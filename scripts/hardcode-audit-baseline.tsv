@@ -1,0 +1,97 @@
+# hardcode-audit baseline — every PROD+CODE hardcode that has been REVIEWED.
+#
+# Format: <path> <TAB> <class> <TAB> <token> <TAB> <why it is not a defect>.
+# A hit is REVIEWED when its path, class and token all appear here. The LINE
+# number is deliberately not part of the key: an unrelated edit above the
+# literal must not turn a reviewed hit into a new one. Adding a line here IS
+# the review act — write the reason, not just the path. Kept sorted.
+#
+internal/tools/task_hermes_host_warning.go	OPERATOR_IDENT	nick-HP	Rule 40 owner host is a MEASURED default behind GOPI_HERMES_OWNER_HOST, read through taskHermesOwnerHost(); a fleet that differs sets the knob instead of editing code
+scripts/demo-memory-loop.sh	PERSONAL_PATH	/home/nick	demo seeds itself from a RECORDED session file; the absolute path is the sample being replayed, and the script comments say so
+scripts/e2e-task-merge.sh	OPERATOR_IDENT	zbook	fleet e2e: the peer box name is the second node under test
+scripts/hp/apply-hp-sweep-dispositions.sh	PERSONAL_PATH	/home/nick	operator fleet tooling: hp and zbook are the two BOXES this tooling drives; the host names ARE the subject under measurement, not a binding of the software
+scripts/hp/hp-checkout-staleness.sh	OPERATOR_IDENT	zbook	operator fleet tooling: hp and zbook are the two BOXES this tooling drives; the host names ARE the subject under measurement, not a binding of the software
+scripts/hp/hp-checkout-staleness.sh	PERSONAL_PATH	/home/nick	operator fleet tooling: hp and zbook are the two BOXES this tooling drives; the host names ARE the subject under measurement, not a binding of the software
+scripts/hp/hp-checkout-staleness.sh	PERSONAL_PATH	/home/nick	operator fleet tooling: hp and zbook are the two BOXES this tooling drives; the host names ARE the subject under measurement, not a binding of the software
+scripts/hp/hp-checkout-staleness.sh	PERSONAL_PATH	/home/nick	operator fleet tooling: hp and zbook are the two BOXES this tooling drives; the host names ARE the subject under measurement, not a binding of the software
+scripts/hp/hp-checkout-staleness.sh	PERSONAL_PATH	/home/nick	operator fleet tooling: hp and zbook are the two BOXES this tooling drives; the host names ARE the subject under measurement, not a binding of the software
+scripts/hp/hp-checkout-staleness.sh	PERSONAL_PATH	/home/nick	operator fleet tooling: hp and zbook are the two BOXES this tooling drives; the host names ARE the subject under measurement, not a binding of the software
+scripts/hp/hp-checkout-staleness.sh	PERSONAL_PATH	/home/nick	operator fleet tooling: hp and zbook are the two BOXES this tooling drives; the host names ARE the subject under measurement, not a binding of the software
+scripts/hp/hp-checkout-staleness.sh	PERSONAL_PATH	/home/nick	operator fleet tooling: hp and zbook are the two BOXES this tooling drives; the host names ARE the subject under measurement, not a binding of the software
+scripts/human-ui/compare-terminals.sh	OPERATOR_IDENT	zbook	fleet comparison: two terminals on two named boxes IS the artifact
+scripts/lib/tmp_ban.py	OPERATOR_IDENT	zbook	linter vocabulary: the host names are DATA the rule matches, never a binding of shipped behaviour
+scripts/materials/entries-topB.sh	PERSONAL_PATH	/home/nick	generated experiment material for one measured campaign; not shipped, replayed only as evidence
+scripts/materials/fourway-drive.sh	PERSONAL_PATH	/home/nick	generated experiment material for one measured campaign; not shipped, replayed only as evidence
+scripts/materials/fourway-drive.sh	PERSONAL_PATH	/home/nick	generated experiment material for one measured campaign; not shipped, replayed only as evidence
+scripts/materials/fourway-drive.sh	PERSONAL_PATH	/home/nick	generated experiment material for one measured campaign; not shipped, replayed only as evidence
+scripts/materials/fourway-drive.sh	PERSONAL_PATH	/home/nick	generated experiment material for one measured campaign; not shipped, replayed only as evidence
+scripts/materials/fourway-drive.sh	PERSONAL_PATH	/home/nick	generated experiment material for one measured campaign; not shipped, replayed only as evidence
+scripts/materials/fourway-drive.sh	PERSONAL_PATH	/home/nick	generated experiment material for one measured campaign; not shipped, replayed only as evidence
+scripts/materials/fourway-drive.sh	PERSONAL_PATH	/home/nick	generated experiment material for one measured campaign; not shipped, replayed only as evidence
+scripts/materials/gen-env-E1.sh	OPERATOR_IDENT	zbook	generated experiment material for one measured campaign; not shipped, replayed only as evidence
+scripts/materials/gen-env-E1.sh	OPERATOR_IDENT	zbook	generated experiment material for one measured campaign; not shipped, replayed only as evidence
+scripts/materials/gen-env-E1.sh	OPERATOR_IDENT	zbook	generated experiment material for one measured campaign; not shipped, replayed only as evidence
+scripts/materials/gen-env-E1.sh	OPERATOR_IDENT	zbook	generated experiment material for one measured campaign; not shipped, replayed only as evidence
+scripts/materials/gen-env-E1.sh	PERSONAL_PATH	/home/nick	generated experiment material for one measured campaign; not shipped, replayed only as evidence
+scripts/materials/gen-envB.sh	PERSONAL_PATH	/home/nick	generated experiment material for one measured campaign; not shipped, replayed only as evidence
+scripts/materials/gen-envB.sh	PERSONAL_PATH	/home/nick	generated experiment material for one measured campaign; not shipped, replayed only as evidence
+scripts/materials/gen-envB.sh	PERSONAL_PATH	/home/nick	generated experiment material for one measured campaign; not shipped, replayed only as evidence
+scripts/materials/gen-envB.sh	PERSONAL_PATH	/home/nick	generated experiment material for one measured campaign; not shipped, replayed only as evidence
+scripts/materials/gen-envB.sh	PERSONAL_PATH	/home/nick	generated experiment material for one measured campaign; not shipped, replayed only as evidence
+scripts/materials/gen-envB.sh	PERSONAL_PATH	/home/nick	generated experiment material for one measured campaign; not shipped, replayed only as evidence
+scripts/materials/gen-flagF-013.sh	PERSONAL_PATH	/home/nick	generated experiment material for one measured campaign; not shipped, replayed only as evidence
+scripts/materials/gen-flagF-013.sh	PERSONAL_PATH	/home/nick	generated experiment material for one measured campaign; not shipped, replayed only as evidence
+scripts/materials/gen-flagF.sh	PERSONAL_PATH	/home/nick	generated experiment material for one measured campaign; not shipped, replayed only as evidence
+scripts/materials/gen-flagF.sh	PERSONAL_PATH	/home/nick	generated experiment material for one measured campaign; not shipped, replayed only as evidence
+scripts/materials/gen-flagF.sh	PERSONAL_PATH	/home/nick	generated experiment material for one measured campaign; not shipped, replayed only as evidence
+scripts/materials/gen-flagF.sh	PERSONAL_PATH	/home/nick	generated experiment material for one measured campaign; not shipped, replayed only as evidence
+scripts/materials/gen-flagF.sh	PERSONAL_PATH	/home/nick	generated experiment material for one measured campaign; not shipped, replayed only as evidence
+scripts/materials/gen-flagF.sh	PERSONAL_PATH	/home/nick	generated experiment material for one measured campaign; not shipped, replayed only as evidence
+scripts/materials/gen-interactive-real.sh	PERSONAL_PATH	/home/nick	generated experiment material for one measured campaign; not shipped, replayed only as evidence
+scripts/materials/gen-memoryC.sh	OPERATOR_IDENT	zbook	generated experiment material for one measured campaign; not shipped, replayed only as evidence
+scripts/materials/gen-memoryC.sh	PERSONAL_PATH	/home/nick	generated experiment material for one measured campaign; not shipped, replayed only as evidence
+scripts/materials/gen-memoryC.sh	PERSONAL_PATH	/home/nick	generated experiment material for one measured campaign; not shipped, replayed only as evidence
+scripts/materials/gen-taskA.sh	PERSONAL_PATH	/home/nick	generated experiment material for one measured campaign; not shipped, replayed only as evidence
+scripts/materials/gen-taskD.sh	PERSONAL_PATH	/home/nick	generated experiment material for one measured campaign; not shipped, replayed only as evidence
+scripts/materials/gen-taskD.sh	PERSONAL_PATH	/home/nick	generated experiment material for one measured campaign; not shipped, replayed only as evidence
+scripts/materials/gen-taskD.sh	PERSONAL_PATH	/home/nick	generated experiment material for one measured campaign; not shipped, replayed only as evidence
+scripts/materials/gen-taskD.sh	PERSONAL_PATH	/home/nick	generated experiment material for one measured campaign; not shipped, replayed only as evidence
+scripts/materials/gen-taskD.sh	PERSONAL_PATH	/home/nick	generated experiment material for one measured campaign; not shipped, replayed only as evidence
+scripts/materials/gen-taskD.sh	PERSONAL_PATH	/home/nick	generated experiment material for one measured campaign; not shipped, replayed only as evidence
+scripts/materials/gen-taskD.sh	PERSONAL_PATH	/home/nick	generated experiment material for one measured campaign; not shipped, replayed only as evidence
+scripts/materials/gen-taskD.sh	PERSONAL_PATH	/home/nick	generated experiment material for one measured campaign; not shipped, replayed only as evidence
+scripts/materials/gen-taskD.sh	PERSONAL_PATH	/home/nick	generated experiment material for one measured campaign; not shipped, replayed only as evidence
+scripts/materials/gen-taskD.sh	PERSONAL_PATH	/home/nick	generated experiment material for one measured campaign; not shipped, replayed only as evidence
+scripts/materials/gen-taskD.sh	PERSONAL_PATH	/home/nick	generated experiment material for one measured campaign; not shipped, replayed only as evidence
+scripts/materials/gen-taskD.sh	PERSONAL_PATH	/home/nick	generated experiment material for one measured campaign; not shipped, replayed only as evidence
+scripts/materials/gen-topA.sh	PERSONAL_PATH	/home/nick	generated experiment material for one measured campaign; not shipped, replayed only as evidence
+scripts/materials/gen-topB.sh	PERSONAL_PATH	/home/nick	generated experiment material for one measured campaign; not shipped, replayed only as evidence
+scripts/materials/materials-gen-env-notify.sh	PERSONAL_PATH	/home/nick	generated experiment material for one measured campaign; not shipped, replayed only as evidence
+scripts/materials/materials-gen-env-notify.sh	PERSONAL_PATH	/home/nick	generated experiment material for one measured campaign; not shipped, replayed only as evidence
+scripts/materials/materials-render-D.py	PERSONAL_PATH	/home/nick	generated experiment material for one measured campaign; not shipped, replayed only as evidence
+scripts/materials/strongest-drive.sh	PERSONAL_PATH	/home/nick	generated experiment material for one measured campaign; not shipped, replayed only as evidence
+scripts/materials/strongest-drive.sh	PERSONAL_PATH	/home/nick	generated experiment material for one measured campaign; not shipped, replayed only as evidence
+scripts/materials/strongest-drive.sh	PERSONAL_PATH	/home/nick	generated experiment material for one measured campaign; not shipped, replayed only as evidence
+scripts/materials/strongest-drive.sh	PERSONAL_PATH	/home/nick	generated experiment material for one measured campaign; not shipped, replayed only as evidence
+scripts/materials/strongest-followups.sh	PERSONAL_PATH	/home/nick	generated experiment material for one measured campaign; not shipped, replayed only as evidence
+scripts/materials/strongest-followups.sh	PERSONAL_PATH	/home/nick	generated experiment material for one measured campaign; not shipped, replayed only as evidence
+scripts/materials/strongest-followups.sh	PERSONAL_PATH	/home/nick	generated experiment material for one measured campaign; not shipped, replayed only as evidence
+scripts/materials/strongest-followups.sh	PERSONAL_PATH	/home/nick	generated experiment material for one measured campaign; not shipped, replayed only as evidence
+scripts/materials/strongest-followups.sh	PERSONAL_PATH	/home/nick	generated experiment material for one measured campaign; not shipped, replayed only as evidence
+scripts/materials/strongest-hermes-native.sh	PERSONAL_PATH	/home/nick	generated experiment material for one measured campaign; not shipped, replayed only as evidence
+scripts/materials/strongest-hermes-native.sh	PERSONAL_PATH	/home/nick	generated experiment material for one measured campaign; not shipped, replayed only as evidence
+scripts/mine_out.json	PERSONAL_PATH	/home/nick	recorded CLI corpus the drive scripts replay; the recorded paths are the measurement itself
+scripts/mine_out.json	PERSONAL_PATH	/home/nick	recorded CLI corpus the drive scripts replay; the recorded paths are the measurement itself
+scripts/mine_out.json	PERSONAL_PATH	/home/nick	recorded CLI corpus the drive scripts replay; the recorded paths are the measurement itself
+scripts/mine_out.json	PERSONAL_PATH	/home/nick	recorded CLI corpus the drive scripts replay; the recorded paths are the measurement itself
+scripts/mine_out.json	PERSONAL_PATH	/home/nick	recorded CLI corpus the drive scripts replay; the recorded paths are the measurement itself
+scripts/mine_out.json	PERSONAL_PATH	/home/nick	recorded CLI corpus the drive scripts replay; the recorded paths are the measurement itself
+scripts/mine_out.json	PERSONAL_PATH	/home/nick	recorded CLI corpus the drive scripts replay; the recorded paths are the measurement itself
+scripts/notify/deploy.sh	OPERATOR_IDENT	zbook	fleet notification: the peer host and its LAN address are the ROUTING TABLE this script delivers over, not a machine binding
+scripts/notify/deploy.sh	OPERATOR_IDENT	zbook	fleet notification: the peer host and its LAN address are the ROUTING TABLE this script delivers over, not a machine binding
+scripts/notify/deploy.sh	OPERATOR_IDENT	zbook	fleet notification: the peer host and its LAN address are the ROUTING TABLE this script delivers over, not a machine binding
+scripts/notify/notify_peer_health_test.sh	PRIVATE_IP	10.0.0.1	fleet notification: the peer host and its LAN address are the ROUTING TABLE this script delivers over, not a machine binding
+scripts/repro-live-holder-worktree-veto.sh	OPERATOR_IDENT	zbook	operator-run harness script: the absolute paths name the WORKTREES and BINARIES of the operator machine this harness drives. Not part of the shipped binary, and no portable default is meaningful — driving those worktrees IS its job
+scripts/voice-e2e-fixture.sh	OPERATOR_IDENT	zbook	operator-run harness script: the absolute paths name the WORKTREES and BINARIES of the operator machine this harness drives. Not part of the shipped binary, and no portable default is meaningful — driving those worktrees IS its job
+scripts/voice-e2e-hp.sh	OPERATOR_IDENT	zbook	operator fleet tooling: drives the peer box by name, which is exactly what the script measures
+scripts/voice-e2e-hp.sh	OPERATOR_IDENT	zbook	operator fleet tooling: drives the peer box by name, which is exactly what the script measures

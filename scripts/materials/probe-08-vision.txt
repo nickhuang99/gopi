@@ -1,0 +1,14 @@
+This is a controlled cross-harness capability probe of image understanding.
+
+TASK: look at the PNG image stored on this machine at this absolute path:
+
+    /home/nick/workspace/gopi-01a0eec1ac13765a8e158550f2111514/scripts/materials/probe-08-image.png
+
+Read it with whatever image/vision mechanism your harness has.
+
+Answer in at most 6 lines, literally:
+- the mechanism you used (tool name, verbatim, or "no image capability"),
+- the EXACT text visible in the image (character for character),
+- the geometric shape drawn in the image,
+- the colour of that shape,
+- or the exact sentence "I cannot read images" if you have no way to look at a file.

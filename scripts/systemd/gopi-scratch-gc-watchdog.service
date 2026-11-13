@@ -1,0 +1,30 @@
+# gopi-scratch-gc-watchdog.service — the GoPi scratch home's host-level upkeep.
+#
+# Installed by scripts/install-scratch-gc-watchdog.sh into
+# ~/.config/systemd/user/. The service is Type=oneshot: it runs the watchdog
+# script once and exits, so it is the TIMER (see the .timer unit) that gives
+# the sweep its 30-minute clock. Nothing resident is created (Rule 3: no new
+# daemon; the resident half of the sweep already rides the worker/merger tick).
+#
+# The script resolves the gopi binary itself (repo bin/gopi by default) and
+# carries its own explicit PATH and lock — see scripts/scratch-gc-watchdog.sh.
+#
+# The optional EnvironmentFile lets an operator point the watchdog at another
+# binary (GOPI_SCRATCH_GC_BIN=<path>, e.g. a worktree) without editing this
+# unit: `-` = the file may be absent.
+[Unit]
+Description=GoPi scratch home watchdog — one-shot sweep of the suite scratch tree
+Documentation=file:%h/work/GoPi/scripts/scratch-gc-watchdog.sh
+
+[Service]
+Type=oneshot
+EnvironmentFile=-%h/.config/gopi/scratch-gc-watchdog.env
+# %h expands to the user's home inside the unit — no per-host path baking.
+ExecStart=%h/work/GoPi/scripts/scratch-gc-watchdog.sh
+# Best-effort disk hygiene: it must never compete with a live suite, and a
+# failure is already loud (the script logs FAIL and exits non-zero).
+Nice=10
+IOSchedulingClass=idle
+# The sweep deletes under the user's own workspace, so no filesystem
+# sandboxing: ProtectHome/ReadOnlyPaths would break exactly the operation this
+# unit exists to perform.

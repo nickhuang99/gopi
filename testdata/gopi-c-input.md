@@ -1,0 +1,3 @@
+Write a c program based on  Python script at /tmp/fibonacci.py that calculates and prints the first 20 Fibonacci numbers. the new c code file should be /tmp/fibonacci.c .
+The c code should be well-formatted with proper c syntax. 
+You should use read and write to copy original python script to c source file and then use edit to finish your coding. After writing the c source file, read it back and use edit function to convert python code to c code and  verify the content looks correct. and then use bash tool to run compile and actually execute binary to show its result to verify your code until it output correct result.

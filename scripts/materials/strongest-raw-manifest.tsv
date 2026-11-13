@@ -1,0 +1,73 @@
+artifact	bytes	sha256_16	rc
+docclass.log	57	83b028151ee04732	
+followups.log	3002	9f718ed36ada0113	
+hermes.m3.native.log	1076	cbed1d93948eb2ff	
+hermes.native.surface.log	1918	e95bc7bef8f292aa	
+m1.gopi.session.log	1820	3e91f546ab38d62d	
+m1.submit.gopi.out	240	9edcb3eb34bbb0d8	
+m1m2.hermes.kanban.help.out	6141	34270885231ec538	
+m1m2m5.hermes.kanban.run.log	2861	894861985b580223	
+m2.gopi.session.log	3894	c44a83d5c6d52dd6	
+m3.gopi.live_session.out	3275	fd675a169a68b33e	
+m3.gopi.session.log	2365	07f4f42dd94a85e6	
+m3m4.gopi.baseline.log	5802	83395f5ff942c27b	
+m3m6.gopi.baseline.log	46937	d334361c5c0f23d9	
+m4.gopi.orphan.log	1528	3daef94552e64c08	
+m4m6.gopi.gate.log	2669	f3e4874d2eccb1f4	
+m5.gopi.dispatch.log	2537	674a15adf8888a6d	
+m5.gopi.dispatch2.log	2763	cbd80fd56776f90b	
+m5.gopi.session.log	4708	19c59553ac901897	
+m5.gopi.worker.run.log	6136	3ccd45214b2fa1e3	
+m5m6.gopi.run.log	3712	f93783829d86302d	
+m5sweep.gopi.log	4061	f2d58ddfb7d1bc4f	
+m6.gopi.session.log	2655	1f54005faa5a1621	
+m6m4.gopi.peer.log	1008	e82909af47c42240	
+probe-m1-ledger.claude.out	2759	c56a846f4e80c4ef	0
+probe-m1-ledger.claude.rc	2	9a271f2a916b0b6e	0
+probe-m1-ledger.codex.out	55562	5b4fd9d06c2505b3	137
+probe-m1-ledger.codex.rc	4	e3b9c2844b5a5c26	137
+probe-m1-ledger.dsh.out	46	ece04509156230a8	1
+probe-m1-ledger.dsh.rc	2	4355a46b19d348dc	1
+probe-m1-ledger.hermes.out	9442	6727d2857fc08b38	137
+probe-m1-ledger.hermes.rc	4	e3b9c2844b5a5c26	137
+probe-m2-dependency.claude.out	2551	6d6aa422541d76e5	0
+probe-m2-dependency.claude.rc	2	9a271f2a916b0b6e	0
+probe-m2-dependency.codex.out	24641	513568193debb3b7	0
+probe-m2-dependency.codex.rc	2	9a271f2a916b0b6e	0
+probe-m2-dependency.dsh.out	46	ece04509156230a8	1
+probe-m2-dependency.dsh.rc	2	4355a46b19d348dc	1
+probe-m2-dependency.hermes.out	16053	a7f95f5994c44257	137
+probe-m2-dependency.hermes.rc	4	e3b9c2844b5a5c26	137
+probe-m3-introspect.claude.long.out	0	e3b0c44298fc1c14	
+probe-m3-introspect.claude.out	0	e3b0c44298fc1c14	137
+probe-m3-introspect.claude.rc	4	e3b9c2844b5a5c26	137
+probe-m3-introspect.codex.out	76074	d52d3869cc1a688d	137
+probe-m3-introspect.codex.rc	4	e3b9c2844b5a5c26	137
+probe-m3-introspect.dsh.out	46	ece04509156230a8	1
+probe-m3-introspect.dsh.rc	2	4355a46b19d348dc	1
+probe-m3-introspect.hermes.out	13040	06d3ab5cd36697d5	0
+probe-m3-introspect.hermes.rc	2	9a271f2a916b0b6e	0
+probe-m4-mergegate.claude.out	0	e3b0c44298fc1c14	137
+probe-m4-mergegate.claude.rc	4	e3b9c2844b5a5c26	137
+probe-m4-mergegate.codex.out	90179	53c1aee9e60f2673	0
+probe-m4-mergegate.codex.rc	2	9a271f2a916b0b6e	0
+probe-m4-mergegate.dsh.out	46	ece04509156230a8	1
+probe-m4-mergegate.dsh.rc	2	4355a46b19d348dc	1
+probe-m4-mergegate.hermes.out	25732	3bd26ff92a4a8f3f	0
+probe-m4-mergegate.hermes.rc	2	9a271f2a916b0b6e	0
+probe-m5-worktree.claude.out	0	e3b0c44298fc1c14	137
+probe-m5-worktree.claude.rc	4	e3b9c2844b5a5c26	137
+probe-m5-worktree.codex.out	209904	6ca553eca994f968	0
+probe-m5-worktree.codex.rc	2	9a271f2a916b0b6e	0
+probe-m5-worktree.dsh.out	46	ece04509156230a8	1
+probe-m5-worktree.dsh.rc	2	4355a46b19d348dc	1
+probe-m5-worktree.hermes.out	11077	807b4ce521d0c97b	137
+probe-m5-worktree.hermes.rc	4	e3b9c2844b5a5c26	137
+probe-m6-sync.claude.out	0	e3b0c44298fc1c14	137
+probe-m6-sync.claude.rc	4	e3b9c2844b5a5c26	137
+probe-m6-sync.codex.out	137157	64834ea6a4927503	0
+probe-m6-sync.codex.rc	2	9a271f2a916b0b6e	0
+probe-m6-sync.dsh.out	46	ece04509156230a8	1
+probe-m6-sync.dsh.rc	2	4355a46b19d348dc	1
+probe-m6-sync.hermes.out	1256	ede2d2adec2e9077	137
+probe-m6-sync.hermes.rc	4	e3b9c2844b5a5c26	137

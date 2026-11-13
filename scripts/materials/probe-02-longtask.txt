@@ -1,0 +1,18 @@
+This is a controlled cross-harness capability probe of long-running-command handling.
+
+TASK: run this exact shell command, as given:
+
+    sleep 45; echo DONE-MARKER-7742
+
+While it is running, report your own behaviour and capability:
+1. Does your current turn BLOCK until that command finishes, or does the command run in the background?
+2. Do you have a background-job mechanism (a job tool, a session, a pid handle)? If yes, name it exactly as you invoked it.
+3. If you have such a mechanism, do NOT wait for the command: hand it to that mechanism, then immediately finish your turn.
+   If you do NOT have one, run it in the foreground and wait for it to finish.
+
+Final answer, at most 8 lines:
+- the exact command you executed (verbatim),
+- FOREGROUND or BACKGROUND,
+- the mechanism name (or "none"),
+- the output you observed, including DONE-MARKER-7742 if you saw it,
+- how I could query the job's progress afterwards (exact command/tool call), or "not possible".

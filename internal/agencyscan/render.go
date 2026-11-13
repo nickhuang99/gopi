@@ -1,0 +1,146 @@
+package agencyscan
+
+import (
+	"fmt"
+	"sort"
+	"strings"
+)
+
+// This file renders a candidate into (summary, payload) — the ONLY shape a
+// proposal takes. Rendering is a pure function of the candidate, so the
+// replay face can print exactly what submit would have enqueued without
+// touching the queue.
+
+const (
+	// summaryPrefixRecurringFailure / summaryPrefixDuplicateKnowledge lead
+	// the proposal headline. They are SHORT on purpose: the ledger stores a
+	// rune length cap (internal/agent's maxAutoTaskSummaryRunes), so a long
+	// prefix would TRUNCATE the pattern excerpt — the one part that must
+	// survive (measured: a 42-rune prefix pushed a CJK headline over the cap
+	// and dropped exactly the evidence).
+	summaryPrefixRecurringFailure   = "[auto] recurring failure: "
+	summaryPrefixDuplicateKnowledge = "[auto] duplicate knowledge: "
+
+	// summaryExcerptRunes bounds the pattern excerpt in a headline.
+	summaryExcerptRunes = 24
+
+	// summaryEvidenceRunes bounds the trailing evidence counts.
+	summaryEvidenceRunes = 16
+)
+
+// renderSubmission renders one candidate as a task headline + briefing.
+//
+// ok=false means the headline did not survive its length budget — the caller
+// DROPS the candidate and counts it (Rule 15: a dropped candidate is
+// recorded, never silently lost).
+func renderSubmission(c candidate) (summary, payload string, ok bool) {
+	prefix := summaryPrefixRecurringFailure
+	if c.Kind == KindDuplicateKnowledge {
+		prefix = summaryPrefixDuplicateKnowledge
+	}
+	excerpt := c.RecurrenceKey
+	if i := strings.LastIndex(excerpt, "|"); i >= 0 {
+		excerpt = excerpt[i+1:]
+	}
+	excerpt = truncateRunes(oneLine(excerpt), summaryExcerptRunes)
+	if excerpt == "" {
+		return "", "", false
+	}
+	tail := fmt.Sprintf(" n=%d fails=%d", c.Count, c.FailedCount)
+	if c.Kind == KindDuplicateKnowledge {
+		tail = fmt.Sprintf(" n=%d", c.Count)
+	}
+	summary = prefix + excerpt + tail
+	if len(summary) > maxProposalSummaryRunes || len(prefix) > maxProposalSummaryRunes/2 {
+		return "", "", false
+	}
+	return summary, renderBriefing(c), true
+}
+
+// maxProposalSummaryRunes is the headline budget this package enforces
+// locally so a truncating ledger cap never silently eats the pattern. It
+// mirrors internal/agent's maxAutoTaskSummaryRunes (a leaf package cannot
+// import it); the local guard is what makes the refusal explicit.
+const maxProposalSummaryRunes = 80
+
+// renderBriefing builds the self-contained briefing the operator reads in
+// `gopi task show`. It states the pattern, the evidence and the 3-condition
+// criteria — and it asks for a DECISION, never for blind work.
+func renderBriefing(c candidate) string {
+	var b strings.Builder
+	fmt.Fprintf(&b, "Agency pass (level 3) — automatic improvement proposal.\n\n")
+	switch c.Kind {
+	case KindRecurringFailure:
+		fmt.Fprintf(&b, "Pattern (recurring failure): %s\n", c.RecurrenceKey)
+		fmt.Fprintf(&b, "Occurrences: %d   failed: %d   statuses: %s\n",
+			c.Count, c.FailedCount, statusLine(c.StatusCounts))
+		b.WriteString("\nWhy this is a candidate: the same task family recurs at least \n")
+		fmt.Fprintf(&b, "%d times AND its failure share (%s%%) is above the\n", minTaskFamilySize, rateString(c.FailedCount, c.Count))
+		fmt.Fprintf(&b, "%d%% gate — the ledger records this as a repeatable pattern\n", int(maxFailureRate*100))
+		b.WriteString("with a reproducible loop whose payoff is currently negative.\n")
+		b.WriteString("\nEvidence rows (status [summary]):\n")
+		writeEvidence(&b, c.Family)
+		b.WriteString("\nWhat to do: decide whether this recurring failure has a ROOT CAUSE\n")
+		b.WriteString("worth an improvement (not a one-off transient). If yes, replace this\n")
+		b.WriteString("proposal with a scoped improvement task (or the fix itself) and mark\n")
+		b.WriteString("this row completed with the decision. If it is transient/expected,\n")
+		b.WriteString("cancel this row with the reason — the reason IS the verdict.\n")
+	case KindDuplicateKnowledge:
+		fmt.Fprintf(&b, "Pattern (duplicate knowledge): %s\n", c.RecurrenceKey)
+		fmt.Fprintf(&b, "Rows sharing one normalized question: %d   surplus: %d\n", c.Count, c.Surplus)
+		b.WriteString("\nWhy this is a candidate: the same question is answered by \n")
+		fmt.Fprintf(&b, "%d or more near-identical rows, so retrieval (and review) pays for\n", duplicateGroupMinSize)
+		b.WriteString("the redundancy on every future task that matches it.\n")
+		b.WriteString("\nEvidence rows (id(retrieval_count) question):\n")
+		writeEvidence(&b, c.Family)
+		b.WriteString("\nWhat to do: consolidate — keep the most-retrieved row as canonical\n")
+		b.WriteString("(merge any unique detail into it), fold the surplus rows into it, and\n")
+		b.WriteString("cancel this row with the outcome. If the rows differ in substance,\n")
+		b.WriteString("cancel this row saying so — that verdict is the record.\n")
+	default:
+		return ""
+	}
+	fmt.Fprintf(&b, "\n%s%s\n", RecurrenceKeyFingerprintMarker, dedupeFence(fingerprint(c.RecurrenceKey)))
+	b.WriteString("\nProvenance: generated by the task-end agency pass (internal/agencyscan).\n")
+	b.WriteString("It proposes; it never dispatches, and it never touches code by itself.\n")
+	return b.String()
+}
+
+// writeEvidence renders the evidence rows, one per line.
+func writeEvidence(b *strings.Builder, family []string) {
+	for i, e := range family {
+		if i >= maxEvidenceRows {
+			fmt.Fprintf(b, "  … %d more\n", len(family)-maxEvidenceRows)
+			break
+		}
+		fmt.Fprintf(b, "  %s\n", oneLine(e))
+	}
+}
+
+// maxEvidenceRows bounds the briefing: a 77-row family must not produce a
+// 77-line payload (the ledger and the reader both pay for it).
+const maxEvidenceRows = 20
+
+// statusLine renders the status histogram deterministically.
+func statusLine(counts map[string]int) string {
+	keys := make([]string, 0, len(counts))
+	for k := range counts {
+		keys = append(keys, k)
+	}
+	sort.Strings(keys)
+	parts := make([]string, 0, len(keys))
+	for _, k := range keys {
+		parts = append(parts, fmt.Sprintf("%s=%d", k, counts[k]))
+	}
+	return strings.Join(parts, " ")
+}
+
+// truncateRunes cuts s to at most n runes (rune-safe: a CJK excerpt must not
+// be split mid-codepoint).
+func truncateRunes(s string, n int) string {
+	r := []rune(s)
+	if len(r) <= n {
+		return s
+	}
+	return string(r[:n])
+}

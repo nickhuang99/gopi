@@ -1,0 +1,23 @@
+=== SEND-SIDE sha256 (file on disk) vs delivered payload sha256 (file minus trailing newline, what $(cat) yields) ===
+probe-m1-ledger file=7e50e0fbf22cb5cef83ed6a93911d0ce86a7cfb209e685c7debca4a263ab218d (1289 bytes) delivered=78477cd68ec19e115480dfccd7595796ead5f516d33fd65a4d7122542e61d5c2 (1288 bytes)
+probe-m2-dependency file=70f9f623a8cd42f89819a0f822231331d50c4a6a69ffa0abf4275f44dbcdd39a (1240 bytes) delivered=620b709d183081369cf33d5755e38d046c3c9000df36efe7795cb64333554ef9 (1239 bytes)
+probe-m3-introspect file=9b024550fb47f77ad70db1a1f489ca944027e4f8159edb3f9636264e1b8de4c7 (1076 bytes) delivered=7190ec8898e6f1b5b4cf81e9a364f2d07e87434f78ea6018c417b9c75af43198 (1075 bytes)
+probe-m4-mergegate file=69d63e9bf32938f07e810cfff65d62cd016c5170b4b34714b3c45b904e5af335 (1233 bytes) delivered=d0336a7a71c1da4cd136083eb1e1273beb75c4aa139a96b021bf7c35d07896b2 (1232 bytes)
+probe-m5-worktree file=840562969ef5edfd52d349af155f40e9bdbf7e999e2a42c64237225aa1bfaefd (1121 bytes) delivered=2224355517c2be73c4d426a5af5c8ea599f3d4d02da3cd796ab274ff51e21f81 (1120 bytes)
+probe-m6-sync file=15e478801ecb17240b5e564dfce7d307a15858ae57dae28b3d962129fec19b72 (835 bytes) delivered=b1bb844bf6f2775e0e24a098eae5f0af42f70985c439ddc23f432a9d3e9c91c6 (834 bytes)
+
+=== ARRIVAL-SIDE (read back from each product's own session record) ===
+claude files: /home/nick/.claude/projects/-home-nick--gopi-sessions-01a0eec1-e2a4-7366-bcf3-d2c2e183fe18-strongest-work-claude/5595e2c3-d0e1-457e-9e9f-24aa7d9645a8.jsonl
+/home/nick/.claude/projects/-home-nick--gopi-sessions-01a0eec1-e2a4-7366-bcf3-d2c2e183fe18-strongest-work-claude/1429aa19-a692-420f-89c2-6f5f48b40342.jsonl
+claude arrival: 620b709d183081369cf33d5755e38d046c3c9000df36efe7795cb64333554ef9 (1239 bytes)
+  head: 【机制探测 M2：父子依赖闸门（父未释放，子不得被调度）】//目标：判断你自身产
+claude arrival: 78477cd68ec19e115480dfccd7595796ead5f516d33fd65a4d7122542e61d5c2 (1288 bytes)
+  head: 【机制探测 M1：append-only 持久任务台账 + 审计链】//目标：判
+hermes tables: ['schema_version', 'sessions', 'messages', 'sqlite_sequence', 'state_meta', 'compression_locks', 'gateway_routing', 'messages_fts', 'messages_fts_data', 'messages_fts_idx', 'messages_fts_content', 'messages_fts_docsize', 'messages_fts_config', 'messages_fts_trigram', 'messages_fts_trigram_data', 'messages_fts_trigram_idx', 'messages_fts_trigram_content', 'messages_fts_trigram_docsize', 'messages_fts_trigram_config']
+   sessions ['id', 'source', 'user_id', 'session_key', 'chat_id', 'chat_type', 'thread_id', 'model', 'model_config', 'system_prompt', 'parent_session_id', 'started_at', 'ended_at', 'end_reason', 'message_count', 'tool_call_count', 'input_tokens', 'output_tokens', 'cache_read_tokens', 'cache_write_tokens', 'reasoning_tokens', 'cwd', 'git_branch', 'git_repo_root', 'billing_provider', 'billing_base_url', 'billing_mode', 'estimated_cost_usd', 'actual_cost_usd', 'cost_status', 'cost_source', 'pricing_version', 'title', 'api_call_count', 'handoff_state', 'handoff_platform', 'handoff_error', 'compression_failure_cooldown_until', 'compression_failure_error', 'rewind_count', 'archived', 'display_name', 'origin_json', 'expiry_finalized', 'cache_miss_tokens']
+   messages ['id', 'session_id', 'role', 'content', 'tool_call_id', 'tool_calls', 'tool_name', 'timestamp', 'token_count', 'finish_reason', 'reasoning', 'reasoning_content', 'reasoning_details', 'codex_reasoning_items', 'codex_message_items', 'platform_message_id', 'observed', 'active', 'compacted', 'jieba_token']
+   messages_fts ['content']
+   messages_fts_trigram ['content']
+codex arrival: 78477cd68ec19e115480dfccd7595796ead5f516d33fd65a4d7122542e61d5c2 (1288 bytes) 【机制探测 M1：append-only 持久任务台 | rollout-2026-09-30T05-30-15-01a0
+codex arrival: 620b709d183081369cf33d5755e38d046c3c9000df36efe7795cb64333554ef9 (1239 bytes) 【机制探测 M2：父子依赖闸门（父未释放，子不得被调 | rollout-2026-09-30T05-33-03-01a0
+codex arrival: 7190ec8898e6f1b5b4cf81e9a364f2d07e87434f78ea6018c417b9c75af43198 (1075 bytes) 【机制探测 M3：自感知 / 自省（会话、token | rollout-2026-09-30T05-33-31-01a0

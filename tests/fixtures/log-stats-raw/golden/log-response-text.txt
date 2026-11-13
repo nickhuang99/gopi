@@ -1,0 +1,19 @@
+Memory confirms the chain. Item 1: Paris.
+
+[TASK_LIST_BEGIN]
+[{"task_id":"1","summary":"Capital of France","status":"completed"},{"task_id":"2","summary":"River under Paris","status":"progressing"},{"task_id":"3","summary":"Sea for Seine","status":"pending"},{"task_id":"4","summary":"Ocean for Channel","status":"pending"},{"task_id":"5","summary":"Full chain","status":"pending"}]
+[TASK_LIST_END]
+Item 2: Paris lies on the Seine.
+
+[TASK_LIST_BEGIN]
+[{"task_id":"1","summary":"Capital of France","status":"completed"},{"task_id":"2","summary":"River under Paris","status":"completed"},{"task_id":"3","summary":"Sea for Seine","status":"progressing"},{"task_id":"4","summary":"Ocean for Channel","status":"pending"},{"task_id":"5","summary":"Full chain","status":"pending"}]
+[TASK_LIST_END]
+Item 3: The Seine empties into the English Channel (La Manche).
+
+[TASK_LIST_BEGIN]
+[{"task_id":"1","summary":"Capital of France","status":"completed"},{"task_id":"2","summary":"River under Paris","status":"completed"},{"task_id":"3","summary":"Sea for Seine","status":"completed"},{"task_id":"4","summary":"Ocean for Channel","status":"progressing"},{"task_id":"5","summary":"Full chain","status":"pending"}]
+[TASK_LIST_END]
+Item 4: The English Channel connects to the Atlantic Ocean.
+Item 5: Compose the complete chain.
+France → Paris → Seine → English Channel (La Manche) → Atlantic Ocean.
+France → Paris → Seine → English Channel (La Manche) → Atlantic Ocean.

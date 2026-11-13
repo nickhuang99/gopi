@@ -1,0 +1,456 @@
+{
+ "task_clusters_ge4": [
+  {
+   "key": "gopi run completed",
+   "n": 91
+  },
+  {
+   "key": "auto task summary",
+   "n": 55
+  },
+  {
+   "key": "auto 背景 nick",
+   "n": 27
+  },
+  {
+   "key": "auto branch feat",
+   "n": 21
+  },
+  {
+   "key": "resolve merge conflict",
+   "n": 19
+  },
+  {
+   "key": "merge backlog hp",
+   "n": 15
+  },
+  {
+   "key": "code review gopi",
+   "n": 12
+  },
+  {
+   "key": "auto bug fix",
+   "n": 12
+  },
+  {
+   "key": "auto you are",
+   "n": 11
+  },
+  {
+   "key": "code review campaign",
+   "n": 11
+  },
+  {
+   "key": "auto reply with",
+   "n": 10
+  },
+  {
+   "key": "auto epic context",
+   "n": 9
+  },
+  {
+   "key": "review memory aware",
+   "n": 8
+  },
+  {
+   "key": "m<n> <n> 补充",
+   "n": 7
+  },
+  {
+   "key": "auto fix the",
+   "n": 7
+  },
+  {
+   "key": "auto run the",
+   "n": 6
+  },
+  {
+   "key": "auto what is",
+   "n": 6
+  },
+  {
+   "key": "gopi run failed",
+   "n": 5
+  },
+  {
+   "key": "auto 背景 gopi",
+   "n": 5
+  },
+  {
+   "key": "merge backlog feat",
+   "n": 5
+  },
+  {
+   "key": "auto failing chat",
+   "n": 5
+  },
+  {
+   "key": "auto second opinion",
+   "n": 5
+  },
+  {
+   "key": "auto current gopi",
+   "n": 4
+  },
+  {
+   "key": "auto 任务 gopi",
+   "n": 4
+  },
+  {
+   "key": "auto pa q",
+   "n": 4
+  },
+  {
+   "key": "auto 发现 nick",
+   "n": 4
+  },
+  {
+   "key": "auto nick nick",
+   "n": 4
+  },
+  {
+   "key": "auto feasibility study",
+   "n": 4
+  },
+  {
+   "key": "tool family merge",
+   "n": 4
+  }
+ ],
+ "tasks_reopened_ge2": 0,
+ "merge_conflict_clusters_ge2": [
+  {
+   "branch": "gopi run completed run elapsed <n>m<n>s",
+   "n": 2
+  },
+  {
+   "branch": "feat/hippocampus-host",
+   "n": 2
+  }
+ ],
+ "failed_task_clusters_ge3": [
+  {
+   "key": "auto run the",
+   "n": 6
+  },
+  {
+   "key": "auto failing chat",
+   "n": 5
+  },
+  {
+   "key": "resolve merge conflict",
+   "n": 4
+  },
+  {
+   "key": "gopi run failed",
+   "n": 3
+  },
+  {
+   "key": "auto bug fix",
+   "n": 3
+  },
+  {
+   "key": "auto task summary",
+   "n": 3
+  }
+ ],
+ "failed_total": 55,
+ "qa_total": 1814,
+ "qa_zero_retrieval": 162,
+ "qa_useless_ge1": 5,
+ "qa_dup_clusters_ge3": [
+  {
+   "key": "your out file is the only evidence qa review sees if it cont",
+   "n": 10
+  },
+  {
+   "key": "git blame internal agent loop go lines <n> <n> which commits",
+   "n": 9
+  },
+  {
+   "key": "if you took no action your response must explain why with sp",
+   "n": 7
+  },
+  {
+   "key": "has the user expressed expectations about how you should beh",
+   "n": 6
+  },
+  {
+   "key": "epic goal is a literal exact string deliverable reply with e",
+   "n": 5
+  },
+  {
+   "key": "output requirements for verification tasks show each test ca",
+   "n": 4
+  },
+  {
+   "key": "test your memory about a previous bugfix for gopi of hangout",
+   "n": 4
+  },
+  {
+   "key": "when you study gopi report pay attention to see if your recu",
+   "n": 4
+  },
+  {
+   "key": "git blame internal tools tasks go lines <n> <n> which commit",
+   "n": 4
+  },
+  {
+   "key": "git blame cmd agent cli tasks go lines <n> <n> which commits",
+   "n": 4
+  },
+  {
+   "key": "the reason i was asking you about the performance gain in go",
+   "n": 3
+  },
+  {
+   "key": "i mean from rpi<n> try git pull hermes remote from github wi",
+   "n": 3
+  },
+  {
+   "key": "task <h> <n> <n>d<n>a<n> in this task i asked gopi to study ",
+   "n": 3
+  },
+  {
+   "key": "why do we have to count and make a decision when asking is s",
+   "n": 3
+  },
+  {
+   "key": "i have gopi in hp to fix a bug and here is report devdoc cac",
+   "n": 3
+  },
+  {
+   "key": "important background process proc <n>a<n>b<n>b<n> completed ",
+   "n": 3
+  },
+  {
+   "key": "epic goal that is itself a literal exact string deliverable ",
+   "n": 3
+  }
+ ],
+ "sessions_with_jsonl": 1361,
+ "tool_prefix_seqs_ge5": [
+  {
+   "seq": "bash bash bash bash bash bash",
+   "n": 39
+  },
+  {
+   "seq": "memory_search bash memory_feedback memory_feedback memory_feedback memory_feedback",
+   "n": 37
+  },
+  {
+   "seq": "memory_search bash memory_feedback memory_feedback memory_feedback bash",
+   "n": 32
+  },
+  {
+   "seq": "memory_search memory_feedback memory_feedback memory_feedback memory_feedback memory_feedback",
+   "n": 26
+  },
+  {
+   "seq": "memory_search bash bash bash bash bash",
+   "n": 22
+  },
+  {
+   "seq": "memory_search memory_feedback memory_feedback memory_feedback bash bash",
+   "n": 21
+  },
+  {
+   "seq": "memory_search bash memory_feedback memory_feedback bash bash",
+   "n": 21
+  },
+  {
+   "seq": "bash bash read read read read",
+   "n": 20
+  },
+  {
+   "seq": "memory_search memory_store",
+   "n": 19
+  },
+  {
+   "seq": "memory_search memory_feedback memory_feedback memory_feedback memory_feedback bash",
+   "n": 19
+  },
+  {
+   "seq": "bash",
+   "n": 18
+  },
+  {
+   "seq": "todo",
+   "n": 16
+  },
+  {
+   "seq": "bash bash bash bash bash read",
+   "n": 11
+  },
+  {
+   "seq": "memory_search memory_feedback memory_feedback bash bash bash",
+   "n": 11
+  },
+  {
+   "seq": "memory_search memory_search memory_feedback memory_feedback memory_feedback memory_feedback",
+   "n": 11
+  }
+ ],
+ "bash_head_ge10": [
+  {
+   "cmd": "cd ~/work/GoPi &&",
+   "n": 8426
+  },
+  {
+   "cmd": "cd /home/nick/work/GoPi &&",
+   "n": 2359
+  },
+  {
+   "cmd": "cd ~/workspace/homm3-m1 &&",
+   "n": 2236
+  },
+  {
+   "cmd": "cd /home/nick/workspace/gopi-merge-backlog &&",
+   "n": 1693
+  },
+  {
+   "cmd": "cd /tmp &&",
+   "n": 627
+  },
+  {
+   "cmd": "sleep 115; cd",
+   "n": 592
+  },
+  {
+   "cmd": "cd ~/work/workspace/maps-phase3 &&",
+   "n": 479
+  },
+  {
+   "cmd": "cd ~/workspace/homm3-m1/run10_evidence &&",
+   "n": 428
+  },
+  {
+   "cmd": "cd /home/nick/work/scheduler &&",
+   "n": 383
+  },
+  {
+   "cmd": "cd ~/workspace/vcmi &&",
+   "n": 376
+  },
+  {
+   "cmd": "cd /home/nick/workspace/gopi-style-sweep &&",
+   "n": 360
+  },
+  {
+   "cmd": "cd ~/workspace/gopi-tool-merge &&",
+   "n": 359
+  },
+  {
+   "cmd": "cd ~/workspace/gopi-m420 &&",
+   "n": 358
+  },
+  {
+   "cmd": "cd ~/workspace/gopi-chat-remote &&",
+   "n": 338
+  },
+  {
+   "cmd": "ps aux |",
+   "n": 322
+  },
+  {
+   "cmd": "cd ~/workspace/gopi-memsync-delta &&",
+   "n": 320
+  },
+  {
+   "cmd": "cd ~/workspace/gopi-review-suite &&",
+   "n": 317
+  },
+  {
+   "cmd": "python3 -c \"",
+   "n": 310
+  },
+  {
+   "cmd": "cd /home/nick/workspace/homm3-m1 &&",
+   "n": 305
+  },
+  {
+   "cmd": "cd ~/workspace/gopi-memory-tool &&",
+   "n": 302
+  },
+  {
+   "cmd": "cd /tmp/tmp.OxwVwyvQSS/repo.wt &&",
+   "n": 298
+  },
+  {
+   "cmd": "cd ~/work/scheduler &&",
+   "n": 287
+  },
+  {
+   "cmd": "cd ~/work/hermes-agent &&",
+   "n": 280
+  },
+  {
+   "cmd": "sleep 115; ssh",
+   "n": 277
+  },
+  {
+   "cmd": "cd ~/workspace/gopi-mem-t2 &&",
+   "n": 270
+  },
+  {
+   "cmd": "cd ~/workspace/gopi-task-create-unified &&",
+   "n": 261
+  },
+  {
+   "cmd": "ssh hp 'cd",
+   "n": 252
+  },
+  {
+   "cmd": "cd ~/.gopi/sessions &&",
+   "n": 245
+  },
+  {
+   "cmd": "cd /home/nick/work/hermes-agent &&",
+   "n": 245
+  },
+  {
+   "cmd": "cd ~/workspace/gopi-hippo-host &&",
+   "n": 227
+  },
+  {
+   "cmd": "cd ~/workspace/gopi-gatelog &&",
+   "n": 223
+  },
+  {
+   "cmd": "python3 - <<'EOF'",
+   "n": 220
+  },
+  {
+   "cmd": "cd ~/workspace/gopi-run-method-provenance &&",
+   "n": 219
+  },
+  {
+   "cmd": "cd ~/workspace/gopi-style-sweep &&",
+   "n": 216
+  },
+  {
+   "cmd": "cd /home/nick/workspace/gopi-tmp-ban &&",
+   "n": 208
+  },
+  {
+   "cmd": "cd ~/workspace/gopi-reportA-gopi &&",
+   "n": 207
+  },
+  {
+   "cmd": "cd ~/workspace/gopi-m421 &&",
+   "n": 201
+  },
+  {
+   "cmd": "cd ~/workspace/gopi-fix-task-p1 &&",
+   "n": 200
+  },
+  {
+   "cmd": "cd ~/workspace/gopi-write-task-area &&",
+   "n": 192
+  },
+  {
+   "cmd": "sqlite3 ~/.gopi/memory.db \"SELECT",
+   "n": 174
+  }
+ ]
+}

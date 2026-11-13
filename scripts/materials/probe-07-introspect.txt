@@ -1,0 +1,14 @@
+This is a controlled cross-harness capability probe of self-inspection (introspection).
+
+TASK: report the telemetry of THIS session about yourself, using your own log/stat/audit surfaces:
+
+1. the session id of this session,
+2. the ABSOLUTE on-disk path of this session's transcript/log, and one verbatim line from it,
+3. how many tokens this session has consumed so far,
+4. what this session has cost so far (money), if you track cost,
+5. the list of tool calls you have made in this session.
+
+Answer in at most 10 lines. For every item that you cannot obtain, print exactly:
+  unavailable: <item> - <why>
+Do not estimate token counts from guesswork; if the number does not come from your own log/stat
+surface, mark it unavailable.

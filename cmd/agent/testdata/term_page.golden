@@ -1,0 +1,13 @@
+<!DOCTYPE html>
+<html><head><meta charset="utf-8"><title>gopi cli</title></head>
+<body>
+<pre>you&gt; hello &lt;gopi&gt; &amp; friends
+gopi&gt; hi
+there
+</pre>
+<form action="/cli/chat" method="post">
+<input type="text" name="message" size="72" autocomplete="off">
+</form>
+<pre><a name="bottom" id="bottom"></a><a href="/cli#bottom">[settled page]</a> <a href="/cli">[top]</a>
+</pre>
+</body></html>

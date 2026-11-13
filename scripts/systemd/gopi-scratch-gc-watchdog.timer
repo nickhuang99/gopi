@@ -1,0 +1,27 @@
+# gopi-scratch-gc-watchdog.timer — the CLOCK that bounds the scratch tree.
+#
+# WHY A TIMER AND NOT A DAEMON: the tree's growth mechanism is abandonment
+# (a suite killed mid-run leaves its per-run root forever), so the upkeep
+# needed is a periodic sweep, not a resident process. An OS timer costs
+# nothing between ticks and survives reboots.
+[Unit]
+Description=GoPi scratch home watchdog — sweep every 30 minutes
+
+[Timer]
+# 30 min (the epic's cadence): an order of magnitude finer than the 6h stale
+# age (internal/scratch.StaleAge), so abandoned scratch is collected within a
+# fraction of its own staleness window. The resident tick's own default is 60
+# min; this face is the finer one because it is the ONLY face on a host that
+# keeps no worker and runs no suites.
+OnBootSec=10min
+OnUnitActiveSec=30min
+# Catch up after a suspend/hibernate (laptop case: the clock stops, the tree
+# keeps whatever the last run left).
+Persistent=true
+# Wake within a minute of the scheduled point rather than exactly on it —
+# a disk-hygiene tick has no deadline.
+AccuracySec=1min
+Unit=gopi-scratch-gc-watchdog.service
+
+[Install]
+WantedBy=timers.target

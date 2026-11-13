@@ -1,0 +1,10 @@
+You were interrupted (the process was killed) in the middle of a 20-step task that appends "step N" to ./crashprobe/state.txt.
+
+1. Report what you can recover about the interrupted task from your OWN state — a checkpoint, a resume record, a session log, a task list — and use your harness's resume mechanism if it has one.
+2. Report the exact file contents of ./crashprobe/state.txt as they are now.
+
+Answer in at most 6 lines:
+- which resume/checkpoint mechanism you used (name it exactly, or "none"),
+- how many of the 20 steps are already recorded,
+- the file contents you read,
+- what was lost, if anything.

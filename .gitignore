@@ -1,0 +1,239 @@
+# build output
+bin/
+
+# test binaries (anchored to repo root — unanchored "agent"/"gopi"
+# accidentally ignored cmd/agent/* and internal/agent/*)
+/agent
+/gopi
+.gopi-tags
+# The ctags index's IN-FLIGHT temp (internal/tools/symbol.go:62 `tagsIndexTempPrefix`
+# = `.gopi-tags-tmp-` + `*`, from tagsIndexFileName + "-tmp-"). ctags writes it into
+# the index's OWN directory and renames it into place, so a rebuild inside `cmd/agent`
+# materialises `cmd/agent/.gopi-tags-tmp-<random>` for its lifetime. The line above
+# matches that NAME EXACTLY and therefore misses the temp: measured 2026-10-31
+# (`git check-ignore -v cmd/agent/.gopi-tags-tmp-2642549001` ⇒ exit 1, NOT ignored),
+# and `git ls-files --others --exclude-standard` then reported it as an untracked
+# file — which TestSyncBarePeersTestCoversEveryChangedFile read as "this run created
+# it" and reded on, in a tree where nothing was ever changed. Any test that reaches
+# code_search from cmd/agent makes it appear at a random instant, which is exactly
+# why that ratchet looked nondeterministic.
+.gopi-tags-tmp-*
+
+# Root-level build outputs from an EXPLICIT `-o`. A tracked recipe builds one
+# here: tasks/01a0cea0-rule31-two-states.sh:35 is
+# `CGO_ENABLED=0 go build -o gopi-behind ./cmd/agent/`, and the A/B compare runs
+# in devdoc/ build ./gopi-before / ./gopi-fixed the same way — all at the
+# checkout root, and before this rule none of them was ignored
+# (`git check-ignore -v gopi-behind` exited 1).
+#
+# The shape is a ROOT-ANCHORED PREFIX and the anchoring is the whole point. The
+# accident recorded directly above was an UNANCHORED `agent`/`gopi`, which
+# matched cmd/agent/* and internal/agent/* — a bare name matches at every depth.
+# A leading `/` matches only the checkout root, so `/gopi-*` cannot reach into
+# any directory, and `gopi-` is not even a prefix of `agent`; both classes are
+# untouched by construction. `/gopi` stays on its own line because `*` requires
+# at least the hyphen. A -o artifact additionally belongs in bin/ (the declared
+# build home, ignored above) or the pinned scratch root — this rule only stops a
+# stray one from appearing as `??` in `git status`, one `git add` from the
+# commit that put `agent` in the index in the first place.
+/gopi-*
+
+# python bytecode from testsuite drivers
+__pycache__/
+.e2e/
+
+# --- tracked-scratch hygiene (see devdoc/repo-hygiene-tracked-scratch.md) ---
+# Guarded by internal/standards TestRepoRootHasNoTrackedJunk.
+#
+# DELIBERATELY ABSENT: any pattern for a repo-relative `scratch/` at the checkout
+# root. That class IS refused by the gate above (index half), but there is no
+# ignore line for it and none may be added: an ignore rule hides the writer
+# instead of stopping it, and `scratch/` must stay VISIBLE as a `??` entry — it
+# is the diagnosing half Rule 30 reads (`completed-unclean`), and how the 135 MB
+# residue of 2026-09-26 was attributed in the first place. Ignoring it would have
+# silenced the only signal that found it. History and ruling:
+# devdoc/scratch-repo-residue-01a0db54.md.
+#
+# Go test / probe binaries: `go test -c` wrote .leakprobe-agent.test (19 MB)
+# into the repo root once and it got committed. Never track a compiled test
+# binary — keep `go test -o <scratch dir>` (testutil.SuiteTempRoot()) instead.
+*.test
+
+# Leak-probe sandbox trees: a fake $HOME holding a copied ~/.gopi (memory.db,
+# sessions jsonl, raw logs) plus a whole go-build cache. Ephemeral evidence,
+# never source — the probe that produced them is gone.
+.leakprobe*
+
+# Ad-hoc e2e output written by hand into the repo root (log + evidence jsonl).
+# The scripted suites write to the pinned scratch root instead
+# (scripts/lib/tmp-ban.sh gopi_scratch_mkdir), never here.
+tmp-e2e/
+e2e-m420-rank/
+
+# Root-level merge/leak-probe leftovers. Anchored on purpose: `base.txt`,
+# `shared.txt` … are legitimate names inside the _test.go temp dirs
+# (filepath.Join(t.TempDir(), "base.txt")) and scripts/e2e-task-merge.sh's
+# scratch clone, so only the repo-root copies are ignored.
+/base.txt
+/div.txt
+/ff.txt
+/ff3.txt
+/shared.txt
+/master-side.txt
+/ort-client.txt
+/ort-master.txt
+/probe-ff-note.txt
+/result.json
+/s6.png
+/text2img
+/.recycle-epic-marker
+/.worktree-owner
+/w.txt
+/y.txt
+
+# Zero-byte sqlite files a probe leaves behind when GOPI_MEMORY_DB / --db is a
+# relative path. The real knowledge base is ~/.gopi/memory.db — never in git.
+/memory.db
+/gopi.db
+
+# --- test scratch dirs INSIDE the source tree: RETIRED 2026-09-21 ---
+# `.gitignore` is not a fix — it hides dirt, it does not stop the writer, and it
+# only covers the spellings someone remembered to list (the measured leak was
+# 5 `internal/tools/firstopen-device-*/` directories holding 341 untracked test
+# `.db` files, plus 106 of them captured in a commit, c2f5a9de). The two
+# producers are GONE and must not come back:
+#   internal/tools/firstopen_sync_test.go        -> testutil.TestDeviceScratchDir(t, "firstopen")
+#   internal/testutil/ledgerpin_backing_test.go  -> testutil.TestDeviceScratchDir(t, "ledgerpin")
+# TestDeviceScratchDir (internal/testutil/scratchroot.go) places a device fixture
+# on the shared block-backed scratch home — off `/` (Rule 22) and OUTSIDE every
+# checkout — and MEASURES the backing, skipping where there is no device. That is
+# the property the in-tree directories were reaching for, obtained without writing
+# into a source tree where a `git add` run can capture it mid-flight (the
+# repo-root junk gate checks repo-ROOT paths only and is blind to a nested tree).
+# The gate internal/standards/db_scaffold_gate_test.go fails any test that
+# recreates a scratch DIRECTORY inside internal/ (arm 2). These patterns stay as
+# the belt-and-braces layer for residue created before the fix:
+firstopen-device-*/
+ledgerpin-device-*/
+
+# --- repo-root report docs — the parking-lot class ---
+# See devdoc/repo-workspace-hygiene-2026-09-12.md: 37 point-in-time report .md
+# files accumulated at the repo root between 2026-08-22 and 2026-09-12 and were
+# committed ONE BY ONE; they now live under reports/archive/<YYYY-MM>/ (a report)
+# or devdoc/ (a design narrative). Ignoring root markdown stops a new one from
+# showing up as a `??` in `git status` that a single `git add .` sweeps in. The
+# negations are the deliberate exceptions, not oversights: CHANGELOG.md is
+# the release surface, and CONFIG.md and COMMANDS.md are the two DOCUMENTS OF
+# RECORD (same anchor discipline, each with its own gate in internal/standards):
+# a knob question sends the reader to CONFIG.md and a command question to
+# COMMANDS.md, so both belong where the reader looks.
+#
+# PROJECT.md IS the fourth negation (2026-10-19): the split of the root rule
+# file by CONTENT KIND. Rules 1-41 are the project's engineering contract — they
+# hold in any clone on any machine (internal Go standards, internal/standards
+# gates, devdoc references, `make test-budget`) — so they are TRACKED, as
+# PROJECT.md, beside CONFIG.md and COMMANDS.md. Everything host-local (this
+# machine's addresses, ssh aliases, task-sync pins, the operator's chat-policy
+# fence) stayed behind in GOPI.md.
+#
+# GOPI.md carries NO negation, deliberately (2026-10-04): it is the CLIENT's own
+# rule file — gopi still loads it from the run's cwd (internal/agent's
+# project-context walk), but git must not carry it from machine to machine. It is
+# ignored here like any other root doc, so it appears in NEITHER half of
+# `git status` and nobody has to remember a `git rm --cached` step. A checkout
+# gets the file from its operator, not from a clone. Do NOT restore the
+# `!/GOPI.md` whitelist: that whitelist is the mechanism that propagated one
+# machine's local policy into every other machine's checkout — the split above
+# exists so that the TRACKED half can travel without it.
+#
+# Guarded by
+# internal/standards TestRepoRootHasNoTrackedJunk (+ its red-proof), so a
+# reviewed root doc is added to rootDocAllowlist — never by deleting this rule.
+/*.md
+!/CHANGELOG.md
+!/CONFIG.md
+!/COMMANDS.md
+!/PROJECT.md
+!/README.md
+.heavy-skipped.tsv
+
+# --- docs/archive/demo: run output of a tracked generator (see devdoc/demo-artifacts-untracked.md) ---
+# Guarded by internal/standards TestDemoArtifactsAreUnderTheSizeCeiling.
+#
+# Each pattern names ONE class that a tracked generator RE-PRODUCES into the
+# tree: `scripts/materials/*.sh` renders materials/<entry>/03-raw.png (the
+# command's terminal capture) and 04-annotated.png (the same frame with the
+# annotation boxes painted on) from that entry's own 01-input.txt/02-output.txt;
+# `scripts/human-ui/build.sh` records a live chat session into
+# human/{raw,clean,frames}/ plus the delivered hero/chat stills and the film;
+# `docs/archive/demo/final/build.sh --shot` renders the page it generates to
+# render-proof.png. The recipe and its text input stay tracked — the RENDER does
+# not, because a clone should not pay 109 MB for pictures it can rebuild.
+#
+# ROOT-ANCHORED, every one: a bare `03-raw.png` would also ignore any future
+# same-named file at any depth (GOPI.md Rule 13's mirror discipline — the pattern
+# exists once, where the class is defined).
+#
+# SIBLING ROWS own `docs/archive/demo/replay/`: task 01a0fd20 (clear that directory's
+# remaining run artefacts) and 01a0fd14 (move the replay verb's output to the
+# session directory altogether). This block therefore names NO replay class —
+# the patterns below are master's own, added by the row that untracked one
+# replay arm (`/docs/archive/demo/replay/arm-*/` + six bare-product names), and their
+# block carries its own reasoning. Nothing here hides that row's remaining work.
+/docs/archive/demo/materials/*/03-raw.png
+/docs/archive/demo/materials/*/04-annotated.png
+# The memory-loop figures are the same two shapes, rendered into docs/archive/demo/loop/
+# by `bash scripts/demo-memory-loop-figs.sh` (its OUT argument) from the loop's
+# own 00-entry.md/02-output.txt — the script's header states the shape is
+# "docs/archive/demo/materials 的约定".
+/docs/archive/demo/loop/*/03-raw.png
+/docs/archive/demo/loop/*/04-annotated.png
+/docs/archive/demo/human/frames/
+/docs/archive/demo/human/raw/
+/docs/archive/demo/human/clean/
+/docs/archive/demo/human/chat-loop.gif
+/docs/archive/demo/human/hero.png
+/docs/archive/demo/human/chat.png
+/docs/archive/demo/final/render-proof.png
+
+# --- replay RUN artefacts — a session's own evidence, never repo content ---
+# A replay arm is the recording of ONE session, written where the run happens:
+# the launcher names the directory after the session it replays
+# (`<OUT>/arm-<8 chars of the session id>-<YYYYMMDD>`, and `<OUT>` itself when
+# no --out-tag is given). One such directory — `arm-sess-4ca8cd29-20261002`,
+# 12 files / 12 MB — was committed to this tree, and it is the class this
+# block exists to keep out: replay.json, the frames/, the GIF and the redaction
+# artefacts are the ARM's evidence, regenerated by re-running the session, so
+# they belong in the run's own session directory (~/.gopi/sessions/<task-id>/,
+# outside every checkout) or a sandbox (Rule 34) — never in a tracked path.
+#
+# The pattern is deliberately the NARROWEST spelling that covers that class:
+# it is rooted at docs/archive/demo/replay/ and matches the `arm-` prefix, so
+# README.md, SOURCE-MAP.tsv, the *.py / *.sh tooling, `replay-film/` (the
+# curated film, which IS repo content) and the sibling evidence-*/, img-*/,
+# terminal/, probe/, appendix/ trees are untouched. Measured rather than
+# assumed: `git ls-files -z | git check-ignore --no-index -z --stdin` matches
+# ZERO tracked paths after this block.
+/docs/archive/demo/replay/arm-*/
+
+# The same run with no --out-tag lands its products DIRECTLY in
+# docs/archive/demo/replay/ instead of inside an `arm-*` directory. These six names are
+# that run's own output (the names are the arm's, not the repo's) and none of
+# them is repo content — anchored on the full path so `replay-film/replay.json`
+# and friends, which are curated and tracked, keep their exemption.
+/docs/archive/demo/replay/frames/
+/docs/archive/demo/replay/replay.json
+/docs/archive/demo/replay/chat-replay.gif
+/docs/archive/demo/replay/diff-table.tsv
+/docs/archive/demo/replay/mask-boxes.json
+/docs/archive/demo/replay/redaction-span.json
+
+# --- run-scene sandbox residue (Rule 39 class; sibling of .leakprobe* above) ---
+# A sandbox (Rule 34) is an EXECUTION ENVIRONMENT, never repo content: it holds a
+# 19.7 MB `go build -o` binary and a fake $HOME whose .gopi/ carried COPIES of the
+# operator's real ledger, sessions and raw logs. 29 such paths (sandbox/**) were
+# TRACKED; the tree is now untracked and the pattern is anchored here so an on-disk
+# copy cannot return as a `??` entry (Rule 30). Get a sandbox by ASKING for one
+# (`gopi sandbox create` / `gopi sandbox run`) — never by hand-building a directory.
+/sandbox/
+devdoc/DOC-INDEX.tsv

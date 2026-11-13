@@ -1,0 +1,56 @@
+{
+  "slug": "001-sandbox-create",
+  "source_commit": "955706a1",
+  "source_path": "docs/demo/materials/001-sandbox-create/03-raw.png",
+  "crop_png": "001-old-row2.png",
+  "crop": [
+    0,
+    35,
+    1227,
+    106
+  ],
+  "row": 2,
+  "box": {
+    "x": 0,
+    "y": 20,
+    "w": 1219,
+    "h": 31
+  },
+  "cell_w": 17.22222222222222,
+  "cols": 70,
+  "row_bands": {
+    "0": [
+      -27,
+      -3
+    ],
+    "1": [
+      -2,
+      22
+    ],
+    "2": [
+      23,
+      47
+    ],
+    "3": [
+      48,
+      72
+    ],
+    "4": [
+      73,
+      97
+    ],
+    "5": [
+      98,
+      122
+    ],
+    "6": [
+      123,
+      147
+    ],
+    "7": [
+      148,
+      172
+    ]
+  },
+  "note": "PIL crop of the shipped 03-raw.png (never a redraw); the whole image is in git: git show 955706a1:docs/demo/materials/001-sandbox-create/03-raw.png"
+}

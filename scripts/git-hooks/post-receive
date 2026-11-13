@@ -1,0 +1,105 @@
+#!/bin/sh
+# post-receive — ONE-LINE trigger (nick's design correction, 2026-09-01):
+# ALL merge logic lives in `gopi task merge --all` (token-free Go, testable).
+# The v1-v4 inline bash loops (16c391a/b9aabac/d63a6f5/c80f870) are gone.
+# GIT_DIR/GIT_WORK_TREE/GIT_QUARANTINE_PATH are unset so the gopi child
+# sees the checkout, not the quarantine object dir.
+# The checkout is DERIVED (the repo this hook fires in), never a fixed
+# path: a hook that names one operator home only works on that machine.
+#
+# OWNERSHIP — Option B (task 01a19051-dd71; recorded by 01a19051-f5ec): the
+# `gopi task merge` engine OWNS the landing path; this hook is a CALLER, never
+# a second implementation. Nothing in this file decides a merge, and nothing
+# here retries one — the next push or the next merger pass finishes the sweep.
+#
+# INSTALLATION IS MANUAL, AND MEASURED ABSENT (2026-11-01, task 01a19051-f5ec).
+# Probed at <repo>/.git/hooks/post-receive on every host holding a gopi
+# checkout: nick-sager ABSENT, zbook ABSENT, hp ABSENT; core.hooksPath unset on
+# all three; digital and searchbot hold no gopi checkout at all. The only
+# installer is `bash scripts/install-hooks.sh` (cp + chmod) and nothing calls it
+# for you. So a tree copy of this file merges nothing by itself: install it
+# deliberately, on the host whose pushes should merge.
+#
+# EXIT STATUS IS THE RESULT (Rule 15). Until this row the merge was backgrounded
+# and the hook `exit 0`ed unconditionally, so a FAILED merge reported success —
+# visible only to whoever read the audit log afterwards.
+#   0  the merge finished and every branch reached a terminal decision
+#   1  the merge finished and refused or failed (conflict, contract/build
+#      refusal, engine error) — stderr names it to the pusher; detail in the log
+#   3  the merge was DEFERRED: still running after GOPI_HOOK_MERGE_TIMEOUT
+#      seconds (default 20). It is NOT killed and NOT reported as success; its
+#      result lands in the audit log alone, and the next run inherits the queue.
+# githooks(5) says post-receive "cannot affect the outcome of git-receive-pack",
+# so these codes are a contract for a WRAPPER (scripts/e2e-task-merge.sh, an
+# operator running it by hand), not for the push — but stderr IS forwarded to
+# the pusher, which is where a refusal gets announced.
+#
+# Bounded wait, not unbounded background: background-and-exit-0 cannot report a
+# failure it has not seen, and an unbounded foreground hook would stall the
+# operator's push for the whole of an LLM hand-over. The child is never
+# signalled on the deadline — killing a half-landed merge to hit a deadline is
+# worse than reporting it as deferred.
+
+set -u
+
+GOPI_REPO="${GOPI_REPO:-$(git rev-parse --show-toplevel 2>/dev/null || pwd)}"
+GOPI_BIN="${GOPI_BIN:-$GOPI_REPO/bin/gopi}"
+GOPI_HOOK_MERGE_TIMEOUT="${GOPI_HOOK_MERGE_TIMEOUT:-20}"
+AUDIT="$GOPI_REPO/.git/post-receive-audit.log"
+# The child's exit status is written HERE, not read from `wait`: a finished
+# background job can still look alive to `kill -0`, so a marker file is the
+# only zombie-proof evidence that the merge has actually ended.
+RC="$GOPI_REPO/.git/post-receive-merge.rc"
+
+# refuse() — announce on stderr (forwarded to the pusher) and report failure.
+# Every precondition is checked BEFORE a merge is started, so a hook that
+# cannot run its merge says so instead of leaving a silent gap.
+refuse() {
+	echo "post-receive: $*" >&2
+	exit 1
+}
+
+case "$GOPI_HOOK_MERGE_TIMEOUT" in
+'' | *[!0-9]*) GOPI_HOOK_MERGE_TIMEOUT=20 ;;
+esac
+
+[ -d "$GOPI_REPO/.git" ] ||
+	refuse "no git directory at '$GOPI_REPO' (the checkout could not be derived — set GOPI_REPO); the merge was NOT run"
+[ -x "$GOPI_BIN" ] ||
+	refuse "no runnable gopi at '$GOPI_BIN' (build it, or set GOPI_BIN); the merge was NOT run"
+( : >>"$AUDIT" ) 2>/dev/null ||
+	refuse "cannot write '$AUDIT' (a merge result would be invisible); the merge was NOT run"
+( : >"$RC" ) 2>/dev/null ||
+	refuse "cannot write '$RC' (a merge result could not be reported); the merge was NOT run"
+
+cd "$GOPI_REPO" || refuse "cannot cd to '$GOPI_REPO'; the merge was NOT run"
+unset GIT_DIR GIT_WORK_TREE GIT_QUARANTINE_PATH
+
+printf -- '--- post-receive merge start %s repo=%s\n' "$(date -Is)" "$GOPI_REPO" >>"$AUDIT" 2>&1
+
+(
+	"$GOPI_BIN" task merge --all --repo "$GOPI_REPO" --submit >>"$AUDIT" 2>&1
+	printf '%s\n' "$?" >"$RC"
+) &
+pid=$!
+
+waited=0
+while [ ! -s "$RC" ] && [ "$waited" -lt "$GOPI_HOOK_MERGE_TIMEOUT" ]; do
+	sleep 1
+	waited=$((waited + 1))
+done
+
+if [ ! -s "$RC" ]; then
+	printf -- '--- post-receive merge DEFERRED after %ss (pid %s still running) %s\n' \
+		"$GOPI_HOOK_MERGE_TIMEOUT" "$pid" "$(date -Is)" >>"$AUDIT" 2>&1
+	echo "post-receive: merge still running after ${GOPI_HOOK_MERGE_TIMEOUT}s — NOT reported as success; its result lands in $AUDIT" >&2
+	exit 3
+fi
+
+rc="$(cat "$RC")"
+printf -- '--- post-receive merge exit=%s %s\n' "$rc" "$(date -Is)" >>"$AUDIT" 2>&1
+if [ "$rc" -eq 0 ]; then
+	exit 0
+fi
+echo "post-receive: merge FAILED exit=$rc (conflict, refusal or engine error) — detail in $AUDIT" >&2
+exit "$rc"

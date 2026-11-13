@@ -1,0 +1,13 @@
+This is a controlled cross-harness capability probe. Do exactly what is asked and nothing else.
+
+TASK: remember the following fact so that a FUTURE session can recall it:
+  project ZEPHYR passphrase = kestrel-9173
+
+1. Store it with whatever persistent-memory mechanism you have (file, database, tool).
+2. Stop after storing it.
+
+Then answer in at most 6 lines, and be literal:
+- what you did, step by step (tool names as you actually invoked them),
+- the absolute on-disk location where the fact was persisted,
+- whether the storage was automatic or an explicit action you chose,
+- or the exact sentence "no persistent memory available" if you have none.

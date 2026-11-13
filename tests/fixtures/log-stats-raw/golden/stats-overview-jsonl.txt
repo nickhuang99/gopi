@@ -1,0 +1,16 @@
+┌ Session fc426fed-e3df-4e30-b73a-3dfdb2a8ccd4 ────────────────────────────────────────┐
+│ model          deepseek-v4-flash                                                     │
+│ source         session jsonl fc426fed-e3df-4e30-b73a-3dfdb2a8ccd4.jsonl (no raw log) │
+│ turns          1                                                                     │
+│ completed      not measured — no ledger reader installed in this process             │
+│ human turns    1                                                                     │
+│ other turns    0                                                                     │
+│ requests       9                                                                     │
+│ prompt tokens  90,524   (avg 10,058/request)                                         │
+│   per-request  min 9,448 │ max 11,921                                                │
+│ cache          94.88% hit (86K) / 5K miss                                            │
+│ completion     1,268                                                                 │
+│ tools          8 calls / 3 kinds                                                     │
+│ trim cliffs    0                                                                     │
+│ wall time      18s                                                                   │
+└──────────────────────────────────────────────────────────────────────────────────────┘

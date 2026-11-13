@@ -1,0 +1,12 @@
+This is a controlled cross-harness capability probe of the persistent task ledger.
+
+TASK: list the tasks in your own persistent task queue / task ledger — the durable queue of work items, not this conversation.
+
+For every row report: id, title, status, and any dependency relation (parent/child, blocked-by).
+
+Then answer in at most 8 lines:
+- the exact command or tool call you used to read the queue (verbatim),
+- how many rows exist and their statuses,
+- whether the queue is durable across sessions, and where it is stored on disk,
+- whether dependencies between rows are enforced (and how), or "not supported",
+- or the exact sentence "no persistent task queue" if you have none.

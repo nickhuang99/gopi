@@ -1,0 +1,63 @@
+== exact normalized bash commands: 56445 distinct, sessions-with-jsonl=1361
+   session-count distribution: [(53, 1), (32, 1), (19, 1), (15, 1), (14, 1), (13, 1), (12, 1), (11, 3), (10, 1), (9, 2), (8, 3), (7, 4)]
+   >=5 sessions: 39
+   >=10 sessions: 11
+   >=20 sessions: 2
+   >=30 sessions: 2
+   >=50 sessions: 1
+== bash loop signatures (first 4 tokens): 13217 distinct, sessions-with-jsonl=1361
+   session-count distribution: [(500, 1), (265, 1), (237, 1), (206, 1), (180, 1), (135, 1), (126, 1), (84, 2), (74, 1), (72, 1), (57, 1), (56, 1)]
+   >=5 sessions: 245
+   >=10 sessions: 96
+   >=20 sessions: 47
+   >=30 sessions: 25
+   >=50 sessions: 17
+
+== top loop signatures (by distinct sessions) ==
+    500  cd ~/work/GoPi && git
+    265  cd ~/work/GoPi && grep
+    237  cd ~/work/GoPi && ls
+    206  cd ~/work/GoPi && sed
+    180  cd ~/work/GoPi && echo
+    135  cd ~/work/GoPi && go
+    126  ps aux | grep
+     84  sleep <n>; tail -<n>
+     84  cd ~/work/GoPi <n>>/dev/null &&
+     74  cd ~/work/GoPi && cat
+     72  cd ~/work/GoPi && for
+     57  cd ~/work/GoPi && wc
+     56  python3 -c " import
+     55  cd ~/work/GoPi && head
+     53  sleep <n>; echo waited
+     52  tail -<n> /tmp/gopi-job-<h>.out <n>>/dev/null;
+     51  cd /tmp && rm
+     49  pwd && ls -la
+     41  cd ~/work/GoPi && python3
+     40  python3 - <<'EOF' import
+     36  cd ~/work/GoPi && ./bin/gopi
+     34  cd ~/work/GoPi <n>>/dev/null ||
+     33  cd ~ && rm
+     32  cd ~/work/scheduler && git
+     30  cd ~/work/GoPi && gopi
+
+== top exact commands ==
+     53  sleep <n>; echo waited
+     32  date +%s
+     19  ls -la
+     15  sleep <n>; echo done
+     14  pwd && ls -la
+     13  cd ~/work/GoPi && go test ./... <n>>&<n> | tail -<n>
+     12  sleep <n>; tail -<n> /tmp/gopi-job-<h>.out
+     11  true
+     11  sleep <n> && echo waited
+     11  go version
+     10  cd ~/work/scheduler && go build ./... <n>>&<n>
+      9  cd ~/work/GoPi && git show <h> --stat | head -<n>
+      9  cd ~/work/GoPi && git worktree list && git branch -a | head -<n> && git log --oneline -<n>
+      8  cd ~/work/GoPi && go build ./... <n>>&<n> | head -<n>
+      8  cd ~/work/scheduler && go test ./... <n>>&<n> | tail -<n>
+      8  cd ~/work/GoPi && git worktree list && git status && git log --oneline -<n>
+      7  gopi task show t-<h> <n>>&<n> | head -<n>
+      7  echo ok
+      7  find ~/work/dispatcher -type f | head -<n>
+      7  find ~/work/dispatcher -type f -name "*.go" | sort

@@ -1,0 +1,14 @@
+═══════════════════════════════════════════════════════════════
+BODY TRAFFIC — Session fc426fed-e3df-4e30-b73a-3dfdb2a8ccd4 (rounds, 1-based (one JSONL `request` row = one HTTP request/response = one iteration))
+═══════════════════════════════════════════════════════════════
+   ROUND        REQ     MSGS       RESP     TEXT    THINK KIND
+       1    36.0 KB        1     9.1 KB       65      211 stream
+       2    44.4 KB        3    16.2 KB       64      340 stream
+       3    45.3 KB        5    25.3 KB      486      263 stream
+       4    36.5 KB        3    23.9 KB      489      156 stream
+       5    36.6 KB        3    21.6 KB      536       63 stream
+       6        0 B        -        0 B        -        - none
+       7        0 B        -        0 B        -        - none
+       8        0 B        -        0 B        -        - none
+       9        0 B        -        0 B        -        - none
+     TOT   198.9 KB       15    96.2 KB    1,640    1,033 2 kinds (none,stream)

@@ -1,0 +1,17 @@
+答案已经在代码里，且和你的判断部分相反：
+
+**第一轮不会折，也不会被压缩。** `foldCompletedTurns` 只折 COMPLETE 的 turn，最后一个（在飞的）永远不动（`turnfold.go:455` 起）；`foldableTurnRanges` 对 task 运行还额外豁免 index 0（`turnfold.go:601`）。所以第一轮在你说话这一轮之前是原样在的。
+
+**但第二轮的请求里，第一轮的 `[IMPORTANT]` 已经不是原文，而是被换成了 `t1 <note>` 一行。** 这就是你问的「第一轮有没有 important notes」——有的，但它是被 turn-fold 抄进 note 的那一行，不是 `[IMPORTANT]` 块本身。
+
+**为什么这不是 bug：** fold 的规则本来就是「turn 的原始工具流量换成一行记录」，note 的来源是 `self-record.md`（`turnFoldRecordSource`，`turnfold.go:957`），也就是模型自己写的 `[IMPORTANT]` 那一行的正文，逐字抄过来。折掉的是消息，知识从 note 里过去了。
+
+**你说「只有有了 previous 的 response 才需要压缩」这个判据，代码里就是这么做的**，两处硬保护：
+- 最后一个 turn 永不折（它是正在跑的那一轮）
+- compaction 的可删集合跳过携带 note 的消息（`isNonCompressibleMessage`，`compact.go:535` 附近）
+
+**要现场看第一轮有没有 note**，一条命令：`gopi session log <session-id> --turns`，第一轮那行会带 `recorded:` 段；盘上真身是 `~/.gopi/sessions/<id>/self-record.md` 的 `t1 ...` 行。
+
+[IMPORTANT]
+核实了 turn-fold 与 compaction 对第一轮的处理：在飞的 turn 永不折（foldCompletedTurns 取 complete[:len-1]），task 运行还豁免 index 0；第一轮的 [IMPORTANT] 在第二轮请求里以 `t1 <note>` 一行存在，note 逐字抄自 self-record.md，不是丢失。 | fold 的 note 唯一来源是 self-record.md（turnFoldRecordSource），assistant 消息不是第二来源；所以「第一轮有没有 note」应查该文件而非 transcript。
+[/IMPORTANT]

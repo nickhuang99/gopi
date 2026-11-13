@@ -1,0 +1,6 @@
+7e50e0fbf22cb5cef83ed6a93911d0ce86a7cfb209e685c7debca4a263ab218d  scripts/materials/probe-m1-ledger.txt
+70f9f623a8cd42f89819a0f822231331d50c4a6a69ffa0abf4275f44dbcdd39a  scripts/materials/probe-m2-dependency.txt
+9b024550fb47f77ad70db1a1f489ca944027e4f8159edb3f9636264e1b8de4c7  scripts/materials/probe-m3-introspect.txt
+69d63e9bf32938f07e810cfff65d62cd016c5170b4b34714b3c45b904e5af335  scripts/materials/probe-m4-mergegate.txt
+840562969ef5edfd52d349af155f40e9bdbf7e999e2a42c64237225aa1bfaefd  scripts/materials/probe-m5-worktree.txt
+15e478801ecb17240b5e564dfce7d307a15858ae57dae28b3d962129fec19b72  scripts/materials/probe-m6-sync.txt

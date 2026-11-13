@@ -1,0 +1,38 @@
+GoPi cli — chat in a TEXT-mode browser (zero-dependency terminal carrier).
+
+  gopi cli                    open the chat surface in the text browser
+  gopi cli open               the same, spelled explicitly
+  gopi cli --tools            the same, with the model's tools enabled
+  gopi cli --addr HOST:PORT   bind a specific address
+  gopi cli -h                 this help (runs nothing)
+
+Options:
+  --tools            tool-enabled turns (the full gopi toolset — the same
+                     switch `gopi web --tools` takes). Without it the model
+                     answers from its own knowledge and calls no tool.
+  --addr HOST:PORT   listen address (default 127.0.0.1:8090).
+                     A non-loopback bind is served behind the per-run access
+                     token, exactly as `gopi web` serves it.
+
+Environment:
+  GOPI_CLI_TURN_TIMEOUT_SEC=N   per-turn budget in seconds (default 600;
+                                0 = unlimited)
+  GOPI_WEB_TOOLS=1              same as --tools (shared with gopi web)
+  GOPI_LINKS_BIN=PATH              the text browser to exec (default: the
+                                vendored links2 at scripts/links/<GOARCH>/links)
+
+Notes:
+  The page is server-rendered and the form is REAL: a text browser submits
+  only a NAMED field inside a form with an action, and the field is ONE line
+  (Enter submits; a text browser cannot type a newline, and a multi-line body
+  is refused with a message rather than silently joined). The settled
+  transcript is what the next page load renders — scroll with the browser's
+  own keys, then type at the form at the bottom.
+
+  The carrier is a second VIEW over the running `gopi web` engine: the same
+  agent, the same single session, the same server-held history, the same
+  slash-command table (`/help` lists it, and a command never reaches the
+  model). Under --tools each tool call appears LIVE as a `⚙ kind name digest`
+  line while the turn runs. Quitting the text browser ends the chat: the
+  session is finalized, and whatever tools ran under --tools, ran — there is
+  no approval gate.

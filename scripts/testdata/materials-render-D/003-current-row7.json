@@ -1,0 +1,57 @@
+{
+  "slug": "003-checkpoint-export",
+  "source_commit": "203e8a40",
+  "source_path": "docs/demo/materials/003-checkpoint-export/03-raw.png",
+  "crop_png": "003-current-row7.png",
+  "crop": [
+    0,
+    160,
+    782,
+    222
+  ],
+  "row": 7,
+  "box": {
+    "x": 0,
+    "y": 20,
+    "w": 774,
+    "h": 22
+  },
+  "cell_w": 17.22222222222222,
+  "cols": "44",
+  "row_bands": {
+    "3": [
+      -78,
+      -61
+    ],
+    "4": [
+      -52,
+      -36
+    ],
+    "5": [
+      -27,
+      -11
+    ],
+    "6": [
+      -2,
+      14
+    ],
+    "7": [
+      22,
+      39
+    ],
+    "8": [
+      47,
+      64
+    ],
+    "9": [
+      73,
+      89
+    ],
+    "11": [
+      123,
+      139
+    ]
+  },
+  "regenerated_by": "frame_around() on this branch; the box shipped before this change was (0,180,771,31), which the structural criterion REFUTES (its bottom edge cut 40 ink px) — see devdoc/materials-D-annotation-criterion.md",
+  "note": "PIL crop of the shipped 03-raw.png (never a redraw); the whole image is in git"
+}

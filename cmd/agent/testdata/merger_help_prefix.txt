@@ -1,0 +1,108 @@
+GoPi merger — the branch-merge DAEMON (a resident server-side service).
+
+TOP-LEVEL BECAUSE IT IS A SERVICE: the merger is an independent resident
+process, the peer of 'gopi worker'. It claims no tasks and runs no tasks —
+it merges branches. 'gopi worker' (which claims and runs tasks) is top-level
+for the same reason: both are process forms a host starts from its own
+service unit; neither is a ledger verb.
+
+One pass (the six-sweep merge surface):
+  adoption → merged-branch cleanup → branch scan → git-sync →
+  merge-backlog audit → merge-backlog executor
+then the post-merge REBUILD of every configured repo whose pass landed work
+(GOPI.md Rule 12: merge → cleanup → rebuild).
+
+Usage:
+  gopi merger                    # FOREGROUND resident daemon (Ctrl+C to stop)
+  gopi merger --daemon           # detach to the background, return at once
+  gopi merger --once             # one pass, then exit 0 (the E2E seam)
+  gopi merger --every 30s        # poll period (Go duration: 30s, 5m, 1h)
+  gopi merger --status           # READ-ONLY: is it running, what would it merge
+  gopi merger --stop             # GRACEFUL stop: finish the in-flight pass,
+                                 #   release the lock, exit 0
+  gopi merger --restart          # --stop, then start a fresh daemon (picks up
+                                 #   the current binary — the restart idiom)
+  gopi merger --start            # start a daemon only if none is running
+  gopi merger -h | --help        # this help — starts NOTHING (zero side-effects)
+
+Flags:
+  --every DURATION   poll period between passes (default 5m)
+  --once             single pass, then exit 0
+  --daemon           detach: start a background daemon and return immediately
+  --db PATH          task ledger override (conflict dispatch + resolve rows)
+  --no-branch-scan   skip the unmerged-branch inventory pass
+  --stop             graceful stop of the running merger (see below)
+  --restart          --stop (bounded wait) then start a fresh daemon
+  --start            start a daemon only when none is running
+  --force            INTERRUPT in-flight work (with --stop/--restart): the
+                     merger reports what it cut, kills its in-flight children,
+                     restores every configured repo to a buildable tip, and
+                     fires the "merger-forced-exit" notify event
+  --wait DURATION    bound on the graceful wait (default 25m; 0 = do not wait)
+
+Restart / graceful stop (why the default never interrupts):
+  A merger pass owns the integration branch, and a pass may be blocked on a
+  resolve or verify CHILD working in its own worktree. So a stop request is
+  honoured at PASS BOUNDARIES only: the merger finishes the pass it is in
+  (including waiting for its children), then exits and releases the
+  single-instance lock. Nothing is unlinked or re-acquired on the way out, so
+  the very next 'gopi merger' takes the lock immediately.
+  Delivery is belt-and-braces: a durable per-instance request file under
+  <gopi data root>/merger (TERM_<pid> / FORCE_<pid>) PLUS a signal — SIGTERM
+  (also SIGINT/SIGUSR1) means "finish, then exit"; SIGUSR2 means "interrupt
+  now". The file alone is enough when signals cannot be delivered; the signal
+  alone is enough when the file cannot be written.
+  --force is the ONLY path that interrupts work, and it repays it: it prints
+  what it interrupted (pass start, repo/branch, child pids), kills those
+  children, and returns every configured repo to its buildable tip (an
+  unfinished merge is aborted, never left for the next merger to trip over).
+  Exit codes: 0 = the requested end state holds; 1 = it does not (still busy
+  past --wait, an ambiguous live set, a failed start).
+  The operator's post-update flow (devdoc/merger-graceful-restart-20260912.md):
+      gopi merger --restart          # stop gracefully, then run the new binary
+      gopi merger --stop --force     # only when a graceful stop will not finish
+
+--daemon (the flag that replaces an external setsid/nohup/& launch):
+  the daemon takes the single-instance lock FIRST — in the process you are
+  waiting on — hands it to a detached child, and returns only after that
+  child has PROVEN it is running (a pipe handshake). So the exit status is
+  a real answer, not a guess:
+    exit 0  → the daemon is up; stdout names its pid and its log file
+    exit ≠0 → the daemon did NOT start; stderr says why (including a
+              single-instance refusal naming the pid that holds the lock)
+  The child is a session leader (setsid) with stdin closed, so it survives
+  your shell. Its stdout+stderr go to:
+    <gopi data root>/logs/merger.log          (default ~/.gopi/logs/merger.log)
+
+Single instance:
+  flock LOCK_EX|LOCK_NB on <gopi data root>/serve.lock — a second merger (or
+  a second --daemon start while one runs) is REFUSED rather than silently
+  double-merging. The lock is inherited across the fork, so the guarantee
+  holds for a detached daemon exactly as for a foreground one.
+
+Privileges (--daemon):
+  A detached merger needs NO privilege: start it as the ordinary user you
+  already are. Running it as root does not obtain the escape either — a
+  process inherits its cgroup from its launcher, so a privileged daemon was
+  measured in the SAME login session scope as its unprivileged launcher, and
+  root has no user manager of its own to migrate into (both measured).
+  When the escape is unavailable the start says so and the daemon runs
+  anyway: setsid already removes the controlling-terminal exposure, and what
+  remains is that it ends with the session scope. --require-scope turns that
+  degradation into a refused start when you need the guarantee rather than
+  the convenience. For a start that outlives the login session, a host's own
+  service unit is the operator's lever — not a password.
+  NO privilege is needed by '--once', or by a FOREGROUND 'gopi merger': they
+  run in your session's scope by DESIGN (Ctrl+C / the session ends them),
+  detach nothing, and touch no cgroup — so the privilege question does not
+  arise there either.
+
+Sweep targets:
+  the settings.json "repos" table keys (one key per repo; an entry with an
+  empty build is a valid PURE merge target). No --repo flag, no cwd
+  assumption: configure the sweep list in settings.json.
+
+Deprecated aliases (still accepted for running deployments):
+  gopi task merger …   # the daemon's pre-promotion home (foreground only)
+  gopi task serve …    # the daemon's pre-split name
+

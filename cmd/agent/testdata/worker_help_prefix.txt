@@ -1,0 +1,98 @@
+GoPi worker — the task worker loop (a plain temporary process).
+
+One loop round (the contract):
+  ① claim the next pending task (atomic CAS — a lost claim race yields to
+     the next round, so two workers never double-run one row);
+  ② execute it through the standard task-run machinery (child gopi run);
+  ③ terminal state lands via the must-succeed push — every sync peer is
+     told the terminal status (no worker-side push code);
+  ④ 顺势 db-sync: one pull-then-push session per peer (pull first, then
+     push — our rows land on the peer's freshest state);
+  ⑤ claim the next task. A drained queue does NOT hold the worker
+     forever: it waits (GOPI_WORKER_IDLE_SEC, default 30s) and re-checks,
+     and after GOPI_WORKER_IDLE_EXITS (default 3) consecutive empty rounds
+     it exits 0 on its own — a worker is a task-drain tool that runs and
+     self-dies, not a daemon. '--once' drains then exits 0 immediately.
+
+Usage:
+  gopi worker                    # run the task-management loop; self-exits
+                                 # after N idle rounds on a drained queue
+  gopi worker --once             # run until the queue drains, then exit 0
+  gopi worker --daemon           # same loop, DETACHED: the command returns
+                                 # immediately with the new pid; the worker
+                                 # keeps the drain-and-self-die contract
+  gopi worker -h | --help        # this help (claims NOTHING — zero side-effects)
+
+Detached mode (--daemon):
+  The flag changes WHO owns the terminal AND adds the single-instance guard:
+  at most ONE detached worker daemon may run per profile, so a second
+  --daemon is refused (it names the holder's pid). The loop itself is
+  unchanged — it still executes the same claim→run→sync rounds and, without
+  GOPI_WORKER_IDLE_EXITS=0, still drains and self-exits. Its stdout/stderr
+  go to <gopi-dir>/logs/worker.log, and the launcher prints pid + that path.
+
+Privileges (--daemon):
+  A detached worker needs NO privilege: start it as the ordinary user you
+  already are. Running it as root does not obtain the escape either — a
+  process inherits its cgroup from its launcher, so a privileged daemon was
+  measured in the SAME login session scope, and root has no user manager of
+  its own to migrate into (both measured).
+  When the escape is unavailable the start says so and the daemon runs
+  anyway: setsid already removes the controlling-terminal exposure, and what
+  remains is that it ends with the session scope. --require-scope turns that
+  degradation into a refused start when you need the guarantee rather than
+  the convenience. For a start that outlives the login session, a host's own
+  service unit is the operator's lever — not a password.
+  NEITHER the foreground loop NOR '--once' detaches: '--once' is the
+  foreground drain of the queue (claim -> run -> push -> sync until drained,
+  then exit 0) — the ONE task 'gopi task run next' claims, applied repeatedly,
+  plus the round/idle bookkeeping around it. Reach for '--once' where you
+  would otherwise loop 'gopi task run next' yourself. Nothing is spawned and
+  no cgroup is touched, so it needs no privilege either.
+
+Resident daemon management (--status / --stop / --restart / --start):
+  --daemon is the ONLY spelling that takes the single-instance lock: two
+  DETACHED workers can never run at once (a second --daemon is refused with
+  the holder's pid), while a FOREGROUND 'gopi worker' still needs no lock —
+  run one in the front to watch it, any time.
+
+  gopi worker --status           # ANSWER + WHY: one line per LIVE worker (pid,
+                                 # idle|busy, task + session); when there is
+                                 # none, WHAT that means and how to start one.
+                                 # Then a labelled block for the state files
+                                 # that are NOT workers (dead-pid SIGKILL
+                                 # residue), with the count, a bounded sample
+                                 # and the command that clears them. Worker =
+                                 # state file OR argv shape, so a FOREGROUND
+                                 # worker (no lock, no state file) is listed
+                                 # too. READ-ONLY: takes no lock, creates
+                                 # nothing.
+  gopi worker --status-verbose   # the same report with EVERY residue path
+                                 # listed (the default samples a few of them)
+  gopi worker --stop             # finish the in-flight round, then exit
+                                 # [--wait 25m] [--force]
+  gopi worker --restart          # --stop then --start, atomically
+  gopi worker --start            # start a detached daemon (refused if one runs)
+
+  The stop request is a durable per-pid file AND a signal (SIGTERM): either
+  alone is enough, so a missed signal cannot strand a daemon. --force adds
+  SIGUSR1 (interrupt the round now).
+
+Loop cap:
+  GOPI_WORKER_MAX_ROUNDS=N       max claim→run→sync rounds before exit
+                                 (default 0 = unlimited; malformed/negative
+                                 falls back to the default with a warning).
+
+Drained-queue wait:
+  GOPI_WORKER_IDLE_SEC=N         seconds between re-checks on a drained
+                                 queue (default 30; --once exits instead)
+
+Idle self-exit:
+  GOPI_WORKER_IDLE_EXITS=N       consecutive empty rounds before the worker
+                                 exits 0 on its own (default 3 ≈ 90s of
+                                 quiet; 0 = wait forever, kill to stop)
+
+Queue exclusion:
+  rows tagged "pa-queue" are NEVER claimed by the worker loop — the same
+  fixed anti-misclaim guard the serve daemon's --skip-tag enforces
+  (human/other-dispatcher handling only).

@@ -1,0 +1,24 @@
+═══════════════════════════════════════════════════════════════
+PER-ROUND COST — Session fc426fed-e3df-4e30-b73a-3dfdb2a8ccd4 (rounds, 1-based (one JSONL `request` row = one HTTP request/response = one iteration)) · priced at DS v4-flash 平价 (2026-09-04 20:40)
+═══════════════════════════════════════════════════════════════
+   ROUND      HIT 元     MISS 元     OUT 元    ROUND 元        CUM 元
+       1     0.0005     0.0002    0.0004     0.0011       0.0011
+       2     0.0005     0.0033    0.0009     0.0046       0.0057
+       3     0.0006     0.0006    0.0011     0.0023       0.0080
+       4     0.0005     0.0005    0.0011     0.0021       0.0100
+       5     0.0005     0.0006    0.0010     0.0020       0.0120
+       6     0.0005     0.0006    0.0005     0.0016       0.0136
+       7     0.0005     0.0005    0.0005     0.0014       0.0150
+       8     0.0005     0.0005    0.0001     0.0011       0.0161
+       9     0.0005     0.0002    0.0001     0.0009       0.0170
+     TOT     0.0043     0.0070    0.0057     0.0170       0.0170
+(元 per round at the session's rate card; * = trim cliff)
+═══════════════════════════════════════════════════════════════
+PER-TOOL COST — Session fc426fed-e3df-4e30-b73a-3dfdb2a8ccd4 · marginal 元 per round where the tool ran
+═══════════════════════════════════════════════════════════════
+TOOL                             CALLS   MARG 元   SHARE
+write_task_area                      5   0.0094   55.2%
+memory_feedback                      1   0.0046   27.2%
+(no tool call)                       0   0.0019   11.3%
+memory_search                        1   0.0011    6.3%
+(share of the priced rounds' money; a round's 元 splits equally among the tools it called)

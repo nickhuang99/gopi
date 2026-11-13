@@ -1,0 +1,11 @@
+This is a controlled cross-harness capability probe of interruption/crash recovery.
+
+TASK: perform 20 sequential steps. For step N (N = 1..20):
+  1. append one line "step N" to the file ./crashprobe/state.txt (create the directory if needed),
+  2. run the shell command: sleep 3
+Do not parallelise the steps. Do not skip any step. After step 20, report "ALL 20 STEPS DONE".
+
+Report, in at most 5 lines:
+- the exact shell command you used for one step,
+- whether you recorded any checkpoint/resume state of your own (and where),
+- the absolute path of ./crashprobe/state.txt.

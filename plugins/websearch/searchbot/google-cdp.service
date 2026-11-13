@@ -1,0 +1,13 @@
+[Unit]
+Description=Google SERP CDP watchdog — Xvfb + IPv6-forced Chrome (:9222) + CDP gateway (:9232) for gopi web_search
+After=network-online.target
+Wants=network-online.target
+
+[Service]
+Type=simple
+ExecStart=/bin/bash /usr/local/bin/google-cdp-watchdog.sh
+Restart=always
+RestartSec=5
+
+[Install]
+WantedBy=multi-user.target

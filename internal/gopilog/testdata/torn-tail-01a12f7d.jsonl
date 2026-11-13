@@ -1,0 +1,4 @@
+{"message":{"content":[{"id":"call_00_RtLq9kZhWIc3wlapEqNE3256","input":{"action":"output","job_id":"job-1"},"name":"job","type":"tool_use"}],"role":"assistant"},"timestamp":"2026-10-12T18:16:15.402662351+08:00","type":"assistant"}
+{"cache_hit":87808,"cache_miss":1077,"completion_tokens":1584,"iteration":27,"prompt_tokens":88885,"timestamp":"2026-10-12T18:16:15.40266881+08:00","type":"request"}
+{"message":{"content":[{"content":"[t+381s] [tool_use id: call_00_RtLq9kZhWIc3wlapEqNE3256]\njob job-1 status=running elapsed=59.5s\n","tool_use_id":"call_00_RtLq9kZhWIc3wlapEqNE3256","type":"tool_result"}],"role":"user"},"timestamp":"2026-10-12T18:16:15.402721039+08:00","type":"tool_result"}
+{"message":{"content":"[system] [t+381s] — +10s since your previous request. session budget: 6m22s elapsed of 1h0m0s (10% used).","ro
