@@ -237,3 +237,6 @@ ledgerpin-device-*/
 # (`gopi sandbox create` / `gopi sandbox run`) — never by hand-building a directory.
 /sandbox/
 devdoc/DOC-INDEX.tsv
+
+# local-first test sandbox (never committed — a ledger is runtime state, not source)
+/.sandbox/

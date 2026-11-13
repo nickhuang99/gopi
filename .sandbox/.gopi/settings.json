@@ -1,6 +1,0 @@
-{
-  "workspace_root": "/home/nick/work/github/gopi/.sandbox/workspace",
-  "tmpdir": "/home/nick/work/github/gopi/.sandbox/tmp",
-  "task_sync": false,
-  "notify": {"cmd": "", "events": "failed,build-failed,cancelled", "async": false}
-}
