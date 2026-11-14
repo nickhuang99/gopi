@@ -6,7 +6,7 @@
 
 ```
 $ gopi --version
-v0.4.0
+v0.5.0
 go: go1.24.0
 ```
 
@@ -135,41 +135,50 @@ layer that can adjudicate.**
 
 ## Installation
 
-gopi is currently **built from source**. It needs Go 1.24 or newer.
+**Read [`INSTALL.md`](INSTALL.md) — it is the page that gets you from a fresh Ubuntu
+22.04 box to a working `gopi` in about five minutes, and it names the exact version each
+piece requires.**
+
+The short version, so you know what you are in for:
 
 ```bash
-git clone <this repo>
+go version          # must be go1.24.0 or newer — this is a hard requirement
+git clone https://github.com/nickhuang99/gopi.git
 cd gopi
-make install
-```
-
-`make install` does two things: it builds `bin/gopi` (statically linked, `CGO_ENABLED=0`),
-and it puts that binary at `$GOPATH/bin/gopi` (so that `gopi` is on your `PATH` and you can
-type it directly).
-
-If you would rather not touch `$GOPATH`:
-
-```bash
-make build          # build only, the artefact is ./bin/gopi
+make build          # → ./bin/gopi
 ./bin/gopi --version
 ```
 
-To install it somewhere else:
+**Platform: Ubuntu 22.04 LTS, x86-64, Go 1.24.x — the only combination that has been run.**
+No macOS, no Windows, no ARM, no other distribution has been tested; see
+[`INSTALL.md` §6](INSTALL.md) for the full honest list.
+
+### You bring your own API key
+
+gopi ships **no credentials**. It is built around **DeepSeek**, and the model name in
+`settings.example.json` is a placeholder you replace with your own key from
+<https://platform.deepseek.com/>. Voice input is a **separate** service (Volcengine /
+ByteDance SAUC) with its own account and its own key, and it is entirely optional.
 
 ```bash
-make install PREFIX=/usr/local/bin
+cp settings.example.json ~/.gopi/settings.json
+$EDITOR ~/.gopi/settings.json       # replace "PUT-YOUR-OWN-DEEPSEEK-KEY-HERE"
 ```
+
+Without a key gopi still starts, and every command that does not call a model still works;
+it tells you which key is missing rather than failing silently.
 
 ### The first run
 
 ```bash
-gopi config setup     # idempotent provisioning: brings home to a runnable state
-gopi config show      # prints the configuration values in effect (not a file read — the parsed result)
+gopi config setup     # idempotent provisioning: fills in what is missing, changes nothing that exists
+gopi config show      # the configuration IN FORCE, and the channel that decided each value
 gopi chat             # start talking
 ```
 
-`gopi config setup` is idempotent — **running it again has no side effects**; it only fills in
-what is missing.
+`gopi config show` is the first thing to run when anything behaves differently from what
+you wrote in the file: it prints the parsed result, not the file, and beside each value the
+channel that won (flag / env var / settings.json / default).
 
 ### Dependencies
 
@@ -183,6 +192,7 @@ needed, and neither Node nor Python is needed.
 
 | What you want to know | Where to look |
 |---|---|
+| **How to install it on a fresh machine, and what exactly is required** | [`INSTALL.md`](INSTALL.md) — Ubuntu 22.04 + Go 1.24, BYOK, and a disposable local sandbox |
 | **The full usage of every CLI verb** | [`COMMANDS.md`](COMMANDS.md) — 421 lines, listed by verb, each line giving the source location |
 | **Every configuration key's default / precedence / who reads it** | [`CONFIG.md`](CONFIG.md) — 1649 lines, one line per knob, with the source line that reads it |
 | **The official description of some subsystem** | [`man/`](man/) — 14 pages, `gopi-chat.md`, `gopi-task.md`, `gopi-memory.md` and so on |
@@ -231,12 +241,12 @@ needed, and neither Node nor Python is needed.
 
 ## Status
 
-`v0.4.0` — under active development. The interfaces will change, but every change is recorded
-in `CHANGELOG.md`.
+`v0.5.0` — the first public tree. Under active development: the interfaces will change, but
+every change is recorded in `CHANGELOG.md`.
 
 ```bash
-$ gopi version
-v0.4.0
+$ ./bin/gopi --version
+v0.5.0
 ```
 
 The specific revision it was built from:

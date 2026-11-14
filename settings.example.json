@@ -1,0 +1,41 @@
+{
+  "_how_to_use": "Copy this file to ~/.gopi/settings.json and replace the two PLACEHOLDER values. gopi ships NO credentials. Everything with a leading underscore is a comment (gopi ignores unknown keys); delete the underscore lines if you prefer a tidy file.",
+
+  "_required_1": "Your OWN DeepSeek API key. Get one at https://platform.deepseek.com/ . gopi is bring-your-own-key: the account and the spend are yours, nothing is proxied.",
+  "api_key": "PUT-YOUR-OWN-DEEPSEEK-KEY-HERE",
+  "base_url": "https://api.deepseek.com/anthropic",
+  "model": "deepseek-flash",
+
+  "_vision_optional": "Image understanding. Same provider, same key.",
+  "vision_model": "deepseek-flash",
+  "vision_base_url": "https://api.deepseek.com/anthropic",
+
+  "_voice_optional": "Speech-to-text is NOT DeepSeek. It is Volcengine (ByteDance) SAUC — a separate account, a separate app id and a separate access token, billed separately. Leave both keys below OUT entirely if you do not want voice input; gopi then reports the voice path as unconfigured instead of failing at startup. To enable it, uncomment (set) them and fill in your own values.",
+  "audio_engine": "",
+  "audio_engine_param": {
+    "sauc": {
+      "endpoint": "wss://openspeech.bytedance.com/api/v3/sauc/bigmodel_async",
+      "resource_id": "volc.seedasr.sauc.duration"
+    },
+    "streaming": {
+      "app_id": "",
+      "token": ""
+    }
+  },
+
+  "_paths_optional": "Leave these two OUT to get the default layout: profile in ~/.gopi, scratch under <home>/workspace. Set them only when you want everything confined to ONE directory (a disposable test sandbox). Both must be ABSOLUTE paths that already exist or that gopi may create; a path pointing at a directory that is not there is a startup error, not a silent fallback. INSTALL.md §5 has the measured recipe.",
+  "_tmpdir_example": "\"tmpdir\": \"/home/you/gopi-local/tmp\",",
+  "_workspace_root_example": "\"workspace_root\": \"/home/you/gopi-local/workspace\",",
+
+  "_housekeeping": "These keep a single-machine install quiet: task_sync=false means no ledger row is ever broadcast to another host, and an empty notify.cmd means no hook is spawned on a task event.",
+  "task_sync": false,
+  "notify": {
+    "cmd": "",
+    "events": "failed,build-failed,cancelled",
+    "async": false
+  },
+
+  "output_language": "en",
+  "reasoning_effort": "high",
+  "thinking_budget": 16384
+}
