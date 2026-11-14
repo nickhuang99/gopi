@@ -162,16 +162,18 @@ If `gopi chat` starts but every turn fails, the cause is almost always one of:
 ## 5. A disposable, fully local sandbox (no global state touched)
 
 This is how you test gopi without letting it write anywhere near your real profile.
-**It needs no code changes — two environment variables do it:**
+**It needs no code changes — ONE environment variable does it:**
 
 ```bash
 SB="$HOME/gopi-sandbox"       # NOT /tmp — see the note below
 mkdir -p "$SB/.gopi"
 
-# A private profile: sessions, the ledger, logs, scratch all land under $SB
+# A private profile: sessions, the ledger, logs, scratch AND the settings
+# document all land under $SB. This one variable is sufficient.
 export GOPI_HOME="$SB"
-# A private settings document. THIS ONE IS NOT OPTIONAL — see the note below.
-export GOPI_SETTINGS="$SB/.gopi/settings.json"
+# Optional, and only when you want the settings file somewhere OTHER than
+# $GOPI_HOME/.gopi/settings.json (an explicit value wins over that default):
+# export GOPI_SETTINGS="$SB/.gopi/settings.json"
 ```
 
 **Do not put the sandbox on `/tmp`** — on most installs `/tmp` is a RAM-backed filesystem
@@ -179,15 +181,31 @@ sized a fraction of the disk, and gopi's ledger plus its build cache grow into h
 megabytes. `$HOME` is the safe default. Any path works as long as it is a real directory on
 a partition with room; gopi checks the free space and says so rather than filling it.
 
-**`GOPI_HOME` alone is not enough, and that is measured, not a guess.** With only
-`GOPI_HOME` set, `gopi config show` still reports:
+**`GOPI_HOME` alone IS enough — measured on a fresh clone, three ways.** Set both if you
+want to be explicit, but do not expect `GOPI_HOME` to leave the global settings in force:
 
-```
-  settings file          /home/you/.gopi/settings.json  (1412 bytes)   ← the GLOBAL one
+```bash
+$ cd <fresh clone>
+$ env -u GOPI_HOME -u GOPI_SETTINGS ./bin/gopi config show | grep 'settings file'
+  settings file          /home/you/.gopi/settings.json  (1231 bytes)          ← global
+$ GOPI_HOME=/tmp/sb ./bin/gopi config show | grep 'settings file'
+  settings file          /tmp/sb/.gopi/settings.json  (absent — built-in defaults in force)
+$ GOPI_HOME=/tmp/sb GOPI_SETTINGS=/tmp/sb/.gopi/settings.json ./bin/gopi config show | grep 'settings file'
+  settings file          /tmp/sb/.gopi/settings.json  (3 bytes)
 ```
 
-Set `GOPI_SETTINGS` as well and the same command reports your sandbox's file. Two more
-facts worth knowing before you build a test harness on this:
+That middle line is the case where `$SB/.gopi/settings.json` does not exist yet — gopi says
+`(absent — built-in defaults in force)` rather than falling back to your global file. Once
+the file is there (the third command, or after `gopi config setup` created one) the same
+command reports its byte count instead. **Neither line ever names `~/.gopi/settings.json`.**
+
+`~/.gopi/settings.json` (a symlink on the author's host) is **not** read when `GOPI_HOME`
+is set: `config.ResolveSettingsPath` falls through to `DefaultSettingsPath()`, which is
+`config.GopiDir() + "/settings.json"`, and `GopiDir()` returns `$GOPI_HOME/.gopi` before
+it ever consults `os.UserHomeDir()`. An earlier draft of this page claimed otherwise and
+was wrong; the three commands above are the correction.
+
+Two more facts worth knowing before you build a test harness on this:
 
 - **The caller's `TMPDIR` beats the `tmpdir` key** in your settings file. gopi prints which
   channel decided it (`from the caller's TMPDIR`), so read that line rather than assuming.
@@ -195,13 +213,15 @@ facts worth knowing before you build a test harness on this:
   are done, or use `gopi tool sandbox create` which produces the same shape at a
   configured, reclaimable location (`gopi tool sandbox show` prints where).
 
-To confirm the isolation actually holds, create a file in the sandbox's ledger and check
-that your real one did not move:
+To confirm the isolation actually holds — **this is the measurement, not a description of
+it** (run on a fresh clone 2026-11-15; the real ledger was 691642368 bytes before AND after,
+mtime 02:58:48 both times):
 
 ```bash
-GOPI_HOME="$SB" GOPI_SETTINGS="$SB/.gopi/settings.json" gopi task list   # writes $SB/.gopi/memory.db
-ls -l "$SB/.gopi/memory.db"          # it exists
-ls -l ~/.gopi/memory.db              # its mtime did NOT change
+ls -l ~/.gopi/memory.db              # BEFORE: 691642368 bytes, mtime 02:58:48
+GOPI_HOME="$SB" gopi task list       # exit 0, prints "No tasks found."
+ls -l "$SB/.gopi/memory.db"          # CREATED: 131072 bytes (a fresh, empty ledger)
+ls -l ~/.gopi/memory.db              # AFTER:  691642368 bytes, mtime 02:58:48 — UNCHANGED
 ```
 
 ---
