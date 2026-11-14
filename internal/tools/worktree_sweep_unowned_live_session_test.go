@@ -3,7 +3,7 @@ package tools
 // Regression tests for the 2026-10-12 residue (task 01a130ae).
 //
 // MEASURED: four one-shot detached worktrees carrying uncommitted mutation
-// material sat in /home/nick/workspace and NO arm reached them, while the sweep
+// material sat in /home/user/workspace and NO arm reached them, while the sweep
 // said `keep [live-session] … — its own session's ground` about one of them — a
 // registration no row names, in a sentence claiming it was the ground of an
 // UNRELATED live task (that task's ground was a different directory).

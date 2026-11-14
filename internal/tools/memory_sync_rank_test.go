@@ -11,7 +11,7 @@ import (
 // rankTestPeer is the peer name the rank ladder's calls carry — the detail of
 // the audit event names it (epic 01a187f4), so the fixture names one peer
 // rather than threading a bare literal through every call.
-const rankTestPeer = "zbook"
+const rankTestPeer = "zpeer"
 
 // TestStatusRankTable: the M4.20-B ladder — every status maps to its
 // normative rank (pending 0 → claimed 1 → in_progress 2 → terminal-tier 3

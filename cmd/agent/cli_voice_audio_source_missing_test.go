@@ -12,7 +12,7 @@ package main
 // runs in the task's session evidence dir) was a caller spelling the session id
 // with the dashes REMOVED —
 //
-//	--voice-audio /home/nick/.gopi/sessions/01a121fceebc73918785db2d149f931e/artifacts/probe.wav
+//	--voice-audio /home/user/.gopi/sessions/01a121fceebc73918785db2d149f931e/artifacts/probe.wav
 //
 // — where the directory that exists is `01a121fc-eebc-7391-8785-db2d149f931e`.
 // The de-dashed directory exists nowhere, so the ENOENT was CORRECT and the run

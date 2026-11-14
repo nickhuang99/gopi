@@ -1,6 +1,6 @@
 // search_fallback.go — the ZERO-BINARY leg of code_search / keyword_search.
 //
-// THE DEFECT (measured 2026-10-11/12 on host nick-sager; the raw artifacts live
+// THE DEFECT (measured 2026-10-11/12 on host host-a; the raw artifacts live
 // in that session's own directory). Both tools shell out — code_search to ctags,
 // keyword_search to ripgrep — and neither had a fallback that is not itself an
 // external binary. On a host with neither package installed:

@@ -13,7 +13,7 @@ package shot
 //	xfce4-terminal  --geometry=WxC in CELLS, -x ARGV, title via -T, no session log at all
 //	gnome-terminal  --geometry=WxC … and NOT USABLE HERE (see below)
 //
-// and the operator's desktop is not necessarily xterm's: on zbook it is
+// and the operator's desktop is not necessarily xterm's: on zpeer it is
 // xfce4-terminal, so a film made with xterm is a picture of a terminal the
 // operator never sees. The fix is not a second `if` in the starter — it is a
 // REGISTRY: one record per terminal carrying its launch shape, and ONE starter

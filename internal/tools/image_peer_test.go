@@ -40,7 +40,7 @@ const (
 	// peerTestProgram is the artifact path both images live at — the path
 	// /proc/<pid>/exe resolves to, spelled once so the assertions below read as
 	// the incident rather than as arbitrary strings.
-	peerTestProgram = "/home/nick/work/gopi/bin/gopi"
+	peerTestProgram = "/home/user/work/gopi/bin/gopi"
 
 	// peerTestPID is the worker pid from the incident.
 	peerTestPID = 1038465

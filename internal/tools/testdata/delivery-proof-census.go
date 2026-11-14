@@ -23,14 +23,14 @@ package main
 // RUN (read-only against the live ledger; prints the census):
 //
 //	go run internal/tools/testdata/delivery-proof-census.go \
-//	    --db /home/nick/.gopi/memory.db
+//	    --db /home/user/.gopi/memory.db
 //
 // Add `--landed` to also answer, per row, whether the row's own accepted tip is
 // an ancestor of the ledger repo's origin/master (`git merge-base --is-ancestor`
-// in --repo, default /home/nick/work/gopi) — that is the "已落地比例" figure.
+// in --repo, default /home/user/work/gopi) — that is the "已落地比例" figure.
 //
 //	go run internal/tools/testdata/delivery-proof-census.go \
-//	    --db /home/nick/.gopi/memory.db --landed --repo /home/nick/work/gopi
+//	    --db /home/user/.gopi/memory.db --landed --repo /home/user/work/gopi
 //
 // It WRITES NOTHING: no ledger row, no ref, no file. Its output is the figure.
 
@@ -55,7 +55,7 @@ const censusGitTimeout = 30 * time.Second
 
 func main() {
 	dbPath := flag.String("db", "", "the LIVE ledger to read (GOPI_MEMORY_DB), read-only")
-	repo := flag.String("repo", "", "the repo whose origin/master answers --landed (e.g. /home/nick/work/gopi)")
+	repo := flag.String("repo", "", "the repo whose origin/master answers --landed (e.g. /home/user/work/gopi)")
 	limit := flag.Int("limit", 0, "measure at most N rows, newest first (0 = every row carrying the record)")
 	landed := flag.Bool("landed", false, "also report whether each row's accepted tip is an ancestor of origin/master")
 	flag.Parse()

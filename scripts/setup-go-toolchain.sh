@@ -9,7 +9,7 @@
 #   2:1.18~0ubuntu2. Neither can even PARSE a '1.24.0' directive:
 #
 #     go: errors parsing go.mod:
-#     /home/nick/work/GoPi/go.mod:3: invalid go version '1.24.0': must match format 1.23
+#     /home/user/work/GoPi/go.mod:3: invalid go version '1.24.0': must match format 1.23
 #
 #   That message is a PARSER limit (%d.%d), not a request to rewrite go.mod:
 #   rewriting the directive to `go 1.23` cannot work either, because the

@@ -5,7 +5,7 @@ package tools
 //
 // THE DEFECT THIS PINS. A git pass that reports every STEP as a success can
 // still leave this host's integration ref frozen: measured 2026-10-13 on
-// nick-sager, `refs/heads/master` sat 141 commits behind the peer's tip and was
+// host-a, `refs/heads/master` sat 141 commits behind the peer's tip and was
 // a purely ancestor of it, while the log of every pass said success. The
 // number was invisible, so a report of the form "gate X is red on master" could
 // not be re-checked against any revision and already-fixed defects read as

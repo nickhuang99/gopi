@@ -13,7 +13,7 @@
 // as an unowned/abandoned one and its checkout was freed — including the
 // checkout the guest was itself standing in. Measured in the wild on the sweep
 // fix's own closing gate run: the worktree it ran from
-// (/home/nick/workspace/gopi-ownrel) was gone afterwards ("getwd: no such file
+// (/home/user/workspace/gopi-ownrel) was gone afterwards ("getwd: no such file
 // or directory") while a planted decoy survived, which is why the two halves
 // are separate fixes.
 //

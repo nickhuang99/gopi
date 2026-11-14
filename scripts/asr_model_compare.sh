@@ -3,7 +3,7 @@
 #
 # 设计要点（沿用本项目已有的教训）：
 #  - 输出落 ~/workspace（boot 分区曾因临时产物耗尽，2026-09-11 事故）
-#  - 每次都记录 wall time + 峰值内存 —— zbook 是 i7-5500U 双核，
+#  - 每次都记录 wall time + 峰值内存 —— zpeer 是 i7-5500U 双核，
 #    "准确率" 和 "跑得动吗" 是同等重要的选型依据
 #  - 用 /usr/bin/time -v 拿 Maximum resident set size（RSS）
 set -u

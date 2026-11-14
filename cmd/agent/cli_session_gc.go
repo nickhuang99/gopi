@@ -2,7 +2,7 @@ package main
 
 // cli_session_gc.go — `gopi session gc`: the session family's ONE reclaim verb.
 //
-// WHY IT EXISTS (measured 2026-10-29, host nick-sager, the bug row this file
+// WHY IT EXISTS (measured 2026-10-29, host host-a, the bug row this file
 // answers). The family carried EIGHT verbs and every one of them was a READER.
 // Nothing could reclaim a session directory, so ~/.gopi/sessions grew to
 // 90 GB / 3175 directories on a `/` partition at 98% (48 G free), and the only

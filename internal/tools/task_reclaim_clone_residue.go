@@ -9,7 +9,7 @@ package tools
 // LINKED registration. The clone channel (`dev_repo`, this host's default) works
 // in a standalone `git clone` whose `.git` is a DIRECTORY: it is registered
 // NOWHERE, so `mergedCleanupWorktrees` answered an empty linked map (measured:
-// linked=0 on /home/nick/work/gopi) and SIX clone grounds holding 104
+// linked=0 on /home/user/work/gopi) and SIX clone grounds holding 104
 // uncommitted entries were measured by nobody:
 //
 //	ReclaimRunResidueCheck(row) → {Attributed:false Porcelain:"" Note:""}

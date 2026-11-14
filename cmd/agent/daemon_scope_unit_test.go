@@ -260,12 +260,12 @@ func TestScopeUnitNameCarriesNoLauncherPid(t *testing.T) {
 // READABLE (an operator recognises the profile) and UNIQUE (the readable half
 // alone is not — two profiles may share a directory name).
 func TestDaemonProfileUnitTagIsUniqueAndReadable(t *testing.T) {
-	alpha := daemonProfileUnitTag("/home/nick/.gopi")
+	alpha := daemonProfileUnitTag("/home/user/.gopi")
 	// The DEFAULT profile's directory is ".gopi" for every such profile, so the
 	// readable half comes from the HOME it lives in — otherwise the tag would
 	// read "/(garbage)-<hash>" and tell the operator nothing.
 	if !strings.HasPrefix(alpha, "nick") {
-		t.Errorf("daemonProfileUnitTag(/home/nick/.gopi) = %q, want it to lead with the profile's readable "+
+		t.Errorf("daemonProfileUnitTag(/home/user/.gopi) = %q, want it to lead with the profile's readable "+
 			"half (the HOME for a default profile, not the shared %q)", alpha, config.ProfileDirName)
 	}
 	// Two DIFFERENT profiles with the SAME directory name must not collide: the
@@ -286,7 +286,7 @@ func TestDaemonProfileUnitTagIsUniqueAndReadable(t *testing.T) {
 	// The tag is always a usable unit-name token: systemd refuses a name that
 	// STARTS with a separator, and a tag whose readable half was entirely
 	// rejected must still produce one.
-	for _, identity := range []string{"/home/nick/.gopi", "/opt/a/gopi", "/tmp/??-.-weird", "/", "profile"} {
+	for _, identity := range []string{"/home/user/.gopi", "/opt/a/gopi", "/tmp/??-.-weird", "/", "profile"} {
 		tag := daemonProfileUnitTag(identity)
 		if tag == "" {
 			t.Fatalf("daemonProfileUnitTag(%q) rendered an EMPTY tag", identity)

@@ -2,7 +2,7 @@
 // misreads on the budget-runs tree, pinned so a future change cannot quietly
 // re-spell them as something they are not.
 //
-// THE MISREADING THIS GUARDS (measured 2026-10-27, nick-sager, tree
+// THE MISREADING THIS GUARDS (measured 2026-10-27, host-a, tree
 // `budget-runs`): the tree printed `collectable=0 kept=429 holding=9172227123
 // holding_n=429` while 19790 FLAT per-run evidence files held a further ~7.0 GiB
 // at ages up to fifteen days. Two sentences in the shipped docs invited a wrong

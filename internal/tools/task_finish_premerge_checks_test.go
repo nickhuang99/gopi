@@ -201,7 +201,7 @@ func TestMergeCheckFailureText_ReadsTheBlockOutOfAnIndentedReport(t *testing.T) 
 	// the indent-aware end, this line and everything after it were quoted as if
 	// they were the failing test's own output.
 	fmt.Fprintf(&b, "%sfull stream: /scratch/run-1793408602-3647113.json\n", reportIndent)
-	fmt.Fprintf(&b, "%sstamp: 2026-10-31T09:03:22+08:00 host=nick-sager exit=1 outcome=fail\n", reportIndent)
+	fmt.Fprintf(&b, "%sstamp: 2026-10-31T09:03:22+08:00 host=host-a exit=1 outcome=fail\n", reportIndent)
 
 	got := mergeCheckFailureText(pmcCheckCmd, b.String())
 	if !strings.Contains(got, pmcFailTestName) {

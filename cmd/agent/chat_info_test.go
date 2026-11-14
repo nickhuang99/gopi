@@ -54,13 +54,13 @@ func TestChatInfoProbesAreNotEmpty(t *testing.T) {
 func infoFixture() chatInfoFields {
 	return chatInfoFields{
 		SessionID:   "4c9a1f3e-8b2d-4a10-9e6f-2c5d7a0b1e33",
-		SessionDir:  "/home/nick/.gopi/sessions/4c9a1f3e-8b2d-4a10-9e6f-2c5d7a0b1e33",
-		SessionFile: "/home/nick/.gopi/sessions/4c9a1f3e-8b2d-4a10-9e6f-2c5d7a0b1e33/session.jsonl",
+		SessionDir:  "/home/user/.gopi/sessions/4c9a1f3e-8b2d-4a10-9e6f-2c5d7a0b1e33",
+		SessionFile: "/home/user/.gopi/sessions/4c9a1f3e-8b2d-4a10-9e6f-2c5d7a0b1e33/session.jsonl",
 		Model:       "deepseek-v4",
-		Dir:         "/home/nick/workspace/gopi-task",
-		Repo:        "/home/nick/workspace/gopi-task",
+		Dir:         "/home/user/workspace/gopi-task",
+		Repo:        "/home/user/workspace/gopi-task",
 		InRepo:      true,
-		Node:        "zbook (server→hp)",
+		Node:        "zpeer (server→hp)",
 		ToolsOn:     true,
 	}
 }

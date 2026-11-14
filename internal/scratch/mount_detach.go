@@ -6,7 +6,7 @@ package scratch
 // THE DEFECT (measured on this host, 2026-10-15). The sweep selects a stale,
 // unheld queue child, calls RemoveAll, and gets
 //
-//	openfdat /home/nick/workspace/gopi-test-scratch/queue/queue-replay-4007787/runtime/gvfs: transport endpoint is not connected
+//	openfdat /home/user/workspace/gopi-test-scratch/queue/queue-replay-4007787/runtime/gvfs: transport endpoint is not connected
 //
 // The path IS the mount point of a `fuse.gvfsd-fuse` filesystem whose daemon
 // (gvfsd-fuse) is GONE: the kernel keeps the mount-table entry, every path into
@@ -32,7 +32,7 @@ package scratch
 // MEASURED, not inferred: `/proc/<pid>/environ` of the two still-LIVE
 // gvfsd-fuse daemons carries exactly
 //
-//	XDG_RUNTIME_DIR=/home/nick/workspace/gopi-test-scratch/queue/queue-replay-1080449/runtime
+//	XDG_RUNTIME_DIR=/home/user/workspace/gopi-test-scratch/queue/queue-replay-1080449/runtime
 //
 // with the pids' mount targets matching (1080553, 2438498). The producers of the
 // three DEAD ones are the same pipeline (the queue children are named

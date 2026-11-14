@@ -53,7 +53,7 @@ type TaskForWorktreeQuery struct {
 
 // taskWorktreePathKey is the comparison key of a worktree path: absolute,
 // cleaned, and free of a trailing separator, so `~/workspace/wt`,
-// `/home/nick/workspace/wt/` and `/home/nick/workspace/./wt` are ONE worktree
+// `/home/user/workspace/wt/` and `/home/user/workspace/./wt` are ONE worktree
 // rather than three.
 //
 // The path is NOT symlink-resolved: the ledger records what the dispatch path

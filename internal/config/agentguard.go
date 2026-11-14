@@ -403,7 +403,7 @@ func RefuseAgentSpawn(verb string, d AgentSpawnDecision) {
 // `gopi submit-x` ("submit-x" is no verb and no near-miss, so the dispatch chain
 // falls through to the bare-prompt face), which started a full paid run that
 // registered an `[auto] submit-x` ledger row and created a clone ground under
-// the SHARED /home/nick/workspace; two such cascaded ghosts cost 440,153 + 855,807
+// the SHARED /home/user/workspace; two such cascaded ghosts cost 440,153 + 855,807
 // prompt tokens, and the ledger already carries 900 `[auto]` rows. Each layer
 // "investigated" the bare word by running it again — self-replication, with no
 // depth limit at all.

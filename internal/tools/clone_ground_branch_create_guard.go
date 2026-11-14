@@ -10,28 +10,28 @@ package tools
 // CREATION FLAGS (checkout -b/-B, switch -c/-C, worktree add -b/-B) and nothing
 // else. Measured on the next row (01a19640, 2026-11-01, git 2.43.0) that scope
 // was a hole, not a boundary: with this run's ground announced and the guard
-// wired in, in the declared shared checkout /home/nick/work/gopi,
+// wired in, in the declared shared checkout /home/user/work/gopi,
 //
-//	git -C /home/nick/work/gopi branch task/probe-b1 a4899a4f          exit 0  ref created
-//	git -C /home/nick/work/gopi branch -f task/probe-b1 90927414       exit 0  ref MOVED
-//	git -C /home/nick/work/gopi update-ref refs/heads/task/probe-u1 …  exit 0  ref created
+//	git -C /home/user/work/gopi branch task/probe-b1 a4899a4f          exit 0  ref created
+//	git -C /home/user/work/gopi branch -f task/probe-b1 90927414       exit 0  ref MOVED
+//	git -C /home/user/work/gopi update-ref refs/heads/task/probe-u1 …  exit 0  ref created
 //
 // — a flag-driven recogniser cannot see a write that carries no flag. So the
 // subject is stated as the PROPERTY (which subcommands write a ref), in ONE list
 // (cloneGroundRefWritingVerbs) read by both the recogniser and the fail-closed
 // arm, and a subcommand in NEITHER that list nor the closed read-only list is
 // REFUSED rather than assumed harmless. Evidence, both directions:
-// /home/nick/.gopi/sessions/01a19640-7632-7d19-9636-67539250995b/probe-before-fix.txt
+// /home/user/.gopi/sessions/01a19640-7632-7d19-9636-67539250995b/probe-before-fix.txt
 // and …/probe-after-fix-v2.txt.
 //
 // ── THE INCIDENT (measured 2026-11-01, row 01a1957a-0e54) ────────────────────
 //
 // The row was dispatched with a clone ground — the runner created
-// /home/nick/workspace/01a1957a-…, set cmd.Dir into it, and appended the
+// /home/user/workspace/01a1957a-…, set cmd.Dir into it, and appended the
 // announcement "[Your ground — ALREADY CREATED for you]" to the briefing (the
 // worker's own output.log line 7/8 records both). The run nevertheless ran
 //
-//	cd /home/nick/work/gopi && git checkout -b task/01a1957a0e54-…    (14:02:27)
+//	cd /home/user/work/gopi && git checkout -b task/01a1957a0e54-…    (14:02:27)
 //
 // — the MAIN checkout, shared with the operator and with every other run — and
 // then edited cmd/agent/cli_scratch_gc.go THERE. The main checkout's reflog
@@ -124,15 +124,15 @@ import (
 // That framing is the fix, not a tidy-up: the earlier version recognised only
 // checkout/switch/worktree's CREATION FLAGS, so a ref write that carries no such
 // flag walked straight through it. Measured on this host (git 2.43.0), in the
-// declared shared checkout /home/nick/work/gopi, with this run's ground
+// declared shared checkout /home/user/work/gopi, with this run's ground
 // announced and the guard wired in:
 //
-//	git -C /home/nick/work/gopi branch task/probe-b1 a4899a4f          exit 0  ref created
-//	git -C /home/nick/work/gopi branch -f task/probe-b1 90927414       exit 0  ref MOVED
-//	git -C /home/nick/work/gopi update-ref refs/heads/task/probe-u1 …  exit 0  ref created
+//	git -C /home/user/work/gopi branch task/probe-b1 a4899a4f          exit 0  ref created
+//	git -C /home/user/work/gopi branch -f task/probe-b1 90927414       exit 0  ref MOVED
+//	git -C /home/user/work/gopi update-ref refs/heads/task/probe-u1 …  exit 0  ref created
 //
 // while `checkout -b`, `switch -C` and `worktree add -B` in the same directory
-// were refused. Evidence: /home/nick/.gopi/sessions/01a19640-…/probe-before-fix.txt.
+// were refused. Evidence: /home/user/.gopi/sessions/01a19640-…/probe-before-fix.txt.
 const (
 	// cloneGroundBranchVerb is git's refs-only verb. Every one of its creating,
 	// moving and renaming spellings is judged — `<name>` (creation with no flag
@@ -372,7 +372,7 @@ func guardCloneGroundBranchCreate(command, workdir string) string {
 	// still write a ref in the shared checkout. Measured with a process that had
 	// no ground at all (env -u GOPI_RUN_GROUND):
 	//
-	//	OUT=$(git -C /home/nick/workspace/_tmp/refguard-subst-probe/shared \
+	//	OUT=$(git -C /home/user/workspace/_tmp/refguard-subst-probe/shared \
 	//	      checkout -b task/probe-NOGROUND 2>&1)   → exit 0, branch created
 	//	git -C … reflog → HEAD@{1}: moving from master to task/probe-NOGROUND
 	//
@@ -808,8 +808,8 @@ const cloneGroundRefsHeadsPrefix = "refs/heads/"
 // tool's workdir, or a `cd` earlier on the same line. Git has a second, equally
 // ordinary way to name that directory, and it is not a shell construct at all:
 //
-//	git -C /home/nick/work/gopi checkout -b task/probe-dashc     → created, exit 0
-//	git -C /home/nick/work/gopi worktree add -b task/probe-r2 …  → created, exit 0
+//	git -C /home/user/work/gopi checkout -b task/probe-dashc     → created, exit 0
+//	git -C /home/user/work/gopi worktree add -b task/probe-r2 …  → created, exit 0
 //
 // Both ran with the shared checkout declared, this run's ground announced, and
 // the guard wired in — the branch really was created in the shared checkout and
@@ -991,7 +991,7 @@ func cloneGroundBranchCreateRefusal(branch, dir, shared, ground string) string {
 //
 //   - it does not judge a path inside the run's own ground (the ordinary case);
 //   - it does not judge a path in a directory nothing declares as a shared
-//     checkout — a session directory under /home/nick/.gopi, a scratch root, every
+//     checkout — a session directory under /home/user/.gopi, a scratch root, every
 //     temporary file a run writes;
 //   - it does not judge a process with NO announced ground (the operator's own
 //     shell, `gopi chat`, a repo-less row): that process's writes are not a

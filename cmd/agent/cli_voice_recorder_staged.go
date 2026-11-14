@@ -3,7 +3,7 @@ package main
 // cli_voice_recorder_staged.go — the STAGED recorder: ONE capture that outlives
 // the transcription of the round before it (task 01a1188c).
 //
-// THE DEFECT THIS EXISTS FOR, measured, not inferred (task 01a11853, zbook
+// THE DEFECT THIS EXISTS FOR, measured, not inferred (task 01a11853, zpeer
 // 2026-10-08): `/voice` records a window per round, stops the recorder, and only
 // then transcribes. The next round's recorder is opened AFTER the engine answers,
 // so a slice of the microphone's audio — the whole inter-round gap, ~1.6 s of it

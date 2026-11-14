@@ -1459,7 +1459,7 @@ func TaskWorktreeStampClaimerFor(taskID, repo, workdir string) (wt, branch strin
 // was ALREADY created — by an earlier step, a resumed run, or a sibling
 // process that provisioned the ground before the claim. Measured on the live
 // ledger (2026-09-20): task 01a0bb71-ec9d sat in_progress with {"repo":…}
-// while /home/nick/workspace/gopi-u1-editorrows existed and was registered as
+// while /home/user/workspace/gopi-u1-editorrows existed and was registered as
 // that repo's linked worktree on a non-exempt branch; its sibling row
 // 01a0bb71-eae2, claimed through the OTHER claim shape (cwd = the worktree),
 // recorded the same ground immediately. So the blind spot is the main-checkout

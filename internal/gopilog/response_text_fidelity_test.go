@@ -208,7 +208,7 @@ func responseTextFidelityFixture(t *testing.T, blocks []string) (string, []strin
 	t.Helper()
 
 	lines := []string{
-		`{"model":"deepseek-flash","sessionId":"response-text-fidelity","timestamp":"2026-09-26T20:00:00.000000000+08:00","type":"session_start","workdir":"/home/nick/work/GoPi"}`,
+		`{"model":"deepseek-flash","sessionId":"response-text-fidelity","timestamp":"2026-09-26T20:00:00.000000000+08:00","type":"session_start","workdir":"/home/user/work/GoPi"}`,
 	}
 	for i, b := range blocks {
 		raw, err := json.Marshal(map[string]any{

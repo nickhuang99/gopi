@@ -53,7 +53,7 @@ func TestScratchGCDepsOriginReadsExeNotArgv0(t *testing.T) {
 	// field is therefore "gopi-shot-profile-42 …" — the word comes from a path,
 	// not from a program.
 	const plantArgv0 = "/usr/lib/chromium/chrome --headless --no-sandbox " +
-		"--user-data-dir=/home/nick/workspace/gopi-test-scratch/queue/run-1/gopi-shot-profile-42 --use-angle=swiftshader"
+		"--user-data-dir=/home/user/workspace/gopi-test-scratch/queue/run-1/gopi-shot-profile-42 --use-angle=swiftshader"
 	// The planted program is a REAL binary and it gets a REAL argv[1].
 	// WHY THE ARGUMENT MATTERS (measured, this test's own flake): the fixture
 	// used to overwrite Args with the single field above, so the kernel passed
@@ -260,11 +260,11 @@ func TestScratchGCDepsCronLineIsASchedule(t *testing.T) {
 		wantCmd string
 		wantOK  bool
 	}{
-		{"weekly gopi entry", "0 3 * * 0 /home/nick/bin/gopi-home-gc.sh", "/home/nick/bin/gopi-home-gc.sh", true},
-		{"step field", "*/10 * * * * /home/nick/bin/hp-worker-autostart.sh", "/home/nick/bin/hp-worker-autostart.sh", true},
-		{"reboot shorthand", "@reboot /home/nick/bin/gopi-worker-up", "/home/nick/bin/gopi-worker-up", true},
+		{"weekly gopi entry", "0 3 * * 0 /home/user/bin/gopi-home-gc.sh", "/home/user/bin/gopi-home-gc.sh", true},
+		{"step field", "*/10 * * * * /home/user/bin/hp-worker-autostart.sh", "/home/user/bin/hp-worker-autostart.sh", true},
+		{"reboot shorthand", "@reboot /home/user/bin/gopi-worker-up", "/home/user/bin/gopi-worker-up", true},
 		{"environment assignment", "PATH=/usr/bin:/bin", "", false},
-		{"comment", "# 0 3 * * 0 /home/nick/bin/gopi-home-gc.sh", "", false},
+		{"comment", "# 0 3 * * 0 /home/user/bin/gopi-home-gc.sh", "", false},
 		{"blank", "   ", "", false},
 		{"prose, not a schedule", "run the crontab installer when the bus is down", "", false},
 		{"too few fields", "0 3 * *", "", false},
@@ -292,7 +292,7 @@ func TestScratchGCDepsOriginIgnoresNonExecutableArgs(t *testing.T) {
 	// regex would match.
 	inScratch := []string{
 		"/snap/chromium/3537/usr/lib/chromium-browser/chrome --type=gpu-process --no-sandbox " +
-			"--user-data-dir=/home/nick/workspace/gopi-test-scratch/queue/queue-runtime-shot-875503/" +
+			"--user-data-dir=/home/user/workspace/gopi-test-scratch/queue/queue-runtime-shot-875503/" +
 			"gopi-shot-profile-2645074146 --use-angle=swiftshader-webgl",
 	}
 	inTmp := []string{
@@ -329,7 +329,7 @@ func TestScratchGCDepsOriginIgnoresNonExecutableArgs(t *testing.T) {
 // visible (including the HP worker family Rule 35's incident was about), and a
 // neighbour's is not silently dropped from the report.
 func TestScratchGCDepsClassifyGopiShapes(t *testing.T) {
-	ours := []string{"gopi", "gopi-worker-up", "hp-worker-autostart.sh", "/home/nick/bin/gopi"}
+	ours := []string{"gopi", "gopi-worker-up", "hp-worker-autostart.sh", "/home/user/bin/gopi"}
 	for _, s := range ours {
 		if got := depsClassify(s); got != depsOriginGopi {
 			t.Errorf("depsClassify(%q) = %q, want %q", s, got, depsOriginGopi)
@@ -354,7 +354,7 @@ func TestScratchGCDepsClassifyGopiShapes(t *testing.T) {
 //
 // Measured live on this host (2026-09-26), two shells at once:
 //
-//	bash -c "cd /home/nick/workspace/gopi-01a0ddfa2d98732aa5a3968bd10b6a3a && sleep 60 & wait"
+//	bash -c "cd /home/user/workspace/gopi-01a0ddfa2d98732aa5a3968bd10b6a3a && sleep 60 & wait"
 //
 // classified `origin=gopi` — the word came from a WORKTREE DIRECTORY NAME. The
 // line was the arm's OWN invocation, so the count depended on how the report was
@@ -366,7 +366,7 @@ func TestScratchGCDepsClassifyGopiShapes(t *testing.T) {
 // reachable by construction; the LAST two are the anti-over-fix controls — a
 // real script operand must still be judged, or the fix would blind the arm.
 func TestScratchGCDepsInterpreterCommandStringIsNotAName(t *testing.T) {
-	worktree := "/home/nick/workspace/gopi-01a0ddfa2d98732aa5a3968bd10b6a3a"
+	worktree := "/home/user/workspace/gopi-01a0ddfa2d98732aa5a3968bd10b6a3a"
 	cases := []struct {
 		name string
 		prog string
@@ -388,7 +388,7 @@ func TestScratchGCDepsInterpreterCommandStringIsNotAName(t *testing.T) {
 		{
 			name: "bash -c whose string carries the binary path",
 			prog: "bash",
-			argv: []string{"bash", "-c", "/home/nick/work/GoPi/bin/gopi merge --every 3m"},
+			argv: []string{"bash", "-c", "/home/user/work/GoPi/bin/gopi merge --every 3m"},
 			want: depsOriginUnknown,
 		},
 		{
@@ -406,13 +406,13 @@ func TestScratchGCDepsInterpreterCommandStringIsNotAName(t *testing.T) {
 		{
 			name: "a quoted script name carrying a space (only the space rule catches this)",
 			prog: "bash",
-			argv: []string{"bash", "/home/nick/bin/gopi worker up"},
+			argv: []string{"bash", "/home/user/bin/gopi worker up"},
 			want: depsOriginUnknown,
 		},
 		{
 			name: "anti-over-fix: a direct script operand is still judged",
 			prog: "bash",
-			argv: []string{"bash", "/home/nick/bin/gopi-worker-up.sh", "2"},
+			argv: []string{"bash", "/home/user/bin/gopi-worker-up.sh", "2"},
 			want: depsOriginGopi,
 		},
 		{

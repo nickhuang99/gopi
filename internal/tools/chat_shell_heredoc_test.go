@@ -39,7 +39,7 @@ var heredocRegressionCommands = []struct {
 }{
 	{
 		name: "notify/heredoc-body-quoting-a-ref-move-is-data",
-		cmd: "cd /home/nick/work/gopi\n" +
+		cmd: "cd /home/user/work/gopi\n" +
 			"cat > /tmp/reply.md <<'" + heredocRegressionDelim + "'\n" +
 			"## Q2\n" +
 			"\n" +

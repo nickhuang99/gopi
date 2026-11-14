@@ -19,8 +19,8 @@
 # 用法: gen-envB.sh <out_root>
 set -uo pipefail
 
-EV=/home/nick/.gopi/sessions/01a0ed23-0e36-7d55-b1b2-4a79e25fc1dd
-ROOT=/home/nick/workspace/gopi-01a0ed230e367d55b1b24a79e25fc1dd
+EV=/home/user/.gopi/sessions/01a0ed23-0e36-7d55-b1b2-4a79e25fc1dd
+ROOT=/home/user/workspace/gopi-01a0ed230e367d55b1b24a79e25fc1dd
 BIN="$ROOT/bin/gopi"
 RENDER="$ROOT/scripts/materials/render.py"
 FONT=/usr/share/fonts/truetype/wqy/wqy-zenhei.ttc
@@ -251,7 +251,7 @@ cat > "$OUTROOT/env-03-sandbox-dir-attribution/05-finding.md" <<'F3'
 **查过四样**：
 
 1. `GOPI_SANDBOX_DIR` 换了根，`gopi sandbox show` 的两行在同一张屏上给出
-   `root=/…/newroot source=from GOPI_SANDBOX_DIR` 与 `root=/home/nick/workspace/gopi-sandbox source=from the built-in default`
+   `root=/…/newroot source=from GOPI_SANDBOX_DIR` 与 `root=/home/user/workspace/gopi-sandbox source=from the built-in default`
    ——"哪个通道决定的"是**被打印出来的**，不是靠读源码猜的。
 2. `sandbox show` 是**纯读**：`newroot` 在本次运行后**并不存在**（实测 `ls -d $SB/newroot` → No such file），
    即 `show` 只解析不物化。这与 `CONFIG.md` 的 `sandbox_dir` 行（"resolved by the same one-function/three-channel rule as `tmpdir`"）一致。
@@ -499,15 +499,15 @@ cat > "$OUTROOT/env-08-error-dump-dir/05-finding.md" <<'F8'
 现场（本条目 02-output.txt，两次调用都失败于同一件事——`GOPI_VISION_MODEL=bogus-model`
 被上游以 HTTP 400 拒绝，错误文本里点名了传入的模型名）：
 
-- **不设该变量**：dump 写到 `/home/nick/.gopi/dumps/<ts>.dump.json` —— 即**操作者的 gopi 目录**，
+- **不设该变量**：dump 写到 `/home/user/.gopi/dumps/<ts>.dump.json` —— 即**操作者的 gopi 目录**，
   与本次运行那个私有沙盒 profile（`GOPI_HOME=$SB`）无关；
 - **设 `GOPI_ERROR_DUMP_DIR=$SB/dumps`**：dump 写到 `<沙盒>/dumps/<ts>.dump.json`。
 
 **为什么是缝**：Rule 34 的整套推理是"一切真跑在私有 profile 内，绝不读写操作者台账"，
 而一个**在沙盒里跑的** `gopi vision_analyze` 默认会把完整请求（含提示词与图片的 base64）
-写进操作者的 `/home/nick/.gopi/dumps/`。沙盒隔离了 `GOPI_HOME`（sessions/raw/logs/memory.db），
+写进操作者的 `/home/user/.gopi/dumps/`。沙盒隔离了 `GOPI_HOME`（sessions/raw/logs/memory.db），
 但**没隔离这个诊断产物**——它是"另一条通道"里默认指向操作者的路径。
-本次运行**确实**向操作者的 `/home/nick/.gopi/dumps/` 写了 2 个文件（本条目取证的对照组所致；
+本次运行**确实**向操作者的 `/home/user/.gopi/dumps/` 写了 2 个文件（本条目取证的对照组所致；
 对照是本条目的必要成分，因为它们证明的正是"默认落在谁家"）。
 **本条目只记录测量结果**；改法（dump 默认跟随 `GOPI_HOME`）属于另一个 bug 行。
 

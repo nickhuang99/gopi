@@ -6,11 +6,11 @@ package tools
 // INCIDENT (epic 01a182bf, filed on row 01a18253-f7c4-7cf7-8cb3-868647a25401).
 // The row read `completed`, and every address the ledger names for it was gone:
 //
-//	$ git -C /home/nick/work/gopi rev-parse --verify --quiet refs/heads/task/01a18253f7c47cf78cb3868647a25401
+//	$ git -C /home/user/work/gopi rev-parse --verify --quiet refs/heads/task/01a18253f7c47cf78cb3868647a25401
 //	(no output, exit 1)
-//	$ git -C /home/nick/work/gopi rev-parse --verify --quiet refs/remotes/origin/task/01a18253f7c47cf78cb3868647a25401
+//	$ git -C /home/user/work/gopi rev-parse --verify --quiet refs/remotes/origin/task/01a18253f7c47cf78cb3868647a25401
 //	(no output, exit 1)
-//	$ ls -d /home/nick/workspace/01a18253-f7c4-7cf7-8cb3-868647a25401
+//	$ ls -d /home/user/workspace/01a18253-f7c4-7cf7-8cb3-868647a25401
 //	ls: cannot access '…': No such file or directory
 //
 // That state is NORMAL after a delivered close-out (the clone channel publishes
@@ -19,7 +19,7 @@ package tools
 // elsewhere — and on this row one exists: the commit the channel recorded
 // pushing carries the row's id in its own `task:` trailer.
 //
-//	$ git -C /home/nick/work/gopi show -s --format='%(trailers)' 20e8328
+//	$ git -C /home/user/work/gopi show -s --format='%(trailers)' 20e8328
 //	task: 01a18253-f7c4-7cf7-8cb3-868647a25401
 //
 // THE CRITERION. A `completed` writeback asks ONE question — does ANY artefact

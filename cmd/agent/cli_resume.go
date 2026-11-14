@@ -1427,7 +1427,7 @@ var resumeRowExists = tools.TaskStatusOf
 // ordering are only assertable by reading the file.
 //
 // ONE WRITER PER CHAIN RUN (epic worker-resume-report-once, measured 2026-09-26
-// on zbook: one `gopi worker --resume` run printed its close-out report twice
+// on zpeer: one `gopi worker --resume` run printed its close-out report twice
 // and its `skipped:` summary three times — /tmp/strange_python.txt, 66 lines).
 //
 // The chain itself has always been idempotent; the REPORT was not, because one

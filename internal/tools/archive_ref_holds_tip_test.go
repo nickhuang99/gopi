@@ -3,7 +3,7 @@ package tools
 // archive_ref_holds_tip_test.go — THE RED PROOF for epic 01a12f48 (a removal
 // path that leaves the removed tip reachable from NO ref).
 //
-// INCIDENT, as MEASURED by the filing run (task 01a12d60, host nick-HP-Laptop):
+// INCIDENT, as MEASURED by the filing run (task 01a12d60, host host-b):
 // the tip of task/01a12d06c02f71008b77c0580690cdf1 (bc8e2ea8) was found on the
 // peer with `git cat-file -t` = commit while EVERY reachability enquiry was
 // empty — `git for-each-ref --contains <tip>` printed nothing, no

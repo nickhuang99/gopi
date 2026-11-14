@@ -5,7 +5,7 @@ package tools
 //
 // THE MEASURED DEFECT. Row 01a0ddc4-c410 (session 3592a5ef) ran, mid-flight:
 //
-//	git worktree add /home/nick/workspace/gopi-evi-pushback -b fix/pushback-rule31-evidence
+//	git worktree add /home/user/workspace/gopi-evi-pushback -b fix/pushback-rule31-evidence
 //
 // while its own deliverable already named .../gopi-01a0ddc4… on
 // task/01a0ddc4…. Three separate mechanisms then conspired to record NOTHING

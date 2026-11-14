@@ -2,12 +2,12 @@
 # voice-e2e-hp.sh — deterministic, human-free end-to-end proof of the two-node
 # voice-input path. Rerunnable by any reader with access to the two nodes.
 #
-#   HP   (`ssh hp`,    nick-HP-Laptop) = capture node. Owns the microphone, the
+#   HP   (`ssh hp`,    host-b) = capture node. Owns the microphone, the
 #                                       ALSA/Pulse stack and the client binary.
-#   zbook(`ssh zbook`)                 = engine node. Owns gopi + the
+#   zpeer(`ssh zpeer`)                 = engine node. Owns gopi + the
 #                                       Fun-ASR-Nano weights (~/work/funasr-models).
 #
-# Claim proven: audio captured on HP crosses to zbook and comes back as text.
+# Claim proven: audio captured on HP crosses to zpeer and comes back as text.
 # Why it needs no human: nothing is spoken live. A fixed WAV (a spoken Chinese
 # paragraph with a written reference transcript) is played into a PulseAudio
 # null-sink and the sink's `.monitor` is captured as the "microphone" — the same
@@ -42,7 +42,7 @@ trap gopi_scratch_cleanup EXIT INT TERM
 # Every device string / rate / path / volume is named here; nothing is typed
 # inline at a use site (Rule 1). Any of them can be overridden from the env.
 readonly HP_HOST=${HP_HOST:-hp}
-readonly ZBOOK_HOST=${ZBOOK_HOST:-zbook}
+readonly ZBOOK_HOST=${ZBOOK_HOST:-zpeer}
 # WORKDIR: the scratch directory on BOTH nodes (default above; an explicit env
 # override is honoured for a reader who already has a prepared workspace).
 readonly WORKDIR=${WORKDIR:-$WORK_ROOT}
@@ -127,7 +127,7 @@ run_hp "test -x '$CLIENT_BIN'" || { echo "FAIL: client binary not executable: $C
 
 section "preflight"
 echo "# hp          : $HP_HOST  ($(run_hp hostname))"
-echo "# zbook       : $ZBOOK_HOST  ($(ssh "$ZBOOK_HOST" hostname))"
+echo "# zpeer       : $ZBOOK_HOST  ($(ssh "$ZBOOK_HOST" hostname))"
 echo "# client bin  : $CLIENT_BIN  built from $(cd "$HERE/.." && git rev-parse --short HEAD)"
 echo "# capture     : $CAP_RATE Hz, $CAP_CHANNELS ch, PCM${CAP_BITS}LE"
 echo "# fixture wav : $FIXTURE_WAV  sha256=$(run_hp "sha256sum '$FIXTURE_WAV' | cut -c1-32")"

@@ -420,7 +420,7 @@ func TestSessionRowAttributesSurvivesAResume(t *testing.T) {
 // the pristine tree at 7f48b1e before any change: a bare id resolved that shape
 // correctly, WITH and WITHOUT the side files a real run dir carries, for the real
 // directory this very run lives in
-// (/home/nick/.gopi/sessions/01a1bd40-…/01a1bd40-….jsonl) and for the one the
+// (/home/user/.gopi/sessions/01a1bd40-…/01a1bd40-….jsonl) and for the one the
 // briefing cites as its measurement (01a1bcd6-…). The reason is layout 3:
 // sessionlayout.Records() classifies a task-run dir as a record container and
 // returns each JSONL in it as a record, so the loop finds BOTH `<id>` (the dir's

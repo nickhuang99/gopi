@@ -194,8 +194,8 @@ func runVoiceCaptureLocal(opts *voiceOptions) {
 // voiceDeploymentSource names the RUNG that supplied the paths this run is
 // about to read, for the lines that report a local run's provenance.
 //
-// It exists because "models /home/nick/.gopi/voice" and "models
-// /home/nick/work/funasr-models" are two different statements about the
+// It exists because "models /home/user/.gopi/voice" and "models
+// /home/user/work/funasr-models" are two different statements about the
 // installation — rung 1 is the deployment gopi owns the location of, rung 2 is
 // the legacy one it merely tolerates — and a reader of one [voice] line should
 // not have to compare paths against a doc to tell which they got. The

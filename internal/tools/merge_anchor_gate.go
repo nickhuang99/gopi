@@ -271,7 +271,7 @@ type mergeAnchorGateSuite struct {
 // EVERY ARM LEAVES A DURABLE RECORD (epic 01a144bfb, acceptance item 1). This
 // lane has one refusing arm and ~26 abstaining ones, and until 2026-10-16 the
 // only trace of ANY of them was a stderr line (`taskNotifyLog`), which no file
-// keeps: measured 2026-10-16 on nick-HP-Laptop, `~/.gopi/merger/` holds no log
+// keeps: measured 2026-10-16 on host-b, `~/.gopi/merger/` holds no log
 // at all, so after four published-anchor drifts landed on master in one day the
 // question "which arm let this through, and why" had no instrument — the answer
 // existed only in a stream that had already scrolled away.

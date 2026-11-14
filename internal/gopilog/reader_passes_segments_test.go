@@ -42,13 +42,13 @@ const resumedSessionFixturePasses = 29
 // to its smallest reproducible form.
 func resumedSessionWithEmptyResume() []string {
 	return []string{
-		`{"model":"deepseek-flash","sessionId":"resumed-fixture","timestamp":"2026-10-27T05:00:00.000+08:00","type":"session_start","workdir":"/home/nick/work/demo"}`,
+		`{"model":"deepseek-flash","sessionId":"resumed-fixture","timestamp":"2026-10-27T05:00:00.000+08:00","type":"session_start","workdir":"/home/user/work/demo"}`,
 		`{"message":{"content":"[EPIC GOAL]\nread go.mod","role":"user"},"timestamp":"2026-10-27T05:00:01.000+08:00","type":"user"}`,
 		`{"message":{"content":[{"text":"on it","type":"text"}],"role":"assistant"},"timestamp":"2026-10-27T05:00:02.000+08:00","type":"assistant"}`,
 		`{"cache_hit":1,"cache_miss":2,"completion_tokens":3,"iteration":0,"prompt_tokens":10,"timestamp":"2026-10-27T05:00:02.500+08:00","type":"request"}`,
 		`{"cache_hit":1,"cache_miss":2,"completion_tokens":3,"iteration":1,"prompt_tokens":11,"timestamp":"2026-10-27T05:00:03.500+08:00","type":"request"}`,
 		`{"elapsed_sec":3.5,"exit_code":0,"total_iterations":29,"total_tokens":1234,"timestamp":"2026-10-27T05:00:04.000+08:00","type":"session_end"}`,
-		`{"model":"deepseek-flash","sessionId":"resumed-fixture","timestamp":"2026-10-27T05:10:00.000+08:00","type":"session_start","workdir":"/home/nick/work/demo"}`,
+		`{"model":"deepseek-flash","sessionId":"resumed-fixture","timestamp":"2026-10-27T05:10:00.000+08:00","type":"session_start","workdir":"/home/user/work/demo"}`,
 		`{"elapsed_sec":0.002867386,"exit_code":0,"total_iterations":0,"total_tokens":0,"timestamp":"2026-10-27T05:10:01.000+08:00","type":"session_end"}`,
 	}
 }

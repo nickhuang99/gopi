@@ -45,7 +45,7 @@ import urllib.parse
 DEFAULT_COUNT = 5        # results returned when --count is omitted
 MAX_COUNT = 20           # hard cap so the JSON payload stays slim (0-token)
 SNIPPET_CHARS = 200      # snippet truncation length (contract limit)
-SSH_HOST = os.environ.get("SSH_HOST", "searchbot")
+SSH_HOST = os.environ.get("SSH_HOST", "searchbox")
 SSH_OPTS = ["-o", "ConnectTimeout=8", "-o", "BatchMode=yes", "-T"]  # fast-fail + non-interactive
 SSH_TIMEOUT_SEC = 40     # whole ssh round-trip cap (curl --max-time 20 + handshake)
 REMOTE_CURL_MAX_TIME = 20  # remote curl --max-time per fetch

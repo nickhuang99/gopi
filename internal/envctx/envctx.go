@@ -21,7 +21,7 @@
 //	               told is exactly what a human reading the file is told.
 //
 // CONFLICTS ARE RECORDED, NOT RESOLVED (Rule 15). The one measured here: the
-// ssh config maps BOTH `hp` and `nas` to 192.168.1.5, and the alias lines
+// ssh config maps BOTH `alpha` and `nas` to 192.0.2.5, and the alias lines
 // themselves spell addresses that differ from their own HostName (rpi5 = .4 on
 // the Host line, .14 on HostName). A generator that picked one silently would
 // be manufacturing a fact it never measured; this one prints both, names the
@@ -249,7 +249,7 @@ func osPrettyName() string {
 
 // localIPv4 lists this host's non-loopback IPv4 addresses as "iface  address",
 // interface-sorted, one address per entry (an interface with two addresses
-// yields two entries — zbook's enp0s25/wlo1 case is exactly why a single
+// yields two entries — zpeer's enp0s25/wlo1 case is exactly why a single
 // "this host's IP" is not a fact).
 func localIPv4() []string {
 	ifaces, err := net.Interfaces()

@@ -11,10 +11,10 @@ import "strings"
 // The shared-checkout branch-create guard refused the bare spelling and let the
 // wrapped one through, and git really ran:
 //
-//	git -C /home/nick/work/gopi checkout -b task/x-legal
-//	  → refused: "cannot create branch \"task/x-legal\" in /home/nick/work/gopi:
+//	git -C /home/user/work/gopi checkout -b task/x-legal
+//	  → refused: "cannot create branch \"task/x-legal\" in /home/user/work/gopi:
 //	    that directory is the declared shared checkout …"
-//	OUT=$(git -C /home/nick/work/gopi checkout -b task/x-legal 2>&1); echo "$OUT"
+//	OUT=$(git -C /home/user/work/gopi checkout -b task/x-legal 2>&1); echo "$OUT"
 //	  → exit 0, git executed
 //
 // The cause is a PARSE fact, not a missing spelling. refGuardClauses split the

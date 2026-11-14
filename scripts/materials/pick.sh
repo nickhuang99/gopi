@@ -120,7 +120,7 @@ sanitize() { # stdin -> stdout；规则从"最长最具体"到"最泛"依次施�
 # 判据是非空洞的：它拦的是**被别人拥有的命名空间**（家目录）与**私域树根**下的绝对路径
 # （/mnt /media /opt /srv —— 这些是要么是别人的挂载点，要么是机器本地布局），
 # 加上 sessions/ 与裸 UUID。产品自己的 help 文本里那种 `/tmp/x`、`/dev/null`、
-# `/home/nick/.gopi/raw` 不在其列：它们是产品路径，不是谁的命名空间。
+# `/home/user/.gopi/raw` 不在其列：它们是产品路径，不是谁的命名空间。
 residue() { grep -cE '/home/|/Users/|/mnt/|/media/|/opt/|/srv/|sessions/|[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}' "$1" 2>/dev/null || true; }
 
 # 出货面 = 放映页**真正嵌入**的三段，逐字来自素材条目：

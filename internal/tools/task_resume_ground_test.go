@@ -812,13 +812,13 @@ func TestResumeGroundRefusesASweptLinkedWorktreeAndTheAdvisoryAgrees(t *testing.
 // TestResumeGroundTakesACloneWorkspaceAndTheAdvisoryAgrees, and it is the
 // spelling that stayed broken (measured 2026-10-27, this epic's own ground):
 //
-//	$ gopi worker --resume --worktree /home/nick/workspace/01a17aba-…
-//	gopi worker: no ground to resume: --worktree /home/nick/workspace/01a17aba-… is the
-//	MAIN checkout of /home/nick/workspace/01a17aba-… — a repo-aware row works in a
+//	$ gopi worker --resume --worktree /home/user/workspace/01a17aba-…
+//	gopi worker: no ground to resume: --worktree /home/user/workspace/01a17aba-… is the
+//	MAIN checkout of /home/user/workspace/01a17aba-… — a repo-aware row works in a
 //	LINKED worktree, and the main checkout is not a deliverable ground
 //	exit=1
 //	$ gopi worker --resume 01a17aba-…          # the SAME directory, the default spelling
-//	resume ground: dir=/home/nick/workspace/01a17aba-… branch=master … model clone
+//	resume ground: dir=/home/user/workspace/01a17aba-… branch=master … model clone
 //
 // ONE directory, TWO spellings, OPPOSITE answers — and the refused one is the
 // shape this epic keeps. The mechanism was structural, not a wording slip: in the

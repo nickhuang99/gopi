@@ -402,9 +402,9 @@ the records your filters excluded.
 
 EXAMPLES (each one is a command line you can type as written):
 
-  gopi notify events --sink /home/nick/.gopi/notify/task-events.jsonl --limit 5
+  gopi notify events --sink /home/user/.gopi/notify/task-events.jsonl --limit 5
   gopi notify events --task <ID> --json
-  gopi notify events --cursor /home/nick/.gopi/notify/cursor --follow
+  gopi notify events --cursor /home/user/.gopi/notify/cursor --follow
 
 EXIT STATUS: 0 read, including "nothing new"; 1 the read failed or no sink
 could be resolved. An unreadable sink is an ERROR, never an empty success.
@@ -451,7 +451,7 @@ authoritative count; this report is what a stream-only consumer can prove.
 
 EXAMPLES (each one is a command line you can type as written):
 
-  gopi notify failed --sink /home/nick/.gopi/notify/task-events.jsonl
+  gopi notify failed --sink /home/user/.gopi/notify/task-events.jsonl
   gopi notify failed --since 2h --json
   gopi notify failed --limit 0
 
@@ -483,7 +483,7 @@ answers which file, not what is in it. Read the stream with gopi notify events.
 EXAMPLES (each one is a command line you can type as written):
 
   gopi notify sink
-  gopi notify sink --sink /home/nick/.gopi/notify/task-events.jsonl
+  gopi notify sink --sink /home/user/.gopi/notify/task-events.jsonl
 
 EXIT STATUS: always 0 — "(none)" is a legitimate ANSWER to this question, not a
 failed read. The refusal line is content, not an error status. A caller that
@@ -1204,7 +1204,7 @@ func resolveNotifySessionDir(session string) (dir, id, whence string, err error)
 	// <root>/<task-id> down to the sessions ROOT and appended the message to
 	// <root>/messages/inbox.jsonl, a file no session ever reads, while the verb
 	// still exited 0 and reported "queued" (measured 2026-10-13, task
-	// 01a1330e-dfe3: `--session <run-uuid>` resolved the dir as /home/nick/.gopi/sessions).
+	// 01a1330e-dfe3: `--session <run-uuid>` resolved the dir as /home/user/.gopi/sessions).
 	// The layout question is answered by the path, not by a basename guess — and
 	// the answer is taken from the ONE definition (sessionlayout.RecordContainer),
 	// which the cross-peer handler calls for the same operand.

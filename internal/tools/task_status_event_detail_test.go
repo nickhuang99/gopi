@@ -380,7 +380,7 @@ func TestTaskStatusEventUnclassifiedDetailKeepsTheRecordedGrounds(t *testing.T) 
 	}
 
 	// The sync lane's spelling, appended by its own writer AFTER the transition.
-	syncDetail := "sync harvest from zbook: in_progress → completed"
+	syncDetail := "sync harvest from zpeer: in_progress → completed"
 	taskEventWrite(context.Background(), sweepTestDB(t), taskID, TaskStatusCompleted, syncDetail)
 
 	db := sweepTestDB(t)

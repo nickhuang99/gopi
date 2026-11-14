@@ -50,7 +50,7 @@ func TestToolResultCapTruncatesAtIngestion(t *testing.T) {
 		t.Fatalf("fixture is not oversized: %d tokens, cap %d — the test would pass vacuously", rawTokens, ToolResultTokenCap)
 	}
 
-	c := &Context{ToolResultSessionPath: "/home/nick/.gopi/sessions/abc/session.jsonl"}
+	c := &Context{ToolResultSessionPath: "/home/user/.gopi/sessions/abc/session.jsonl"}
 	c.AddToolResult("call_1", big)
 
 	if len(c.Messages) != 1 {

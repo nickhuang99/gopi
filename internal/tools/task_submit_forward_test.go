@@ -40,7 +40,7 @@ import (
 
 // taskForwardPeer is the authoritative alias the test node declares; the
 // value is opaque (no ssh is ever dialled — the seam replaces the transport).
-const taskForwardPeer = "zbook"
+const taskForwardPeer = "zpeer"
 
 // taskForwardScene builds the two ledgers and points the process at the
 // MIRROR one, with the node declaring itself a client of taskForwardPeer.

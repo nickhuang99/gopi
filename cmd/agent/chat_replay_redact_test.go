@@ -27,7 +27,7 @@ import (
 // the pass would assert nothing about the pass.
 const (
 	redactTestUUID  = "4ca8cd29-019c-4dda-a000-6dafd782bf91"
-	redactTestHome  = "/home/nick/.gopi/sessions"
+	redactTestHome  = "/home/user/.gopi/sessions"
 	redactTestSplit = 18 // the rune index the stream cases split the uuid at
 )
 

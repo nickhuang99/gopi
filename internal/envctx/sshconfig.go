@@ -103,8 +103,8 @@ func readSSHConfig(path string) (nodes []Node, missing string, err error) {
 // alias; any pattern that looks like an IPv4 literal is recorded as the
 // stanza's inline address, which is how a line like
 //
-//	Host rpi5 192.168.1.4
-//	        HostName 192.168.1.14
+//	Host rpi5 192.168.7.4
+//	        HostName 192.168.7.14
 //
 // states two different addresses for one node. A stanza whose only pattern is
 // a wildcard is not a node.
@@ -131,7 +131,7 @@ func newNode(fields []string, lineNo int) (Node, bool) {
 		node.Inline = inline[0]
 	}
 	if looksLikeIPv4(alias) {
-		// `Host 192.168.1.5` (no name): the pattern itself is the address, and
+		// `Host 192.0.2.5` (no name): the pattern itself is the address, and
 		// the "alias" a user types is that literal. Record it as the address
 		// with no hostname stanza rather than pretending a name exists.
 		node.Address = alias

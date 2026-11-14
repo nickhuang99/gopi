@@ -320,7 +320,7 @@ const realSleepSeconds = "20"
 
 // The fork→execve window, made measurable instead of assumed.
 //
-// MEASURED (2026-10-12, host=nick-sager, go test -count=50, this file's own
+// MEASURED (2026-10-12, host=host-a, go test -count=50, this file's own
 // probe): exec.Command(...).Start() returns ONCE THE FORK IS DONE, but the child
 // may not have reached execve yet — in that window /proc/<pid>/cmdline EXISTS
 // and is 0 bytes, and the process reads state=R. Reading it ONCE right after

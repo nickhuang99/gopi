@@ -70,7 +70,7 @@ RIG="$(gopi_scratch_mkdir notify-parse-failure)" || { echo "FATAL: scratch root 
 # checkout-shaped GOPI_HOME ANCHORS the payload at $HOME/.gopi — the documented
 # fallback, pinned by notify_slot_contract_test's case 6. So a sink call that
 # pins GOPI_HOME but leaves HOME INHERITED files the rig's fixture payload into
-# the OPERATOR's live evidence file (/home/nick/.gopi/notify/task-events.jsonl). Every
+# the OPERATOR's live evidence file (/home/user/.gopi/notify/task-events.jsonl). Every
 # sink invocation in this file therefore names $RIG_HOME; notify_hermeticity_test.sh
 # scans for a call site that does not.
 RIG_HOME="$RIG/rig-home"

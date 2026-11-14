@@ -155,12 +155,12 @@ func TestDeliveryEmptyRefusalReadsTheBehindCountFromThePEER(t *testing.T) {
 // that decides whether the behind reading can be taken at all: a LOCAL PATH is
 // turned into a file:// address (so the read never runs a receiving repository's
 // upload-pack hooks), while an address some transport already serves — an ssh
-// spelling such as `zbook:/home/nick/work/gopi`, this clone's own origin — is
+// spelling such as `zpeer:/home/user/work/gopi`, this clone's own origin — is
 // passed through UNTOUCHED. Prefixing the second kind with file:// would ask a
 // transport that does not exist and the answer would look like an unreachable
 // peer: exactly the false abstention this test exists to prevent.
 func TestDeliveryPeerOperandKeepsATransportAddressAsItIs(t *testing.T) {
-	sshAddress := "zbook:/home/nick/work/gopi"
+	sshAddress := "zpeer:/home/user/work/gopi"
 	if operand, ref := deliveryPeerOperand(sshAddress, DefaultBranch); operand != sshAddress {
 		t.Fatalf("an ssh address must be passed through as it is, got %q for %q", operand, sshAddress)
 	} else if ref != "refs/heads/"+DefaultBranch {

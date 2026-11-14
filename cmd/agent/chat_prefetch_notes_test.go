@@ -69,14 +69,14 @@ func TestPrefetchNotesLegRescuesAnEmptyMemoryLedger(t *testing.T) {
 			Turn:      12,
 			Note:      "the note leg must be PARALLEL: both indexes feed one section and each line names its index",
 			Host:      "some-other-host",
-			Path:      "/home/nick/.gopi/sessions/an-earlier-run/self-record.md",
+			Path:      "/home/user/.gopi/sessions/an-earlier-run/self-record.md",
 		},
 		{
 			SessionID: "an-earlier-run",
 			Turn:      13,
 			Note:      "the note leg must be PARALLEL: it renders through the same InjectSection the memory leg uses, one section not two",
 			Host:      "some-other-host",
-			Path:      "/home/nick/.gopi/sessions/an-earlier-run/self-record.md",
+			Path:      "/home/user/.gopi/sessions/an-earlier-run/self-record.md",
 		},
 	}, "note leg must be PARALLEL")
 
@@ -104,7 +104,7 @@ func TestPrefetchNotesLegRescuesAnEmptyMemoryLedger(t *testing.T) {
 	if !strings.Contains(res.Section, "some-other-host") {
 		t.Fatalf("the section carries no note provenance (host):\n%s", res.Section)
 	}
-	if !strings.Contains(res.Section, "/home/nick/.gopi/sessions/an-earlier-run/self-record.md") {
+	if !strings.Contains(res.Section, "/home/user/.gopi/sessions/an-earlier-run/self-record.md") {
 		t.Fatalf("the section carries no note provenance (full path):\n%s", res.Section)
 	}
 	if res.Notes.HitsCount != 2 || res.Hits != 2 {
@@ -123,7 +123,7 @@ func TestPrefetchNotesLegRunsBesideTheMemoryLeg(t *testing.T) {
 		Turn:      4,
 		Note:      "read-only ledger DSN: the busy timeout bounds the wait and query_only refuses every write",
 		Host:      "some-other-host",
-		Path:      "/home/nick/.gopi/sessions/an-earlier-run/self-record.md",
+		Path:      "/home/user/.gopi/sessions/an-earlier-run/self-record.md",
 	}}, "read-only ledger DSN")
 
 	res := prefetchLookupDetailed(context.Background(), "read-only ledger DSN", memoryprefetch.DefaultConfig(), nil,
@@ -161,21 +161,21 @@ func TestPrefetchNotesLegExcludesTheReadersOwnEcho(t *testing.T) {
 			Turn:      1,
 			Note:      "echo probe: the note leg excludes a hit recorded by the reader's own run",
 			Host:      "some-other-host",
-			Path:      "/home/nick/.gopi/sessions/this-very-run/self-record.md",
+			Path:      "/home/user/.gopi/sessions/this-very-run/self-record.md",
 		},
 		{
 			SessionID: "an-earlier-run",
 			Turn:      9,
 			Note:      "echo probe: a note from another run is a real retrieval and must still arrive",
 			Host:      "some-other-host",
-			Path:      "/home/nick/.gopi/sessions/an-earlier-run/self-record.md",
+			Path:      "/home/user/.gopi/sessions/an-earlier-run/self-record.md",
 		},
 		{
 			SessionID: "an-earlier-run",
 			Turn:      10,
 			Note:      "echo probe: the second surviving note keeps the section above the injection floor",
 			Host:      "some-other-host",
-			Path:      "/home/nick/.gopi/sessions/an-earlier-run/self-record.md",
+			Path:      "/home/user/.gopi/sessions/an-earlier-run/self-record.md",
 		},
 	}, "echo probe")
 
@@ -288,7 +288,7 @@ func TestPrefetchNotesLegSharesTheWarmHandle(t *testing.T) {
 		Turn:      2,
 		Note:      "handle reuse: one file, one connection, two legs",
 		Host:      "some-other-host",
-		Path:      "/home/nick/.gopi/sessions/an-earlier-run/self-record.md",
+		Path:      "/home/user/.gopi/sessions/an-earlier-run/self-record.md",
 	}}, "handle reuse")
 
 	ctx := context.Background()
@@ -322,8 +322,8 @@ func TestPrefetchNotesLegSharesTheWarmHandle(t *testing.T) {
 // yields no exclusion rather than a guess.
 func TestPrefetchNotesSessionIDFromDir(t *testing.T) {
 	cases := []struct{ dir, want string }{
-		{"/home/nick/.gopi/sessions/01a131f5-aaaa", "01a131f5-aaaa"},
-		{"/home/nick/.gopi/sessions/2026-10-13-abc/", "2026-10-13-abc"},
+		{"/home/user/.gopi/sessions/01a131f5-aaaa", "01a131f5-aaaa"},
+		{"/home/user/.gopi/sessions/2026-10-13-abc/", "2026-10-13-abc"},
 		{"", ""},
 		{".", ""},
 		{"/", ""},

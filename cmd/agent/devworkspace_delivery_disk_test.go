@@ -19,8 +19,8 @@ func diskBlocker() *devworkspace.Blocker {
 	return &devworkspace.Blocker{
 		Kind:   devworkspace.BlockerKindDiskExhaustion,
 		Marker: "no space left on device",
-		Ground: "/home/nick/workspace/01a18f47-49a7-7f34-b1db-20c5a76dc3c3",
-		Words: "link: writing /home/nick/workspace/x/a.out: no space left on device | " +
+		Ground: "/home/user/workspace/01a18f47-49a7-7f34-b1db-20c5a76dc3c3",
+		Words: "link: writing /home/user/workspace/x/a.out: no space left on device | " +
 			"make: *** [Makefile:42: build] Error 1",
 	}
 }

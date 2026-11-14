@@ -54,7 +54,7 @@ package tools
 // work. Anything else (one stamp inside the window, no clock on the row, an
 // unreadable commit) is NOT a disproof and the arm says nothing.
 //
-// MEASURED ON THE LIVE LEDGER (2026-10-28, `--db /home/nick/.gopi/memory.db`,
+// MEASURED ON THE LIVE LEDGER (2026-10-28, `--db /home/user/.gopi/memory.db`,
 // 275 rows carrying `delivery-proof-unverified`, 60 of them judged `delivered`):
 // this witness DISPROVES exactly ONE row and leaves fifty-nine alone —
 //

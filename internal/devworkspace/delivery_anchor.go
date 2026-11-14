@@ -5,7 +5,7 @@ package devworkspace
 // THE TWO DEFECTS THIS FILE EXISTS FOR (measured 2026-10-27, row 01a17dee):
 //
 //	① THE LEG PUBLISHED FROM A DIRECTORY NOBODY HAD COMMITTED IN. The row owned
-//	  the ground /home/nick/workspace/01a17dee-… and its delivery leg ran there,
+//	  the ground /home/user/workspace/01a17dee-… and its delivery leg ran there,
 //	  but the two real commits were in ANOTHER row's ground (01a17da2). The leg
 //	  never asked "is the directory I am about to publish from the directory the
 //	  run actually committed in?", so it published an empty tree.
@@ -313,7 +313,7 @@ const (
 	deliveryFileURLScheme = "file://"
 
 	// pathSeparator / currentDirPrefix are what tell "a repository address some
-	// transport serves" (`zbook:/home/nick/work/gopi`, `git@host:repo`) from "a
+	// transport serves" (`zpeer:/home/user/work/gopi`, `git@host:repo`) from "a
 	// directory on this machine" (`/srv/repo`, `./repo`). A file:// address is
 	// built ONLY from the second kind — prefixing an ssh address with file://
 	// would ask the wrong transport and the answer would be a failure that looks
@@ -356,7 +356,7 @@ const (
 	// REPOSITORY, exit 0, no warning. Measured here: with `.probe-anchor/nested`
 	// (no `.git` of its own) inside this checkout,
 	// `git -C .probe-anchor/nested rev-parse --show-toplevel` printed
-	// /home/nick/workspace/01a17dfb-… and
+	// /home/user/workspace/01a17dfb-… and
 	// `git -C .probe-anchor/nested rev-parse HEAD` printed this repo's HEAD.
 	// So every count this file takes ("ahead of the base", "carries no commit")
 	// could be about ANOTHER DIRECTORY while the refusal names the one it was

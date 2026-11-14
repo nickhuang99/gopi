@@ -39,7 +39,7 @@ const (
 
 	// xauthForeignAddress is the Xauthority address spelling of a NON-local
 	// client host — the shape that shipped the defect (measured on this host: a
-	// `nick-HP-Laptop:11` entry listed before the live `zbook:11` one). It is a
+	// `host-b:11` entry listed before the live `zpeer:11` one). It is a
 	// name no Xauthority reader can mistake for this machine.
 	xauthForeignAddress = "some-other-laptop"
 
@@ -604,8 +604,8 @@ func TestX11SetupRefusalReadsTheReasonString(t *testing.T) {
 // TestX11CredentialLabelMatchesXauthSpelling keeps the operator-facing label
 // findable in their own `xauth list` output.
 func TestX11CredentialLabelMatchesXauthSpelling(t *testing.T) {
-	if got := x11CredentialLabel(x11Credential{address: "zbook"}, 11); got != "zbook:11" {
-		t.Errorf("label = %q, want %q", got, "zbook:11")
+	if got := x11CredentialLabel(x11Credential{address: "zpeer"}, 11); got != "zpeer:11" {
+		t.Errorf("label = %q, want %q", got, "zpeer:11")
 	}
 	if got := x11CredentialLabel(x11Credential{}, 11); got != ":11" {
 		t.Errorf("internet-family label = %q, want %q", got, ":11")

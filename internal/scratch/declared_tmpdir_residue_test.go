@@ -3,7 +3,7 @@ package scratch
 // declared_tmpdir_residue_test.go — the regression guard for the DECLARED TEMP
 // ROOT's own residue, the tree nothing bounded until 2026-11-02.
 //
-// THE DEFECT (measured on nick-sager): `_tmp` holds 20 886 MB across 528
+// THE DEFECT (measured on host-a): `_tmp` holds 20 886 MB across 528
 // top-level entries. The only declared row that reached it was `go-tmp`
 // (106 `go-build*` / 7 466 MB); every other family — 224 run-chosen names /
 // 11 815 MB, plus the residue namespace — was named by no row, so the resident

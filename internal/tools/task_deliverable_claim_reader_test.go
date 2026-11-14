@@ -24,7 +24,7 @@ package tools
 // `gopi merger --status` rendered
 //
 //   - fix/claim-stamp-live-probe — NOT a candidate: a checkout holds it
-//     (/home/nick/workspace/_claim-stamp-live/stamp-wt) and a live process IS
+//     (/home/user/workspace/_claim-stamp-live/stamp-wt) and a live process IS
 //     working in that checkout (pid …) — task 01a0b324-38cf-7bea-baa8-38fa623869db
 //
 // while the sibling control branch (a worktree nobody claimed) still printed

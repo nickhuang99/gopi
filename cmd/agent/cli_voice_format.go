@@ -20,7 +20,7 @@ import (
 //	audio: failed to open/decode <path> (supported: wav/mp3/flac)
 //
 // MEASURED (2026-09-20, task feat/voice-format-contract) against the real
-// runtime — /home/nick/work/runtime/llama.cpp/build/bin/llama-funasr-cli:
+// runtime — /home/user/work/runtime/llama.cpp/build/bin/llama-funasr-cli:
 //
 //	t.wav  → transcript,  exit 0
 //	t.mp3  → transcript,  exit 0

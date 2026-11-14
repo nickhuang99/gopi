@@ -6,7 +6,7 @@ package main
 // THE MEASURED DEFECT. Three live rows died at the clone channel with one
 // sentence:
 //
-//	clone channel: repo "/home/nick/workspace/01a1510e-…" declares no build
+//	clone channel: repo "/home/user/workspace/01a1510e-…" declares no build
 //	command in settings repos → …build
 //
 // and that sentence was FALSE. The directory was gone: it was the PARENT run's

@@ -156,7 +156,7 @@ func sandboxOwnershipMarkerPresent(dir string) bool {
 //   - `<home>/<profile leaf>` (no marker anywhere): the SAME arithmetic applies
 //     to the operator's OWN profile root, and the first version of this guard
 //     deliberately let it through. Measured 2026-10-13 on sager:
-//     `GOPI_HOME=/home/nick/.gopi` resolved to /home/nick/.gopi/.gopi, whose
+//     `GOPI_HOME=/home/user/.gopi` resolved to /home/user/.gopi/.gopi, whose
 //     memory.db held 2 rows while the real ledger held 1376 — and `gopi task
 //     submit` printed a normal `Task queued: <id>` with exit 0, so a row was
 //     written into a ledger nothing on the host sweeps, dispatches from or reads

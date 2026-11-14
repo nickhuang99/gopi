@@ -448,8 +448,8 @@ func mergeExecRowRepo(deliverable string) string {
 // The identity comes from `--git-common-dir` (mergeExecMainRepo), not from
 // string equality, because the two paths a caller compares are commonly the
 // main checkout and a worktree of it: a worker submits from inside
-// /home/nick/workspace/gopi-<task> while the settings table sweeps
-// /home/nick/work/GoPi, and a comparison that called those two different would
+// /home/user/workspace/gopi-<task> while the settings table sweeps
+// /home/user/work/GoPi, and a comparison that called those two different would
 // silently fail to park a LIVE branch — the exact failure direction this
 // predicate exists to prevent (a false park is a visible freeze; a missed park
 // is an unfinished delivery on master).

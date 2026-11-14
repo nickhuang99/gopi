@@ -69,7 +69,7 @@ func TestSessionNotesReadsTheIndexThroughTheRealBinary(t *testing.T) {
 	profileRoot := t.TempDir()
 	env := notesTestProfileEnv(t, profileRoot, dbPath)
 
-	const notePath = "/home/nick/.gopi/sessions/sess-cli/self-record.md"
+	const notePath = "/home/user/.gopi/sessions/sess-cli/self-record.md"
 	if err := tools.ChatNoteRecord(tools.ChatNote{
 		SessionID: "sess-cli",
 		Turn:      7,

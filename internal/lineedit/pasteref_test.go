@@ -17,7 +17,7 @@ import (
 // PasteRefFor renders, PasteRefPaths reads back as its path and its reference.
 func TestPasteRefPathsParsesTheRenderedSpelling(t *testing.T) {
 	for _, path := range []string{
-		"/home/nick/.gopi/sessions/abc/paste/paste-20260927-204444-3.txt",
+		"/home/user/.gopi/sessions/abc/paste/paste-20260927-204444-3.txt",
 		"/tmp/p.txt",
 	} {
 		ref := PasteRefFor(PasteRef{Path: path, Bytes: 12, Runes: 12})
@@ -109,7 +109,7 @@ func TestExceedsInputLineBoundIsTheLinesOwnCapacity(t *testing.T) {
 // about something else entirely.
 func TestStripPasteRefsRemovesThePointerAndKeepsTheWords(t *testing.T) {
 	ref := PasteRefFor(PasteRef{
-		Path:   "/home/nick/workspace/gopi-sandbox/sandbox-x/.gopi/sessions/7349789c/paste/paste-20261006-041850-1.txt",
+		Path:   "/home/user/workspace/gopi-sandbox/sandbox-x/.gopi/sessions/7349789c/paste/paste-20261006-041850-1.txt",
 		Bytes:  5411,
 		Runes:  5411,
 		Source: "human",

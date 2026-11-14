@@ -47,7 +47,7 @@ run_case() { # run_case <rig> <spelling-flag> <operand-kind>
   git -C "$R/repo" rev-parse "$BRANCH"
 
   say "RUN: gopi worker --resume $flag $operand   (cwd: the repo, NOT the ground)"
-  ( cd "$R/repo" && env -i PATH=/usr/bin:/bin HOME=/home/nick \
+  ( cd "$R/repo" && env -i PATH=/usr/bin:/bin HOME=/home/user \
       GOPI_HOME="$HOME_DIR" GOPI_MEMORY_DB="$DB" GOPI_SETTINGS="$R/nonexistent.json" \
       GOPI_TASK_SYNC=0 GOPI_COMPUTE_NODES= GOPI_SYNC_PEERS= GOPI_HUMAN_TERMINAL=1 \
       ANTHROPIC_AUTH_TOKEN=test-key ANTHROPIC_BASE_URL="http://127.0.0.1:$STUB_PORT" \
@@ -68,7 +68,7 @@ run_case() { # run_case <rig> <spelling-flag> <operand-kind>
 run_refusal() { # run_refusal <label> <argv...>
   local label="$1"; shift
   say "REFUSAL: $label — gopi $*"
-  ( cd "$ROOT/rig-branch/repo" && env -i PATH=/usr/bin:/bin HOME=/home/nick \
+  ( cd "$ROOT/rig-branch/repo" && env -i PATH=/usr/bin:/bin HOME=/home/user \
       GOPI_HOME="$ROOT/rig-branch/gopi-home" GOPI_MEMORY_DB="$ROOT/rig-branch-ledger.db" \
       GOPI_SETTINGS="$ROOT/rig-branch/nonexistent.json" GOPI_TASK_SYNC=0 GOPI_HUMAN_TERMINAL=1 \
       "$GOPI" "$@" 2>&1 | tail -3 )

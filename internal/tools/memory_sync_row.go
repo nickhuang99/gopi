@@ -3,7 +3,7 @@ package tools
 // memory_sync_row.go — the SINGLE-ROW send/receive legs of the task-ledger
 // sync family.
 //
-// THE DEFECT THIS FILE CLOSES (measured 2026-09-21 on zbook, re-confirmed by
+// THE DEFECT THIS FILE CLOSES (measured 2026-09-21 on zpeer, re-confirmed by
 // this task's own probe):
 //
 //	$ gopi task sync --push-only --task-id <row> --peer hp

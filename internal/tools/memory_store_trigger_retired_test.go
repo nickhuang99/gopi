@@ -73,7 +73,7 @@ func TestMemoryStoreReturnSaysNothingAboutSync(t *testing.T) {
 		t.Fatal("MemoryStore returned an empty reply: a store that says nothing cannot be told from one that failed")
 	}
 	lower := strings.ToLower(reply)
-	for _, banned := range []string{"peer", "push", "sync", "zbook", "hp"} {
+	for _, banned := range []string{"peer", "push", "sync", "zpeer", "hp"} {
 		if strings.Contains(lower, banned) {
 			t.Fatalf("the store reply mentions %q — a store's success is the LOCAL write and nothing else: %q", banned, reply)
 		}

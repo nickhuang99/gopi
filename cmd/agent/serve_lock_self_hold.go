@@ -4,11 +4,11 @@ package main
 // funnel (acquireServeLock), and the "this process is not another holder"
 // rendering the refusal needs.
 //
-// THE DEFECT, measured on nick-sager 2026-10-17 (task 01a149e8's predecessor):
+// THE DEFECT, measured on host-a 2026-10-17 (task 01a149e8's predecessor):
 //
 //	gopi task finish-cleanup --apply
 //	→ gopi task finish-cleanup: serve lock held by a live daemon: another merge
-//	  process is already running (lock /home/nick/.gopi/serve.lock held by pid
+//	  process is already running (lock /home/user/.gopi/serve.lock held by pid
 //	  2196749) — refusing double-serve …
 //	  lock-holder: pid 2196749
 //	  lock-kernel-records: 1 record(s) on the refused inode 25034787:

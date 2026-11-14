@@ -9,11 +9,11 @@ package tools
 //	① THE PRODUCER. TaskRunGroundForClone returned EARLY when the row named no
 //	   repo, and TaskGroundAnchorRecord — the ONLY writer of a run-ground anchor
 //	   — sits after that early return. So a clone workspace opened for such a row
-//	   (/home/nick/workspace/<task-id>, a full clone of its own) got NO anchor.
+//	   (/home/user/workspace/<task-id>, a full clone of its own) got NO anchor.
 //	   The anchor is the sole input to the sweep's run-ground population
 //	   (RunGroundCollectableGrounds ← RunGroundAnchors), so the directory was
 //	   not "kept" — it was INVISIBLE: no reclaim arm could name it, and it stayed
-//	   on disk forever (measured: /home/nick/workspace/002c43f2-d6dc-4c4b-82d9-
+//	   on disk forever (measured: /home/user/workspace/002c43f2-d6dc-4c4b-82d9-
 //	   f2b40163d53c, 233 MB, clean, on master, and absent from
 //	   `gopi task sweep-worktrees --dry-run`'s output entirely).
 //

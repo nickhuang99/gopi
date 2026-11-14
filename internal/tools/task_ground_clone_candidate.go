@@ -8,7 +8,7 @@ package tools
 // disk holding a live `refs/heads/task/<id>`:
 //
 //	$ gopi task show 01a17df2-1d64-7624-b08e-f6ba187631b2 | grep '^ground (resolved now)'
-//	ground (resolved now): repo=/home/nick/work/gopi worktree=(none) branch=(none) — the row's session "01a17df2-…" names no worktree-add and no in-place branch creation
+//	ground (resolved now): repo=/home/user/work/gopi worktree=(none) branch=(none) — the row's session "01a17df2-…" names no worktree-add and no in-place branch creation
 //
 // WHY THE SESSION CANNOT ANSWER IT: the SESSION arm of the reading
 // (taskGroundSessionReadingFor) reconstructs the branch from the run's own

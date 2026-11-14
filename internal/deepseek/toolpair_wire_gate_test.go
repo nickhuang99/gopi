@@ -16,7 +16,7 @@ import (
 // behaviour: the server applies the API's own rule to what it RECEIVED.
 //
 // The API's rule, verbatim from the death dump
-// (/home/nick/.gopi/dumps/20260922-040822.dump.json, HTTP 400):
+// (/home/user/.gopi/dumps/20260922-040822.dump.json, HTTP 400):
 //
 //	"messages.1: `tool_use` ids were found without `tool_result` blocks
 //	 immediately after: call_00_ET_TBCTnLz8k12TGe2ZEVxl2105. Each `tool_use`

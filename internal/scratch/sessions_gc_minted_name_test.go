@@ -10,7 +10,7 @@ import (
 // The MINTED-SUFFIX arm of the OURS predicate, driven through the REAL
 // PlanSessions / SweepSessions pair.
 //
-// THE MEASURED DEFECT this pins (host nick-sager, 2026-10-30): the OURS test was
+// THE MEASURED DEFECT this pins (host host-a, 2026-10-30): the OURS test was
 // a bare canonical-uuid test, so the two suffix shapes THIS SYSTEM mints — a
 // reopen successor (`<uuid>-r1`, `-r2`) and a clean-room clone (`<uuid>-c1`) —
 // read as foreign names and could never be collected at any age:

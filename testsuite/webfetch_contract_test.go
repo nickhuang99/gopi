@@ -17,7 +17,7 @@ import (
 //
 //  1. Geo routing: DIRECT_DOMAINS hosts (CN sites) fetch from the LOCAL
 //     network (geo-correct pricing/CN-only variants); everything else goes
-//     via the searchbot ssh jump host; localhost/private ranges ALWAYS ssh
+//     via the searchbox ssh jump host; localhost/private ranges ALWAYS ssh
 //     (SSRF hard gate — a "CN-looking" private host must never go direct).
 //  2. Fetch status contract: ok / error (HTTP>=400, binary) / timeout
 //     (curl rc=28) / unavailable (ssh failure, http 000, no marker) — each
@@ -83,7 +83,7 @@ func TestWebFetchContract_GeoRoute(t *testing.T) {
 		{"http://localhost:9/x", "ssh"},       // SSRF gate: never direct
 		{"http://127.0.0.1/x", "ssh"},
 		{"http://10.0.0.1/x", "ssh"},
-		{"http://192.168.1.1/x", "ssh"},
+		{"http://192.168.7.1/x", "ssh"},
 		{"http://172.16.0.1/x", "ssh"}, // 172.16-31 private range
 		{"http://172.32.0.1/x", "ssh"}, // public range still ssh (default)
 		{"http://[::1]:8/x", "ssh"},    // bracketed IPv6 loopback
@@ -267,11 +267,11 @@ func TestWebFetchContract_SingleLineBodyRegression(t *testing.T) {
 // TestWebFetchContract_RepoScriptsAreTheSourceOfTruth replaces the old
 // TestWebFetchContract_DeployedScriptSync (task 01a16ac0, 2026-10-28).
 //
-// WHAT WAS WRONG. The old gate read /home/nick/.gopi/plugins/websearch/scripts/<name>
+// WHAT WAS WRONG. The old gate read /home/user/.gopi/plugins/websearch/scripts/<name>
 // and failed whenever that file's bytes differed from the repo copy. Two
 // independent facts make that assertion indefensible:
 //
-//  1. /home/nick/.gopi/plugins is the OPERATOR'S INSTALL AREA, not a mirror of this
+//  1. /home/user/.gopi/plugins is the OPERATOR'S INSTALL AREA, not a mirror of this
 //     checkout. internal/scratch/profile_root.go lists it among the profile
 //     root's children as `Class: ProfileChildState` with the bound "the plugin
 //     tree the operator installs into; never a candidate" — i.e. the system's

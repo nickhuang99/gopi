@@ -4,7 +4,7 @@ package main
 // AGENT-side Go toolchain cache (~/.cache/go-build) MEASURED, JUDGED and — only
 // when asked — brought back under its bound.
 //
-// WHY THIS ARM EXISTS (measured on nick-HP-Laptop, 2026-10-12):
+// WHY THIS ARM EXISTS (measured on host-b, 2026-10-12):
 //
 //	/dev/nvme0n1p7 (/home, device 66309)  458G, 416G used, 19G free — 96% FULL
 //	/dev/nvme0n1p5 (/,     device 66307)  183G,  43G used, 131G free
@@ -80,7 +80,7 @@ const (
 // reading into a decision the reader can take or refuse, and that points at where
 // the reason for the standing design is written down.
 //
-// WHY IT EXISTS (measured on nick-HP-Laptop, 2026-10-17): the cache sat at 3.1x
+// WHY IT EXISTS (measured on host-b, 2026-10-17): the cache sat at 3.1x
 // its own 25 GiB bound (78.3 GiB body, 49.9 GiB reclaimable at the entry grain,
 // 184489 entries past the grace window) ACROSS a /home exhaustion that killed a
 // `cmd/agent` suite with ENOSPC. Nothing was broken — the bound existed, the grain

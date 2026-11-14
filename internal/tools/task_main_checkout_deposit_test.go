@@ -6,7 +6,7 @@ package tools
 // THE DEFECT THESE TESTS PIN. That row's payload carried the repo's MAIN
 // checkout as its only absolute path —
 //
-//	"Repo: /home/nick/work/GoPi (branch master at 4c802614). Re-verify every
+//	"Repo: /home/user/work/GoPi (branch master at 4c802614). Re-verify every
 //	 line number before relying on it."
 //
 // — and the run wrote the two things a run must write into the SHARED checkout:
@@ -532,7 +532,7 @@ const mainCheckoutDepositTestFile = "task_main_checkout_deposit_test.go"
 // must not be read as the row pointing at the shared tree. This is the
 // difference between a record and a blame instrument.
 func TestBriefingNamesDirIsTokenBoundExceptForPaths(t *testing.T) {
-	const main = "/home/nick/work/GoPi"
+	const main = "/home/user/work/GoPi"
 	for _, tc := range []struct {
 		name string
 		text string
@@ -545,8 +545,8 @@ func TestBriefingNamesDirIsTokenBoundExceptForPaths(t *testing.T) {
 		{"sentence-final full stop — deliberately NOT read as a name", "See " + main + ". Then start.", false},
 		{"a SIBLING sharing the prefix", "Repo: " + main + "-old (stale clone)", false},
 		{"a BACKUP directory", "Repo: " + main + ".bak", false},
-		{"a SUFFIXED parent name", "Repo: /home/nick/work/my-GoPi", false},
-		{"not named at all", "Repo: /home/nick/workspace/gopi-other", false},
+		{"a SUFFIXED parent name", "Repo: /home/user/work/my-GoPi", false},
+		{"not named at all", "Repo: /home/user/workspace/gopi-other", false},
 		{"empty text", "", false},
 	} {
 		t.Run(tc.name, func(t *testing.T) {
@@ -562,8 +562,8 @@ func TestBriefingNamesDirIsTokenBoundExceptForPaths(t *testing.T) {
 // writes, and tells the model what an absolute path in its payload IS.
 func TestBriefingAuthorityClauseNamesTheGroundAndDisarmsThePayloadPath(t *testing.T) {
 	const (
-		ground = "/home/nick/workspace/gopi-01a0db25"
-		main   = "/home/nick/work/GoPi"
+		ground = "/home/user/workspace/gopi-01a0db25"
+		main   = "/home/user/work/GoPi"
 	)
 	clause := TaskBriefingAuthorityClause(ground, main)
 	for _, want := range []string{ground, main, "ONLY tree this run writes", "REFERENCE for reading", "MAIN checkout"} {

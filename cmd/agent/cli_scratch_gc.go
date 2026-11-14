@@ -136,7 +136,7 @@ const scratchGCDryRunFlag = "--dry-run"
 // exactly the form the help page demonstrated as "the VETTING face" deleted the
 // very entries the verdicts were describing. Measured on the reporting row: the
 // operator's own `scratch-gc --explain` removed
-// `/home/nick/workspace/_tmp/go-build3659052550` (11,270,405 bytes) while printing
+// `/home/user/workspace/_tmp/go-build3659052550` (11,270,405 bytes) while printing
 // `verdict=collectable` for it (devdoc/tmpdir-lifecycle-forensics.md §5). The
 // verdict report's own comment said "it deletes nothing", which was true of the
 // REPORT and false of the COMMAND — the exact ambiguity this flag now closes.

@@ -13,7 +13,7 @@ import (
 // Regression for the `gopi session log <id> --request` failure of 2026-09-23:
 //
 //	$ gopi session log --last --request --text
-//	Error: no raw logs found in /home/nick/.gopi/raw (the raw HTTP logger
+//	Error: no raw logs found in /home/user/.gopi/raw (the raw HTTP logger
 //	may not be enabled)
 //
 // The raw log EXISTED — it sat beside the session JSONL, which is where

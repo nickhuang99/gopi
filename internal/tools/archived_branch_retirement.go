@@ -5,7 +5,7 @@ package tools
 // project's one archive writer leaves, and plumbed into every seam that decides
 // what to do with a branch-shaped row.
 //
-// THE MEASURED DEFECT (task 01a1446e's bug row; measured on zbook by run
+// THE MEASURED DEFECT (task 01a1446e's bug row; measured on zpeer by run
 // 01a141c4, 2026-10-16). A merge-backlog row ("merge task/probe-zombie into
 // master") stayed LIVE after the branch was retired — archive tag
 // refs/tags/archive/task/probe-zombie plus its companion reason record
@@ -22,7 +22,7 @@ package tools
 // other host.
 //
 // WHY THE ARMS ARE READ THIS WAY (Rule 5's Evidence — the classes are MEASURED
-// against the live repo /home/nick/work/GoPi, not assumed):
+// against the live repo /home/user/work/GoPi, not assumed):
 //
 //   - THE MATCH IS ON THE CANONICAL BRANCH (refArchivedExclusion's spec), because
 //     branch names reach a repository through two renamed spellings. The live
@@ -36,7 +36,7 @@ package tools
 //     A reader that compared the row's summary branch to the ref name verbatim
 //     would miss `probe-zombie` (the task-id task_id vs ground branch
 //     rename); a reader that stripped every "task/" prefix would fold
-//     /home/nick/work/GoPi (which IS a real branch on this host — the probe
+//     /home/user/work/GoPi (which IS a real branch on this host — the probe
 //     branch 01a1446e's own filer measured) onto the branch `GoPi`, i.e. onto
 //     the MAIN work tree's name. ONE reader, KEYED ON THE WHOLE CANONICAL
 //     SPEC, is what the three live spellings above demand, and
@@ -211,7 +211,7 @@ func ArchivedBranchExclusionText(rec ArchivedBranchRetirement) string {
 //
 //	summary:     merge task/probe-zombie into master
 //	deliverable: {"branch":"task/01a141c4615b7b0d9f47a8c5e946ce07",
-//	              "repo":"/home/nick/work/GoPi", "worktree":"…"}
+//	              "repo":"/home/user/work/GoPi", "worktree":"…"}
 //
 // The retired branch is the SUMMARY's; the deliverable's branch is the worker's
 // ground and is not retired and never will be. A reader that consulted only the

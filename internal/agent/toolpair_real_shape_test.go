@@ -16,7 +16,7 @@ import (
 // Messages 0 and 1 below are the first two messages of the death dump's
 // request, VERBATIM in structure and identity:
 //
-//	/home/nick/.gopi/sessions/01a18f4a-6e0c-7a80-9c50-f72d60003262/
+//	/home/user/.gopi/sessions/01a18f4a-6e0c-7a80-9c50-f72d60003262/
 //	  01a18f4a-6e0c-7a80-9c50-f72d60003262.dump.json
 //
 //	[0] assistant  thinking + tool_use  id=call_00_xAMlopO2DVTawtVAbfYU7604  name=bash

@@ -464,7 +464,7 @@ func deliveryRetryOne(ctx context.Context, db *sql.DB, row deliveryRetryRow) *De
 // whose entire deliverable IS that push. Measured on this host before the fix:
 //
 //	$ gopi task retry-delivery --task 01a16deb-73df-7a96-851d-97297f619246
-//	… blocked branch=master peer=zbook:/home/nick/work/gopi — delivery owed: branch master is exempt
+//	… blocked branch=master peer=zpeer:/home/user/work/gopi — delivery owed: branch master is exempt
 //
 // while the ground's own HEAD was contained in neither the peer's master nor
 // any other peer ref. 99 of 103 failed rows on this host were that shape.

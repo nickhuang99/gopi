@@ -251,7 +251,7 @@ func chatClonePushContentBlocks(ev testutil.Event) []map[string]interface{} {
 // BOTH channels are written, and that is not belt-and-braces: the workspace root
 // resolves through worktreeroots.Resolve, whose FIRST branch is
 // GOPI_WORKTREE_ROOT — MockEnv always sets it (per test, so a fixture never
-// writes into the operator's /home/nick/workspace), and a lone GOPI_WORKSPACE_ROOT would
+// writes into the operator's /home/user/workspace), and a lone GOPI_WORKSPACE_ROOT would
 // therefore be overruled by the environment the fixture itself handed the child.
 // Measured: with only GOPI_WORKSPACE_ROOT set the run read the MockEnv worktree
 // root as the workspace root and the clone ground fell outside it

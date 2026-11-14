@@ -292,7 +292,7 @@ func chatResolveSgrReplayPath(target string) (string, error) {
 	// The stream is looked for under EVERY suffix in ScreenStreamSuffixes, newest
 	// first — a session recorded BEFORE the 2026-11-08 sgr→screen rename keeps its
 	// bytes in `.sgr.stream`, and that file is the only verbatim recording the run
-	// has. MEASURED: /home/nick/.gopi/sessions holds 177 `.sgr.stream` files against
+	// has. MEASURED: /home/user/.gopi/sessions holds 177 `.sgr.stream` files against
 	// 4 `.screen.stream`, so a resolver that composed only the new name would report
 	// "no screen.stream stream" for virtually every recording on the host. Composing
 	// ONE name and stat-ing it is the defect; the list is the law (Rule 14).

@@ -282,7 +282,7 @@ func runGroundAnchorLiveness(a RunGroundAnchor, lookup *groundRowLookup) RunGrou
 	// reaching that answer, because neither of them can ask it:
 	//
 	//	· the LAUNCH ladder answers "is the taker gone?", a statement about a
-	//	  process — it returned COLLECTABLE for /home/nick/workspace/01a163df-…
+	//	  process — it returned COLLECTABLE for /home/user/workspace/01a163df-…
 	//	  on this host (measured 2026-10-22), having never looked at the tree;
 	//	· the LEDGER rung answers "is the row over?", a statement about a record.
 	//
@@ -1019,7 +1019,7 @@ func RunGroundCollect(collectable []RunGroundLiveness) (removed, skipped []strin
 			// no deliverable.repo at all) could be anchored and still never
 			// reach either removal leg. That was the second half of the
 			// population gap:
-			// /home/nick/workspace/002c43f2-d6dc-4c4b-82d9-f2b40163d53c would
+			// /home/user/workspace/002c43f2-d6dc-4c4b-82d9-f2b40163d53c would
 			// have been listed as collectable and then skipped here with
 			// "the anchor names no repo" — a directory kept forever by a
 			// question whose answer was standing in it.

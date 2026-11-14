@@ -394,15 +394,15 @@ func TestParseHolderRoundTrips(t *testing.T) {
 		"pid=4321",
 		"startticks=987654",
 		"acquired_at=2026-11-05T01:02:03Z",
-		"host=nick-sager",
+		"host=host-a",
 		"",
 	}, stampLineEnd)
 	got := parseHolder(text)
-	want := Holder{PID: 4321, StartTicks: "987654", AcquiredAt: "2026-11-05T01:02:03Z", Host: "nick-sager"}
+	want := Holder{PID: 4321, StartTicks: "987654", AcquiredAt: "2026-11-05T01:02:03Z", Host: "host-a"}
 	if got != want {
 		t.Fatalf("parseHolder = %+v, want %+v", got, want)
 	}
-	if s := got.String(); !strings.Contains(s, "pid 4321") || !strings.Contains(s, "host nick-sager") {
+	if s := got.String(); !strings.Contains(s, "pid 4321") || !strings.Contains(s, "host host-a") {
 		t.Errorf("Holder.String() = %q, want it to name the pid and the host", s)
 	}
 	// An empty file is "no holder recorded", not a bogus zero holder.

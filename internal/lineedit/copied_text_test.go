@@ -174,7 +174,7 @@ func TestCopiedText_CodeBlockRowsArePasteable(t *testing.T) {
 // claim above is an instance of, over a block with several rows and a wrap: NO
 // row of a code/tool-layer run opens with a gutter glyph, whatever it holds.
 func TestCopiedText_NoRowOfACodeBlockCarriesTheGutterGlyph(t *testing.T) {
-	long := "git -C /home/nick/work/GoPi status --short --branch " + strings.Repeat("and-more ", 12) + "tail"
+	long := "git -C /home/user/work/GoPi status --short --branch " + strings.Repeat("and-more ", 12) + "tail"
 	p := renderGutterAnswer(t, true, FenceMarker+"\n"+long+"\n"+FenceMarker+"\n")
 	for _, g := range AnswerGutters() {
 		g = strings.TrimRight(g, " ")

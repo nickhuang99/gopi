@@ -605,7 +605,7 @@ func insideAnyIf(root ast.Node, target ast.Node) bool {
 func TestRetainedHitFieldsDoNotPinTheWholeRow(t *testing.T) {
 	// A row long enough that "pins the parent" is a real cost, with a match
 	// column inside it: the shape a session-log search produces.
-	row := "/home/nick/.gopi/sessions/abcdef/abcdef.raw.log:12:1:" + strings.Repeat("z", 4096)
+	row := "/home/user/.gopi/sessions/abcdef/abcdef.raw.log:12:1:" + strings.Repeat("z", 4096)
 	file, lineNo, snippet, ok := splitRgColumnLine(row)
 	if !ok {
 		t.Fatalf("splitRgColumnLine refused a well-formed line: %q", row[:40])
@@ -621,7 +621,7 @@ func TestRetainedHitFieldsDoNotPinTheWholeRow(t *testing.T) {
 	if unsafe.StringData(snippet) == rowData {
 		t.Errorf("Snippet aliases the whole rg output row (%d bytes) — same defect through the other field", len(row))
 	}
-	if file != "/home/nick/.gopi/sessions/abcdef/abcdef.raw.log" {
+	if file != "/home/user/.gopi/sessions/abcdef/abcdef.raw.log" {
 		t.Errorf("FilePath = %q, want the path field intact (a clone must not change the value)", file)
 	}
 }

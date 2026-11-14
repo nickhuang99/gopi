@@ -50,11 +50,11 @@ func TestWrapCols_KeepsADottedNameWhole(t *testing.T) {
 // something that was in the answer.
 func TestWrapCols_KeepsPathComponentsWhole(t *testing.T) {
 	const (
-		in    = "/home/nick/.gopi/sessions/01a1"
+		in    = "/home/user/.gopi/sessions/01a1"
 		width = 20
 	)
 	got := wrapCols(in, width)
-	want := []string{"/home/nick/.gopi/", "sessions/01a1"}
+	want := []string{"/home/user/.gopi/", "sessions/01a1"}
 	if len(got) != len(want) {
 		t.Fatalf("wrapCols(%q, %d) = %q, want %q", in, width, got, want)
 	}
@@ -118,7 +118,7 @@ func TestWrapCols_CJKBreaksBetweenWideRunes(t *testing.T) {
 // shares, stated once: boundary breaks add row breaks and nothing else.
 func TestWrapCols_JoinsBackAfterABoundaryBreak(t *testing.T) {
 	ins := []string{
-		"target=/home/nick/workspace/01a15629-211d-741e-b9d4-a0895abf4c22",
+		"target=/home/user/workspace/01a15629-211d-741e-b9d4-a0895abf4c22",
 		"run make test-budget PKGS='./internal/lineedit' && git status",
 		"the project's COMMANDS.md lists it (see [the docs])",
 		"混合中文 and ascii tokens - with dashes_and_underscores here",

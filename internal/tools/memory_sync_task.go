@@ -5,7 +5,7 @@
 //
 // Design (the epic's five mechanics):
 //
-//	export (zbook side): SELECT tasks rows (status gate, tag filter, --since,
+//	export (zpeer side): SELECT tasks rows (status gate, tag filter, --since,
 //	       --limit, oldest-first) → JSON patch rows WITHOUT the
 //	       executor-owned columns (claimed_by/claimed_at are execution
 //	       state, not work definition — a receiving node claims with its
@@ -24,17 +24,17 @@
 //	          (the former skip cost a row every time a peer re-worded a
 //	          payload; dedup is the IMPORTER's responsibility and the file
 //	          is never trusted).
-//	       ② task_id preserved (zbook t-* ids stay traceable across nodes);
+//	       ② task_id preserved (zpeer t-* ids stay traceable across nodes);
 //	          a colliding task_id is never rewritten — skip+already, or
 //	          forward-migrate when the patch carries a terminal status.
 //	       ③ forward-only status migration — fresh imports write pending
 //	          only; a local row's later states are advanced by local
-//	          execution; the reverse direction (HP finished → zbook) moves
+//	          execution; the reverse direction (HP finished → zpeer) moves
 //	          an existing pending row forward into the patch's terminal
 //	          status (pending → completed|failed|verified are all legal
 //	          taskAllowedTransitions moves; cancelled stays local).
 //	       ④ provenance — tags are FORCED to carry the from-node tag
-//	       (from-zbook style, decided at import, never trusted from the
+//	       (from-zpeer style, decided at import, never trusted from the
 //	       file — the same rule as brew rows' node:<host>).
 //	       ⑤ no-overwrite (the nick hard rule) — an existing row's
 //	          summary is NEVER rewritten: a same-task_id pending
@@ -283,7 +283,7 @@ type SyncTaskRow struct {
 	// until the parent reaches the release set). It travels because a row
 	// shipped without it arrives as five independent tasks: a five-link
 	// chain sent one row at a time became five claimable rows on the peer
-	// (measured zbook→hp, 2026-10-07). Absent on pre-fix rows AND on a row
+	// (measured zpeer→hp, 2026-10-07). Absent on pre-fix rows AND on a row
 	// whose edge the operator deliberately dropped — and an IMPORT refuses a
 	// row whose edge the receiving ledger cannot honour (syncParentVerdict,
 	// syncParentUnresolvable), so "absent" never means "a live edge was
@@ -428,8 +428,8 @@ func SyncTaskExport(opts SyncTaskExportOptions) (*SyncTaskPatch, *SyncTaskExport
 	}
 	// Anti-reflow (brew double-gate semantics): rows tagged from-<THIS
 	// node> are channel-borne — they re-import no-op on the peer anyway,
-	// but excluding them here keeps a relay node (HP exporting to zbook a
-	// patch HP itself received from zbook) from ever shipping someone
+	// but excluding them here keeps a relay node (HP exporting to zpeer a
+	// patch HP itself received from zpeer) from ever shipping someone
 	// else's rows a second time. GOPI_SYNC_NODE override respected.
 	// M4.20-B EXCEPTION: TERMINAL rows are exempt from the anti-reflow
 	// gate — a verdict must reach its origin node too (A completed the
@@ -658,7 +658,7 @@ func syncTaskCanonText(s string) string {
 
 // syncTaskCanonHash is the near-identity dedup key: sha256 over the
 // canonical text of summary+payload. Two submissions of the same brief —
-// one dispatched Monday with /home/nick paths and one Tuesday with fresh
+// one dispatched Monday with /home/user paths and one Tuesday with fresh
 // timestamps — normalize to the same key.
 func syncTaskCanonHash(summary, payload string) string {
 	text := syncTaskCanonText(summary) + " " + syncTaskCanonText(payload)
@@ -1228,7 +1228,7 @@ func TaskDedupScan(dbPath string, liveOnly bool) (*DedupScanStats, error) {
 // the winner commits).
 func importTaskFreshTx(ctx context.Context, tx *sql.Tx, r SyncTaskRow, tags string,
 	stats *SyncTaskImportStats) error {
-	// Mechanic ② — preserve the exporter's task_id (zbook t-* traceability).
+	// Mechanic ② — preserve the exporter's task_id (zpeer t-* traceability).
 	// M4.11: sync imports are re-submissions on the receiving node — the tags
 	// derivation applies there too (fresh node = no legacy priority to
 	// respect; rows keep their derived tier).
@@ -1762,7 +1762,7 @@ func stringSetEqual(a, b []string) bool {
 // is the direct peer-to-peer pull: `gopi task harvest --peer hp` SSHes to the
 // peer, runs a timestamp-gated SELECT over ITS tasks ledger, and applies the
 // rows locally in ONE transaction. No intermediate file, no manual transport —
-// HP assets are harvested onto zbook even when zbook's ledger is blank.
+// HP assets are harvested onto zpeer even when zpeer's ledger is blank.
 //
 // Per-row semantics (the epic's six counts):
 //   new task_id            → INSERT with the from-<peer> tag … harvested

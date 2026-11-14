@@ -2,7 +2,7 @@
 // the container test could not see: a uuid's 32 hex characters with NO separator
 // at all (the branch/worktree stem spelling).
 //
-// THE MEASURED STATE (2026-10-17, host nick-sager, task
+// THE MEASURED STATE (2026-10-17, host host-a, task
 // 01a144001e4b7086b97d257497a832ed; evidence:
 // `gopi tool scratch-gc trees --dry-run` + a stat of the sessions root). The
 // sessions root carried 25 root-level directories named exactly this way.

@@ -12,8 +12,8 @@ package tools
 // point somewhere else, under another spelling:
 //
 //	$ gopi config show | grep -E 'dev_repo|repos '
-//	  dev_repo  "zbook:/home/nick/work/gopi"
-//	  repos     {"/home/nick/work/gopi":{...}}
+//	  dev_repo  "zpeer:/home/user/work/gopi"
+//	  repos     {"/home/user/work/gopi":{...}}
 //
 // and on the peer those two paths are DIFFERENT REPOSITORIES, not two names for
 // one: measured `git -C <p> rev-list --max-parents=0` answers disjoint roots

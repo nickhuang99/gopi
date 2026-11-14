@@ -42,9 +42,9 @@ import (
 // spaces to break at). Each is longer than the canvas in at least one arm below,
 // so each one forces the break decision under test.
 const (
-	wrapFixturePathToken   = "/home/nick/workspace/01a17e74-2f9b-4c3e-9d1f-393e636d3fce/internal/replayplay/material.go"
+	wrapFixturePathToken   = "/home/user/workspace/01a17e74-2f9b-4c3e-9d1f-393e636d3fce/internal/replayplay/material.go"
 	wrapFixtureFlagToken   = "--turn=8 --full --cols=101 --from=auto --session=61f5992a-c126-4a55-935e-68fc80bebe19"
-	wrapFixtureKeyValToken = "task=01a1c04f-3558-7c71-ad74-3ee0eaf650f7 commit=15182088 branch=master host=nick-sager"
+	wrapFixtureKeyValToken = "task=01a1c04f-3558-7c71-ad74-3ee0eaf650f7 commit=15182088 branch=master host=host-a"
 	wrapFixtureCJKToken    = "的含义：实测gopi session replay 01a19075-80dd --turn 1 → header calls=286，正文^⚙ 行数= 286，一个不丢。"
 )
 
@@ -122,7 +122,7 @@ func TestContentWrapEqualsTheLiveScreenRowForRow(t *testing.T) {
 func TestContentWrapKeepsALongTokenWhole(t *testing.T) {
 	const (
 		choppedHeader = "eader calls="
-		choppedPath   = "it -C /home/nick"
+		choppedPath   = "it -C /home/user"
 	)
 	for _, cols := range []int{101, 117, 200} {
 		rows := contentLines(contentWrapFixtureText, cols)

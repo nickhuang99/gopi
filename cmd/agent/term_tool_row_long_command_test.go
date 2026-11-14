@@ -51,7 +51,7 @@ import (
 // spaces, quotes, slashes and a `#`, because those are the characters a wrap or a
 // boundary cut would damage (`-ma…xdepth` was the measured shape). It is ONE line
 // and ends in a marker the reconstruction can look for.
-const longCmd = `bash -lc 'cd /home/nick/work/gopi && git log --oneline --all --decorate --graph -40 -- internal/tools/task_finish_cleanup.go internal/tools/task_sync_git_pushback.go | head -60 && echo LONG_COMMAND_TAIL'`
+const longCmd = `bash -lc 'cd /home/user/work/gopi && git log --oneline --all --decorate --graph -40 -- internal/tools/task_finish_cleanup.go internal/tools/task_sync_git_pushback.go | head -60 && echo LONG_COMMAND_TAIL'`
 
 // longCmdMinCells is the width the fixture must exceed for the case to be the
 // defect rather than a coincidence of a long-ish string.

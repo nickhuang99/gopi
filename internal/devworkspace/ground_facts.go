@@ -5,7 +5,7 @@ package devworkspace
 // WHY IT EXISTS (measured 2026-10-27, row 01a17a48). A summary line inserted
 // into a run's context said, in ONE sentence:
 //
-//	Ground facts: /home/nick/workspace/01a17a24-… is a LINKED WORKTREE (.git is
+//	Ground facts: /home/user/workspace/01a17a24-… is a LINKED WORKTREE (.git is
 //	a FILE), on branch master, tree clean, HEAD=46a448d, diverged vs
 //	origin/master: 1 ahead / 6 behind. No rebase in progress (no
 //	.git/rebase-merge|apply).

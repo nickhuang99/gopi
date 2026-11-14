@@ -37,7 +37,7 @@ func TestStatusReportKeepsTheStampAndTheFlockApart(t *testing.T) {
 	}
 	// The stamp names a pid that no longer writes anything; the transcript is
 	// 5h18m old — the exact pair the epic was filed on.
-	stamp := "pid=518745\nstartticks=179267413\nacquired_at=2026-11-05T14:14:47Z\nhost=nick-sager\n"
+	stamp := "pid=518745\nstartticks=179267413\nacquired_at=2026-11-05T14:14:47Z\nhost=host-a\n"
 	if err := os.WriteFile(runlock.PathIn(dir), []byte(stamp), 0o600); err != nil {
 		t.Fatalf("seed the lock stamp: %v", err)
 	}

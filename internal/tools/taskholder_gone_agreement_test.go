@@ -12,7 +12,7 @@ package tools
 // 01a1bb2d-e7bc): `gopi task show` printed, in ONE output,
 //
 //	status:      in_progress + holder dead (pid 4122750 gone)
-//	claimed_by:  nick-sager:3177317
+//	claimed_by:  host-a:3177317
 //
 // while pid 3177317 was alive with its /proc/<pid>/cwd standing in the row's own
 // session directory — a demonstrably working run called dead by a marker that

@@ -85,7 +85,7 @@ func TestDegradation_NilErrOutStillReachesTheRecord(t *testing.T) {
 //	previous read delivered 6 key(s) at once and this Enter arrived 0s later …
 //
 // — appeared in NO file under the session directory: `grep -r 'read an Enter as
-// pasted' /home/nick/.gopi/sessions/e1e22e9f-…` returned 0 hits while the operator had
+// pasted' /home/user/.gopi/sessions/e1e22e9f-…` returned 0 hits while the operator had
 // just been shown it. The sink is the ONE road that exists so a degradation
 // outlives the terminal that showed it, and warn() was not on it.
 func TestWarn_AlsoReachesTheRecord(t *testing.T) {

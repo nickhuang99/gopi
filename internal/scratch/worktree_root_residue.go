@@ -4,7 +4,7 @@ package scratch
 // of a directory this system shares with real worktrees is CLASSIFIED, so the
 // residue families that no sweep can reach are NAMED instead of invisible.
 //
-// THE MEASURED DEFECT (2026-10-07, /home/nick/workspace): the worktree root held
+// THE MEASURED DEFECT (2026-10-07, /home/user/workspace): the worktree root held
 // 95 `gopi-*` directories plus 98 children in other naming schemes. Exactly
 // SEVEN of them were `git worktree list` registrations. The rest fell into
 // families that NO sweep covers —

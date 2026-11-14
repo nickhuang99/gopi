@@ -901,7 +901,7 @@ var g6BlockedForms = map[string]string{
 	"gopi tool voice_input --client --seconds 8 --out nick.wav":                       "needs a real capture device (pulse/alsa)",
 	"gopi tool voice_input --client --seconds N --stdio":                              "needs a real capture device (pulse/alsa)",
 	"gopi tool voice_input --client --seconds 5 --stdio":                              "needs a real capture device (pulse/alsa)",
-	"gopi tool voice_input --client --server-url http://192.168.1.6:7788 --seconds 8": "needs a peer voice server on the LAN",
+	"gopi tool voice_input --client --server-url http://192.168.7.6:7788 --seconds 8": "needs a peer voice server on the LAN",
 	// the maintenance verbs: destructive host actions. `merge` HAD seven rows here
 	// and left with its command surface (epic merge-removal, item 2): a blocked
 	// form is "a form the help advertises that this suite will not drive", and

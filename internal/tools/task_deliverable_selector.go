@@ -121,7 +121,7 @@ type DeliverableResolution struct {
 	// call resolved is the only thing that knows which repositories the
 	// selector is about, and the show face used to ignore it and read whatever
 	// repository the process happened to stand in — measured 2026-09-27: the
-	// operator asked about a row whose deliverable records /home/nick/work/GoPi
+	// operator asked about a row whose deliverable records /home/user/work/GoPi
 	// and the git half answered about his desktop's own checkout instead, then
 	// declared the two "the SAME repository".
 	//

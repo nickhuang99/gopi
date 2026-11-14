@@ -3,10 +3,10 @@ package tools
 // deploy_drift.go — the measured DISTANCE between the artifact a checkout's bin/
 // carries and the branch that checkout would build from.
 //
-// THE MEASURED CASE (host nick-HP-Laptop, 2026-10-14, epic 01a137cb). A dispatch
+// THE MEASURED CASE (host host-b, 2026-10-14, epic 01a137cb). A dispatch
 // seam's guard was correct in the source, wired at the ONE spawn seam, and green
 // for 74 commits — and absent from the artifact the machine actually ran.
-// /usr/local/bin/gopi is a SYMLINK to /home/nick/work/GoPi/bin/gopi, so the
+// /usr/local/bin/gopi is a SYMLINK to /home/user/work/GoPi/bin/gopi, so the
 // deployed binary IS that checkout's bin/gopi (one file, not two:
 // `sha256sum $(which gopi) <repo>/bin/gopi` printed one digest). `strings` on it
 // found the guard's SIBLING literal once and its own literal zero times — the
@@ -58,7 +58,7 @@ import (
 // written by a push-back pass and pruned by that same pass
 // (gitPushbackPruneMirrors), so on a host that never runs one it freezes and
 // falls further behind on every landing (measured 2026-10-28/29 on host
-// nick-sager: 3 days old, 405 commits and monotonically growing, then 426).
+// host-a: 3 days old, 405 commits and monotonically growing, then 426).
 // A ref that no operator action can bring the artifact to follow cannot make
 // the artifact stale; saying it did was the contradiction this file now
 // removes (its own line read "not stale behind it" beside a printed `STALE:`).
@@ -173,7 +173,7 @@ func deployDriftRefIsScratch(ref string) bool {
 // a report about which refs were read would let the printed list and the
 // measured list disagree (Rules 1/13/14).
 //
-// WHY THIS REF IS MEASURED AT ALL (measured 2026-10-28, host nick-sager): the
+// WHY THIS REF IS MEASURED AT ALL (measured 2026-10-28, host host-a): the
 // report used to measure only the local branch and the peer mirror. The
 // deployment gap it exists to surface was 67 commits on refs/heads/master AND
 // 27 on refs/remotes/origin/master — the second number was simply absent from
@@ -256,7 +256,7 @@ func DeployDriftOf(repo string) DeployDrift {
 // the loop).
 //
 // artifact may lie OUTSIDE repo — that is the case this seam exists for: the
-// deployed /usr/local/bin/gopi is a symlink into /home/nick/work/gopi/bin, and a
+// deployed /usr/local/bin/gopi is a symlink into /home/user/work/gopi/bin, and a
 // run started anywhere else has to be able to measure THAT file rather than the
 // bin/ of whatever directory it happens to stand in.
 func DeployDriftAt(repo, artifact string) DeployDrift {
@@ -375,10 +375,10 @@ func (d DeployDrift) VotingRefs() []DeployDriftRef {
 // ("is the gopi on this machine old?"), answered about the file that is
 // answering it.
 //
-// WHY THIS IS NOT DeployDriftOf(cwd): measured 2026-10-28 on host nick-sager.
-// /usr/local/bin/gopi is a SYMLINK to /home/nick/work/gopi/bin/gopi. Started
+// WHY THIS IS NOT DeployDriftOf(cwd): measured 2026-10-28 on host host-a.
+// /usr/local/bin/gopi is a SYMLINK to /home/user/work/gopi/bin/gopi. Started
 // from a task ground, `gopi version --drift` reported
-// `drift-artifact: /home/nick/workspace/<task-id>/bin/gopi` and
+// `drift-artifact: /home/user/workspace/<task-id>/bin/gopi` and
 // `refs/heads/master: follows the ref — the artifact was built from it` — a
 // TRUE statement about that ground's own fresh build and a completely
 // misleading answer about the deployed binary, which was 67 commits behind. A

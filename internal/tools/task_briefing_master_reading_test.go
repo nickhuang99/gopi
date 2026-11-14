@@ -243,7 +243,7 @@ func firstClauseLine(clause string) string {
 }
 
 // TestMasterReadingClauseStatesTheMirrorIsARefNotARemote is the arm the row's
-// own premise produced (measured 2026-10-17, row 01a14877 on nick-sager): the
+// own premise produced (measured 2026-10-17, row 01a14877 on host-a): the
 // clause's ref table named refs/remotes/gitPushcheck/master and nothing about
 // that name being a NAMESPACE rather than a configured remote, so briefings
 // built from it told executors to run `git fetch gitPushcheck` — which that tree
@@ -252,7 +252,7 @@ func firstClauseLine(clause string) string {
 //
 // THREE ARMS, and the positive control is what makes the red arm mean anything:
 //
-//	① NO REMOTE UNDER THAT NAME (the measured host shape: one remote, `zbook`):
+//	① NO REMOTE UNDER THAT NAME (the measured host shape: one remote, `zpeer`):
 //	   the clause must say the name is NOT a remote, quote git's own sentence and
 //	   its exit status, name the remotes the tree DOES have, and render a refresh
 //	   command built from the lane's own refspec — reaching the ref without

@@ -12,10 +12,10 @@ import (
 
 // NodeBanner renders the one-line node-identity banner (bug041): the
 // node's declared role from settings.json, printed at startup so a Bond
-// session knows WHICH node it is running on ("[gopi] node: hp (client→zbook)")
+// session knows WHICH node it is running on ("[gopi] node: hp (client→zpeer)")
 // before it reasons about the topology. Empty role → no banner line (unset
 // role means the topology is undeclared; never guess from the hostname).
-// Format: server → "(server)"; client with sync_to → "(client→zbook)".
+// Format: server → "(server)"; client with sync_to → "(client→zpeer)".
 func NodeBanner(role, syncTo string) string {
 	if role == "" {
 		return ""

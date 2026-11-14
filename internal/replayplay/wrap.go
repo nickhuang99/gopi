@@ -14,7 +14,7 @@ package replayplay
 //
 // Measured at 200 columns on the session above:
 //
-//	↳ /home/nick/workspace/01a17e74-…-393e636d3fce carries no commit to
+//	↳ /home/user/workspace/01a17e74-…-393e636d3fce carries no commit to
 //	↳ thing to push. This is NOT a refused pull and NOT a conflict — …
 //
 // The sentence's own words are "… carries no commit to deliver: … so there is

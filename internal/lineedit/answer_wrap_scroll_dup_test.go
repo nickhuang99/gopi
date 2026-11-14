@@ -22,7 +22,7 @@ package lineedit
 //
 // THE READING MUST BE scrollback + BAND — this is the instrument gap this file used
 // to record and now closes (measured 2026-09-27, task 01a0e355, worktree
-// /home/nick/workspace/gopi-01a0e355b9fd70c19fe5d61f99197fe0). The band's whole
+// /home/user/workspace/gopi-01a0e355b9fd70c19fe5d61f99197fe0). The band's whole
 // mechanism is that a committed line LEAVES it: Region.commitScroll emits one LF
 // inside the scroll region (`CSI 1;<bandBottom> r`), which pushes the band's oldest
 // row off the TOP of that region. The rig feeds a real Screen whose scrolling region

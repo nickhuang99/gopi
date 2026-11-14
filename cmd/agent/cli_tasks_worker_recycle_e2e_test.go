@@ -4,7 +4,7 @@ package main
 // 2026-09-04): a task delivered by a WORKER on a server/single-node must
 // recycle its worktree at close-out — the missing server leg of the
 // finish-cleanup chain that left HOMM3's four feasibility worktrees behind
-// on zbook (PA removed them by hand so the maps merger could see the
+// on zpeer (PA removed them by hand so the maps merger could see the
 // branches). This file drives the REAL binary through the FULL worker chain:
 //
 //	submit → gopi worker (claims, runs a real child via mock LLM) →
@@ -47,7 +47,7 @@ func workerRecycleEnv(t *testing.T, repo string, role string) []string {
 	t.Cleanup(mock.Close)
 	settingsDir := t.TempDir()
 	settingsPath := filepath.Join(settingsDir, "settings.json")
-	// role may be "" (the zbook live shape: NO "role" field, no sync_peers —
+	// role may be "" (the zpeer live shape: NO "role" field, no sync_peers —
 	// the finish-cleanup server arm fires on the empty peer target via
 	// finishCleanupServerTarget()==""), or explicit "server". Either way the
 	// repos table carries the sweep repo for the merger pass.
@@ -186,7 +186,7 @@ func mergeRunLockPath(t *testing.T, env []string) string {
 // (worktree mode) → completes → ITS WORKTREE IS AUTOMATICALLY REMOVED →
 // the branch is unprotected → the NEXT merger pass merges it into master.
 // Zero manual intervention — the exact HOMM3 scenario (4 worktrees needed
-// manual cleanup on zbook).
+// manual cleanup on zpeer).
 func TestWorkerServerDeliveryRecyclesThenMergerMerges(t *testing.T) {
 	if _, err := exec.LookPath("git"); err != nil {
 		t.Skip("git not installed")
@@ -251,7 +251,7 @@ func TestWorkerServerDeliveryRecyclesThenMergerMerges(t *testing.T) {
 	// the repository is the actor allowed to free a row's ground (a process
 	// standing inside a linked worktree of it is a GUEST and is refused by
 	// design — guestRowOwnRefusal). Explicit role=server here; the dirty test
-	// below exercises the REAL zbook shape (no role field, no peers → empty
+	// below exercises the REAL zpeer shape (no role field, no peers → empty
 	// peer target fires the same server arm).
 	stdout, stderr, code := runGopiMapped(t, []string{"worker", "--once"},
 		"", env, repo)
@@ -412,7 +412,7 @@ func TestWorkerServerDeliveryDirtyWorktreeKeepsBranch(t *testing.T) {
 	if err := os.WriteFile(filepath.Join(wt, "wip.txt"), []byte("live bond writing"), 0o644); err != nil {
 		t.Fatal(err)
 	}
-	env := workerRecycleEnv(t, repo, "") // the REAL zbook shape: no role field, no peers
+	env := workerRecycleEnv(t, repo, "") // the REAL zpeer shape: no role field, no peers
 	if _, stderr, code := runGopiMapped(t, []string{"task", "submit",
 		"worker dirty e2e", "--payload", "do the deliverable work", "--task-id", "1085f792-7c16-573d-bc39-dbf503a9ca14",
 		"--repo", repo},
@@ -498,7 +498,7 @@ const (
 // block).
 //
 // Why above pid_max rather than "any pid not currently in /proc" (measured
-// 2026-10-03 on zbook, this test's own flake): the old search scanned
+// 2026-10-03 on zpeer, this test's own flake): the old search scanned
 // 3,000,000..3,999,999, a window that OVERLAPS the live pid range — live pids
 // read 3043482/3044206/3044208 and later 3977341 while ns_last_pid showed
 // 1,648,062, i.e. the allocator hands out free pids from the low end and had
@@ -576,7 +576,7 @@ func envValue(env []string, key string) string {
 // foreign-owner negative case measured on the DELIVERY path (not the sweep):
 // a task's worktree is released at delivery even though another row names the
 // same directory — because that other row's life is OVER and its holder pid is
-// GONE. Before the fix this exact shape stranded /home/nick/workspace/gopi-cov-agent
+// GONE. Before the fix this exact shape stranded /home/user/workspace/gopi-cov-agent
 // (completed row 01a08cfd blocked by cancelled sibling 01a08cd5) and the
 // delivered row's chain reported "worktree ownership mismatch".
 //

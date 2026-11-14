@@ -933,7 +933,7 @@ const syncRemoteDBFlagForPeer = "db"
 // would otherwise read as a mistake: CallerAlias (`--peer <alias>`) is NOT a
 // dial target on these faces — a peer-side handler dials nobody. It is the
 // alias the CALLER reached this peer by, carried so the row's own trail can
-// name where its work went ("handed over to peer zbook…"). The peer cannot
+// name where its work went ("handed over to peer zpeer…"). The peer cannot
 // derive it (the alias lives in the INITIATOR's ssh config), so when it is
 // absent the reason says exactly that instead of inventing a name.
 type SyncTransferPeerFaceOptions struct {

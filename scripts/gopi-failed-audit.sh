@@ -43,7 +43,7 @@
 # USAGE:
 #   scripts/gopi-failed-audit.sh                 # 7-day window (the default)
 #   scripts/gopi-failed-audit.sh --days 3
-#   scripts/gopi-failed-audit.sh --repo /home/nick/work/GoPi --db ~/.gopi/memory.db
+#   scripts/gopi-failed-audit.sh --repo /home/user/work/GoPi --db ~/.gopi/memory.db
 #
 # Rule 1: every literal that carries meaning is a named constant below.
 # Rule 27: static inspection only — this script generates no device load.

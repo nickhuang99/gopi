@@ -4,7 +4,7 @@ package tools
 // `gopi task list --status failed > out.txt` produced a file with NUL bytes
 // because ONE ledger row's summary WAS a raw ELF executable image (measured row
 // 01a09f6d-7753-7321-ba33-8b32b09213e7). Root cause: a bare-prompt run in
-// /home/nick/workspace/peak-bin was started with the built binary as its
+// /home/user/workspace/peak-bin was started with the built binary as its
 // positional argument; readInput reads an existing non-image file as prompt
 // TEXT, so the executable became the prompt and the start hook stored
 // `[auto] ` + its first 200 runes as the ledger summary.
@@ -47,7 +47,7 @@ func elfSummaryFixture() string {
 func TestTaskSummarySanitizerIsIdentityForText(t *testing.T) {
 	for _, s := range []string{
 		"resolve merge conflict: fix/cwd-and-lifetime",
-		"[auto] 背景（nick：harvest 时是否也 push HP 分支回 zbook？）",
+		"[auto] 背景（nick：harvest 时是否也 push HP 分支回 zpeer？）",
 		"fix(build): master tip bd42e827 does not compile — undefined: atomic",
 		"emoji 🙂 and symbols → ✓ § ¶",
 		"tabs\tand\nnewlines fold to spaces",

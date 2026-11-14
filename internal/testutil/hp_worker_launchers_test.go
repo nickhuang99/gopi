@@ -641,7 +641,7 @@ func TestHpWorkerLaunchersDryRunStartsNothing(t *testing.T) {
 				"GOPI_HOME="+sandbox,
 				// NOTE: no launcher override — the dry run must work with the
 				// DEFAULT launcher path, which is exactly the acceptance claim
-				// (/home/nick/bin/gopi-worker-up.sh present, dry run real) and must not
+				// (/home/user/bin/gopi-worker-up.sh present, dry run real) and must not
 				// require that file to exist yet.
 				tc.logKnob+"="+filepath.Join(sandbox, "log"),
 				hpNightStartKnob+"=0", hpNightEndKnob+"=24")
@@ -719,7 +719,7 @@ echo "stub launcher: launching $1 worker(s)"
 exit "${STUB_LAUNCH_EXIT:-0}"
 `)
 	// The DEFAULT launcher path (no override knob) points INSIDE the sandbox:
-	// a refusal must never be able to reach the operator's real /home/nick/bin copy,
+	// a refusal must never be able to reach the operator's real /home/user/bin copy,
 	// whether or not this sandbox's stub is passed explicitly.
 	if err := os.MkdirAll(filepath.Join(sandbox, "bin"), 0o755); err != nil {
 		t.Fatalf("mkdir sandbox bin: %v", err)

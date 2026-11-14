@@ -48,7 +48,7 @@ const nestedProfileExitCode = 2
 // TWO SPELLINGS, ONE PREDICATE (the value's LEAF), and both are measured on
 // this host. The SANDBOX arm (2026-09-26 audit) is the one described above. The
 // ORDINARY-HOME arm is the one that actually put rows in a second ledger
-// (2026-10-13): `GOPI_HOME=/home/nick/.gopi`, no sandbox anywhere in the path,
+// (2026-10-13): `GOPI_HOME=/home/user/.gopi`, no sandbox anywhere in the path,
 // resolved to a nested profile holding 2 rows while the real ledger held 1376 —
 // and `gopi task submit` printed a normal `Task queued: <id>` with exit 0. The
 // first version of this guard asked about the value's PARENT (a sibling sandbox

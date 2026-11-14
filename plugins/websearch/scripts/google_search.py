@@ -2,10 +2,10 @@
 """Google web search — 0-token websearch plugin script (W5, U1 python 迁移).
 
 走 search-bot VPS 跳板（GFW 本地直连 google.com 不通），三层来源：
-  1) 浏览器-SERP（CDP 主路径）：ssh searchbot → 有头 Chrome CDP 网关 (:9232)
+  1) 浏览器-SERP（CDP 主路径）：ssh searchbox → 有头 Chrome CDP 网关 (:9232)
      Runtime.evaluate 导航真实 SERP + 提取 title/url/snippet。
-  2) curl SERP    ：ssh searchbot 'curl https://www.google.com/search ...'（udm=14 纯网页）。
-  3) News RSS 兜底：ssh searchbot curl news.google.com/rss/search（免 JS 真实结果）。
+  2) curl SERP    ：ssh searchbox 'curl https://www.google.com/search ...'（udm=14 纯网页）。
+  3) News RSS 兜底：ssh searchbox curl news.google.com/rss/search（免 JS 真实结果）。
 
 访问路径（2026-08 实证，重要！）：
   - search-bot（DigitalOcean 机房）IPv4 对 google.com/search 返回 reCAPTCHA /sorry
@@ -15,7 +15,7 @@
     预热（先开首页再搜索）与 reCAPTCHA 复选框点击均无效。
   => Epic 所述"IPv6 绕过 google 反爬"在本 VPS 上不成立：IPv6 只是避开 IPv4 的
      302/硬墙，但 SERP 结果永远拿不到。CDP 路径保持为正确架构（网关已在
-     searchbot 上以 systemd google-cdp.service 常驻 + IPv6 强制连接），一旦 Google
+     searchbox 上以 systemd google-cdp.service 常驻 + IPv6 强制连接），一旦 Google
      风控变化或接入住家退出 IP，CDP 主路径自动生效；当前实际由 News RSS 兜底。
   4) News-RSS 的 news.google.com 包装 URL 已实证无法解出真实文章 URL：
      重定向链止于 news.google.com 查看页（JS 渲染），CBMi 载荷为加密/签名数据，
@@ -45,7 +45,7 @@ import xml.etree.ElementTree as ET
 # ---------------------------------------------------------------------------
 # Constants — single source of truth, no magic numbers inline (Rule 1)
 # ---------------------------------------------------------------------------
-SSH_HOST = os.environ.get("SSH_HOST", "searchbot")
+SSH_HOST = os.environ.get("SSH_HOST", "searchbox")
 SSH_OPTS = ["-o", "ConnectTimeout=8", "-o", "BatchMode=yes", "-T"]  # 快速失败 + 非交互
 SSH_TIMEOUT_SEC = 30     # 整个 ssh 往返总超时（curl SERP/RSS，最坏 ~10s + 握手 2-6s）
 CDP_SSH_TIMEOUT_SEC = 40 # CDP 网关往返超时（页面加载 ~3.5s + 轮询 ~15s + 握手 2-6s；IPv6 主路径需留足余量）

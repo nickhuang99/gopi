@@ -21,7 +21,7 @@ package tools
 //	                                   passes
 //
 // MEASURED (2026-11-02, row 01a19d92). In the shared main checkout
-// (/home/nick/work/gopi: master, upstream origin/master, `git status --porcelain`
+// (/home/user/work/gopi: master, upstream origin/master, `git status --porcelain`
 // empty, `git rev-list --count @{u}..HEAD` = 1) SEVEN arms failed with exactly
 // that shape — four in the ref-move family and three in the heredoc family —
 // while the same source tree passed in a clone with no upstream. "Clean + ahead

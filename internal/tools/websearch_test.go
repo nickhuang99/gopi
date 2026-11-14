@@ -420,13 +420,13 @@ func TestWebFetchInvalidURL(t *testing.T) {
 func TestWebFetchScriptUnavailable(t *testing.T) {
 	dir := t.TempDir()
 	if err := os.WriteFile(filepath.Join(dir, "web_fetch.py"),
-		[]byte("#!/usr/bin/env python3\nprint('{\"status\":\"unavailable\",\"url\":\"https://example.com/x\",\"chars\":0,\"truncated\":false,\"content\":\"\",\"message\":\"ssh to searchbot failed\"}')"),
+		[]byte("#!/usr/bin/env python3\nprint('{\"status\":\"unavailable\",\"url\":\"https://example.com/x\",\"chars\":0,\"truncated\":false,\"content\":\"\",\"message\":\"ssh to searchbox failed\"}')"),
 		0o755); err != nil {
 		t.Fatal(err)
 	}
 	t.Setenv(config.WebSearchScriptsDirEnvName, dir)
 	r := mustParseFetch(t, WebFetch("https://example.com/x", 0))
-	if r.Status != "unavailable" || !strings.Contains(r.Message, "searchbot") {
+	if r.Status != "unavailable" || !strings.Contains(r.Message, "searchbox") {
 		t.Fatalf("expected unavailable passthrough: %+v", r)
 	}
 }

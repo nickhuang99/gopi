@@ -5,7 +5,7 @@ package agent
 //
 // THE MEASURED DEFECT (rows 01a154de / 01a1510e / 01a1513b). In the clone
 // channel the parent row's deliverable.repo IS its workspace
-// (/home/nick/workspace/<parent-id>), and that workspace is RECLAIMED when the
+// (/home/user/workspace/<parent-id>), and that workspace is RECLAIMED when the
 // parent's push lands. A reframe/split child then inherited the path through
 // reframeChildRepo (which honours the parent row verbatim), and the clone
 // channel refused it — correctly — but with the WRONG reason: "declares no build

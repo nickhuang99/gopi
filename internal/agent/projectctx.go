@@ -311,7 +311,7 @@ func searchDirsLine(dirs []string) string {
 // never travels with the code. The profile is where this product already keeps
 // its per-machine facts (envctx.Path() resolves environment.md the same way),
 // so the system-level rules live beside it — one location, resolved through
-// ONE function (Rule 2/14), never a hardcoded /home/nick/.gopi and never a shell path.
+// ONE function (Rule 2/14), never a hardcoded /home/user/.gopi and never a shell path.
 //
 // The path is a RESULT even when it cannot be resolved: an unresolvable profile
 // (no HOME, a refused nested GOPI_HOME) leaves ok=false, which the caller

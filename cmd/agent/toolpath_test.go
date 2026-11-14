@@ -16,7 +16,7 @@ import (
 // and `t.Skipf("ctags not available in this environment: %v", err)`
 // (cli_code_search_test.go). What those did not cover is the trio that reaches
 // the SAME binary through a path nobody guarded — measured 2026-10-11 on host
-// nick-sager, `make test-budget PKGS='./internal/tools ./cmd/agent'`:
+// host-a, `make test-budget PKGS='./internal/tools ./cmd/agent'`:
 //
 //	TestCodeSearchBackendNoSymbol      exec: "ctags": executable file not found in $PATH
 //	TestKeywordSearchRunPrintsHitsAndNoMatches  exec: "rg": executable file not found

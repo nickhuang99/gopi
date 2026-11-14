@@ -150,7 +150,7 @@ func TestDeployDriftRefLine_StatesEveryVerdict(t *testing.T) {
 
 // --- The SUMMARY sentence must be incapable of contradicting the lines above it.
 //
-// THE DEFECT (measured 2026-10-29, host nick-sager, deployed artifact d50f746d7):
+// THE DEFECT (measured 2026-10-29, host host-a, deployed artifact d50f746d7):
 // the report printed, in one block,
 //
 //	refs/heads/master:  follows the ref — the artifact was built from it

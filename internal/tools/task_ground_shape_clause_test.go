@@ -8,7 +8,7 @@ package tools
 //
 //	$ test -d .git && echo DIRECTORY            → DIRECTORY
 //	$ git rev-parse --git-common-dir            → .git
-//	$ git remote -v                             → origin zbook:/home/nick/work/gopi
+//	$ git remote -v                             → origin zpeer:/home/user/work/gopi
 //
 // — and its OWN briefing said, in one and the same message, both
 //

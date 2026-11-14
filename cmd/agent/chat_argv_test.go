@@ -1607,8 +1607,8 @@ func TestChatRunArgsReleaseReportNamesItsProvenance(t *testing.T) {
 		// rather than an invention.
 		guardStack := "goroutine 26 [running]:\n" +
 			"runtime/debug.Stack()\n\t/usr/local/go/src/runtime/debug/stack.go:26 +0x5e\n" +
-			"github.com/nick/gopi/cmd/agent.chatRunArgsReleaseStream(0xc000882e00, {0x15bfa08, 0x6}, {0xc0008161a0, 0xf})\n\t/home/nick/workspace/gopi/cmd/agent/chat_argv_test.go:298 +0x156\n" +
-			"github.com/nick/gopi/cmd/agent." + guard + "(0xc000882e00)\n\t/home/nick/workspace/gopi/cmd/agent/chat_argv_test.go:508 +0x4f6\n" +
+			"github.com/nick/gopi/cmd/agent.chatRunArgsReleaseStream(0xc000882e00, {0x15bfa08, 0x6}, {0xc0008161a0, 0xf})\n\t/home/user/workspace/gopi/cmd/agent/chat_argv_test.go:298 +0x156\n" +
+			"github.com/nick/gopi/cmd/agent." + guard + "(0xc000882e00)\n\t/home/user/workspace/gopi/cmd/agent/chat_argv_test.go:508 +0x4f6\n" +
 			"testing.tRunner(0xc000882e00, 0x36dbbe8)\n\t/usr/local/go/src/testing/testing.go:1792 +0xf4\n"
 		if got := chatRunArgsForeignReleaseLabel(guardStack); got != chatRunArgsForeignReleaseMadeByTheGuardLabel {
 			t.Errorf("the manufacturing guard %s classified as %q (convention-following: %v), want %q — its MANUFACTURED "+
@@ -1637,14 +1637,14 @@ func TestChatRunArgsReleaseReportNamesItsProvenance(t *testing.T) {
 	// the measured ones from the whole-package occurrence, which is what makes these
 	// strings a fixture rather than an invention.
 	const (
-		ownReporterFrame  = "github.com/nick/gopi/cmd/agent.chatRunArgsReleaseStream(0xc000882e00, {0x15bfa08, 0x6}, {0xc0008161a0, 0xf})\n\t/home/nick/workspace/gopi/cmd/agent/chat_argv_test.go:298 +0x156\n"
+		ownReporterFrame  = "github.com/nick/gopi/cmd/agent.chatRunArgsReleaseStream(0xc000882e00, {0x15bfa08, 0x6}, {0xc0008161a0, 0xf})\n\t/home/user/workspace/gopi/cmd/agent/chat_argv_test.go:298 +0x156\n"
 		runtimeFrame      = "runtime/debug.Stack()\n\t/usr/local/go/src/runtime/debug/stack.go:26 +0x5e\n"
 		liveArmHeader     = "goroutine 26 [running]:\n"
 		testingFrame      = "testing.tRunner(0xc000882e00, 0x36dbbe8)\n\t/usr/local/go/src/testing/testing.go:1792 +0xf4\n"
-		guardCallerFrame  = "github.com/nick/gopi/cmd/agent.TestChatRunArgsForeignReleaseOfAReadEndIsAttributedNotFatal(0xc000882e00)\n\t/home/nick/workspace/gopi/cmd/agent/chat_argv_test.go:508 +0x4f6\n"
-		caseCallerFrame   = "github.com/nick/gopi/cmd/agent.TestChatRunArgsReleaseClassifierPinsBothSidesOfTheVerdict(0xc000882e00)\n\t/home/nick/workspace/gopi/cmd/agent/chat_argv_test.go:394 +0x1a2\n"
-		genericOwnFrames  = "github.com/nick/gopi/cmd/agent.chatRunArgs[...](0xc000882e00, {0xc0000360f0, 0x1, 0x1})\n\t/home/nick/workspace/gopi/cmd/agent/chat_argv_test.go:111 +0x2a1\n"
-		genericOwnFrames2 = "github.com/nick/gopi/cmd/agent.chatRunArgs[T any](0xc000882e00, {0xc0000360f0, 0x1, 0x1})\n\t/home/nick/workspace/gopi/cmd/agent/chat_argv_test.go:111 +0x2a1\n"
+		guardCallerFrame  = "github.com/nick/gopi/cmd/agent.TestChatRunArgsForeignReleaseOfAReadEndIsAttributedNotFatal(0xc000882e00)\n\t/home/user/workspace/gopi/cmd/agent/chat_argv_test.go:508 +0x4f6\n"
+		caseCallerFrame   = "github.com/nick/gopi/cmd/agent.TestChatRunArgsReleaseClassifierPinsBothSidesOfTheVerdict(0xc000882e00)\n\t/home/user/workspace/gopi/cmd/agent/chat_argv_test.go:394 +0x1a2\n"
+		genericOwnFrames  = "github.com/nick/gopi/cmd/agent.chatRunArgs[...](0xc000882e00, {0xc0000360f0, 0x1, 0x1})\n\t/home/user/workspace/gopi/cmd/agent/chat_argv_test.go:111 +0x2a1\n"
+		genericOwnFrames2 = "github.com/nick/gopi/cmd/agent.chatRunArgs[T any](0xc000882e00, {0xc0000360f0, 0x1, 0x1})\n\t/home/user/workspace/gopi/cmd/agent/chat_argv_test.go:111 +0x2a1\n"
 	)
 	for name, tc := range map[string]struct {
 		stack string

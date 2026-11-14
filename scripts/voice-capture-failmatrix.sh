@@ -161,7 +161,7 @@ case_a() {
     head2 "case (a) no capture device present"
     if ! have arecord; then record a "$SKIP" "$MODE_NO_DEVICE" "no arecord" ""; return; fi
 
-    # a1: this host genuinely has no capture hardware (zbook).
+    # a1: this host genuinely has no capture hardware (zpeer).
     local listing line mode
     listing="$(timeout "$SCRIPT_TIMEOUT_SEC" arecord -l 2>&1 </dev/null || true)"
     if printf '%s' "$listing" | grep -qi 'no soundcards found'; then
@@ -309,7 +309,7 @@ case_d() {
     local raw device=""
     raw="$(raw_capture_device)"
     # A node whose ALSA inventory is empty cannot stage this case at all: the
-    # device it would name is only a /proc entry (the zbook advertises an
+    # device it would name is only a /proc entry (the zpeer advertises an
     # ALC3228 PCM it has no permission to open). Record the honest SKIP and
     # assert the classifier contract from the repo instead.
     if printf '%s' "$(timeout "$SCRIPT_TIMEOUT_SEC" arecord -l 2>&1 </dev/null || true)" | grep -qi 'no soundcards found'; then

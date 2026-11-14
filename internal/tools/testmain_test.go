@@ -147,7 +147,7 @@ func toolsPinBuildCacheSandbox() {
 //
 // IT IS A LIST BECAUSE THE HOST DECIDES, and the host that broke the first
 // version is the ordinary unprivileged CLIENT (measured 2026-10-11, host
-// nick-sager, the run that filed task 01a12b54): there the two historical
+// host-a, the run that filed task 01a12b54): there the two historical
 // candidates are BOTH refused by the very rules this arm exists to honour —
 // the scratch run root sits on /dev/shm (RAM: the 2026-09-15 exhaustion, ban 2)
 // and $HOME/.cache shares the `/` device (Linux with a single large root

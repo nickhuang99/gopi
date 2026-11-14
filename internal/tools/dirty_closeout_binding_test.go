@@ -7,7 +7,7 @@ package tools
 // its own report, FOUR times:
 //
 //	[task-notify] run 01a0af50-5029-75ba-8bac-368ae86a3351 closed out with
-//	  UNCOMMITTED TRACKED WORK in /home/nick/workspace/gopi-merger-takeover-detach:
+//	  UNCOMMITTED TRACKED WORK in /home/user/workspace/gopi-merger-takeover-detach:
 //	  worktree is DIRTY (uncommitted work) — left for a human — entries:
 //	  M cmd/agent/merger_takeover.go
 //	  M cmd/agent/merger_tick_no_child_gate_test.go

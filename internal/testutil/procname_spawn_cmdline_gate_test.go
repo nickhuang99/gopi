@@ -4,7 +4,7 @@ package testutil
 // TestRealWorkerIncarnationMatchesProcStat intermittently RED (task
 // 01a12df6-a237-7a1a-a1a0-37da52723a54).
 //
-// THE DEFECT, as the kernel actually behaves (measured, this host= nick-sager,
+// THE DEFECT, as the kernel actually behaves (measured, this host= host-a,
 // 2026-10-12, production reader internal/procname, 200 trials):
 //
 //	exec.Command(...).Start() returns once the FORK is done; the child has not

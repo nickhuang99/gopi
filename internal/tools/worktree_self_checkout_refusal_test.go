@@ -9,7 +9,7 @@ package tools
 // tick call site in 58b5618b; the acceptance runs as
 // TestMergerPass_ReclaimsDeadHolderWorktree today, and the arm is unchanged; the
 // same run watched
-// /home/nick/workspace/gopi-repro-3480894-decoy disappear 457s in). The
+// /home/user/workspace/gopi-repro-3480894-decoy disappear 457s in). The
 // mechanism has two halves and NEITHER half is a bug on its own:
 //
 //	CWD half  — worktreeSweepRepos() enrols the repo the process's CWD belongs

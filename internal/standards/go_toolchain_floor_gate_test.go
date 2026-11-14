@@ -1,7 +1,7 @@
 // go_toolchain_floor_gate_test.go — the toolchain floor is a FACT with two
 // halves that must agree, and nothing else checked either of them.
 //
-// THE DEFECT THIS PINS (task 01a0f0f4, 2026-09-30, host nick-sager):
+// THE DEFECT THIS PINS (task 01a0f0f4, 2026-09-30, host host-a):
 //
 //	go: errors parsing go.mod:
 //	go.mod:3: invalid go version '1.24.0': must match format 1.23

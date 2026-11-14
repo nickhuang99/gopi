@@ -2,15 +2,15 @@ package main
 
 // chat_ground_replay_notice_test.go — A REPLAY DOES NOT "WRITE IN" ANY DIRECTORY,
 // SO IT MUST NOT SAY THAT IT DOES (row 01a1a629-62f4, the measured defect in
-// /home/nick/.gopi/sessions/01a1a629-9dfb-7a57-baa6-cc824db453a6's attachments).
+// /home/user/.gopi/sessions/01a1a629-9dfb-7a57-baa6-cc824db453a6's attachments).
 //
 // THE DEFECT, AS MEASURED. `gopi chat --replay <id>` is a read-only re-run: under
 // internal/replaymode.Active() the run mints no session (internal/agent/
 // session.go), opens no raw log (internal/agent/rawlog.go), registers no chat
 // slot and writes no `chats` row. And yet its stderr carried
 //
-//	[gopi] chat: this session writes in /home/nick/work/gopi — the MAIN CHECKOUT
-//	of /home/nick/work/gopi. No worktree and no branch of its own: every
+//	[gopi] chat: this session writes in /home/user/work/gopi — the MAIN CHECKOUT
+//	of /home/user/work/gopi. No worktree and no branch of its own: every
 //	read/write/edit/bash round lands uncommitted in that checkout's working area.
 //
 // — a sentence about an event the run cannot produce. The producer's criterion was
@@ -50,7 +50,7 @@ const chatGroundReplayNoticeRecording = "/a/recording/that/does/not/exist.jsonl"
 
 // chatGroundReplayNoticeDir is the directory the notice would have called the
 // session's write target.
-const chatGroundReplayNoticeDir = "/home/nick/work/gopi"
+const chatGroundReplayNoticeDir = "/home/user/work/gopi"
 
 // chatGroundReplayTestResolved is the resolved report a live chat in a repo's
 // main checkout produces — the exact shape whose announcement was the defect.

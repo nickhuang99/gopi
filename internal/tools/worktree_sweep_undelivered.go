@@ -29,11 +29,11 @@ package tools
 // Measured on this host, 2026-10-22, so the file states evidence rather than a
 // story: (a) the anchor axis's `git worktree remove` REFUSES a clone ground
 // ("is not a working tree", exit 128), so that axis cannot be the remover of a
-// clone; (b) every ground standing in /home/nick/workspace on that date was a
+// clone; (b) every ground standing in /home/user/workspace on that date was a
 // clone whose HEAD was already in master (ahead=0) — the loss this rung exists
 // to prevent had not yet happened there, which is why the rung's evidence comes
 // from the mechanism and from the sandbox fixture below, not from a corpse;
-// (c) the removal-audit sink records 735 distinct /home/nick/workspace targets
+// (c) the removal-audit sink records 735 distinct /home/user/workspace targets
 // already removed, 472 of them `gopi-<stem>` LINKED grounds removed by
 // `task-self-reclaim` / `task-self-own-sweep` — the shape whose delivery path
 // dies with the directory.
@@ -346,9 +346,9 @@ func worktreeSweepUndeliveredRefusal(ground, repo, branch string) string {
 	// A DIRECTORY THAT IS ALREADY GONE HAS NOTHING FOR THIS RUNG TO PROTECT, and
 	// the sentence it would otherwise print is simply FALSE. Measured on this
 	// host (2026-10-23) by running the rung for real: the anchor sink still
-	// names /home/nick/workspace/gopi-closeout-sweep, whose own removal record
+	// names /home/user/workspace/gopi-closeout-sweep, whose own removal record
 	// is `{"ts":"2026-10-22T21:13:48","kind":"worktree-removal","arm":
-	// "task-self-own-sweep","target":"/home/nick/workspace/gopi-closeout-sweep"}`
+	// "task-self-own-sweep","target":"/home/user/workspace/gopi-closeout-sweep"}`
 	// — the directory had been gone for a day, while this rung reported "this
 	// directory is that work's only home: push the branch or merge it into
 	// master, then the ground is collectable".

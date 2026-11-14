@@ -152,7 +152,7 @@ var depsInterpreterRes = regexp.MustCompile(`^(` + depsInterpreterNames + `)([0-
 //
 // The program is /proc/<pid>/exe (the real exec'd file): `chrome` there, for
 // both spellings. An interpreter is the one case where the exe is NOT the
-// program — `sh -c /home/nick/bin/gopi-worker-up` is really the script — so for
+// program — `sh -c /home/user/bin/gopi-worker-up` is really the script — so for
 // a shell the argument is judged instead — but only when that argument IS a
 // name (see depsOriginFromProgram). An unreadable exe is `unknown`, never a
 // silent `foreign` (Rule 15).
@@ -179,7 +179,7 @@ func depsResidentOrigin(pid int, parts []string) string {
 //  2. the INTERPRETER branch (measured again 2026-09-26, this commit):
 //     `filepath.Base(<first non-flag argument>)` is only a program name when
 //     the argument is a PATH. For `bash -c "<line>"` it is a command STRING,
-//     so `bash -c "cd /home/nick/workspace/gopi-01a0… && sleep 60"` — a
+//     so `bash -c "cd /home/user/workspace/gopi-01a0… && sleep 60"` — a
 //     generic shell, two of them measured live — read as `origin=gopi`
 //     because the line mentions a WORKTREE DIRECTORY. Worse, the line was the
 //     arm's own invocation, so the count depended on how the report was run

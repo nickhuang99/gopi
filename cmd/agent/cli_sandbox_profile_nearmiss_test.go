@@ -18,8 +18,8 @@
 //     resolves to `$SB/.gopi/.gopi` — a SECOND profile, with no .sandbox-owner.json,
 //     invisible to SweepSandboxes (it sweeps a sandbox ROOT's children), while the
 //     sandbox's own ledger and sessions stay empty.
-//   - ORDINARY HOME (measured 2026-10-13 on sager): `GOPI_HOME=/home/nick/.gopi`
-//     — no sandbox anywhere in the path — resolved to `/home/nick/.gopi/.gopi`,
+//   - ORDINARY HOME (measured 2026-10-13 on sager): `GOPI_HOME=/home/user/.gopi`
+//     — no sandbox anywhere in the path — resolved to `/home/user/.gopi/.gopi`,
 //     whose memory.db held 2 rows while the real ledger held 1376, and
 //     `gopi task submit` printed a normal `Task queued: <id>` with exit 0. The
 //     first version of this guard deliberately let that value through, on the
@@ -194,7 +194,7 @@ func TestSandboxNearMissOptOutIsAnnounced(t *testing.T) {
 // family of the near miss, driven through the real binary: a value that names an
 // ORDINARY home's profile root — no sandbox, no marker, nothing sandbox-shaped
 // anywhere in it. Measured 2026-10-13 on sager with the pre-fix binary:
-// `GOPI_HOME=/home/nick/.gopi` resolved to /home/nick/.gopi/.gopi, whose
+// `GOPI_HOME=/home/user/.gopi` resolved to /home/user/.gopi/.gopi, whose
 // memory.db held 2 rows while the real ledger held 1376, and `gopi task submit`
 // printed a normal `Task queued: <id>` with exit 0.
 //
@@ -317,7 +317,7 @@ func TestNearMissDoublyNestedSpellingIsRefused(t *testing.T) {
 	// The FIXED CONTROL — the arm this test used to assert the OPPOSITE of, and
 	// the flip is the change: a single trailing leaf IS the near miss on its own
 	// leaf, with no sibling sandbox marker to ask about. The pre-fix predicate
-	// required one, which is why `GOPI_HOME=/home/nick/.gopi` walked through it
+	// required one, which is why `GOPI_HOME=/home/user/.gopi` walked through it
 	// (measured 2026-10-13: a second ledger, 2 rows against the real 1376, and a
 	// `Task queued: <id>` with exit 0).
 	if profile, canonical, ok := config.LookupSandboxProfileMisuse(filepath.Join(home, config.ProfileDirName)); !ok {

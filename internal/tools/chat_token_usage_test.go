@@ -75,7 +75,7 @@ func TestChatSessionLogOnMachineIsTheSharedCriterion(t *testing.T) {
 // the one the operator can produce locally: the log IS here, the index simply
 // has no row for it. "no such session" would be false — and it is what the
 // not-found branch said before this split (measured 2026-10-05: 3435 such logs
-// in zbook's own profile).
+// in zpeer's own profile).
 func TestChatShowReportsALogOnThisMachineWithNoIndexRow(t *testing.T) {
 	chatTestEnv(t)
 	const id = "chat-log-here-no-row-9999"

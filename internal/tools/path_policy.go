@@ -150,10 +150,10 @@ const (
 	// worktree root), so reading it as the target refused the exact shape every
 	// reclaim and every cleanup uses:
 	//
-	//	git -C /home/nick/work/GoPi worktree remove /home/nick/workspace/wt
+	//	git -C /home/user/work/GoPi worktree remove /home/user/workspace/wt
 	//
 	// measured 2026-09-15: a verifier that had created its OWN probe worktree
-	// tried that shape and was refused with `target "/home/nick/work/GoPi" is
+	// tried that shape and was refused with `target "/home/user/work/GoPi" is
 	// outside every declared root` — the guard named the repository, not the
 	// worktree — so the probe worktree stayed registered and became permanent
 	// residue (the very leak this fix closes). Every internally generated
@@ -261,8 +261,8 @@ var destructiveShapes = []struct {
 	// checkout is never a worktree root), and refused the command. MEASURED
 	// 2026-09-15 on the unfixed tree, both shapes refused naming the repo:
 	//
-	//	git -C /home/nick/work/GoPi worktree remove /home/nick/workspace/wt
-	//	cd /home/nick/work/GoPi && git worktree remove /home/nick/workspace/wt
+	//	git -C /home/user/work/GoPi worktree remove /home/user/workspace/wt
+	//	cd /home/user/work/GoPi && git worktree remove /home/user/workspace/wt
 	//
 	// The first is the shape EVERY internal removal uses (`git -C <repo>
 	// worktree remove <wt>`) and the second is how a session re-runs it by hand;

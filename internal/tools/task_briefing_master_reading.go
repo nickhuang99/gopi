@@ -7,7 +7,7 @@ package tools
 // was closed against the acceptance criterion «devdoc/DOC-INDEX.tsv 与
 // anchor-number baseline 用 master 的版本», and the deliverable's red/green
 // depended entirely on WHICH ref the reviewer held. Measured in ONE tree
-// (nick-HP-Laptop, 2026-10-14), three different blobs each answering to
+// (host-b, 2026-10-14), three different blobs each answering to
 // "master":
 //
 //	refs/heads/master                  DOC-INDEX.tsv 578ada5ab  2502 lines
@@ -116,8 +116,8 @@ const (
 	// which is the fact that makes the two readings differ at all.
 	//
 	// The peer row ALSO says what the mirrored name is and is NOT — a REF, not a
-	// remote. Measured 2026-10-17 on nick-sager (row 01a14877): `git remote -v`
-	// listed only `zbook`, while refs/remotes/gitPushcheck/master existed and was
+	// remote. Measured 2026-10-17 on host-a (row 01a14877): `git remote -v`
+	// listed only `zpeer`, while refs/remotes/gitPushcheck/master existed and was
 	// the ground's cut point, so `git fetch --quiet gitPushcheck` answered
 	// `fatal: 'gitPushcheck' does not appear to be a git repository` (exit 128)
 	// — and several briefings told executors to run exactly that. The ref table
@@ -162,7 +162,7 @@ const (
 	// above carries the name of the lane that writes it, and a reader told only
 	// the ref's NAME will try `git fetch <that name>` — which is rc=128 on a host
 	// whose remotes are named otherwise (measured here: `git remote -v` lists
-	// `zbook` only). So the clause states, from a measurement of `git remote`,
+	// `zpeer` only). So the clause states, from a measurement of `git remote`,
 	// whether that name is a remote at all, and gives the refresh that is really
 	// runnable when it is not.
 	//

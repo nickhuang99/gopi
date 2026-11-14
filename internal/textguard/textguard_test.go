@@ -32,7 +32,7 @@ func TestIsTextIdentity(t *testing.T) {
 	for _, s := range []string{
 		"",
 		"resolve merge conflict: fix/cwd-and-lifetime",
-		"[auto] 背景（nick：harvest 时是否也 push HP 分支回 zbook？）",
+		"[auto] 背景（nick：harvest 时是否也 push HP 分支回 zpeer？）",
 		"emoji 🙂 and symbols → ✓ § ¶",
 		"tabs\tand\nnewlines are whitespace, not corruption",
 	} {

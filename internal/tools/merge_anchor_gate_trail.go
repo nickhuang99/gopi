@@ -6,7 +6,7 @@ package tools
 // THE GAP. `mergeAnchorGate` has exactly ONE refusing arm and ~26 abstaining
 // ones, and until 2026-10-16 every one of them spoke only into the merger log
 // stream (`taskNotifyLog` → stderr). Nothing on disk kept it: measured
-// 2026-10-16 on nick-HP-Laptop, `~/.gopi/merger/` holds no log file at all, so
+// 2026-10-16 on host-b, `~/.gopi/merger/` holds no log file at all, so
 // after FOUR published-anchor drifts landed on master in ONE day (commits
 // 14861c100 / 57fa55834 / 448d2a67c / 3e07a4052, each a `Merge branch …` whose
 // own diff touched no generated document) the question "which arm let this

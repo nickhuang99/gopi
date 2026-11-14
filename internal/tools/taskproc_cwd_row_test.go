@@ -303,9 +303,9 @@ func TestCwdRowRungComparesOnlyWhenTheRecordNamesARow(t *testing.T) {
 // which is the silent fallback this rung must not have.
 func TestCwdRowEvidenceNameIsAReadNotAPathPrefix(t *testing.T) {
 	for _, dir := range []string{
-		"/home/nick/workspace/" + cwdRowFixtureA,
-		"/home/nick/workspaces/" + cwdRowFixtureA,
-		"/home/nick/.gopi/sessions/" + cwdRowFixtureA,
+		"/home/user/workspace/" + cwdRowFixtureA,
+		"/home/user/workspaces/" + cwdRowFixtureA,
+		"/home/user/.gopi/sessions/" + cwdRowFixtureA,
 		"/somewhere/else/" + cwdRowFixtureA + "-c1",
 		"/somewhere/else/" + cwdRowFixtureA + "-r2",
 	} {
@@ -318,11 +318,11 @@ func TestCwdRowEvidenceNameIsAReadNotAPathPrefix(t *testing.T) {
 		}
 	}
 	for _, dir := range []string{
-		"/home/nick/work/gopi",
-		"/home/nick/.gopi/sessions",
+		"/home/user/work/gopi",
+		"/home/user/.gopi/sessions",
 		"/",
-		"/home/nick/workspace/not-a-row-name",
-		"/home/nick/workspace/" + cwdRowFixtureA + "-z1",
+		"/home/user/workspace/not-a-row-name",
+		"/home/user/workspace/" + cwdRowFixtureA + "-z1",
 	} {
 		if row, ok := sessionContainerRowOf(dir); ok {
 			t.Fatalf("%s: read as row %q — a non-minted name must answer 'names no row'", dir, row)

@@ -50,7 +50,7 @@ const (
 	zzMainDepEvidence     = "devdoc/evidence/tui-two-defects/"
 	zzMainDepTestFile     = "internal/uiclient/live_emphasis_attr_test.go"
 	zzMainDepMeasuredRow  = "01a0dabe-3fa1-7cc8-b601-66f1456b8ffd"
-	zzMainDepRepositoryID = "/home/nick/work/GoPi"
+	zzMainDepRepositoryID = "/home/user/work/GoPi"
 )
 
 // zzMainDepFixture is the measured shape on a throwaway repo: the main checkout

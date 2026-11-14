@@ -11,7 +11,7 @@ package tools
 // registration no row had ever created was printed under whatever row happened to
 // be closing out at that moment:
 //
-//	task 01a17dcd-c59c-7344-a99a-83133d4416c7: own-worktree-release: own registered worktree kept: /home/nick/workspace/cptest-verify — worktree is DIRTY (uncommitted work) — left for a human
+//	task 01a17dcd-c59c-7344-a99a-83133d4416c7: own-worktree-release: own registered worktree kept: /home/user/workspace/cptest-verify — worktree is DIRTY (uncommitted work) — left for a human
 //
 // The directory was a chat's hand-made verification checkout, the seven files in
 // it belonged to a DIFFERENT task, and `01a17dcd`'s own commit was complete and

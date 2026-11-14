@@ -85,7 +85,7 @@ func TestGroundAnnouncementClauseNamesTheGroundAndForbidsASecondWorktree(t *test
 func TestGroundEvidenceClauseNamesTheRunsAllowedDestination(t *testing.T) {
 	const (
 		row    = "t-groundevidence"
-		ground = "/home/nick/workspace/gopi-01a0dbec"
+		ground = "/home/user/workspace/gopi-01a0dbec"
 	)
 	reportPath, err := TaskReportPath(row)
 	if err != nil {

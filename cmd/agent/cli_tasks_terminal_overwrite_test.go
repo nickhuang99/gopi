@@ -36,7 +36,7 @@ func failedRowWithNetworkDeath(t *testing.T, row string) {
 		t.Fatalf("TaskNew: %v", err)
 	}
 	if _, err := tools.TaskUpdateReason(row, tools.TaskStatusFailed,
-		"gopi run failed: exit status 1 — child stderr: read tcp 192.168.1.12:52098->121.204.231.156:443: read: connection timed out "+
+		"gopi run failed: exit status 1 — child stderr: read tcp 192.0.2.12:52098->203.0.113.156:443: read: connection timed out "+
 			"— task run failed (abnormal child exit)",
 		""); err != nil {
 		t.Fatalf("the failed verdict: %v", err)

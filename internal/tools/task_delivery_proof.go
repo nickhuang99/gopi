@@ -6,8 +6,8 @@ package tools
 // INCIDENT (row 01a163df-a105-71b8-a297-680c5d35d093, measured 2026-10-22).
 // The row reads `status: completed`, its deliverable is
 //
-//	{"branch":"master","repo":"/home/nick/work/gopi",
-//	 "worktree":"/home/nick/workspace/01a163df-a105-71b8-a297-680c5d35d093"}
+//	{"branch":"master","repo":"/home/user/work/gopi",
+//	 "worktree":"/home/user/workspace/01a163df-a105-71b8-a297-680c5d35d093"}
 //
 // and the ground it names is a CLONE-channel workspace whose three commits
 // never reached the delivery point:
@@ -295,7 +295,7 @@ type deliveryProofSaw struct {
 // delivery point reported and the point's own URL. A clone ground's tracking
 // ref and the recorded repo's are different worlds, and the note must say WHICH
 // was consulted; a delivery point is a third world, and saying "origin/master in
-// /home/nick/workspace/<task>" would name a cache while claiming the point.
+// /home/user/workspace/<task>" would name a cache while claiming the point.
 type deliveryProofRef struct {
 	Ref string
 	At  string
@@ -365,7 +365,7 @@ func deliveryProofGitRead(ctx context.Context, dir string, args ...string) strin
 // no removal-audit record kept its sha" — while their commits were ancestors of
 // origin/master (6afc5ae5, 8f12b871, 7c8079dc, 5f4c675f). Measured on this host:
 //
-//	$ ls -d /home/nick/workspace/01a17de7-fe23-72c1-b4ad-70141607c6ea
+//	$ ls -d /home/user/workspace/01a17de7-fe23-72c1-b4ad-70141607c6ea
 //	ls: cannot access '...': No such file or directory        ← witness (1) gone
 //	$ grep '"kind":"branch-delete".*"branch":"task/01a17de7fe2372c1b4ad70141607c6ea"' \
 //	      ~/.gopi/logs/removal-audit.log | wc -l

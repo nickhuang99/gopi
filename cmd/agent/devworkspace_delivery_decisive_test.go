@@ -37,7 +37,7 @@ func pullConflictBlocker() *devworkspace.Blocker {
 	return &devworkspace.Blocker{
 		Kind: devworkspace.BlockerKindPull,
 		Step: "git pull --rebase origin master",
-		Words: "git pull --rebase origin master refused (exit: 1) | From zbook:/home/nick/work/gopi ; " +
+		Words: "git pull --rebase origin master refused (exit: 1) | From zpeer:/home/user/work/gopi ; " +
 			"* branch            master     -> FETCH_HEAD ; 138f611..f2d6d39  master     -> origin/master ; " +
 			"Rebasing (1/1)Auto-merging cmd/agent/cli_resume.go ; " +
 			"Auto-merging internal/tools/task_holder_resume.go ; " +
@@ -67,7 +67,7 @@ func buildFailureBlocker() *devworkspace.Blocker {
 // 200-rune ledger summary a run actually writes.
 func TestDeliverySummaryCarriesThePullConflictDecisiveLine(t *testing.T) {
 	blk := pullConflictBlocker()
-	briefing := deliveryRetryBriefing(blk, "/home/nick/workspace/01a17df9-824d-7a54-bd7e-fc8e84247ce4", 1)
+	briefing := deliveryRetryBriefing(blk, "/home/user/workspace/01a17df9-824d-7a54-bd7e-fc8e84247ce4", 1)
 	summary := agent.AutoTaskSummaryLine(briefing)
 
 	if !strings.HasPrefix(summary, agent.AutoTaskSummaryPrefix) {
@@ -107,7 +107,7 @@ func TestDeliverySummaryCarriesThePullConflictDecisiveLine(t *testing.T) {
 	// executed, with its real output pasted — not `-h`).
 	t.Logf("deliveryRetryBriefing → agent.AutoTaskSummaryLine = %q (%d runes); STORED (first %d) = %q",
 		summary, utf8.RuneCountInString(summary), agent.AutoTaskSummaryBudget, stored)
-	if strings.Contains(stored, "From zbook:") && strings.Index(stored, "From zbook:") < strings.Index(stored, "CONFLICT") {
+	if strings.Contains(stored, "From zpeer:") && strings.Index(stored, "From zpeer:") < strings.Index(stored, "CONFLICT") {
 		t.Fatalf("the fetch plumbing must not precede the decisive line:\n%s", summary)
 	}
 }
@@ -158,7 +158,7 @@ func TestDeliverySummaryCarriesTheDirtyPathDecisiveLine(t *testing.T) {
 func TestDeliveryBriefingSaysWhenNoDecisiveLineCouldBeExtracted(t *testing.T) {
 	blk := &devworkspace.Blocker{
 		Kind:  devworkspace.BlockerKindPull,
-		Words: "git pull --rebase origin master refused (exit: 1) | From zbook:/home/nick/work/gopi",
+		Words: "git pull --rebase origin master refused (exit: 1) | From zpeer:/home/user/work/gopi",
 	}
 	note := blk.DecisiveLines()
 	if note.Found() {
@@ -176,7 +176,7 @@ func TestDeliveryBriefingSaysWhenNoDecisiveLineCouldBeExtracted(t *testing.T) {
 	if !strings.Contains(briefing, fmt.Sprintf("%d 段", 2)) && !strings.Contains(briefing, "段只是") {
 		t.Fatalf("the non-answer must report how much output it read:\n%s", briefing)
 	}
-	if !strings.Contains(briefing, "From zbook:/home/nick/work/gopi") {
+	if !strings.Contains(briefing, "From zpeer:/home/user/work/gopi") {
 		t.Fatalf("the tool's words must still be handed over verbatim:\n%s", briefing)
 	}
 }

@@ -109,7 +109,7 @@ func TestStatusRowCarriesNoThemeResolvedColour(t *testing.T) {
 		{"thinking", Status{Label: label, Live: "thinking…", Thinking: true}, 200},
 		{"no-live", Status{Label: label}, 200},
 		{"narrow", Status{Label: label, Live: "ready"}, 12},
-		{"long-tool", Status{Label: "m" + StatusSep + ToolGlyph + " read /home/nick/work/GoPi/internal/lineedit/palette.go", Live: "ready", Thinking: true}, 200},
+		{"long-tool", Status{Label: "m" + StatusSep + ToolGlyph + " read /home/user/work/GoPi/internal/lineedit/palette.go", Live: "ready", Thinking: true}, 200},
 	}
 	for _, tc := range states {
 		row := styledStatusLine(tc.st, tc.cols, BasicPalette)

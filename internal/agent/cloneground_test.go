@@ -3,7 +3,7 @@ package agent
 // cloneground_test.go — the BARE-PROMPT face's clone channel, pinned on both
 // arms.
 //
-// THE DEFECT THESE TESTS CLOSE (measured on zbook 2026-10-23, row 01a16520):
+// THE DEFECT THESE TESTS CLOSE (measured on zpeer 2026-10-23, row 01a16520):
 // with settings `dev_repo` set, `echo "…" | gopi` was the ONE face that ignored
 // the channel — it auto-registered a row whose deliverable was the process's
 // own git work tree (tools.TaskAutoDeliverableJSON) and worked in a Rule-6a
@@ -202,8 +202,8 @@ func TestBarePromptCloneChannelGroundsTheRunInTheCloneWorkspace(t *testing.T) {
 // there and published THAT as its ground. Two directories then existed and the
 // run's own briefing named the one it had just left:
 //
-//	01a17da5's briefing: "工作区仍是你的，在 /home/nick/workspace/01a17d6d-…"
-//	01a17da5's ground:   /home/nick/workspace/01a17da5-…   (0 ahead, 0 behind)
+//	01a17da5's briefing: "工作区仍是你的，在 /home/user/workspace/01a17d6d-…"
+//	01a17da5's ground:   /home/user/workspace/01a17da5-…   (0 ahead, 0 behind)
 //
 // The old ground held the three undelivered commits; the announced one was
 // empty; the delivery leg publishes the ANNOUNCED one — so delivery could never

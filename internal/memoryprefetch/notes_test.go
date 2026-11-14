@@ -14,8 +14,8 @@ func sampleNote(id int, session string) NoteHit {
 		Session:   session,
 		Round:     7,
 		Note:      "prefetch 只查 memory 知识库一条腿；round 级 [IMPORTANT] 笔记索引必须并列检索",
-		Host:      "nick-HP-Laptop",
-		Path:      "/home/nick/.gopi/sessions/2026-12-08-abc/notes.jsonl",
+		Host:      "host-b",
+		Path:      "/home/user/.gopi/sessions/2026-12-08-abc/notes.jsonl",
 		CreatedAt: 1765000000,
 	}
 }
@@ -43,10 +43,10 @@ func TestNoteHits_CarryTheirSourceIndexAndProvenance(t *testing.T) {
 		if h.Note == "" {
 			t.Fatalf("hit %d carries no note text", i)
 		}
-		if !strings.Contains(h.TierCell, "nick-HP-Laptop") {
+		if !strings.Contains(h.TierCell, "host-b") {
 			t.Fatalf("hit %d provenance cell does not name the host: %q", i, h.TierCell)
 		}
-		if !strings.Contains(h.TierCell, "/home/nick/.gopi/sessions/2026-12-08-abc/notes.jsonl") {
+		if !strings.Contains(h.TierCell, "/home/user/.gopi/sessions/2026-12-08-abc/notes.jsonl") {
 			t.Fatalf("hit %d provenance cell does not carry the FULL path: %q", i, h.TierCell)
 		}
 		if !strings.Contains(h.TierCell, "round 7") {

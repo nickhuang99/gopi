@@ -16,7 +16,7 @@ import (
 //
 // ROOT CAUSE THIS FILE EXISTS FOR (2026-09-26, measured): the suite root is an
 // operator-chosen scratch home, and on this host that home is
-// /home/nick/workspace/gopi-test-scratch — on the BOOT BLOCK DEVICE
+// /home/user/workspace/gopi-test-scratch — on the BOOT BLOCK DEVICE
 // (measured: stat -c %d = 2052, ext4 /dev/sda4; `/` is 2051). The pin's own
 // startup line says so ("the ledger sandbox … is on block-backed filesystem
 // type 0xef53 (device-backed): every fresh ledger's first open pays that

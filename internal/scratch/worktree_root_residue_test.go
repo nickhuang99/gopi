@@ -11,7 +11,7 @@ import (
 // worktree_root_residue_test.go — the regression guards for the worktree-root
 // CENSUS (worktree_root_residue.go).
 //
-// THE DEFECT EACH ONE PINS (measured 2026-10-07): /home/nick/workspace held 95
+// THE DEFECT EACH ONE PINS (measured 2026-10-07): /home/user/workspace held 95
 // `gopi-*` directories and exactly SEVEN were `git worktree list` registrations.
 // Nothing reported the difference, so the root read as "many worktrees" and the
 // residue families were in nobody's scope. The two failure modes a fix must not

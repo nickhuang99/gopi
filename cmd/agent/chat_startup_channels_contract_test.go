@@ -73,7 +73,7 @@ func chatStartupNoticeSentences() []struct {
 		{
 			name: "slot self-check",
 			text: chatSlotNotice + chatSessionSlotSelfCheckLine(
-				ChatSessionSlotEntry{Index: 3, Path: "/home/nick/.gopi/chat_session_id_3.txt"}, "/home/nick/.gopi/sessions/abc"),
+				ChatSessionSlotEntry{Index: 3, Path: "/home/user/.gopi/chat_session_id_3.txt"}, "/home/user/.gopi/sessions/abc"),
 		},
 		{
 			name: "policy posture",

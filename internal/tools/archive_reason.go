@@ -4,7 +4,7 @@ package tools
 //
 // INCIDENT: at 21:04 on 2026-09-16 nine `refs/tags/archive/<branch>` refs
 // appeared within ONE second (the loose-ref mtimes are identical to the
-// millisecond) for nine branches in /home/nick/work/GoPi — five of them
+// millisecond) for nine branches in /home/user/work/GoPi — five of them
 // carrying `completed` task rows — with no ledger row and no reason recorded
 // anywhere. Every in-code archive lane (the park lane, the merge-time compile
 // gates) writes an ANNOTATED record next to the ref; these nine had none, and
@@ -457,7 +457,7 @@ const (
 //
 // It is deliberately NOT the caller's path (epic 01a14a8c, measured 2026-10-15):
 // `gopi task archive` is normally run from a linked worktree
-// (/home/nick/workspace/gopi-<task>), while the ref store it writes into is the
+// (/home/user/workspace/gopi-<task>), while the ref store it writes into is the
 // SHARED one (<main>/.git). Recording the caller's checkout made the field name
 // a directory the finish-cleanup chain deletes at hand-over — so the record's
 // claim about where the decision lives became false the moment the worktree was
@@ -1163,7 +1163,7 @@ type archiveOwner struct {
 // than no report).
 //
 // THE RANK IS THE SAFETY ORDER, NOT THE LIFECYCLE ORDER (measured 2026-10-07,
-// zbook, run 01a115c3, branch task/01a113e467767eb9a4c33cb1df1cdfbb). Four rows
+// zpeer, run 01a115c3, branch task/01a113e467767eb9a4c33cb1df1cdfbb). Four rows
 // named that ONE branch — among them a `cancelled` one, a `completed` one and
 // an `in_progress` one — and the old rule ("an OPEN row supersedes a DECIDED
 // one") was ALREADY satisfied by the `cancelled` row: archiveOwnerDecided is

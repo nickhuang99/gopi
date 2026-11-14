@@ -4,11 +4,11 @@ package tools
 // the regression the epic was filed for: a repo whose git REMOTE NAME and whose
 // declared ssh ALIAS are not the same string must still DELIVER.
 //
-// MEASURED 2026-10-12 on sager: `sync_peers: ["zbook"]` while `git remote -v`
+// MEASURED 2026-10-12 on sager: `sync_peers: ["zpeer"]` while `git remote -v`
 // listed only `origin`. The client close-out chain composed its target as
 // `<alias>:<path>`, read the topology alias as if it were a git remote name, and
 // every delivery leg died on git's own
-// `fatal: 'zbook' does not appear to be a git repository` — a sentence that
+// `fatal: 'zpeer' does not appear to be a git repository` — a sentence that
 // names neither the declared peer nor the remotes that DO exist here.
 //
 // The three properties pinned below, in the order they matter:
@@ -56,7 +56,7 @@ const prtAliasInRemoteName = "peer-remote"
 // prtAliasNotARemote is the alias used by the mismatch / diagnosis arms: this
 // repo configures NO remote of that name (it has `origin`), which is the sager
 // shape the epic was filed for.
-const prtAliasNotARemote = "zbook"
+const prtAliasNotARemote = "zpeer"
 
 // prtChainReport runs the close-out chain for the fixture with the DECLARED
 // topology in force — never with an injected target, so what runs is the
@@ -214,7 +214,7 @@ func TestDeliveryTargetUsesTheReposOwnRemoteName(t *testing.T) {
 // MINIMAL REPRODUCTION of the regression this epic was filed for, and it is the
 // smallest world in which it appears: a REAL repository that configures a git
 // remote whose name IS the declared alias — the shape this checkout itself has
-// (`git remote -v` → `zbook`), which is why the defect reached master.
+// (`git remote -v` → `zpeer`), which is why the defect reached master.
 //
 // THE TWO SIDES, and which one moved (memory #6569's method: narrow to the
 // smallest sample, then decide with evidence — never by weakening a claim):
@@ -226,8 +226,8 @@ func TestDeliveryTargetUsesTheReposOwnRemoteName(t *testing.T) {
 // contract is real". MEASURED, by executing git in a repository that does NOT
 // configure the name (the state of every repo a leg actually pushes FROM):
 //
-//	git fetch zbook  →  fatal: 'zbook' … unknown transport
-//	git push  zbook  →  fatal: 'zbook' does not appear to be a git repository
+//	git fetch zpeer  →  fatal: 'zpeer' … unknown transport
+//	git push  zpeer  →  fatal: 'zpeer' does not appear to be a git repository
 //
 // A remote name is not a transport; it is a per-repo local alias, resolvable
 // only where declared. A delivery target is handed to git in the ROW's repo. So
@@ -294,7 +294,7 @@ func TestFinishCleanupTargetHoldsTheWireFormWhenTheAliasIsARemoteName(t *testing
 // If the two could ever disagree, a delivery would be dialled differently
 // depending on a per-repository config the receiving side cannot see, which is
 // precisely the defect (peerRemoteTarget.SSHTarget carries the measurement:
-// `git push zbook` → "does not appear to be a git repository").
+// `git push zpeer` → "does not appear to be a git repository").
 //
 // NOTE on the subtest names: they are deliberately shell-safe (no parentheses,
 // no commas). t.TempDir() derives its directory name from the test name, and

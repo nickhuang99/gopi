@@ -15,7 +15,7 @@ package tools
 // directory the run's own end deletes:
 //
 //	$ gopi task show 01a1604a-63d9-…
-//	deliverable.repo: /home/nick/workspace/01a16033-c069-72fe-8b4e-d15d706f41ac
+//	deliverable.repo: /home/user/workspace/01a16033-c069-72fe-8b4e-d15d706f41ac
 //	reason: clone channel: repo "…/01a16033-c069-…" is not usable: the directory
 //	        no longer exists on disk — refusing to push a workspace that cannot
 //	        be built …   runs: none (no run log in the directory)
@@ -93,18 +93,18 @@ const (
 // — anything at or below the root. The root is not a private namespace: by
 // default it IS `<home>/workspace` (worktreeroots.DefaultRoot), which is where
 // checkouts, an operator's scratch repositories and — on this host — the test
-// suite's own scratch home (`/home/nick/workspace/gopi-test-scratch`) live. A
+// suite's own scratch home (`/home/user/workspace/gopi-test-scratch`) live. A
 // plain `git init` fixture two levels down was therefore announced as "the
 // clone channel's workspace for one run (under the workspace root …)" and
 // refused, though no run had ever touched it:
 //
 //	$ go test ./cmd/agent -run TestTaskVerbCloneCarriesARepo
 //	--- FAIL: TestTaskVerbCloneCarriesARepo
-//	    gopi task clone … --repo /home/nick/workspace/gopi-test-scratch/queue/queue-device-cli-clone-repo-3615867/override-main
+//	    gopi task clone … --repo /home/user/workspace/gopi-test-scratch/queue/queue-device-cli-clone-repo-3615867/override-main
 //	    exit 1 (want 0)
-//	    gopi task clone: task clone: --repo: no durable repository for /home/nick/workspace/gopi-test-scratch/queue/queue-device-cli-clone-repo-3615867/override-main:
+//	    gopi task clone: task clone: --repo: no durable repository for /home/user/workspace/gopi-test-scratch/queue/queue-device-cli-clone-repo-3615867/override-main:
 //	    it is the clone channel's workspace for one run (under the workspace root
-//	    "/home/nick/workspace"), so it cannot be the row's deliverable.repo — the
+//	    "/home/user/workspace"), so it cannot be the row's deliverable.repo — the
 //	    checkout declares no readable origin remote: … No such remote 'origin'
 //
 // The channel produces exactly one depth: `devworkspace.Dir(root, taskID)` is

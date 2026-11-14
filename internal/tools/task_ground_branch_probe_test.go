@@ -9,13 +9,13 @@ package tools
 // clone-channel run is the shared main checkout — and a clone's refs exist
 // nowhere else. The live commands, run against that row's real directories:
 //
-//	$ git -C /home/nick/work/gopi rev-parse --verify --quiet \
+//	$ git -C /home/user/work/gopi rev-parse --verify --quiet \
 //	      refs/heads/task/01a17df21d647624b08ef6ba187631b2 ; echo $?
 //	1
-//	$ git -C /home/nick/workspace/01a17df2-1d64-7624-b08e-f6ba187631b2 \
+//	$ git -C /home/user/workspace/01a17df2-1d64-7624-b08e-f6ba187631b2 \
 //	      rev-parse refs/heads/task/01a17df21d647624b08ef6ba187631b2
 //	3af81a93271e80356c99b95263a125a808a27e67
-//	$ ls -ld /home/nick/workspace/01a17df2-…/.git
+//	$ ls -ld /home/user/workspace/01a17df2-…/.git
 //	drwxrwxr-x 8 nick nick 4096 Oct 28 01:47 …/.git     # a DIRECTORY ⇒ CLONE
 //
 // and the ledger said NOT FOUND. So a delivered-but-stuck run read exactly like

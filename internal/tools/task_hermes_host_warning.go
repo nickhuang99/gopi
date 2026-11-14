@@ -5,11 +5,11 @@ package tools
 //
 // WHY THIS EXISTS (measured, 2026-10-03, rows 01a0fe63 → 01a0fe67): a
 // hermes-agent task was submitted on the ZBOOK ledger while hermes-agent is
-// HP's (nick-HP-Laptop) working tree. The repo verification at submit time
-// PASSED — because /home/nick/work/hermes-agent EXISTS ON ZBOOK TOO (it is
+// HP's (host-b) working tree. The repo verification at submit time
+// PASSED — because /home/user/work/hermes-agent EXISTS ON ZBOOK TOO (it is
 // HP's git upstream, a real work tree, non-bare, on branch `hot-note`) — so
 // `git rev-parse --is-inside-work-tree` said "true" on the WRONG host. The
-// row sat on zbook's ledger (`role=server`, `sync_peers=[]` ⇒ nothing
+// row sat on zpeer's ledger (`role=server`, `sync_peers=[]` ⇒ nothing
 // forwards it) until a human noticed, exported the payload and re-submitted
 // it as 01a0fe67 on HP.
 //
@@ -63,7 +63,7 @@ const HermesOwnerHostEnv = "GOPI_HERMES_OWNER_HOST"
 // hostname of that node (`ssh hp hostname`, 2026-10-03). It is the default
 // only — taskHermesOwnerHost resolves the knob first, so a second fleet does
 // not read this one operator's machine name as a rule about itself.
-const taskHermesOwnerHostDefault = "nick-HP-Laptop" // the measured owner: see GOPI.md Rule 40
+const taskHermesOwnerHostDefault = "host-b" // the measured owner: see GOPI.md Rule 40
 
 // taskHermesOwnerHost resolves the owning host: the knob, else the measured
 // default. One reader, so the predicate and the warning text agree.

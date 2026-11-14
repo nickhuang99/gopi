@@ -27,7 +27,7 @@ package tools
 // (3af81a93271e80356c99b95263a125a808a27e67) can no longer be read in ANY repo
 // on this machine:
 //
-//	$ git -C /home/nick/work/gopi cat-file -t 3af81a93…
+//	$ git -C /home/user/work/gopi cat-file -t 3af81a93…
 //	fatal: git cat-file: could not get object info
 //
 // That is what "B was never fixed" costs: the loss is not that a branch is

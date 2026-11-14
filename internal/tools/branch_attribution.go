@@ -18,9 +18,9 @@ package tools
 // worktree for an ordinary row, and it runs when the run is already over.
 //
 // THE MEASURED DEFECT this file closes (row 01a0a996, live during the change):
-// status=in_progress, claimed_by=zbook:3680671 (that pid is GONE — the wrapper
+// status=in_progress, claimed_by=zpeer:3680671 (that pid is GONE — the wrapper
 // was killed), deliverable.branch=fix/live-runner-not-dead-holder (the ref no
-// longer exists — it was merged), deliverable.worktree=/home/nick/workspace/
+// longer exists — it was merged), deliverable.worktree=/home/user/workspace/
 // gopi-live-veto (the directory no longer exists). Two independent sweep arms
 // look at that row and both answer wrongly:
 //

@@ -368,8 +368,8 @@ func TestWebM2B5_TranscriptCarriesToolNameAndSummaryForReplay(t *testing.T) {
 	// The digest rule itself, at its narrowest (the minimal sample): a stamped
 	// result digests to the PAYLOAD line, an unstamped one to its own first
 	// line, an empty result to "", and the rune cap never cuts mid-character.
-	stampedSample := "[tool_use id: call_x]\nnick-HP-Laptop\n"
-	if got := agent.ToolResultDigest(stampedSample, webTranscriptDigestMaxRunes); got != "nick-HP-Laptop" {
+	stampedSample := "[tool_use id: call_x]\nhost-b\n"
+	if got := agent.ToolResultDigest(stampedSample, webTranscriptDigestMaxRunes); got != "host-b" {
 		t.Errorf("ToolResultDigest(%q) = %q, want the payload line", stampedSample, got)
 	}
 	if got := agent.ToolResultDigest("plain\nrest", webTranscriptDigestMaxRunes); got != "plain" {

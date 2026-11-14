@@ -266,7 +266,7 @@ func WriteControlText(path string, body []byte) error {
 // controlTmpPath is the in-flight write path for ONE write of `path`: the
 // caller's path plus a suffix unique to (this process, this write).
 //
-// WHY IT IS NOT A CONSTANT SUFFIX (measured 2026-10-15, host nick-sager). The
+// WHY IT IS NOT A CONSTANT SUFFIX (measured 2026-10-15, host host-a). The
 // predecessor spelled `path + controlTmpSuffix`, i.e. ONE tmp name shared by
 // EVERY writer of that control file. A control file has several writers by
 // design — a worker's state record is flushed from its loop goroutine and from

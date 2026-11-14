@@ -121,7 +121,7 @@ func covPushbackClient(t *testing.T, peerRepo string) string {
 	// Adopt: master → peer, then the integrated branch's tip → peer master
 	// (i.e. the server merged it and deleted the client-side ref's twin).
 	// NB: push to the LITERAL target path (what gitPushbackDefault composes:
-	// <peer>:/home/nick/work/GoPi) — git resolves it to the local bare repo above.
+	// <peer>:/home/user/work/GoPi) — git resolves it to the local bare repo above.
 	covGit(t, clientDir, "push", "-q", peerRepo, "master:master")
 	covGit(t, clientDir, "push", "-q", peerRepo, "cov-integrated:master")
 	// The client learns the peer's new master (what a fetch does) and bases the

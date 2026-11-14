@@ -12,7 +12,7 @@ package testutil
 //
 // **`cmd.Dir` does NOT override `GIT_DIR`.** GIT_DIR, once set, has top
 // priority: cmd.Dir only changes a cwd that git then ignores. A run that had
-// exported GIT_DIR=/home/nick/work/GoPi/.git (to give an unrelated provenance
+// exported GIT_DIR=/home/user/work/GoPi/.git (to give an unrelated provenance
 // probe a git context) therefore made the fixture's `git init` RE-INITIALISE
 // the real repository, and `git add -A` + `git commit` committed the real
 // working tree — 12 fixture commits took the real master tree from 7678 files

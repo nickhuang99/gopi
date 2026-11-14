@@ -536,14 +536,14 @@ entry_header 005 sandbox-show "gopi tool sandbox show" yes \
   "框住 \`source=\` 字段：真正值钱的不是路径本身，而是"这个路径是谁定的"——没有它，一个指向别处的沙盒根目录看起来和默认值毫无区别。"
 entry_input "$E_SB" \
   "$BIN tool sandbox show" \
-  "GOPI_SANDBOX_DIR=/home/nick/workspace/_materials-d-demo-root $BIN tool sandbox show" \
-  "$BIN tool sandbox show --sandbox-dir /home/nick/workspace/_materials-d-demo-flag" \
+  "GOPI_SANDBOX_DIR=/home/user/workspace/_materials-d-demo-root $BIN tool sandbox show" \
+  "$BIN tool sandbox show --sandbox-dir /home/user/workspace/_materials-d-demo-flag" \
   "GOPI_HOME=$E_SB $BIN session log --last"
 run_cmd "$E_DIR/02-output.txt" "$BIN tool sandbox show" "$BIN" tool sandbox show
-run_cmd "$E_DIR/02-output.txt" "GOPI_SANDBOX_DIR=/home/nick/workspace/_materials-d-demo-root $BIN tool sandbox show" \
-  GOPI_SANDBOX_DIR=/home/nick/workspace/_materials-d-demo-root "$BIN" tool sandbox show
-run_cmd "$E_DIR/02-output.txt" "$BIN tool sandbox show --sandbox-dir /home/nick/workspace/_materials-d-demo-flag" \
-  "$BIN" tool sandbox show --sandbox-dir /home/nick/workspace/_materials-d-demo-flag
+run_cmd "$E_DIR/02-output.txt" "GOPI_SANDBOX_DIR=/home/user/workspace/_materials-d-demo-root $BIN tool sandbox show" \
+  GOPI_SANDBOX_DIR=/home/user/workspace/_materials-d-demo-root "$BIN" tool sandbox show
+run_cmd "$E_DIR/02-output.txt" "$BIN tool sandbox show --sandbox-dir /home/user/workspace/_materials-d-demo-flag" \
+  "$BIN" tool sandbox show --sandbox-dir /home/user/workspace/_materials-d-demo-flag
 run_cmd "$E_DIR/02-output.txt" "GOPI_HOME=$E_SB $BIN session log --last" GOPI_HOME="$E_SB" "$BIN" session log --last
 entry_card
 entry_render 0 \
@@ -593,14 +593,14 @@ entry_input "$E_SB" \
   "$BIN tool sandbox bogus" \
   "$BIN tool sandbox run --label $LABEL_PREFIX-007-$RUNSTAMP" \
   "$BIN tool sandbox run --bogus -- echo hi" \
-  "$BIN tool sandbox show --sandbox-dir /home/nick/workspace/_x" \
+  "$BIN tool sandbox show --sandbox-dir /home/user/workspace/_x" \
   "GOPI_HOME=$E_SB $BIN session log --last"
 run_cmd "$E_DIR/02-output.txt" "$BIN tool sandbox bogus" "$BIN" tool sandbox bogus
 run_cmd "$E_DIR/02-output.txt" "$BIN tool sandbox run --label $LABEL_PREFIX-007-$RUNSTAMP" \
   "$BIN" tool sandbox run --label "$LABEL_PREFIX-007-$RUNSTAMP"
 run_cmd "$E_DIR/02-output.txt" "$BIN tool sandbox run --bogus -- echo hi" "$BIN" tool sandbox run --bogus -- echo hi
-run_cmd "$E_DIR/02-output.txt" "$BIN tool sandbox show --sandbox-dir /home/nick/workspace/_x" \
-  "$BIN" tool sandbox show --sandbox-dir /home/nick/workspace/_x
+run_cmd "$E_DIR/02-output.txt" "$BIN tool sandbox show --sandbox-dir /home/user/workspace/_x" \
+  "$BIN" tool sandbox show --sandbox-dir /home/user/workspace/_x
 run_cmd "$E_DIR/02-output.txt" "GOPI_HOME=$E_SB $BIN session log --last" GOPI_HOME="$E_SB" "$BIN" session log --last
 entry_card
 entry_render 0 \
@@ -613,10 +613,10 @@ cat > "$E_DIR/05-finding.md" <<'FINDING_EOF'
 本条目实测（同一个二进制、同一次运行，02-output.txt）：
 
 ```
-$ gopi sandbox show --sandbox-dir /home/nick/workspace/_x
+$ gopi sandbox show --sandbox-dir /home/user/workspace/_x
 gopi sandbox show: unexpected argument "--sandbox-dir"     ; exit=2
 $ gopi sandbox show   # 但 --sandbox-dir 在 create/run 上是被 help 广告的
-sandbox root=/home/nick/workspace/gopi-sandbox source=from the built-in default prefix=sandbox- stale=72h0m0s
+sandbox root=/home/user/workspace/gopi-sandbox source=from the built-in default prefix=sandbox- stale=72h0m0s
 ```
 
 `gopi sandbox -h` 的 Flags 段把 `--sandbox-dir PATH` 与 `--label` / `--task-id` **并列**写在一起
@@ -647,4 +647,4 @@ if [[ -s "$WORK/failed.txt" ]]; then
   echo "GENERATOR FAILED: $(wc -l < "$WORK/failed.txt") entry/entries" >&2
   exit 1
 fi
-printf 'WORK=%s\nSANDBOXES=%s\n' "$WORK" "$(ls -d /home/nick/workspace/gopi-sandbox/*materials-d-* 2>/dev/null | wc -l)"
+printf 'WORK=%s\nSANDBOXES=%s\n' "$WORK" "$(ls -d /home/user/workspace/gopi-sandbox/*materials-d-* 2>/dev/null | wc -l)"

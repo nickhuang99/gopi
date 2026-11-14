@@ -33,7 +33,7 @@ package tools
 //
 // WHY THIS RESOLVER IS TRANSITIVE, MEASURED. The first real reissue (row
 // 01a15a17, 2026-10-27) came back repaired to
-// /home/nick/workspace/01a1597d-… — a workspace that was STILL ALIVE, because it
+// /home/user/workspace/01a1597d-… — a workspace that was STILL ALIVE, because it
 // was some other run's current clone. RepairDurableRepoForSubmit answers such a
 // path IDENTITY (it IS a git work tree, and for a SUBMIT that is correct: the
 // workspace's own origin is the durable answer, which cloneGroundSourceRepo

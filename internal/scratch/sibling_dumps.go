@@ -12,7 +12,7 @@
 // place (minimalCoreDumpDir) — and an operator may export it from a shell
 // profile, where every live gopi and every child it spawns inherits it. Measured
 // on this host (2026-10-01): `~/.bashrc:139` exports
-// `GOPI_ERROR_DUMP_DIR=/home/nick/.gopi/dumps`, and the tree holds 4,345 dumps /
+// `GOPI_ERROR_DUMP_DIR=/home/user/.gopi/dumps`, and the tree holds 4,345 dumps /
 // 102 MiB. THE PATH THAT WRITES THIS TREE IS THE ENV OVERRIDE, NOT A CODE PATH.
 //
 // That fact decides the SHAPE of the fix. Changing the writer would override the
@@ -72,11 +72,11 @@ const (
 	// SiblingDumpsDirName is the tree's own leaf name under the gopi profile
 	// root — the directory the tree roots at, and the directory the env dump
 	// override points at when an operator configures it (measured:
-	// GOPI_ERROR_DUMP_DIR=/home/nick/.gopi/dumps).
+	// GOPI_ERROR_DUMP_DIR=/home/user/.gopi/dumps).
 	SiblingDumpsDirName = "dumps"
 
 	// SiblingDumps1214DirName is the second tree's leaf name (measured:
-	// GOPI_1214_DUMP_DIR=/home/nick/.gopi/dumps-1214).
+	// GOPI_1214_DUMP_DIR=/home/user/.gopi/dumps-1214).
 	SiblingDumps1214DirName = "dumps-1214"
 )
 

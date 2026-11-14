@@ -59,14 +59,14 @@ func TestNotifyBranchPushed_RecordsHintTask(t *testing.T) {
 	path := filepath.Join(t.TempDir(), "memory.db")
 	t.Setenv("GOPI_MEMORY_DB", path)
 
-	notifyBranchPushed("feat/hp-did-thing", "zbook:~/work/GoPi")
+	notifyBranchPushed("feat/hp-did-thing", "zpeer:~/work/GoPi")
 
 	summaries := listLedgerSummaries(t, path)
 	joined := strings.Join(summaries, "\n")
 	if !strings.Contains(joined, "branch-pushed: feat/hp-did-thing awaits merge decision") {
 		t.Fatalf("ledger must carry a branch-pushed hint for the branch, got:\n%s", joined)
 	}
-	if !strings.Contains(joined, "zbook:~/work/GoPi") {
+	if !strings.Contains(joined, "zpeer:~/work/GoPi") {
 		t.Errorf("hint must name the push target repo, got:\n%s", joined)
 	}
 }

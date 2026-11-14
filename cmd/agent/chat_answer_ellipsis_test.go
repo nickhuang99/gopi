@@ -252,7 +252,7 @@ func TestChatAnswerEllipsisTruncatedUnitIsNamed_RED(t *testing.T) {
 	}{
 		{
 			name: "a workspace path",
-			body: "the worktree is /home/nick/workspace/01a15bb9-…-r1 and that is where it landed",
+			body: "the worktree is /home/user/workspace/01a15bb9-…-r1 and that is where it landed",
 			kind: chatAnswerEllipsisUnitPath,
 		},
 		{
@@ -432,7 +432,7 @@ func TestChatAnswerEllipsisUnitKinds(t *testing.T) {
 	}{
 		{"x/y/…", chatAnswerEllipsisUnitPath},
 		{"task/01a16033-…", chatAnswerEllipsisUnitBranch},
-		{"--repo=/home/nick/…", chatAnswerEllipsisUnitCommand},
+		{"--repo=/home/user/…", chatAnswerEllipsisUnitCommand},
 		{"https://x.test/a…", chatAnswerEllipsisUnitURL},
 		{"01a16033-dd15-…", chatAnswerEllipsisUnitIdentifier},
 		{"`pool.go`…", chatAnswerEllipsisUnitIdentifier},

@@ -1,14 +1,14 @@
 // Host-ownership tests for the hermes-agent submit warning (PROJECT.md Rule 40).
 //
 // The defect the warning exists for, measured 2026-10-03: a hermes-agent task
-// submitted on zbook's ledger, repo verification PASSED (the path exists on
+// submitted on zpeer's ledger, repo verification PASSED (the path exists on
 // both hosts), and the row sat there unclaimed until a human migrated it to HP
 // (01a0fe63 → 01a0fe67).
 //
 // Cases:
 //
 //	(a) a hermes-agent repo on a NON-owner host → the warning fires
-//	(b) the same repo on the OWNER host (nick-HP-Laptop, any case) → silent
+//	(b) the same repo on the OWNER host (host-b, any case) → silent
 //	(c) a non-hermes repo on a non-owner host → silent
 //	(d) an empty/unknown repo → silent
 //	(e) the WRITE face: TaskSubmit with such a repo still queues the row (it is
@@ -42,9 +42,9 @@ func TestHermesHostWarningFiresOnANonOwnerHost(t *testing.T) {
 		repo string
 		host string
 	}{
-		{"absolute work tree path", "/home/nick/work/hermes-agent", "zbook"},
-		{"a worktree of it", "/home/nick/workspace/gopi-01a0fe67/hermes-agent", "some-other-host"},
-		{"plugin subtree", "/home/nick/work/hermes-agent/plugins/x", "zbook"},
+		{"absolute work tree path", "/home/user/work/hermes-agent", "zpeer"},
+		{"a worktree of it", "/home/user/workspace/gopi-01a0fe67/hermes-agent", "some-other-host"},
+		{"plugin subtree", "/home/user/work/hermes-agent/plugins/x", "zpeer"},
 	}
 	for _, c := range cases {
 		t.Run(c.name, func(t *testing.T) {
@@ -72,15 +72,15 @@ func TestHermesHostWarningSilentOnTheOwnerHost(t *testing.T) {
 	// The owner's name in any case: hostname spelling must not decide whether
 	// the owner sees a false alarm.
 	for _, host := range []string{taskHermesOwnerHost(), strings.ToLower(taskHermesOwnerHost()), strings.ToUpper(taskHermesOwnerHost())} {
-		if got := taskHermesHostWarningFor("/home/nick/work/hermes-agent", host); got != "" {
+		if got := taskHermesHostWarningFor("/home/user/work/hermes-agent", host); got != "" {
 			t.Errorf("host %q owns hermes-agent but got a warning:\n%s", host, got)
 		}
 	}
 }
 
 func TestHermesHostWarningSilentForOtherRepos(t *testing.T) {
-	for _, repo := range []string{"", "   ", "/home/nick/work/GoPi", "/home/nick/work/GoPi-hermes", "/srv/agent"} {
-		if got := taskHermesHostWarningFor(repo, "zbook"); got != "" {
+	for _, repo := range []string{"", "   ", "/home/user/work/GoPi", "/home/user/work/GoPi-hermes", "/srv/agent"} {
+		if got := taskHermesHostWarningFor(repo, "zpeer"); got != "" {
 			t.Errorf("repo %q is not the hermes-agent tree but got a warning:\n%s", repo, got)
 		}
 	}
@@ -147,7 +147,7 @@ func TestHermesHostWarningLiteralsLiveAtOneSite(t *testing.T) {
 		t.Fatalf("read package dir: %v", err)
 	}
 	needles := []string{
-		`taskHermesOwnerHostDefault = "nick-HP-Laptop"`,
+		`taskHermesOwnerHostDefault = "host-b"`,
 		`HermesOwnerHostEnv = "GOPI_HERMES_OWNER_HOST"`,
 		"warning: repo %q belongs to %s",
 	}

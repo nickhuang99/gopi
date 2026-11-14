@@ -66,16 +66,16 @@ func TestPathPolicy_RefusesWorktreeAddOutsideDeclaredRoot(t *testing.T) {
 func TestPathPolicy_RefusesOutOfRootRecursiveDelete(t *testing.T) {
 	_, session, _ := guardPolicyFixture(t)
 	for _, command := range []string{
-		"rm -rf /home/nick/work/GoPi",
+		"rm -rf /home/user/work/GoPi",
 		"rm -rf " + worktreeroots.ShmDir + "/gopi-test-scratch",
 		"sudo rm -rf /var/lib/thing",
-		"rm -rf /home/nick/workspace-other", // prefix STRING match would allow this
-		"chown -R root:root /home/nick/work",
+		"rm -rf /home/user/workspace-other", // prefix STRING match would allow this
+		"chown -R root:root /home/user/work",
 		"chmod -R 777 /etc",
 		"mount -t tmpfs tmpfs " + worktreeroots.ShmDir,
 		"dd if=/dev/zero of=/dev/sda",
-		"find /home/nick/work -name '*.go' -delete",
-		"git worktree remove /home/nick/work/GoPi-someone-else",
+		"find /home/user/work -name '*.go' -delete",
+		"git worktree remove /home/user/work/GoPi-someone-else",
 	} {
 		if reason := rejectOutsideDeclaredRoots(command, session); reason == "" {
 			t.Errorf("%q was ALLOWED — a destructive shape outside every declared root must be refused", command)
@@ -365,7 +365,7 @@ func TestPathPolicyGitChangeDirIsNotTheTarget(t *testing.T) {
 // resolve it against the SESSION workdir. The two were different paths, so the
 // guard judged (and refused) a path git would never touch:
 //
-//	cd /home/nick/work/GoPi && git worktree remove ../../workspace/gopi-task
+//	cd /home/user/work/GoPi && git worktree remove ../../workspace/gopi-task
 //
 // The operand is extracted once (gitWorktreePathTargets) and the base is read
 // from the command (commandChangeDir), so the assertion is on the pair — a

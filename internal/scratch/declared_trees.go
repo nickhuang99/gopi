@@ -28,7 +28,7 @@
 //     sibling brief (briefings/brief-declared-paths-survive-sweep.md) exists
 //     for: `gopi-go-tmp` IS `GOTMPDIR`, a hand sweep deleted it (it was idle,
 //     not a worktree, so it passed both guards) and the next build died with
-//     `go: creating work dir: stat /home/nick/workspace/gopi-go-tmp: no such
+//     `go: creating work dir: stat /home/user/workspace/gopi-go-tmp: no such
 //     file or directory`. "Nothing is using it right now" is not "it is not
 //     needed." Only a declared tree's AGED, UNHELD CHILDREN are ever
 //     candidates, and removeCollectableOfTree re-checks the root identity
@@ -595,7 +595,7 @@ func DeclaredTrees() []DeclaredTree {
 // abandoned `go-build*` directory landed under `$TMPDIR` and NOTHING swept it.
 // The row reported `not configured on this host — nothing to sweep` while the
 // very tree it describes was being filled: measured the same day, three
-// `go-build*` directories under /home/nick/workspace/_tmp (this host's
+// `go-build*` directories under /home/user/workspace/_tmp (this host's
 // TMPDIR, 1.5 GB) at ~50 MB each, all three abandoned by killed builds.
 //
 // A DECLARED TREE THAT RESOLVES TO NOTHING IS WORSE THAN AN UNDECLARED ONE: the
@@ -1245,7 +1245,7 @@ func measuredEntry(tree DeclaredTree, path string, isDir bool, now time.Time) Tr
 // this function says which one it is: NO holder is consulted here (grep this
 // body — `held`/`Holder` appear zero times). It is a WALK OF THE TREE, filtered
 // by entryName and nothing else, which makes `holding_n` EQUAL to the probe's
-// `entries` on every tree (measured 2026-10-27 on nick-sager: 46 tree lines
+// `entries` on every tree (measured 2026-10-27 on host-a: 46 tree lines
 // across four invocations, `entries != holding_n` on ZERO of them; the pair
 // `budget-runs entries=431 holding=9175448847 holding_n=431` is that identity).
 //

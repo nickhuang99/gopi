@@ -8,7 +8,7 @@ package tools
 // another subject (a re-land rewrites the message).
 //
 // THE DEFECT THIS CLOSES, measured on this host 2026-10-27 (bug row 01a17d1b,
-// the ground /home/nick/workspace/01a17a5f-…):
+// the ground /home/user/workspace/01a17a5f-…):
 //
 //	ground's  refs/remotes/origin/master = 2c8710d  06:29:29   (never fetched)
 //	main repo's master                   = 934dd697d 19:23:41   (+12h54m)

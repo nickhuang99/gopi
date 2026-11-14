@@ -4,8 +4,8 @@ package tools
 // tree that the settings `repos` table does not declare.
 //
 // WHY THIS EXISTS (measured, row 01a159a9-ecb8-7664-8beb-57438ac4023f, and the
-// rows it repeats): /home/nick/work/GoPi (uppercase, a checkout frozen at
-// 2026-10-18) and /home/nick/work/gopi (lowercase, master) both exist on this
+// rows it repeats): /home/user/work/GoPi (uppercase, a checkout frozen at
+// 2026-10-18) and /home/user/work/gopi (lowercase, master) both exist on this
 // machine. The settings `repos` table declares a build command for the
 // LOWERCASE path only. `task submit` WITHOUT --repo stamps the process CWD
 // (taskSubmitResolveDefaultRepo), so a submit typed while standing in the
@@ -14,8 +14,8 @@ package tools
 // (taskRepoVerifiable) — because it really IS a git work tree. The row queues,
 // and dispatch refuses it later and terminally:
 //
-//	clone channel: repo "/home/nick/work/GoPi" declares no build command in
-//	settings repos → /home/nick/work/GoPi.build — refusing to push a workspace
+//	clone channel: repo "/home/user/work/GoPi" declares no build command in
+//	settings repos → /home/user/work/GoPi.build — refusing to push a workspace
 //	that was never built
 //
 // TWO CHECKS, TWO DIFFERENT QUESTIONS, NEVER CROSSED: "is this a work tree"

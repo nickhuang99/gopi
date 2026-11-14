@@ -84,7 +84,7 @@ func TestResolveResumeLogPath_SessionIDResolvesRawLog(t *testing.T) {
 // TestResolveResumeLogPath_UsesRecordedRawLog verifies that when a session's
 // session_start records a rawLogPath (custom GOPI_RAW_LOG_DIR), session-id
 // resolution uses it verbatim — even when the recorded path is NOT inside
-// /home/nick/.gopi/raw (the timestamp-based pairing would fail there).
+// /home/user/.gopi/raw (the timestamp-based pairing would fail there).
 func TestResolveResumeLogPath_UsesRecordedRawLog(t *testing.T) {
 	home := t.TempDir()
 	t.Setenv("HOME", home)
@@ -95,7 +95,7 @@ func TestResolveResumeLogPath_UsesRecordedRawLog(t *testing.T) {
 		t.Fatal(err)
 	}
 
-	// Custom raw dir OUTSIDE /home/nick/.gopi — recorded in session_start.
+	// Custom raw dir OUTSIDE /home/user/.gopi — recorded in session_start.
 	customRawDir := filepath.Join(t.TempDir(), "custom-raw")
 	if err := os.MkdirAll(customRawDir, 0755); err != nil {
 		t.Fatal(err)

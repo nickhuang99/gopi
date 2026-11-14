@@ -7,14 +7,14 @@ package agent
 // roadmap children through reframeSubmitOptions, which named no repo — so
 // tools.TaskSubmit fell back to taskSubmitResolveDefaultRepo: the submitting
 // PROCESS CWD. For a worker-run parent that cwd IS the run's ground
-// (/home/nick/workspace/gopi-<parent-uuid>), a LINKED WORKTREE the worker
+// (/home/user/workspace/gopi-<parent-uuid>), a LINKED WORKTREE the worker
 // creates for the parent run and DELETES when the parent finishes. The four
 // children of 01a0d526 were therefore born naming a directory that died with
 // their parent:
 //
-//	parent 01a0d526 deliverable = {"branch":"task/<uuid>","repo":"/home/nick/work/GoPi",
-//	                               "worktree":"/home/nick/workspace/gopi-01a0d52643bf701f9dba6746c8a09d8e"}
-//	child  01a0d528 deliverable = {"repo":"/home/nick/workspace/gopi-01a0d52643bf701f9dba6746c8a09d8e"}
+//	parent 01a0d526 deliverable = {"branch":"task/<uuid>","repo":"/home/user/work/GoPi",
+//	                               "worktree":"/home/user/workspace/gopi-01a0d52643bf701f9dba6746c8a09d8e"}
+//	child  01a0d528 deliverable = {"repo":"/home/user/workspace/gopi-01a0d52643bf701f9dba6746c8a09d8e"}
 //	                                   ^ the parent's WORKTREE, stamped as the child's REPO
 //
 // `gopi worker <child>` then refused — correctly — with "the repo is not a git

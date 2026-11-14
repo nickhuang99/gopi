@@ -9,16 +9,16 @@ package tools
 // summary through ONE predicate: is a row in a LIVE status? That is correct for
 // a row being worked HERE and wrong for a row whose work MOVED:
 //
-//	zbook  merger files "resolve merge conflict: rework: task/01a113e4…"  (01a11564)
-//	zbook  `gopi task send --cancel-source --peer hp` → hp's ledger stores it,
-//	       zbook's copy becomes cancelled (the migration the flag exists for)
-//	zbook  the NEXT tick's probes, ALL of them, ask "is a LIVE row carrying this
+//	zpeer  merger files "resolve merge conflict: rework: task/01a113e4…"  (01a11564)
+//	zpeer  `gopi task send --cancel-source --peer hp` → hp's ledger stores it,
+//	       zpeer's copy becomes cancelled (the migration the flag exists for)
+//	zpeer  the NEXT tick's probes, ALL of them, ask "is a LIVE row carrying this
 //	       summary?" → NO (the row is cancelled) → the branch is handed a SECOND
 //	       rework row (01a1156f, 12 minutes later; then 01a115bb)
 //
 // Measured shape, both ledger halves of the same branch:
 //
-//	zbook: 4 rows — cancelled, cancelled, cancelled, pending
+//	zpeer: 4 rows — cancelled, cancelled, cancelled, pending
 //	hp:    2 rows — completed (the migrated work, run here), pending
 //
 // So "cancelled" was carrying TWO opposite meanings for this lane — "abandoned,

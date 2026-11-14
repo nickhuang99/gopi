@@ -16,7 +16,7 @@ import (
 // announcement, then git's own lines joined with pullBodyLineJoiner, then the
 // conflicted paths — parts joined with pullPartJoiner.
 const pullConflictWords = "git pull --rebase origin master refused (exit: 1) | " +
-	"From zbook:/home/nick/work/gopi ; * branch            master     -> FETCH_HEAD ; " +
+	"From zpeer:/home/user/work/gopi ; * branch            master     -> FETCH_HEAD ; " +
 	"138f611..f2d6d39  master     -> origin/master ; Rebasing (1/1)Auto-merging cmd/agent/cli_resume.go ; " +
 	"Auto-merging internal/tools/task_holder_resume.go ; " +
 	"CONFLICT (content): Merge conflict in internal/tools/task_holder_resume.go ; " +
@@ -109,7 +109,7 @@ func TestBlockerDecisiveLines_DirtyKeepsThePorcelainColumns(t *testing.T) {
 // and how much output was read, distinguishing "plumbing only" from "no output".
 func TestBlockerDecisiveLines_NoRecognisedLineSaysWhy(t *testing.T) {
 	plumbingOnly := &Blocker{Kind: BlockerKindPull,
-		Words: "git pull --rebase origin master refused (exit: 1) | From zbook:/home/nick/work/gopi"}
+		Words: "git pull --rebase origin master refused (exit: 1) | From zpeer:/home/user/work/gopi"}
 	note := plumbingOnly.DecisiveLines()
 	if note.Found() {
 		t.Fatalf("plumbing must not be a decisive line: %v", note.Lines)

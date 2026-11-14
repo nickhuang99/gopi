@@ -11,7 +11,7 @@
 #     "这个 cronjob 必须终止，我们不能依赖这种系统来做，它掩盖了问题。"
 #
 # THE MEASUREMENT THAT PRODUCED THE RULING (recorded once; do not re-derive):
-#   `crontab -l` carried `*/10 * * * * /home/nick/bin/hp-worker-autostart.sh`.
+#   `crontab -l` carried `*/10 * * * * /home/user/bin/hp-worker-autostart.sh`.
 #   Its log ~/.gopi/logs/worker-autostart.log was 36,398 lines and recorded
 #   1,214 delegations. The log shows the shape plainly — the line fired, a
 #   worker started, the count read zero seconds later, ten minutes later it

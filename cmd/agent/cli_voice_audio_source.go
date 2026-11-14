@@ -741,7 +741,7 @@ func voiceSourcePCM(path string, raw []byte) ([]byte, error) {
 // of a path with its dashes removed, the dashed directory exists and the
 // de-dashed one does not, and the run answered
 //
-//	--audio-source /home/nick/.gopi/sessions/<de-dashed>/artifacts/probe.wav:
+//	--audio-source /home/user/.gopi/sessions/<de-dashed>/artifacts/probe.wav:
 //	open …: no such file or directory
 //
 // — a sentence true of EVERY component at once. Two readers followed it into a

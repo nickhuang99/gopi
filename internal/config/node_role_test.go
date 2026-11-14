@@ -25,7 +25,7 @@ func writeNodeSettings(t *testing.T, content string) {
 }
 
 func TestConfigRoleSyncToParsing(t *testing.T) {
-	writeNodeSettings(t, `{"role":"client","sync_to":"zbook"}`)
+	writeNodeSettings(t, `{"role":"client","sync_to":"zpeer"}`)
 	cfg, err := FromSettingsFile(os.Getenv("GOPI_SETTINGS"))
 	if err != nil {
 		t.Fatal(err)
@@ -33,21 +33,21 @@ func TestConfigRoleSyncToParsing(t *testing.T) {
 	if cfg.Role != NodeRoleClient {
 		t.Errorf("role = %q, want %q", cfg.Role, NodeRoleClient)
 	}
-	if cfg.SyncTo != "zbook" {
-		t.Errorf("sync_to = %q, want zbook", cfg.SyncTo)
+	if cfg.SyncTo != "zpeer" {
+		t.Errorf("sync_to = %q, want zpeer", cfg.SyncTo)
 	}
 }
 
 func TestResolveNodeRoleSettings(t *testing.T) {
-	writeNodeSettings(t, `{"role":"client","sync_to":"zbook"}`)
+	writeNodeSettings(t, `{"role":"client","sync_to":"zpeer"}`)
 	role, syncTo := ResolveNodeRole()
-	if role != NodeRoleClient || syncTo != "zbook" {
-		t.Errorf("got (%q, %q), want (client, zbook)", role, syncTo)
+	if role != NodeRoleClient || syncTo != "zpeer" {
+		t.Errorf("got (%q, %q), want (client, zpeer)", role, syncTo)
 	}
 }
 
 func TestResolveNodeRoleEnvOverridesSettings(t *testing.T) {
-	writeNodeSettings(t, `{"role":"client","sync_to":"zbook"}`)
+	writeNodeSettings(t, `{"role":"client","sync_to":"zpeer"}`)
 	t.Setenv(RoleEnv, "server")
 	t.Setenv(SyncToEnv, "hp")
 	role, syncTo := ResolveNodeRole()
@@ -66,7 +66,7 @@ func TestResolveNodeRoleUnknownSpellingUndeclared(t *testing.T) {
 
 func TestNodeIdentityLineServer(t *testing.T) {
 	writeNodeSettings(t, `{"role":"server"}`)
-	want := "zbook (server)" // hostname varies; check shape + role
+	want := "zpeer (server)" // hostname varies; check shape + role
 	line := NodeIdentityLine()
 	if !strings.Contains(line, "(server)") || !strings.HasPrefix(line, "node: ") {
 		t.Errorf("line = %q, want prefix 'node: ' + '(server)' e.g. %q", line, want)
@@ -77,10 +77,10 @@ func TestNodeIdentityLineServer(t *testing.T) {
 }
 
 func TestNodeIdentityLineClientArrow(t *testing.T) {
-	writeNodeSettings(t, `{"role":"client","sync_to":"zbook"}`)
+	writeNodeSettings(t, `{"role":"client","sync_to":"zpeer"}`)
 	line := NodeIdentityLine()
-	if !strings.Contains(line, "(client→zbook)") {
-		t.Errorf("line = %q, want '(client→zbook)'", line)
+	if !strings.Contains(line, "(client→zpeer)") {
+		t.Errorf("line = %q, want '(client→zpeer)'", line)
 	}
 }
 
@@ -95,9 +95,9 @@ func TestNodeIdentityUndeclaredEmpty(t *testing.T) {
 }
 
 func TestNodeIdentityBriefingFormat(t *testing.T) {
-	writeNodeSettings(t, `{"role":"client","sync_to":"zbook"}`)
+	writeNodeSettings(t, `{"role":"client","sync_to":"zpeer"}`)
 	b := NodeIdentityBriefing()
-	if !strings.HasPrefix(b, "[node] node: ") || !strings.Contains(b, "(client→zbook)") {
-		t.Errorf("briefing = %q, want '[node] node: <host> (client→zbook)'", b)
+	if !strings.HasPrefix(b, "[node] node: ") || !strings.Contains(b, "(client→zpeer)") {
+		t.Errorf("briefing = %q, want '[node] node: <host> (client→zpeer)'", b)
 	}
 }

@@ -46,7 +46,7 @@ const tornTailFixture = "testdata/torn-tail-01a12f7d.jsonl"
 // command, not a description of one (a truncated reference is a dead end: the
 // reader has to be able to get the bytes back).
 //
-//	tail -c 827 /home/nick/.gopi/sessions/01a12f7d-4389-7506-911f-156a62293903/155941c1-6026-4db3-85b9-f0999da86bf6.jsonl \
+//	tail -c 827 /home/user/.gopi/sessions/01a12f7d-4389-7506-911f-156a62293903/155941c1-6026-4db3-85b9-f0999da86bf6.jsonl \
 //	    > internal/gopilog/testdata/torn-tail-01a12f7d.jsonl
 //
 // The original is 405,504 bytes and the slice starts at byte 404,677 (the

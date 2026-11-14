@@ -8,7 +8,7 @@ package main
 // installed at all (measured 2026-10-17: no systemd user timer for it, no
 // crontab line, no copy under ~/.local/bin or ~/bin).
 //
-// THE FAILURE THIS PINS, MEASURED (nick-HP-Laptop, 2026-10-17 06:4x), one device
+// THE FAILURE THIS PINS, MEASURED (host-b, 2026-10-17 06:4x), one device
 // (66309 = /home), `du -xsh`:
 //
 //	~/.cache/go-build              78 G   (agent-side toolchain cache — out of scope by an existing decision)

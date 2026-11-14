@@ -11,9 +11,9 @@ package main
 //
 // MEASURED ON THE SHIPPED LEDGER before the fix (`gopi task list`, 33 rows):
 //
-//	[auto] 交付没有内容可发布。工作区仍是你的，在 /home/nick/workspace/…。
+//	[auto] 交付没有内容可发布。工作区仍是你的，在 /home/user/workspace/…。
 //	       第 2/3 轮检查量到的结果是「这里没有要交付的提交」——不是 pull 被拒，
-//	       也不是冲突， 不要去查网络。工具原话（逐字，未改写）： /home/nick/…
+//	       也不是冲突， 不要去查网络。工具原话（逐字，未改写）： /home/user/…
 //
 // 33 of 33 rows carried the measurement and not one carried a word of what it
 // found: no `carries no commit to deliver`, no `rev-list --count`, no
@@ -41,10 +41,10 @@ import (
 )
 
 // emptyBehindBlockerDir is the workspace path these arms render with. It is the
-// SHAPE that matters (this host's `/home/nick/workspace/<uuid>`), and it is a
+// SHAPE that matters (this host's `/home/user/workspace/<uuid>`), and it is a
 // named constant so the "the path is not what the budget is spent on" assertion
 // below can look for exactly one spelling.
-const emptyBehindBlockerDir = "/home/nick/workspace/01a18801-e544-73b5-b16a-caece35a30ea"
+const emptyBehindBlockerDir = "/home/user/workspace/01a18801-e544-73b5-b16a-caece35a30ea"
 
 // emptyBehindBlocker is the blocker a ground that is BEHIND its peer produces:
 // `rev-list --count HEAD --not origin/master` answered 0 (nothing to publish),

@@ -51,7 +51,7 @@ const (
 
 	// workerImageTestProgram is the artifact path the incident's /proc/<pid>/exe
 	// resolved to.
-	workerImageTestProgram = "/home/nick/work/gopi/bin/gopi"
+	workerImageTestProgram = "/home/user/work/gopi/bin/gopi"
 
 	// workerImageTestPID is the worker pid from the incident.
 	workerImageTestPID = 1038465

@@ -455,7 +455,7 @@ func cwdProbeProductionSources(root string) ([]cwdProbeSource, error) {
 // instant an unrelated TEST helper is touched — measured on master 2026-09-16:
 // internal/testutil/legacy_residue.go was edited while the operator's bin/gopi
 // was being built, so TestBareRunKeepsAllItsArtifactsInOneSessionDir refused to
-// run ("/home/nick/work/GoPi/bin/gopi (mtime …) is OLDER than …/legacy_residue.go")
+// run ("/home/user/work/GoPi/bin/gopi (mtime …) is OLDER than …/legacy_residue.go")
 // even though nothing the binary compiles had changed. That is the false alarm
 // the comment above already warns about, arriving through a directory the
 // _test.go skip cannot reach.

@@ -1,11 +1,11 @@
 package tools
 
 // THE ENOENT THIS PINS (measured 2026-10-16, task 01a143696d247e66abe1dda74a3fc9fd,
-// host nick-sager; filed 2026-10-17 as task 01a1453a954871d584bf6d8a9c13d7e5).
+// host host-a; filed 2026-10-17 as task 01a1453a954871d584bf6d8a9c13d7e5).
 //
 // A live run's own session directory appeared to vanish mid-run: `ls -la` and
 // the file tools returned ENOENT for
-// /home/nick/.gopi/sessions/01a14369-6d24-7e66-abe1-dda74a3fc9fd, while the
+// /home/user/.gopi/sessions/01a14369-6d24-7e66-abe1-dda74a3fc9fd, while the
 // very same directory resolved seconds later — with every artifact's mtime
 // untouched. The incident looked like a filesystem mystery (a directory that
 // stops resolving and comes back). It was a SPELLING: the failing call carried

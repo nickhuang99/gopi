@@ -8,7 +8,7 @@ package main
 // to run the whole start-up: it built the agent, which mints the session
 // directory, the .raw.log, the session.jsonl and the exit marker, then read
 // EOF immediately and exited 0. Measured on this host with a scratch profile
-// (`GOPI_HOME=/home/nick/workspace/_tmp_A.u5od`):
+// (`GOPI_HOME=/home/user/workspace/_tmp_A.u5od`):
 //
 //	gopi chat </dev/null   →  EXIT=0, session dirs 1
 //	                          (id 3b9ab81b-bd8d-41d1-a0c6-4d68dbfe5a96,

@@ -9,11 +9,11 @@ package tools
 // NAMED that repository, sending the reader to inspect a tree the command could
 // not reach. The measured command was a plainly legal cross-repository fetch:
 //
-//	cd /home/nick/work/gopi && git fetch <path> <branch>:<branch>
+//	cd /home/user/work/gopi && git fetch <path> <branch>:<branch>
 //
-// refused with "FROM /home/nick/workspace/<session clone> would rewrite the SHARED
-// branch … of /home/nick/workspace/<session clone>, which is checked out by
-// ANOTHER worktree", where the branch does not exist in /home/nick/work/gopi at
+// refused with "FROM /home/user/workspace/<session clone> would rewrite the SHARED
+// branch … of /home/user/workspace/<session clone>, which is checked out by
+// ANOTHER worktree", where the branch does not exist in /home/user/work/gopi at
 // all.
 //
 // The fixture is two repositories, and the SPLIT is what makes the assertion

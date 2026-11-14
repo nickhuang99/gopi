@@ -9,7 +9,7 @@ package main
 //	124                      # zero output; the pairwise ladder is quadratic
 //	$ timeout 5 ./bin/gopi task merge </dev/null ; echo $?
 //	124                      # took the merge lock, then a 300s build gate on
-//	                         # the operator's LIVE /home/nick/work/gopi
+//	                         # the operator's LIVE /home/user/work/gopi
 //
 // Neither hang is a "slow machine" story: `dedup-scan` with an explicit
 // `--live` finishes in 0.46s (19 rows), and `merge` names its work only after

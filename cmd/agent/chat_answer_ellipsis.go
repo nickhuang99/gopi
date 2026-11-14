@@ -161,7 +161,7 @@ const (
 // An answer body may legitimately carry a rhetorical ellipsis: "the net is slow
 // … anyway", "before … after". Nothing was lost there — the reader gets the
 // sentence, and nothing had to be pasted. But `task/01a16033-dd15-7ba0-…` and
-// `/home/nick/workspace/01a15bb9-…-r1` are NOT prose: they are identifiers whose
+// `/home/user/workspace/01a15bb9-…-r1` are NOT prose: they are identifiers whose
 // exact bytes are the whole point, and an ellipsis inside one produces a token
 // that no shell will accept and no reader can complete. That difference — not
 // the presence of the character — is what the escalation now keys on.

@@ -1,7 +1,7 @@
 // launch.go — HOW `gopi tool shot` starts headless chrome, and the clamp it must
 // escape first.
 //
-// WHY THIS FILE EXISTS (measured on zbook, 2026-09-19): the SPA capture path
+// WHY THIS FILE EXISTS (measured on zpeer, 2026-09-19): the SPA capture path
 // was dead in every gopi-worker context. `bash` children carry scratch's child
 // clamp (`internal/scratch`: `ulimit -v 12582912 -u 4096`), and the hard limit
 // is inherited, so chrome died at startup with a V8 CHECK failure
@@ -278,7 +278,7 @@ func systemdRunArgs(unit, errPath string, memMaxMB int, unitEnv []string, chrome
 	}
 	// A TRANSIENT UNIT DOES NOT INHERIT THE CALLER'S ENVIRONMENT. Measured on
 	// systemd 249, launching a stub through this exact argv: the unit's own
-	// /proc/self/environ carried `PWD=/home/nick` (the user's home, not the
+	// /proc/self/environ carried `PWD=/home/user` (the user's home, not the
 	// caller's directory) and NO TMPDIR at all, while the same stub launched as
 	// a plain child saw both. So a variable the launched program is entitled to
 	// must be handed over EXPLICITLY, or the escape silently drops it — an

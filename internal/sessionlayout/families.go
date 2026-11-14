@@ -678,7 +678,7 @@ func isSessionContainerShape(shape string) bool {
 // (internal/scratch's session-legacy rows), and the near-miss it could not see
 // is a name a run mints for itself by mis-transcribing its own id.
 //
-// MEASURED (2026-10-14, host nick-HP-Laptop, this package's sibling gate). A
+// MEASURED (2026-10-14, host host-b, this package's sibling gate). A
 // run whose row id is `01a13645-66c3-79ec-962a-5f8776e1f216` typed the four-dash
 // form `01a13645-66c3-79ec-962a5f8776e1f216` — the tail group's leading dash
 // moved one group left, i.e. the branch/worktree spelling a stem that strips
@@ -717,7 +717,7 @@ func IsSessionContainerName(name string) bool {
 		// and this predicate is the namespace rule of a row that removes
 		// root-level directories.
 		//
-		// MEASURED (2026-10-17, host nick-sager, task
+		// MEASURED (2026-10-17, host host-a, task
 		// 01a144001e4b7086b97d257497a832ed). The sessions root carried 25
 		// root-level directories named as a bare 32-hex run. ALL 25 had a
 		// canonical twin beside them (25 of 25), and one twin was WRITTEN 40

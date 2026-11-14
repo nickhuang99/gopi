@@ -93,7 +93,7 @@ const taskListCloseoutEllipsis = "…"
 // STATUS-FILTERED population; a count taken over the whole ledger printed above
 // it is a different population from the rows under it, and the header used to
 // carry no scope clause at all — so it READ as "of the rows on screen"
-// (measured 2026-10-12, nick-sager: `--status failed` header 54 / 0 marked rows
+// (measured 2026-10-12, host-a: `--status failed` header 54 / 0 marked rows
 // on screen, `--status cancelled` 54 / 1). Both halves are now the same
 // population: the query is scoped by the view's own status predicate and the
 // sentence names the domain it counted. Epic 01a12bc0.

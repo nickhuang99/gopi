@@ -237,7 +237,7 @@ const (
 
 // Command renders an argv as the single re-runnable command line recorded
 // in run_cmd: argv[0] is reduced to its BASENAME (the ledger records a
-// portable command — `/home/nick/go/bin/gopi worker` re-runs as `gopi
+// portable command — `/home/user/go/bin/gopi worker` re-runs as `gopi
 // worker`), every element is shell-quoted when needed, and the elements
 // are joined with single spaces. An empty argv renders "" — the honest
 // "no command known" value, never a fabricated placeholder.

@@ -305,7 +305,7 @@ func staleCLIEnv(t *testing.T, home, notifyLog string) []string {
 		env = append(env, "GOPI_TASK_NOTIFY_CMD=", "GOPI_TASK_NOTIFY_EVENTS=stale")
 	}
 	// The child must not inherit a stray GOPI_SETTINGS pointing at the real
-	// /home/nick/.gopi/settings.json (which carries compute_nodes / notify / model).
+	// /home/user/.gopi/settings.json (which carries compute_nodes / notify / model).
 	env = append(env, "GOPI_SETTINGS="+filepath.Join(home, "settings.json"))
 	return env
 }

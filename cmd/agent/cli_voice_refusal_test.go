@@ -184,7 +184,7 @@ func TestVoiceParseAdvertisedShapesStillParse(t *testing.T) {
 		"--client --seconds 8 --out nick.wav":             {"--" + voiceFlagClient, "--" + voiceFlagSeconds, "8"},
 		"--client --self --seconds 8":                     {"--" + voiceFlagClient, "--" + voiceFlagSelf, "--" + voiceFlagSeconds, "8"},
 		"--client --self --seconds 8 --display :57":       {"--" + voiceFlagClient, "--" + voiceFlagSelf, "--" + voiceFlagSeconds, "8", "--" + voiceFlagDisplay, ":57"},
-		"--client --server-url … --seconds 8":             {"--" + voiceFlagClient, "--" + voiceFlagServerURL, "http://192.168.1.6:7788", "--" + voiceFlagSeconds, "8"},
+		"--client --server-url … --seconds 8":             {"--" + voiceFlagClient, "--" + voiceFlagServerURL, "http://192.168.7.6:7788", "--" + voiceFlagSeconds, "8"},
 		"--seconds 5 (the bare capture)":                  {"--" + voiceFlagSeconds, "5"},
 		"--record (the bare capture keeps its utterance)": {"--" + voiceFlagRecord, "utterance.wav"},
 	}

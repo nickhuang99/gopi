@@ -297,7 +297,7 @@
    "n": 8426
   },
   {
-   "cmd": "cd /home/nick/work/GoPi &&",
+   "cmd": "cd /home/user/work/GoPi &&",
    "n": 2359
   },
   {
@@ -305,7 +305,7 @@
    "n": 2236
   },
   {
-   "cmd": "cd /home/nick/workspace/gopi-merge-backlog &&",
+   "cmd": "cd /home/user/workspace/gopi-merge-backlog &&",
    "n": 1693
   },
   {
@@ -325,7 +325,7 @@
    "n": 428
   },
   {
-   "cmd": "cd /home/nick/work/scheduler &&",
+   "cmd": "cd /home/user/work/scheduler &&",
    "n": 383
   },
   {
@@ -333,7 +333,7 @@
    "n": 376
   },
   {
-   "cmd": "cd /home/nick/workspace/gopi-style-sweep &&",
+   "cmd": "cd /home/user/workspace/gopi-style-sweep &&",
    "n": 360
   },
   {
@@ -365,7 +365,7 @@
    "n": 310
   },
   {
-   "cmd": "cd /home/nick/workspace/homm3-m1 &&",
+   "cmd": "cd /home/user/workspace/homm3-m1 &&",
    "n": 305
   },
   {
@@ -405,7 +405,7 @@
    "n": 245
   },
   {
-   "cmd": "cd /home/nick/work/hermes-agent &&",
+   "cmd": "cd /home/user/work/hermes-agent &&",
    "n": 245
   },
   {
@@ -429,7 +429,7 @@
    "n": 216
   },
   {
-   "cmd": "cd /home/nick/workspace/gopi-tmp-ban &&",
+   "cmd": "cd /home/user/workspace/gopi-tmp-ban &&",
    "n": 208
   },
   {

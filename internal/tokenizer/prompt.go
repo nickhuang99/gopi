@@ -9,7 +9,7 @@ package tokenizer
 //
 // The rendering below is a line-by-line translation of
 // `deepseek-v41-chat_template.jinja` (252 lines), fetched from the model repo
-// over the searchbot channel and carried verbatim in the run's evidence. The
+// over the searchbox channel and carried verbatim in the run's evidence. The
 // previous version translated the V3 template from
 // `~/Downloads/deepseek_v3_tokenizer/tokenizer_config.json`, whose tool-call
 // grammar (`<｜tool▁call▁begin｜>function<｜tool▁sep｜>name\n```json…`) does not

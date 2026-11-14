@@ -178,7 +178,7 @@ func cloneGroundRestoreFixture(t *testing.T) (clone, branch string) {
 // `make test-budget PKGS='./cmd/agent'` moved this run's ground to master AGAIN.
 // The ground's post-checkout hook recorded the mover:
 //
-//	2026-10-28T19:30:01+08:00 pid=2049361 cwd=/home/nick/workspace/01a17e4b…
+//	2026-10-28T19:30:01+08:00 pid=2049361 cwd=/home/user/workspace/01a17e4b…
 //	  prev=b52e00c… new=b7e575c… flag=1
 //	  2049334: git checkout master
 //	  2049284: …/test-budget/run-…/test-budget …/gopi --prompt RP1-BOUNDARY-PLAIN-PROMPT-4f2a …
@@ -358,7 +358,7 @@ func TestFinishCleanupMainRestoreLeavesAProbeBlindCloneGroundAlone(t *testing.T)
 
 // TestFinishCleanupMainRestoreStillRepairsACheckoutThatIsNotAGroundName is the
 // REVERSE ARM of the third discriminator: an ordinary checkout whose directory
-// name is NOT a task id (a repo's shared main checkout — `/home/nick/work/gopi`) is still
+// name is NOT a task id (a repo's shared main checkout — `/home/user/work/gopi`) is still
 // repaired. Without this, "the name looks like a ground" would silently become
 // "never restore anything", and a parked main checkout would stop being fixed.
 func TestFinishCleanupMainRestoreStillRepairsACheckoutThatIsNotAGroundName(t *testing.T) {

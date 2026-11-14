@@ -34,8 +34,8 @@ func withTasksDB(t *testing.T, path string) {
 }
 
 func TestCanonicalStripsPathsTimestampsWhitespace(t *testing.T) {
-	a := syncTaskCanonText("审查 泄漏。范围 /home/nick/work/GoPi 派发 1735689600 \n\t报告  2026-08-31T13:00:00Z")
-	b := syncTaskCanonText("审查 泄漏。范围 /home/nick/work/GoPi 派发 1735776000 \n 报告   12:00:00")
+	a := syncTaskCanonText("审查 泄漏。范围 /home/user/work/GoPi 派发 1735689600 \n\t报告  2026-08-31T13:00:00Z")
+	b := syncTaskCanonText("审查 泄漏。范围 /home/user/work/GoPi 派发 1735776000 \n 报告   12:00:00")
 	// Same path (same node dispatches from the same tree), different
 	// timestamps and whitespace — the canonical forms must converge.
 	if a == "" {
@@ -62,7 +62,7 @@ func TestCanonicalStripsPathsTimestampsWhitespace(t *testing.T) {
 
 func TestCanonHashTwinSubmissionsMatch(t *testing.T) {
 	// Leak ①: same brief, different dispatch timestamp + embedded path.
-	a := "审查 M4.8 导入去重泄漏。审计范围 /home/nick/work/GoPi，派发时间 1735689600，完成后写报告。"
+	a := "审查 M4.8 导入去重泄漏。审计范围 /home/user/work/GoPi，派发时间 1735689600，完成后写报告。"
 	b := "审查 M4.8 导入去重泄漏。审计范围 /home/user/GoPi，派发时间 1735776000，完成后写报告。"
 	if syncTaskWorkHash(a, "") == syncTaskWorkHash(b, "") {
 		t.Fatal("exact hashes should differ (that is the leak)")
@@ -83,7 +83,7 @@ func TestCanonHashBelowMinLenStaysExact(t *testing.T) {
 func TestThreeGateLadderCatchesBothLeaks(t *testing.T) {
 	twinA := liveDedupRow{taskID: "t-a",
 		summary: "审查 M4.8 导入去重泄漏",
-		payload: "审查 M4.8 导入去重泄漏。审计范围 /home/nick/work/GoPi，派发时间 1735689600，完成后写报告。"}
+		payload: "审查 M4.8 导入去重泄漏。审计范围 /home/user/work/GoPi，派发时间 1735689600，完成后写报告。"}
 	cases := []struct {
 		name string
 		in   liveDedupRow
@@ -134,10 +134,10 @@ func TestImportDedupHardenedEndToEnd(t *testing.T) {
 	withTasksDB(t, dedupTestDB(t))
 	patch := &SyncTaskPatch{
 		Version: syncTaskPatchVersion,
-		Node:    "zbook",
+		Node:    "zpeer",
 		Rows: []SyncTaskRow{
 			{TaskID: "t-a", Summary: "审查 M4.8 导入去重泄漏",
-				Payload: "审查 M4.8 导入去重泄漏。审计范围 /home/nick/work/GoPi，派发时间 1735689600，完成后写报告。",
+				Payload: "审查 M4.8 导入去重泄漏。审计范围 /home/user/work/GoPi，派发时间 1735689600，完成后写报告。",
 				Source:  "auto"},
 			{TaskID: "t-b", Summary: "审查 M4.8 导入去重泄漏",
 				Payload: "审查 M4.8 导入去重泄漏。审计范围 /home/user/GoPi，派发时间 1735776000，完成后写报告。",
@@ -171,10 +171,10 @@ func TestImportReRunIsIdempotent(t *testing.T) {
 	withTasksDB(t, dedupTestDB(t))
 	patch := &SyncTaskPatch{
 		Version: syncTaskPatchVersion,
-		Node:    "zbook",
+		Node:    "zpeer",
 		Rows: []SyncTaskRow{
 			{TaskID: "t-a", Summary: "审查 M4.8 导入去重泄漏",
-				Payload: "审查 M4.8 导入去重泄漏。审计范围 /home/nick/work/GoPi，派发时间 1735689600，完成后写报告。",
+				Payload: "审查 M4.8 导入去重泄漏。审计范围 /home/user/work/GoPi，派发时间 1735689600，完成后写报告。",
 				Source:  "auto"},
 		},
 	}
@@ -211,7 +211,7 @@ func TestDedupScanFindsPlantedTwins(t *testing.T) {
 	defer db.Close()
 	// Two live rows carrying the same work behind different embeds.
 	for _, row := range [][2]string{
-		{"t-a", "审查 M4.8 导入去重泄漏|审查 M4.8 导入去重泄漏。审计范围 /home/nick/work/GoPi，派发时间 1735689600，完成后写报告。"},
+		{"t-a", "审查 M4.8 导入去重泄漏|审查 M4.8 导入去重泄漏。审计范围 /home/user/work/GoPi，派发时间 1735689600，完成后写报告。"},
 		{"t-b", "审查 M4.8 导入去重泄漏|审查 M4.8 导入去重泄漏。审计范围 /home/user/GoPi，派发时间 1735776000，完成后写报告。"},
 	} {
 		if _, err := db.ExecContext(ctx,

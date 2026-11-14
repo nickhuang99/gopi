@@ -52,8 +52,8 @@ func TestChatNoteSearchOnLadderTierAnswersAPrefetchShapedQuery(t *testing.T) {
 			SessionID: "an-earlier-run",
 			Turn:      28,
 			Note:      "auto-memory 捕获对象从 [IMPORTANT] note 改为 response 正文：标定阈值实测过了",
-			Host:      "nick-sager",
-			Path:      "/home/nick/.gopi/sessions/an-earlier-run/self-record.md",
+			Host:      "host-a",
+			Path:      "/home/user/.gopi/sessions/an-earlier-run/self-record.md",
 		},
 	})
 
@@ -86,8 +86,8 @@ func TestChatNoteSearchOnPhraseTiersKeepTheirPrecedence(t *testing.T) {
 			SessionID: "an-earlier-run",
 			Turn:      5,
 			Note:      "the phrase tiers must keep their precedence over the ladder",
-			Host:      "nick-sager",
-			Path:      "/home/nick/.gopi/sessions/an-earlier-run/self-record.md",
+			Host:      "host-a",
+			Path:      "/home/user/.gopi/sessions/an-earlier-run/self-record.md",
 		},
 	})
 
@@ -125,8 +125,8 @@ func TestChatNoteSearchOnLadderRespectsTheLimit(t *testing.T) {
 			SessionID: "an-earlier-run",
 			Turn:      i + 1,
 			Note:      "ladder limit probe: the term subset walk must honour the caller's cap",
-			Host:      "nick-sager",
-			Path:      "/home/nick/.gopi/sessions/an-earlier-run/self-record.md",
+			Host:      "host-a",
+			Path:      "/home/user/.gopi/sessions/an-earlier-run/self-record.md",
 		})
 	}
 	db, ctx := ladderNoteFixture(t, notes)

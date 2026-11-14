@@ -61,7 +61,7 @@ func TestChatOpCategoryOperatorWorkRuns(t *testing.T) {
 	operatorWork := []string{
 		// ops / DevOps / network / machine operation
 		"ls -la", "git status", "git worktree list", "git log --oneline -5", "df -h", "systemctl status gopi",
-		"ip addr show", "ping -c3 192.168.1.6", "ssh zbook 'gopi task list'", "scp a.tar gopi@gopi:/tmp/a.tar",
+		"ip addr show", "ping -c3 192.168.7.6", "ssh zpeer 'gopi task list'", "scp a.tar gopi@gopi:/tmp/a.tar",
 		// a script, a document, a query, a diagnosis
 		"./scripts/gopi-stats.sh", `read -p "?" x`, "grep -rn todo internal/", "ps -p 1234",
 		// the ledger, the session, the self-inspection verbs
@@ -172,7 +172,7 @@ func TestChatOpCategoryRepoWriteRefused(t *testing.T) {
 	chatOpWithChannel(t, "", func() {
 		for _, cmd := range []string{
 			"echo evidence > ~/.gopi/sessions/01a14731/artifacts/e.md",
-			"printf 'x' >> /home/nick/.gopi/sessions/01a14731/log.txt",
+			"printf 'x' >> /home/user/.gopi/sessions/01a14731/log.txt",
 			"git ls-files internal/",
 		} {
 			if adm := ChatOpAdmit(cmd, ""); !adm.Allowed() {

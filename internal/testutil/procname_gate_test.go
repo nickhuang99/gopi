@@ -822,7 +822,7 @@ func writeProcFixture(t *testing.T, root string) {
 	t.Helper()
 	entries := []procFixtureEntry{
 		// --- real workers: the gopi PROGRAM (image) AND argv[1] == the verb ---
-		{"1001", procname.NameGopi, procname.NameGopi, []string{"/home/nick/work/GoPi/bin/" + procname.NameGopi, procname.VerbWorker},
+		{"1001", procname.NameGopi, procname.NameGopi, []string{"/home/user/work/GoPi/bin/" + procname.NameGopi, procname.VerbWorker},
 			procStatLine("1001", procname.NameGopi, "S", "111001"),
 			"a plain worker (absolute binary path in argv[0])"},
 		{"1002", procname.NameGopi + "\n", procname.NameGopi, []string{procname.NameGopi, procname.VerbWorker},

@@ -3,7 +3,7 @@ package main
 // worker_status_enumeration_scope_test.go — WHAT A STATUS ASSERTION IS ALLOWED
 // TO BE ABOUT (epic: the four cmd/agent worker cases that were red on master).
 //
-// THE DEFECT (measured 2026-10-24, host nick-sager, HEAD 76e6faf): four cases —
+// THE DEFECT (measured 2026-10-24, host host-a, HEAD 76e6faf): four cases —
 // TestWorkerDaemon_IdleDrainedStopLandsOnSIGTERM / …OnStopCommand /
 // …LeavesNoResidue and TestWorkerListAliasCLIPrintsTheStatusReport — asserted
 // that `worker --status` prints `no workers running` once the daemon under test

@@ -6,7 +6,7 @@ scripts/m2_acceptance.py, ...) creates throwaway directories and load output.
 On this host `tempfile.mkdtemp()` defaults to /tmp, which lives on the 147G
 `/` partition (87% full) — the partition the 2026-09-11 exhaustion filled with
 13,044 abandoned scratch dirs plus an unbounded stress loop
-(devdoc/zbook-resource-exhaustion-20260911.md).
+(devdoc/zpeer-resource-exhaustion-20260911.md).
 
 The contract, identical to scripts/lib/tmp-ban.sh and
 internal/testutil/scratchroot.go (one rule, three languages):

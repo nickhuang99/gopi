@@ -95,7 +95,7 @@ func TestChatOpCategoryThreePathsAgree(t *testing.T) {
 
 	// PATH 1 — operator work RUNS: the prompt states it is the console's own, and
 	// the guard admits it with nothing declared.
-	for _, cmd := range []string{"git status", "ls internal/agent", "gopi task list", "ssh zbook 'gopi task list'"} {
+	for _, cmd := range []string{"git status", "ls internal/agent", "gopi task list", "ssh zpeer 'gopi task list'"} {
 		if adm := tools.ChatOpAdmit(cmd, ""); !adm.Allowed() {
 			t.Errorf("the prompt says operator work is the console's, but the guard refuses %q (%s)",
 				cmd, adm.Reason())

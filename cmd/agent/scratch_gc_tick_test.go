@@ -98,7 +98,7 @@ func TestScratchGCTick_ThrottleAndFailOpen(t *testing.T) {
 	// test reports a defect in a tick that behaved exactly as specified.
 	// Measured 2026-10-01: with the real sandbox root in force, `first tick
 	// removed 2, want 1`, the extra one being
-	// `removed 1 abandoned sandbox(es) … from /home/nick/workspace/gopi-sandbox`.
+	// `removed 1 abandoned sandbox(es) … from /home/user/workspace/gopi-sandbox`.
 	// Both are pinned EMPTY, which is the same "this arm finds nothing" state the
 	// fixtures rely on for the base arm.
 	t.Setenv(scratch.ResolveBaseEnvName, t.TempDir())

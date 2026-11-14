@@ -5,7 +5,7 @@ package tools
 //
 // The defect this file pins (found by the 2026-09-27 statistics audit): the
 // four reporting probe roots were compiled-in absolute paths
-// (/home/nick/work/GoPi + three hermes trees), so "does this harvested path
+// (/home/user/work/GoPi + three hermes trees), so "does this harvested path
 // resolve?" was really asking "is this machine the operator's box?". The roots
 // feed REPORTING only — no classification decision reads the filesystem, a
 // property the file's own comment states and these tests preserve.

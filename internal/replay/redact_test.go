@@ -17,7 +17,7 @@ import (
 const (
 	testUUID      = "4ca8cd29-019c-4dda-a000-6dafd782bf91"
 	testHex32     = "9f2c7ab41d0e5386ac1122fdeb445566"
-	testHomePath  = "/home/nick/.gopi/sessions"
+	testHomePath  = "/home/user/.gopi/sessions"
 	testSandboxID = "sandbox-build-4ca8cd29"
 )
 
@@ -157,7 +157,7 @@ func TestPendingShapeTailLenHoldsOnlyWhatCouldStillBecomeAShape(t *testing.T) {
 // released prefix matches no shape) and the whole run is then masked by the
 // joined mask.
 func TestPendingShapeTailLenIsSufficientForTheShapes(t *testing.T) {
-	for _, shape := range []string{testUUID, testHex32, "/home/nick", testSandboxID} {
+	for _, shape := range []string{testUUID, testHex32, "/home/user", testSandboxID} {
 		rs := []rune(shape)
 		for cut := 1; cut < len(rs); cut++ {
 			head, tail := string(rs[:cut]), string(rs[cut:])

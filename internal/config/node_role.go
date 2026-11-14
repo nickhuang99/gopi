@@ -74,7 +74,7 @@ func ResolveNodeRole() (NodeRole, string) {
 }
 
 // NodeIdentityLine renders the one-line banner identity:
-// "node: hp (client→zbook)" / "node: zbook (server)". Empty when the role
+// "node: hp (client→zpeer)" / "node: zpeer (server)". Empty when the role
 // is undeclared (no banner on a machine that never opted into the
 // topology — keeps single-machine output clean).
 func NodeIdentityLine() string {

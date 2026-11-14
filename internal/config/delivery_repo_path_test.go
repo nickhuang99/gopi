@@ -40,7 +40,7 @@ func deliveryRepoTestSettings(t *testing.T, doc map[string]any) string {
 // travels back with the value so a caller can say which declaration is in
 // force rather than presenting a value with no provenance.
 func TestDeliveryRepoDeclaredPrefersTheEnvChannel(t *testing.T) {
-	deliveryRepoTestSettings(t, map[string]any{DevRepoSettingsKey: "zbook:/home/nick/work/gopi"})
+	deliveryRepoTestSettings(t, map[string]any{DevRepoSettingsKey: "zpeer:/home/user/work/gopi"})
 	t.Setenv(DevRepoEnvName, "peer:/srv/from-env")
 
 	got, source, err := DeliveryRepoDeclared()
@@ -59,14 +59,14 @@ func TestDeliveryRepoDeclaredPrefersTheEnvChannel(t *testing.T) {
 // the same precedence: with no env value the document decides, and the channel
 // names the KEY, not the file.
 func TestDeliveryRepoDeclaredFallsBackToTheSettingsDocument(t *testing.T) {
-	deliveryRepoTestSettings(t, map[string]any{DevRepoSettingsKey: "zbook:/home/nick/work/gopi"})
+	deliveryRepoTestSettings(t, map[string]any{DevRepoSettingsKey: "zpeer:/home/user/work/gopi"})
 	t.Setenv(DevRepoEnvName, "")
 
 	got, source, err := DeliveryRepoDeclared()
 	if err != nil {
 		t.Fatalf("DeliveryRepoDeclared: %v", err)
 	}
-	if got != "zbook:/home/nick/work/gopi" {
+	if got != "zpeer:/home/user/work/gopi" {
 		t.Fatalf("DeliveryRepoDeclared = %q, want the settings value", got)
 	}
 	if source != "settings "+DevRepoSettingsKey {
@@ -98,7 +98,7 @@ func TestDeliveryRepoDeclaredEmptyIsNotAnError(t *testing.T) {
 func TestDeliveryReposTableReadsTheKeysTheMergerSweeps(t *testing.T) {
 	deliveryRepoTestSettings(t, map[string]any{
 		"repos": map[string]any{
-			"/home/nick/work/gopi": map[string]any{"build": "make build"},
+			"/home/user/work/gopi": map[string]any{"build": "make build"},
 			"/srv/other":           map[string]any{},
 		},
 	})
@@ -110,8 +110,8 @@ func TestDeliveryReposTableReadsTheKeysTheMergerSweeps(t *testing.T) {
 	if len(table) != 2 {
 		t.Fatalf("table = %v, want the two declared keys", table)
 	}
-	if _, ok := table["/home/nick/work/gopi"]; !ok {
-		t.Errorf("table keys = %v, want /home/nick/work/gopi among them", table)
+	if _, ok := table["/home/user/work/gopi"]; !ok {
+		t.Errorf("table keys = %v, want /home/user/work/gopi among them", table)
 	}
 
 	swept, err := ResolveMergerRepos()

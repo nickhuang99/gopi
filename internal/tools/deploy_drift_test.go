@@ -203,7 +203,7 @@ func TestDeployDrift_RefsAreNamedOnce(t *testing.T) {
 //
 // These exist because a false-clean SHIPPED: the report printed "0 behind" for
 // the deployed artifact and the number was true. Measured 2026-10-28 on host
-// nick-sager, deployed revision 84beb30 against the peer mirror b7a1ff8:
+// host-a, deployed revision 84beb30 against the peer mirror b7a1ff8:
 //
 //	git rev-list --count 84beb30..refs/remotes/gitPushcheck/master  → 0     ("0 behind")
 //	git rev-list --count refs/remotes/gitPushcheck/master..84beb30  → 284   (AHEAD)
@@ -389,7 +389,7 @@ func TestDeployDriftRepoOf_ResolvesTheArtifactsOwnRepo(t *testing.T) {
 
 // --- The SUMMARY verdict: AHEAD does not vote, BEHIND does, scratch never does.
 //
-// THE DEFECT THESE LEGS PIN (measured 2026-10-29, host nick-sager, deployed
+// THE DEFECT THESE LEGS PIN (measured 2026-10-29, host host-a, deployed
 // artifact d50f746d7):
 //
 //	refs/heads/master:                follows the ref — the artifact was built from it

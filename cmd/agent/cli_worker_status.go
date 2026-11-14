@@ -412,7 +412,7 @@ type workerStatusWorker struct {
 	// recycled pid from being reported as a worker.
 	Attested bool
 	// Profile is the profile this worker belongs to, as its OWN environment
-	// named it (the gopi data root, e.g. /home/nick/.gopi), or "" when the /proc
+	// named it (the gopi data root, e.g. /home/user/.gopi), or "" when the /proc
 	// entry could not be read. It is the ATTRIBUTION fact: a detached worker
 	// whose profile differs from the caller's is another profile's worker.
 	Profile string

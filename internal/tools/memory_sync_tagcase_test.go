@@ -22,11 +22,11 @@ const (
 	// carries (a hostname-derived from-<node> tag — ~/.gopi/memory.db,
 	// 135/1043 rows). Case policy has to be right for THIS shape, not just
 	// for a synthetic "BUG".
-	syncTagCaseTknHostMixed = "from-nick-HP-Laptop"
+	syncTagCaseTknHostMixed = "from-host-b"
 	// syncTagCasePeer is a peer whose node name carries uppercase — the
 	// from-<peer> gate's mirror direction (a wrong-case channel tag under
 	// the old case-folding LIKE escaped silently).
-	syncTagCasePeer      = "zbook-X"
+	syncTagCasePeer      = "zpeer-X"
 	syncTagCasePeerWrong = "ZBOOK-X"
 	// syncTagCaseBystanderPeer is a peer name NO fixture row is tagged
 	// with: passing it makes the anti-reflow gate a provable no-op, which
@@ -198,7 +198,7 @@ const syncTagCaseQueryOldLIKE = "(',' || COALESCE(tags,'') || ',') LIKE ?"
 // TestSyncTagTokenMatch_SQLGoParity is the acceptance test for the decided
 // case policy (devdoc/sync-tag-case-policy.md): for every fixture row the
 // SHIPPED SQL gate and the GO token rule must return the SAME population —
-// including the mixed-case rows ("BUG", "FROM-ZBOOK-X", from-nick-HP-Laptop)
+// including the mixed-case rows ("BUG", "FROM-ZBOOK-X", from-host-b)
 // that the old case-folding LIKE split apart from the readers.
 func TestSyncTagTokenMatch_SQLGoParity(t *testing.T) {
 	dbPath := taskSyncTestDB(t)
@@ -250,7 +250,7 @@ func TestSyncTagTokenMatch_SQLGoParity(t *testing.T) {
 	// exact compare; an importer writes it with this exact spelling).
 	peers := []string{
 		syncTagCasePeer, syncTagCasePeerWrong,
-		"nick-HP-Laptop", "nick-hp-laptop", syncTagCaseBystanderPeer,
+		"host-b", "nick-hp-laptop", syncTagCaseBystanderPeer,
 	}
 	for _, peer := range peers {
 		channelToken := SyncTaskTagPrefix + peer

@@ -90,7 +90,7 @@ type TreeKeepSummary struct {
 	// count and the walk cannot answer differently.
 	//
 	// IT IS A SHAPE COUNT, NOT AN OWNERSHIP COUNT, and the name is the older of
-	// the two facts (measured 2026-10-27, tree `budget-runs` on nick-sager). The
+	// the two facts (measured 2026-10-27, tree `budget-runs` on host-a). The
 	// two populations it mixes are DIFFERENT and a reader who assumes the
 	// wrong one mis-diagnoses the tree:
 	//

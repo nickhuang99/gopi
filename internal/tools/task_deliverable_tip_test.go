@@ -326,7 +326,7 @@ const deliverableTipMirrorGateMinFiles = 50
 //
 // THE INCIDENT, verbatim from that row's close-attempt.txt:
 //
-//	[task] run 01a18d61-… claims `completed` for /home/nick/work/gopi, but its
+//	[task] run 01a18d61-… claims `completed` for /home/user/work/gopi, but its
 //	  deliverable's tip is reachable from no ref: branch task/… resolves to no ref,
 //	  no delivery point was recorded for it, and no reachable commit names this task
 //	  id …; the work is unreachable and nothing was deleted, moved or restored by

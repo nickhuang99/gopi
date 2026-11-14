@@ -132,7 +132,7 @@ func TestParseAndRenderBinaryPromptSession(t *testing.T) {
 	start := RawEvent{Type: sessionevent.EventTypeSessionStart}
 	start.SessionID = "fixture-binary-prompt"
 	start.Model = "test-model"
-	start.Workdir = "/home/nick/workspace/peak-bin"
+	start.Workdir = "/home/user/workspace/peak-bin"
 
 	writeJSONLine(t, path, start)
 	writeJSONLine(t, path, userEvent(binaryPromptTask(200)))

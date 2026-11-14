@@ -132,7 +132,7 @@ type procReaperInts map[int]bool
 // number. On a plain host an abandoned process is reparented to init (ppid 1);
 // on a host running a systemd user session the kernel installs `systemd --user`
 // as the child-subreaper of user.slice, so the same abandoned process is
-// reparented to THAT manager and carries its pid (measured on nick-sager:
+// reparented to THAT manager and carries its pid (measured on host-a:
 // ppid 3100 = /lib/systemd/systemd --user, and never 1). Asserting the literal
 // 1 is therefore asserting one host's reaper rather than the mechanism — the
 // same mistake Rule 24 names for process independence (judge the mechanism,
@@ -515,7 +515,7 @@ const (
 // not yet readable — a state MEASURED on a freshly spawned child, and NOT the
 // same fact as "this process has no argv".
 //
-// THE MEASUREMENT (nick-sager, Linux, 2026-10-12; the probe is
+// THE MEASUREMENT (host-a, Linux, 2026-10-12; the probe is
 // artifacts/capture-race-probe in the bug row's session dir): a child spawned by
 // exec.Cmd.Start() was read the instant Start returned, and 194 of 200 reads
 // found /proc/<pid>/cmdline EMPTY while the child was state R (running, NOT a

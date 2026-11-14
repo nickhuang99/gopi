@@ -15,10 +15,10 @@ for f in "$M"/probe-m*.txt; do
   cd "$S/work/$PROD" || exit 9
   t0=$(date +%s)
   case "$PROD" in
-    codex)  timeout --signal=KILL 180 /home/nick/bin/codex exec --skip-git-repo-check -C "$S/work/$PROD" --dangerously-bypass-approvals-and-sandbox "$PROMPT" >"$out" 2>&1 ;;
-    claude) timeout --signal=KILL 180 /home/nick/.local/bin/claude -p --dangerously-skip-permissions "$PROMPT" >"$out" 2>&1 ;;
-    dsh)    timeout --signal=KILL 180 /home/nick/.local/bin/dsh --profile headless "$PROMPT" >"$out" 2>&1 ;;
-    hermes) timeout --signal=KILL 180 /home/nick/work/hermes-agent/.venv/bin/hermes chat -q "$PROMPT" --yolo >"$out" 2>&1 ;;
+    codex)  timeout --signal=KILL 180 /home/user/bin/codex exec --skip-git-repo-check -C "$S/work/$PROD" --dangerously-bypass-approvals-and-sandbox "$PROMPT" >"$out" 2>&1 ;;
+    claude) timeout --signal=KILL 180 /home/user/.local/bin/claude -p --dangerously-skip-permissions "$PROMPT" >"$out" 2>&1 ;;
+    dsh)    timeout --signal=KILL 180 /home/user/.local/bin/dsh --profile headless "$PROMPT" >"$out" 2>&1 ;;
+    hermes) timeout --signal=KILL 180 /home/user/work/hermes-agent/.venv/bin/hermes chat -q "$PROMPT" --yolo >"$out" 2>&1 ;;
     gopi)   timeout --signal=KILL 180 /usr/local/bin/gopi --prompt "$PROMPT" >"$out" 2>&1 ;;
   esac
   e=$?; echo "$e" > "$rc"

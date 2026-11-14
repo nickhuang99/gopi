@@ -8,7 +8,7 @@ package daemoncwd
 // written for. MEASURED on this host (2026-09-14, the eight live leftovers of an
 // earlier commit's cmd/agent suite):
 //
-//	cwd      = /home/nick/workspace/gopi-<task>/cmd/agent   ← a TASK WORKTREE
+//	cwd      = /home/user/workspace/gopi-<task>/cmd/agent   ← a TASK WORKTREE
 //	GOPI_HOME= /dev/shm/gopi-test-scratch/suite-cmd-agent-run-…/001
 //	TMPDIR   = /dev/shm/gopi-test-scratch/suite-cmd-agent-run-…
 //

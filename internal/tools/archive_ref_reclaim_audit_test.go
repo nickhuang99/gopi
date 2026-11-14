@@ -11,7 +11,7 @@ package tools
 // classified sites by the porcelain verb pair alone, so this arm's deletions were
 // the one class of local ref removal in the tree that left NO line behind. The
 // observation that produced the investigation: 11 refs/heads (16 → 5) on
-// /home/nick/work/GoPi disappeared at 09:45–09:46 CST with no `kind=branch-delete`
+// /home/user/work/GoPi disappeared at 09:45–09:46 CST with no `kind=branch-delete`
 // record for any of them, and running this arm for real against a fixture repo
 // removed its ref and wrote nothing.
 //

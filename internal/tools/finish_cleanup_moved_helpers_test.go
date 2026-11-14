@@ -536,7 +536,7 @@ const (
 // — the process EXISTS. The fixture only looked correct because the old probe
 // folded EPERM into "dead", i.e. it was resting on the very defect epic
 // 01a17e87 removes: once the probe told the truth, these two tests failed with
-// "claimed by nick-sager pid 7 (alive)".
+// "claimed by host-a pid 7 (alive)".
 //
 // The replacement cannot rot that way: pid_max is a hard bound on every pid the
 // kernel can hand out, so a larger number is provably unassigned. It also does
@@ -1470,7 +1470,7 @@ const (
 
 	// leakShimPeerAlias is the peer the leaking arm declares: the server's own
 	// alias, which resolves to this host and therefore to this checkout.
-	leakShimPeerAlias = "zbook"
+	leakShimPeerAlias = "zpeer"
 
 	// leakShimScript is the checked-in shim body, run through the `sh` on the
 	// system so the test never depends on the file's own exec bit.
@@ -2018,17 +2018,17 @@ func runFinishCleanupChainTarget(ctx context.Context, rep *FinishCleanupReport, 
 	// IN-PROCESS TEST FENCE — a test must never be able to push a deliverable
 	// into a REAL node's repo (Rule 30; epic fix/fixture-leak-temp-root).
 	//
-	// MEASURED 2026-09-22 on the server itself (zbook): a plain
+	// MEASURED 2026-09-22 on the server itself (zpeer): a plain
 	// `go test ./internal/tools/ -count=1` drove this body with the target the
-	// PRODUCTION resolver renders — `zbook:/home/nick/work/GoPi` — from
+	// PRODUCTION resolver renders — `zpeer:/home/user/work/GoPi` — from
 	// TestFinishCleanupGoneWorktreeNamesTheUndeclaredPeer's "a peer IS
-	// declared" arm (t.Setenv(config.SyncPeersEnv, "zbook")). On the server
+	// declared" arm (t.Setenv(config.SyncPeersEnv, "zpeer")). On the server
 	// that alias resolves to 127.0.0.1 and `~` IS this checkout, so the
 	// fixture's throwaway branch landed in the REAL repository as
 	// refs/heads/feat/sync-conflict-completed. GIT_TRACE caught the exact
 	// command:
 	//
-	//	git push 'zbook:/home/nick/work/GoPi' feat/sync-conflict-completed:feat/sync-conflict-completed
+	//	git push 'zpeer:/home/user/work/GoPi' feat/sync-conflict-completed:feat/sync-conflict-completed
 	//
 	// WHY THE RESOLVED DIRECTORY IS THE REAL REPO: neither the peer catalog nor
 	// the fixture is at fault — a host may legitimately declare its own alias
@@ -2037,14 +2037,14 @@ func runFinishCleanupChainTarget(ctx context.Context, rep *FinishCleanupReport, 
 	// chain ran IN THE TEST PROCESS while its target pointed OUTSIDE the space
 	// the run was confined to: the fixture's every artefact — the client repo
 	// and the "server" — lives under t.TempDir(), and the resolution of
-	// `zbook:/home/nick/work/GoPi` does not. The two sides disagree, and the test pushes
+	// `zpeer:/home/user/work/GoPi` does not. The two sides disagree, and the test pushes
 	// to the side it does not own.
 	//
 	// THE CRITERION IS THEREFORE THAT SAME BOUNDARY, and it needs no knowledge
 	// of what a "test target" looks like: is the LOCAL side of the target inside
 	// a temp/scratch root this process may write? On the loopback host the
 	// remote and the local side are the same filesystem, so the fixture's bare
-	// repo resolves inside TMPDIR while `/home/nick/work/GoPi` resolves outside it — the
+	// repo resolves inside TMPDIR while `/home/user/work/GoPi` resolves outside it — the
 	// asymmetry is the whole check. The roots are the ones already in force
 	// (Rules 22/30/32) rather than a bespoke "test mode": a shipped binary,
 	// whose tmpdir is the operator's workspace, simply never has a test process

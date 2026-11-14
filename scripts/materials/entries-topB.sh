@@ -356,7 +356,7 @@ is armed: gopi chat --dump-screen … or gopi ui --dump-screen`）。所以这�
 「ui_state 坏了」的错误结论。
 
 **同一次运行里还有一处值得记的形状**：`roots` 里的第二个根是
-`/home/nick/workspace/gopi-test-scratch/queue/queue-runtime-ui-session-`（共享 scratch 的
+`/home/user/workspace/gopi-test-scratch/queue/queue-runtime-ui-session-`（共享 scratch 的
 队列运行目录），而第一个根是本 profile 自己的 `sessions/`。**它把"我搜了哪些地方"逐字列出来**，
 所以上面那条误读不会发生——对比批 1 的 108（`code-search` 在非仓库 cwd 里与"真的没有"
 共用一句话、同一个码），这里"没有"与"没扫到"是能分开的。**这也正是 140 号 finding

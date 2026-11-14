@@ -5,7 +5,7 @@ Queries Wikipedia's MediaWiki API (en.wikipedia.org/w/api.php,
 action=query&list=search) and returns a single slim JSON object. Wikipedia is
 GFW-blocked from mainland China, so like github/google the fetch goes through
 the search-bot VPS jump host when the direct route fails: try direct first
-(works abroad, fastest), fall back to `ssh searchbot curl` (works behind the
+(works abroad, fastest), fall back to `ssh searchbox curl` (works behind the
 GFW). All filtering/truncation happens inside this script so the agent only
 pays tokens for the distilled result.
 
@@ -44,7 +44,7 @@ DEFAULT_COUNT = 5          # results returned when --count is omitted
 MAX_COUNT = 20             # hard cap so the JSON payload stays slim (0-token)
 SNIPPET_CHARS = 200        # snippet truncation length (contract limit)
 DIRECT_TIMEOUT_SEC = 5          # direct API timeout; exceeded -> fall back to ssh
-SSH_HOST = "searchbot"
+SSH_HOST = "searchbox"
 SSH_OPTS = ["-o", "ConnectTimeout=8", "-o", "BatchMode=yes", "-T"]  # fast-fail + non-interactive
 SSH_TIMEOUT_SEC = 40       # whole ssh round-trip cap (curl --max-time + handshake)
 REMOTE_CURL_MAX_TIME = 20  # remote curl --max-time per fetch
@@ -103,16 +103,16 @@ def fetch_via_ssh(url):
         cmd, capture_output=True, text=True, timeout=SSH_TIMEOUT_SEC
     )
     if proc.returncode != 0:
-        raise RuntimeError(f"ssh searchbot failed (rc={proc.returncode}): {proc.stderr.strip()[:200]}")
+        raise RuntimeError(f"ssh searchbox failed (rc={proc.returncode}): {proc.stderr.strip()[:200]}")
     out = proc.stdout
     marker = "@@HTTP:"
     idx = out.find(marker)
     if idx < 0:
-        raise RuntimeError("ssh searchbot: no @@HTTP marker in output")
+        raise RuntimeError("ssh searchbox: no @@HTTP marker in output")
     code = int(out[idx + len(marker):idx + len(marker) + 3])
     body = out[idx + len(marker) + 3:].lstrip("\n")
     if code != 200:
-        raise RuntimeError(f"wikipedia API HTTP {code} via searchbot")
+        raise RuntimeError(f"wikipedia API HTTP {code} via searchbox")
     return body
 
 
@@ -162,10 +162,10 @@ def fetch_best(query, count):
             urllib.error.HTTPError, OSError, json.JSONDecodeError) as e:
         last_err = e
     try:
-        return parse_results(fetch_via_ssh(url)), "searchbot"
+        return parse_results(fetch_via_ssh(url)), "searchbox"
     except (subprocess.TimeoutExpired, RuntimeError, OSError,
             json.JSONDecodeError) as e:
-        raise RuntimeError(f"direct ({last_err!r}) and searchbot ({e!r}) both failed")
+        raise RuntimeError(f"direct ({last_err!r}) and searchbox ({e!r}) both failed")
 
 
 def main():

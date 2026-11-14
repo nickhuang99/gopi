@@ -45,7 +45,7 @@ func wt(task string) string { return filepath.Join("/dev/shm/gopi-"+task, "wt") 
 	for _, src := range []string{
 		"package p\n\nconst tmpFixture = \"/tmp/gopi-fixture\"\n",
 		"package p\n\nconst root = \"~/workspace/gopi-x\"\n",
-		"package p\n\nconst root = \"/home/nick/workspace/gopi-x\"\n",
+		"package p\n\nconst root = \"/home/user/workspace/gopi-x\"\n",
 		"package p\n\nconst root = \"$HOME/workspace/gopi-x\"\n",
 		// THE SHAPE THE GATE USED TO MISS: the BARE directory, with no entry
 		// below it. The original pattern was anchored to "/dev/shm/<name>", so
@@ -73,7 +73,7 @@ func wt(task string) string {
 	return filepath.Join(root, task)
 }
 
-const sibling = "/home/nick/workspace-backup/gopi-x"
+const sibling = "/home/user/workspace-backup/gopi-x"
 const cacheDir = "/dev/shm-cache/x"
 `
 	if got := probeHits(t, g, compliant); len(got) != 0 {

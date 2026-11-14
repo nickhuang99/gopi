@@ -5,7 +5,7 @@ package tools
 // 2026-10-15).
 //
 // THE DEFECT this file is the red proof for: `gopi task archive` is normally run
-// from a LINKED WORKTREE (/home/nick/workspace/gopi-<task>), while the ref it
+// from a LINKED WORKTREE (/home/user/workspace/gopi-<task>), while the ref it
 // writes (refs/tags/archive/<branch> + refs/gopi/archive-reason/<branch>) lives
 // in the SHARED ref store (<main>/.git/refs/...). The record used to be rendered
 // from the caller's path, so it named a transient worktree — a directory the

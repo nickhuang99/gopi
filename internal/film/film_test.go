@@ -415,7 +415,7 @@ func TestFilmChecksFailOnTheirCounterexample(t *testing.T) {
 		// A delivered text artifact carrying a redacted run VERBATIM: the leak a
 		// later stage would introduce by re-serializing the source.
 		leaked := readFirstRedactedRun(t, evidence)
-		appendToFile(t, filepath.Join(out, film.MetadataName), "session_path", "/home/nick/"+leaked)
+		appendToFile(t, filepath.Join(out, film.MetadataName), "session_path", "/home/user/"+leaked)
 		v := film.CheckWithholding(realFilm(evidence, out))
 		requireRed(t, v, "LEAK")
 	})

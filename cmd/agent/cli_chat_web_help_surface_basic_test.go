@@ -356,7 +356,7 @@ var g5Uncovered = []g5Gap{
 	{
 		Claim: "gopi web search — the real search engines (bing/google/arxiv/github/deepseek) and the merged default",
 		Why:   "each method is a python3 plugin that talks to a live engine; the network AND the operator's plugin credentials are outside a test's reach, and the briefing forbids standing in a fake engine",
-		Needs: "a network egress plus the plugins' own API keys (the operator's /home/nick/.gopi/plugins/websearch config); the routing contract (which script, which argv) is what the tests here cover instead",
+		Needs: "a network egress plus the plugins' own API keys (the operator's /home/user/.gopi/plugins/websearch config); the routing contract (which script, which argv) is what the tests here cover instead",
 	},
 	{
 		Claim: "gopi web fetch — a real page fetched through the search-bot VPS jump host",

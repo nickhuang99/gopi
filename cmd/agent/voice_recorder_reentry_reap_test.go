@@ -3,7 +3,7 @@ package main
 // voice_recorder_reentry_reap_test.go — ONE UNREAPED RECORDER CHILD PER `/voice`
 // ENTRY: the `/voice` re-entry leak, measured on a live `gopi chat` of this tree.
 //
-// THE DEFECT, as it appeared in the process table (2026-10-26, host nick-sager,
+// THE DEFECT, as it appeared in the process table (2026-10-26, host host-a,
 // the chat's own binary revision b9be76f — whose four recorder files are
 // BYTE-IDENTICAL to this tree, so the leak is live in current master):
 //

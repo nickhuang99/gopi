@@ -332,7 +332,7 @@ func branchDeleteTipOf(ctx context.Context, repo, branch string) string {
 // Nothing is written, fetched or cloned into repo.
 //
 // workDir is where the git process runs, NOT the target: a delivery point is a
-// REMOTE ADDRESS (an ssh alias, `zbook:~/work/GoPi`) and is passed as `git
+// REMOTE ADDRESS (an ssh alias, `zpeer:~/work/GoPi`) and is passed as `git
 // ls-remote`'s repository ARGUMENT — it is never a working directory, and a
 // relative path among its spellings therefore resolves against the same
 // directory the delivery's own push ran in (the judged repo).
@@ -452,7 +452,7 @@ func branchDeleteContainingRefs(ctx context.Context, repo, tip, branch string, r
 //	   config and no `%(upstream)`, so a mirror-as-upstream can only come from an
 //	   explicit `git branch --set-upstream-to` / `push -u` that THIS REPO NEVER
 //	   ISSUES (measured: the only branch with an upstream in the real repo is
-//	   master tracking refs/remotes/zbook/master — a DURABLE ref, the shape git's
+//	   master tracking refs/remotes/zpeer/master — a DURABLE ref, the shape git's
 //	   rule was written for). So the mirror-upstream hazard is real but unobserved.
 //
 //	③ The lock the arms actually DO hold is a READ of the integration branch

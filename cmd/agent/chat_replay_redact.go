@@ -2,7 +2,7 @@
 //
 // WHY THIS FILE EXISTS. `gopi chat --replay` films the REAL chat surface, and a
 // real answer's own text carries identifying runs: the operator's `~` is not
-// expanded on the wire (`/home/nick/…`), a session is named by its uuid, a
+// expanded on the wire (`/home/user/…`), a session is named by its uuid, a
 // sandbox by its record. The renderer route (`gopi replay`) has masked those
 // runs before any pixel existed since it landed; this route drew them, and
 // tools/replay/verify.py's fourth self-check said so in as many words — "no

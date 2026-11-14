@@ -13,7 +13,7 @@ package main
 //
 // The row was NOT unknowable: every one of those six processes stood in
 //
-//	/proc/<pid>/cwd -> /home/nick/.gopi/sessions/01a17df9-524a-7362-9ebd-efc24de76275
+//	/proc/<pid>/cwd -> /home/user/.gopi/sessions/01a17df9-524a-7362-9ebd-efc24de76275
 //
 // — the container `taskWorkdirEnter` moves a worker into at its claim boundary,
 // and out of at the round's end (task_session_cwd.go). The derivation only asked

@@ -152,7 +152,7 @@ func TestArchiveCLIRefusesACompletedOwnerThenRecordsTheReason(t *testing.T) {
 }
 
 // TestArchiveCLIRefusesALiveOwnerDespiteACancelledSibling is the REAL-VERB
-// regression for the four-owner-row incident (zbook 2026-10-07, run 01a115c3,
+// regression for the four-owner-row incident (zpeer 2026-10-07, run 01a115c3,
 // branch task/01a113e467767eb9a4c33cb1df1cdfbb): two rows named one branch, the
 // `cancelled` one was the pick, and `gopi task archive <branch> --reason
 // hand-mistake` exited 0 with `archive/<branch>` written over a run that was

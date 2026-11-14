@@ -1,7 +1,7 @@
 // task_status_check_rebuild_test.go pins the ONE divergence that made a
 // published remedy a dead end, and the gate that makes its return impossible.
 //
-// MEASURED (task 01a12f76, 2026-10-12, zbook's live ledger): the transition
+// MEASURED (task 01a12f76, 2026-10-12, zpeer's live ledger): the transition
 // table advertised `pending → superseded` while the persisted
 // `tasks.status` CHECK enumerated EIGHT statuses — `superseded` absent — so
 // `gopi task update <pending> --status superseded --reason x` answered

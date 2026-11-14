@@ -636,7 +636,7 @@ func TestDeclaredTreeSweepsOnlyAgedUnheldEntries(t *testing.T) {
 // work directories under the standard temp root — and the declared row reported
 // `not configured on this host — nothing to sweep` while the tree it describes
 // was being filled (three abandoned `go-build*` directories under
-// /home/nick/workspace/_tmp, ~30 MB each, all from killed builds).
+// /home/user/workspace/_tmp, ~30 MB each, all from killed builds).
 //
 // THE FALLBACK IS A RANK, NOT A CONVENIENCE: `go`'s own ladder is
 // GOTMPDIR($env) > GOTMPDIR(go env file) > the standard temp root, so a GC that

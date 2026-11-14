@@ -104,7 +104,7 @@ func TestLedgerSnapshotIsClassifiedByShapeNotHost(t *testing.T) {
 func TestBackupsRegistrySpellsNoHostname(t *testing.T) {
 	// The machine names this host has carried. Their ABSENCE is the contract:
 	// a table that spells one of these only classifies snapshots taken HERE.
-	machines := []string{"zbook", "nick-HP", "nick@"}
+	machines := []string{"zpeer", "nick-HP", "nick@"}
 	tree := locateBackupsTree(t)
 	for _, name := range []string{
 		"memory.db.otherhost-backup",

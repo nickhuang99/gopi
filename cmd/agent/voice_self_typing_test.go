@@ -28,7 +28,7 @@ type voiceSelfTypedRecorder struct {
 // returns a transcript containing a backslash, a quote and spaces, and the text
 // that reaches the injection point must be byte-identical to it.
 func TestVoiceSelfTypesTheTranscriptVerbatim(t *testing.T) {
-	const transcript = `cd /home/nick/work && echo "a\b"`
+	const transcript = `cd /home/user/work && echo "a\b"`
 
 	srv := httptest.NewServer(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
 		if r.Method != http.MethodPost || !strings.HasSuffix(r.URL.Path, voiceTranscribePath) {

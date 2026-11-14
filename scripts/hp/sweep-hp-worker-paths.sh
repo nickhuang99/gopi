@@ -1,7 +1,7 @@
 #!/bin/bash
 # WORKER-OWNERSHIP: OPERATOR-ONLY — devdoc/worker-ownership.md
 # HP sweep: every path that could auto-start a worker. Fast by design: the
-# recursive /home/nick grep is bounded by depth and excludes dependency trees
+# recursive /home/user grep is bounded by depth and excludes dependency trees
 # (an unbounded walk of the home directory takes minutes on this host).
 set -u
 H="$HOME"

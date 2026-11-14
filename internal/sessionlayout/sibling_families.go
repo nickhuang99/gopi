@@ -723,7 +723,7 @@ func backupsFamilies() []SiblingFamily {
 //
 // MEASURED (this host, 2026-10-01): 4 entries / 100 MiB. The WRITER is not code
 // in this tree at all: it is the operator's own settings.json `notify.cmd`
-// (measured: `awk '{print; print ""}' | tee -a /home/nick/.gopi/notify/task-events.jsonl`),
+// (measured: `awk '{print; print ""}' | tee -a /home/user/.gopi/notify/task-events.jsonl`),
 // run by internal/tools' notify path on every task transition. The path is
 // therefore CONFIGURATION, and a keeper of this tree is the operator, not the
 // repository.

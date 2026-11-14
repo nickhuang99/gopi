@@ -2,7 +2,7 @@
 // the decided-exclusion namespace (refs/tags/archive/<branch>) from a shell.
 //
 // WHY THIS VERB EXISTS (epic hand-archive-gate, 2026-09-16): at 21:04 nine
-// branches in /home/nick/work/GoPi were archived by hand — `git tag
+// branches in /home/user/work/GoPi were archived by hand — `git tag
 // archive/<branch> <branch>`, nine loose refs written inside one second, five
 // of them over task rows the ledger calls `completed` — with no ledger row
 // and no reason recorded anywhere. The tag is the project's decided-exclusion

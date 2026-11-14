@@ -9,7 +9,7 @@ package sessionevent
 // ~/.gopi/sessions/01a1355d-d0f4-71b1-8d97-5305dd229431/artifacts/
 // bug-worker-stale-binary.md): a task run's tool surfaces are executed by the
 // WORKER's own binary, and that binary may come from ANOTHER checkout — the
-// worker was `gopi worker` with exe /home/nick/work/GoPi/bin/gopi (revision
+// worker was `gopi worker` with exe /home/user/work/GoPi/bin/gopi (revision
 // adafe54b) while the run's ground was a linked worktree whose source the run
 // was editing. So "the branch is fixed and the package suite is green" and "the
 // shape the live bash surface exhibits" are answers about two different code

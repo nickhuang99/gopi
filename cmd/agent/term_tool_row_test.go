@@ -36,9 +36,9 @@ var termToolRowRealCommands = []struct {
 	command string
 }{
 	{"quotes", `git log --oneline -3 --grep "worktree at"`},
-	{"and-and", `cd /home/nick/workspace/01a150dc && git status --short && git log --oneline -1`},
+	{"and-and", `cd /home/user/workspace/01a150dc && git status --short && git log --oneline -1`},
 	{"variable", `cd "$GOPI_HOME" && ls -1 sessions | tail -5`},
-	{"cjk-path", `cd /home/nick/工作区/测试 && cat 报告.txt`},
+	{"cjk-path", `cd /home/user/工作区/测试 && cat 报告.txt`},
 	{"long-arg", `go test ./cmd/agent -run TestTermToolRowCarriesTheCommandVerbatim -count=1 -v -timeout 900s -args -probe=aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa`},
 }
 
@@ -228,7 +228,7 @@ func TestTermToolRowShapesMatchTheHistoricLine(t *testing.T) {
 // steps over sequences) cuts the command at a cell boundary and never inside a
 // sequence — and a mask applied per run cannot reach into the middle of one.
 func TestTermToolRowRunsCarryTheCommandAsOneRun(t *testing.T) {
-	cmd := `cd /home/nick/workspace/01a150dc && git log --oneline -3`
+	cmd := `cd /home/user/workspace/01a150dc && git log --oneline -3`
 	row := termToolRow(agent.ToolEvent{Kind: agent.ToolEventKindCall, Name: "bash", Summary: cmd}, termToolStylesFor(lineedit.ColourOn))
 	runs := termToolRuns(row, nil)
 	if got := lineedit.NoteRunText(runs); got != row.Text() {
@@ -253,8 +253,8 @@ func TestTermToolRowRunsCarryTheCommandAsOneRun(t *testing.T) {
 		t.Fatalf("the command is not one contiguous run: %#v", runs)
 	}
 	// The mask is applied per run and reaches the command.
-	masked := termToolRuns(row, func(s string) string { return strings.ReplaceAll(s, "/home/nick", "<HOME>") })
-	if got := lineedit.NoteRunText(masked); strings.Contains(got, "/home/nick") {
+	masked := termToolRuns(row, func(s string) string { return strings.ReplaceAll(s, "/home/user", "<HOME>") })
+	if got := lineedit.NoteRunText(masked); strings.Contains(got, "/home/user") {
 		t.Fatalf("the mask did not reach the command: %q", got)
 	}
 }

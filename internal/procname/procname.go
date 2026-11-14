@@ -59,7 +59,7 @@ const (
 // JUST spawned — one home for a value two packages need (Rule 14: a shared value
 // gets exactly one definition, in a leaf every consumer can import).
 //
-// WHY THE RETRY EXISTS AT ALL (measured 2026-10-12, host=nick-sager):
+// WHY THE RETRY EXISTS AT ALL (measured 2026-10-12, host=host-a):
 // exec.Command's Start() returns once the FORK is done, but the child may not
 // have reached execve yet. In that window /proc/<pid>/cmdline EXISTS and is 0
 // bytes, and the process reads state=R — so ONE read immediately after Start()

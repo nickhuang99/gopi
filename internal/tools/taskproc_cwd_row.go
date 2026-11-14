@@ -28,8 +28,8 @@ package tools
 // a row's run may stand in <gopi dir>/sessions/<row-id> (a worker) OR in
 // <workspace root>/<row-id> (a task run) OR in a delivered ground that has been
 // REGISTERED under a different path than it was created at — this host has the
-// same clone registered at /home/nick/workspace/<row> and
-// /home/nick/workspaces/<row>. A prefix test against one configured root would
+// same clone registered at /home/user/workspace/<row> and
+// /home/user/workspaces/<row>. A prefix test against one configured root would
 // silently answer "not a row directory" for the other, which is a silent
 // fallback of exactly the kind Rule 15 forbids. So the predicate is:
 //

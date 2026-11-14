@@ -284,7 +284,7 @@ func TestVoiceCaptureFailureKeepsBothErrorsReachable(t *testing.T) {
 	}
 }
 
-// The bug report this guards (2026-10-05, host nick-sager):
+// The bug report this guards (2026-10-05, host host-a):
 //
 //	$ gopi tool voice_input --client --out /tmp/8seconds1.wav --seconds 8
 //	[voice] wrote 256044 bytes of WAV (8.0s) to /tmp/8seconds1.wav
@@ -317,8 +317,8 @@ func TestVoiceStartServerHintQuotesTheFailedTarget(t *testing.T) {
 		},
 		{
 			name:   "a LAN peer is told to run the server THERE, not here",
-			url:    "http://192.168.1.6:7788" + voiceTranscribePath,
-			want:   []string{"192.168.1.6", "ON that host"},
+			url:    "http://192.168.7.6:7788" + voiceTranscribePath,
+			want:   []string{"192.168.7.6", "ON that host"},
 			absent: []string{voiceDefaultListen},
 		},
 		{

@@ -793,7 +793,7 @@ func GroundShapeSentence(dir, branch string) string {
 // THE MEASURED CONSEQUENCE OF A FENCE WITH NOWHERE TO PUT THINGS (2026-09-26,
 // row 01a0dbe4-ac93-74f6-8afe-e740669c9532, HP main checkout): the run's row
 // carried `deliverable.repo` = the shared checkout, its briefing rendered
-// "Repo: /home/nick/work/GoPi", and the announcement above told it that its
+// "Repo: /home/user/work/GoPi", and the announcement above told it that its
 // worktree was the ONLY tree it writes. Rule 22 forbids the `/` partition for
 // temp data, `.gitignore` entries and reapers were ruled out, and no evidence
 // directory existed anywhere in the run's text — so the run INVENTED
@@ -1297,7 +1297,7 @@ func TaskRunGroundForClone(taskID, dir string) (TaskGroundResolution, error) {
 	// (RunGroundCollectableGrounds ← RunGroundAnchors). The directory was not
 	// "kept"; it was INVISIBLE: no reclaim arm could name it, so it stayed on
 	// disk with nothing anywhere recording that it existed (measured:
-	// /home/nick/workspace/002c43f2-d6dc-4c4b-82d9-f2b40163d53c — 233 MB, clean,
+	// /home/user/workspace/002c43f2-d6dc-4c4b-82d9-f2b40163d53c — 233 MB, clean,
 	// on master, its row `completed` — absent from
 	// `gopi task sweep-worktrees --dry-run` in its entirety).
 	//
@@ -1366,7 +1366,7 @@ func TaskRunGroundForClone(taskID, dir string) (TaskGroundResolution, error) {
 	// ARGUMENT IS THIS DIRECTORY, not a name derived from the row: the claimer
 	// derives `gopi-<stem>` from the repo, and on a clone that names a directory
 	// the run never creates (measured live 2026-10-18: the row ended up pointing
-	// at /home/nick/workspace/gopi-<stem>, which does not exist, while the real
+	// at /home/user/workspace/gopi-<stem>, which does not exist, while the real
 	// workspace was reclaimed). Passing dir explicitly records the truth.
 	if _, err := taskBackfillDeliverableWorktreeAt(taskID, dir, branch, &repo, taskWorktreeStampMomentClaim); err != nil {
 		return TaskGroundResolution{}, fmt.Errorf("task ground: recording the clone workspace %s on row %s: %w", dir, taskID, err)

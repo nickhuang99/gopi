@@ -522,7 +522,7 @@ func TestGroundReconcileScopesTheNoOwnerClaimAndLabelsTheGitChannel(t *testing.T
 	db, dbPath := reconcileLedger(t)
 
 	// THE LEDGER HAS ROWS, AND EVERY ONE OF THEM IS REPO-ONLY — the measured
-	// in-flight shape (a column of `{"repo":"/home/nick/work/GoPi"}` rows carrying
+	// in-flight shape (a column of `{"repo":"/home/user/work/GoPi"}` rows carrying
 	// no branch at all), so no row of it can name any selector.
 	now := time.Now()
 	for _, id := range []string{"01a0ed25-cc83-7766-82f3-d729367e24d6", "01a0ed34-b8a7-79c6-a7ca-aad436ec7e3e"} {

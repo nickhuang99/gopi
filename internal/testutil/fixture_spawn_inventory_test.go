@@ -3,7 +3,7 @@ package testutil
 // fixture_spawn_inventory_test.go — the measured inventory of every test-side
 // spawn of a test binary, and the ONE rule that keeps the leak from coming back.
 //
-// THE SHAPE THIS IS ABOUT (measured on zbook 2026-09-26). A fixture child that
+// THE SHAPE THIS IS ABOUT (measured on zpeer 2026-09-26). A fixture child that
 // blocks forever, whose test parent never waits for it and never kills it,
 // outlives the test binary: it reparents to init (PPID 1) and stands wherever it
 // was started — inside a task worktree, if that is the CWD it inherited.

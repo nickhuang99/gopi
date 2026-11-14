@@ -17,7 +17,7 @@ package devworkspace
 // (mergeBuildGateTestCompileCmd / mergeUnionGateGoTestCompileCmdFmt in
 // internal/tools, both now reading internal/testcompile's ONE spelling), but
 // their only callers are the MERGE path (task_merge.go, repo_sweep.go), and
-// master has essentially stopped travelling through it: measured on zbook, 762
+// master has essentially stopped travelling through it: measured on zpeer, 762
 // ref updates by `push` against 10 by `merge`, and on this clone **0 merge
 // commits in the 192 commits since the last one**. So the guards were correct
 // and unreachable.

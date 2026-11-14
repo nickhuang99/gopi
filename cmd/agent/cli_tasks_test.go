@@ -559,7 +559,7 @@ func TestParseTasksArgsSubmitRepoFlag(t *testing.T) {
 // --attachment paths must carry both through to the runTaskSubmit options.
 func TestParseTasksArgsSubmitAttachmentRepeatable(t *testing.T) {
 	opts, err := parseTasksArgs("submit", []string{
-		"work summary", "--attachment", "/tmp/a.log", "--attachment=/home/nick/b.log",
+		"work summary", "--attachment", "/tmp/a.log", "--attachment=/home/user/b.log",
 	})
 	if err != nil {
 		t.Fatalf("submit --attachment x2: %v", err)
@@ -567,8 +567,8 @@ func TestParseTasksArgsSubmitAttachmentRepeatable(t *testing.T) {
 	if len(opts.attachments) != 2 {
 		t.Fatalf("opts.attachments = %v, want 2 entries", opts.attachments)
 	}
-	if opts.attachments[0] != "/tmp/a.log" || opts.attachments[1] != "/home/nick/b.log" {
-		t.Errorf("opts.attachments = %v, want [/tmp/a.log /home/nick/b.log] (arg order preserved)", opts.attachments)
+	if opts.attachments[0] != "/tmp/a.log" || opts.attachments[1] != "/home/user/b.log" {
+		t.Errorf("opts.attachments = %v, want [/tmp/a.log /home/user/b.log] (arg order preserved)", opts.attachments)
 	}
 
 	// Zero occurrences → nil (no-attachment submit unchanged).
@@ -912,8 +912,8 @@ func TestRunMethodFor(t *testing.T) {
 		t.Fatalf("single-row = %q / %q, want manual / gopi worker t-abc", m, c)
 	}
 	// Manual with the remote return path (the dispatched node's own row).
-	m, c = runMethodFor("t-abc", &tasksOptions{taskID: "t-abc", reportTo: "zbook", repo: "zbook:/home/nick/work/GoPi"})
-	if m != runcmd.MethodManual || c != "gopi worker t-abc --report-to zbook --repo zbook:/home/nick/work/GoPi" {
+	m, c = runMethodFor("t-abc", &tasksOptions{taskID: "t-abc", reportTo: "zpeer", repo: "zpeer:/home/user/work/GoPi"})
+	if m != runcmd.MethodManual || c != "gopi worker t-abc --report-to zpeer --repo zpeer:/home/user/work/GoPi" {
 		t.Fatalf("single-row+return = %q / %q, want the full re-runnable command", m, c)
 	}
 	// Worker round: the latch holds the target. The recorded command is the

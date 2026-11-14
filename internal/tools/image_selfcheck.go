@@ -4,13 +4,13 @@ package tools
 // would start?" — the self-check a RESIDENT decider owes the rest of the
 // system (epic merge-image-selfcheck, 2026-10-13).
 //
-// THE DEFECT IT CLOSES, measured (2026-10-13, host zbook):
+// THE DEFECT IT CLOSES, measured (2026-10-13, host zpeer):
 //
 //	$ readlink -f /proc/3869823/exe
-//	/home/nick/work/GoPi/bin/gopi (deleted)      # a replacement happened under it
+//	/home/user/work/GoPi/bin/gopi (deleted)      # a replacement happened under it
 //	$ strings /proc/3869823/exe | grep -c "devdoc-anchor family may have drifted"
 //	0
-//	$ strings /home/nick/work/GoPi/bin/gopi | grep -c "devdoc-anchor family may have drifted"
+//	$ strings /home/user/work/GoPi/bin/gopi | grep -c "devdoc-anchor family may have drifted"
 //	1
 //
 // The resident `gopi merge --every 2m` (the process that DECIDES landings) was

@@ -541,15 +541,15 @@ module.exports = [
         messages: [
           { role: 'user', content: 'read the file' },
           { role: 'assistant', content: '', tools: [{ id: 'c1', name: 'read', call: '{"path":"/etc/hostname"}' }] },
-          { role: 'tool', content: '[tool_use id: c1]\nnick-HP-Laptop', tools: [{ id: 'c1', name: 'read', result: 'nick-HP-Laptop' }] },
-          { role: 'assistant', content: 'The hostname is nick-HP-Laptop.' },
+          { role: 'tool', content: '[tool_use id: c1]\nhost-b', tools: [{ id: 'c1', name: 'read', result: 'host-b' }] },
+          { role: 'assistant', content: 'The hostname is host-b.' },
         ],
       };
       await api.replayTranscript();
       const cards = api.els.log.querySelectorAll('.toolcard');
       t.eq(cards.length, 1, 'ONE tool card was rebuilt (the call row opened it, the result row filled it)');
       t.ok(cards[0] && cards[0].textContent.indexOf('read') >= 0, 'the card names the tool');
-      t.ok(cards[0] && cards[0].querySelector('.tbody').textContent.indexOf('nick-HP-Laptop') >= 0, 'the card body carries the result digest');
+      t.ok(cards[0] && cards[0].querySelector('.tbody').textContent.indexOf('host-b') >= 0, 'the card body carries the result digest');
       t.eq(cards[0].classList.contains('closed'), true, 'the card is COLLAPSED once its result arrived (the live stream collapses it too)');
       t.ok(cards[0].textContent.indexOf('/etc/hostname') >= 0, 'the call digest is rendered too');
       const bubbles = api.els.log.children.filter((c) => c.classList.contains('assistant'));
@@ -603,7 +603,7 @@ module.exports = [
       const { api, state } = ctx;
       state.identity = {
         session_id: 'sess-abc', model: 'deepseek-v4-pro', tools: true,
-        addr: '192.168.1.9:8090', messages: 3, turns: 2, tokens: 1234,
+        addr: '192.0.2.9:8090', messages: 3, turns: 2, tokens: 1234,
         started: '2026-09-24T11:00:00Z',
       };
       await api.identifyEngine();
@@ -679,8 +679,8 @@ module.exports = [
 
       // B. Release the rest: the result, the answer's delta, and done.
       pushChunk([
-        frame('tool', json({ kind: 'result', name: 'bash', summary: 'nick-sager' })),
-        frame('delta', json({ text: 'the host is nick-sager' })),
+        frame('tool', json({ kind: 'result', name: 'bash', summary: 'host-a' })),
+        frame('delta', json({ text: 'the host is host-a' })),
         frame('done', '{}'),
       ]);
       live = false;
@@ -695,7 +695,7 @@ module.exports = [
       t.ok(ti < ai, 'DOM order = arrival order: the card is BEFORE the answer (got ' + JSON.stringify(rows) + ')');
       const bubbles = log.children.filter((c) => c.classList.contains('assistant'));
       t.eq(bubbles.length, 1, 'exactly ONE assistant bubble was created for the whole turn (openBubble is idempotent)');
-      t.ok(bubbles[0].textContent.indexOf('the host is nick-sager') >= 0, 'the single bubble carries the streamed answer');
+      t.ok(bubbles[0].textContent.indexOf('the host is host-a') >= 0, 'the single bubble carries the streamed answer');
 
       // D. A PURE ANSWER turn (no tool frames) still renders its bubble, in the
       //    same place a reader expects it: after the question, with no card.

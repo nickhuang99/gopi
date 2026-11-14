@@ -277,7 +277,7 @@ func TestResponseTopologyGlyphsPartitionTheNoteSet(t *testing.T) {
 
 // TestVolcengineBillResponseIsCapturedAsTable is the regression case named in the
 // epic's acceptance clause: the operator's own billing round — a four-column
-// markdown price table in the response body, read off /home/nick/work/audio-bill.png
+// markdown price table in the response body, read off /home/user/work/audio-bill.png
 // and written out by the model — must be captured by the TABLE arm.
 //
 // THE FIXTURE IS THE REAL ROUND, byte for byte, read from a local session log and

@@ -10,7 +10,7 @@ package scratch
 //	         surviving copy of evidence (measured: branch-capture-list-windows.
 //	         bundle is the last copy of an archived branch), so a rule that could
 //	         take one is worse than no rule. The fixture plants the real shape:
-//	         `<container>/attachments/home/nick/workspace/<name>.bundle`.
+//	         `<container>/attachments/home/user/workspace/<name>.bundle`.
 //	COLLECT — an ORDINARY, EMPTY, unheld, aged `attachments/` directory goes.
 //	         It holds no evidence (nothing at all) and it is what the family
 //	         costs: measured on this host 2026-10-02, 75,602 of 75,851 archives

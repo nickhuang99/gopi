@@ -319,7 +319,7 @@ func TestHarvestNewerWinsMigration(t *testing.T) {
 // truths (TestHarvestConflictSameStampBothTerminal).
 func TestHarvestConflictSameStamp(t *testing.T) {
 	harvestTestDB(t)
-	harvestSeedRow(t, "t-both-2", "zbook version", "pending", 1788000300, "")
+	harvestSeedRow(t, "t-both-2", "zpeer version", "pending", 1788000300, "")
 	remote := harvestRemote("t-both-2", "hp version", "pending", 1788000300)
 	counts, err := TaskHarvest(HarvestOptions{Peer: harvestFixturePeer, Since: 0, Fetch: harvestRows([]harvestRemoteRow{remote}, nil)})
 	if err != nil {
@@ -332,7 +332,7 @@ func TestHarvestConflictSameStamp(t *testing.T) {
 	if err != nil || row == nil {
 		t.Fatalf("local t-both-2: %v", err)
 	}
-	if row.Status != "pending" || row.Summary != "zbook version" {
+	if row.Status != "pending" || row.Summary != "zpeer version" {
 		t.Fatalf("relabel rewrote the local row: (%q,%q)", row.Status, row.Summary)
 	}
 	incoming, err := syncTaskByID("t-both-2-nhp")
@@ -345,7 +345,7 @@ func TestHarvestConflictSameStamp(t *testing.T) {
 }
 
 // TestHarvestLadderSameStampTerminalWins: the same work planted on both
-// nodes (the shared-session memsync reality) — zbook still pending, HP
+// nodes (the shared-session memsync reality) — zpeer still pending, HP
 // already completed, same updated_at: the terminal result adopts the row
 // (status outranks content at equal stamps; the conflict counter is for two
 // FINISHED truths, not for "one side hasn't finished yet").
@@ -386,7 +386,7 @@ func TestHarvestConflictSameStampBothTerminal(t *testing.T) {
 // TestHarvestLiveLocalSkipped: a claimed/in_progress row is owned by this
 // node — a newer live-status remote report never rewrites it. But a newer
 // TERMINAL remote report IS the result and must migrate the row (the E2E
-// bug038 path: HP completed the shared row; zbook's live twin receives it).
+// bug038 path: HP completed the shared row; zpeer's live twin receives it).
 func TestHarvestLiveLocalSkipped(t *testing.T) {
 	harvestTestDB(t)
 	harvestSeedRow(t, "t-live-1", "being executed here", "in_progress", 1788000100, "")
@@ -420,7 +420,7 @@ func TestHarvestLiveLocalSkipped(t *testing.T) {
 // TestHarvestSameStampLiveTwinAbsorbed: the remote live twin arrives coerced
 // to pending at the SAME stamp as the local live row — same work content
 // absorbs as duped; a diverging same-stamp twin conflicts (the E2E 8-row
-// duped signature: zbook's pending twins vs HP's in_progress twins).
+// duped signature: zpeer's pending twins vs HP's in_progress twins).
 func TestHarvestSameStampLiveTwinAbsorbed(t *testing.T) {
 	harvestTestDB(t)
 	harvestSeedRow(t, "t-twin-1", "twin work", "in_progress", 1788000100, "seed-tag")
@@ -491,7 +491,7 @@ func TestHarvestStrictlyNewerTerminalOverDivergentLive(t *testing.T) {
 	harvestTestDB(t)
 	const id = "t-collide"
 	// Local: a live in_progress row with THIS node's own work content.
-	harvestSeedRow(t, id, "local live work", taskStatusInProgress, 1788000100, "worker:zbook")
+	harvestSeedRow(t, id, "local live work", taskStatusInProgress, 1788000100, "worker:zpeer")
 	// Remote: strictly newer (stamp +10s), terminal, DIFFERENT content.
 	rows := []harvestRemoteRow{
 		{TaskID: id, Summary: "peer different work", Payload: "peer payload",
@@ -499,7 +499,7 @@ func TestHarvestStrictlyNewerTerminalOverDivergentLive(t *testing.T) {
 	}
 	// Pin node so relabel would use a stable name (irrelevant here — the
 	// defect path is the overwrite, not the relabel).
-	t.Setenv("GOPI_SYNC_NODE", "zbook")
+	t.Setenv("GOPI_SYNC_NODE", "zpeer")
 	counts, err := TaskHarvest(HarvestOptions{Peer: harvestFixturePeer, Fetch: harvestRows(rows, nil)})
 	if err != nil {
 		t.Fatalf("harvest: %v", err)

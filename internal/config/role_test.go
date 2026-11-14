@@ -31,8 +31,8 @@ func TestRoleSyncToParsing(t *testing.T) {
 		t.Fatalf("SyncTo = %q, want empty on server", cfg.SyncTo)
 	}
 
-	// Client form: role + sync_to (hp → zbook).
-	clientJSON := `{"role": "client", "sync_to": "zbook"}`
+	// Client form: role + sync_to (hp → zpeer).
+	clientJSON := `{"role": "client", "sync_to": "zpeer"}`
 	if err := os.WriteFile(path, []byte(clientJSON), 0o600); err != nil {
 		t.Fatal(err)
 	}
@@ -43,8 +43,8 @@ func TestRoleSyncToParsing(t *testing.T) {
 	if cfg.Role != "client" {
 		t.Fatalf("Role = %q, want client", cfg.Role)
 	}
-	if cfg.SyncTo != "zbook" {
-		t.Fatalf("SyncTo = %q, want zbook", cfg.SyncTo)
+	if cfg.SyncTo != "zpeer" {
+		t.Fatalf("SyncTo = %q, want zpeer", cfg.SyncTo)
 	}
 
 	// Absent fields → zero values (unset role = undeclared topology).
@@ -68,7 +68,7 @@ func TestBannerNodeRole(t *testing.T) {
 		wantEmpty                bool
 	}{
 		{"server", "", "(server)", false},
-		{"client", "zbook", "(client→zbook)", false},
+		{"client", "zpeer", "(client→zpeer)", false},
 		{"", "", "", true}, // undeclared → no banner line at all
 	}
 	for _, tc := range cases {

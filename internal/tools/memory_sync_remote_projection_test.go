@@ -79,7 +79,7 @@ func TestRemoteProjectionDecodesThroughTheRealCLI(t *testing.T) {
 		t.Fatalf("open fixture ledger: %v", err)
 	}
 	defer db.Close()
-	const wantReason = "handed over to peer zbook"
+	const wantReason = "handed over to peer zpeer"
 	const wantParent = "t-parent-01"
 	if _, err := db.Exec(`INSERT INTO tasks
 		(task_id, summary, payload, tags, source, model, status, created_at, updated_at,

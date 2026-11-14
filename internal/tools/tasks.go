@@ -82,7 +82,7 @@ const (
 	// work" and "the work is someone else's now" — and Rule 33's dependency
 	// gate releases a parked child only on a release-set status, so a child
 	// whose parent was MIGRATED (not abandoned) was parked forever while the
-	// queue looked clean (Rule 15 silent failure). Measured on zbook's live
+	// queue looked clean (Rule 15 silent failure). Measured on zpeer's live
 	// ledger 2026-10-07: 426 cancelled rows, exactly 1 parking a pending
 	// child, and its reason is the three-step migration recipe verbatim.
 	//
@@ -2791,7 +2791,7 @@ func TaskList(statusFilter string) (string, error) {
 		// # column (cross-node reconciliation): renders the task_id's numeric
 		// part, NOT the local SQLite rowid. rowid is allocated per-node at
 		// INSERT, so sync'd replicas of the same task show different #s
-		// (zbook #180 vs HP #220); the t-<unix> task_id is the shared primary
+		// (zpeer #180 vs HP #220); the t-<unix> task_id is the shared primary
 		// key, so its digits are identical on every node.
 		// via suffix (run provenance): a compact "how was this run launched"
 		// marker — [via auto] (a self-registering bare run), [via manual],
@@ -7711,9 +7711,9 @@ const TaskDurableRepoErrFmt = "no durable repository for %s: %s"
 // children, internal/agent/reframe.go's dispatchReframeRoadmap) was born naming
 // a directory that died with its parent:
 //
-//	parent 01a0d526 deliverable = {"branch":"task/<uuid>","repo":"/home/nick/work/GoPi",
-//	                               "worktree":"/home/nick/workspace/gopi-01a0d52643bf701f9dba6746c8a09d8e"}
-//	child  01a0d528 deliverable = {"repo":"/home/nick/workspace/gopi-01a0d52643bf701f9dba6746c8a09d8e"}
+//	parent 01a0d526 deliverable = {"branch":"task/<uuid>","repo":"/home/user/work/GoPi",
+//	                               "worktree":"/home/user/workspace/gopi-01a0d52643bf701f9dba6746c8a09d8e"}
+//	child  01a0d528 deliverable = {"repo":"/home/user/workspace/gopi-01a0d52643bf701f9dba6746c8a09d8e"}
 //	                                   ^ the parent's WORKTREE, stamped as the child's REPO
 //
 // and the four children then refused to start, correctly, with "the repo is not
@@ -7939,7 +7939,7 @@ func TaskSubmitReturningID(opts TaskSubmitOptions) (string, string, error) {
 		// to start, correctly and permanently:
 		//
 		//	cannot resolve the ground for task <id> in repo
-		//	/home/nick/workspace/gopi-<uuid>: the repo is not a git work tree …
+		//	/home/user/workspace/gopi-<uuid>: the repo is not a git work tree …
 		//
 		// The main checkout is recovered from ANY position inside the repository
 		// (mergeExecMainRepo → `git rev-parse --git-common-dir`, the existing ONE
@@ -8499,7 +8499,7 @@ type TaskNextResult struct {
 }
 
 // TaskNext atomically claims the oldest eligible pending task (CAS conditional
-// UPDATE — the /home/nick/work/tasks pool.go Claim pattern). Two concurrent claimers
+// UPDATE — the /home/user/work/tasks pool.go Claim pattern). Two concurrent claimers
 // race on the same statement: exactly one sees RowsAffected()==1, the loser
 // re-selects and retries until it claims a different task or the queue is
 // empty. excludeSession skips tasks derived from that session

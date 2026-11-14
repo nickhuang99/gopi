@@ -33,7 +33,7 @@ func writeFixture(t *testing.T, lines []string) string {
 // session_start → user → thinking → tool_use → request → tool_result (after the
 // request flushed the iteration) → text → request → session_end.
 var anthropicSession = []string{
-	`{"model":"deepseek-v4-flash","sessionId":"test-session-1","timestamp":"2026-08-06T14:58:12.635051212+08:00","type":"session_start","workdir":"/home/nick/work/demo"}`,
+	`{"model":"deepseek-v4-flash","sessionId":"test-session-1","timestamp":"2026-08-06T14:58:12.635051212+08:00","type":"session_start","workdir":"/home/user/work/demo"}`,
 	`{"message":{"content":"[EPIC GOAL]\nread go.mod\n\nBased on this Epic, generate an initial task list.","role":"user"},"promptId":"p1","timestamp":"2026-08-06T14:58:12.636510863+08:00","type":"user"}`,
 	`{"message":{"content":[{"thinking":"Let me read go.mod.","type":"thinking"}],"role":"assistant"},"timestamp":"2026-08-06T14:58:13.908451918+08:00","type":"assistant"}`,
 	`{"message":{"content":[{"id":"call_00_abc","input":{"path":"go.mod"},"name":"read","type":"tool_use"}],"role":"assistant"},"timestamp":"2026-08-06T14:58:13.909299996+08:00","type":"assistant"}`,
@@ -59,7 +59,7 @@ func TestParseAnthropicSession(t *testing.T) {
 	if s.Model != "deepseek-v4-flash" {
 		t.Errorf("Model = %q, want deepseek-v4-flash", s.Model)
 	}
-	if s.Workdir != "/home/nick/work/demo" {
+	if s.Workdir != "/home/user/work/demo" {
 		t.Errorf("Workdir = %q", s.Workdir)
 	}
 	if s.Task == "" || !strings.HasPrefix(s.Task, "[EPIC GOAL]") {

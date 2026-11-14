@@ -542,7 +542,7 @@ func TestTaskDeliverableWorktreeAccessors(t *testing.T) {
 // DETECTION seam: it may close a gap (repo-only row → repo+worktree), never
 // re-point a row that already names a directory. The live incident: row
 // 01a09250's deliverable read gopi-wtrecycle2, then a read-only probe of
-// another task's worktree (`git -C /home/nick/workspace/gopi-cov-agent status`)
+// another task's worktree (`git -C /home/user/workspace/gopi-cov-agent status`)
 // rebound it to gopi-cov-agent — the row then BLOCKED the other task's
 // recycle as a foreign owner (and was itself blocked by it), which is the
 // mutual-lock shape the whole epic is about.

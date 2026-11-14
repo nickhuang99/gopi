@@ -1,7 +1,7 @@
 // x11route_fallback_test.go — the route-resolution guards for the defect
 // "`gopi tool act info` → connect … no such file or directory".
 //
-// THE DEFECT (measured on zbook, 2026-09-20): `DISPLAY=localhost:17.0` (an SSH
+// THE DEFECT (measured on zpeer, 2026-09-20): `DISPLAY=localhost:17.0` (an SSH
 // forward whose forward is gone) made every X11 path fail with ENOENT — while
 // the SAME HOST had live displays (:1, :98) and the same display NUMBER was
 // often served locally by the durable Xvfb. The resolver mapped a `localhost`
@@ -172,7 +172,7 @@ func TestDialX11FallsBackToTCPWhenTheLocalSocketIsGone(t *testing.T) {
 
 // TestDialX11FallsBackToTheLocalSocketForALocalhostDisplay is the other half:
 // the DISPLAY names `localhost:N` (TCP over a forward that has died) while the
-// same display NUMBER is served locally on the unix socket. That is the zbook
+// same display NUMBER is served locally on the unix socket. That is the zpeer
 // case the worker's display preflight reports as an unreachable GUI, and the
 // local server is the display the operator meant.
 func TestDialX11FallsBackToTheLocalSocketForALocalhostDisplay(t *testing.T) {

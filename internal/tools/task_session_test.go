@@ -6,7 +6,7 @@ package tools
 //	(a) same-name files in DIFFERENT absolute dirs copy to distinct replica
 //	    subdirs — never collide, path structure preserved
 //	    (/tmp/log.txt → attachments/tmp/log.txt,
-//	     /home/nick/log.txt → attachments/home/nick/log.txt)
+//	     /home/user/log.txt → attachments/home/user/log.txt)
 //	(b) submit with --attachment paths → session dir created, replicas
 //	    present with correct content, manifest in the deliverable JSON
 //	    (original_abs_path / replica_rel_path / sha256 / file_size /
@@ -85,7 +85,7 @@ func phase1ReplicaPath(t *testing.T, gopiHome, taskID, rel string) string {
 func TestPhase1AttachSubmitSameNameDifferentDirs(t *testing.T) {
 	home := phase1AttachEnv(t)
 
-	// /tmp/log.txt and /home/nick/log.txt — same base name, different dirs.
+	// /tmp/log.txt and /home/user/log.txt — same base name, different dirs.
 	aDir := filepath.Join(home, "dirA")
 	bDir := filepath.Join(home, "dirB")
 	if err := os.MkdirAll(aDir, 0o755); err != nil {

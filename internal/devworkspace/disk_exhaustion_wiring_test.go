@@ -22,7 +22,7 @@ func TestAttemptDeliveryClassifiesAnENOSPCBuildAsDiskExhaustion(t *testing.T) {
 	cfg := cloneCfg(t, origin)
 	// The declared build prints the kernel's text and fails, which is exactly
 	// what the linker did on this host when the partition hit 2.3 GiB free.
-	cfg.Build = "echo 'link: writing /home/nick/workspace/x/a.out: no space left on device'; exit 1"
+	cfg.Build = "echo 'link: writing /home/user/workspace/x/a.out: no space left on device'; exit 1"
 	if _, err := Open(context.Background(), cfg); err != nil {
 		t.Fatalf("Open: %v", err)
 	}

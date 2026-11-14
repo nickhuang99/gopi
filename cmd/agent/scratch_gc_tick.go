@@ -284,7 +284,7 @@ func scratchGCTick(role string, now time.Time) int {
 	}
 	// The DECLARED-TREES arm rides the same tick, the same cadence and the same
 	// off switch — and its ABSENCE is the defect this call site closes.
-	// MEASURED (nick-HP-Laptop, 2026-10-17): `/home` at 100%, a `git worktree
+	// MEASURED (host-b, 2026-10-17): `/home` at 100%, a `git worktree
 	// add` inside cmd/agent's own suite dying with ENOSPC, while `gopi tool
 	// scratch-gc trees --dry-run` reported 45.7 GB collectable in the shared
 	// build cache, 5.4 GB of aged `*.raw.log`, 1.27 GB of abandoned `go-build*`

@@ -1,8 +1,8 @@
 #!/bin/bash
 # Operator-authored, LLM-free evidence for hermes' OWN native surfaces (M1/M2/M3).
 # Only hermes' own CLI is invoked; no wrapper logic beyond cd/timeout/redirect.
-H=/home/nick/work/hermes-agent/.venv/bin/hermes
-R=/home/nick/.gopi/sessions/01a0eec1-e2a4-7366-bcf3-d2c2e183fe18/strongest/raw
+H=/home/user/work/hermes-agent/.venv/bin/hermes
+R=/home/user/.gopi/sessions/01a0eec1-e2a4-7366-bcf3-d2c2e183fe18/strongest/raw
 B=probe-01a0eec1c
 k(){ timeout 45 $H kanban --board $B "$@" 2>&1; }
 echo "=== hermes NATIVE-SURFACE DIRECT EVIDENCE (operator-run, no LLM) ==="

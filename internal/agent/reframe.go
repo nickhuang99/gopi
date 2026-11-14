@@ -455,7 +455,7 @@ func reframeChildPayload(parentSummary string, item reframeRoadmapItem) string {
 // process cwd — and a worker-run parent's cwd is its GROUND, the linked worktree
 // the worker creates for that one run and DELETES on finish. The four children
 // of row 01a0d526 were born with
-// {"repo":"/home/nick/workspace/gopi-01a0d52643bf701f9dba6746c8a09d8e"} — their
+// {"repo":"/home/user/workspace/gopi-01a0d52643bf701f9dba6746c8a09d8e"} — their
 // own parent's worktree — and `gopi worker <child>` then refused, correctly,
 // with "the repo is not a git work tree ... refusing to start the run in the
 // repo's main checkout". A child that must outlive its parent cannot inherit
@@ -490,9 +490,9 @@ func reframeSubmitOptions(summary, payload, parentID, tag, sessionID, model, rep
 // WHY THE PARENT ROW IS THE ONLY SOURCE (bug 01a1515c, measured live
 // 2026-10-18; three of three reframe splits died on it):
 //
-//	parent 01a150cb deliverable.repo     = /home/nick/work/gopi
-//	                 deliverable.worktree = /home/nick/workspace/01a150cb-…
-//	children 01a150cb/01a1510e/01a1513b  repo = /home/nick/workspace/01a150cb-…
+//	parent 01a150cb deliverable.repo     = /home/user/work/gopi
+//	                 deliverable.worktree = /home/user/workspace/01a150cb-…
+//	children 01a150cb/01a1510e/01a1513b  repo = /home/user/workspace/01a150cb-…
 //	                                             ^ the PARENT'S WORKSPACE
 //
 // so each child was refused at spawn by the clone channel — correctly — with
@@ -502,7 +502,7 @@ func reframeSubmitOptions(summary, payload, parentID, tag, sessionID, model, rep
 // The previous resolution (epic 01a0d55b) asked DurableRepoForSubmit(cwd). That
 // is right for a LINKED WORKTREE — git's common-dir names the main checkout
 // from anywhere inside the repository — and silently wrong for the clone
-// channel, whose cwd IS a standalone clone at /home/nick/workspace/<parent-id>:
+// channel, whose cwd IS a standalone clone at /home/user/workspace/<parent-id>:
 // the common dir of a clone is the clone, so the durable answer was the
 // parent's own workspace. Reading the row removes the question entirely: the
 // parent row already recorded the repository it was dispatched for, and no

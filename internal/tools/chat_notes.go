@@ -31,7 +31,7 @@ package tools
 //
 // WHY source_host AND source_path ARE BOTH COLUMNS. The two machines of this
 // topology have home directories that are literally the same string
-// (`/home/nick/...`, measured on sager and zbook), so a PATH alone cannot say
+// (`/home/user/...`, measured on sager and zpeer), so a PATH alone cannot say
 // which machine a note came from and a HOST alone cannot say where to look for
 // the rest of the run. Both are stamped, from sources that already exist —
 // tools.OriginHostName() (the node-identity override > hostname, Rule 14: one

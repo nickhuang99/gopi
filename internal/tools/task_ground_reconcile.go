@@ -6,7 +6,7 @@
 // minted BEFORE that producer landed still record nothing, so every
 // deliverable→row lookup answers "no owner" for a LIVE ground — the measured
 // shape (row 01a0ddc4-c410, session 3592a5ef): the run created
-// /home/nick/workspace/gopi-evi-pushback on fix/pushback-rule31-evidence while
+// /home/user/workspace/gopi-evi-pushback on fix/pushback-rule31-evidence while
 // its row named its own ground, and NOTHING in the ledger names the created
 // directory or branch.
 //
@@ -589,7 +589,7 @@ func taskGroundReconcileScanSession(path, worktree, branch string, createdAt, en
 // taskWorktreeAddNamesDir reports whether command's `git worktree add` names the
 // given directory. The comparison is a FIELD test (the same Fields() split the
 // branch parser uses) against the path and against its basename, so
-// `/home/nick/workspace/gopi-x` matches both the absolute spelling and the
+// `/home/user/workspace/gopi-x` matches both the absolute spelling and the
 // `~/workspace/gopi-x`/relative one a run may have typed — the registration is
 // what pins the identity, this predicate only asks whether the command's own
 // words point at it.

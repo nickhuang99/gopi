@@ -6,9 +6,9 @@
 # on 2026-11-05 (internal/taskverbs.SyncVerbs is empty), so leg B now prints the
 # removal sentence. The lines stay verbatim: they are what the recorded output came
 # from, and re-running this file is a history replay, never a check.
-S=/home/nick/.gopi/sessions/01a0eec1-e2a4-7366-bcf3-d2c2e183fe18/strongest
+S=/home/user/.gopi/sessions/01a0eec1-e2a4-7366-bcf3-d2c2e183fe18/strongest
 R=$S/raw
-H=/home/nick/work/hermes-agent/.venv/bin/hermes
+H=/home/user/work/hermes-agent/.venv/bin/hermes
 echo "=== follow-up A: hermes M5 worktree workspace, REAL creation+reclaim (throwaway git repo) ==="
 FIX=$S/work/m5repo
 mkdir -p "$FIX"
@@ -24,7 +24,7 @@ timeout 120 $H kanban --board $B claim "$T" 2>&1 | tail -5
 echo "--- fixture repo worktree list AFTER claim ---"
 git -C "$FIX" worktree list 2>&1 | head -5
 echo "--- product workspaces dir ---"
-find /home/nick/.hermes/kanban/boards/$B/workspaces -maxdepth 3 2>/dev/null | head -8
+find /home/user/.hermes/kanban/boards/$B/workspaces -maxdepth 3 2>/dev/null | head -8
 echo "--- product reclaim surface: kanban gc / archive ---"
 timeout 90 $H kanban gc -h 2>&1 | head -8
 timeout 60 $H kanban --board $B complete "$T" 2>&1 | tail -2
@@ -44,8 +44,8 @@ GOPI_HOME=$GH timeout 60 /usr/local/bin/gopi task sync --status 2>&1 | head -4; 
 echo
 echo "=== follow-up C: claude M3 retry with a longer bounded timeout (420s) ==="
 cd $S/work/claude || exit 9
-P="$(cat /home/nick/workspace/gopi-01a0eec1e2a47366bcf3d2c2e183fe18/scripts/materials/probe-m3-introspect.txt)"
-timeout --signal=KILL 420 /home/nick/.local/bin/claude -p --dangerously-skip-permissions "$P" > $R/probe-m3-introspect.claude.long.out 2>&1
+P="$(cat /home/user/workspace/gopi-01a0eec1e2a47366bcf3d2c2e183fe18/scripts/materials/probe-m3-introspect.txt)"
+timeout --signal=KILL 420 /home/user/.local/bin/claude -p --dangerously-skip-permissions "$P" > $R/probe-m3-introspect.claude.long.out 2>&1
 echo "claude M3 long: exit=$? bytes=$(wc -c <$R/probe-m3-introspect.claude.long.out)"
 grep -aoE 'M3_VERDICT=[A-Za-z]+' $R/probe-m3-introspect.claude.long.out | tail -2
 echo "DONE followups"

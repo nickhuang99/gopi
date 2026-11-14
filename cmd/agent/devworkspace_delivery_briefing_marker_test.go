@@ -79,7 +79,7 @@ func deliveryBriefingCases() []struct {
 	name     string
 	briefing string
 } {
-	const dir = "/home/nick/workspace/01a188c0-34e9-72ec-b3d1-89e39619470b"
+	const dir = "/home/user/workspace/01a188c0-34e9-72ec-b3d1-89e39619470b"
 	pull, empty := pullConflictBlocker(), emptyBehindBlocker()
 	return []struct {
 		name     string

@@ -54,7 +54,7 @@ const (
 	zz2UIClientDir   = "internal/uiclient"
 	zz2ScratchEntry  = "scratch/evidence-01a0dbe4.txt"
 	zz2MeasuredRow   = "01a0dbe4-ac93-74f6-8afe-e740669c9532"
-	zz2MeasuredCheck = "/home/nick/work/GoPi"
+	zz2MeasuredCheck = "/home/user/work/GoPi"
 	zz2DepositEvent  = "completed-unclean-main-checkout-deposit"
 )
 

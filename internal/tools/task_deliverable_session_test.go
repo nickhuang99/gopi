@@ -50,7 +50,7 @@ func TestResolveSessionByDeliverableAddressesTheRowsSession(t *testing.T) {
 	const (
 		taskID    = "t-session-selector"
 		branch    = "feat/session-selector"
-		worktree  = "/home/nick/workspace/gopi-session-selector"
+		worktree  = "/home/user/workspace/gopi-session-selector"
 		sessionID = "3e1f3d26-b5e4-455a-b7c0-bcaeeb1f775a"
 	)
 	sessionSelectorSeed(t, dbPath, taskID, TaskStatusInProgress, branch, worktree, sessionID)

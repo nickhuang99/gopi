@@ -65,14 +65,14 @@ func TestCovCfgResetNodeIdentityForTest_ClearsRoleCache(t *testing.T) {
 func TestCovCfgResetNodeIdentityForTest_ClearsSyncToCache(t *testing.T) {
 	covCfgNodeSandbox(t, `{}`)
 
-	t.Setenv(SyncToEnv, "zbook")
-	if role, syncTo := ResolveNodeRole(); role != "" || syncTo != "zbook" {
-		t.Fatalf("first resolve = (%q, %q), want (\"\", \"zbook\")", role, syncTo)
+	t.Setenv(SyncToEnv, "zpeer")
+	if role, syncTo := ResolveNodeRole(); role != "" || syncTo != "zpeer" {
+		t.Fatalf("first resolve = (%q, %q), want (\"\", \"zpeer\")", role, syncTo)
 	}
 
 	t.Setenv(SyncToEnv, "other-node")
-	if _, syncTo := ResolveNodeRole(); syncTo != "zbook" {
-		t.Fatalf("second resolve sync_to = %q, want the CACHED zbook", syncTo)
+	if _, syncTo := ResolveNodeRole(); syncTo != "zpeer" {
+		t.Fatalf("second resolve sync_to = %q, want the CACHED zpeer", syncTo)
 	}
 
 	ResetNodeIdentityForTest()
@@ -85,10 +85,10 @@ func TestCovCfgResetNodeIdentityForTest_ClearsSyncToCache(t *testing.T) {
 // freezes the settings.json contribution; after the reset a REWRITTEN
 // settings file is read again.
 func TestCovCfgResetNodeIdentityForTest_ReReadsSettingsFile(t *testing.T) {
-	path := covCfgNodeSandbox(t, `{"role":"client","sync_to":"zbook"}`)
+	path := covCfgNodeSandbox(t, `{"role":"client","sync_to":"zpeer"}`)
 
-	if role, syncTo := ResolveNodeRole(); role != NodeRoleClient || syncTo != "zbook" {
-		t.Fatalf("first resolve = (%q, %q), want (client, zbook)", role, syncTo)
+	if role, syncTo := ResolveNodeRole(); role != NodeRoleClient || syncTo != "zpeer" {
+		t.Fatalf("first resolve = (%q, %q), want (client, zpeer)", role, syncTo)
 	}
 
 	if err := os.WriteFile(path, []byte(`{"role":"server"}`), 0o600); err != nil {
@@ -114,7 +114,7 @@ func TestCovCfgResetNodeIdentityForTest_EnvBeatsRewrittenSettings(t *testing.T) 
 	if role, _ := ResolveNodeRole(); role != NodeRoleServer {
 		t.Fatalf("resolve = %q, want the env %q", role, NodeRoleServer)
 	}
-	if err := os.WriteFile(path, []byte(`{"role":"client","sync_to":"zbook"}`), 0o600); err != nil {
+	if err := os.WriteFile(path, []byte(`{"role":"client","sync_to":"zpeer"}`), 0o600); err != nil {
 		t.Fatalf("rewrite settings: %v", err)
 	}
 
@@ -123,8 +123,8 @@ func TestCovCfgResetNodeIdentityForTest_EnvBeatsRewrittenSettings(t *testing.T) 
 	if role != NodeRoleServer {
 		t.Errorf("role after reset = %q, want the env %q to still win", role, NodeRoleServer)
 	}
-	if syncTo != "zbook" {
-		t.Errorf("sync_to after reset = %q, want zbook (env sets no sync_to → settings fill it)", syncTo)
+	if syncTo != "zpeer" {
+		t.Errorf("sync_to after reset = %q, want zpeer (env sets no sync_to → settings fill it)", syncTo)
 	}
 }
 

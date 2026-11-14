@@ -120,7 +120,7 @@ func TestReclaimRefusesADirectoryALiveRowsSessionStandsIn(t *testing.T) {
 
 	row := reclaimDeadHolderRow{
 		TaskID: "t-live-session", Status: taskStatusInProgress,
-		ClaimedBy: "zbook:" + strconv.Itoa(deadPID(t)),
+		ClaimedBy: "zpeer:" + strconv.Itoa(deadPID(t)),
 		Repo:      repo, Branch: branch, Worktree: worktree,
 	}
 	// Before the stand-in: dead claim pid, no recorded runner → the arm frees.

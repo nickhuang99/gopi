@@ -389,7 +389,7 @@ func TestBaselineDetectorFlagsASyntheticSite(t *testing.T) {
 		},
 		{
 			name:  "a comment naming the shape is documentation",
-			body:  "# git worktree add --detach /home/nick/dcbase dc75ea64",
+			body:  "# git worktree add --detach /home/user/dcbase dc75ea64",
 			isBad: false,
 		},
 		{

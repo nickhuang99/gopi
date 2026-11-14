@@ -7,7 +7,7 @@ package tools
 // THE DEFECT THIS CLOSES (measured 2026-09-26, epic 01a0db25). A row's payload
 // carried the repo's MAIN checkout as its only absolute path —
 //
-//	"Repo: /home/nick/work/GoPi (branch master at 4c802614). …"
+//	"Repo: /home/user/work/GoPi (branch master at 4c802614). …"
 //
 // — measured on live row 01a0dabe-3fa1-7cc8-b601-66f1456b8ffd, whose payload
 // contains exactly ONE absolute path and it is the shared checkout. That text
@@ -27,7 +27,7 @@ package tools
 // a convention: this arm runs ONLY for a row whose own briefing text NAMES the
 // shared checkout. That is the one fact that separates "this run was pointed at
 // the shared tree" from "the operator (or a sibling run) has scratch in it":
-// measured over the epic's own row, 01a0dabe named /home/nick/work/GoPi and is
+// measured over the epic's own row, 01a0dabe named /home/user/work/GoPi and is
 // the run that deposited there. A row whose briefing names only its own
 // worktree — every row the ground announcement reaches — keeps today's handling
 // EXACTLY (no measurement, no record).

@@ -116,7 +116,7 @@ func TestTaskregisterSessionStaysOutOfTheRealProfile(t *testing.T) {
 	if !strings.HasPrefix(a.SessionLog.Path(), os.TempDir()) {
 		t.Errorf("session log %q is not in a temp sandbox — the taskregister helper leaked into the real profile", a.SessionLog.Path())
 	}
-	if strings.HasPrefix(a.SessionLog.Path(), "/home/nick/.gopi") {
+	if strings.HasPrefix(a.SessionLog.Path(), "/home/user/.gopi") {
 		t.Errorf("session log %q escaped into the real user profile", a.SessionLog.Path())
 	}
 }

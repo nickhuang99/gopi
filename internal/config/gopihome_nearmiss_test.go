@@ -11,8 +11,8 @@
 // value's PARENT — a sibling sandbox marker, or a second profile leaf — and the
 // arithmetic it refuses is one level ABOVE that window: a GOPI_HOME that names
 // a profile is the near miss whatever its parent is. Measured 2026-10-13 on
-// sager, `GOPI_HOME=/home/nick/.gopi` (parent `/home/nick`, clean, no marker)
-// resolved to /home/nick/.gopi/.gopi, whose memory.db held 2 rows while the real
+// sager, `GOPI_HOME=/home/user/.gopi` (parent `/home/user`, clean, no marker)
+// resolved to /home/user/.gopi/.gopi, whose memory.db held 2 rows while the real
 // ledger held 1376, and `gopi task submit` printed a normal `Task queued: <id>`
 // with exit 0. So the cases below come in two families, and the second is the
 // one that bit this host.

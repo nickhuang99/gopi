@@ -78,7 +78,7 @@ const (
 func replayMintTestProfile(t *testing.T) (profileRoot, recordingPath string) {
 	t.Helper()
 	// Rule 17's spelling: the scope is the TEST, and the profile is what
-	// config.GopiDir()/SessionsRoot() resolve from, so /home/nick/.gopi is never
+	// config.GopiDir()/SessionsRoot() resolve from, so /home/user/.gopi is never
 	// in the picture.
 	home := t.TempDir()
 	t.Setenv(config.GopiDirEnv, home)

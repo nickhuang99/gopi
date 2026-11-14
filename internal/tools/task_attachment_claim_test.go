@@ -131,8 +131,8 @@ func TestAttachmentClaimMarkerQuietOnPathAndFeatureProse(t *testing.T) {
 		name    string
 		payload string
 	}{
-		{"absolute log path", "the run log lives at /home/nick/workspace/gopi-x/run.log — read it after the run"},
-		{"workspace scratch dir", "evidence under /home/nick/workspace/_tmp/task-01a0b53b/, keep the dir"},
+		{"absolute log path", "the run log lives at /home/user/workspace/gopi-x/run.log — read it after the run"},
+		{"workspace scratch dir", "evidence under /home/user/workspace/_tmp/task-01a0b53b/, keep the dir"},
 		{"relative path citation", "see devdoc/attachment-claim-marker.md for the decision record"},
 		{"log mention", "the bash tool writes its stdout to the session log; check stderr for the trace"},
 		{"attachments feature discussion", "the attachments feature copies files into the session dir when --attachment is passed"},
@@ -258,7 +258,7 @@ func TestAttachmentClaimScanTable(t *testing.T) {
 		{name: "punctuation boundary", payload: "evidence attached — see below", want: attachClaimPhraseEvidenceAttached, fire: true},
 		{name: "CJK adjacent still matches", payload: "见 attached file", want: attachClaimPhraseAttachedFile, fire: true},
 		{name: "the measured defect payload", payload: "attached to the originating session", want: attachClaimPhraseAttachedToOriginating, fire: true},
-		{name: "path only", payload: "/home/nick/work/GoPi/devdoc/x.md", fire: false},
+		{name: "path only", payload: "/home/user/work/GoPi/devdoc/x.md", fire: false},
 		{name: "reattached is not attached", payload: "the driver was reattached", fire: false},
 		{name: "preattached-check", payload: "the preattached-check passed", fire: false},
 		{name: "feature prose", payload: "the attachments area holds the replicas", fire: false},

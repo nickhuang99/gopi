@@ -33,7 +33,7 @@ package tools
 //     fix, not a style choice: it must land in the peer's remote-tracking
 //     namespace (refs/remotes/<alias>/*) or the reap cannot happen at all.
 //
-// MEASURED 2026-09-26 on zbook (fixture, /home/nick/.gopi/sessions/
+// MEASURED 2026-09-26 on zpeer (fixture, /home/user/.gopi/sessions/
 // 01a115ac-23d5-7b3b-a8d2-d6b33ac894b3/evidence/gq1): a fetch that carries
 // `--prune` together with ONE explicit refspec (+) produced no prune at all —
 // `refs/remotes/gitPushcheck/ghost` survived the fetch that was asked to prune

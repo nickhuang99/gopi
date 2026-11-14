@@ -8,7 +8,7 @@ package tools
 // facts that contradict each other:
 //
 //	status: completed
-//	result: clone channel: nothing to deliver — /home/nick/workspace/01a186b9-… carries
+//	result: clone channel: nothing to deliver — /home/user/workspace/01a186b9-… carries
 //	        no commit to deliver: `rev-list --count HEAD --not origin/master` answered 0 …
 //	        nothing can be delivered or compared
 //

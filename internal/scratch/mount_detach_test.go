@@ -39,15 +39,15 @@ import (
 // DefaultStaleAge, so the entry is unambiguously stale.
 const staleFixtureAge = 3 * time.Hour
 
-const realDeadGvfsMountLine = `gvfsd-fuse /home/nick/workspace/gopi-test-scratch/queue/queue-replay-4007787/runtime/gvfs fuse.gvfsd-fuse rw,nosuid,nodev,relatime,user_id=1000,group_id=1000 0 0`
+const realDeadGvfsMountLine = `gvfsd-fuse /home/user/workspace/gopi-test-scratch/queue/queue-replay-4007787/runtime/gvfs fuse.gvfsd-fuse rw,nosuid,nodev,relatime,user_id=1000,group_id=1000 0 0`
 
 // realLiveGvfsMountLine is a gvfs mount whose daemon is alive (measured the same
 // day, pid 1080553 on the same host) — the row the arm must NOT detach.
-const realLiveGvfsMountLine = `gvfsd-fuse /home/nick/workspace/gopi-test-scratch/queue/queue-replay-1080449/runtime/gvfs fuse.gvfsd-fuse rw,nosuid,nodev,relatime,user_id=1000,group_id=1000 0 0`
+const realLiveGvfsMountLine = `gvfsd-fuse /home/user/workspace/gopi-test-scratch/queue/queue-replay-1080449/runtime/gvfs fuse.gvfsd-fuse rw,nosuid,nodev,relatime,user_id=1000,group_id=1000 0 0`
 
 // foreignFuseMountLine is a mount of a DIFFERENT fuse type inside the same
 // entry: not this system's to detach, whatever its state.
-const foreignFuseMountLine = `sshfs /home/nick/workspace/gopi-test-scratch/queue/queue-other-1/remote fuse.sshfs rw,nosuid,nodev 0 0`
+const foreignFuseMountLine = `sshfs /home/user/workspace/gopi-test-scratch/queue/queue-other-1/remote fuse.sshfs rw,nosuid,nodev 0 0`
 
 // mountArmFixture installs injected seams for one test and restores the real
 // ones on cleanup (LIFO, so a failure mid-test still restores).
@@ -124,7 +124,7 @@ func TestParseSelfMountsReadsTheRealDefectLine(t *testing.T) {
 	if len(got) != 2 {
 		t.Fatalf("parsed %d rows, want 2: %+v", len(got), got)
 	}
-	const wantTarget = "/home/nick/workspace/gopi-test-scratch/queue/queue-replay-4007787/runtime/gvfs"
+	const wantTarget = "/home/user/workspace/gopi-test-scratch/queue/queue-replay-4007787/runtime/gvfs"
 	if got[0].Target != wantTarget {
 		t.Fatalf("target = %q, want %q", got[0].Target, wantTarget)
 	}

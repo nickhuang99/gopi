@@ -54,8 +54,8 @@ import (
 // these). They exist because "no ledger row names the branch" and "there is no
 // ground to resume" are DIFFERENT facts, and the pre-fix code rendered the
 // first as the second (measured 2026-09-27: branch fix/pushback-rule31-evidence
-// was live in /home/nick/workspace/gopi-evi-pushback, a registered linked
-// worktree of /home/nick/work/GoPi, and the verb said "no ground to resume").
+// was live in /home/user/workspace/gopi-evi-pushback, a registered linked
+// worktree of /home/user/work/GoPi, and the verb said "no ground to resume").
 //
 // A row-less ground is reported as EXISTS-but-unresumable, never as absent: the
 // resume checkpoint lives in the row's own run directory, so a ground the
@@ -485,7 +485,7 @@ func taskResumeGroundAxisText(v string) string {
 // ground was refused as "the MAIN checkout of itself" — while the SAME directory
 // resolved fine through the default (task-id) spelling:
 //
-//	$ gopi worker --resume --worktree /home/nick/workspace/01a17aba-…   → refused, exit 1
+//	$ gopi worker --resume --worktree /home/user/workspace/01a17aba-…   → refused, exit 1
 //	$ gopi worker --resume 01a17aba-…                                  → resolved (model clone)
 //
 // The two refusals of the LINKED path are distinct on purpose. "P is not there /
@@ -627,7 +627,7 @@ func taskResumeGroundFromCloneWorktree(dir, worktree string) (TaskResumeGround, 
 	// a clone ground's row records the SOURCE repository it was cloned from in
 	// deliverable.repo, not this directory, so narrowing by it would ask the
 	// ledger a question no row answers (measured 2026-10-27 on this run's own
-	// row: repo=/home/nick/work/gopi, worktree=/home/nick/workspace/<task>).
+	// row: repo=/home/user/work/gopi, worktree=/home/user/workspace/<task>).
 	row, detail, rerr := taskResumeGroundRowForWorktree(st.Dir, "")
 	if rerr != nil {
 		return TaskResumeGround{}, rerr

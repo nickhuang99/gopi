@@ -46,7 +46,7 @@ func ntdSandbox(t *testing.T, taskID, body string) string {
 
 // ntdChannelReason is the clone channel's own sentence, verbatim from the row
 // that closed anyway (the exit's composed string, Rule 14).
-const ntdChannelReason = "clone channel: nothing to deliver — clone channel: /home/nick/workspace/01a186b9-064c-76c8-9d02-d4f9177e4361 " +
+const ntdChannelReason = "clone channel: nothing to deliver — clone channel: /home/user/workspace/01a186b9-064c-76c8-9d02-d4f9177e4361 " +
 	"carries no commit to deliver: `rev-list --count HEAD --not origin/master` answered 0 against origin/master, so there is nothing to push"
 
 // TestNothingToDeliverClosesFailedWhenTheReportDeclaresIt is THE repro for this

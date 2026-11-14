@@ -7,7 +7,7 @@ package agent
 // KEEPS the workspace — because the channel's delivery loop
 // (cmd/agent/devworkspace_channel.go) is shaped for a face that can spawn agent
 // ROUNDS against a Blocker, and a bare-prompt run IS the agent. The result was a
-// run whose commits existed only in /home/nick/workspace/<task-id>. That is the
+// run whose commits existed only in /home/user/workspace/<task-id>. That is the
 // state the epic left open, and this file is the leg that closes it.
 //
 // WHAT IT RUNS: devworkspace.AttemptDelivery, ONCE — the same function the

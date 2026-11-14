@@ -12,7 +12,7 @@ import (
 
 // ---------------------------------------------------------------------------
 // P2 dispatcher tests: atomic claim race, state machine, FTS scope, legacy
-// schema migration. GOPI_MEMORY_DB per test (never the real /home/nick/.gopi db).
+// schema migration. GOPI_MEMORY_DB per test (never the real /home/user/.gopi db).
 // ---------------------------------------------------------------------------
 
 func TestTaskSubmitAndNextLifecycle(t *testing.T) {

@@ -40,7 +40,7 @@ func replayWritesTestProfile(t *testing.T) string {
 	// t.Setenv is the Rule 17 spelling: the scope is the TEST, and the profile
 	// this case measures is what config.GopiDir() resolves from — GOPI_HOME plus
 	// the profile leaf, so the scratch directory below is the profile ROOT and
-	// the operator's own /home/nick/.gopi is never in the picture.
+	// the operator's own /home/user/.gopi is never in the picture.
 	home := t.TempDir()
 	t.Setenv(config.GopiDirEnv, home)
 	dir, err := config.GopiDir()

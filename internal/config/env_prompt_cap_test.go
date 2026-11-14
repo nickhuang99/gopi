@@ -12,7 +12,7 @@ package config_test
 //
 //	[gopi] clone channel: cannot resolve the ground … git rev-parse --abbrev-ref HEAD:
 //	       fork/exec /usr/local/bin/git: argument list too long
-//	[task-notify] cmd "bash /home/nick/.gopi/notify/notify.sh":
+//	[task-notify] cmd "bash /home/user/.gopi/notify/notify.sh":
 //	       fork/exec /usr/bin/sh: argument list too long
 //
 // So ONE oversized prompt turned "a large prompt" into "this runtime cannot

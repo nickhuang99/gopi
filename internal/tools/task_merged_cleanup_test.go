@@ -615,7 +615,7 @@ func TestMergedCleanupStaleOwnerRowIsReleased(t *testing.T) {
 
 	block, note := finishCleanupForeignOwnerReason([]TaskWorktreeRow{
 		{TaskID: "t-stale-owner", Status: TaskStatusCancelled,
-			ClaimedBy: "zbook:" + strconv.Itoa(deadOwnerPid), Deliverable: f.wtDir, HolderLive: false},
+			ClaimedBy: "zpeer:" + strconv.Itoa(deadOwnerPid), Deliverable: f.wtDir, HolderLive: false},
 	}, f.wtDir)
 	if block != "" {
 		t.Fatalf("a provably-dead holder must not block the sweep: %q", block)

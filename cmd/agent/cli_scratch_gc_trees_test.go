@@ -10,7 +10,7 @@ package main
 // The E2E cases exec the built binary through testutil.RunGopi against a
 // SANDBOX: GOTMPDIR points into a t.TempDir, GOPI_HOME puts the gopi data root
 // (raw + sessions) inside the same sandbox. Nothing here can touch the
-// developer's real /home/nick/workspace/gopi-go-tmp, ~/.gopi/raw or sessions.
+// developer's real /home/user/workspace/gopi-go-tmp, ~/.gopi/raw or sessions.
 
 import (
 	"crypto/sha256"

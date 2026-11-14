@@ -314,7 +314,7 @@ func syncTagTokenPattern(token string) string {
 // the dangerous one — a wrong-case from-<peer> tag ESCAPED the anti-reflow
 // exclusion and reflowed the peer's row back at it. The persisted ledger
 // agrees with the readers: the only mixed-case tokens in ~/.gopi/memory.db
-// are real node NAMES (from-nick-HP-Laptop, worker:nick-HP-Laptop) — the
+// are real node NAMES (from-host-b, worker:host-b) — the
 // hostname of the machine, not a keyword — so folding case would silently
 // rewrite a row's provenance (from-hp ≠ from-HP: different nodes).
 //
@@ -888,7 +888,7 @@ func syncDeltaMergeRow(ctx context.Context, db *sql.DB, bus *taskNotifyBus, exis
 		// M4.16 semantic fix (bug053): the blind server ruling — write
 		// completed + sync-resolved + advance the anchor — is ONLY legal
 		// for source=auto registration/mirror rows (登记噪音: a pending
-		// row on zbook that a HP mirror cancelled, or an auto-registered
+		// row on zpeer that a HP mirror cancelled, or an auto-registered
 		// row whose peer echo differs). A REAL ticket (source human/llm,
 		// non-empty payload — the 登记噪音 vs 真工单 distinction) can NEVER
 		// be blind-flattened: bug050/051/052 were all fake-closed by
@@ -1042,7 +1042,7 @@ func syncRowIsMirrorNoise(existing *Task) bool {
 // syncDeltaTagConflictNoRuling unions the conflict tag onto a real ticket's
 // row WITHOUT advancing status/ended_at/anchor — the bug053 guard: a human
 // ticket that the server refused to flatten stays exactly where it was
-// (pending on zbook), only tagged so the next sync re-echo is a known
+// (pending on zpeer), only tagged so the next sync re-echo is a known
 // conflict no-op. Returns (conflictAlreadyKnown, echoNoOp, error) — a
 // known-conflict re-echo with equal tags is a pure no-op (RowsAlready).
 func syncDeltaTagConflictNoRuling(ctx context.Context, db *sql.DB, existing *Task, merged string) (bool, bool, error) {

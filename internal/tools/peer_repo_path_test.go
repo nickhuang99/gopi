@@ -7,7 +7,7 @@ package tools
 // THE DEFECT (measured 2026-10-25, evidence in the filing run's session dir):
 // three delivery legs each carried their own copy of the peer's checkout path,
 // all spelling `~/work/GoPi`, while the host DECLARES its delivery point as
-// `zbook:/home/nick/work/gopi`. On the peer those are two unrelated
+// `zpeer:/home/user/work/gopi`. On the peer those are two unrelated
 // repositories. The measured consequences were (a) every push refused
 // non-fast-forward and (b) the staleness alarm prescribing
 // `git merge refs/remotes/gitPushcheck/master` — a merge that would graft 12025
@@ -29,8 +29,8 @@ import (
 )
 
 const (
-	peerRepoPathTestDeclaredPath   = "/home/nick/work/gopi"
-	peerRepoPathTestDeclaredTarget = "zbook" + peerRepoPathDeliverySep + peerRepoPathTestDeclaredPath
+	peerRepoPathTestDeclaredPath   = "/home/user/work/gopi"
+	peerRepoPathTestDeclaredTarget = "zpeer" + peerRepoPathDeliverySep + peerRepoPathTestDeclaredPath
 	peerRepoPathTestLastResortPath = "~/work/GoPi"
 )
 
@@ -65,7 +65,7 @@ func peerRepoPathResetNotes() {
 // path the three legs dial must be the one this host DECLARES, parsed out of
 // `dev_repo`'s `<alias>:<path>` spelling — not a per-leg constant. The measured
 // failure this pins was a push to `~/work/GoPi` while the declaration said
-// `/home/nick/work/gopi`.
+// `/home/user/work/gopi`.
 func TestPeerRepoPathPrefersTheDeclaredDeliveryPoint(t *testing.T) {
 	peerRepoPathTestSettings(t, map[string]any{
 		// The repos table deliberately names a DIFFERENT path: arm ① must win,
@@ -88,7 +88,7 @@ func TestPeerRepoPathPrefersTheDeclaredDeliveryPoint(t *testing.T) {
 	}
 	// The composed target the legs hand to git carries that path — this is the
 	// string that ends up in the mirror ref's reflog.
-	t.Setenv(config.SyncPeersEnv, "zbook")
+	t.Setenv(config.SyncPeersEnv, "zpeer")
 	t.Setenv("GOPI_SYNC_NODE", "hp")
 	if got, want := GitSyncServerTarget(), peerRepoPathTestDeclaredTarget; got != want {
 		t.Errorf("GitSyncServerTarget() = %q, want %q", got, want)

@@ -6,8 +6,8 @@ package main
 // THE DEFECT, MEASURED. `gopi chat --replay <id>` printed, on stderr, byte for
 // byte what an ordinary chat prints:
 //
-//	[gopi] chat: this session writes in /home/nick/work/gopi — the MAIN CHECKOUT
-//	of /home/nick/work/gopi. No worktree and no branch of its own: every
+//	[gopi] chat: this session writes in /home/user/work/gopi — the MAIN CHECKOUT
+//	of /home/user/work/gopi. No worktree and no branch of its own: every
 //	read/write/edit/bash round lands uncommitted in that checkout's working
 //	area.
 //

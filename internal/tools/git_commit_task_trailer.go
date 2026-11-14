@@ -38,7 +38,7 @@ package tools
 // ── THE SECOND REFERENCE: WHICH MACHINE MADE IT ─────────────────────────────
 //
 // `git log` says nothing about the HOST that produced a commit, so across the
-// fleet (nick-sager / hp / zbook) review and triage are blind on that axis: a
+// fleet (host-a / hp / zpeer) review and triage are blind on that axis: a
 // commit is visible but its author-machine is not. The same seam carries a
 // second trailer, `<HostTrailerKey>: <local hostname>`.
 //

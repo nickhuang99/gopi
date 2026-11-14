@@ -24,8 +24,8 @@ import (
 func TestTaskIDRelabelSanitizesNode(t *testing.T) {
 	cases := []struct{ node, wantSuffix string }{
 		{"hp", "-nhp"},
-		{"zbook_01", "-nzbook_01"}, // '_' is legal, kept verbatim
-		{"zbook/01", "-nzbook_01"}, // '/' is not alphanumeric → '_'
+		{"zpeer_01", "-nzpeer_01"}, // '_' is legal, kept verbatim
+		{"zpeer/01", "-nzpeer_01"}, // '/' is not alphanumeric → '_'
 		{"  hp  ", "-nhp"},         // trimmed
 		{"", "-nnode"},             // empty → "node"
 		{"!!!", "-n___"},           // all-illegal → each char becomes '_' (not "node" — that path needs an EMPTY result after trim)

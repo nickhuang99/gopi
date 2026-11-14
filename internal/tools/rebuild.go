@@ -10,7 +10,7 @@ package tools
 //
 // The per-repo build contract comes from settings.json "repos":
 //
-//	"repos": {"/home/nick/work/GoPi": {"build": "make build"}}
+//	"repos": {"/home/user/work/GoPi": {"build": "make build"}}
 //
 // Declared, never discovered (same philosophy as compute_nodes/sync_peers).
 // A repo with NO entry has no build contract — the server skips the
@@ -394,7 +394,7 @@ func binaryVersion(repo string) (display, revision string, dirty bool) {
 //
 // The separation exists because the deployed artifact is not always under the
 // directory you are standing in: /usr/local/bin/gopi is a symlink into
-// /home/nick/work/gopi/bin/gopi, so a run started in a task ground measured that
+// /home/user/work/gopi/bin/gopi, so a run started in a task ground measured that
 // ground's bin/gopi and reported a DIFFERENT artifact than the one the machine
 // runs (measured 2026-10-28, the false "follows the ref" this seam fixes).
 func binaryVersionAt(repo, bin string) (display, revision string, dirty bool) {

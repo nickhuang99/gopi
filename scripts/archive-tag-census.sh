@@ -44,7 +44,7 @@
 # creates no temp files (the two ledgers of names live in bash associative
 # arrays), so it is safe to run against a foreign checkout.
 #
-# VERIFIED (2026-09-17): run on /home/nick/work/GoPi it reports 159 rows —
+# VERIFIED (2026-09-17): run on /home/user/work/GoPi it reports 159 rows —
 # ①2 ②a45 ②b20 ③1 D91; on an empty repo (no tags) it reports "total=0" and exits
 # 0 both with and without a ledger, so a zero-tag repo is a readable answer
 # rather than a crash.

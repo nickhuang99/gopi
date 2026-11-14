@@ -12,7 +12,7 @@ package tools
 // the run's session directory were collected by the sweep, so the tip
 // (3af81a93…) can now be read in NO repo on this machine:
 //
-//	$ git -C /home/nick/work/gopi cat-file -t 3af81a93271e80356c99b95263a125a808a27e67
+//	$ git -C /home/user/work/gopi cat-file -t 3af81a93271e80356c99b95263a125a808a27e67
 //	fatal: git cat-file: could not get object info
 //
 // WHAT THESE TESTS PIN (the three directions the reading must never confuse):

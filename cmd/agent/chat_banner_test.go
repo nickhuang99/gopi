@@ -25,8 +25,8 @@ func bannerTestSpec(cols int, pal lineedit.Palette) chatBannerSpec {
 		cols:      cols,
 		version:   gopiversion.Version,
 		model:     "deepseek-v4-flash",
-		node:      "zbook",
-		dir:       "/home/nick/workspace/gopi-example",
+		node:      "zpeer",
+		dir:       "/home/user/workspace/gopi-example",
 		sessionID: bannerTestSessionID,
 		toolsOn:   true,
 		pal:       pal,
@@ -367,7 +367,7 @@ func TestChatBannerCropMarksWhatItCut(t *testing.T) {
 // "~". Both are display-only, and both are pinned because a path shortened from
 // the wrong end names a different directory.
 func TestChatBannerShortenDirKeepsTheTail(t *testing.T) {
-	long := "/home/nick/workspace/gopi-01a0e7ed69337a83870fcb8291a09b21"
+	long := "/home/user/workspace/gopi-01a0e7ed69337a83870fcb8291a09b21"
 	got := chatBannerShortenDir(long, 20)
 	if !strings.HasPrefix(got, chatBannerCutMarker) {
 		t.Errorf("shortened %q does not mark the cut at its head: %q", long, got)

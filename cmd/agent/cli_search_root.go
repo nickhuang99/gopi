@@ -372,7 +372,7 @@ func searchGitWorkTreeOf(dir string) (string, bool) {
 // searchNestedWorkTrees names the top-level subdirectories of root that are
 // themselves git work trees: the shape where a bare "nothing here" would be
 // actively misleading, because the operator is one path segment away from the
-// real tree (`/home/nick/workspace` holds work trees and no sources of its own).
+// real tree (`/home/user/workspace` holds work trees and no sources of its own).
 //
 // A subdirectory counts only when it IS a work tree's toplevel. Asking git alone
 // is not enough: from inside an existing work tree, `rev-parse --show-toplevel`

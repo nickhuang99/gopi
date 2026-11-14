@@ -72,7 +72,7 @@ type SessionLogger struct {
 	// executed by the WORKER's executable, and that binary may come from
 	// ANOTHER checkout than the run's ground — measured 2026-10-14 (task
 	// 01a1355d): the worker was `gopi worker` with exe
-	// /home/nick/work/GoPi/bin/gopi at revision adafe54b while the run's
+	// /home/user/work/GoPi/bin/gopi at revision adafe54b while the run's
 	// ground was a linked worktree whose source that very run was editing. The
 	// two facts are about two code versions, and a report's `Ran:`/`Result:`
 	// lines cannot be pinned to one after the run is gone — unless the run's

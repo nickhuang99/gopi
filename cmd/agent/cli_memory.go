@@ -338,7 +338,7 @@ func runMemoryProvenance(mode string) (string, error) {
 		}
 		// The SQL is printed UNINDENTED and starting at column 0 so the report
 		// is directly pipeable into sqlite3 (`… --latent-candidates | sed -n
-		// '/^SELECT/,$p' | sqlite3 -readonly /home/nick/.gopi/memory.db`) — the
+		// '/^SELECT/,$p' | sqlite3 -readonly /home/user/.gopi/memory.db`) — the
 		// re-runnability the acceptance criteria ask for.
 		return renderLatentResult(rep) + "\n\nreproduce without this binary:\n" +
 			tools.LatentCandidateSQL(), nil

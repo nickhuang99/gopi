@@ -7,7 +7,7 @@ package devworkspace
 // never guessed (Rule 12), because a guessed build can compile packages the
 // change never touched and would let unverified code reach master. But a
 // reframe's roadmap child can be born naming its parent's WORKSPACE
-// (/home/nick/workspace/<parent-id>) instead of the repository that workspace
+// (/home/user/workspace/<parent-id>) instead of the repository that workspace
 // was cloned from. A workspace is a repository of its own — a plain CLONE, not a
 // linked worktree — so it is declared nowhere in settings and every child died
 // on that check (three of three, measured 2026-10-18).

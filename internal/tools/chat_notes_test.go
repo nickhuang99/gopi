@@ -57,7 +57,7 @@ func TestChatNoteSearchIsRedThenGreen(t *testing.T) {
 		SessionID: "sess-red-green",
 		Turn:      3,
 		Note:      "wired the note index and " + needle,
-		Path:      "/home/nick/.gopi/sessions/sess-red-green/self-record.md",
+		Path:      "/home/user/.gopi/sessions/sess-red-green/self-record.md",
 	}
 	if err := ChatNoteRecord(note); err != nil {
 		t.Fatalf("record: %v", err)
@@ -94,7 +94,7 @@ func TestChatNoteSearchFindsChineseInsideALongerRun(t *testing.T) {
 		SessionID: "sess-cjk",
 		Turn:      1,
 		Note:      "把网络测试环境的结果记下来，trigram 负责中文子串",
-		Path:      "/home/nick/.gopi/sessions/sess-cjk/self-record.md",
+		Path:      "/home/user/.gopi/sessions/sess-cjk/self-record.md",
 	}); err != nil {
 		t.Fatalf("record: %v", err)
 	}
@@ -152,7 +152,7 @@ func TestChatNoteRoundAbsenceIsStoredAsAbsence(t *testing.T) {
 	if err := ChatNoteRecord(ChatNote{
 		SessionID: "sess-noround",
 		Note:      "a note recorded without a round number",
-		Path:      "/home/nick/.gopi/sessions/sess-noround/self-record.md",
+		Path:      "/home/user/.gopi/sessions/sess-noround/self-record.md",
 	}); err != nil {
 		t.Fatalf("record: %v", err)
 	}
@@ -177,7 +177,7 @@ func TestChatNoteSearchLimitIsHonouredAndDisclosed(t *testing.T) {
 			SessionID: "sess-limit",
 			Turn:      i,
 			Note:      fmt.Sprintf("limit-probe note number %d", i),
-			Path:      "/home/nick/.gopi/sessions/sess-limit/self-record.md",
+			Path:      "/home/user/.gopi/sessions/sess-limit/self-record.md",
 		}); err != nil {
 			t.Fatalf("record %d: %v", i, err)
 		}

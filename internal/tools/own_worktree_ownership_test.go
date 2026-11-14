@@ -4,7 +4,7 @@ package tools
 //
 // MEASURED (verbatim, from row 01a17dcd's close-out on this host):
 //
-//	task 01a17dcd-c59c-7344-a99a-83133d4416c7: own-worktree-release: own registered worktree kept: /home/nick/workspace/cptest-verify — worktree is DIRTY (uncommitted work) — left for a human
+//	task 01a17dcd-c59c-7344-a99a-83133d4416c7: own-worktree-release: own registered worktree kept: /home/user/workspace/cptest-verify — worktree is DIRTY (uncommitted work) — left for a human
 //
 // The registration was a chat's hand-made verification checkout that no ledger
 // row had ever created; the seven "uncommitted" files belonged to a DIFFERENT

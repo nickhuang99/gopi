@@ -226,7 +226,7 @@ func deployDriftRepoOf(self string) (repo, how string) {
 //
 // THE SUBJECT IS THE RUNNING ARTIFACT, NOT <cwd>/bin/gopi — measured 2026-10-28,
 // and the difference is the whole point. /usr/local/bin/gopi is a symlink to
-// /home/nick/work/gopi/bin/gopi. Started from a task ground, this command used to
+// /home/user/work/gopi/bin/gopi. Started from a task ground, this command used to
 // probe THAT GROUND's bin/gopi and print `refs/heads/master: follows the ref —
 // the artifact was built from it`: a true statement about the ground's own fresh
 // build, and a false answer to the question the operator asked, since the
@@ -269,7 +269,7 @@ func printDeployDrift() {
 // `d.Stale()` where Stale() meant "some ref is not followed", while the per-ref
 // line for an AHEAD ref said "this artifact is AHEAD of it, not stale behind
 // it", and DeployDriftVerdictAhead's own doc said the same. Measured 2026-10-29
-// on host nick-sager: refs/heads/master `follows`, refs/remotes/origin/master
+// on host host-a: refs/heads/master `follows`, refs/remotes/origin/master
 // `1 ahead`, refs/remotes/gitPushcheck/master `426 ahead` — and a printed
 // `STALE:` beside three lines that each denied it.
 //

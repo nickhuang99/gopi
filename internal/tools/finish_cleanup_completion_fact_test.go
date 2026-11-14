@@ -98,7 +98,7 @@ func TestFinishCleanupRemovalProceedsWhenNoRowNamesTheGround(t *testing.T) {
 // (HolderLive) — which is the incident's shape — and lets the orphan through to
 // the arm that owns its release. The residual is recorded in the report's
 // `## Not Done`: the incident's two rows had DEAD holders and cross-host
-// (`zbook:…`) stamps this host cannot measure, so they are not this host's
+// (`zpeer:…`) stamps this host cannot measure, so they are not this host's
 // orphans; deciding that shape belongs to a policy task, not to this fix.
 func TestFinishCleanupRemovalProceedsForAProvablyDeadLocalHolderOrphan(t *testing.T) {
 	repo, wt, branch := finishCleanupCompletionFixture(t, "t-regress-dead-holder", []string{"t-regress-dead-holder"}, true, true)

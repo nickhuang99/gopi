@@ -2979,7 +2979,7 @@ const (
 
 // g6ProfileRootEnv pins the profile root inside the case's own sandbox: HOME and
 // GOPI_HOME are the same directory, so config resolves <GOPI_HOME>/.gopi and the
-// arm reports the fixture rather than the operator's /home/nick/.gopi. GOPI_SETTINGS is
+// arm reports the fixture rather than the operator's /home/user/.gopi. GOPI_SETTINGS is
 // pointed at the fixture's own settings file for the same reason.
 func g6ProfileRootEnv(home string) []string {
 	return []string{

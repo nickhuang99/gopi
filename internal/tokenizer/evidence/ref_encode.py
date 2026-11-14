@@ -33,7 +33,7 @@ CASES = [
     ("whitespace", "  \t\n  multiple   spaces\n\n"),
     ("newlines", "line one\nline two\r\nline three\n"),
     ("url", "https://github.com/nick/gopi/blob/master/internal/tokenizer/pre.go"),
-    ("path", "/home/nick/.gopi/sessions/e1e22e9f/session.jsonl"),
+    ("path", "/home/user/.gopi/sessions/e1e22e9f/session.jsonl"),
     ("cyrillic", "Привет, мир! Тестирование токенизатора."),
     ("japanese", "これは日本語のテストです。"),
     ("korean", "이것은 한국어 테스트입니다."),

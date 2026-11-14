@@ -166,7 +166,7 @@ on `gopi task -h`, and own no implementation. What they were:
   says the run is over while the ledger calls it live). Both halves are still on
   the read: `gopi task show <id>` prints the ledger status AND the advisory
   ground line for the same row, and a run log is a file —
-  `/home/nick/.gopi/sessions/<task-id>/output.log`. `gopi task list --status pending`
+  `/home/user/.gopi/sessions/<task-id>/output.log`. `gopi task list --status pending`
   marks an unclaimable row `[queue-skip]` with the parent gate's own reason.
 
 The one thing that did NOT die with those files is the shared instrument they

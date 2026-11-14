@@ -183,7 +183,7 @@ func TestWebShotRefusesAClientSuppliedTarget(t *testing.T) {
 		want string
 	}{
 		{name: "url", body: `{"url":"http://example.com/"}`, want: "url"},
-		{name: "addr", body: `{"addr":"192.168.1.9:8090"}`, want: "addr"},
+		{name: "addr", body: `{"addr":"192.0.2.9:8090"}`, want: "addr"},
 		{name: "surface", body: `{"surface":"screen"}`, want: "surface"},
 		{name: "several", body: `{"url":"http://x/","surface":"screen"}`, want: "surface"},
 	}
@@ -328,7 +328,7 @@ func TestWebShotSurfacesACaptureFailure(t *testing.T) {
 // browser starts — the endpoint never navigates to a host it does not run.
 func TestWebShotRefusesAnAddressThatIsNotItsOwn(t *testing.T) {
 	cases := []struct{ name, addr string }{
-		{name: "lan-address", addr: "192.168.1.9:8090"},
+		{name: "lan-address", addr: "192.0.2.9:8090"},
 		{name: "no-port", addr: "127.0.0.1"},
 		{name: "closed-loopback-port", addr: "127.0.0.1:1"},
 	}

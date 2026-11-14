@@ -3,7 +3,7 @@ package tools
 // search_fallback_test.go — the regression guard for the two search tools' ZERO-
 // BINARY leg (search_fallback.go).
 //
-// WHY THESE TESTS MUST CONTROL PATH: the host that carries the defect (nick-sager)
+// WHY THESE TESTS MUST CONTROL PATH: the host that carries the defect (host-a)
 // had BOTH packages installed by 2026-10-12 08:51, so a test that merely calls
 // CodeSearch on the ambient PATH measures the ctags/ripgrep leg on this machine
 // and would pass on a host where the bug is fully alive. Every test below either
@@ -17,7 +17,7 @@ package tools
 // makes this package fail to BUILD rather than fail an assertion — a build failure
 // proves nothing about behaviour. The observable pre-fix state is therefore the
 // BINARY: `bin-master` (unmodified tree) vs `bin-fixed`, both driven with the same
-// controlled PATH (the epic's own acceptance shape). Measured on nick-sager,
+// controlled PATH (the epic's own acceptance shape). Measured on host-a,
 // artifacts under this task's session directory (artifacts/fallback-probe/):
 //
 //	bin-master, PATH=<empty>:      code_search: ctags: exec: "ctags": executable file not found in $PATH:   exit=1
@@ -132,7 +132,7 @@ func TestSearchFallbackKeywordFindsRealTextWithoutRG(t *testing.T) {
 	// promise about a user-facing call, not a fact about this fixture: the scan
 	// below walks the WHOLE checkout (7781 files / 163MB), so its wall time is a
 	// function of HOST LOAD, and the assertion "the scanner returns real hits"
-	// turned into "this host was idle enough" — measured red on nick-sager
+	// turned into "this host was idle enough" — measured red on host-a
 	// (`keyword_search: timed out after 30s`) and reproduced here with a tightened
 	// knob (`GOPI_TOOL_TIMEOUT_SEC=1` → `keyword_search: timed out after 1s`,
 	// artifacts/red-proof-1s-x5.txt). The probe therefore carries its OWN budget

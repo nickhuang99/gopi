@@ -4,7 +4,7 @@ contract tests (testsuite/webfetch_contract_test.go).
 
 ZERO NETWORK: every subprocess (ssh/curl) is monkeypatched at the module
 level, so the contract suite exercises web_fetch.py's REAL parse/route/clean
-logic against canned byte payloads — no ssh to searchbot, no curl, no DNS.
+logic against canned byte payloads — no ssh to searchbox, no curl, no DNS.
 
 Usage:
   python3 webfetch_contract_driver.py route <url> [<url> ...]

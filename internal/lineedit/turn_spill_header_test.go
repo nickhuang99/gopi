@@ -41,12 +41,12 @@ import (
 // REAL-shaped absolute path because that is what the store mints
 // (`paste-<stamp>-<n>.txt` under the session's own paste directory), and the width
 // arithmetic is only meaningful over the shape production actually writes.
-const spillTestPath = "/home/nick/.gopi/sessions/01a0e922-69fe-740c-8c0b-901ee777fc06/paste/paste-20260929-013000-1.txt"
+const spillTestPath = "/home/user/.gopi/sessions/01a0e922-69fe-740c-8c0b-901ee777fc06/paste/paste-20260929-013000-1.txt"
 
 // spillPathFragment is the part of that path a mid-width header can afford: the
 // header never claims the WHOLE path until the band allows it, so a leg asserting
 // "the header names the file" must assert the fragment that must survive.
-const spillPathFragment = "/home/nick/.gopi/sessions/01a0e922"
+const spillPathFragment = "/home/user/.gopi/sessions/01a0e922"
 
 // spillHandleOnlyBudget is the widest cell budget at which spillContent must
 // choose the HANDLE alone, DERIVED from the payload rather than hard-coded: it is

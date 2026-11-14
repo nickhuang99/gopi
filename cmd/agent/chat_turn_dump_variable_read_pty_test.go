@@ -60,7 +60,7 @@ const vrrUniformReadBytes = 7
 
 // vrrEvidenceDir is the run's session directory: evidence belongs OUTSIDE the
 // worktree, so a run leaves `git status --porcelain` empty (Rule 30).
-const vrrEvidenceDir = "/home/nick/.gopi/sessions/01a0e851-bbf0-7b56-9922-1313da2e677e"
+const vrrEvidenceDir = "/home/user/.gopi/sessions/01a0e851-bbf0-7b56-9922-1313da2e677e"
 
 // vrrWriteLogName is the recording of the paint writes one turn produced, one
 // line per write: its index, its byte length, and its escaped head and tail. It

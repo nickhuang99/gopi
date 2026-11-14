@@ -96,7 +96,7 @@ func TestHelpConstantsCarryNoCarelessText(t *testing.T) {
 		{"for the full family help", "the attachment's dangling pointer standing in for content"},
 		{"Refused when >=3\n", "a sentence hand-broken mid-clause by an editor's line wrap"},
 		{"--latent-crosscheck|--latent-calibrate", "a synopsis pipe-separated with no spaces (unreadable enum)"},
-		{"/home/nick/", "a developer machine path leaking into user-facing help"},
+		{"/home/user/", "a developer machine path leaking into user-facing help"},
 	} {
 		if strings.Contains(text, bad.fragment) {
 			t.Errorf("help text still carries %q — %s", bad.fragment, bad.why)

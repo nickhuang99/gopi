@@ -265,7 +265,7 @@ func TestUndeliveredUnmeasurableKeeps(t *testing.T) {
 // of commits shown" — beside `--count`. `rev-list --count` therefore answered
 // with the LIMIT, not with the count: a real branch holding NINE undelivered
 // commits was reported as "holds 1 commit that no delivery point has"
-// (measured in /home/nick/work/gopi:
+// (measured in /home/user/work/gopi:
 // `git rev-list --count feat/suite-closeout-sweep-gate --not refs/remotes/origin/master refs/heads/master -1`
 // → 1, while the same command WITHOUT `-1` → 9).
 //
@@ -325,7 +325,7 @@ func TestUndeliveredCountsEveryCommitNotJustTheFirst(t *testing.T) {
 //
 // MEASURED: `gopi task sweep-worktrees --dry-run` on this host printed
 //
-//	keep [run-ground-anchor] /home/nick/workspace/gopi-closeout-sweep  kept: the
+//	keep [run-ground-anchor] /home/user/workspace/gopi-closeout-sweep  kept: the
 //	ground's branch feat/suite-closeout-sweep-gate holds 9 commits that no
 //	delivery point has (...) — this directory is that work's only home: push the
 //	branch or merge it into master, then the ground is collectable
@@ -333,7 +333,7 @@ func TestUndeliveredCountsEveryCommitNotJustTheFirst(t *testing.T) {
 // while that directory had not existed for a day — the removal sink records it:
 //
 //	{"ts":"2026-10-22T21:13:48.776365076Z","kind":"worktree-removal",
-//	 "arm":"task-self-own-sweep","target":"/home/nick/workspace/gopi-closeout-sweep"}
+//	 "arm":"task-self-own-sweep","target":"/home/user/workspace/gopi-closeout-sweep"}
 //
 // Two defects in one sentence, and the second is the expensive one:
 //

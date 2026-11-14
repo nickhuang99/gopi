@@ -855,7 +855,7 @@ var EnvVars = []envKey{
 	// (cmd/agent/task_pull_retired.go, cmd/agent/memory_sync_every_retired.go)
 	// NAMES back at an operator still setting them — and neither is given a
 	// settings key it never had.)
-	{MemorySyncOnStoreEnv, MemorySyncOnStoreSettingsKey, "", "RETIRED 2026-10-27: the store-triggered memory-asset sync was DELETED, so a successful memory_store writes this node's /home/nick/.gopi/memory.db and reaches no peer. The values push | pull | off are all still ACCEPTED and all now mean off (only a malformed value is an error, never a silent fallback), and an operator still setting push or pull is told on the start path. Cross-node propagation is a manual ONE-WAY COPY: gopi memory backup ships this ledger to a declared memory_peers peer and imports nothing from it, so the two knowledge bases stay divergent"},
+	{MemorySyncOnStoreEnv, MemorySyncOnStoreSettingsKey, "", "RETIRED 2026-10-27: the store-triggered memory-asset sync was DELETED, so a successful memory_store writes this node's /home/user/.gopi/memory.db and reaches no peer. The values push | pull | off are all still ACCEPTED and all now mean off (only a malformed value is an error, never a silent fallback), and an operator still setting push or pull is told on the start path. Cross-node propagation is a manual ONE-WAY COPY: gopi memory backup ships this ledger to a declared memory_peers peer and imports nothing from it, so the two knowledge bases stay divergent"},
 
 	// Harness nudge / dead-end trim tuning (loop.go; env-overridable for
 	// tests, constants are the defaults — Rule 2).

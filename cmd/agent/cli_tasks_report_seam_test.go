@@ -297,7 +297,7 @@ func reportSeamGitOutput(t *testing.T, dir string, args ...string) string {
 //	① the scratch-root arm is the one that catches the REVERSION. The fixed
 //	   fixture stands in a t.TempDir() (under the suite scratch root), so a
 //	   row resolving to the tree under test — this worktree, any sibling
-//	   session's worktree, /home/nick/work/GoPi — names a path outside that
+//	   session's worktree, /home/user/work/GoPi — names a path outside that
 //	   root. Comparing the resolved ground against the `repo` argument alone
 //	   would NOT catch it: a reverted fixture passes the tree under test AS the
 //	   repo argument, so the two agree by construction.
@@ -417,13 +417,13 @@ func modeOf(fi os.FileInfo) string {
 // the two shapes that must NOT be refused.
 func TestReportSeamGroundGuardRejectsForeignGround(t *testing.T) {
 	// The suite's scratch root, in the shape a real run sees it.
-	const scratchRoot = "/home/nick/workspace/gopi-test-scratch/suite-cmd-agent-run-1"
+	const scratchRoot = "/home/user/workspace/gopi-test-scratch/suite-cmd-agent-run-1"
 	// The fixture's own ground: a t.TempDir() INSIDE that root.
 	repo := filepath.Join(scratchRoot, "TestTaskRunSeamWritesReportAndShowRendersIt123", "001")
 	// The shapes the defect took: the tree under test (this session's worktree
 	// and a sibling session's — both OUTSIDE the suite scratch root).
-	const treeUnderTest = "/home/nick/workspace/gopi-seam-hermetic"
-	const siblingWorktree = "/home/nick/workspace/gopi-cmdagent-reds"
+	const treeUnderTest = "/home/user/workspace/gopi-seam-hermetic"
+	const siblingWorktree = "/home/user/workspace/gopi-cmdagent-reds"
 	render := func(repoLine, worktreeLine string) string {
 		show := "task_id:        01a11500-0000-7000-8000-000000000023\nstatus:         completed\n"
 		if repoLine != "" {
@@ -453,7 +453,7 @@ func TestReportSeamGroundGuardRejectsForeignGround(t *testing.T) {
 		}
 	})
 	t.Run("a foreign worktree in another session's scratch is refused", func(t *testing.T) {
-		foreign := "/home/nick/workspace/gopi-test-scratch/suite-cmd-agent-run-2/Other123/001"
+		foreign := "/home/user/workspace/gopi-test-scratch/suite-cmd-agent-run-2/Other123/001"
 		if v := verdict(t, render(foreign, foreign), repo); v == "" {
 			t.Fatal("guard accepted a sibling suite's scratch directory as this fixture's ground")
 		}
@@ -463,7 +463,7 @@ func TestReportSeamGroundGuardRejectsForeignGround(t *testing.T) {
 		// worker-creates-child-ground), so "outside the fixture repo" is the
 		// normal shape now — what must never pass is a ground outside the
 		// SUITE's own scratch root, i.e. one this test did not create.
-		if v := verdict(t, render(repo, "/home/nick/workspace/gopi-otherworld"), repo); v == "" {
+		if v := verdict(t, render(repo, "/home/user/workspace/gopi-otherworld"), repo); v == "" {
 			t.Fatal("guard accepted a worktree outside the suite's scratch root — the operator's real workspace would pass silently")
 		}
 	})

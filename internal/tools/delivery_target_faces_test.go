@@ -49,7 +49,7 @@ const (
 
 	// dtfOtherRemoteName is the fixture client's OWN remote — a name that is NOT
 	// the declared alias, which is the ordinary shape of a client (sager:
-	// sync_peers ["zbook"], `git remote -v` = origin). It is what makes the
+	// sync_peers ["zpeer"], `git remote -v` = origin). It is what makes the
 	// assertion "the answer is about THIS repo" observable rather than a tautology.
 	dtfOtherRemoteName = "faces-client-remote"
 )

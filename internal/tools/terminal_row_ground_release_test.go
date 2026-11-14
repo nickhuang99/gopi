@@ -12,7 +12,7 @@ package tools
 //
 // 192 of 1826 session logs carried the line
 //
-//	the clone workspace /home/nick/workspace/<row> is NOT recorded as this
+//	the clone workspace /home/user/workspace/<row> is NOT recorded as this
 //	row's ground — branch master is already named by row 01a1ab49-…
 //
 // The naming row was `completed` — its life OVER — yet

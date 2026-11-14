@@ -95,7 +95,7 @@ func TestWrapToCols_ExistingBoundaryBreaksSurvive(t *testing.T) {
 			[]string{"run /compact then check the ", "endpoint of s//tyle now"},
 		},
 		// A path ends after its own separators: every row is whole components.
-		{"path-components", "/home/nick/.gopi/sessions/01a1", 20, []string{"/home/nick/.gopi/", "sessions/01a1"}},
+		{"path-components", "/home/user/.gopi/sessions/01a1", 20, []string{"/home/user/.gopi/", "sessions/01a1"}},
 		// A dotted name is one token, moved down whole.
 		{"dotted-name", "see the COMMANDS.md file", 12, []string{"see the ", "COMMANDS.md ", "file"}},
 	}

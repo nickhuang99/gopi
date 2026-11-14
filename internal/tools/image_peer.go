@@ -14,7 +14,7 @@ package tools
 // `git merge-base --is-ancestor`:
 //
 //	$ readlink /proc/1038465/exe
-//	/home/nick/work/gopi/bin/gopi (deleted)
+//	/home/user/work/gopi/bin/gopi (deleted)
 //	$ go version -m /proc/1038465/exe | head -3
 //	... mod  v0.0.0-20261028000000-84beb3091e
 //

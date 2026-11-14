@@ -3,7 +3,7 @@ package tools
 // THE HOLDER-GONE READING — the regression proof for the defect measured
 // 2026-10-27 on row 01a17aba (`gopi task status --worktree <ground>`):
 //
-//	holder:      nick-sager:1698361 (claim stamp is fresh for this run)
+//	holder:      host-a:1698361 (claim stamp is fresh for this run)
 //	verdict:     dead
 //	live:        pid 1698361 alive=no
 //

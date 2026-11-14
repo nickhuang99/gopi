@@ -94,13 +94,13 @@ EXIT
 
 EXAMPLES
   # the common case: this machine's profile, pulling from one peer
-  bash scripts/notify/deploy.sh --peer zbook
+  bash scripts/notify/deploy.sh --peer zpeer
 
   # a second/third machine, with its own state directory
-  bash scripts/notify/deploy.sh --peer zbook --state-dir ~/.gopi/notify-state
+  bash scripts/notify/deploy.sh --peer zpeer --state-dir ~/.gopi/notify-state
 
   # what would happen, without touching anything
-  bash scripts/notify/deploy.sh --peer zbook --dry-run
+  bash scripts/notify/deploy.sh --peer zpeer --dry-run
 
 AFTER INSTALLING, check it with the sink's own instruments:
   gopi notify sink            # the resolved notify.cmd and what it appends to

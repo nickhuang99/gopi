@@ -11,7 +11,7 @@ package devworkspace
 //
 //	$ mkdir -p .probe-anchor/nested            # no .git of its own
 //	$ git -C .probe-anchor/nested rev-parse --show-toplevel
-//	/home/nick/workspace/01a17dfb-…            # the ENCLOSING repo
+//	/home/user/workspace/01a17dfb-…            # the ENCLOSING repo
 //	$ git -C .probe-anchor/nested rev-parse HEAD
 //	64301adf…                                  # the ENCLOSING repo's HEAD
 //	$ git -C .probe-anchor/nested status --porcelain; echo $?

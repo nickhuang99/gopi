@@ -784,7 +784,7 @@ type worktreeSweepHostObservations struct {
 	// task's registration: clean (nothing to report), no live holder, past the
 	// age floor, inside a declared root. Observed in this session: while
 	// `go test ./cmd/agent/` ran from a linked worktree, the sibling linked
-	// worktree /home/nick/workspace/probe-run — clean, unowned in the sandbox
+	// worktree /home/user/workspace/probe-run — clean, unowned in the sandbox
 	// ledger that run pointed at, registered three days earlier — was removed
 	// mid-run (t+147s): the directory went and the branch stayed.
 	//
@@ -1413,7 +1413,7 @@ func worktreeSweepSessionDir(taskID string) string {
 // registration on that evidence, in a sentence that claimed the registration was
 // that row's own ground ("its own session's ground") while the row's recorded
 // ground was a different directory. Four one-shot detached worktrees carrying
-// uncommitted mutation material therefore sat in /home/nick/workspace with NO arm
+// uncommitted mutation material therefore sat in /home/user/workspace with NO arm
 // reaching them (no row names them), while the sweep said an unrelated task's
 // live session owned them.
 //

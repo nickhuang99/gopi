@@ -353,7 +353,7 @@ func refGuardGitVersion(t *testing.T) string {
 // whole family walks through a refs/heads/<b> another worktree holds and the RED
 // half therefore observes the damage. On a host whose `git` is NEWER, git answers
 // that family itself: on git 2.43.0 (`/usr/local/bin/git`, the binary `git`
-// resolves to on nick-sager) `branch -f`/`--force`/`-M --move --force`,
+// resolves to on host-a) `branch -f`/`--force`/`-M --move --force`,
 // `checkout -B`, `switch -C` and a `fetch` whose destination is a held branch all
 // exit 128 with "cannot force update the branch '<b>' used by worktree at '<wt>'"
 // / "refusing to fetch into branch 'refs/heads/<b>' checked out at '<wt>'" —
@@ -596,7 +596,7 @@ func TestSharedIntegrationRefGuard_ConfigFetchWithoutRefspec(t *testing.T) {
 	// turns staged — the Rule 30 park, one fetch away, with no refspec spelled.
 	//
 	// The RED proof is its OWN subtest so that a host where git itself raises the
-	// occupancy wall (2.43.0 on nick-sager: "refusing to fetch into branch
+	// occupancy wall (2.43.0 on host-a: "refusing to fetch into branch
 	// 'refs/heads/main' checked out at '<trunk-checkout>'") skips ONLY the damage
 	// reproduction below — the GREEN refusal and the two no-weakening probes after
 	// it are this arm's verdict and they keep running. Aborting the whole function

@@ -13,10 +13,10 @@ package tools
 // creation seam may never fire, so the row stays repo-only for its whole life.
 //
 // Measured on the live ledger (2026-09-20): row 01a0bb71-ec9d sat in_progress
-// with {"repo":"/home/nick/work/GoPi"} while /home/nick/workspace/gopi-chat-wrap
+// with {"repo":"/home/user/work/GoPi"} while /home/user/workspace/gopi-chat-wrap
 // existed and was registered as that repo's linked worktree on a non-exempt
 // branch. Measured too: that row's session LAUNCHED in the main checkout
-// (workdir=/home/nick/work/GoPi) — byte-identical to its already-grounded
+// (workdir=/home/user/work/GoPi) — byte-identical to its already-grounded
 // sibling 01a0bb71-eae2's — and the ONLY thing separating the two runs is the
 // `git worktree add … -b feat/chat-stream-tty-wrap` the gap-A run itself
 // executed. Hence the seam's central rule, pinned below:

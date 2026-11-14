@@ -1001,7 +1001,7 @@ func taskRowAddressRefusal() error {
 //	$ timeout 5 gopi task dedup-scan </dev/null ; echo $?   → 124   (zero output)
 //	$ timeout 5 gopi task merge </dev/null     ; echo $?   → 124   (after taking
 //	    the merge lock and starting a 300 s build gate on the operator's LIVE
-//	    /home/nick/work/gopi checkout)
+//	    /home/user/work/gopi checkout)
 //
 // The cost of those two arms is decided entirely by their SCOPE, and scope was
 // the one thing the bare spelling never asked for: `dedup-scan --live` answers
@@ -1711,7 +1711,7 @@ func parseTasksArgs(verb string, args []string) (*tasksOptions, error) {
 		// is refused here rather than deep inside the engine, because what it
 		// costs is decided at THIS seam: with no branch, no --all and no --repo
 		// the engine resolves the settings.json "repos" table and sweeps every
-		// configured repo — here, the operator's LIVE /home/nick/work/gopi, with
+		// configured repo — here, the operator's LIVE /home/user/work/gopi, with
 		// the merge lock taken and a 300 s build gate started. Measured on this
 		// host: the bare spelling had produced no decision line and no exit
 		// inside five seconds, twice.
@@ -2796,7 +2796,7 @@ func runTaskRunOnce(opts *tasksOptions) error {
 	// the clone channel was on — so every clone-channel run still ran this
 	// resolver, whose creation arm executed a `git worktree add` whose directory
 	// was discarded one line later (measured on this host: the run log carries
-	// `CREATED the ground /home/nick/workspace/gopi-01a13207597b…`, and that
+	// `CREATED the ground /home/user/workspace/gopi-01a13207597b…`, and that
 	// directory is gone). The creation arm STAYS — it is the fallback ground on
 	// a host that declares no dev_repo, and deleting it turned 41 e2e walks red
 	// (2026-10-27; the 41 is the SET DIFFERENCE r1-r2 between the two runs'
@@ -2889,7 +2889,7 @@ func runTaskRunOnce(opts *tasksOptions) error {
 		// 01a0dabe-3fa1-7cc8-b601-66f1456b8ffd): the announcement above says
 		// WHERE the ground is; it does not say which tree has AUTHORITY over
 		// the run's writes — and a payload naming the repo's main checkout
-		// takes that authority away in one sentence ("Repo: /home/nick/work
+		// takes that authority away in one sentence ("Repo: /home/user/work
 		// /GoPi (branch master at …). Re-verify every line number before
 		// relying on it."). That run wrote its evidence artifacts and a new
 		// test file into the SHARED checkout. The clause names the ground as
@@ -3007,7 +3007,7 @@ func runTaskRunOnce(opts *tasksOptions) error {
 		// created_at: a rework/resume successor (`<id>-rN`, tasktags.ReworkLineageTag)
 		// inherits its parent's payload VERBATIM, so its clock says when the ROW was
 		// minted, not when the briefing was written. Measured 2026-10-27 on this
-		// ledger (rows 01a159e5-… and its −r1 successor, repo /home/nick/work/gopi):
+		// ledger (rows 01a159e5-… and its −r1 successor, repo /home/user/work/gopi):
 		// anchoring on the successor's created_at (epoch 1793040588) resolved the
 		// assertion to 0d313323 — 42 commits behind the tip — while the text's own
 		// moment (epoch 1792509551) resolves to bf401850, 398 commits behind. (The
@@ -3912,7 +3912,7 @@ func taskRunReclaimOwnDirectories(target string) {
 // created — a chat's hand-made verification checkout, a leftover from another
 // task — which used to be printed under whatever row happened to be closing out
 // (measured: `task 01a17dcd-…: own-worktree-release: own registered worktree
-// kept: /home/nick/workspace/cptest-verify — worktree is DIRTY`, about seven
+// kept: /home/user/workspace/cptest-verify — worktree is DIRTY`, about seven
 // files belonging to a DIFFERENT task). The observation stays (Rule 15: a dirty
 // directory is a human's decision); the false subject goes — an unowned line is
 // printed with no row id at all.
@@ -4427,7 +4427,7 @@ func writebackOutcome(taskID, status, resultSummary, reportTo, repo string) erro
 		// boundary). This boundary had none: it renders its target from the
 		// caller's --repo/--report-to and hands it straight to git, so a test
 		// that drove this leg pointed real bytes at whatever the flag named.
-		// Measured residue (2026-10-26, zbook): refs/heads/feat/exists, an
+		// Measured residue (2026-10-26, zpeer): refs/heads/feat/exists, an
 		// orphan root of a `t <t@t>` fixture, reflog `push`.
 		if why := pushfence.Refusal(repo); why != "" {
 			fmt.Fprintf(os.Stderr, taskProgName+": report-back push refused before it ran: %s\n", why)
@@ -5876,7 +5876,7 @@ func taskRemovedAdvice(verb string) string {
 		// pointing back at a command that no longer exists. Measured, on the
 		// binary built at `c5548b88`:
 		//
-		//	$ gopi task branch-refs --peer zbook ; echo $?
+		//	$ gopi task branch-refs --peer zpeer ; echo $?
 		//	… "gopi task finish-cleanup" (what a terminal row's delivery should do) …
 		//	1
 		//	$ gopi task finish-cleanup ; echo $?
@@ -5946,7 +5946,7 @@ func taskRemovedAdvice(verb string) string {
 		// a LIVE row's status and its ground line are on the read, the run log is
 		// a file the row's session directory holds. The parent-gate half of the
 		// readout is asserted by the claim funnel itself.
-		return `the contradiction readout was retired — both halves are still on the read: "gopi task show <id>" prints the ledger status AND the advisory ground line for the same row, and a run log is a file in that row's session directory (/home/nick/.gopi/sessions/<task-id>/output.log); "gopi task list --status pending" marks an unclaimable row [queue-skip] with the parent gate's own reason`
+		return `the contradiction readout was retired — both halves are still on the read: "gopi task show <id>" prints the ledger status AND the advisory ground line for the same row, and a run log is a file in that row's session directory (/home/user/.gopi/sessions/<task-id>/output.log); "gopi task list --status pending" marks an unclaimable row [queue-skip] with the parent gate's own reason`
 	}
 	if verb == taskverbs.New {
 		return `task creation via the CLI was removed — use "gopi task submit <summary>" (enqueue as pending; the in-process auto-registration path is unaffected)`

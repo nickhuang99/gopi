@@ -539,9 +539,9 @@ const goCacheEnvNameInTest = "GOCACHE"
 
 // TestResolveToolchainCachePathConsultsTheGoEnvFile pins the channel the
 // pre-fix resolver was MISSING: the go env file (<home>/.config/go/env), which is
-// where `go env -w` PERSISTS a pin. Measured defect it pins (nick-sager,
-// 2026-11-01): the file said GOCACHE=/home/nick/workspace/.gocache while the
-// verb reported /home/nick/.cache/go-build — a report about a cache no build
+// where `go env -w` PERSISTS a pin. Measured defect it pins (host-a,
+// 2026-11-01): the file said GOCACHE=/home/user/workspace/.gocache while the
+// verb reported /home/user/.cache/go-build — a report about a cache no build
 // fills, and (behind `--trim`) an eviction aimed at the wrong tree.
 //
 // The fixture is a controlled home with a controlled env file — never the

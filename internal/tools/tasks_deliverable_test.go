@@ -129,7 +129,7 @@ func TestTaskSubmitRepoBareRepoAborts(t *testing.T) {
 // DurableRepoForSubmit to the repository's MAIN checkout. This test used to
 // assert `deliverable.repo == cwd`, which held only until that commit landed; it
 // was then red in BOTH environments (measured 2026-09-25 on master + this
-// worktree: with this session's env the row rendered /home/nick/work/GoPi while
+// worktree: with this session's env the row rendered /home/user/work/GoPi while
 // the test demanded <worktree>/internal/tools, and under `env -i` the same). A
 // stale assertion, not an env defect — family A of
 // devdoc/internal-tools-whole-package-triage-20260925.md, where the

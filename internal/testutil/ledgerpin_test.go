@@ -207,7 +207,7 @@ func TestLedgerPinHonoursANamedLedgerButRefusesTheOperatorsOwn(t *testing.T) {
 // makes, through PinSuiteLedgerEnv — a caller that pins, holding an ambient
 // override in the environment (the hostile shape: something exported
 // GOPI_MEMORY_DB pointing at the developer's live ledger, e.g. a shell that ran
-// `export GOPI_MEMORY_DB=/home/nick/.gopi/memory.db`). The pin must OVERRULE it and land
+// `export GOPI_MEMORY_DB=/home/user/.gopi/memory.db`). The pin must OVERRULE it and land
 // on the sandbox; the neighbouring table test covers the named-sandbox half
 // that must be left alone.
 func TestLedgerPinWouldPinAHostileInheritedOverride(t *testing.T) {

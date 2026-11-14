@@ -7,7 +7,7 @@ Step 2: Use read to extract the key sections. The page is Docusaurus HTML — lo
   bash("grep -oP '(?<=<p>).*?(?=</p>)' /tmp/deepseek-pi-doc.html | head -50")
   bash("grep -oP '<h[12][^>]*>.*?</h[12]>' /tmp/deepseek-pi-doc.html")
 
-Step 3: Read the extracted content, then compare with our current GoPi implementation at /home/nick/work/GoPi/:
+Step 3: Read the extracted content, then compare with our current GoPi implementation at /home/user/work/GoPi/:
 
    Current GoPi features:
    - 4 tools: read, write, edit, bash

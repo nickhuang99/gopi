@@ -35,7 +35,7 @@
 set -uo pipefail
 
 ROOT="$(cd "$(dirname "${BASH_SOURCE[0]}")/../.." && pwd)"
-EV="${GOPI_MATERIALS_EVIDENCE:-/home/nick/.gopi/sessions/01a0ed23154f763eb5ee36b3867ecaf7}"
+EV="${GOPI_MATERIALS_EVIDENCE:-/home/user/.gopi/sessions/01a0ed23154f763eb5ee36b3867ecaf7}"
 BIN="${GOPI_MATERIALS_BIN:-$EV/materials-topB/bin/gopi}"
 RENDER="$ROOT/scripts/materials/render.py"
 # Rule 22：临时工作目录来自仓库自己的共享助手（不用手搓 mktemp）。

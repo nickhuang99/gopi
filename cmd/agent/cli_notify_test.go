@@ -382,7 +382,7 @@ func TestNotifySubVerbNamesAreDispatched(t *testing.T) {
 // reach a test subprocess — but without pinning a mock model endpoint, because
 // this verb runs no model and must not need one. The operator's sink is the
 // thing being protected: an inherited GOPI_TASK_NOTIFY_CMD would point the
-// fixture's gopi at /home/nick/.gopi/notify/task-events.jsonl, so it is stripped here
+// fixture's gopi at /home/user/.gopi/notify/task-events.jsonl, so it is stripped here
 // AND overwritten explicitly by the caller.
 func notifyScrubbedEnv() []string {
 	current := os.Environ()

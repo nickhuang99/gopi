@@ -97,7 +97,7 @@ func TestFailedReissueBucketSplitsDebtFromConversation(t *testing.T) {
 
 	// An execution that recorded a GROUND but no briefing text (the `task run`
 	// wrapper shape): the deliverable is the obligation.
-	groundRow := `{"repo":"/home/nick/work/gopi","branch":"task/t-ground-only","worktree":"/home/nick/workspace/t-ground-only"}`
+	groundRow := `{"repo":"/home/user/work/gopi","branch":"task/t-ground-only","worktree":"/home/user/workspace/t-ground-only"}`
 	seedReissueRow(t, "t-ground-only", taskStatusFailed, "", "", groundRow)
 
 	db := openReissueLedger(t)
@@ -264,7 +264,7 @@ func TestFailedReissueBucketIsReproducibleByIndependentSQL(t *testing.T) {
 	seedBarePromptRow(t, "t-bare-replay", "[auto] replay 56507166-ef62-4d2d-bafe-af504fca9311")
 	seedReissueRow(t, "t-debt-one", taskStatusFailed, "", "", "")
 	seedReissueRow(t, "t-debt-two", taskStatusFailed, "", "",
-		`{"repo":"/home/nick/work/gopi","branch":"task/t-debt-two"}`)
+		`{"repo":"/home/user/work/gopi","branch":"task/t-debt-two"}`)
 	// Excluded from the count entirely (already dealt with), so a bucket query
 	// that forgot the debt predicate would over-report.
 	seedReissueRow(t, "t-already-resolved", taskStatusFailed, taskTagResolved, "", "")

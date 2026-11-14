@@ -49,7 +49,7 @@ func TestMirrorTerminalRowCarriesLedgerVocabulary(t *testing.T) {
 	// (no local counterpart, terminal status).
 	done := time.Now().Unix()
 	src := SyncTaskPatch{
-		Version: syncTaskPatchVersion, Node: "zbook", ExportedAt: done,
+		Version: syncTaskPatchVersion, Node: "zpeer", ExportedAt: done,
 		Rows: []SyncTaskRow{{
 			TaskID: "t-mirror-9001", Summary: "work finished on the peer",
 			Payload: "the peer's briefing", Tags: []string{"bug"},
@@ -130,7 +130,7 @@ func TestFreshReplicatedRowStaysServer(t *testing.T) {
 	taskSyncTestDB(t)
 
 	src := SyncTaskPatch{
-		Version: syncTaskPatchVersion, Node: "zbook", ExportedAt: time.Now().Unix(),
+		Version: syncTaskPatchVersion, Node: "zpeer", ExportedAt: time.Now().Unix(),
 		Rows: []SyncTaskRow{{
 			TaskID: "t-fresh-9002", Summary: "work to run here",
 			Payload: "a live briefing", Tags: []string{"bug"},

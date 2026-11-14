@@ -23,12 +23,12 @@
 # 用法: bash scripts/materials/gen-memoryC.sh <out_root> [evidence_dir]
 set -uo pipefail
 
-ROOT=/home/nick/workspace/gopi-01a0ed2301fe7978918558344dfdcae2
+ROOT=/home/user/workspace/gopi-01a0ed2301fe7978918558344dfdcae2
 BIN="$ROOT/bin/gopi"
 RENDER="$ROOT/scripts/materials/render.py"
 FONT=/usr/share/fonts/truetype/wqy/wqy-zenhei.ttc
 OUTROOT="${1:?usage: scripts/materials/gen-memoryC.sh <out_root> [evidence_dir]}"
-EVID="${2:-/home/nick/.gopi/sessions/01a0ed23-01fe-7978-9185-58344dfdcae2}"
+EVID="${2:-/home/user/.gopi/sessions/01a0ed23-01fe-7978-9185-58344dfdcae2}"
 FACE=memory
 TODAY="$(date +%F)"
 COMMIT="$(git -C "$ROOT" rev-parse --short HEAD)"
@@ -326,7 +326,7 @@ entry 010 brew-dry-run \
 entry 011 memsync-export \
   "gopi memory memsync --export" yes \
   "把本机独有的知识行导出成一个可评审的补丁文件——传输方式是文件，不是活会话" \
-  "结论是 \`exported 1 rows (1 scanned, 0 skipped by --since) → <path> (node zbook)\`：行数、被 --since 挡掉的行数、落盘路径、节点名都在同一行。" \
+  "结论是 \`exported 1 rows (1 scanned, 0 skipped by --since) → <path> (node zpeer)\`：行数、被 --since 挡掉的行数、落盘路径、节点名都在同一行。" \
   "框住 export 的收尾行：它把「传了什么、挡了什么、落到哪、以谁的名义」压进一行——这张图说明 memsync 与 memory sync 的分工是传输方式（文件 vs 活会话），所以导出物本身必须是可评审的。" \
   "skipped by --since:行数、被 --since 挡掉的行数、落盘路径、节点名在同一行——补丁文件是可评审的传输" \
   "$BIN memory memsync --export --out $EV/patch-$STAMP.json"

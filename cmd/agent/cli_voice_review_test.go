@@ -1168,7 +1168,7 @@ func TestVoiceListenIsWildcard(t *testing.T) {
 		{"::7788", true},          // unbracketed IPv6 wildcard
 		{"127.0.0.1:7788", false}, // the new default
 		{"[::1]:7788", false},     // IPv6 loopback
-		{"192.168.1.6:7788", false},
+		{"192.168.7.6:7788", false},
 		{"localhost:7788", false},
 		{"not-an-address", true}, // unparseable ⇒ warn: we cannot promise loopback
 	}

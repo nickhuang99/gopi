@@ -15,7 +15,7 @@
 // directory every walker (the declared-tree sweep, the family census, a `du`)
 // has to visit, which is the family's whole cost. The 249 non-empty ones are what
 // the operator's principle protects: measured here,
-// `01a0f3de-…/attachments/home/nick/workspace/branch-capture-list-windows.bundle`
+// `01a0f3de-…/attachments/home/user/workspace/branch-capture-list-windows.bundle`
 // (284,840,438 bytes) is the operator's own example of a last surviving copy.
 //
 // WHY AN EMPTINESS PREDICATE IS NOT AN AGE WINDOW. The constraint is explicit

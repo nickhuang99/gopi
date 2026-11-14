@@ -39,7 +39,7 @@ import (
 
 // chatGroundSourceRepoDir is the directory the resolved fixture stands in. It is
 // never opened: the notice names it, it does not read it.
-const chatGroundSourceRepoDir = "/home/nick/work/gopi"
+const chatGroundSourceRepoDir = "/home/user/work/gopi"
 
 // chatGroundSourceResolved is the report an ordinary chat in a main checkout
 // produces — the shape whose announcement the defect printed under a replay.

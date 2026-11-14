@@ -747,9 +747,9 @@ func TestCloneGroundWorktreeAdd_InsideTheGroundLands(t *testing.T) {
 // creation FLAG, and all three were MEASURED walking through the guard in the
 // declared shared checkout with this run's ground announced:
 //
-//	git -C /home/nick/work/gopi branch task/probe-b1 a4899a4f          exit 0
-//	git -C /home/nick/work/gopi branch -f task/probe-b1 90927414       exit 0
-//	git -C /home/nick/work/gopi update-ref refs/heads/task/probe-u1 …  exit 0
+//	git -C /home/user/work/gopi branch task/probe-b1 a4899a4f          exit 0
+//	git -C /home/user/work/gopi branch -f task/probe-b1 90927414       exit 0
+//	git -C /home/user/work/gopi update-ref refs/heads/task/probe-u1 …  exit 0
 //
 // The fix restates the guard's subject as "a git invocation that CREATES, MOVES
 // or RENAMES a ref" (cloneGroundRefWritingVerbs) and adds a FAIL-CLOSED arm for

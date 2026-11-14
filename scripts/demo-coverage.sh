@@ -287,12 +287,12 @@ skip  sub task "task sync --peer"           "carries rows over ssh to a DECLARED
 # THESE ROWS SAID "no peer is declared on this host" AND THAT WAS FALSE (measured
 # 2026-10-31): the profile this script copies the operator's settings INTO
 # inherits their `sync_peers`, so `gopi task diff` is not peerless here — it ran
-# over ssh against zbook and hp and printed a real DIVERGED verdict for each
+# over ssh against zpeer and hp and printed a real DIVERGED verdict for each
 # (`local=7 peer=7028`, `local=7 peer=5210`). A skipped row whose REASON is wrong
 # is worse than a skipped row: it tells the next reader this host has no peers.
 # The reasons below are the ones that actually hold — each of these verbs moves
 # rows or refs between two ledgers, which an instrument must not do.
-skip  sub task "task diff"                  "compares this ledger against a DECLARED peer's over ssh. This profile does declare peers (it copies the operator's settings), and the probe DID read them — the run is skipped because the answer is a cross-node agreement verdict about two live ledgers (measured: DIVERGED, 7035 rows against zbook), not a property of one command"
+skip  sub task "task diff"                  "compares this ledger against a DECLARED peer's over ssh. This profile does declare peers (it copies the operator's settings), and the probe DID read them — the run is skipped because the answer is a cross-node agreement verdict about two live ledgers (measured: DIVERGED, 7035 rows against zpeer), not a property of one command"
 skip  sub task "task harvest"               "pulls rows FROM a peer over ssh; it writes into this ledger from another host's, which an instrument must not do"
 skip  sub task "task push"                  "pushes rows TO a peer over ssh; it mutates a PEER ledger, which this host does not own"
 skip  sub task "task send"                  "MOVES a row to a peer over ssh (--task-id --peer, a MOVE or a CHAIN) — it cancels the source row and creates one on the peer, mutating two ledgers at once"

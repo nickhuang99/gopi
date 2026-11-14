@@ -349,7 +349,7 @@ func TestGuardedWriteThroughASymlinkKeepsTheLink(t *testing.T) {
 // finds a file that does not exist (a false all-clear).
 func TestSettingsBackupPathFollowsTheSiblingConvention(t *testing.T) {
 	cases := []struct{ in, want string }{
-		{"/home/nick/.gopi/.ds_flash_settings.json", "/home/nick/.gopi/.ds_flash_settings_backup.json"},
+		{"/home/user/.gopi/.ds_flash_settings.json", "/home/user/.gopi/.ds_flash_settings_backup.json"},
 		{"/tmp/x/settings.json", "/tmp/x/settings_backup.json"},
 		{"/tmp/x/settings", "/tmp/x/settings_backup"},
 	}

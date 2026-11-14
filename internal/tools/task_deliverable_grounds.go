@@ -8,7 +8,7 @@
 // MORE than one ground, and the incident is the shape: the row already named
 // .../gopi-01a0ddc4… on task/01a0ddc4…, and the run then minted a SECOND
 // worktree for its evidence
-// (`git worktree add /home/nick/workspace/gopi-evi-pushback -b fix/pushback-rule31-evidence`).
+// (`git worktree add /home/user/workspace/gopi-evi-pushback -b fix/pushback-rule31-evidence`).
 // That directory ended up in NO record at all:
 //
 //	the row          — the primary axes were taken and the writer refuses to
@@ -19,7 +19,7 @@
 //	the run anchor    — TaskGroundAnchorRecord is called from a seam that had
 //	                   already returned, so no ground anchor was written either
 //	                   (measured: the sink held 154 anchors and NOTHING for
-//	                   /home/nick/workspace/gopi-evi-pushback).
+//	                   /home/user/workspace/gopi-evi-pushback).
 //
 // The consequence was an owner-less live ground: the branch→row lookup
 // fix/pushback-rule31-evidence` answered "no owner" while the branch sat in a

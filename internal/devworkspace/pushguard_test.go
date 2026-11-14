@@ -2,7 +2,7 @@ package devworkspace
 
 // THE CLONE CHANNEL'S TEST FENCE, proved on real git.
 //
-// The measured residue this pins (2026-10-26, zbook's own repository):
+// The measured residue this pins (2026-10-26, zpeer's own repository):
 //
 //	$ git log --format='%H|%an <%ae>|%s' feat/exists
 //	3043963598210ca6d6edb4075feb389a77de7c5e|t <t@t>|work

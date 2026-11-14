@@ -252,7 +252,7 @@ func sandboxSettingsResolvedFor(t *testing.T, home string) string {
 //   - settings.json is a REAL, READ-ONLY FILE (0444) holding a byte-for-byte
 //     copy of the operator's document — NOT a symlink. The symlink was a
 //     write-through: a `>` redirect followed it and truncated the operator's
-//     LIVE /home/nick/.gopi/settings.json (2026-09-27, twelve keys lost). The proof that
+//     LIVE /home/user/.gopi/settings.json (2026-09-27, twelve keys lost). The proof that
 //     the shape is fixed is the second half of the test below: the real source
 //     is UNCHANGED after a write attempt through the profile path;
 //   - the ledger is a REAL FILE at the path the ledger resolver computes, so a

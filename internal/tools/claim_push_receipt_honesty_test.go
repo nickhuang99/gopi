@@ -3,12 +3,12 @@ package tools
 // claim_push_receipt_honesty_test.go — the peer-free REGRESSION GUARD for
 // the manual push's receipt.
 //
-// THE DEFECT THIS FILE LOCKS DOWN (measured 2026-09-21 on zbook, re-measured
+// THE DEFECT THIS FILE LOCKS DOWN (measured 2026-09-21 on zpeer, re-measured
 // 2026-10-12 from the client host): `gopi task sync --push-only --task-id T`
 // rides the CLAIM BROADCAST. The peer mirrors the row's LOCK and answers a
 // verdict; it never writes the row into its ledger. The success line said
 //
-//	push zbook: accepted (1 row(s))
+//	push zpeer: accepted (1 row(s))
 //
 // and exit 0 — TRUE about the LOCK, read as "the row arrived". The follow-up
 // found the peer's tasks table missing the row entirely. A host's local policy

@@ -12,7 +12,7 @@ package testutil
 // `~/.gopi/raw/rounds-test.log` — md5 unchanged, mtime moved two minutes into
 // the future of a "read-only" verification run. Earlier instance of the same
 // class: commit f6694fc8 ("stop the web-signal test from logging into the real
-// /home/nick/.gopi").
+// /home/user/.gopi").
 //
 // WHY the anchor below cannot simply be "the HOME this test set": the guard's
 // whole job is to catch a MISSING override, and a missing override makes the

@@ -304,9 +304,9 @@ clone channel is off. Measured on this host before the fix:
 ```bash
 # the ground the run log names, and whether anything is still there
 grep -h 'CREATED the ground' ~/.gopi/sessions/*/output.log | head -3
-ls -d /home/nick/workspace/gopi-01a13207597b* 2>&1        # No such file or directory
+ls -d /home/user/workspace/gopi-01a13207597b* 2>&1        # No such file or directory
 # the shape census, by the ONLY discriminator (.git kind, not the name)
-for d in /home/nick/workspace/*/; do
+for d in /home/user/workspace/*/; do
   if [ -d "$d/.git" ]; then echo clone
   elif [ -f "$d/.git" ]; then echo linked
   fi
@@ -696,7 +696,7 @@ copy.**
   temp root that cannot be provided or written fails LOUDLY, naming the path, the
   reason and the channel — never a silent fallback to `/tmp`.
 - **Never fix this at the host level**: the policy lives strictly inside gopi's own
-  process tree — `/home/nick/.bashrc`, `/home/nick/.profile`, `/etc/tmpfiles.d`,
+  process tree — `/home/user/.bashrc`, `/home/user/.profile`, `/etc/tmpfiles.d`,
   `/etc/environment` and every other host-level configuration are out of scope.
 
 Check: `internal/scratch.AssertTempRootOffRootFS`, `internal/testutil`'s suite
@@ -823,18 +823,18 @@ Heavy tests are **off by default** (`heavytest.Require`; `GOPI_HEAVY_TESTS` trut
 **On the merge/verify path the rule is: SMOKE, BRANCH-SCOPED — never the whole
 tree** (`internal/smokegate`; `TestSmokePathPrescribesNoWholeTreeSuite`).
 
-## Rule 28: Two Hosts, Two Jobs — zbook Owns the System Layer, HP Owns Features
+## Rule 28: Two Hosts, Two Jobs — zpeer Owns the System Layer, HP Owns Features
 
 **The division** (operator's decision, 2026-09-16):
 
 | host | role | work |
 |---|---|---|
-| **zbook** | server | **system-level**: worktree lifecycle, branch/merge machinery, the merger, task ledger, sync, scheduling — the parts that define how work flows |
+| **zpeer** | server | **system-level**: worktree lifecycle, branch/merge machinery, the merger, task ledger, sync, scheduling — the parts that define how work flows |
 | **HP** | client | **feature development** that does **not** touch the system layer |
 
 **Why it is a rule and not a preference**: everything that went wrong in
 2026-09-16's incidents went wrong *because both hosts worked the same layer at
-once* — fourteen HP branches sat on a stale baseline while zbook reworked the
+once* — fourteen HP branches sat on a stale baseline while zpeer reworked the
 same areas, so each one needed a rebase to land and then a compile fix anyway
 (`fix/dump-name-collision` merged with "zero conflicts" and did not build). The
 division exists so a feature branch comes back **mergeable**, not so the hosts
@@ -848,7 +848,7 @@ HP-shaped if it:
   (`cli_tasks*.go` runner paths, `merger*`, `task_reclaim*`, `worktree*` sweep,
   `internal/testutil` gates, `internal/standards` gates).
 
-A task that needs both is two tasks; the system half goes to zbook, the feature
+A task that needs both is two tasks; the system half goes to zpeer, the feature
 half to HP.
 
 **Migrating a task to the other host is a three-step move, and the cancel is not
@@ -856,7 +856,7 @@ optional**: export the payload, submit it on the target host, and **cancel the
 original row** with a reason naming the new row id. Without the cancel both hosts
 claim it and the work runs twice (Rule 26's duplicate-dispatch allowance is for
 *repair*, not for an unowned second run). Tag the new row so its origin is
-visible (e.g. `migrated-from-zbook`).
+visible (e.g. `migrated-from-zpeer`).
 
 **Before dispatching to HP, check the briefing's own assumptions.** The GUI tasks
 migrated on 2026-09-16 each opened with "read
@@ -1216,7 +1216,7 @@ silently replaced — writing through a link targets a shared artifact, and repl
 the change.
 
 **NEVER invent a sandbox.** The named anti-pattern: a per-script or per-run
-directory built by hand — `SB=$(mktemp -d)`, `SB=/home/nick/workspace/sbx-$$`, an
+directory built by hand — `SB=$(mktemp -d)`, `SB=/home/user/workspace/sbx-$$`, an
 `os.MkdirTemp` inside a test body — with `GOPI_HOME` exported into it; each is a
 different shape, none is reclaimed, and each is a second, unreviewable answer to
 "what does an isolated profile contain?"
@@ -1288,7 +1288,7 @@ gopi tool scratch-gc sandboxes --dry-run    # what WOULD go, with the reason per
 session was asked to fix two HP-side worker starters that launched workers without
 checking the exit status. It did the right thing to the launchers — and then, to
 make them reliable, it **installed a cron line**:
-`*/10 * * * * /home/nick/bin/hp-worker-autostart.sh`. Author of both the script and
+`*/10 * * * * /home/user/bin/hp-worker-autostart.sh`. Author of both the script and
 the install: `gopi <gopi@gopi>`, commit `4fade437`.
 
 Nobody knew it was running. Its log reached **36,398 lines / 1,214 delegations**,
@@ -1857,28 +1857,28 @@ same run's scan reports; an absolute row count could only tighten as the table
 legitimately ratchets down), so a gate that read an empty tree or a fragmentary
 table cannot pass.
 
-## Rule 40: hermes-agent Is HP's Work — zbook Is Only Its git Upstream
+## Rule 40: hermes-agent Is HP's Work — zpeer Is Only Its git Upstream
 
-**The division.** `hermes-agent` (nick-HP-Laptop, `~/work/hermes-agent`)
-is developed and RUN on **HP**. **zbook is its git upstream and nothing
-else** — a checkout of it exists on zbook, but no hermes-agent work is
-commissioned there and no hermes-agent row is filed on zbook's ledger.
+**The division.** `hermes-agent` (host-b, `~/work/hermes-agent`)
+is developed and RUN on **HP**. **zpeer is its git upstream and nothing
+else** — a checkout of it exists on zpeer, but no hermes-agent work is
+commissioned there and no hermes-agent row is filed on zpeer's ledger.
 
 **The operable criteria — how a hermes task is filed correctly:**
 
-- The task row goes on **HP's ledger**, not zbook's.
+- The task row goes on **HP's ledger**, not zpeer's.
 - Its `deliverable.repo` resolves to the **HP-local** path
-  (`/home/nick/work/hermes-agent` on `nick-HP-Laptop`), i.e. the path that
+  (`/home/user/work/hermes-agent` on `host-b`), i.e. the path that
   exists on the machine that will RUN it.
 - **A verified repo is NOT evidence the row was filed on the right host.**
   This is the dangerous signal, and it is measured, not hypothetical:
-  `/home/nick/work/hermes-agent` exists on **both** hosts (on zbook it is a
+  `/home/user/work/hermes-agent` exists on **both** hosts (on zpeer it is a
   real work tree, non-bare, on branch `hot-note`), so `task_submit`'s
   repo verification — `taskRepoVerifiable`, `git rev-parse
   --is-inside-work-tree` — passes on the **wrong** host and the row goes out
   looking correct. What it proves is path existence on a filesystem; what it
   cannot prove is which machine owns the work. A row not claimed by HP's
-  workers is not "slow"; it is **never dispatched at all** (zbook's ledger
+  workers is not "slow"; it is **never dispatched at all** (zpeer's ledger
   holds it, `sync_peers` forwards nothing).
 
 **Migration, when a hermes task WAS filed on the wrong host — three steps, in
@@ -1889,7 +1889,7 @@ to one project instead of to a layer):
    off the wrong ledger, so nothing is re-typed from memory.
 2. **Re-submit on the target host and verify `deliverable.repo`** — file the
    row on HP, then confirm the stamped repo resolves to HP's own
-   `/home/nick/work/hermes-agent`, not to a path that merely looks the same.
+   `/home/user/work/hermes-agent`, not to a path that merely looks the same.
 3. **Cancel the original row, naming the new id in the reason** — the cancel
    is not optional: without it the work is live in two places and both hosts
    may claim it. The reason names the new row id so a reader of the cancelled
@@ -1897,10 +1897,10 @@ to one project instead of to a layer):
    dispatching again, never by waiting).
 
 **Relation to Rule 28 — a specialisation, not a conflict.** Rule 28 draws the
-host line by LAYER (zbook owns the system layer, HP owns features). Rule 40
+host line by LAYER (zpeer owns the system layer, HP owns features). Rule 40
 pins **one project** that the same division places on HP regardless of which
 layer a particular change touches: hermes-agent work is HP's even when it
-touches machinery that would otherwise be zbook-shaped. Where the two appear
+touches machinery that would otherwise be zpeer-shaped. Where the two appear
 to disagree, **Rule 40 is the narrower and decides for hermes-agent**; Rule 28
 governs everything else.
 
@@ -1912,7 +1912,7 @@ container, a peer shell, and the legitimate HP-side submit itself) would be
 worse than the defect. What exists is a **warning at the submit seam, never a
 refusal**: `internal/tools/task_hermes_host_warning.go` — when a submit's
 `deliverable.repo` names the hermes-agent tree and the submitting host is not
-`nick-HP-Laptop`, `TaskSubmit` appends
+`host-b`, `TaskSubmit` appends
 `TaskSubmitHermesHostWarning` to its confirmation, the same place the
 attachment false-claim warning lands (`task_attachment_claim.go`), so the
 submitter learns BEFORE the row is dispatched. The row still queues. The table
@@ -1958,7 +1958,7 @@ make the complete hop: **you need not fix it, nor prove it — you need to let i
 **Scope.** It holds for all three surfaces — **PA / worker / chat**. It belongs to the **rules region**: it is a constraint
 every node shares, not the local policy of any single node. A PA dispatches a row like this as usual; the chat surface can
 file a row too (Rule 37: chat does not commit code, but filing tasks is its work). **The discoverer does not fix it** (Rule
-28: system-layer defects are filed on zbook) — filing the row is itself the delivery.
+28: system-layer defects are filed on zpeer) — filing the row is itself the delivery.
 
 ## The second half of Rule 41: after the discovery, you do it yourself — never push a decided job back
 
@@ -2083,7 +2083,7 @@ keeps is the discipline "say it and then shut up", not the conclusion of 2026-11
 permissions, so when something **genuinely** has to be handed over (a destination a guard refused, one of the operator's own
 decisions), there are only these right steps:
 
-1. write the exact command out (`cd /home/nick/work/gopi && git push origin master`),
+1. write the exact command out (`cd /home/user/work/gopi && git push origin master`),
 2. state the consequence (which commit is being pushed, and who can see it afterwards),
 3. **and then do not restate it.**
 

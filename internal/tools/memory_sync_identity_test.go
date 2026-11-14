@@ -26,7 +26,7 @@ import (
 func identityImportPatch(t *testing.T, row SyncTaskRow) (*SyncTaskImportStats, error) {
 	t.Helper()
 	patchPath := taskSyncWritePatch(t, SyncTaskPatch{
-		Version: syncTaskPatchVersion, Node: "zbook", Rows: []SyncTaskRow{row},
+		Version: syncTaskPatchVersion, Node: "zpeer", Rows: []SyncTaskRow{row},
 	})
 	return SyncTaskImport(patchPath)
 }
@@ -37,7 +37,7 @@ func identityImportPatch(t *testing.T, row SyncTaskRow) (*SyncTaskImportStats, e
 // (already / tags union) — never relabeled and never refused.
 //
 // RED on master: syncTaskWorkHash(summary, payload) differed, so the
-// importTaskExisting collision gate relabeled the row to t-…-nzbook and
+// importTaskExisting collision gate relabeled the row to t-…-nzpeer and
 // queued a second copy (RowsRelabeled=1, RowsAlready=0).
 func TestTaskSyncImportSameIDEditedPayloadIsTheSameWork(t *testing.T) {
 	taskSyncTestDB(t)
@@ -73,7 +73,7 @@ func TestTaskSyncImportSameIDEditedPayloadIsTheSameWork(t *testing.T) {
 	if _, _, tags := taskSyncStatus(t, "t-id-1"); !strings.Contains(tags, "local-tag") {
 		t.Fatalf("local row tags = %q, want the union path untouched", tags)
 	}
-	if row, err := syncTaskByID("t-id-1-nzbook"); err != nil || row != nil {
+	if row, err := syncTaskByID("t-id-1-nzpeer"); err != nil || row != nil {
 		t.Fatalf("relabeled twin exists (row=%v, err=%v) — the payload edit forked the work", row, err)
 	}
 }
@@ -169,7 +169,7 @@ func TestTaskSyncImportTerminalSyncBackDivergentSummaryStillRefused(t *testing.T
 func TestTaskSyncImportContentLadderWarnsButNeverSkips(t *testing.T) {
 	taskSyncTestDB(t)
 	patchPath := taskSyncWritePatch(t, SyncTaskPatch{
-		Version: syncTaskPatchVersion, Node: "zbook",
+		Version: syncTaskPatchVersion, Node: "zpeer",
 		Rows: []SyncTaskRow{
 			{TaskID: "t-warn-1", Summary: "repeated brief", Payload: "identical body"},
 			{TaskID: "t-warn-2", Summary: "repeated brief", Payload: "identical body"},
@@ -236,11 +236,11 @@ func TestHarvestSameIDEditedPayloadIsDuped(t *testing.T) {
 // axis plays no part.
 func TestHarvestSameIDDivergentSummaryRelabels(t *testing.T) {
 	harvestTestDB(t)
-	t.Setenv("GOPI_SYNC_NODE", "zbook")
+	t.Setenv("GOPI_SYNC_NODE", "zpeer")
 	const id = "t-h-2"
-	harvestSeedRow(t, id, "zbook version", taskStatusPending, 1788000300, "")
+	harvestSeedRow(t, id, "zpeer version", taskStatusPending, 1788000300, "")
 	remote := harvestRemoteRow{
-		TaskID: id, Summary: "hp version", Payload: "seed payload zbook version",
+		TaskID: id, Summary: "hp version", Payload: "seed payload zpeer version",
 		CreatedAt: 1788000290, UpdatedAt: 1788000300,
 	}
 	counts, err := TaskHarvest(HarvestOptions{Peer: harvestFixturePeer, Since: 0, Fetch: harvestRows([]harvestRemoteRow{remote}, nil)})

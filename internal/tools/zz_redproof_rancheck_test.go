@@ -12,10 +12,10 @@ package tools
 //
 // Reproduce:
 //
-//	git worktree add --detach /home/nick/workspace/gopi-rule31-ab master
+//	git worktree add --detach /home/user/workspace/gopi-rule31-ab master
 //	cp internal/tools/zz_redproof_rancheck_test.go internal/tools/task_report_test.go \
-//	   /home/nick/workspace/gopi-rule31-ab/internal/tools/
-//	cd /home/nick/workspace/gopi-rule31-ab && go test -run TestZZRedProofMissingRanLine ./internal/tools/
+//	   /home/user/workspace/gopi-rule31-ab/internal/tools/
+//	cd /home/user/workspace/gopi-rule31-ab && go test -run TestZZRedProofMissingRanLine ./internal/tools/
 //
 // The asserted record prefix is a LITERAL here on purpose: this file must
 // compile against the pre-fix tree, where no constant for it exists (the

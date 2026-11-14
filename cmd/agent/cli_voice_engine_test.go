@@ -345,7 +345,7 @@ func TestVoiceDoubaoMissingKeyNamesTheWayBackToLocal(t *testing.T) {
 
 	// The key FILE is named explicitly at a path that cannot exist: the check
 	// must not depend on whether THIS host happens to have a real key (the
-	// operator's /home/nick/.doubao/apikey.txt exists here, and a test that silently
+	// operator's /home/user/.doubao/apikey.txt exists here, and a test that silently
 	// used it would pass by accident on one machine and fail on another).
 	msg := voiceDoubaoDepsReady(&voiceOptions{doubaoKeyFile: filepath.Join(t.TempDir(), "absent-key.txt")})
 	if msg == "" {

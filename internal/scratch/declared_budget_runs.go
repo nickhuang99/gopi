@@ -48,7 +48,7 @@
 // point: a reader greps the directory for the run's tag and finds the record,
 // the stream and the built-binary directory together.
 //
-// WHAT THIS ROW BOUNDS — AND WHAT IT DOES NOT (measured 2026-10-27, nick-sager;
+// WHAT THIS ROW BOUNDS — AND WHAT IT DOES NOT (measured 2026-10-27, host-a;
 // this paragraph used to claim the age-GC'd half was "what bounds the tree's
 // bytes" and that the records were "noise beside that", and BOTH HALVES OF THAT
 // CLAIM ARE FALSE on the live tree): the flat evidence is NOT noise and the tree

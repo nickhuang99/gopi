@@ -99,18 +99,18 @@ func TestMemorySyncDirectionRefusesBothFlags(t *testing.T) {
 // the list), and rendering both as "not declared" is the silent-failure shape.
 func TestMemorySyncRequireDeclaredPeerNamesTheWhitelist(t *testing.T) {
 	t.Run("declared peer passes", func(t *testing.T) {
-		t.Setenv(config.MemoryPeersEnv, "zbook")
-		if err := memorySyncRequireDeclaredPeer("zbook"); err != nil {
+		t.Setenv(config.MemoryPeersEnv, "zpeer")
+		if err := memorySyncRequireDeclaredPeer("zpeer"); err != nil {
 			t.Fatalf("a declared peer was refused: %v", err)
 		}
 	})
 	t.Run("undeclared peer is refused with the list", func(t *testing.T) {
-		t.Setenv(config.MemoryPeersEnv, "zbook,hp")
+		t.Setenv(config.MemoryPeersEnv, "zpeer,hp")
 		err := memorySyncRequireDeclaredPeer("nosuchhost")
 		if err == nil {
 			t.Fatal("an undeclared peer must be refused before any leg exists")
 		}
-		for _, want := range []string{"nosuchhost", "zbook", "hp", config.MemoryPeersSettingsKey} {
+		for _, want := range []string{"nosuchhost", "zpeer", "hp", config.MemoryPeersSettingsKey} {
 			if !strings.Contains(err.Error(), want) {
 				t.Errorf("the refusal must name %q:\n%s", want, err)
 			}
@@ -118,7 +118,7 @@ func TestMemorySyncRequireDeclaredPeerNamesTheWhitelist(t *testing.T) {
 	})
 	t.Run("a node with no peers says exactly that", func(t *testing.T) {
 		t.Setenv(config.MemoryPeersEnv, "")
-		err := memorySyncRequireDeclaredPeer("zbook")
+		err := memorySyncRequireDeclaredPeer("zpeer")
 		if err == nil {
 			t.Fatal("with no declared peers nothing can be declared a peer")
 		}

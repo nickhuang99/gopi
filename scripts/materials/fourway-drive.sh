@@ -3,15 +3,15 @@
 # prompt rewriting: every product receives the SAME file content verbatim as its prompt
 # argument. Probe-major loop, the 4 products within one probe run in PARALLEL; probe-06
 # stays serial so one product's kill cannot remove another's victim. Resumable via .rc.
-S=/home/nick/.gopi/sessions/01a0eec1-ac13-765a-8e15-8550f2111514
-M=/home/nick/workspace/gopi-01a0eec1ac13765a8e158550f2111514/scripts/materials
+S=/home/user/.gopi/sessions/01a0eec1-ac13-765a-8e15-8550f2111514
+M=/home/user/workspace/gopi-01a0eec1ac13765a8e158550f2111514/scripts/materials
 R=$S/fourway/raw
 WROOT=$S/fourway/work
-CODEX=/home/nick/bin/codex
-CLAUDE=/home/nick/.local/bin/claude
-DSH=/home/nick/.local/bin/dsh
-HERMES=/home/nick/work/hermes-agent/.venv/bin/hermes
-export PATH=/home/nick/.local/share/pi-node/node-v22.23.2-linux-x64/bin:$PATH
+CODEX=/home/user/bin/codex
+CLAUDE=/home/user/.local/bin/claude
+DSH=/home/user/.local/bin/dsh
+HERMES=/home/user/work/hermes-agent/.venv/bin/hermes
+export PATH=/home/user/.local/share/pi-node/node-v22.23.2-linux-x64/bin:$PATH
 mkdir -p "$WROOT"
 pgrep -f "http.server 8765" >/dev/null || ( cd "$WROOT" && nohup python3 -m http.server 8765 --bind 127.0.0.1 >/dev/null 2>&1 & echo $! > $S/fourway/httpd.pid )
 

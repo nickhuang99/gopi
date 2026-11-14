@@ -698,7 +698,7 @@ func TestTaskForBranchNoOwnerNamesHostAndLedgerAndTheBoundary(t *testing.T) {
 func TestTaskForBranchNoOwnerReportsAnUnreadableHostAsUnknown(t *testing.T) {
 	report := TaskForBranchReport(TaskForBranchLookup{
 		Branch:          "feat/x",
-		LedgerPath:      "/home/nick/.gopi/memory.db",
+		LedgerPath:      "/home/user/.gopi/memory.db",
 		Host:            "",
 		LedgerRowsTotal: 12,
 		Readable:        true,

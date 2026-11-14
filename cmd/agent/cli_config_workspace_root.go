@@ -8,7 +8,7 @@ package main
 // same run's worker banner read that key and built its ground under it:
 //
 //	task <id>: clone channel ON (dev_repo=… via settings dev_repo;
-//	              workspace_root=/home/nick/workspace via settings workspace_root)
+//	              workspace_root=/home/user/workspace via settings workspace_root)
 //
 // Two surfaces of one binary contradicting each other is worse than either being
 // absent (Rule 15). The model half of that bug is fixed in internal/config

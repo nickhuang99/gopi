@@ -41,7 +41,7 @@ package main
 // the channel's own `nothing to deliver` conclusion. Zero were witnessless —
 // INCLUDING row 01a18253-f7c4, whose surviving artefact is commit 20e832891:
 //
-//	$ git -C /home/nick/work/gopi show -s --format='%(trailers)' 20e832891
+//	$ git -C /home/user/work/gopi show -s --format='%(trailers)' 20e832891
 //	task: 01a18253-f7c4-7cf7-8cb3-868647a25401
 //
 // So the epic's third check ("no matching master commit") was answered by a
@@ -56,7 +56,7 @@ package main
 // RUN (read-only; writes no ledger row, no ref, no file):
 //
 //	go run internal/tools/testdata/completed-witness-census.go \
-//	    --db /home/nick/.gopi/memory.db --repo /home/nick/work/gopi \
+//	    --db /home/user/.gopi/memory.db --repo /home/user/work/gopi \
 //	    --since 20c15007c74b8af04a5304fe9728bfbc8ed6cd01
 //
 // `--since` accepts any revision git can resolve in --repo; its committer

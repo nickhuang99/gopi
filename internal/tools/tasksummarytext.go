@@ -15,7 +15,7 @@ package tools
 //	01a09f6d-7753-7321-ba33-8b32b09213e7  [failed]  [auto] \x7fELF\x02\x01\x01…
 //
 // whose 351-byte summary IS the head of a Linux ELF executable. The path was
-// measured, not guessed: a bare-prompt run started in /home/nick/workspace/
+// measured, not guessed: a bare-prompt run started in /home/user/workspace/
 // peak-bin, where the just-built `bin/gopi` had been copied as ./gopi. The
 // operator ran `gopi gopi help`; readInput classifies a positional that names
 // an EXISTING non-image file as a TEXT INPUT FILE (cmd/agent/main.go —

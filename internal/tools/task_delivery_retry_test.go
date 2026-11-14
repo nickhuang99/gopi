@@ -443,7 +443,7 @@ func firstDetail(r *DeliveryRetryReport) string {
 }
 
 // TestDeliveryRetryOnACloneGroundRowAsksAboutTheRowsOwnTip is the regression
-// guard for bug 01a17343 (measured 2026-10-26 on host nick-sager).
+// guard for bug 01a17343 (measured 2026-10-26 on host host-a).
 //
 // THE DEFECT. Every CLONE-GROUND row records `deliverable.branch = master`
 // (the clone channel pushes `HEAD:master` and its ground stands on the

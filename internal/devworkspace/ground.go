@@ -7,10 +7,10 @@ package devworkspace
 // by two faces of this system and answered differently in the same minute.
 //
 //	$ gopi task show 01a150b3-9894-…        # the ledger's advisory line
-//	ground (resolved now): repo=/home/nick/work/gopi worktree=/home/nick/workspace/01a150b3-… (exists) branch=master (exists) — recorded ground — verified live
+//	ground (resolved now): repo=/home/user/work/gopi worktree=/home/user/workspace/01a150b3-… (exists) branch=master (exists) — recorded ground — verified live
 //
 //	$ gopi worker --resume 01a150b3-9894-…
-//	gopi worker: resume: row … records worktree /home/nick/workspace/01a150b3-…, which is NOT a live linked worktree of /home/nick/work/gopi — the ground is gone …
+//	gopi worker: resume: row … records worktree /home/user/workspace/01a150b3-…, which is NOT a live linked worktree of /home/user/work/gopi — the ground is gone …
 //
 // Both statements were produced by honest, independent readers of the same
 // facts, and both were WRONG about the directory: it exists, it is a git work

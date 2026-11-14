@@ -32,7 +32,7 @@ import (
 	"github.com/nick/gopi/internal/deepseek"
 )
 
-const simSessionPath = "/home/nick/.gopi/sessions/da75915d-4990-4017-9dbe-27a58babe723.jsonl"
+const simSessionPath = "/home/user/.gopi/sessions/da75915d-4990-4017-9dbe-27a58babe723.jsonl"
 
 // simSession parses a gopi session JSONL into flat deepseek messages (order
 // preserved) plus per-round landmarks (message count at each request, the

@@ -2,7 +2,7 @@
 // container test could not see: a uuid's 32 hex characters in a grouping this
 // tree does not use.
 //
-// THE MEASURED INCIDENT (host nick-HP-Laptop, 2026-10-14, task
+// THE MEASURED INCIDENT (host host-b, 2026-10-14, task
 // 01a13645-66c3-79ec-962a-5f8776e1f216). A run transcribed its own row id with
 // the tail group's leading dash moved one group left and ran
 // `mkdir -p <that spelling>/artifacts`. The spelling is the branch/worktree form

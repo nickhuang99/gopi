@@ -165,7 +165,7 @@ func TestCovTaskSessionDirLegacyCollisionNewWins(t *testing.T) {
 func TestCovTaskAttachmentRelPathMapping(t *testing.T) {
 	cases := []struct{ in, want string }{
 		{"/tmp/log.txt", "tmp/log.txt"},
-		{"/home/nick/log.txt", "home/nick/log.txt"},
+		{"/home/user/log.txt", "home/nick/log.txt"},
 		{"  /tmp/trimmed.txt  ", "tmp/trimmed.txt"}, // whitespace-trimmed
 		{"//tmp/double.txt", "/tmp/double.txt"},     // exactly ONE leading slash removed
 		{"/", ""},                                   // the root is empty after the strip
@@ -182,7 +182,7 @@ func TestCovTaskAttachmentRelPathMapping(t *testing.T) {
 	// Collision avoidance: same basename, different dirs → distinct rels, and
 	// distinct resolved replica paths under the same attachments area.
 	a := TaskAttachmentRelPath("/tmp/log.txt")
-	b := TaskAttachmentRelPath("/home/nick/log.txt")
+	b := TaskAttachmentRelPath("/home/user/log.txt")
 	if a == b {
 		t.Fatalf("same-basename attachments collided: both map to %q", a)
 	}

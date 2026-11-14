@@ -659,7 +659,7 @@ func TestWorkerStatusPrintedRemedyIsExecutable(t *testing.T) {
 //	   The file's own bytes cannot distinguish a SIGKILL from a crash, from a
 //	   driver that crashed holding it, or from a TEST FIXTURE that wrote into
 //	   the profile and walked away — measured on this host, where a fixture
-//	   left worker-state files in the operator's /home/nick/.gopi/worker and the report
+//	   left worker-state files in the operator's /home/user/.gopi/worker and the report
 //	   sent the operator hunting a killer that never existed. The reader must
 //	   name the fact it measured (the pid is gone, nothing cleaned up) and
 //	   refuse the unprovable cause.
@@ -693,7 +693,7 @@ const deadPidForResidueReason = 4194305
 // TestWorkerStatusEnumerateTouchesNoFileOutsideItsDir pins the READ-ONLY +
 // IN-DIRECTORY contract the phantom-worker report depends on: an enumeration
 // run against a private directory must not create or remove anything, in that
-// directory or anywhere a sibling `/home/nick/.gopi/worker` would be.
+// directory or anywhere a sibling `/home/user/.gopi/worker` would be.
 func TestWorkerStatusEnumerateTouchesNoFileOutsideItsDir(t *testing.T) {
 	dir := t.TempDir()
 	// The operator's real worker directory as it stands now: the scan must

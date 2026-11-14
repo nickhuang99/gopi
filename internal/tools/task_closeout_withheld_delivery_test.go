@@ -2,7 +2,7 @@ package tools
 
 // closeout-withheld-delivery — THE ROW'S TRAIL MUST SAY THE BRANCH NEVER LEFT.
 //
-// EPIC 01a12d5b-bb3a (measured 2026-10-12, nick-HP-Laptop, client→zbook).
+// EPIC 01a12d5b-bb3a (measured 2026-10-12, host-b, client→zpeer).
 //
 // The measured defect. A worker row's delivery branch is pushed by ONE arm —
 // the client half of the close-out chain — and that arm is downstream of the
@@ -129,7 +129,7 @@ func TestTaskListCarriesTheWithheldStateInsideItsClip(t *testing.T) {
 	// The row's OWN trail decides, so the two rows below carry exactly the two
 	// sentences the chain writes — quoted from the chain's own vocabulary
 	// rather than re-typed.
-	withheld := finishCleanupMainRepoSkipMarker + finishCleanupMainRepoDirtyPrefix + "/home/nick/work/GoPi: " +
+	withheld := finishCleanupMainRepoSkipMarker + finishCleanupMainRepoDirtyPrefix + "/home/user/work/GoPi: " +
 		finishCleanupDirtyTrackedPrefix + " M CONFIG.md" + finishCleanupMainRepoRepairNote +
 		finishCleanupRemovalNotReachedNote + finishCleanupDeliveryWithheldMarker
 	removalOnly := finishCleanupGoneWorktreeSkipMarker + "nothing to remove)"

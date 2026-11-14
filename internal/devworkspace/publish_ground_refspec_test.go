@@ -33,7 +33,7 @@ package devworkspace
 // aesthetic: after a `pull --rebase` the row's own commits are REWRITTEN, so a
 // round-2 push of `HEAD:refs/heads/task/<id>` is a non-fast-forward refusal, and
 // forcing it (the `+` the removed paragraph argued for) leaves one `task/*` ref
-// per task on the server forever — zbook carried 15 of them, every one already
+// per task on the server forever — zpeer carried 15 of them, every one already
 // merged and none ever deleted (9ab17237e).
 
 import (

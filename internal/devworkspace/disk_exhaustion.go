@@ -4,7 +4,7 @@ package devworkspace
 // the write.
 //
 // THE DEFECT THIS FILE CLOSES (measured on this host). Every clone-channel run
-// compiles inside its ground under `/home/nick/workspace`, a 3.6 TiB partition
+// compiles inside its ground under `/home/user/workspace`, a 3.6 TiB partition
 // that had reached 2.3 GiB free. The declared build then died with
 //
 //	no space left on device
@@ -17,7 +17,7 @@ package devworkspace
 // named a filesystem.
 //
 // The partition was not full of task grounds: measured in the same session on
-// that partition, the Go TOOLCHAIN cache `/home/nick/workspace/.gocache` held
+// that partition, the Go TOOLCHAIN cache `/home/user/workspace/.gocache` held
 // 559.4 GiB — `gopi tool scratch-gc gocache` prints
 // `body=559.4 GiB … bound=25.0 GiB … reclaimable=436.3 GiB` — while every task
 // ground together is a rounding error beside it. So the one useful thing to say

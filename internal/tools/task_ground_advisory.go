@@ -51,7 +51,7 @@ import (
 // measured defect raised from the other side: the row's PAYLOAD can name the
 // repo's MAIN checkout as its only absolute path — measured on live row
 // 01a0dabe-3fa1-7cc8-b601-66f1456b8ffd, whose payload says "Repo:
-// /home/nick/work/GoPi (branch master at 4c802614). Re-verify every line number
+// /home/user/work/GoPi (branch master at 4c802614). Re-verify every line number
 // before relying on it." — and a run given one absolute path writes to it.
 //
 // The briefing is the model's only instruction, so the correction can only live

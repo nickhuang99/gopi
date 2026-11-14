@@ -170,7 +170,7 @@ const (
 	//
 	// MEASURED at 5.02s for the sibling fixture of this same suite
 	// (cmd/agent/cli_serve_test.go's holder, commit 99e2eacac's report).
-	// MEASURED AGAIN on this host 2026-10-12 (nick-sager, 8 cores, load 8-12):
+	// MEASURED AGAIN on this host 2026-10-12 (host-a, 8 cores, load 8-12):
 	// `-test.run='^$'` 0.77-0.93s (n=5) and the diagnosis helper reached its body
 	// 0.78-1.05s after spawn (n=15, median 0.863s) — this host is simply faster.
 	// The constant therefore carries the WORST measurement, not this host's: a

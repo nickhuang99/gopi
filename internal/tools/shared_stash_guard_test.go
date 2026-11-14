@@ -394,8 +394,8 @@ func TestSharedStashGuard_PermitsReadOnlyAndSingleWorktree(t *testing.T) {
 		"git stash list",
 		"git stash show -p stash@{0}",
 		"git status --porcelain",
-		"cd /home/nick/workspace/gopi-stash-guard && git status --porcelain",
-		"echo /home/nick/workspace/stash-pop-verbatim-report.md; git log --oneline -1",
+		"cd /home/user/workspace/gopi-stash-guard && git status --porcelain",
+		"echo /home/user/workspace/stash-pop-verbatim-report.md; git log --oneline -1",
 		"git status --porcelain",
 		"cat stash-guard-notes.md",
 	} {

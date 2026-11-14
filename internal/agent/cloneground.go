@@ -2,7 +2,7 @@ package agent
 
 // cloneground.go — THE BARE-PROMPT FACE'S CLONE GROUND.
 //
-// THE DEFECT THIS CLOSES (measured on zbook 2026-10-23, row 01a16520): a bare
+// THE DEFECT THIS CLOSES (measured on zpeer 2026-10-23, row 01a16520): a bare
 // prompt (`echo "…" | gopi`, no ledger row supplied by anybody) auto-registers
 // its own row and, with a non-empty settings `dev_repo`, STILL took the
 // worktree channel — the run created a linked `gopi-<stem>` worktree inside the

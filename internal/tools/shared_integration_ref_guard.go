@@ -7,12 +7,12 @@ package tools
 // ── THE INCIDENT (measured 2026-10-12, HP; row 01a12d86, bug row 01a12da8) ────
 //
 // A run issued, from its OWN linked worktree
-// (/home/nick/workspace/gopi-01a12d30…), a command whose first step was
+// (/home/user/workspace/gopi-01a12d30…), a command whose first step was
 //
 //	git update-ref refs/heads/master 1508e3821 2>/dev/null || true
 //
 // That worktree belongs to the SAME repository as the operator's main checkout
-// (`git rev-parse --git-common-dir` → /home/nick/work/GoPi/.git), so the write
+// (`git rev-parse --git-common-dir` → /home/user/work/GoPi/.git), so the write
 // landed on the MAIN CHECKOUT'S integration-branch ref — a full pull rolled
 // back, fast-forward `6f7acc1e1 → dfa56ff93` undone to `1508e3821`. No tree and
 // no index were written (`.git/logs/HEAD` mtime unchanged; the only mutation was

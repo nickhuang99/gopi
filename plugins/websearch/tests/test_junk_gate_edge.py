@@ -7,7 +7,7 @@ sys.path.insert(0, os.path.join(os.path.dirname(__file__)))
 import unittest
 
 HERE = os.environ.get("BING_SCRIPT", os.path.expanduser(
-    "/home/nick/.gopi/plugins/websearch/scripts/bing_search.py"))
+    "/home/user/.gopi/plugins/websearch/scripts/bing_search.py"))
 spec = importlib.util.spec_from_file_location("bing_search", HERE)
 bing = importlib.util.module_from_spec(spec)
 spec.loader.exec_module(bing)

@@ -6,7 +6,7 @@ package tools
 //
 // THE DEFECT (measured 2026-10-25, evidence and raw output in the filing run's
 // session directory): the delivery legs dialled `~/work/GoPi` while the host
-// declared `zbook:/home/nick/work/gopi`, and on the peer those are two
+// declared `zpeer:/home/user/work/gopi`, and on the peer those are two
 // repositories with disjoint root commits (12025 vs 359 commits, `rev-list
 // --max-parents=0` answering different roots). The mirror ref therefore held a
 // stranger's tip, and the staleness alarm answered it with
@@ -40,7 +40,7 @@ const (
 // peerIdentityTestBuildFixture returns (client, strangerPeer): the client is a
 // real checkout on the integration branch, and the peer is a bare repository
 // whose master has a DIFFERENT ROOT COMMIT — no common ancestor, which is
-// exactly the measured shape of `~/work/GoPi` vs `/home/nick/work/gopi` on the
+// exactly the measured shape of `~/work/GoPi` vs `/home/user/work/gopi` on the
 // peer.
 func peerIdentityTestBuildFixture(t *testing.T) (client, stranger string) {
 	t.Helper()

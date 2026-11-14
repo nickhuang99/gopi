@@ -4,7 +4,7 @@ package procname
 // gets its own assertions: this host's answer is measured, not assumed
 // (bug row 01a12e43, 2026-10-12).
 //
-// THE MEASURED FACT these pin (nick-sager, 2026-10-12, artifacts in the row's
+// THE MEASURED FACT these pin (host-a, 2026-10-12, artifacts in the row's
 // session dir — /proc/sys/kernel/child_subreaper does not exist on this 6.8
 // kernel, so the mark itself is unreadable and the set must be DERIVED):
 //

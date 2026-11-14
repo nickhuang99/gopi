@@ -30,8 +30,8 @@ func TestCommand(t *testing.T) {
 		{"empty element stays visible", []string{"gopi", ""}, "gopi ''"},
 		{
 			"a non-default settings path round-trips quoted",
-			[]string{"gopi", "--settings", "/home/nick/.gopi/.do settings.json", "task", "run", "t-9"},
-			"gopi --settings '/home/nick/.gopi/.do settings.json' task run t-9",
+			[]string{"gopi", "--settings", "/home/user/.gopi/.do settings.json", "task", "run", "t-9"},
+			"gopi --settings '/home/user/.gopi/.do settings.json' task run t-9",
 		},
 	}
 	for _, tc := range cases {

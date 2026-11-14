@@ -621,12 +621,12 @@ func TestRetiredTaskVerbsDispatchARemoval(t *testing.T) {
 			// The ref facts are read from their owners: git, and the machinery
 			// that consumes refs.
 			verb:    taskverbs.BranchRefs,
-			args:    []string{"--peer", "zbook"},
+			args:    []string{"--peer", "zpeer"},
 			replace: "git ls-remote",
 		},
 		{
 			verb:    taskverbs.Orphans,
-			args:    []string{"--delivery", "zbook"},
+			args:    []string{"--delivery", "zpeer"},
 			replace: "gopi task show",
 		},
 		{
@@ -697,7 +697,7 @@ func TestRetiredTaskVerbsDispatchARemoval(t *testing.T) {
 		// `reconcile` and MISSED in `branch-refs`, where the sentence went on to
 		// name `gopi task finish-cleanup` (retired by the same epic) as "what a
 		// terminal row's delivery should do". Measured on the binary at
-		// `c5548b88`: `gopi task branch-refs --peer zbook` printed it and exited
+		// `c5548b88`: `gopi task branch-refs --peer zpeer` printed it and exited
 		// 1, and `gopi task finish-cleanup` printed a SECOND removal and exited
 		// 1. (3) alone is why that shipped green — it checks the ENTRANCE to the
 		// sentence, not the far side of it. This arm checks the whole sentence.

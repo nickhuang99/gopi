@@ -3,7 +3,7 @@ package testsuite
 // notify_sink_deployed_sync_test.go — the deployed TASK-EVENT SINK must be the
 // bytes the repo ships, or say why it is not ours.
 //
-// THE MEASURED GAP THIS CLOSES (task 01a16942, 2026-10-24, host nick-sager).
+// THE MEASURED GAP THIS CLOSES (task 01a16942, 2026-10-24, host host-a).
 // `~/.gopi/notify/notify.sh` — the file `notify.cmd` execs on every task
 // transition — was a copy from 2026-10-13 (23449 bytes) while
 // `scripts/notify/notify.sh` had grown to 55815 bytes with nine functions the

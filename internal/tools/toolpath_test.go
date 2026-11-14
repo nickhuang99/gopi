@@ -20,7 +20,7 @@ import (
 // corrupt_index_test.go, search_withtimeout_test.go, cli_code_search_test.go,
 // cli_code_search_corrupt_test.go). What those sites DID NOT COVER is the family
 // of tests that reach the same external binary through a path they forgot to
-// guard — measured 2026-10-11 on host nick-sager, where `make test-budget
+// guard — measured 2026-10-11 on host host-a, where `make test-budget
 // PKGS='./internal/tools ./cmd/agent'` reported 8 such tests, every one of them
 // red with `exec: "ctags": executable file not found in $PATH`:
 //

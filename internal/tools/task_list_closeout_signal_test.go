@@ -104,7 +104,7 @@ func TestTaskListCloseoutHeaderClaimsNoHalfOfTheChain(t *testing.T) {
 // Composed from the marker constant so a wording change reaches this arm too
 // (Rule 1b): the literal form of this sentence is what the fix retired.
 const closeoutRefusal = finishCleanupGoneWorktreeSkipMarker +
-	"git status: chdir /home/nick/workspace/gopi-x: no such file or directory)"
+	"git status: chdir /home/user/workspace/gopi-x: no such file or directory)"
 
 // closeoutSeedRow writes one row plus its trail. `events` is rendered in order,
 // so a caller states the row's history the way the ledger stores it.

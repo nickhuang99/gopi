@@ -11,7 +11,7 @@
 // therefore hands git an environment that names a DIFFERENT repository whenever
 // the process that started the suite carries GIT_DIR / GIT_WORK_TREE /
 // GIT_INDEX_FILE / GIT_OBJECT_DIRECTORY. Measured 2026-10-13: a run with
-// GIT_DIR=/home/nick/work/GoPi/.git made a corpus-fixture reader's git child
+// GIT_DIR=/home/user/work/GoPi/.git made a corpus-fixture reader's git child
 // re-initialise the REAL repository and commit 12 synthetic commits onto real
 // master, taking its tree from 7678 files to 2 (507,046 deletions), and a
 // sibling worktree was cut from the wreckage.

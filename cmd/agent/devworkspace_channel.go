@@ -1091,9 +1091,9 @@ func deliveryRetryBriefing(blk *devworkspace.Blocker, dir string, round int) str
 	// 150 and was cut every time. 33 rows on the ledger carry the measurement and
 	// not one of them carries a word of it:
 	//
-	//	[auto] 交付没有内容可发布。工作区仍是你的，在 /home/nick/workspace/…。
+	//	[auto] 交付没有内容可发布。工作区仍是你的，在 /home/user/workspace/…。
 	//	       第 2/3 轮检查量到的结果是「这里没有要交付的提交」——不是 pull 被拒，
-	//	       也不是冲突， 不要去查网络。工具原话（逐字，未改写）： /home/nick/…
+	//	       也不是冲突， 不要去查网络。工具原话（逐字，未改写）： /home/user/…
 	//
 	// That is the refused branch's defect one kind over, and it takes the same
 	// cure: the measurement leads, the path and the 「工具原话」 label move
@@ -1174,7 +1174,7 @@ func deliveryRetryBriefing(blk *devworkspace.Blocker, dir string, round int) str
 //
 // WHY THE PATH GOES (row 01a18801). deliveryEmptyRefusalFmt opens with `%s
 // carries no commit to deliver` and that `%s` is the workspace path — 56 runes
-// on this host's `/home/nick/workspace/<uuid>`, all of them the SAME prefix on
+// on this host's `/home/user/workspace/<uuid>`, all of them the SAME prefix on
 // every row and none of them a fact the reader has to act on (the briefing names
 // the workspace in its own fourth sentence). Against a 200-rune ledger budget it
 // is the most expensive thing in the sentence, so it is the first thing spent:

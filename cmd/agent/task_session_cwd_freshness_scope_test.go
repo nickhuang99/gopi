@@ -6,8 +6,8 @@ package main
 // MEASURED DEFECT (master 2026-09-16, the 12:59:33 `make test` stamp):
 // TestBareRunKeepsAllItsArtifactsInOneSessionDir failed with
 //
-//	/home/nick/work/GoPi/bin/gopi (mtime 2026-09-16T12:59:01+08:00) is OLDER
-//	than /home/nick/work/GoPi/internal/testutil/legacy_residue.go (mtime
+//	/home/user/work/GoPi/bin/gopi (mtime 2026-09-16T12:59:01+08:00) is OLDER
+//	than /home/user/work/GoPi/internal/testutil/legacy_residue.go (mtime
 //	2026-09-16T12:59:35+08:00) — this test drives the BUILT binary, so it would
 //	verify code that is not in that binary. Rebuild it … and re-run.
 //

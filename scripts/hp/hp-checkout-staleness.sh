@@ -4,7 +4,7 @@
 # for devdoc/hp-inline-launchers-20260912.md §staleness. Read-only.
 set -u
 echo "=== checkouts on HP (HEAD + date) ==="
-for d in /home/nick/work/GoPi /home/nick/work/gopi-wprov; do
+for d in /home/user/work/GoPi /home/user/work/gopi-wprov; do
   [ -d "$d/.git" ] || continue
   printf '%-40s %s  %s  %s\n' "$d" \
     "$(cd "$d" && git rev-parse --short HEAD 2>/dev/null)" \
@@ -14,7 +14,7 @@ done
 echo
 echo "=== the resolved worker binary ==="
 readlink -f /usr/local/bin/gopi
-ls -l /home/nick/work/GoPi/bin/gopi 2>&1
+ls -l /home/user/work/GoPi/bin/gopi 2>&1
 echo
 echo "=== do the guard / the log-root flag exist in that binary? ==="
 # NOTE (epic child-stream-task-output, 2026-09-17): --worker-log-root is no
@@ -23,12 +23,12 @@ echo "=== do the guard / the log-root flag exist in that binary? ==="
 # replacement, so the count stays > 0 for a fresh build and 0 for a build older
 # than the guard.
 for s in "refusing to start a worker" "worker-log-root" "GOPI_AGENT_SESSION" "GOPI_WORKER_MAX_ROUNDS"; do
-  printf '  %-30s %s\n' "$s" "$(strings /home/nick/work/GoPi/bin/gopi 2>/dev/null | grep -c "$s")"
+  printf '  %-30s %s\n' "$s" "$(strings /home/user/work/GoPi/bin/gopi 2>/dev/null | grep -c "$s")"
 done
 echo
 echo "=== is the launcher in the checkout (working tree / git)? ==="
-ls -l /home/nick/work/GoPi/scripts/gopi-worker-up.sh 2>&1
-(cd /home/nick/work/GoPi && git cat-file -e master:scripts/gopi-worker-up.sh 2>&1 && echo "  in the git object store" || echo "  NOT in the git object store")
+ls -l /home/user/work/GoPi/scripts/gopi-worker-up.sh 2>&1
+(cd /home/user/work/GoPi && git cat-file -e master:scripts/gopi-worker-up.sh 2>&1 && echo "  in the git object store" || echo "  NOT in the git object store")
 echo
-echo "=== last fetch from zbook ==="
-ls -l /home/nick/work/GoPi/.git/FETCH_HEAD 2>&1
+echo "=== last fetch from zpeer ==="
+ls -l /home/user/work/GoPi/.git/FETCH_HEAD 2>&1

@@ -3,7 +3,7 @@ package tools
 // rework_landing_probe.go — "master may ALREADY carry this change", asked of the
 // object store and put into the branch-rework briefing.
 //
-// THE DEFECT THIS FILE CLOSES (measured on zbook, 2026-10-13). A merge run filed
+// THE DEFECT THIS FILE CLOSES (measured on zpeer, 2026-10-13). A merge run filed
 // a branch-rework row for tip 8fafbafee ("fix(code_search): accept a ctags index
 // whose pseudo-tag block is not at byte 0"). Master already carried a commit
 // with that EXACT subject (ffa1cf4f8), from the identical base — the branch's
@@ -55,7 +55,7 @@ const (
 	//
 	// A RECENCY WINDOW WAS THE FIRST IMPLEMENTATION AND IT WAS WRONG. The probe
 	// originally read the newest 400 commits of the integration branch. Measured
-	// on zbook for the very pair this file exists for: master's landed commit
+	// on zpeer for the very pair this file exists for: master's landed commit
 	// ffa1cf4f8 sits **1313 commits below master's tip** (`git rev-list --count
 	// ffa1cf4f8..master` = 1313), so a 400-commit window MISSES it and prints
 	// "NOT ALREADY LANDED (probe ran)" — a false negative on the exact case the

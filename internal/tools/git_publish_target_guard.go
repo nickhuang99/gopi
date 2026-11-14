@@ -3,7 +3,7 @@ package tools
 // git_publish_target_guard.go — refuse a hand-rolled `git push` from a
 // CLONE-CHANNEL ground to any ref OTHER than the branch that ground stands on.
 //
-// ── THE INCIDENT (measured 2026-10-21 on zbook, rows 01a15b70-a6aa…,
+// ── THE INCIDENT (measured 2026-10-21 on zpeer, rows 01a15b70-a6aa…,
 // 01a15b70-c35f…, 01a15b2c-…, 01a15b11-…) ─────────────────────────────────────
 //
 // The clone channel's contract is: the run works in a clone at
@@ -15,7 +15,7 @@ package tools
 //
 // Four runs, however, ended with a ref the channel never creates:
 //
-//	zbook:/home/nick/work/gopi
+//	zpeer:/home/user/work/gopi
 //	  refs/heads/feat/reopen-carries-evidence             71ea4f7  @05:16:55 push
 //	  refs/heads/task/01a15b2c-7096-72c7-82b4-c64e1096914d efaa891 @07:11:22 push
 //	  refs/heads/task/01a15b70-a6aa-7ad2-b7d4-9171a4bc8abd 197c951  @08:23:03 push
@@ -24,7 +24,7 @@ package tools
 // `git reflog show` on each of the four carries exactly ONE entry, `push`, on
 // the same second the run's own bash tool logged
 //
-//	cd /home/nick/workspace/01a15b70-a6aa-… && git push origin HEAD:refs/heads/task/01a15b70-a6aa-…
+//	cd /home/user/workspace/01a15b70-a6aa-… && git push origin HEAD:refs/heads/task/01a15b70-a6aa-…
 //
 // and the run's reasoning is in the same log: "Better: push to a named branch,
 // e.g. `git push origin HEAD:refs/heads/task/…`" — the agent applied PROJECT.md

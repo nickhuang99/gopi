@@ -67,7 +67,7 @@ func taskSyncStatus(t *testing.T, taskID string) (string, string, string) {
 	return row.Status, row.Summary, row.Tags
 }
 
-// TestTaskSyncExportPending — the zbook side: --status pending exports live
+// TestTaskSyncExportPending — the zpeer side: --status pending exports live
 // rows status-less (execution state never travels), --limit caps the count,
 // --tags filters.
 func TestTaskSyncExportPending(t *testing.T) {
@@ -135,7 +135,7 @@ func TestTaskSyncImportFreshQueue(t *testing.T) {
 	taskSyncTestDB(t)
 
 	src := SyncTaskPatch{
-		Version: syncTaskPatchVersion, Node: "zbook", ExportedAt: 1234,
+		Version: syncTaskPatchVersion, Node: "zpeer", ExportedAt: 1234,
 		Rows: []SyncTaskRow{
 			{TaskID: "t-1001", Summary: "do the thing", Payload: "payload body", Tags: []string{"bug", "ui"}, Source: "llm"},
 			{TaskID: "t-1002", Summary: "second thing"},
@@ -161,7 +161,7 @@ func TestTaskSyncImportFreshQueue(t *testing.T) {
 		if summary != want.summary {
 			t.Errorf("%s summary = %q, want %q", want.id, summary, want.summary)
 		}
-		if !strings.Contains(tags, "from-zbook") {
+		if !strings.Contains(tags, "from-zpeer") {
 			t.Errorf("%s tags = %q — from-node tag must be forced at import", want.id, tags)
 		}
 	}
@@ -185,7 +185,7 @@ func TestTaskSyncImportIdempotent(t *testing.T) {
 	taskSyncTestDB(t)
 
 	src := SyncTaskPatch{
-		Version: syncTaskPatchVersion, Node: "zbook",
+		Version: syncTaskPatchVersion, Node: "zpeer",
 		Rows: []SyncTaskRow{
 			{TaskID: "t-2001", Summary: "same work", Payload: "same body"},
 			{TaskID: "t-2002", Summary: "same work", Payload: "same body"}, // content twin of t-2001
@@ -242,7 +242,7 @@ func TestTaskSyncImportHashDedupLive(t *testing.T) {
 		t.Fatal(err)
 	}
 	src := SyncTaskPatch{
-		Version: syncTaskPatchVersion, Node: "zbook",
+		Version: syncTaskPatchVersion, Node: "zpeer",
 		Rows: []SyncTaskRow{{TaskID: "t-9999", Summary: "identical work", Payload: "identical body"}},
 	}
 	patchPath := filepath.Join(t.TempDir(), "patch.json")
@@ -269,7 +269,7 @@ func TestTaskSyncImportNoOverwrite(t *testing.T) {
 		t.Fatal(err)
 	}
 	src := SyncTaskPatch{
-		Version: syncTaskPatchVersion, Node: "zbook",
+		Version: syncTaskPatchVersion, Node: "zpeer",
 		Rows: []SyncTaskRow{{TaskID: "t-3001", Summary: "HACKED summary", Payload: "HACKED payload", Tags: []string{"injected"}}},
 	}
 	patchPath := filepath.Join(t.TempDir(), "patch.json")
@@ -281,7 +281,7 @@ func TestTaskSyncImportNoOverwrite(t *testing.T) {
 		t.Fatal(err)
 	}
 	// Post-collision-fix semantics: HACKED summary/payload is DIFFERENT work
-	// under the same id → relabeled to t-3001-nzbook (never absorbed into the
+	// under the same id → relabeled to t-3001-nzpeer (never absorbed into the
 	// local row). Mechanic ⑤ intact: the local row's data is untouched.
 	if stats.RowsRelabeled != 1 || stats.RowsImported != 1 {
 		t.Fatalf("stats = %+v, want 1 relabeled 1 imported", stats)
@@ -302,14 +302,14 @@ func TestTaskSyncImportNoOverwrite(t *testing.T) {
 		t.Errorf("payload OVERWRITTEN — mechanic ⑤ violated: %+v", row)
 	}
 	// The incoming (different-work) row queued under the relabeled id.
-	hacked, _ := syncTaskByID("t-3001-nzbook") //stylegate:ignore reads a row in a fixture; the compared row is the assertion
+	hacked, _ := syncTaskByID("t-3001-nzpeer") //stylegate:ignore reads a row in a fixture; the compared row is the assertion
 	if hacked == nil || hacked.Summary != "HACKED summary" || hacked.Status != taskStatusPending {
 		t.Errorf("relabeled incoming row missing/wrong: %+v", hacked)
 	}
 }
 
 // TestTaskSyncForwardMigration — the reverse sync-back: HP finished the
-// work, exports completed rows, zbook imports → its pending row migrates
+// work, exports completed rows, zpeer imports → its pending row migrates
 // forward to completed (taskAllowedTransitions: pending→completed legal).
 // A second import is idempotent (same status → already).
 func TestTaskSyncForwardMigration(t *testing.T) {
@@ -395,7 +395,7 @@ func TestTaskSyncImportIdCollisionDistinctWork(t *testing.T) {
 		t.Fatal(err)
 	}
 	src := SyncTaskPatch{
-		Version: syncTaskPatchVersion, Node: "zbook",
+		Version: syncTaskPatchVersion, Node: "zpeer",
 		Rows: []SyncTaskRow{
 			{TaskID: "t-8001", Summary: "different work entirely", Payload: "different body"},
 			{TaskID: "t-8002", Summary: "ghost terminal", Status: taskStatusCompleted},
@@ -420,8 +420,8 @@ func TestTaskSyncImportIdCollisionDistinctWork(t *testing.T) {
 	if status, summary, _ := taskSyncStatus(t, "t-8001"); status != taskStatusPending || summary != "local original" {
 		t.Errorf("collision row mutated: status=%s summary=%q — mechanic ②/⑤ violated", status, summary)
 	}
-	if status, _, _ := taskSyncStatus(t, "t-8001-nzbook"); status != taskStatusPending {
-		t.Errorf("relabeled row t-8001-nzbook missing (status=%q)", status)
+	if status, _, _ := taskSyncStatus(t, "t-8001-nzpeer"); status != taskStatusPending {
+		t.Errorf("relabeled row t-8001-nzpeer missing (status=%q)", status)
 	}
 	if status, _, _ := taskSyncStatus(t, "t-8002"); status != taskStatusCompleted {
 		t.Errorf("terminal ghost row: status=%q, want completed (rank model inserts fresh)", status)
@@ -475,7 +475,7 @@ func TestTaskSyncBrewChannelUnaffected(t *testing.T) {
 func TestTaskSyncImportValidation(t *testing.T) {
 	taskSyncTestDB(t)
 	src := SyncTaskPatch{
-		Version: syncTaskPatchVersion, Node: "zbook",
+		Version: syncTaskPatchVersion, Node: "zpeer",
 		Rows: []SyncTaskRow{
 			{TaskID: "t-6001", Summary: "   "},
 			{TaskID: "t-6002", Summary: "bad source", Source: "aliens"},
@@ -669,7 +669,7 @@ func taskSyncSeedTerminal(t *testing.T, taskID, terminal string) {
 // taskSyncRowID builds a one-row patch for import tests.
 func taskSyncRowID(id, status string) SyncTaskPatch {
 	return SyncTaskPatch{
-		Version: syncTaskPatchVersion, Node: "zbook", ExportedAt: 1234,
+		Version: syncTaskPatchVersion, Node: "zpeer", ExportedAt: 1234,
 		Rows: []SyncTaskRow{{TaskID: id, Summary: "sync task number a", Payload: "payload for sync task a", Status: status}},
 	}
 }
@@ -1026,7 +1026,7 @@ func TestTaskSyncImportMidPatchStorageFailureLeavesNoRows(t *testing.T) {
 	}
 	failing := rows[memsyncProbeFailIndex].TaskID
 	patchPath := taskSyncWritePatch(t, SyncTaskPatch{
-		Version: syncTaskPatchVersion, Node: "zbook", Rows: rows,
+		Version: syncTaskPatchVersion, Node: "zpeer", Rows: rows,
 	})
 
 	taskSyncInjectStorageFailure(t, failing)
@@ -1137,7 +1137,7 @@ func TestTaskSyncImportUnderWriteLockIsNeverPartial(t *testing.T) {
 		rows = append(rows, memsyncProbeRow(memsyncAtomicPrefix, i))
 	}
 	patchPath := taskSyncWritePatch(t, SyncTaskPatch{
-		Version: syncTaskPatchVersion, Node: "zbook", Rows: rows,
+		Version: syncTaskPatchVersion, Node: "zpeer", Rows: rows,
 	})
 
 	release := taskSyncHoldWriteLock(t, dbPath, memsyncAtomicHolderID, memsyncProbeContendHold)
@@ -1164,7 +1164,7 @@ func TestTaskSyncImportThenRetryIsIdempotent(t *testing.T) {
 		rows = append(rows, memsyncProbeRow(memsyncRetryPrefix, i))
 	}
 	patchPath := taskSyncWritePatch(t, SyncTaskPatch{
-		Version: syncTaskPatchVersion, Node: "zbook", Rows: rows,
+		Version: syncTaskPatchVersion, Node: "zpeer", Rows: rows,
 	})
 	stats, err := SyncTaskImport(patchPath)
 	if err != nil {
@@ -1204,7 +1204,7 @@ func TestTaskSyncImportConcurrentSamePatch(t *testing.T) {
 		rows = append(rows, memsyncProbeRow(memsyncRacePrefix, i))
 	}
 	patchPath := taskSyncWritePatch(t, SyncTaskPatch{
-		Version: syncTaskPatchVersion, Node: "zbook", Rows: rows,
+		Version: syncTaskPatchVersion, Node: "zpeer", Rows: rows,
 	})
 
 	type result struct {

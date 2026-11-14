@@ -42,7 +42,7 @@ func provFixtures() []provFixture {
 		{"https://docs.bigmodel.cn/cn/guide/models/vlm/glm-5.3-flash", provenanceTypeURL, "URL: contains '/' and must NOT be a local_path"},
 		{"distilled.db导入-Ollama评估", provenanceTypeImport, "the CJK import marker"},
 		{"hermes-skills-import", provenanceTypeImport, "the ASCII import marker"},
-		{"node:nick-HP-Laptop", provenanceTypeNode, "sync-layer peer provenance"},
+		{"node:host-b", provenanceTypeNode, "sync-layer peer provenance"},
 		{"GoPi session — reply-only Epic goal", provenanceTypeSession, "session label"},
 		{"task t-1788769211", provenanceTypeTask, "bare task prefix"},
 		{"GoPi host, 2026-09-11, task scratch-gc-watchdog", provenanceTypeDescriptor,

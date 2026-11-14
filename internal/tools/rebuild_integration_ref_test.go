@@ -3,7 +3,7 @@ package tools
 // The close loop's CURRENT-NESS measurement: which ref answers "what revision
 // must this repo's artifact carry?" (task 01a1385d).
 //
-// THE INCIDENT THESE TESTS PIN (measured 2026-10-14, nick-HP-Laptop): the
+// THE INCIDENT THESE TESTS PIN (measured 2026-10-14, host-b): the
 // deployed artifact attested a revision EQUAL to the checkout's LOCAL
 // refs/heads/master, so the shortcut in RebuildAfterMerge called it "already
 // current" and SKIPPED — while refs/remotes/gitPushcheck/master (the ref the

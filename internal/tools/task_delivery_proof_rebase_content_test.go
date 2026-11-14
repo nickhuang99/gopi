@@ -469,11 +469,11 @@ func TestDeliveryProofContent_NormaliserKeepsTheWork(t *testing.T) {
 //	489bc1a 2026-10-27 22:55:21 +0800 fix(delivery-proof): the landed record names the row's ADDRESS…
 //	572673f 2026-10-27 09:58:11 +0800 test(agent): the landed-record reader opens the ledger…
 //	e0b1726 2026-10-27 08:57:31 +0800 fix(delivery-proof): a rebase that re-derived the content…
-//	$ git -C /home/nick/work/gopi log -1 --format='%h %ad %s' --date=iso d010dfd0a
+//	$ git -C /home/user/work/gopi log -1 --format='%h %ad %s' --date=iso d010dfd0a
 //	d010dfd0a 2026-10-27 23:08:04 +0800 fix(delivery-proof): the row's address has TWO spellings…
-//	$ git -C /home/nick/work/gopi grep -c "func CloneDeliveryTip" 6c752f6 -- 'internal/tools/*.go'
+//	$ git -C /home/user/work/gopi grep -c "func CloneDeliveryTip" 6c752f6 -- 'internal/tools/*.go'
 //	6c752f6:internal/tools/task_delivery_proof.go:1
-//	$ git -C /home/nick/work/gopi show 6c752f6:internal/tools/zz_redproof_delivery_proof_rebase_test.go | wc -l
+//	$ git -C /home/user/work/gopi show 6c752f6:internal/tools/zz_redproof_delivery_proof_rebase_test.go | wc -l
 //	235
 //
 // So walking that ground TODAY must answer DELIVERED — refusing it would be the
@@ -489,8 +489,8 @@ func TestDeliveryProofContent_NormaliserKeepsTheWork(t *testing.T) {
 // is ARM D, which needs no real tree at all.
 func TestDeliveryProofContent_RealUndeliveredGroundRefusedAtItsPreAdoptionTip(t *testing.T) {
 	const (
-		realGround   = "/home/nick/workspace/01a17abb-7de0-7479-a8a7-20340f489b5d"
-		realRepo     = "/home/nick/work/gopi"
+		realGround   = "/home/user/workspace/01a17abb-7de0-7479-a8a7-20340f489b5d"
+		realRepo     = "/home/user/work/gopi"
 		adoptionHead = "fix(delivery-proof): the row's address has TWO spellings, and the reader must accept both"
 	)
 	ctx := context.Background()

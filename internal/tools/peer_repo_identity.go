@@ -8,7 +8,7 @@ package tools
 // THE DEFECT THIS ANSWERS (measured 2026-10-25, evidence in the filing run's
 // session directory). The peer path the three delivery legs dialled was
 // `~/work/GoPi` while this host's declared delivery point is
-// `/home/nick/work/gopi`, and on the peer those are TWO COMPLETELY UNRELATED
+// `/home/user/work/gopi`, and on the peer those are TWO COMPLETELY UNRELATED
 // REPOSITORIES (disjoint root commits; 12025 vs 359 commits). Two consequences,
 // both measured, and only the second one is what this file fixes:
 //

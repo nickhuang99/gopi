@@ -819,7 +819,7 @@ var auditedDriverRoots = []string{docsDirName, tasksDirName, toolsDirName,
 //     shell runs on ANOTHER host against that host's temp root), not a dev/test
 //     scratch workspace — see devdoc/tmp-ban-scratch-root.md. Measured
 //     2026-10-07: widening to it would redden SIX files (19 sites), every one of
-//     them the searchbot's remote-side restart/dashboard scripts and its CDP
+//     them the searchbox's remote-side restart/dashboard scripts and its CDP
 //     server, i.e. reds about a service we do not run here (the measured list is
 //     in the devdoc).
 var auditedScriptRoots = append(append([]string{}, auditedScratchRoots...),

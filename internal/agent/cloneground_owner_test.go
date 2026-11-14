@@ -10,10 +10,10 @@ package agent
 // the parent's directory and branch stamped onto its own row:
 //
 //	$ grep -o '"workdir":"[^"]*"' ~/.gopi/sessions/d55a93dc-…/session.jsonl
-//	"workdir":"/home/nick/workspace/01a19648-4fbe-72ea-b3e9-02b219aaa4bf"
+//	"workdir":"/home/user/workspace/01a19648-4fbe-72ea-b3e9-02b219aaa4bf"
 //	$ head -2 ~/.gopi/sessions/d55a93dc-…/console.log | tail -1
 //	[task-notify] task 01a196bf-8cbb-…: deliverable.worktree backfilled to
-//	"/home/nick/workspace/01a19648-4fbe-…" (branch "task/01a196484fbe…") at claim
+//	"/home/user/workspace/01a19648-4fbe-…" (branch "task/01a196484fbe…") at claim
 //
 // Its close-out then reported `clone channel: delivery did not land` against a
 // dirty tree its neighbour was still editing — a tree it never touched.

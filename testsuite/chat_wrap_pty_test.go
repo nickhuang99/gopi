@@ -48,7 +48,7 @@ const (
 // chatWireSuitePath is the answer's payload: a real, long, space-free file path,
 // repeated so the line also exceeds the WIDE terminal. It is the shape that was
 // reported (a long path broken in the middle by a CR LF).
-const chatWireSuitePath = "/home/nick/workspace/01a1bca5-4a71-71bf-9d4b-bcecdec15313/internal/tools/git_publish_target_guard.go"
+const chatWireSuitePath = "/home/user/workspace/01a1bca5-4a71-71bf-9d4b-bcecdec15313/internal/tools/git_publish_target_guard.go"
 
 // chatWireSuiteAnswer is one logical line: no space, no newline, longer than the
 // wide terminal.

@@ -411,7 +411,7 @@ func TestDeliveryExhaustedBriefingPutsEachFactInItsSlot(t *testing.T) {
 	// A directory whose text cannot be mistaken for a kind, and a kind that
 	// cannot be mistaken for a path: the swap this test exists for had a path
 	// like "/ws/task" and the kind "empty".
-	const dir = "/home/nick/workspace/task-01a18242"
+	const dir = "/home/user/workspace/task-01a18242"
 	briefing := deliveryExhaustedBriefing(blk, dir, devworkspace.MaxDeliveryRounds)
 
 	// THE PATH IS THE KEPT WORKSPACE, in the sentence that says so.
@@ -448,7 +448,7 @@ func TestDeliveryExhaustedBriefingPutsEachFactInItsSlot(t *testing.T) {
 // say a step did. The empty kind reaches the exhausted path whenever an agent
 // round after a blocker leaves the workspace still holding no commit.
 func TestDeliveryExhaustedBriefingDoesNotInventAStepForTheEmptyKind(t *testing.T) {
-	const dir = "/home/nick/workspace/task-01a18242"
+	const dir = "/home/user/workspace/task-01a18242"
 	briefing := deliveryExhaustedBriefing(&devworkspace.Blocker{
 		Kind:  devworkspace.BlockerKindEmpty,
 		Words: "0\n",
@@ -785,11 +785,11 @@ func TestDeliveryLoopInheritedDeliveryIsItsOwnCompletion(t *testing.T) {
 // TestDeliveryLoopDoesNotRetryAGroundThatNeverCommitted is the DELIVERY-LOOP half
 // of bug row 01a1907d-family (measured 2026-10-31 on 01a18d61-509f).
 //
-// THE INCIDENT, in the row's own log (verbatim, /home/nick/.gopi/sessions/
+// THE INCIDENT, in the row's own log (verbatim, /home/user/.gopi/sessions/
 // 01a18d61-509f-7ba9-aeaa-4526f249b637/output.log, three identical lines then
 // the summary):
 //
-//	clone-channel: /home/nick/workspace/01a18d61-… carries no commit to deliver:
+//	clone-channel: /home/user/workspace/01a18d61-… carries no commit to deliver:
 //	  `rev-list --count HEAD --not origin/master` answered 0 against origin/master, …
 //	gopi worker: clone channel: nothing to deliver — … (after 3 delivery attempt(s), …)
 //

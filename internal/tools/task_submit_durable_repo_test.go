@@ -10,7 +10,7 @@ package tools
 // that no longer exists cannot answer; the refusal is correct and the row is
 // stranded forever:
 //
-//	cannot resolve the ground for task <id> in repo /home/nick/workspace/gopi-<uuid>:
+//	cannot resolve the ground for task <id> in repo /home/user/workspace/gopi-<uuid>:
 //	the repo is not a git work tree (or git cannot be read), so its main checkout
 //	cannot be told from a task ground — refusing to start the run …
 //
@@ -20,7 +20,7 @@ package tools
 // `repo` parameter and `gopi task submit --repo <my worktree>` minted rows born
 // naming a directory their own parent was about to delete. Measured live on row
 // 01a1103b: its submitter (01a11004) recorded ground
-// /home/nick/workspace/gopi-01a110043f0e… as the child's repo out of the session
+// /home/user/workspace/gopi-01a110043f0e… as the child's repo out of the session
 // log, and finish-cleanup removed that ground 5 minutes later.
 //
 // WHAT EACH READING IS FOR, and why they are independent:

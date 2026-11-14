@@ -7,7 +7,7 @@ package tools
 //
 //	verdict:     unknown
 //	resumable:   yes          ← the operator's next step is `gopi worker --resume`
-//	holder:      nick-sager:3718508 (claim stamp is fresh for this run)
+//	holder:      host-a:3718508 (claim stamp is fresh for this run)
 //	recorded:    pid=3721192 …
 //	live:        pid 3718508 alive=yes cmd="gopi worker"
 //
@@ -346,7 +346,7 @@ func TestADifferingPidOnAForeignStampStaysUnmeasurable(t *testing.T) {
 	dir := differingPidRunDir(t)
 	p := startDifferingPidPair(t, dir)
 	task := differingPidRow(t, p.parentPID, p.childPID)
-	task.ClaimedBy = "nick-HP-Laptop:" + strconv.Itoa(p.parentPID)
+	task.ClaimedBy = "host-b:" + strconv.Itoa(p.parentPID)
 
 	st := taskProcessStatus(task)
 	if st.Verdict != TaskProcessStateUnknown || !st.Foreign {

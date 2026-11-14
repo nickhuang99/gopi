@@ -33,11 +33,11 @@ import (
 func termNoteProbeFields() chatInfoFields {
 	return chatInfoFields{
 		SessionID:   "01a16208-2a83-7ebb-bbc1-7ea15c70948e",
-		SessionDir:  "/home/nick/.gopi/sessions/01a16208-2a83-7ebb-bbc1-7ea15c70948e",
-		SessionFile: "/home/nick/.gopi/sessions/01a16208-2a83-7ebb-bbc1-7ea15c70948e/session.jsonl",
+		SessionDir:  "/home/user/.gopi/sessions/01a16208-2a83-7ebb-bbc1-7ea15c70948e",
+		SessionFile: "/home/user/.gopi/sessions/01a16208-2a83-7ebb-bbc1-7ea15c70948e/session.jsonl",
 		Model:       "probe-model",
-		Dir:         "/home/nick/workspace/gopi-probe",
-		Repo:        "/home/nick/workspace/gopi-probe",
+		Dir:         "/home/user/workspace/gopi-probe",
+		Repo:        "/home/user/workspace/gopi-probe",
 		InRepo:      true,
 		Node:        "probe-node",
 		ToolsOn:     true,

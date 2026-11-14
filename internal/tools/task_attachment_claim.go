@@ -22,7 +22,7 @@ package tools
 //
 // WHAT THE PREDICATE DELIBERATELY DOES NOT DO:
 //   - It never looks for bare file paths. A payload quoting
-//     "/home/nick/workspace/x.log" (a file the run itself writes, a cited
+//     "/home/user/workspace/x.log" (a file the run itself writes, a cited
 //     source, a scratch path) is ordinary prose and stays legal — flagging it
 //     would fire on most real payloads and the marker would be ignored. Only an
 //     asserting PHRASE fires.

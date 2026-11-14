@@ -6,7 +6,7 @@ package main
 // WHY A RESIDENT FACE CHECKS ITS OWN IMAGE, in one measured sentence: the
 // resident `gopi merge --every 2m` that DECIDES landings was found running an
 // image whose file had been replaced under it — `readlink -f /proc/<pid>/exe`
-// printed `/home/nick/work/GoPi/bin/gopi (deleted)`, and the gate edge its
+// printed `/home/user/work/GoPi/bin/gopi (deleted)`, and the gate edge its
 // source carries was absent from the running process. Every landing that
 // decider made was decided without that edge, and nothing anywhere said so.
 //

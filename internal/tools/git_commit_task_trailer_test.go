@@ -259,7 +259,7 @@ func TestGitCommitTrailersSkipOnlyUnspellableValues(t *testing.T) {
 // reader that greps `host: <name>` (a person, a report, a triage script) and a
 // writer that renders it cannot drift apart (Rules 1/13/14).
 func TestGitCommitHostTrailerLineShape(t *testing.T) {
-	if got, want := HostTrailerLine("zbook"), HostTrailerKey+": zbook"; got != want {
+	if got, want := HostTrailerLine("zpeer"), HostTrailerKey+": zpeer"; got != want {
 		t.Fatalf("HostTrailerLine = %q, want %q", got, want)
 	}
 	if HostTrailerKey != "host" {

@@ -20,7 +20,7 @@ import (
 // (Rule 5): ONE line of the kernel's own text, fed to the classifier that the
 // build step calls, must not come back as a code failure.
 func TestBuildBlockerClassifiesAFilesystemRefusalAsItsOwnKind(t *testing.T) {
-	out := "/usr/local/go/pkg/tool/linux_amd64/link: writing /home/nick/workspace/x/a.out: no space left on device\n"
+	out := "/usr/local/go/pkg/tool/linux_amd64/link: writing /home/user/workspace/x/a.out: no space left on device\n"
 	blk := buildBlocker(t.TempDir(), out)
 	if blk.Kind != BlockerKindDiskExhaustion {
 		t.Fatalf("a `no space left on device` build output must be kind %q, got %q (words: %s)",
@@ -92,7 +92,7 @@ func TestBlockerDecisiveLines_DiskKindNamesTheRefusal(t *testing.T) {
 		Marker: "no space left on device",
 		Words: "go: downloading example.com/x | " +
 			"# github.com/nick/gopi/internal/devworkspace | " +
-			"link: writing /home/nick/workspace/x/a.out: no space left on device | " +
+			"link: writing /home/user/workspace/x/a.out: no space left on device | " +
 			"make: *** [Makefile:42: build] Error 1",
 	}
 	note := blk.DecisiveLines()

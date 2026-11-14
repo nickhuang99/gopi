@@ -20,7 +20,7 @@ package agent
 //	req#3   line 5335  ground=False publish=False tree=False evidence=False cutpoint=False   ← reframe applied
 //	… every later request: all five False
 //
-// and 12 s after that switch the run ran `cd /home/nick/work/gopi && git
+// and 12 s after that switch the run ran `cd /home/user/work/gopi && git
 // checkout -b task/<id>` in the repo's MAIN checkout, then edited a file there.
 // The briefing's authority clause names that directory by absolute path and
 // says twice that it is read-only for this run; the publish clause says the

@@ -11,14 +11,14 @@ fixtures must be REAL logs, not constructed mocks).
 | `raw/gopi-raw-20260904-204046.log` | `~/.gopi/raw/gopi-raw-20260904-204046.log` |
 
 Both were written by a real gopi run (`deepseek-v4-flash`, workdir
-`/home/nick/work/GoPi`, 2026-09-04 20:40 local) and are copied byte-for-byte
+`/home/user/work/GoPi`, 2026-09-04 20:40 local) and are copied byte-for-byte
 except for the two documented edits below.
 
 ## Edits vs the originals (both required for hermeticity)
 
 1. **`rawLogPath` removed from the `session_start` event.** The recorded value
    is an absolute path on the machine the session ran on
-   (`/home/nick/.gopi/raw/...`); a test sandbox must not reach outside
+   (`/home/user/.gopi/raw/...`); a test sandbox must not reach outside
    `tests/fixtures/`. With the field gone, pairing falls back to the
    timestamp rule (`FindRawLogForSession`), which matches this fixture by
    filename + session_start time — that fallback is itself a real code path.

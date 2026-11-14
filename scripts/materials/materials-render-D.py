@@ -98,7 +98,7 @@ CELL_W_PX_DEFAULT = 8    # xterm 12px 等宽字形的 cell（resize increments �
 CELL_H_PX_DEFAULT = 16
 WIDEN_TRIES = 3     # 行→像素映射不成立时，把窗口加宽重下的次数上限
 WIDEN_STEP_COLS = 40
-SCRATCH = "/home/nick/.gopi/sessions/01a0ed23-04b0-7af2-8ac5-eafe05cc25bd/materials-scratch"
+SCRATCH = "/home/user/.gopi/sessions/01a0ed23-04b0-7af2-8ac5-eafe05cc25bd/materials-scratch"
 
 # ---- 标注框的结构判据（Rule 10.2「渲染真值」）与框的贴合常数 ----------------
 # 判据问的不是"框够不够贴目标行"（一个骑在两行之间、各压一半的框完全满足这种

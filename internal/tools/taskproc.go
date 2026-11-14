@@ -1259,7 +1259,7 @@ func taskHolderVerdictFor(t *Task, pid int) (string, taskJudgedPidReading) {
 		// `gopi worker` read `verdict: unknown`, `resumable: yes`, exit 3 while
 		// its run was measurably working — the stamp's pid was the worker
 		// PARENT (cmdline `gopi worker`) and the row's recorded executor was
-		// the CHILD it spawned (cmdline `/home/nick/work/gopi/bin/gopi`,
+		// the CHILD it spawned (cmdline `/home/user/work/gopi/bin/gopi`,
 		// ppid == the stamp's pid), so `ProcPid != claimStampPid` fired on a
 		// perfectly healthy run and the `unknown` fell through
 		// taskVerdictResumable's default to `yes`. The operator acting on that

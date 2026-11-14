@@ -406,7 +406,7 @@ EOF
     cat > "$dir/05-finding.md" <<'EOF'
 ## 发现：这一条要求**把字节送出本机**，因此它天然不能与其余三条同权
 
-本机没有 FunASR-Nano 的权重（`--models` 默认 `/home/nick/work/funasr-models`，此处不存在），
+本机没有 FunASR-Nano 的权重（`--models` 默认 `/home/user/work/funasr-models`，此处不存在），
 所以默认引擎 `local` 跑不出文字；`01-input.txt` 里的 `--engine doubao` 是**显式选**的，
 而 `-h` 自己也把这条选择的性质写明了：「sending audio off the machine is a privacy
 decision, so it is never a default」。

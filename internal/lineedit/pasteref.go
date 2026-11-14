@@ -226,7 +226,7 @@ func PasteRefInfoFor(s string) (PasteRefInfo, bool) {
 // the operator (or the model) wrote around them.
 //
 // WHY THIS EXISTS (measured 2026-10-06, the paste half of the turn-boundary
-// retrieval). A reference is a POINTER, not content: `[paste 5411: /home/nick/
+// retrieval). A reference is a POINTER, not content: `[paste 5411: /home/user/
 // workspace/gopi-sandbox/sandbox-turn-prefetch-daa50fca/.gopi/sessions/7349789c-
 // …/paste/paste-20261006-041850-1.txt source=human size=5411B]` contributed NINE
 // candidates — the path's own components and the size — and the extractor's

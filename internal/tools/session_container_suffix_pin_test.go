@@ -23,7 +23,7 @@ import (
 // as OUR names or they can never be collected at any age (the 47-directory /
 // 4.0 GiB freeze this predicate was written for).
 //
-// WHY IT MATTERS (the measured defect, host nick-sager 2026-10-30): the
+// WHY IT MATTERS (the measured defect, host host-a 2026-10-30): the
 // reclaimer's OURS test was a bare canonical-uuid test, so a container named
 // after a SUCCESSOR row (`<uuid>-r1`) or a CLONE row (`<uuid>-c1`) read as a
 // foreign name and could never be collected at any age — 47 directories / 4.0 GiB

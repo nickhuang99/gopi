@@ -81,7 +81,7 @@ const (
 	// rule27ScanFileCap bounds the working-tree walk. A cap that is hit is
 	// DISCLOSED (Rule 15: never a silent truncation that reads like a pass).
 	rule27ScanFileCap = 6000
-	// rule27AmbientDepth bounds the sibling-checkout scan (/home/nick/workspace is
+	// rule27AmbientDepth bounds the sibling-checkout scan (/home/user/workspace is
 	// a flat pile of ~150 worktrees, clones and probe dirs).
 	rule27AmbientDepth = 2
 	// rule27AmbientFileCap bounds that scan for the same reason.

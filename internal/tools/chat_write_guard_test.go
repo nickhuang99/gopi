@@ -34,7 +34,7 @@ import (
 // chatWriteTestRepoRoot is the repository root the tests resolve paths against:
 // a spelling no test asserts to exist, because the normalization is a prefix
 // subtraction and the rules never consult the disk.
-const chatWriteTestRepoRoot = "/home/nick/work/GoPi"
+const chatWriteTestRepoRoot = "/home/user/work/GoPi"
 
 // chatWriteSampleFence is the rule table the write arm is measured against — the
 // same two rules the sample fence in the repository's GOPI.md carries: the
@@ -133,7 +133,7 @@ func TestChatWritePathRefusalForbidsByRule(t *testing.T) {
 		t.Errorf("the forbidden rule leaked onto the allowed corpus:\n%s", got)
 	}
 	// And a path no rule mentions falls to the POSTURE — ask, not refuse.
-	got := ChatWritePathRefusal("/home/nick/.gopi/sessions/abc/files/notes.md", chatWriteTestRepoRoot)
+	got := ChatWritePathRefusal("/home/user/.gopi/sessions/abc/files/notes.md", chatWriteTestRepoRoot)
 	if !strings.Contains(got, chatWriteApprovalPrefix) {
 		t.Errorf("a target outside every rule must take the posture's `prompt` answer:\n%s", got)
 	}
@@ -145,7 +145,7 @@ func TestChatWritePathRefusalForbidsByRule(t *testing.T) {
 // rule mentions — the arm adds no opinion of its own — while the on-request
 // posture asks about it.
 func TestChatWritePathRefusalFollowsThePostureWhenNoRuleMatches(t *testing.T) {
-	const outside = "/home/nick/.gopi/sessions/abc/files/notes.md"
+	const outside = "/home/user/.gopi/sessions/abc/files/notes.md"
 
 	freezeChatRuleTable(t, chatPolicyFence("allow write "+devdoc.Root+" *"), postureOnRequest())
 	if got := ChatWritePathRefusal(outside, chatWriteTestRepoRoot); !strings.Contains(got, chatWriteApprovalPrefix) {

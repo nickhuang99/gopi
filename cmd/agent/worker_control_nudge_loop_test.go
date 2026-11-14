@@ -1,6 +1,6 @@
 // worker_control_nudge_loop_test.go — the regression guard for the DRAINING
 // worker's hot loop and its control-file ENOENT storm (measured 2026-10-15,
-// host nick-sager, bug: `gopi worker --stop --pid <pid>` never returns).
+// host host-a, bug: `gopi worker --stop --pid <pid>` never returns).
 //
 // TWO DEFECTS, ONE CHAIN, and this file pins both halves.
 //

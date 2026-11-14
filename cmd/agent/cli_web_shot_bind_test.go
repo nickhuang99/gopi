@@ -112,7 +112,7 @@ func shotOwnGlobalIPv6Addr(t *testing.T) string {
 }
 
 // TestWebShotCapturesThisProcessesOwnNonLoopbackListener is the bug's regression
-// test: `gopi web --addr 192.168.1.12:PORT` must be captureable.
+// test: `gopi web --addr 192.0.2.12:PORT` must be captureable.
 //
 // It binds a REAL listener on this machine's own LAN address (that is exactly
 // what `gopi web` does), drives the endpoint over the real mux, and asserts both
@@ -121,7 +121,7 @@ func shotOwnGlobalIPv6Addr(t *testing.T) string {
 // request could have named.
 //
 // RED PROOF (measured, before the fix): 500 with
-// `/api/shot: refusing to capture 192.168.1.12:<port> — only a loopback address
+// `/api/shot: refusing to capture 192.0.2.12:<port> — only a loopback address
 // can be this instance's own page`, and the capture never ran.
 func TestWebShotCapturesThisProcessesOwnNonLoopbackListener(t *testing.T) {
 	lanIP := shotOwnLANAddr(t)

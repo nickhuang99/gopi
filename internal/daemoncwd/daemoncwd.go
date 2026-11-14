@@ -520,9 +520,9 @@ func IsDaemonProcess(pid int) bool {
 //
 // WHY ② EXISTS (MEASURED, not assumed — this host, 2026-09-14): every residue
 // daemon of the incident has its cwd inside a TASK WORKTREE
-// (`/home/nick/workspace/gopi-<task>/cmd/agent`), NOT inside the scratch tree:
+// (`/home/user/workspace/gopi-<task>/cmd/agent`), NOT inside the scratch tree:
 //
-//	pid 130432  cwd=/home/nick/workspace/gopi-worker-status-assert/cmd/agent
+//	pid 130432  cwd=/home/user/workspace/gopi-worker-status-assert/cmd/agent
 //	            GOPI_HOME=/dev/shm/gopi-test-scratch/suite-cmd-agent-run-2837926703/TestMergerRestart_…/001
 //	            TMPDIR=/dev/shm/gopi-test-scratch/suite-cmd-agent-run-2837926703
 //

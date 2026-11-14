@@ -1,7 +1,7 @@
 // cli_worker_foreground.go — the FOREGROUND worker's presence, and the control
 // face's honest answer about it.
 //
-// WHY IT EXISTS (bug 01a131c8-0500, measured 2026-10-12 on nick-HP-Laptop):
+// WHY IT EXISTS (bug 01a131c8-0500, measured 2026-10-12 on host-b):
 // `gopi worker --stop` printed
 //
 //	gopi worker: no worker daemon is running (no live worker state under …);

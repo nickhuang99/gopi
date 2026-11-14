@@ -92,7 +92,7 @@ func TestNormalizeAndKey_FoldVolatileTokens(t *testing.T) {
 		t.Fatalf("volatile tokens did not fold:\n %q\n %q", ka, kb)
 	}
 	// Provenance tags are runner identity, not pattern identity.
-	if k1, k2 := recurrenceKeyOf(a, "bug,worker:zbook"), recurrenceKeyOf(b, "bug,from-hp"); k1 != k2 {
+	if k1, k2 := recurrenceKeyOf(a, "bug,worker:zpeer"), recurrenceKeyOf(b, "bug,from-hp"); k1 != k2 {
 		t.Fatalf("provenance tags leaked into the key: %q vs %q", k1, k2)
 	}
 	// Automation-owned rows are the dispatcher's own doings, never a pattern.

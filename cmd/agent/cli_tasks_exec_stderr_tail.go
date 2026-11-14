@@ -14,7 +14,7 @@ package main
 // (01a175d6-a055-751d-b083-fff5329cfa16):
 //
 //	failed: gopi run failed: exit status 1 — task run failed (abnormal child
-//	exit) — run: elapsed=20m10s — task-report: /home/nick/.gopi/sessions/… md
+//	exit) — run: elapsed=20m10s — task-report: /home/user/.gopi/sessions/… md
 //	(5740 bytes, missing sections: ## Files) — gate-claims-unobserved: …
 //
 // exit status ✓ · elapsed ✓ · report path ✓ · **the child's own stderr ✗**.

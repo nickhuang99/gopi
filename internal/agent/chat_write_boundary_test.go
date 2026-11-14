@@ -343,7 +343,7 @@ func TestChatWriteBoundaryTeachesTheThreeAnswersAndTheRoute(t *testing.T) {
 	}
 	// The destination is named RELATIVE to the run's own session directory, never
 	// as a hard-coded home path (the session dir is per-run and relocatable).
-	if strings.Contains(block, "/home/") || strings.Contains(block, "/home/nick/.gopi") {
+	if strings.Contains(block, "/home/") || strings.Contains(block, "/home/user/.gopi") {
 		t.Errorf("the boundary hard-codes a session path instead of pointing at [CURRENT SESSION]:\n%s", block)
 	}
 }

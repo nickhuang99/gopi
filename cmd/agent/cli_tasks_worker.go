@@ -3,7 +3,7 @@ package main
 // cli_tasks_worker.go — the WORKER LOOP (`gopi worker`): the general
 // task-management service (epic serve/worker-split 2026-09-03, nick's final
 // design). The worker is the ONLY task-execution process — it runs
-// identically on BOTH the client (HP) and the server (zbook), while
+// identically on BOTH the client (HP) and the server (zpeer), while
 // `task serve`/`task merger` were the SERVER-ONLY merge pass — the retired
 // merger tick (deleted 2026-09-19; its live half is mergerPassOnce). It ran
 // ONE tick, scheduled by the host (a cronjob since daemon-machinery-removal,
@@ -575,7 +575,7 @@ func runTaskWorkerLoop(once bool) {
 	// from the code's shape and written as if quoted; the arrangement it names
 	// is real, the quotation was not.)
 	//
-	// THE CONSEQUENCE, measured on this host the same day: /home/nick/workspace
+	// THE CONSEQUENCE, measured on this host the same day: /home/user/workspace
 	// held 119 `go-build*` directories / 9.0 GB (+2 more appearing per hour at
 	// ~1.4 GB/h), every one of them abandoned by a killed build, and the tree's
 	// OWN window was not the problem — `gopi tool scratch-gc trees --dry-run`
@@ -809,7 +809,7 @@ func runTaskWorkerLoop(once bool) {
 		// advances this host's integration ref (refs/heads/master) to the peer's
 		// tip, and until now it was reached only from the serve tick and the
 		// merger pass — on a CLIENT host that keeps a worker and no serve and no
-		// merger, nobody advanced it at all. Measured 2026-10-13 on nick-sager:
+		// merger, nobody advanced it at all. Measured 2026-10-13 on host-a:
 		// the local ref was 141 commits behind the peer's tip and a purely
 		// ancestor of it, so every statement of the form "gate X is red on
 		// master" was unrecheckable and already-fixed defects read as still red

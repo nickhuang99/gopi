@@ -3,7 +3,7 @@
 //
 // ROOT CAUSE THIS FILE EXISTS FOR: on this host `/tmp` is a directory on the
 // 147G `/` partition (which the 2026-09-11 exhaustion took from 19G to 1.5G
-// free, devdoc/zbook-resource-exhaustion-20260911.md) and TMPDIR is UNSET, so
+// free, devdoc/zpeer-resource-exhaustion-20260911.md) and TMPDIR is UNSET, so
 // every child gopi spawns — `gopi task run` children, the bash tool, git —
 // resolves its temp workspace to /tmp by IMPLICIT fallback (os.TempDir()'s
 // implementation default). 23.5G of residue accumulated there because not one
@@ -463,7 +463,7 @@ func FilesystemTypeAt(path string) (string, bool) {
 // layer cannot drift (Rule 13).
 const SettingsEnvName = "GOPI_SETTINGS"
 
-// GopiDirEnvName relocates the gopi data root (/home/nick/.gopi). Named for the same
+// GopiDirEnvName relocates the gopi data root (/home/user/.gopi). Named for the same
 // reason.
 const GopiDirEnvName = "GOPI_HOME"
 

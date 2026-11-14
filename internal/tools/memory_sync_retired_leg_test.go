@@ -78,7 +78,7 @@ func retiredLegSandbox(t *testing.T, peer string) (argvFile string) {
 	argvFile = filepath.Join(dir, "argv")
 	shim := filepath.Join(dir, "ssh")
 	body := "#!/bin/sh\necho \"$@\" > " + argvFile + "\n" +
-		"printf '{\"version\":2,\"node\":\"zbook\",\"exported_at\":7,\"rows\":[]}'\n"
+		"printf '{\"version\":2,\"node\":\"zpeer\",\"exported_at\":7,\"rows\":[]}'\n"
 	if err := os.WriteFile(shim, []byte(body), 0o755); err != nil {
 		t.Fatalf("write ssh stand-in: %v", err)
 	}
@@ -91,7 +91,7 @@ func retiredLegSandbox(t *testing.T, peer string) (argvFile string) {
 // deliberately (its callers and its seam outlive the verb), so this arm is the
 // one that can still go red if a future change reinstates the composition.
 func TestDeltaLegRefusesWithoutDialling(t *testing.T) {
-	const peer = "zbook"
+	const peer = "zpeer"
 	argvFile := retiredLegSandbox(t, peer)
 	deltaInsertRaw(t, retiredLegTaskID(0), "retired row", "pending", 1000, 1000, "")
 

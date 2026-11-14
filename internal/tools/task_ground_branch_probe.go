@@ -7,17 +7,17 @@ package tools
 // 01a17df2-1d64-7624-b08e-f6ba187631b2). The advisory ground line verified the
 // branch with ONE call — taskBranchExists(recRepo, recBranch) — against the
 // row's recorded repo, which on a clone-channel run is the MAIN checkout
-// (/home/nick/work/gopi). A clone ground holds the run's branch in its OWN ref
-// namespace (/home/nick/workspace/<task-id>), so the two answers disagreed on
+// (/home/user/work/gopi). A clone ground holds the run's branch in its OWN ref
+// namespace (/home/user/workspace/<task-id>), so the two answers disagreed on
 // the same minute of the same machine:
 //
-//	$ git -C /home/nick/work/gopi rev-parse --verify --quiet \
+//	$ git -C /home/user/work/gopi rev-parse --verify --quiet \
 //	      refs/heads/task/01a17df21d647624b08ef6ba187631b2 ; echo $?
 //	1                                     # the recorded repo has no such ref
-//	$ git -C /home/nick/workspace/01a17df2-1d64-7624-b08e-f6ba187631b2 rev-parse \
+//	$ git -C /home/user/workspace/01a17df2-1d64-7624-b08e-f6ba187631b2 rev-parse \
 //	      --verify --quiet refs/heads/task/01a17df21d647624b08ef6ba187631b2
 //	3af81a93271e80356c99b95263a125a808a27e67      # the clone ground does
-//	$ ls -ld /home/nick/workspace/01a17df2-1d64-7624-b08e-f6ba187631b2/.git
+//	$ ls -ld /home/user/workspace/01a17df2-1d64-7624-b08e-f6ba187631b2/.git
 //	drwxrwxr-x 8 nick nick 4096 Oct 28 01:47 …/.git   # a DIRECTORY = clone
 //
 // and `task show` rendered `branch=task/01a17df2… (NOT FOUND now — a stale

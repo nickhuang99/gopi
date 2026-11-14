@@ -7,12 +7,12 @@ package agent
 // PROCESS CWD (tools.DurableRepoForSubmit(reframeSubmitCwd())). For the pre-fix
 // epic 01a0d55b that was a fix: a LINKED WORKTREE's cwd resolves through git's
 // common dir to the main checkout. Under the CLONE CHANNEL it is the bug: the
-// parent's cwd is /home/nick/workspace/<parent-id>, a STANDALONE CLONE — its own
+// parent's cwd is /home/user/workspace/<parent-id>, a STANDALONE CLONE — its own
 // repository, not a worktree of the source — so git's common dir answers with
 // the clone itself and every child was born naming it:
 //
-//	parent 01a150cb deliverable.repo = /home/nick/work/gopi   deliverable.worktree = /home/nick/workspace/01a150cb-…
-//	child  01a1510e deliverable.repo = /home/nick/workspace/01a150cb-…   ← the parent's WORKSPACE
+//	parent 01a150cb deliverable.repo = /home/user/work/gopi   deliverable.worktree = /home/user/workspace/01a150cb-…
+//	child  01a1510e deliverable.repo = /home/user/workspace/01a150cb-…   ← the parent's WORKSPACE
 //
 // and the clone channel then refused each child — correctly — with "repo …
 // declares no build command in settings repos". Three of three splits died the

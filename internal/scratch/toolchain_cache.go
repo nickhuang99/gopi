@@ -2,7 +2,7 @@
 // how big it is, whether the filesystem holding it has headroom, and how it is
 // brought back under a bound WITHOUT deleting the operator's cache.
 //
-// WHY THIS FILE EXISTS (measured on nick-HP-Laptop, 2026-10-12):
+// WHY THIS FILE EXISTS (measured on host-b, 2026-10-12):
 //
 //	/dev/nvme0n1p7  (66309, /home)   458G, 416G used, 19G free  — 96% FULL
 //	/dev/nvme0n1p5  (66307, /)       183G,  43G used, 131G free — 25%
@@ -395,13 +395,13 @@ const toolchainCacheGoEnvName = "GOCACHE"
 //  3. GOCACHE in the go env file (<home>/.config/go/env)          the file `go env -w` writes
 //  4. <user cache dir>/go-build                                  the toolchain's built-in default
 //
-// WHY CHANNEL 3 EXISTS, and the measured defect it repairs (nick-sager,
+// WHY CHANNEL 3 EXISTS, and the measured defect it repairs (host-a,
 // 2026-11-01): the Go toolchain persists `go env -w KEY=VALUE` in the go env
 // FILE, not in any shell profile, so on a host that pinned its cache with
-// `go env -w GOCACHE=/home/nick/workspace/.gocache` the variable is EMPTY in the
+// `go env -w GOCACHE=/home/user/workspace/.gocache` the variable is EMPTY in the
 // process environment and the toolchain nevertheless uses that directory (548G).
 // The pre-fix resolver read channels 1, 2 and 4 only and reported
-// /home/nick/.cache/go-build (273M) — a cache `go` IS NOT USING. Reported by a
+// /home/user/.cache/go-build (273M) — a cache `go` IS NOT USING. Reported by a
 // READ-ONLY diagnostic that is a confident wrong answer, and fatal behind
 // `--trim`, which would have evicted from a directory no build ever fills. So the
 // file channel is not a convenience: a report about a cache the toolchain is not

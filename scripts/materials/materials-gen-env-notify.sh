@@ -35,7 +35,7 @@ TODAY="$(date +%F)"
 COMMIT="$(git -C "$ROOT" rev-parse --short HEAD)"
 
 # 非分支证据（日志 / webhook 抓包 / census 落盘）只写 GOPI_HOME 的会话目录。
-EVID="${GOPI_SESSION_DIR:-/home/nick/workspace/gopi-sandbox/sandbox-enve1-7fe4b684/.gopi/sessions/01a0ed89-b98c-73b8-b15d-ac0d32329510}/materials-env-notify"
+EVID="${GOPI_SESSION_DIR:-/home/user/workspace/gopi-sandbox/sandbox-enve1-7fe4b684/.gopi/sessions/01a0ed89-b98c-73b8-b15d-ac0d32329510}/materials-env-notify"
 mkdir -p "$EVID" || exit 1
 
 # webhook 接收端（零依赖：python3 标准库；一次 POST 追加一行 body）
@@ -64,7 +64,7 @@ HTTPServer(("127.0.0.1", int(sys.argv[1])), H).serve_forever()
 PY
 
 # --- 私有沙盒 profile（Rule 34：ASK for a sandbox，never invent a directory） --
-SB="${GOPI_ENV_NOTIFY_SANDBOX:-/home/nick/workspace/gopi-sandbox/sandbox-env-notify-probe-3f7837c4}"
+SB="${GOPI_ENV_NOTIFY_SANDBOX:-/home/user/workspace/gopi-sandbox/sandbox-env-notify-probe-3f7837c4}"
 if [[ ! -d "$SB/.gopi" ]]; then
   SB="$("$BIN" tool sandbox create --label "env-notify-probe" \
         --task-id 01a0ed89-b98c-73b8-b15d-ac0d32329510 2>/dev/null | tail -1)"
@@ -382,13 +382,13 @@ finding 006-notify-env-over-settings-hierarchy <<'FINDING_EOF'
 
 ```
 $ env -u GOPI_SETTINGS GOPI_HOME=<sandbox> ./bin/gopi config show
-  home                   /home/nick/workspace/gopi-sandbox/sandbox-env-notify-probe-3f7837c4
+  home                   /home/user/workspace/gopi-sandbox/sandbox-env-notify-probe-3f7837c4
   settings file          …/sandbox-env-notify-probe-3f7837c4/.gopi/settings.json  (782 bytes)
 settings.json:
-  notify            {"cmd":"cat >> /home/nick/.gopi/notify/task-events.jsonl","events":"claimed,in_progress,completed,failed,stale,build-failed","async":false}
+  notify            {"cmd":"cat >> /home/user/.gopi/notify/task-events.jsonl","events":"claimed,in_progress,completed,failed,stale,build-failed","async":false}
 ```
 
-沙盒的 settings 文件里，`notify.cmd` 指向的是 **`/home/nick/.gopi/notify/task-events.jsonl`**
+沙盒的 settings 文件里，`notify.cmd` 指向的是 **`/home/user/.gopi/notify/task-events.jsonl`**
 ——沙盒外的、操作者的文件。本探测的**第一次**运行（当时只钉了 `GOPI_HOME`、没钉
 `GOPI_SETTINGS`）就在那里真的落下了一行：`01a0ed8d-d2a4-7633-96fd-f338cf6884df`。
 

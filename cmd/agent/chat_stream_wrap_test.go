@@ -144,7 +144,7 @@ func TestChatStream_EmitsTheModelsBytesOnEveryWriter(t *testing.T) {
 // ANY writer width. It is the same property as the case above with the shape
 // that was actually reported.
 func TestChatStream_LongPathSurvivesWhole(t *testing.T) {
-	const path = "/home/nick/workspace/01a1bca5-4a71-71bf-9d4b-bcecdec15313/internal/tools/git_publish_target_guard.go"
+	const path = "/home/user/workspace/01a1bca5-4a71-71bf-9d4b-bcecdec15313/internal/tools/git_publish_target_guard.go"
 	if len(path) <= chatWireTestNarrowCols {
 		t.Fatalf("the fixture is wrong: the path is %d bytes, which fits the narrow width — it would prove nothing",
 			len(path))

@@ -16,7 +16,7 @@ package main
 // 01a18f45): the removal of the round call left `scratchGCSweepAsync` with NO
 // production caller at all, and the test above — correctly — only asserts it is
 // not on the round. So the suite was fully green on a tree where nothing in the
-// system ever ran the sweep: /home/nick/workspace accumulated 119 `go-build*`
+// system ever ran the sweep: /home/user/workspace accumulated 119 `go-build*`
 // directories / 9.0 GB, growing ~1.4 GB/h, while `gopi tool scratch-gc trees
 // --dry-run` reported the predicate healthy (`tree=go-tmp entries=119
 // collectable=1` — only 1 had aged past the 24h window, the other 118 sat

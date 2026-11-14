@@ -15,7 +15,7 @@ package main
 //
 //	A. TEST SIDE (upstream, already addressed): the test spawner seam inherited
 //	   os.Environ() verbatim, and a child with no explicit GOPI_HOME/GOPI_SETTINGS
-//	   fell through to HOME=/home/nick ⇒ config.GopiDir() = ~/.gopi. The suite
+//	   fell through to HOME=/home/user ⇒ config.GopiDir() = ~/.gopi. The suite
 //	   entry point now pins the profile (testutil.PinSuiteGopiProfile), which
 //	   closes that door for THIS suite — pinning, not a guard, is the right fix
 //	   for a test's own environment.

@@ -1,7 +1,7 @@
 // Regression tests for the repo-DECLARED submit warning.
 //
-// The defect (row 01a159a9-ecb8-7664-8beb-57438ac4023f): /home/nick/work/GoPi
-// (uppercase, frozen at 2026-10-18) and /home/nick/work/gopi (lowercase,
+// The defect (row 01a159a9-ecb8-7664-8beb-57438ac4023f): /home/user/work/GoPi
+// (uppercase, frozen at 2026-10-18) and /home/user/work/gopi (lowercase,
 // master) both exist; the settings `repos` table declares a build command for
 // the lowercase path only; `task submit` without --repo stamps the process CWD;
 // and the ONE repo check at the submit seam —
@@ -84,10 +84,10 @@ func repoDeclaredSettings(t *testing.T, repos ...string) string {
 // predicate: the path is a work tree (that is the whole point), the table does
 // not carry it, and the warning must name both facts.
 func TestRepoUndeclaredWarningFiresForARepoOutsideTheTable(t *testing.T) {
-	const repo = "/home/nick/work/GoPi"
-	const declaredRepo = "/home/nick/work/gopi"
+	const repo = "/home/user/work/GoPi"
+	const declaredRepo = "/home/user/work/gopi"
 	repoDeclaredSettings(t, declaredRepo)
-	t.Setenv(config.DevRepoEnvName, "zbook:"+declaredRepo) // the clone channel is ON
+	t.Setenv(config.DevRepoEnvName, "zpeer:"+declaredRepo) // the clone channel is ON
 
 	got := TaskSubmitRepoUndeclaredWarning(repo)
 	if got == "" {
@@ -103,9 +103,9 @@ func TestRepoUndeclaredWarningFiresForARepoOutsideTheTable(t *testing.T) {
 // TestRepoUndeclaredWarningSilentWhenDeclared is the GREEN half: a repo the
 // table declares produces nothing, on either channel setting.
 func TestRepoUndeclaredWarningSilentWhenDeclared(t *testing.T) {
-	const repo = "/home/nick/work/gopi"
+	const repo = "/home/user/work/gopi"
 	repoDeclaredSettings(t, repo)
-	for _, devRepo := range []string{"", "zbook:" + repo} {
+	for _, devRepo := range []string{"", "zpeer:" + repo} {
 		t.Setenv(config.DevRepoEnvName, devRepo)
 		if got := TaskSubmitRepoUndeclaredWarning(repo); got != "" {
 			t.Errorf("dev_repo=%q: declared repo %q still warned:\n%s", devRepo, repo, got)
@@ -139,15 +139,15 @@ func TestRepoUndeclaredWarningSilentForAnotherSpellingOfTheSameDir(t *testing.T)
 // by channel, and the warning must state the one that applies — a warning that
 // claims a refusal which cannot happen is a false alarm.
 func TestRepoUndeclaredWarningSaysWhichChannelIsInForce(t *testing.T) {
-	const repo = "/home/nick/work/GoPi"
-	on := taskSubmitRepoUndeclaredWarningFor(repo, []string{"/home/nick/work/gopi"}, true)
+	const repo = "/home/user/work/GoPi"
+	on := taskSubmitRepoUndeclaredWarningFor(repo, []string{"/home/user/work/gopi"}, true)
 	if !strings.Contains(on, "refusing to push") {
 		t.Errorf("clone channel ON must quote the dispatch refusal:\n%s", on)
 	}
 	if strings.Contains(on, "would still run") {
 		t.Errorf("clone channel ON must not claim the row would run:\n%s", on)
 	}
-	off := taskSubmitRepoUndeclaredWarningFor(repo, []string{"/home/nick/work/gopi"}, false)
+	off := taskSubmitRepoUndeclaredWarningFor(repo, []string{"/home/user/work/gopi"}, false)
 	if !strings.Contains(off, "would still run") {
 		t.Errorf("clone channel OFF must say today's run works:\n%s", off)
 	}
@@ -160,7 +160,7 @@ func TestRepoUndeclaredWarningSaysWhichChannelIsInForce(t *testing.T) {
 // "you picked a declared repo" must be distinguishable — a blank list reads as
 // a rendering bug.
 func TestRepoUndeclaredWarningRendersAnEmptyTableAsNone(t *testing.T) {
-	got := taskSubmitRepoUndeclaredWarningFor("/home/nick/work/GoPi", nil, true)
+	got := taskSubmitRepoUndeclaredWarningFor("/home/user/work/GoPi", nil, true)
 	if !strings.Contains(got, taskSubmitRepoUndeclaredNone) {
 		t.Errorf("an empty table must render its own marker, got:\n%s", got)
 	}

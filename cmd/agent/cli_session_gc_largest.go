@@ -4,7 +4,7 @@ package main
 // when the disk measurement showed its age-based judgement could not see the
 // problem.
 //
-// WHY THEY EXIST (measured 2026-10-30, host nick-sager; the row this file
+// WHY THEY EXIST (measured 2026-10-30, host host-a; the row this file
 // answers). The family's ONE reclaim verb judged by AGE: `gopi session gc`
 // reported 3281 directories scanned, 110 collectable, 14.7 MiB. The tree it was
 // judging held 83 GB, and the shape of the occupancy was the OPPOSITE of what an

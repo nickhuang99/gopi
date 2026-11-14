@@ -4,7 +4,7 @@ package tools
 // close-out header's COUNT must be the number of marker lines the SAME render
 // printed.
 //
-// WHAT WAS MEASURED WRONG (nick-sager, 2026-10-12, `gopi task list`):
+// WHAT WAS MEASURED WRONG (host-a, 2026-10-12, `gopi task list`):
 //
 //	--status failed     header "close-out refused on 54 row(s)" — 0 marked rows on screen
 //	--status cancelled  header "close-out refused on 54 row(s)" — 1 marked row on screen

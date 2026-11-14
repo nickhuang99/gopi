@@ -187,7 +187,7 @@ func TestRollbackLocalClaimRevertsInProgress(t *testing.T) {
 
 // TestExportClaimPatchCarriesPeerOriginRow: the claim-lock acquire patch
 // must reach the row's ORIGIN even when the local copy is tagged
-// from-<peer> (HP claiming a from-zbook row). The M4.24 anti-reflow gate
+// from-<peer> (HP claiming a from-zpeer row). The M4.24 anti-reflow gate
 // (c4745d9) excluded exactly those live rows from the export → the acquire
 // patch came back empty ("not found in the ledger") → every round failed →
 // yield into the stuck zombie (the anchor-guard incident). The claim
@@ -196,8 +196,8 @@ func TestRollbackLocalClaimRevertsInProgress(t *testing.T) {
 func TestExportClaimPatchCarriesPeerOriginRow(t *testing.T) {
 	claimTestDB(t)
 	id := claimSeedTask(t, "peer-origin claim probe")
-	// Simulate the row having been imported from peer "zbook": tag it
-	// from-zbook and put it in the live in_progress rung (the claim
+	// Simulate the row having been imported from peer "zpeer": tag it
+	// from-zpeer and put it in the live in_progress rung (the claim
 	// protocol's acquire-verb state after TaskStart).
 	db, err := openTasksDB(context.Background(), memoryDBPath())
 	if err != nil {
@@ -205,12 +205,12 @@ func TestExportClaimPatchCarriesPeerOriginRow(t *testing.T) {
 	}
 	defer db.Close()
 	if _, err := db.Exec(`UPDATE tasks SET tags = ?, status = ?, updated_at = ? WHERE task_id = ?`,
-		"from-zbook,"+claimRevertTag, taskStatusInProgress, float64(time.Now().Unix()), id); err != nil {
+		"from-zpeer,"+claimRevertTag, taskStatusInProgress, float64(time.Now().Unix()), id); err != nil {
 		t.Fatalf("tag+advance row: %v", err)
 	}
 	// Pre-fix this errored "not found in the ledger" because the export
-	// gate dropped the from-zbook live row before row selection.
-	patch, err := exportClaimPatch(id, "hp-runner", "zbook")
+	// gate dropped the from-zpeer live row before row selection.
+	patch, err := exportClaimPatch(id, "hp-runner", "zpeer")
 	if err != nil {
 		t.Fatalf("exportClaimPatch must carry a from-peer live row, got: %v", err)
 	}

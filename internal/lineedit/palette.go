@@ -396,7 +396,7 @@ var BasicPalette = Palette{
 // The Hermes-derived gold tables
 // ---------------------------------------------------------------------------
 //
-// WHERE THESE COME FROM. They are the DESIGN of /home/nick/work/hermes-agent's
+// WHERE THESE COME FROM. They are the DESIGN of /home/user/work/hermes-agent's
 // terminal theme (ui-tui/src/theme.ts: DARK_THEME / LIGHT_THEME), ported — not
 // imported: that project is TypeScript with a node_modules tree, this is a
 // zero-dependency Go renderer, and what crosses the language boundary is the

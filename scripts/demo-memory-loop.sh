@@ -160,7 +160,7 @@ step search-stale-wrong memory search "$WRONGTOK"
 # 所以先把一份真会话放进沙盒（这是 brew 的**真输入**，不是造出来的负载）。
 SEED_DIR="$SB/.gopi/sessions/demo"
 mkdir -p "$SEED_DIR"
-SEED_SRC=/home/nick/.gopi/sessions/01a0eec1-fca2-7bb5-a4e6-4988cd5944c1/739f49d7-4963-420f-8f72-3757073e44f0.jsonl
+SEED_SRC=/home/user/.gopi/sessions/01a0eec1-fca2-7bb5-a4e6-4988cd5944c1/739f49d7-4963-420f-8f72-3757073e44f0.jsonl
 cp "$SEED_SRC" "$SEED_DIR/$(basename "$SEED_SRC")"
 { echo "seed_src=$SEED_SRC"; echo "seed_dst=$SEED_DIR/$(basename "$SEED_SRC")";
   echo "seed_bytes=$(stat -c %s "$SEED_DIR/"*.jsonl)"; } >> "$EV/run.env"

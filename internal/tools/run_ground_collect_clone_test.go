@@ -9,8 +9,8 @@ package tools
 // per-task clone in the reclaimable workspace root, 351 directories / 28.9 GB on
 // a 96 %-full `/` partition. The leg had ONE verb:
 //
-//	$ git worktree remove /home/nick/workspace/<task-id>
-//	fatal: '/home/nick/workspace/<task-id>' is not a working tree
+//	$ git worktree remove /home/user/workspace/<task-id>
+//	fatal: '/home/user/workspace/<task-id>' is not a working tree
 //	exit 128
 //
 // so the axis removed NOTHING, forever, while its own plan said those grounds

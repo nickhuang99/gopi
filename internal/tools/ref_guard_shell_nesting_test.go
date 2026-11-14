@@ -5,9 +5,9 @@
 // announced and the shared checkout declared, on the revision this file was cut
 // from (1d16b04):
 //
-//	git -C /home/nick/work/gopi checkout -b task/x-legal
+//	git -C /home/user/work/gopi checkout -b task/x-legal
 //	  → REFUSED ("cannot create branch \"task/x-legal\" … declared shared checkout")
-//	OUT=$(git -C /home/nick/work/gopi checkout -b task/x-legal 2>&1); echo "$OUT"
+//	OUT=$(git -C /home/user/work/gopi checkout -b task/x-legal 2>&1); echo "$OUT"
 //	  → RAN. exit 0, and git executed (its own `fatal:` came back through $OUT).
 //
 // The root cause is a PARSE fact, not a missing spelling: refGuardClauses cut the
@@ -67,7 +67,7 @@ func rgsnVerbs(command, workdir string) []string {
 // verb the recogniser can read. A form added to the shell later is caught here,
 // not by another spelling-specific row in the guard's own table.
 func TestRefGuardShellNesting_ParseLayerCoversEveryNestingForm(t *testing.T) {
-	const shared = "/home/nick/work/gopi"
+	const shared = "/home/user/work/gopi"
 	for _, tc := range []struct {
 		what    string
 		command string
@@ -106,7 +106,7 @@ func TestRefGuardShellNesting_ParseLayerCoversEveryNestingForm(t *testing.T) {
 // original defect was exactly this — "I did not understand it" read as "there is
 // nothing here to judge" (Rule 15).
 func TestRefGuardShellNesting_UnreadNestingIsRefusedNotSkipped(t *testing.T) {
-	const shared = "/home/nick/work/gopi"
+	const shared = "/home/user/work/gopi"
 	command := "OUT=$(git -C " + shared + " checkout -b " + rgsnLegalBranch
 	marked := false
 	for _, clause := range refGuardClauses(command, shared) {

@@ -236,7 +236,7 @@ func TestGitCommitSeamAliasesAreNotCopies(t *testing.T) {
 	if got, want := TaskTrailerLine("abc"), gitcommit.TaskTrailerLine("abc"); got != want {
 		t.Fatalf("TaskTrailerLine = %q, gitcommit's = %q", got, want)
 	}
-	if got, want := HostTrailerLine("zbook"), gitcommit.HostTrailerLine("zbook"); got != want {
+	if got, want := HostTrailerLine("zpeer"), gitcommit.HostTrailerLine("zpeer"); got != want {
 		t.Fatalf("HostTrailerLine = %q, gitcommit's = %q", got, want)
 	}
 	if got, want := localHostTrailerLine(), gitcommit.LocalHostTrailerLine(); got != want {

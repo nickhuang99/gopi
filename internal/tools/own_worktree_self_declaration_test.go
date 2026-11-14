@@ -5,7 +5,7 @@ package tools
 //
 // THE MEASURED DEFECT (2026-10-27, row 01a17dcd's close-out on this host):
 //
-//	task 01a17dcd-c59c-7344-a99a-83133d4416c7: own-worktree-release: own registered worktree kept: /home/nick/workspace/cptest-verify — worktree is DIRTY (uncommitted work) — left for a human
+//	task 01a17dcd-c59c-7344-a99a-83133d4416c7: own-worktree-release: own registered worktree kept: /home/user/workspace/cptest-verify — worktree is DIRTY (uncommitted work) — left for a human
 //
 // The directory was a chat's hand-made checkout; the seven files in it belonged
 // to a DIFFERENT task; `01a17dcd`'s own commit was complete and correct. The

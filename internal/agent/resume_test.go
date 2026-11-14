@@ -334,7 +334,7 @@ func TestResume_NoTaskStartSearchEnforcement(t *testing.T) {
 // message stays the bare continuation text. That encoded the bug. The Claude
 // API rejects an unanswered tool_use deterministically — HTTP 400 "`tool_use`
 // ids were found without `tool_result` blocks immediately after" (measured:
-// /home/nick/.gopi/dumps/20260922-040822.dump.json, where an unanswered head tool_use
+// /home/user/.gopi/dumps/20260922-040822.dump.json, where an unanswered head tool_use
 // killed a live run at its hand-off and then every resume of it). So the
 // harness now REPAIRS the dangling call with a synthesized tool_result before
 // the continuation, and the last message is the continuation arriving after

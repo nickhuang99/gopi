@@ -44,7 +44,7 @@ TIMEOUT_SEC = 8          # urlopen 超时；超过 -> status=timeout
 DEFAULT_COUNT = 5        # 默认返回条数
 MAX_COUNT = 20           # 硬上限，保证 JSON 精简（0-token）
 SNIPPET_CHARS = 200      # snippet 截断长度（与 bash 版一致）
-SSH_HOST = os.environ.get("SSH_HOST", "searchbot")  # 英文查询跳板（同 google_search.py）
+SSH_HOST = os.environ.get("SSH_HOST", "searchbox")  # 英文查询跳板（同 google_search.py）
 SSH_OPTS = ["-o", "ConnectTimeout=8", "-o", "BatchMode=yes", "-T"]
 SSH_TIMEOUT_SEC = 30     # 英文查询整次 ssh 往返总超时
 UA = "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/126.0.0.0 Safari/537.36"

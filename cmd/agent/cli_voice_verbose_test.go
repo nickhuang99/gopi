@@ -111,7 +111,7 @@ func TestVoiceVerbosePrintsThePartialStream(t *testing.T) {
 // presence of one sentence and the absence of the other in the same output.
 func TestVoiceStreamStartKeepsTheDisclosureAndGatesThePlumbing(t *testing.T) {
 	cred := doubaostream.Credential{AppID: "inline-id", Token: "inline-token"}
-	const path = "/home/nick/.doubao/v2_voice.env"
+	const path = "/home/user/.doubao/v2_voice.env"
 
 	quiet := voiceCaptureStderr(t, func() {
 		voiceReportStreamStart(cred, path, doubaostream.DefaultChunkMillis, "wss://example.invalid/api/v2/asr", false)

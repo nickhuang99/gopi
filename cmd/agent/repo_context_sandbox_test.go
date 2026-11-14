@@ -22,7 +22,7 @@ package main
 // them (ordinary `git worktree remove`, branch detached). Measured live, not
 // inferred:
 //
-//	worker: own-worktree-release: own registered worktree freed: /home/nick/workspace/gopi-v1-clean
+//	worker: own-worktree-release: own registered worktree freed: /home/user/workspace/gopi-v1-clean
 //	   (a worktree of this run's repo that no ledger row owned; branch detached untouched)
 //
 // and the dirty siblings were correctly `kept … left for a human`, which is why

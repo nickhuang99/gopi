@@ -9,7 +9,7 @@ and returns the cleaned article/body text, truncated to a token-budget cap.
 Path (mirrors google_search.py / github_search.py):
   - URL validated locally (http/https only).
   - Body fetched on the search-bot VPS jump host (GFW'd local host cannot
-    reach many overseas sites): ssh searchbot 'curl -sL --max-time N URL'.
+    reach many overseas sites): ssh searchbox 'curl -sL --max-time N URL'.
     The URL is base64-wrapped so no shell injection can pass through.
   - HTML cleaned: script/style/nav/header/footer/noscript/iframe dropped,
     block tags → newlines, entities unescaped, whitespace collapsed.
@@ -49,7 +49,7 @@ MIN_MAX_CHARS = 200           # floor so a tiny budget still yields something
 MAX_MAX_CHARS = 100000        # hard cap — protects the LLM context window
 DEFAULT_MAX_TIME = 30         # remote curl --max-time (seconds)
 MAX_MAX_TIME = 120            # hard cap on the remote fetch
-SSH_HOST = os.environ.get("SSH_HOST", "searchbot")
+SSH_HOST = os.environ.get("SSH_HOST", "searchbox")
 # Direct-fetch domains: hosts reachable from the LOCAL network (CN sites).
 # Fetching these via the US jump host distorts geo-sensitive content
 # (pricing pages show USD instead of CNY, CN-only variants are hidden).

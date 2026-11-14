@@ -97,7 +97,7 @@ func TestWorkerRunFlagsRefuseOptionShapedAlias(t *testing.T) {
 	const bad = "-oProxyCommand=/tmp/payload"
 	for _, argv := range [][]string{
 		{"t-1", "--report-to", bad},
-		{"t-1", "--repo", bad + ":/home/nick/work/GoPi"},
+		{"t-1", "--repo", bad + ":/home/user/work/GoPi"},
 		{"t-1", "--report-to=" + bad},
 	} {
 		wa, unknown := scanWorkerArgs(argv)
@@ -112,7 +112,7 @@ func TestWorkerRunFlagsRefuseOptionShapedAlias(t *testing.T) {
 	}
 	// Well-formed values still scan (the guard is not a blanket refusal).
 	for _, argv := range [][]string{
-		{"t-1", "--report-to", "zbook", "--repo", "zbook:/home/nick/work/GoPi"},
+		{"t-1", "--report-to", "zpeer", "--repo", "zpeer:/home/user/work/GoPi"},
 		{"t-1"},
 	} {
 		wa, unknown := scanWorkerArgs(argv)

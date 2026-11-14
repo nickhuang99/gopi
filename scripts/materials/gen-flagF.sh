@@ -25,7 +25,7 @@
 set -uo pipefail
 
 ROOT="$(cd "$(dirname "${BASH_SOURCE[0]}")/../.." && pwd)"
-EV="${GOPI_MATERIALS_EVIDENCE:-/home/nick/.gopi/sessions/01a0ed23-1945-77f7-bad0-962ec576bcb9}"
+EV="${GOPI_MATERIALS_EVIDENCE:-/home/user/.gopi/sessions/01a0ed23-1945-77f7-bad0-962ec576bcb9}"
 BIN="${GOPI_MATERIALS_BIN:-$EV/bin/gopi}"
 RENDER="$ROOT/scripts/materials/render.py"
 # shellcheck source=scripts/lib/tmp-ban.sh
@@ -388,7 +388,7 @@ entry 224 flag-bash-timeout-declared-unread \
   '结论是三块证据同页：真跑的 `elapsed=` 行与回答里的「sleep 25 已执行」、`--bash-timeout abc` 的 `invalid value … want an integer`（解析层是活的）、以及消费层的 grep 结果（`internal/config` 写入的字段在别处无人读）。' \
   '框住 `TOOL25-DONE` 那一行：3 秒的上限下这条命令仍然跑完（哨兵串只会在 25 秒的 sleep 走完之后出现）——声明（`-h` 里写着这个 flag）、解析（非法值被拒）、**消费**三层里，第三层在这条证据里缺席。再框住 grep 出来的 `BashTimeoutSec`：读者可以自己复核「谁读它」。' \
   'TOOL25-DONE::3 秒上限下这条命令仍然跑完;;invalid value::解析层是活的;;BashTimeoutSec::这个字段只出现在 config 包内' \
-  -- "\"$B\" --bash-timeout 3 --prompt \"Use the bash tool to run exactly: sleep 25; then reply with exactly TOOL25-DONE\" --timeout 45;;\"$B\" --bash-timeout abc --prompt \"Reply with exactly: ok\" --timeout 8 > \$GOPI_HOME/refuse.txt 2>&1; echo \"exit=$?\"; sed -n '1p' \$GOPI_HOME/refuse.txt;;grep -rn \"BashTimeoutSec\" --include=*.go /home/nick/workspace/gopi-01a0edf349a371b78c6cbb79fb58b772/internal /home/nick/workspace/gopi-01a0edf349a371b78c6cbb79fb58b772/cmd"
+  -- "\"$B\" --bash-timeout 3 --prompt \"Use the bash tool to run exactly: sleep 25; then reply with exactly TOOL25-DONE\" --timeout 45;;\"$B\" --bash-timeout abc --prompt \"Reply with exactly: ok\" --timeout 8 > \$GOPI_HOME/refuse.txt 2>&1; echo \"exit=$?\"; sed -n '1p' \$GOPI_HOME/refuse.txt;;grep -rn \"BashTimeoutSec\" --include=*.go /home/user/workspace/gopi-01a0edf349a371b78c6cbb79fb58b772/internal /home/user/workspace/gopi-01a0edf349a371b78c6cbb79fb58b772/cmd"
 
 # 225 --tool-timeout：同族第三个成员，用一次真读来问「它到了工具层没有」
 entry 225 flag-tool-timeout-declared-unread \
@@ -396,7 +396,7 @@ entry 225 flag-tool-timeout-declared-unread \
   '结论是两块：`--tool-timeout 1` 下 read 工具正常返回文件内容，以及 grep 出的消费层证据（工具层读的是环境变量 `GOPI_TOOL_TIMEOUT_SEC`，不是配置里的字段）。' \
   '框住 `TOKEN-ZZ-4711`：1 秒的上限下 read 照常返回——与 224 同一形态（声明与解析都在，消费层缺席）。再框住 grep 输出里的 `GOPI_TOOL_TIMEOUT_SEC`：工具层真正读的是**环境变量**，同一族三个 flag 的运行时值因此由环境决定，而不是由你写下的 flag 决定。' \
   'TOKEN-ZZ-4711::1 秒上限下 read 照常返回;;GOPI_TOOL_TIMEOUT_SEC::工具层读的是环境变量' \
-  -- "printf 'TOKEN-%s\\n' ZZ-4711 > \$GOPI_HOME/probe-attach.txt; \"$B\" --tool-timeout 1 --prompt \"Use the read tool on \$GOPI_HOME/probe-attach.txt then reply done\" --timeout 30;;grep -rn \"GOPI_TOOL_TIMEOUT_SEC\" --include=*.go /home/nick/workspace/gopi-01a0edf349a371b78c6cbb79fb58b772/internal"
+  -- "printf 'TOKEN-%s\\n' ZZ-4711 > \$GOPI_HOME/probe-attach.txt; \"$B\" --tool-timeout 1 --prompt \"Use the read tool on \$GOPI_HOME/probe-attach.txt then reply done\" --timeout 30;;grep -rn \"GOPI_TOOL_TIMEOUT_SEC\" --include=*.go /home/user/workspace/gopi-01a0edf349a371b78c6cbb79fb58b772/internal"
 
 # 226 --tool-timeout 的另一面：read 遇到命名管道 —— 失败在 seek 上，错误逐字带回 errno
 entry 226 flag-tool-timeout-read-pipe \
@@ -412,7 +412,7 @@ entry 227 flag-bash-idle-declared-unread \
   '结论是三块同页：flag 侧与 env 侧两次真跑都正常完成、`invalid value` 说明解析层活着、grep 说明 `cfg.BashIdleSec` 在别处无人读。' \
   '框住两次真跑的计数行：**flag 与 env 两条通道都没能让计时器开火**（本条不写「杀」，因为没杀）。再框住 grep 的 `cfg.BashIdleSec`：与 224/225 同一族同一形态——声明与解析都在，消费层缺席；「太慢」与「太安静」两把刀在本二进制里都读不到这两个 flag 写下的值。' \
   '已执行::两条通道都没能让计时器开火;;BashIdleSec::这个字段在别处无人读' \
-  -- "\"$B\" --bash-timeout 60 --bash-idle 3 --prompt \"Use the bash tool to run exactly: sleep 12; then reply done\" --timeout 40;;export GOPI_BASH_IDLE_SEC=3; \"$B\" --bash-timeout 60 --prompt \"Use the bash tool to run exactly: sleep 12; then reply done\" --timeout 40;;grep -rn \"BashIdleSec\" --include=*.go /home/nick/workspace/gopi-01a0edf349a371b78c6cbb79fb58b772/internal /home/nick/workspace/gopi-01a0edf349a371b78c6cbb79fb58b772/cmd"
+  -- "\"$B\" --bash-timeout 60 --bash-idle 3 --prompt \"Use the bash tool to run exactly: sleep 12; then reply done\" --timeout 40;;export GOPI_BASH_IDLE_SEC=3; \"$B\" --bash-timeout 60 --prompt \"Use the bash tool to run exactly: sleep 12; then reply done\" --timeout 40;;grep -rn \"BashIdleSec\" --include=*.go /home/user/workspace/gopi-01a0edf349a371b78c6cbb79fb58b772/internal /home/user/workspace/gopi-01a0edf349a371b78c6cbb79fb58b772/cmd"
 
 
 # 228 --compact：非法值静默当默认（与同面的整数型 flag 拒绝非法值形成对照）

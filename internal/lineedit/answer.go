@@ -262,8 +262,8 @@ const (
 
 // statusEllipsis marks a status field the row had to cut short. It is the
 // difference between "the terminal is narrow" and "this is corrupted data":
-// "⚙ read /home/nick/work/GoPi/interna" reads as a broken path, while
-// "⚙ read /home/nick/work/GoPi/interna…" reads as a field that continues. It is
+// "⚙ read /home/user/work/GoPi/interna" reads as a broken path, while
+// "⚙ read /home/user/work/GoPi/interna…" reads as a field that continues. It is
 // one display cell wide — a hard requirement, because the row's one-screen-row
 // guarantee is arithmetic on cell widths (see fitField).
 const statusEllipsis = "…"
@@ -5336,7 +5336,7 @@ func isWrapSpace(r rune) bool { return r == ' ' }
 // 2026-09-27 on master: `cols=60 burst=7: body row 18 opens at cell 3, want the
 // block's column 2`. The same arithmetic is what leaves a row opening OUTSIDE
 // the column entirely on the operator's dump (`tatus ==="; git status -sb`
-// beneath `▌ cd /home/nick/work/GoPi; … git branch -vv`).
+// beneath `▌ cd /home/user/work/GoPi; … git branch -vv`).
 //
 // It is applied ONLY to a CONTINUATION row — one the renderer opens with the
 // blank gutter because the line it belongs to is still being drawn — and only to

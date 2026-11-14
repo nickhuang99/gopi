@@ -138,7 +138,7 @@ const (
 	// REPORTING probe root below. It is the honest lever for a deployment
 	// whose rows describe a checkout that is not this process's own (an
 	// imported tree, a peer's layout): the value was a compiled-in
-	// /home/nick/work/GoPi, which made the report correct on exactly one box.
+	// /home/user/work/GoPi, which made the report correct on exactly one box.
 	latentColumnProbeRootEnv = "GOPI_PROVENANCE_PROBE_ROOT"
 
 	// latentColumnProbeRoot is the repository root consulted when REPORTING
@@ -544,7 +544,7 @@ func latentColumnsPresent(ctx context.Context, q QueryExecer) bool {
 // heading rule, printed by the CLI so a reader can reproduce the population
 // WITHOUT this binary:
 //
-//	./bin/gopi memory provenance --latent-candidates | sed -n '/^SELECT/,$p' | sqlite3 -readonly /home/nick/.gopi/memory.db
+//	./bin/gopi memory provenance --latent-candidates | sed -n '/^SELECT/,$p' | sqlite3 -readonly /home/user/.gopi/memory.db
 //
 // It is RENDERED from latentFileExtensions and latentTokenTrim ({{tok}}), so the
 // mirror cannot drift from the predicate the harvest applies. Two decisions make

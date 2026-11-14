@@ -121,7 +121,7 @@ func TestPrefetchLookupDrivesAReleasedSharedHandle(t *testing.T) {
 		Turn:      1,
 		Note:      "a released handle must not be answered through: the leg dials its own",
 		Host:      "some-other-host",
-		Path:      "/home/nick/.gopi/sessions/an-earlier-run/self-record.md",
+		Path:      "/home/user/.gopi/sessions/an-earlier-run/self-record.md",
 	}}, "released handle")
 
 	released := releasedPrefetchHandle(t, path)

@@ -14,7 +14,7 @@ package tools
 //
 //	$ sqlite3 (read-only) SELECT claimed_by, proc_pid, proc_start_ticks,
 //	                     in_progress_at, session_id FROM tasks WHERE task_id LIKE '01a163df%'
-//	  nick-sager:1190977 | NULL | NULL | NULL | ''
+//	  host-a:1190977 | NULL | NULL | NULL | ''
 //	$ ls -d /proc/1190977
 //	  No such file or directory
 //	$ SELECT count(*) FROM tasks WHERE proc_start_ticks IS NOT NULL
@@ -141,7 +141,7 @@ func TestWriterIdentity_DeliveryArmRefusesTheIncidentsOwnTerminalWrite(t *testin
 //
 //	claimHolder("merge-executor")                -> host="" pid=0 ok=false
 //	claimHolder("merge-verify-staleness-guard")  -> host="" pid=0 ok=false
-//	claimHolder("nick-sager:1190977")            -> host="nick-sager" pid=1190977 ok=true
+//	claimHolder("host-a:1190977")            -> host="host-a" pid=1190977 ok=true
 //
 // So an ownership predicate keyed on claimed_by's pid does not REFUSE those
 // doors — it cannot see them, and "no pid to judge" becomes a silent PASS. That

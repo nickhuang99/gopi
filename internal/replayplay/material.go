@@ -700,7 +700,7 @@ func LoadSession(dir string) (Material, error) {
 // directory: the screen dump is looked for under dumpDir, and the event timeline
 // is read from the EXACT path jsonlPath (empty = look for it beside the dump).
 //
-// WHY A SECOND ENTRY POINT (measured on this host, 2026-10-06). zbook's session
+// WHY A SECOND ENTRY POINT (measured on this host, 2026-10-06). zpeer's session
 // tree has TWO layouts, and only ONE of them puts the log beside the artifacts:
 //
 //	sessions/<session-id>/session.jsonl            a bare session/chat run
