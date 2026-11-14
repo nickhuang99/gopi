@@ -14,7 +14,7 @@ import (
 	"strings"
 	"testing"
 
-	"github.com/nick/gopi/internal/runend"
+	"github.com/nickhuang99/gopi/internal/runend"
 )
 
 func TestTaskShowRendersTruncatedRun(t *testing.T) {

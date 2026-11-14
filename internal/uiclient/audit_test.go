@@ -13,7 +13,7 @@ import (
 	"strings"
 	"testing"
 
-	"github.com/nick/gopi/internal/lineedit"
+	"github.com/nickhuang99/gopi/internal/lineedit"
 )
 
 // auditCandidate builds a painted candidate at a known geometry, with the given

@@ -24,11 +24,11 @@ import (
 func TestTaskIDRelabelSanitizesNode(t *testing.T) {
 	cases := []struct{ node, wantSuffix string }{
 		{"hp", "-nhp"},
-		{"zpeer_01", "-nzpeer_01"}, // '_' is legal, kept verbatim
-		{"zpeer/01", "-nzpeer_01"}, // '/' is not alphanumeric → '_'
-		{"  hp  ", "-nhp"},         // trimmed
-		{"", "-nnode"},             // empty → "node"
-		{"!!!", "-n___"},           // all-illegal → each char becomes '_' (not "node" — that path needs an EMPTY result after trim)
+		{"zpeer_01", "-npeerbox_01"},   // '_' is legal, kept verbatim
+		{"peerbox/01", "-npeerbox_01"}, // '/' is not alphanumeric → '_'
+		{"  hp  ", "-nhp"},             // trimmed
+		{"", "-nnode"},                 // empty → "node"
+		{"!!!", "-n___"},               // all-illegal → each char becomes '_' (not "node" — that path needs an EMPTY result after trim)
 	}
 	for _, tc := range cases {
 		got, changed, err := taskIDRelabel("t-9001", tc.node, func(string) (bool, error) { return false, nil })

@@ -7,8 +7,8 @@ import (
 	"strings"
 	"testing"
 
-	"github.com/nick/gopi/internal/config"
-	"github.com/nick/gopi/internal/doubaostream"
+	"github.com/nickhuang99/gopi/internal/config"
+	"github.com/nickhuang99/gopi/internal/doubaostream"
 )
 
 // ── the third arm of the engine dispatch ───────────────────────────────

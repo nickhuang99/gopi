@@ -15,9 +15,9 @@ import (
 	"testing"
 	"time"
 
-	"github.com/nick/gopi/internal/deepseek"
-	"github.com/nick/gopi/internal/heavytest"
-	"github.com/nick/gopi/internal/toolnames"
+	"github.com/nickhuang99/gopi/internal/deepseek"
+	"github.com/nickhuang99/gopi/internal/heavytest"
+	"github.com/nickhuang99/gopi/internal/toolnames"
 )
 
 // writeSSELine writes a single SSE data line followed by a blank line.

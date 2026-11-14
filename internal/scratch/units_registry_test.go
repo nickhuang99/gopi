@@ -20,7 +20,7 @@ import (
 	"testing"
 	"time"
 
-	"github.com/nick/gopi/internal/procname"
+	"github.com/nickhuang99/gopi/internal/procname"
 )
 
 // writeShotUnitRecord writes a record the way the production registrar writes

@@ -4,7 +4,7 @@ import (
 	"strings"
 	"testing"
 
-	"github.com/nick/gopi/internal/lineedit"
+	"github.com/nickhuang99/gopi/internal/lineedit"
 )
 
 // chat_status_width_test.go — the status row's WIDTH contract, table-driven.

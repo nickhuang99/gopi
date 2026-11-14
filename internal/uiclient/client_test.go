@@ -17,7 +17,7 @@ import (
 	tea "github.com/charmbracelet/bubbletea"
 	"github.com/mattn/go-runewidth"
 
-	"github.com/nick/gopi/internal/lineedit"
+	"github.com/nickhuang99/gopi/internal/lineedit"
 )
 
 // ---- helpers ---------------------------------------------------------------

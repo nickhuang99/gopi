@@ -6,9 +6,9 @@ import (
 	"strings"
 	"testing"
 
-	"github.com/nick/gopi/internal/config"
-	"github.com/nick/gopi/internal/sessionlayout"
-	"github.com/nick/gopi/internal/signalrec"
+	"github.com/nickhuang99/gopi/internal/config"
+	"github.com/nickhuang99/gopi/internal/sessionlayout"
+	"github.com/nickhuang99/gopi/internal/signalrec"
 )
 
 // sessionlayout.writeFile makes a file with a little content (the classifier is a NAME +

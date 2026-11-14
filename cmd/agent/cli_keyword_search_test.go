@@ -29,8 +29,8 @@ import (
 	"strings"
 	"testing"
 
-	"github.com/nick/gopi/internal/config"
-	"github.com/nick/gopi/internal/toolnames"
+	"github.com/nickhuang99/gopi/internal/config"
+	"github.com/nickhuang99/gopi/internal/toolnames"
 )
 
 // TestParseKeywordSearchArgs pins the pure parser: one query (words join),

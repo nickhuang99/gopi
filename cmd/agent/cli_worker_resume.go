@@ -30,7 +30,7 @@ package main
 // wrapper, no second implementation of anything.
 
 import (
-	"github.com/nick/gopi/internal/cliverbs"
+	"github.com/nickhuang99/gopi/internal/cliverbs"
 
 	"errors"
 	"fmt"
@@ -40,10 +40,10 @@ import (
 	"path/filepath"
 	"strings"
 
-	"github.com/nick/gopi/internal/closeouthandoff"
-	"github.com/nick/gopi/internal/runcmd"
-	"github.com/nick/gopi/internal/tools"
-	"github.com/nick/gopi/internal/worktreerelease"
+	"github.com/nickhuang99/gopi/internal/closeouthandoff"
+	"github.com/nickhuang99/gopi/internal/runcmd"
+	"github.com/nickhuang99/gopi/internal/tools"
+	"github.com/nickhuang99/gopi/internal/worktreerelease"
 )
 
 // workerFlagResume is the `--resume` spelling. The three ground selectors live

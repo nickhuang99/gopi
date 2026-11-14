@@ -47,8 +47,8 @@ import (
 	"fmt"
 	"strings"
 
-	"github.com/nick/gopi/internal/agent"
-	"github.com/nick/gopi/internal/runcmd"
+	"github.com/nickhuang99/gopi/internal/agent"
+	"github.com/nickhuang99/gopi/internal/runcmd"
 )
 
 // The command's vocabulary. Every word the switch, the help page and the

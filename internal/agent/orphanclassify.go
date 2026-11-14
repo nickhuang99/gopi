@@ -5,8 +5,8 @@ import (
 	"encoding/json"
 	"os"
 
-	"github.com/nick/gopi/internal/procstat"
-	"github.com/nick/gopi/internal/sessionevent"
+	"github.com/nickhuang99/gopi/internal/procstat"
+	"github.com/nickhuang99/gopi/internal/sessionevent"
 )
 
 // ProcessAliveStampField is the session_start key that records the writing

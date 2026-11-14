@@ -8,7 +8,7 @@ import (
 	"strings"
 	"testing"
 
-	"github.com/nick/gopi/internal/lineedit"
+	"github.com/nickhuang99/gopi/internal/lineedit"
 )
 
 // TestAuditAnswer_RepaintTailIsArrivalNotPaintLoss is the defect's own fixture: a

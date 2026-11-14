@@ -46,7 +46,7 @@ import (
 	"strings"
 	"testing"
 
-	"github.com/nick/gopi/internal/sgr"
+	"github.com/nickhuang99/gopi/internal/sgr"
 )
 
 // recCols/recRows is the geometry the reconciliation cases paint into: wide

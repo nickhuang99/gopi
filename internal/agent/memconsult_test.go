@@ -7,8 +7,8 @@ import (
 	"strings"
 	"testing"
 
-	"github.com/nick/gopi/internal/config"
-	"github.com/nick/gopi/internal/toolnames"
+	"github.com/nickhuang99/gopi/internal/config"
+	"github.com/nickhuang99/gopi/internal/toolnames"
 )
 
 // The review-time consult checkpoint's switch has exactly ONE spelling per

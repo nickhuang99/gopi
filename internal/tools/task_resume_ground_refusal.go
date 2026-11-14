@@ -28,7 +28,7 @@ import (
 	"errors"
 	"fmt"
 
-	"github.com/nick/gopi/internal/config"
+	"github.com/nickhuang99/gopi/internal/config"
 )
 
 // TaskResumeGroundRefusalKind names WHICH refusal a resume ground resolution

@@ -110,7 +110,7 @@ const (
 	// trimpath caveat, stated rather than assumed: `-trimpath`, which the
 	// release build (inside container/deploy.sh's `podman build`) passes,
 	// rewrites the recorded path to a module-relative one
-	// ("github.com/nick/gopi/internal/tools/…"), so it no longer resolves on
+	// ("github.com/nickhuang99/gopi/internal/tools/…"), so it no longer resolves on
 	// disk. A path that does not name a real directory is REFUSED as an anchor
 	// and the search FALLS BACK to the walking contract below — announced, so
 	// the degradation is visible (Rule 15) instead of silently selecting
@@ -206,7 +206,7 @@ const (
 	// be REFUSED as an anchor (the fallback is what keeps a release build's
 	// suite honest) — an anchor that accepted it would scan a tree named by a
 	// path nobody can stat.
-	auditTrimpathAnchor = "github.com/nick/gopi/internal/tools/" + "assertion_totality_audit_test.go"
+	auditTrimpathAnchor = "github.com/nickhuang99/gopi/internal/tools/" + "assertion_totality_audit_test.go"
 )
 
 // auditTotalityActionRe matches the message vocabulary of an action claim:
@@ -1206,7 +1206,7 @@ func auditRootFromSourceAnchor() (string, bool) {
 
 // auditAnchorRootFrom turns a RECORDED source path into a module root. The
 // path is refused as an anchor unless it names a real file: a -trimpath build
-// records a module-relative path ("github.com/nick/gopi/internal/tools/…")
+// records a module-relative path ("github.com/nickhuang99/gopi/internal/tools/…")
 // which resolves to nothing on disk, and a directory is not this file either.
 // Both refusals are pinned by the anchor regression test, so the fallback
 // contract cannot be silently narrowed to "always trust the recorded path".

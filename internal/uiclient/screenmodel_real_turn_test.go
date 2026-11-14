@@ -33,7 +33,7 @@ import (
 
 	tea "github.com/charmbracelet/bubbletea"
 
-	"github.com/nick/gopi/internal/sessionevent"
+	"github.com/nickhuang99/gopi/internal/sessionevent"
 )
 
 const (
@@ -185,7 +185,7 @@ func TestRealToolCallTurnScreenModelIsAgentReadable(t *testing.T) {
 		{name: "tool result row", want: "resultbashexit=0"},
 		// The tool's OUTPUT — what the operator actually asked for — is in the
 		// transcript (the model quoted the bash result back).
-		{name: "tool output on screen", want: "github.com/nick/gopi"},
+		{name: "tool output on screen", want: "github.com/nickhuang99/gopi"},
 		// The turn ended, with the counters an agent uses to know WHERE it is.
 		// The row's count is the REPL-turn quantity and names itself as one — the
 		// expectation is built from the constant, so the word cannot drift from

@@ -29,7 +29,7 @@ import (
 	"sync"
 	"testing"
 
-	"github.com/nick/gopi/internal/gitcommit"
+	"github.com/nickhuang99/gopi/internal/gitcommit"
 )
 
 // ── claim 1: the literal gate ───────────────────────────────────────────────
@@ -236,7 +236,7 @@ func TestGitCommitSeamAliasesAreNotCopies(t *testing.T) {
 	if got, want := TaskTrailerLine("abc"), gitcommit.TaskTrailerLine("abc"); got != want {
 		t.Fatalf("TaskTrailerLine = %q, gitcommit's = %q", got, want)
 	}
-	if got, want := HostTrailerLine("zpeer"), gitcommit.HostTrailerLine("zpeer"); got != want {
+	if got, want := HostTrailerLine("peerbox"), gitcommit.HostTrailerLine("peerbox"); got != want {
 		t.Fatalf("HostTrailerLine = %q, gitcommit's = %q", got, want)
 	}
 	if got, want := localHostTrailerLine(), gitcommit.LocalHostTrailerLine(); got != want {

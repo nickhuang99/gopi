@@ -42,7 +42,7 @@ package main
 import (
 	"errors"
 	"fmt"
-	"github.com/nick/gopi/internal/heavytest"
+	"github.com/nickhuang99/gopi/internal/heavytest"
 	"os"
 	"os/exec"
 	"path/filepath"
@@ -52,10 +52,10 @@ import (
 	"testing"
 	"time"
 
-	"github.com/nick/gopi/internal/devdoc"
-	"github.com/nick/gopi/internal/taskverbs"
-	"github.com/nick/gopi/internal/testutil"
-	"github.com/nick/gopi/internal/tools"
+	"github.com/nickhuang99/gopi/internal/devdoc"
+	"github.com/nickhuang99/gopi/internal/taskverbs"
+	"github.com/nickhuang99/gopi/internal/testutil"
+	"github.com/nickhuang99/gopi/internal/tools"
 )
 
 // g1TaskVerbTimeout bounds ONE probe's child. It is a TEST ceiling (Rule 27: a
@@ -621,12 +621,12 @@ func TestRetiredTaskVerbsDispatchARemoval(t *testing.T) {
 			// The ref facts are read from their owners: git, and the machinery
 			// that consumes refs.
 			verb:    taskverbs.BranchRefs,
-			args:    []string{"--peer", "zpeer"},
+			args:    []string{"--peer", "peerbox"},
 			replace: "git ls-remote",
 		},
 		{
 			verb:    taskverbs.Orphans,
-			args:    []string{"--delivery", "zpeer"},
+			args:    []string{"--delivery", "peerbox"},
 			replace: "gopi task show",
 		},
 		{
@@ -697,7 +697,7 @@ func TestRetiredTaskVerbsDispatchARemoval(t *testing.T) {
 		// `reconcile` and MISSED in `branch-refs`, where the sentence went on to
 		// name `gopi task finish-cleanup` (retired by the same epic) as "what a
 		// terminal row's delivery should do". Measured on the binary at
-		// `c5548b88`: `gopi task branch-refs --peer zpeer` printed it and exited
+		// `c5548b88`: `gopi task branch-refs --peer peerbox` printed it and exited
 		// 1, and `gopi task finish-cleanup` printed a SECOND removal and exited
 		// 1. (3) alone is why that shipped green — it checks the ENTRANCE to the
 		// sentence, not the far side of it. This arm checks the whole sentence.

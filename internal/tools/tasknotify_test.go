@@ -15,7 +15,7 @@ import (
 	"testing"
 	"time"
 
-	"github.com/nick/gopi/internal/config"
+	"github.com/nickhuang99/gopi/internal/config"
 )
 
 // taskNotifyProfileSandbox gives the test its OWN PROFILE: GOPI_HOME at a temp

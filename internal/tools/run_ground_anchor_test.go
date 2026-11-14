@@ -22,10 +22,10 @@ import (
 	"testing"
 	"time"
 
-	"github.com/nick/gopi/internal/procname"
-	"github.com/nick/gopi/internal/removalaudit"
-	"github.com/nick/gopi/internal/testutil"
-	"github.com/nick/gopi/internal/worktreeroots"
+	"github.com/nickhuang99/gopi/internal/procname"
+	"github.com/nickhuang99/gopi/internal/removalaudit"
+	"github.com/nickhuang99/gopi/internal/testutil"
+	"github.com/nickhuang99/gopi/internal/worktreeroots"
 )
 
 // askeProbeMarker identifies the re-exec'd asker-probe child (see

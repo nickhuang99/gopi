@@ -6,9 +6,9 @@ import (
 	"path/filepath"
 	"strings"
 
-	"github.com/nick/gopi/internal/config"
-	"github.com/nick/gopi/internal/scratch"
-	"github.com/nick/gopi/internal/worktreeroots"
+	"github.com/nickhuang99/gopi/internal/config"
+	"github.com/nickhuang99/gopi/internal/scratch"
+	"github.com/nickhuang99/gopi/internal/worktreeroots"
 )
 
 // Suite TEMP-ROOT placement: where this suite's throwaway trees are allowed to

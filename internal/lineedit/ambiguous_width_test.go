@@ -25,7 +25,7 @@ import (
 	"testing"
 	"unicode"
 
-	"github.com/nick/gopi/internal/config"
+	"github.com/nickhuang99/gopi/internal/config"
 )
 
 // ambiguousNarrowCells is the OLD runeCells: W/F two cells, everything else one,

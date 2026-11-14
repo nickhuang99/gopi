@@ -10,7 +10,7 @@
 # box takes >600 s when other agents' suites are running (measured: FAIL
 # `internal/tools 600.3xx s` at load 42-63, with a `panic: test timed out`
 # dump of idle database/sql connectionOpener goroutines). The reported verdict
-# is then `FAIL github.com/nick/gopi/internal/tools 600.3xx s` — text that
+# is then `FAIL github.com/nickhuang99/gopi/internal/tools 600.3xx s` — text that
 # reads like a failing assertion while proving nothing about the code (Rule 15:
 # a failure must NAME itself).
 #
@@ -254,12 +254,12 @@ anomaly_marker="STREAM OUT OF SCOPE"
 # carries, so the requested scope is expressed as import paths and compared
 # against the stream's own values. It is READ FROM go.mod at run time, never
 # assumed: the branch-scoped smoke gate executes this script inside a FIXTURE
-# module (github.com/nick/gopi/smokefixture), where a hardcoded repo path would
+# module (github.com/nickhuang99/gopi/smokefixture), where a hardcoded repo path would
 # mark every package out of scope — a warning that cries wolf is one a reader
 # learns to ignore. The constant below is the REPO'S own path, used only when
 # go.mod cannot be read; the gate pins it against go.mod
 # (assertBudgetScopePrefixMatchesGoMod), so the fallback cannot silently rot.
-module_import_path_fallback="github.com/nick/gopi"
+module_import_path_fallback="github.com/nickhuang99/gopi"
 # The three scratch files the anomaly check works from, inside the run's own
 # artifact directory (never an ambient temp path — Rule 22).
 scope_pkgs_filename="scope-packages.txt"

@@ -18,9 +18,9 @@ package agent
 import (
 	"testing"
 
-	"github.com/nick/gopi/internal/deepseek"
-	"github.com/nick/gopi/internal/sessionevent"
-	"github.com/nick/gopi/internal/toolnames"
+	"github.com/nickhuang99/gopi/internal/deepseek"
+	"github.com/nickhuang99/gopi/internal/sessionevent"
+	"github.com/nickhuang99/gopi/internal/toolnames"
 )
 
 // headNoteHistory builds the shape a post-resume chat carries: the previous

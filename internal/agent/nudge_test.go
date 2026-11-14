@@ -10,7 +10,7 @@ import (
 	"strings"
 	"testing"
 
-	"github.com/nick/gopi/internal/deepseek"
+	"github.com/nickhuang99/gopi/internal/deepseek"
 )
 
 // All no-list-yet nudge tests drive maybeNudgeNoList directly (it is

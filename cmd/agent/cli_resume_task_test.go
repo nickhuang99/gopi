@@ -6,9 +6,9 @@ import (
 	"strings"
 	"testing"
 
-	"github.com/nick/gopi/internal/config"
-	"github.com/nick/gopi/internal/sessionlayout"
-	"github.com/nick/gopi/internal/tools"
+	"github.com/nickhuang99/gopi/internal/config"
+	"github.com/nickhuang99/gopi/internal/sessionlayout"
+	"github.com/nickhuang99/gopi/internal/tools"
 )
 
 // TestParseResumeArgs: the --task linkage option (M4.7) — accepted in

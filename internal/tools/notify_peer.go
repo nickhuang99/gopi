@@ -10,8 +10,8 @@ package tools
 //
 //	WHAT BREAKS WITHOUT IT — measured: a delivery is a FILE in the target
 //	session's own directory (`<session>/messages/inbox.jsonl`), so `gopi notify
-//	--session X --message Y` run on zpeer can only ever resolve a session under
-//	zpeer's own profile. Every cross-host hand-off today is an operator typing
+//	--session X --message Y` run on peerbox can only ever resolve a session under
+//	peerbox's own profile. Every cross-host hand-off today is an operator typing
 //	an ssh command by hand.
 //	WHY NOT IN-PROCESS — the target session's profile is on another machine;
 //	nothing in this process can write a file there without a transport.
@@ -63,9 +63,9 @@ import (
 	"strings"
 	"time"
 
-	"github.com/nick/gopi/internal/cliverbs"
-	"github.com/nick/gopi/internal/config"
-	"github.com/nick/gopi/internal/sessionlayout"
+	"github.com/nickhuang99/gopi/internal/cliverbs"
+	"github.com/nickhuang99/gopi/internal/config"
+	"github.com/nickhuang99/gopi/internal/sessionlayout"
 )
 
 const (

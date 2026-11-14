@@ -9,7 +9,7 @@ import (
 	"strings"
 	"testing"
 
-	"github.com/nick/gopi/internal/config"
+	"github.com/nickhuang99/gopi/internal/config"
 )
 
 // console_provenance_pin_guard_test.go — the family-A guard for THIS package's

@@ -10,8 +10,8 @@ import (
 	"strings"
 	"testing"
 
-	"github.com/nick/gopi/internal/config"
-	"github.com/nick/gopi/internal/tools"
+	"github.com/nickhuang99/gopi/internal/config"
+	"github.com/nickhuang99/gopi/internal/tools"
 	sqlite "modernc.org/sqlite" // the driver's own error type: the chain must still carry it
 )
 

@@ -20,7 +20,7 @@ import (
 	"strings"
 	"testing"
 
-	"github.com/nick/gopi/internal/lineedit"
+	"github.com/nickhuang99/gopi/internal/lineedit"
 )
 
 // capabilitySink is a dumper the tests can render a record line from: the path

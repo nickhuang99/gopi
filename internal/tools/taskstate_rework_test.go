@@ -31,8 +31,8 @@ import (
 	"testing"
 	"time"
 
-	"github.com/nick/gopi/internal/config"
-	"github.com/nick/gopi/internal/sessionevent"
+	"github.com/nickhuang99/gopi/internal/config"
+	"github.com/nickhuang99/gopi/internal/sessionevent"
 )
 
 // taskStateTestDeadPid resolves a pid that is guaranteed NOT to be a live

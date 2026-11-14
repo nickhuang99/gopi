@@ -4,8 +4,8 @@ import (
 	"strings"
 	"testing"
 
-	"github.com/nick/gopi/internal/tasktags"
-	"github.com/nick/gopi/internal/testutil"
+	"github.com/nickhuang99/gopi/internal/tasktags"
+	"github.com/nickhuang99/gopi/internal/testutil"
 )
 
 // FIXTURE ROW (epic fixture-row, 2026-10-13) — the reserved tag a RIG marks a

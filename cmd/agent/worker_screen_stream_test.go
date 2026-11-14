@@ -12,10 +12,10 @@ import (
 	"strings"
 	"testing"
 
-	"github.com/nick/gopi/internal/cliverbs"
-	"github.com/nick/gopi/internal/config"
-	"github.com/nick/gopi/internal/replayplay"
-	"github.com/nick/gopi/internal/uiclient"
+	"github.com/nickhuang99/gopi/internal/cliverbs"
+	"github.com/nickhuang99/gopi/internal/config"
+	"github.com/nickhuang99/gopi/internal/replayplay"
+	"github.com/nickhuang99/gopi/internal/uiclient"
 )
 
 // TestWorkerScreenStreamArmedRecordsTheRoundsLines is the armed path end to end:

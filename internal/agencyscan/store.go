@@ -10,7 +10,7 @@ import (
 	"strconv"
 	"strings"
 
-	"github.com/nick/gopi/internal/config"
+	"github.com/nickhuang99/gopi/internal/config"
 	_ "modernc.org/sqlite" // DB driver: the ledger + knowledge base live in one sqlite file
 )
 

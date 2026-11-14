@@ -1,4 +1,4 @@
-module github.com/nick/gopi
+module github.com/nickhuang99/gopi
 
 go 1.24.0
 

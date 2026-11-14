@@ -22,7 +22,7 @@ import (
 	"syscall"
 	"testing"
 
-	"github.com/nick/gopi/internal/testutil"
+	"github.com/nickhuang99/gopi/internal/testutil"
 )
 
 // The measured cgroup shapes this host really produces. They are FIXTURES, not

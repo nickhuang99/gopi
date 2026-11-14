@@ -55,8 +55,8 @@ import (
 	"fmt"
 	"strings"
 
-	"github.com/nick/gopi/internal/agent"
-	"github.com/nick/gopi/internal/tools"
+	"github.com/nickhuang99/gopi/internal/agent"
+	"github.com/nickhuang99/gopi/internal/tools"
 )
 
 // chatJobNoticeTurnNotice is printed when the level opens a turn of its own.

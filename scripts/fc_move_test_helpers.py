@@ -86,9 +86,9 @@ def normalize_imports(helper):
     if imps:
         block = 'import (\n' + ''.join('\t"%s"\n' % x for x in imps) + ')\n\n'
     if re.search(r'\btestutil\.', body) and 'internal/testutil' not in block:
-        block = block.replace(')\n\n', '\n\t"github.com/nick/gopi/internal/testutil"\n)\n\n')
+        block = block.replace(')\n\n', '\n\t"github.com/nickhuang99/gopi/internal/testutil"\n)\n\n')
     if re.search(r'\btaskverbs\.', body) and 'internal/taskverbs' not in block:
-        block = block.replace(')\n\n', '\n\t"github.com/nick/gopi/internal/taskverbs"\n)\n\n')
+        block = block.replace(')\n\n', '\n\t"github.com/nickhuang99/gopi/internal/taskverbs"\n)\n\n')
     header = '\n'.join(lines[:i]).rstrip()
     open(helper, 'w').write(header + '\n\n' + pkgline + '\n\n' + block + body)
 

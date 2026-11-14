@@ -17,7 +17,7 @@ package main
 // against git — which stores content, the only thing that decides whether the
 // binary contains the tree:
 //
-//	build revision   the `-X github.com/nick/gopi/internal/version.Revision=<commit>`
+//	build revision   the `-X github.com/nickhuang99/gopi/internal/version.Revision=<commit>`
 //	                 operand the build recipe supplies (the path half is
 //	                 buildidentity.RevisionLdflagPath, never re-typed — Rule 13/14).
 //	                 It is read back with debug/buildinfo.ReadFile, so it is a
@@ -43,7 +43,7 @@ import (
 	"testing"
 	"time"
 
-	"github.com/nick/gopi/internal/buildidentity"
+	"github.com/nickhuang99/gopi/internal/buildidentity"
 )
 
 const (

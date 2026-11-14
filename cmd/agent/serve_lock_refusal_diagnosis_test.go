@@ -28,8 +28,8 @@ import (
 	"syscall"
 	"testing"
 
-	"github.com/nick/gopi/internal/config"
-	"github.com/nick/gopi/internal/tools"
+	"github.com/nickhuang99/gopi/internal/config"
+	"github.com/nickhuang99/gopi/internal/tools"
 )
 
 // serveLockRefusalDiagHelperEnv drives the re-exec'd helper process whose ONLY

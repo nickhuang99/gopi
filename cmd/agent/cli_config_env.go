@@ -29,7 +29,7 @@ import (
 	"os"
 	"path/filepath"
 
-	"github.com/nick/gopi/internal/envctx"
+	"github.com/nickhuang99/gopi/internal/envctx"
 )
 
 // configEnvVerb is the sub-verb word.

@@ -8,8 +8,8 @@ import (
 	"testing"
 	"time"
 
-	"github.com/nick/gopi/internal/pricing"
-	"github.com/nick/gopi/internal/rawlogfmt"
+	"github.com/nickhuang99/gopi/internal/pricing"
+	"github.com/nickhuang99/gopi/internal/rawlogfmt"
 )
 
 // Golden tests (IMPLEMENT-SPEC §4 — nick's hard requirement): the fixtures in

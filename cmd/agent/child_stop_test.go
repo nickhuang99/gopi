@@ -26,9 +26,9 @@ import (
 	"testing"
 	"time"
 
-	"github.com/nick/gopi/internal/config"
-	"github.com/nick/gopi/internal/signalrec"
-	"github.com/nick/gopi/internal/tools"
+	"github.com/nickhuang99/gopi/internal/config"
+	"github.com/nickhuang99/gopi/internal/signalrec"
+	"github.com/nickhuang99/gopi/internal/tools"
 )
 
 // Child-startup and death-probe budgets (Rule 1a: named, never inline).

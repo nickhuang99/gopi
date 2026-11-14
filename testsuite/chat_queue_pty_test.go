@@ -32,7 +32,7 @@ import (
 	"testing"
 	"time"
 
-	"github.com/nick/gopi/internal/testutil"
+	"github.com/nickhuang99/gopi/internal/testutil"
 )
 
 // The markers this case waits on. They are the REPL's own strings, spelled here

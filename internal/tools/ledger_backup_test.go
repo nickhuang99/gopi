@@ -17,9 +17,9 @@ import (
 	"testing"
 	"time"
 
-	"github.com/nick/gopi/internal/config"
-	"github.com/nick/gopi/internal/scratch"
-	"github.com/nick/gopi/internal/worktreeroots"
+	"github.com/nickhuang99/gopi/internal/config"
+	"github.com/nickhuang99/gopi/internal/scratch"
+	"github.com/nickhuang99/gopi/internal/worktreeroots"
 )
 
 // ledgerBackupTestDB builds a real gopi ledger at path through the production

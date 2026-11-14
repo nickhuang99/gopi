@@ -7,7 +7,7 @@ import (
 	"strings"
 	"testing"
 
-	"github.com/nick/gopi/internal/config"
+	"github.com/nickhuang99/gopi/internal/config"
 )
 
 // The three-channel tests drive the REAL resolution — config.MemoryPrefetchEnabled

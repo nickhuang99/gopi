@@ -2,7 +2,7 @@ package main
 
 // gopi memory sync — the MANUAL cross-node knowledge-sync entry point.
 //
-//	gopi memory sync --peer zpeer            one bidirectional session
+//	gopi memory sync --peer peerbox            one bidirectional session
 //	gopi memory sync --peer hp --push        one-way OUTWARD
 //	gopi memory sync --peer hp --pull        one-way INWARD
 //	gopi memory sync --peer hp --dry-run     size the outbound patch, no ssh
@@ -35,8 +35,8 @@ import (
 	"strconv"
 	"strings"
 
-	"github.com/nick/gopi/internal/config"
-	"github.com/nick/gopi/internal/tools"
+	"github.com/nickhuang99/gopi/internal/config"
+	"github.com/nickhuang99/gopi/internal/tools"
 )
 
 // memorySyncUsage is the help page for `gopi memory sync` (Rule: every

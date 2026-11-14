@@ -18,7 +18,7 @@ import (
 	"syscall"
 	"testing"
 
-	"github.com/nick/gopi/internal/procstat"
+	"github.com/nickhuang99/gopi/internal/procstat"
 )
 
 // livenessInitPid is init. It is unambiguously ALIVE and — for a non-root

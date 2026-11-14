@@ -47,9 +47,9 @@ import (
 	"testing"
 	"unicode/utf8"
 
-	"github.com/nick/gopi/internal/agent"
-	"github.com/nick/gopi/internal/lineedit"
-	"github.com/nick/gopi/internal/sgr"
+	"github.com/nickhuang99/gopi/internal/agent"
+	"github.com/nickhuang99/gopi/internal/lineedit"
+	"github.com/nickhuang99/gopi/internal/sgr"
 )
 
 // chatStartupNoticeSentences are the three writers' sentences built with REAL

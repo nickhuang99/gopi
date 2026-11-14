@@ -60,9 +60,9 @@ package main
 import (
 	"strings"
 
-	"github.com/nick/gopi/internal/agent"
-	"github.com/nick/gopi/internal/lineedit"
-	"github.com/nick/gopi/internal/sgr"
+	"github.com/nickhuang99/gopi/internal/agent"
+	"github.com/nickhuang99/gopi/internal/lineedit"
+	"github.com/nickhuang99/gopi/internal/sgr"
 )
 
 // termToolResultMaxRunes caps the result half of a row (see the header: a digest

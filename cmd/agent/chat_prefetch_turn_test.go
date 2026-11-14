@@ -20,12 +20,12 @@ import (
 	"testing"
 	"time"
 
-	"github.com/nick/gopi/internal/config"
-	"github.com/nick/gopi/internal/inputsource"
-	"github.com/nick/gopi/internal/lineedit"
-	"github.com/nick/gopi/internal/memoryprefetch"
-	"github.com/nick/gopi/internal/testutil"
-	"github.com/nick/gopi/internal/tools"
+	"github.com/nickhuang99/gopi/internal/config"
+	"github.com/nickhuang99/gopi/internal/inputsource"
+	"github.com/nickhuang99/gopi/internal/lineedit"
+	"github.com/nickhuang99/gopi/internal/memoryprefetch"
+	"github.com/nickhuang99/gopi/internal/testutil"
+	"github.com/nickhuang99/gopi/internal/tools"
 )
 
 // The fixture texts. Named (Rule 1) because a test that re-typed them inline

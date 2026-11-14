@@ -6,7 +6,7 @@ import (
 	"testing"
 	"time"
 
-	"github.com/nick/gopi/internal/lineedit"
+	"github.com/nickhuang99/gopi/internal/lineedit"
 )
 
 // chat_status_cache_bound_test.go — the regression guard for epic 01a0e2e9, the

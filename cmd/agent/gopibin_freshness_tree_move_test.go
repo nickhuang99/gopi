@@ -63,7 +63,7 @@ import (
 	"testing"
 	"time"
 
-	"github.com/nick/gopi/internal/testutil"
+	"github.com/nickhuang99/gopi/internal/testutil"
 )
 
 const (
@@ -570,7 +570,7 @@ func TestFreshnessAbstentionResolvesToSkipNeverToPassOrFail(t *testing.T) {
 // the freshness fixture built its artifact with the JOINED `-X<path>=<rev>`
 // spelling, which the toolchain refuses outright —
 //
-//	flag provided but not defined: -Xgithub.com/nick/gopi/internal/version.Revision
+//	flag provided but not defined: -Xgithub.com/nickhuang99/gopi/internal/version.Revision
 //
 // — so `fixtureBinary` SKIPPED (its own "needs a working Go toolchain" skip) and
 // every arm built on it had been proving nothing: a skip reads exactly like a

@@ -56,7 +56,7 @@ import (
 	"path/filepath"
 	"strings"
 
-	"github.com/nick/gopi/internal/deepseek"
+	"github.com/nickhuang99/gopi/internal/deepseek"
 )
 
 // The artifact's name and modes. The name is ALWAYS an ordinal on the axis the

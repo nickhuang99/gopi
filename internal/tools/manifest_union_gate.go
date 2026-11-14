@@ -52,8 +52,8 @@ import (
 	"path/filepath"
 	"strings"
 
-	"github.com/nick/gopi/internal/devdoc"
-	"github.com/nick/gopi/internal/scratch"
+	"github.com/nickhuang99/gopi/internal/devdoc"
+	"github.com/nickhuang99/gopi/internal/scratch"
 )
 
 const (

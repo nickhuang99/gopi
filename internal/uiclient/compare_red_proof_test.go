@@ -11,7 +11,7 @@ import (
 	"strings"
 	"testing"
 
-	"github.com/nick/gopi/internal/lineedit"
+	"github.com/nickhuang99/gopi/internal/lineedit"
 )
 
 // redProofLine is the shape of the report's line: the report's own was 95 runes.

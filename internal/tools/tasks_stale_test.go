@@ -7,7 +7,7 @@ import (
 	"testing"
 	"time"
 
-	"github.com/nick/gopi/internal/testutil"
+	"github.com/nickhuang99/gopi/internal/testutil"
 )
 
 // openTestTasksDB opens the seeded DB directly for raw column assertions.

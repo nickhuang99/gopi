@@ -40,11 +40,11 @@ import (
 	"strings"
 	"time"
 
-	"github.com/nick/gopi/internal/config"
-	"github.com/nick/gopi/internal/gopilog"
-	"github.com/nick/gopi/internal/lineedit"
-	"github.com/nick/gopi/internal/scratch"
-	"github.com/nick/gopi/internal/uiclient"
+	"github.com/nickhuang99/gopi/internal/config"
+	"github.com/nickhuang99/gopi/internal/gopilog"
+	"github.com/nickhuang99/gopi/internal/lineedit"
+	"github.com/nickhuang99/gopi/internal/scratch"
+	"github.com/nickhuang99/gopi/internal/uiclient"
 )
 
 // The verb's flag vocabulary (Rule 1b): the parser, the help page and the tests

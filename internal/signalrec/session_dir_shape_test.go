@@ -7,8 +7,8 @@ import (
 	"strings"
 	"testing"
 
-	"github.com/nick/gopi/internal/config"
-	"github.com/nick/gopi/internal/sessionid"
+	"github.com/nickhuang99/gopi/internal/config"
+	"github.com/nickhuang99/gopi/internal/sessionid"
 )
 
 // srdssRowID is the ROW spelling of the id the tests below mangle: a canonical

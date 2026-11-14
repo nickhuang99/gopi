@@ -24,7 +24,7 @@ import (
 	"testing"
 	"time"
 
-	"github.com/nick/gopi/internal/config"
+	"github.com/nickhuang99/gopi/internal/config"
 )
 
 // sessionDirFixture builds a sessions root under a pinned profile and returns it.

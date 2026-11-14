@@ -87,7 +87,7 @@ const (
 	// buffer (so the control fires).
 	budgetReportPipeFixtureRows = 4096
 	// budgetReportPipeFixturePkg / …TestPrefix spell the fixture's own events.
-	budgetReportPipeFixturePkg        = "github.com/nick/gopi/internal/budgetpipefixture"
+	budgetReportPipeFixturePkg        = "github.com/nickhuang99/gopi/internal/budgetpipefixture"
 	budgetReportPipeFixtureTestPrefix = "TestBudgetReportPipeFixture"
 	// budgetReportPipeChildLocale is the message locale every arm PINS onto the
 	// shell it spawns. "C" makes `sort`'s and `grep`'s diagnostics byte-stable

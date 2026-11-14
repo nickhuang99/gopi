@@ -33,7 +33,7 @@ package deepseek
 import (
 	"encoding/json"
 
-	"github.com/nick/gopi/internal/rawlogfmt"
+	"github.com/nickhuang99/gopi/internal/rawlogfmt"
 )
 
 // claudeStreamResponseAnnotation marks a TagResponse record as DERIVED from a

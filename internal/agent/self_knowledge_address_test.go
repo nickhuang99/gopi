@@ -5,7 +5,7 @@ import (
 	"strings"
 	"testing"
 
-	"github.com/nick/gopi/internal/cliverbs"
+	"github.com/nickhuang99/gopi/internal/cliverbs"
 )
 
 // TestSessionAddressesIsAConstantExpression is the anti-regression guard for the

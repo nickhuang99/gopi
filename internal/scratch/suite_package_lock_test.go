@@ -35,7 +35,7 @@ import (
 	"testing"
 	"time"
 
-	"github.com/nick/gopi/internal/scratch"
+	"github.com/nickhuang99/gopi/internal/scratch"
 )
 
 // The helper's protocol: which mode the child runs, which lock to address, and the

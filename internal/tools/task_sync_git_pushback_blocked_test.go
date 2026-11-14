@@ -8,11 +8,11 @@ package tools
 // machine because `remote.<name>.pushurl` points at something that is not a
 // repository.
 //
-// MEASURED 2026-10-08 on HP (the client), on the real repo: `remote.zpeer.pushurl`
-// = `DISABLED-no-push`, and `git push zpeer master:master` fails with
+// MEASURED 2026-10-08 on HP (the client), on the real repo: `remote.peerbox.pushurl`
+// = `DISABLED-no-push`, and `git push peerbox master:master` fails with
 // `fatal: 'DISABLED-no-push' does not appear to be a git repository` — while
 // every gopi lane spells its target `<alias>:<path>` (`GitSyncServerTarget()` →
-// `zpeer:~/work/GoPi`, `finishCleanupServerTarget()` → the same shape), which
+// `peerbox:~/work/GoPi`, `finishCleanupServerTarget()` → the same shape), which
 // git hands to ssh directly and which that key does NOT govern. So the guardrail
 // could never have stopped gopi's own push-back; what it could do is make a
 // refusal unreadable, and that is what this test pins.
@@ -119,7 +119,7 @@ func TestPushbackPushURLProbeIsSilentWhenUnset(t *testing.T) {
 	// ② the target is a PATH (this lane's ordinary spelling — the ssh shape
 	//    `<alias>:<path>` and a bare local path both carry a separator), which
 	//    is not a remote NAME and cannot carry `remote.<name>.pushurl`.
-	for _, target := range []string{w.server, "zpeer:~/work/GoPi"} {
+	for _, target := range []string{w.server, "peerbox:~/work/GoPi"} {
 		if url, ok := gitPushbackRemotePushURL(context.Background(), w.client, target); ok {
 			t.Errorf("target %q is not a remote name, yet the probe answered (%q, true)", target, url)
 		}

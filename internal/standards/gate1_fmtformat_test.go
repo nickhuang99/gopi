@@ -257,7 +257,7 @@ func TestImportDirOfResolvesWithinTheModule(t *testing.T) {
 	const src = `package p
 
 import (
-	"github.com/nick/gopi/internal/sitekey"
+	"github.com/nickhuang99/gopi/internal/sitekey"
 	"strings"
 )
 
@@ -327,7 +327,7 @@ func TestGate1EveryFmtErrorfIsJudgedOrCounted(t *testing.T) {
 	}
 	undecidable := CountUndecidableFormats()
 	if constFmt == probeCensusConstFloor {
-		t.Fatalf("CENSUS VACUOUS: not one fmt.Errorf on this tree has a non-literal format "+
+		t.Fatalf("CENSUS VACUOUS: not one fmt.Errorf on this tree has a non-literal format " +
 			"string — the widening has no live subject, so nothing here proves it works")
 	}
 	if want := total - undecidable; resolved != want {

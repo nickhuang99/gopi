@@ -28,7 +28,7 @@ package main
 import (
 	"testing"
 
-	"github.com/nick/gopi/internal/tools"
+	"github.com/nickhuang99/gopi/internal/tools"
 )
 
 // TestUITurnBaselineReadsTheLogsOrdinals: the number the bar is seeded with is

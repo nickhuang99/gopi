@@ -27,7 +27,7 @@ import (
 	"io"
 	"testing"
 
-	"github.com/nick/gopi/internal/testutil"
+	"github.com/nickhuang99/gopi/internal/testutil"
 )
 
 // riCloseEnv closes a fixture handle and FAILS the case when the close errors.

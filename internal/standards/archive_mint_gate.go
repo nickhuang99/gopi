@@ -4,7 +4,7 @@ import (
 	"path/filepath"
 	"strings"
 
-	"github.com/nick/gopi/internal/tools"
+	"github.com/nickhuang99/gopi/internal/tools"
 )
 
 // archive_mint_gate.go — nothing outside gopi's one writer may MINT an archive

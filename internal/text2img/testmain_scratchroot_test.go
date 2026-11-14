@@ -3,7 +3,7 @@ package text2img
 import (
 	"testing"
 
-	"github.com/nick/gopi/internal/testutil"
+	"github.com/nickhuang99/gopi/internal/testutil"
 )
 
 // TestMain pins this suite's scratch root into the shared scratch home and

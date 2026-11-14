@@ -30,8 +30,8 @@ import (
 	"strings"
 	"testing"
 
-	"github.com/nick/gopi/internal/config"
-	"github.com/nick/gopi/internal/sessionevent"
+	"github.com/nickhuang99/gopi/internal/config"
+	"github.com/nickhuang99/gopi/internal/sessionevent"
 )
 
 // The fixture's two runs and the value `tasks.session_id` would carry for it.

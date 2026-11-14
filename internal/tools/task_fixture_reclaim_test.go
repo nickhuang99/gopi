@@ -29,9 +29,9 @@ import (
 	"strings"
 	"testing"
 
-	"github.com/nick/gopi/internal/config"
-	"github.com/nick/gopi/internal/tasktags"
-	"github.com/nick/gopi/internal/testutil"
+	"github.com/nickhuang99/gopi/internal/config"
+	"github.com/nickhuang99/gopi/internal/tasktags"
+	"github.com/nickhuang99/gopi/internal/testutil"
 )
 
 // fixtureReclaimLedger pins a fresh per-test ledger AND a private profile root

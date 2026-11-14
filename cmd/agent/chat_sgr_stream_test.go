@@ -16,7 +16,7 @@ import (
 	"strings"
 	"testing"
 
-	"github.com/nick/gopi/internal/cliverbs"
+	"github.com/nickhuang99/gopi/internal/cliverbs"
 )
 
 // TestChatSgrEnvChannel pins the env channel's FOUR states, which are the whole

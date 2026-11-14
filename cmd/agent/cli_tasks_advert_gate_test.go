@@ -38,7 +38,7 @@ import (
 	"strings"
 	"testing"
 
-	"github.com/nick/gopi/internal/taskverbs"
+	"github.com/nickhuang99/gopi/internal/taskverbs"
 )
 
 // ledgerAdvertOffense is one reason the ledger group re-advertises a verb whose

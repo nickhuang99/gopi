@@ -4,7 +4,7 @@ import (
 	"encoding/json"
 	"time"
 
-	"github.com/nick/gopi/internal/requestusage"
+	"github.com/nickhuang99/gopi/internal/requestusage"
 )
 
 // RawEvent represents a single JSONL line before processing

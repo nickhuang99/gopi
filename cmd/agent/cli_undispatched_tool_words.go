@@ -56,7 +56,7 @@ import (
 	"os"
 	"strings"
 
-	"github.com/nick/gopi/internal/config"
+	"github.com/nickhuang99/gopi/internal/config"
 )
 
 // undispatchedToolWord is one spelling that names a REAL command without

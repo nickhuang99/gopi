@@ -7,7 +7,7 @@ import (
 	"strings"
 	"testing"
 
-	"github.com/nick/gopi/internal/sessionevent"
+	"github.com/nickhuang99/gopi/internal/sessionevent"
 )
 
 // chatTestEnv isolates the real profile: temp GOPI_HOME (sessions dir) +

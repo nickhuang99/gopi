@@ -7,9 +7,9 @@ import (
 	"strings"
 	"testing"
 
-	"github.com/nick/gopi/internal/config"
-	"github.com/nick/gopi/internal/replaydrive"
-	"github.com/nick/gopi/internal/sessionevent"
+	"github.com/nickhuang99/gopi/internal/config"
+	"github.com/nickhuang99/gopi/internal/replaydrive"
+	"github.com/nickhuang99/gopi/internal/sessionevent"
 )
 
 // geometryRecording writes a session JSONL whose session_start carries the

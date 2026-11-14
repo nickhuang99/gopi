@@ -17,7 +17,7 @@ import (
 	"syscall"
 	"testing"
 
-	"github.com/nick/gopi/internal/procname"
+	"github.com/nickhuang99/gopi/internal/procname"
 )
 
 const (

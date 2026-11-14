@@ -7,7 +7,7 @@ import (
 	"strings"
 	"testing"
 
-	"github.com/nick/gopi/internal/deepseek"
+	"github.com/nickhuang99/gopi/internal/deepseek"
 )
 
 // headID names the current head of the history — the message a trim advances

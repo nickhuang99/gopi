@@ -33,7 +33,7 @@ import (
 	"testing"
 	"time"
 
-	"github.com/nick/gopi/internal/testutil"
+	"github.com/nickhuang99/gopi/internal/testutil"
 )
 
 // audioSourceMissingScratch makes an empty scratch directory for these cases.

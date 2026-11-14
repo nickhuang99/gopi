@@ -33,7 +33,7 @@ import (
 	"os"
 	"strings"
 
-	"github.com/nick/gopi/internal/config"
+	"github.com/nickhuang99/gopi/internal/config"
 )
 
 // nestedProfileExitCode is the exit status for the refusal. It is the USAGE

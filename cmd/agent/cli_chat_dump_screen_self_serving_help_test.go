@@ -31,9 +31,9 @@ import (
 	"strings"
 	"testing"
 
-	"github.com/nick/gopi/internal/agent"
-	"github.com/nick/gopi/internal/toolnames"
-	"github.com/nick/gopi/internal/uiclient"
+	"github.com/nickhuang99/gopi/internal/agent"
+	"github.com/nickhuang99/gopi/internal/toolnames"
+	"github.com/nickhuang99/gopi/internal/uiclient"
 )
 
 // chatSurfaceToolName is the tool the block must name as the reader the artifact

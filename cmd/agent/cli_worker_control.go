@@ -56,9 +56,9 @@ import (
 	"syscall"
 	"time"
 
-	"github.com/nick/gopi/internal/config"
-	"github.com/nick/gopi/internal/signalrec"
-	"github.com/nick/gopi/internal/tools"
+	"github.com/nickhuang99/gopi/internal/config"
+	"github.com/nickhuang99/gopi/internal/signalrec"
+	"github.com/nickhuang99/gopi/internal/tools"
 )
 
 // workerControlSignals are the signals that end the CONTROL command's wait. It
@@ -267,7 +267,7 @@ const (
 // THE DEFECT THIS CLOSES (epic: "terminated received" is unattributable).
 // Every investigation of "who killed the workers?" starts from the worker's own
 // termination line, and that line named neither the sender, nor the signal, nor
-// the task that was running, nor the wallclock. Measured on zpeer's
+// the task that was running, nor the wallclock. Measured on peerbox's
 // ~/.gopi/logs/worker.log (2026-09-16, 31 termination lines): 31/31 read
 // `terminated received`, 0/31 named a sender, only 3/31 could be resolved to a
 // task id — and the SAME string was printed for an operator's graceful `--stop`

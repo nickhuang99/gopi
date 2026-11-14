@@ -34,8 +34,8 @@ import (
 	"io"
 	"os"
 
-	"github.com/nick/gopi/internal/agent"
-	"github.com/nick/gopi/internal/config"
+	"github.com/nickhuang99/gopi/internal/agent"
+	"github.com/nickhuang99/gopi/internal/config"
 )
 
 // debugConfigDumpSep is the ONE line printed before and after the block, so a

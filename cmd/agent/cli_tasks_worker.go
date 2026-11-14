@@ -3,7 +3,7 @@ package main
 // cli_tasks_worker.go — the WORKER LOOP (`gopi worker`): the general
 // task-management service (epic serve/worker-split 2026-09-03, nick's final
 // design). The worker is the ONLY task-execution process — it runs
-// identically on BOTH the client (HP) and the server (zpeer), while
+// identically on BOTH the client (HP) and the server (peerbox), while
 // `task serve`/`task merger` were the SERVER-ONLY merge pass — the retired
 // merger tick (deleted 2026-09-19; its live half is mergerPassOnce). It ran
 // ONE tick, scheduled by the host (a cronjob since daemon-machinery-removal,
@@ -62,13 +62,13 @@ import (
 	"strings"
 	"time"
 
-	"github.com/nick/gopi/internal/config"
-	"github.com/nick/gopi/internal/daemonlifetime"
-	"github.com/nick/gopi/internal/procname"
-	"github.com/nick/gopi/internal/shot"
-	"github.com/nick/gopi/internal/signalrec"
-	"github.com/nick/gopi/internal/tools"
-	"github.com/nick/gopi/internal/worktreerelease"
+	"github.com/nickhuang99/gopi/internal/config"
+	"github.com/nickhuang99/gopi/internal/daemonlifetime"
+	"github.com/nickhuang99/gopi/internal/procname"
+	"github.com/nickhuang99/gopi/internal/shot"
+	"github.com/nickhuang99/gopi/internal/signalrec"
+	"github.com/nickhuang99/gopi/internal/tools"
+	"github.com/nickhuang99/gopi/internal/worktreerelease"
 )
 
 // Worker-loop constants (Rule 1: every literal lives here, one place).

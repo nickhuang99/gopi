@@ -36,11 +36,11 @@ import (
 	"strings"
 	"testing"
 
-	"github.com/nick/gopi/internal/config"
-	"github.com/nick/gopi/internal/gopilog"
-	"github.com/nick/gopi/internal/lineedit"
-	"github.com/nick/gopi/internal/replayplay"
-	"github.com/nick/gopi/internal/sessionevent"
+	"github.com/nickhuang99/gopi/internal/config"
+	"github.com/nickhuang99/gopi/internal/gopilog"
+	"github.com/nickhuang99/gopi/internal/lineedit"
+	"github.com/nickhuang99/gopi/internal/replayplay"
+	"github.com/nickhuang99/gopi/internal/sessionevent"
 )
 
 // replayTurnRowLabelRe matches a listing row's own label ("turn 11/11"), so the

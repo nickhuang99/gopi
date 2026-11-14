@@ -38,10 +38,10 @@ import (
 	"strings"
 	"time"
 
-	"github.com/nick/gopi/internal/gopilog"
-	"github.com/nick/gopi/internal/rundir"
-	"github.com/nick/gopi/internal/sessionevent"
-	"github.com/nick/gopi/internal/tools"
+	"github.com/nickhuang99/gopi/internal/gopilog"
+	"github.com/nickhuang99/gopi/internal/rundir"
+	"github.com/nickhuang99/gopi/internal/sessionevent"
+	"github.com/nickhuang99/gopi/internal/tools"
 )
 
 // sessionSubcommandNames is the `gopi session <sub>` vocabulary: the group's

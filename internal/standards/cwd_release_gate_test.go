@@ -811,7 +811,7 @@ func banner() { fmt.Println("gopi merger: nothing to sweep") }
 	// never CALLS it is still a violation — an unused import is not a release.
 	importOnly := `package main
 
-import "github.com/nick/gopi/internal/worktreerelease"
+import "github.com/nickhuang99/gopi/internal/worktreerelease"
 
 func teardown(repo, wtdir string) {
 	exec.Command("git", "-C", repo, "worktree", "remove", "--force", wtdir).Run()

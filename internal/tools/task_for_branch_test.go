@@ -30,8 +30,8 @@ import (
 	"testing"
 	"time"
 
-	"github.com/nick/gopi/internal/config"
-	"github.com/nick/gopi/internal/taskverbs"
+	"github.com/nickhuang99/gopi/internal/config"
+	"github.com/nickhuang99/gopi/internal/taskverbs"
 )
 
 // forBranchSeed files a row with the given status/claim stamp and deliverable

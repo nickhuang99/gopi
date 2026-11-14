@@ -26,7 +26,7 @@ import (
 	"testing"
 	"time"
 
-	"github.com/nick/gopi/internal/testutil"
+	"github.com/nickhuang99/gopi/internal/testutil"
 )
 
 // Child-mode selector: this test binary re-executes ITSELF with these set, so

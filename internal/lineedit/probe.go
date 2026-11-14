@@ -61,7 +61,7 @@ import (
 	"strings"
 	"time"
 
-	"github.com/nick/gopi/internal/sgr"
+	"github.com/nickhuang99/gopi/internal/sgr"
 	"golang.org/x/sys/unix"
 )
 

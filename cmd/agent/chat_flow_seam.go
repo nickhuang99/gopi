@@ -54,8 +54,8 @@ import (
 	"os"
 	"strings"
 
-	"github.com/nick/gopi/internal/agent"
-	"github.com/nick/gopi/internal/lineedit"
+	"github.com/nickhuang99/gopi/internal/agent"
+	"github.com/nickhuang99/gopi/internal/lineedit"
 )
 
 // flowRowBufferCells bounds the un-committed tail the seam holds while it waits

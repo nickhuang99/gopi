@@ -10,7 +10,7 @@ import (
 	"strings"
 	"testing"
 
-	"github.com/nick/gopi/internal/tools"
+	"github.com/nickhuang99/gopi/internal/tools"
 )
 
 // TestReframeChildRepoIsDurableNotTheGround: standing in a linked worktree (a

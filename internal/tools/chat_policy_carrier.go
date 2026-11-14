@@ -51,7 +51,7 @@ package tools
 // nothing to set, nothing to remember and nothing to leave enabled.
 
 import (
-	"github.com/nick/gopi/internal/chatpolicy"
+	"github.com/nickhuang99/gopi/internal/chatpolicy"
 )
 
 // The carriers that drive Agent.Chat / Agent.ChatOps. VALUES (Rule 1), not prose

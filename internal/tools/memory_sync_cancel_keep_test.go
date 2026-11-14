@@ -9,7 +9,7 @@ import (
 // TestSyncDeltaPeerCancelKeepsLiveLocalRow — the RED PROOF for the defect
 // measured on 2026-10-29 (rows 01a16f98/01a17866/01a17a10/01a17a6a/01a17a8a/
 // 01a17c53/01a17d07/01a17e23): a PA cancelled eight rows on ONE node to
-// de-duplicate two ledgers, with a reason that said "keep the sager side,
+// de-duplicate two ledgers, with a reason that said "keep the hosta side,
 // cancel the HP side" — and the v2 rank ladder wrote `cancelled` onto the
 // KEPT side, because cancelled ranks 3 and pending ranks 0.
 //

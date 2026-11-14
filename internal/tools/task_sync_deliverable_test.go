@@ -85,7 +85,7 @@ func TestSyncTaskDeliverableRoundTrip(t *testing.T) {
 	clientDB := filepath.Join(t.TempDir(), "client.db")
 	t.Setenv(memoryDBEnv, clientDB)
 	t.Setenv("GOPI_SYNC_NODE", "client")
-	patch := &SyncTaskPatch{Version: syncPatchVersionDelta, Node: "zpeer", Rows: patch1.Rows}
+	patch := &SyncTaskPatch{Version: syncPatchVersionDelta, Node: "peerbox", Rows: patch1.Rows}
 	if _, err := SyncTaskImportDelta(patch); err != nil {
 		t.Fatalf("import: %v", err)
 	}
@@ -141,7 +141,7 @@ func TestSyncDeltaDeliverableForwardMigration(t *testing.T) {
 	// migration must backfill the deliverable next to the status.
 	t.Setenv(memoryDBEnv, serverDB)
 	t.Setenv("GOPI_SYNC_NODE", "server")
-	patch := &SyncTaskPatch{Version: syncPatchVersionDelta, Node: "zpeer", Rows: []SyncTaskRow{completed}}
+	patch := &SyncTaskPatch{Version: syncPatchVersionDelta, Node: "peerbox", Rows: []SyncTaskRow{completed}}
 	if _, err := SyncTaskImportDelta(patch); err != nil {
 		t.Fatalf("import delta: %v", err)
 	}
@@ -163,7 +163,7 @@ func TestSyncDeltaDeliverableUnknownVersionDropped(t *testing.T) {
 		Deliverable:        `{"repo":"x","branch":"feat/future","newfield":1}`,
 		DeliverableVersion: deliverableVersionKnown + 1,
 	}}
-	if _, err := SyncTaskImportDelta(&SyncTaskPatch{Version: syncPatchVersionDelta, Node: "zpeer", Rows: rows}); err != nil {
+	if _, err := SyncTaskImportDelta(&SyncTaskPatch{Version: syncPatchVersionDelta, Node: "peerbox", Rows: rows}); err != nil {
 		t.Fatalf("import: %v", err)
 	}
 	db, err := openTasksDB(context.Background(), memoryDBPath())
@@ -190,13 +190,13 @@ func TestSyncDeltaDeliverableDoesNotOverwrite(t *testing.T) {
 		Deliverable:        `{"repo":"/a","branch":"feat/first"}`,
 		DeliverableVersion: deliverableVersionKnown,
 	}
-	if _, err := SyncTaskImportDelta(&SyncTaskPatch{Version: syncPatchVersionDelta, Node: "zpeer", Rows: []SyncTaskRow{first}}); err != nil {
+	if _, err := SyncTaskImportDelta(&SyncTaskPatch{Version: syncPatchVersionDelta, Node: "peerbox", Rows: []SyncTaskRow{first}}); err != nil {
 		t.Fatalf("import 1: %v", err)
 	}
 	second := first
 	second.Deliverable = `{"repo":"/b","branch":"feat/second"}`
 	second.UpdatedAt = time.Now().Unix() + 20
-	if _, err := SyncTaskImportDelta(&SyncTaskPatch{Version: syncPatchVersionDelta, Node: "zpeer", Rows: []SyncTaskRow{second}}); err != nil {
+	if _, err := SyncTaskImportDelta(&SyncTaskPatch{Version: syncPatchVersionDelta, Node: "peerbox", Rows: []SyncTaskRow{second}}); err != nil {
 		t.Fatalf("import 2: %v", err)
 	}
 	db, err := openTasksDB(context.Background(), memoryDBPath())

@@ -65,7 +65,7 @@ import (
 	"path/filepath"
 	"strings"
 
-	"github.com/nick/gopi/internal/replaymode"
+	"github.com/nickhuang99/gopi/internal/replaymode"
 )
 
 // ChatGroundBranchPrefix is RETIRED, and this declaration is the record of that

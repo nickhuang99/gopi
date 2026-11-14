@@ -53,8 +53,8 @@ import (
 	"syscall"
 	"time"
 
-	"github.com/nick/gopi/internal/procname"
-	"github.com/nick/gopi/internal/runcmd"
+	"github.com/nickhuang99/gopi/internal/procname"
+	"github.com/nickhuang99/gopi/internal/runcmd"
 )
 
 const (

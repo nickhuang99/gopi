@@ -32,8 +32,8 @@ import (
 	"strings"
 	"testing"
 
-	"github.com/nick/gopi/internal/config"
-	"github.com/nick/gopi/internal/lineedit"
+	"github.com/nickhuang99/gopi/internal/config"
+	"github.com/nickhuang99/gopi/internal/lineedit"
 )
 
 // paletteNoticeMark identifies the downgrade notice in a captured stream. It is

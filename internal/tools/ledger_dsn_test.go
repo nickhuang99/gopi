@@ -8,7 +8,7 @@ import (
 	"testing"
 	"time"
 
-	"github.com/nick/gopi/internal/testutil"
+	"github.com/nickhuang99/gopi/internal/testutil"
 )
 
 // TestLedgerDSNCarriesProductionsContract pins the single-source-of-truth

@@ -3,7 +3,7 @@ package film_test
 import (
 	"testing"
 
-	"github.com/nick/gopi/internal/film"
+	"github.com/nickhuang99/gopi/internal/film"
 )
 
 // TestPaletteAnchorsMatchThePythonTable PINS the derived anchors against the

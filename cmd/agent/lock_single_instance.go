@@ -43,7 +43,7 @@ import (
 	"os"
 	"path/filepath"
 
-	"github.com/nick/gopi/internal/tools"
+	"github.com/nickhuang99/gopi/internal/tools"
 )
 
 // The program names these faces print in their diagnostics (Rule 1: each

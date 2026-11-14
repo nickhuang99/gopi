@@ -32,7 +32,7 @@ import (
 	"strings"
 	"testing"
 
-	"github.com/nick/gopi/internal/tasktags"
+	"github.com/nickhuang99/gopi/internal/tasktags"
 )
 
 // reworkGateParentDone marks the parent row terminal through a path that does

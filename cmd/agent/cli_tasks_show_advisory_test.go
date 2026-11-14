@@ -17,9 +17,9 @@ import (
 	"strings"
 	"testing"
 
-	"github.com/nick/gopi/internal/config"
-	"github.com/nick/gopi/internal/toolnames"
-	"github.com/nick/gopi/internal/tools"
+	"github.com/nickhuang99/gopi/internal/config"
+	"github.com/nickhuang99/gopi/internal/toolnames"
+	"github.com/nickhuang99/gopi/internal/tools"
 )
 
 // showVerbRowID names the fixture row both show-verb tests address. It is a

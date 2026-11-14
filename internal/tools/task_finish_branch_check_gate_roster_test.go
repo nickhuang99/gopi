@@ -25,9 +25,9 @@ import (
 	"strings"
 	"testing"
 
-	"github.com/nick/gopi/internal/smoke"
-	"github.com/nick/gopi/internal/smokegate"
-	"github.com/nick/gopi/internal/testutil"
+	"github.com/nickhuang99/gopi/internal/smoke"
+	"github.com/nickhuang99/gopi/internal/smokegate"
+	"github.com/nickhuang99/gopi/internal/testutil"
 )
 
 const (

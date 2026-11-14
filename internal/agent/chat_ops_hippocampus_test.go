@@ -30,7 +30,7 @@ import (
 	"sync/atomic"
 	"testing"
 
-	"github.com/nick/gopi/internal/toolnames"
+	"github.com/nickhuang99/gopi/internal/toolnames"
 )
 
 // chatOpsStoreProbePath is the file the fake tool round reads. It EXISTS (the

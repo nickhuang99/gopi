@@ -37,7 +37,7 @@ import (
 	"os"
 	"time"
 
-	"github.com/nick/gopi/internal/scratch"
+	"github.com/nickhuang99/gopi/internal/scratch"
 )
 
 // The arm's spellings, each named ONCE (Rule 1b): the parser, the usage text and

@@ -25,8 +25,8 @@ import (
 	"path/filepath"
 	"testing"
 
-	"github.com/nick/gopi/internal/config"
-	"github.com/nick/gopi/internal/scratch"
+	"github.com/nickhuang99/gopi/internal/config"
+	"github.com/nickhuang99/gopi/internal/scratch"
 )
 
 func TestZZRedProof_DirtyDeadHolderWorkIsOrphaned(t *testing.T) {

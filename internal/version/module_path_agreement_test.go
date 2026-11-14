@@ -8,7 +8,7 @@ package version
 //	CGO_ENABLED=0 go build -ldflags "-X <RevisionLdflagPath>=$(git rev-parse HEAD)" -o bin/gopi ./cmd/agent/
 //
 // with the operand's module half spelled `github.com/youngminz/gopi` instead of
-// this go.mod's `github.com/nick/gopi` produced exit 0, empty stderr, and a
+// this go.mod's `github.com/nickhuang99/gopi` produced exit 0, empty stderr, and a
 // binary whose `version` printed "revision: unavailable" — i.e. the build
 // recipe degraded to stamping NOTHING, with no diagnostic at any surface.
 //

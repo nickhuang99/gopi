@@ -15,8 +15,8 @@ import (
 	"strings"
 	"testing"
 
-	"github.com/nick/gopi/internal/testutil"
-	"github.com/nick/gopi/internal/tools"
+	"github.com/nickhuang99/gopi/internal/testutil"
+	"github.com/nickhuang99/gopi/internal/tools"
 )
 
 // rebuildFixtureRepo makes a sandbox git repo (one commit on master) whose

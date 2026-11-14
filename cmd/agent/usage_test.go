@@ -6,11 +6,11 @@ import (
 	"strings"
 	"testing"
 
-	"github.com/nick/gopi/internal/config"
-	"github.com/nick/gopi/internal/deepseek"
-	"github.com/nick/gopi/internal/taskverbs"
-	"github.com/nick/gopi/internal/toolnames"
-	"github.com/nick/gopi/internal/tools"
+	"github.com/nickhuang99/gopi/internal/config"
+	"github.com/nickhuang99/gopi/internal/deepseek"
+	"github.com/nickhuang99/gopi/internal/taskverbs"
+	"github.com/nickhuang99/gopi/internal/toolnames"
+	"github.com/nickhuang99/gopi/internal/tools"
 )
 
 // TestTopLevelUsageListsSubcommands guards against regressing "the user has

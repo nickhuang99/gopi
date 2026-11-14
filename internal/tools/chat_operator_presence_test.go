@@ -23,9 +23,9 @@ import (
 	"strings"
 	"testing"
 
-	"github.com/nick/gopi/internal/chatpolicy"
-	"github.com/nick/gopi/internal/signalrec"
-	"github.com/nick/gopi/internal/testutil"
+	"github.com/nickhuang99/gopi/internal/chatpolicy"
+	"github.com/nickhuang99/gopi/internal/signalrec"
+	"github.com/nickhuang99/gopi/internal/testutil"
 )
 
 // attendOperator restores the ATTENDED reading when the test ends. Presence is

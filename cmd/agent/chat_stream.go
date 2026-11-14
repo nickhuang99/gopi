@@ -8,7 +8,7 @@ import (
 	"sync"
 	"time"
 
-	"github.com/nick/gopi/internal/lineedit"
+	"github.com/nickhuang99/gopi/internal/lineedit"
 )
 
 // chat_stream.go — the A5 scrollback-safe streaming path plus the one-line

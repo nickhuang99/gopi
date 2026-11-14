@@ -30,7 +30,7 @@ import (
 	"strings"
 	"time"
 
-	"github.com/nick/gopi/internal/tools"
+	"github.com/nickhuang99/gopi/internal/tools"
 )
 
 // archiveUsage is the -h text for the archive verb. It is a function (not a

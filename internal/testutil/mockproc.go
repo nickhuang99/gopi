@@ -2,7 +2,7 @@ package testutil
 
 // Mock-process reaping: the OTHER half of the scratch hygiene rule.
 //
-// The 2026-09-11 zpeer exhaustion (devdoc/zpeer-resource-exhaustion-20260911.md)
+// The 2026-09-11 peerbox exhaustion (devdoc/peerbox-resource-exhaustion-20260911.md)
 // had two mechanisms: throwaway DATA with no bound (part A, the scratch root +
 // age/holder GC in scratchroot.go) and throwaway PROCESSES with no owner. The
 // second one is this file. A test that spawns a long-lived mock (an X server, a

@@ -20,10 +20,10 @@ import (
 	"path/filepath"
 	"testing"
 
-	"github.com/nick/gopi/internal/config"
-	"github.com/nick/gopi/internal/sessionevent"
-	"github.com/nick/gopi/internal/testutil"
-	"github.com/nick/gopi/internal/tools"
+	"github.com/nickhuang99/gopi/internal/config"
+	"github.com/nickhuang99/gopi/internal/sessionevent"
+	"github.com/nickhuang99/gopi/internal/testutil"
+	"github.com/nickhuang99/gopi/internal/tools"
 )
 
 // resumeE2EJSONQuote renders a string as a JSON literal for the fixtures above

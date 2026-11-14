@@ -1,6 +1,6 @@
 package agent
 
-import "github.com/nick/gopi/internal/toolnames"
+import "github.com/nickhuang99/gopi/internal/toolnames"
 
 // This file owns the AGENT-LOOP's tool classes — the predicates the loop
 // detectors need to say "this round only looked" or "this round changed

@@ -104,7 +104,7 @@ import (
 	"sync"
 	"time"
 
-	"github.com/nick/gopi/internal/lineedit"
+	"github.com/nickhuang99/gopi/internal/lineedit"
 )
 
 // The control vocabulary. It is TWO ROWS now, and the second one is empty: every

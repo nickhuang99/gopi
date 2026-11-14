@@ -54,9 +54,9 @@ import (
 	"path/filepath"
 	"strings"
 
-	"github.com/nick/gopi/internal/gendoc"
-	"github.com/nick/gopi/internal/smoke"
-	"github.com/nick/gopi/internal/smokegate"
+	"github.com/nickhuang99/gopi/internal/gendoc"
+	"github.com/nickhuang99/gopi/internal/smoke"
+	"github.com/nickhuang99/gopi/internal/smokegate"
 )
 
 // --- tunables (Rule 1: every literal this check uses lives here) ---

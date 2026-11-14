@@ -119,10 +119,10 @@ import (
 	"os"
 	"strings"
 
-	"github.com/nick/gopi/internal/cliverbs"
-	"github.com/nick/gopi/internal/config"
-	"github.com/nick/gopi/internal/devworkspace"
-	"github.com/nick/gopi/internal/removalaudit"
+	"github.com/nickhuang99/gopi/internal/cliverbs"
+	"github.com/nickhuang99/gopi/internal/config"
+	"github.com/nickhuang99/gopi/internal/devworkspace"
+	"github.com/nickhuang99/gopi/internal/removalaudit"
 )
 
 // The criterion's names (Rule 1b/13: one spelling each, referenced everywhere).

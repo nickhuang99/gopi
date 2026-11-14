@@ -8,7 +8,7 @@
 // The filter matched no gate test (TestStandardGates / TestStandardGateDataReport
 // are not in the pattern), so the Rule 16–21 gate family did not run on any rev
 // of that branch — while the report carried a package-level
-// `ok github.com/nick/gopi/internal/standards` line. On the delivery tip the
+// `ok github.com/nickhuang99/gopi/internal/standards` line. On the delivery tip the
 // same package's whole run was FAIL exit 1, and the filtered command printed
 // `ok … 3.3s` from the SAME tree. `scripts/test-budget.sh` models the
 // neighbouring gap and closes it — exit 5 (NO TEST EXECUTED) refuses a filtered
@@ -46,7 +46,7 @@ import (
 	"os"
 	"strings"
 
-	"github.com/nick/gopi/internal/taskreport"
+	"github.com/nickhuang99/gopi/internal/taskreport"
 )
 
 // TaskShowReportFilteredLabel is the label of the filtered-package finding in

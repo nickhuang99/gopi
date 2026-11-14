@@ -25,7 +25,7 @@ import (
 	"strings"
 	"testing"
 
-	"github.com/nick/gopi/internal/config"
+	"github.com/nickhuang99/gopi/internal/config"
 )
 
 // TestChatHelpShowsMemoryPrefetch pins the instance on the page the user is

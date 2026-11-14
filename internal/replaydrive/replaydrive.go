@@ -52,8 +52,8 @@ import (
 	"sync"
 	"time"
 
-	"github.com/nick/gopi/internal/deepseek"
-	"github.com/nick/gopi/internal/sessionevent"
+	"github.com/nickhuang99/gopi/internal/deepseek"
+	"github.com/nickhuang99/gopi/internal/sessionevent"
 )
 
 // The recording's row kinds and content-block kinds (Rule 1b: the JSONL's own

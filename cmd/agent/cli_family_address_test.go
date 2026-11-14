@@ -34,7 +34,7 @@ import (
 	"strings"
 	"testing"
 
-	"github.com/nick/gopi/internal/testutil"
+	"github.com/nickhuang99/gopi/internal/testutil"
 )
 
 // runGopiMapped is testutil.RunGopi with the DOOR mapped: the argv[0] a test

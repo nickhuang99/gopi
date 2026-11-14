@@ -15,12 +15,12 @@
 package main
 
 import (
-	"github.com/nick/gopi/internal/heavytest"
+	"github.com/nickhuang99/gopi/internal/heavytest"
 	"os/exec"
 	"strings"
 	"testing"
 
-	"github.com/nick/gopi/internal/lineedit"
+	"github.com/nickhuang99/gopi/internal/lineedit"
 )
 
 // pageScript returns the page's <script> body (the code the browser runs).

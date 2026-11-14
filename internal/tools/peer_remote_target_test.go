@@ -4,11 +4,11 @@ package tools
 // the regression the epic was filed for: a repo whose git REMOTE NAME and whose
 // declared ssh ALIAS are not the same string must still DELIVER.
 //
-// MEASURED 2026-10-12 on sager: `sync_peers: ["zpeer"]` while `git remote -v`
+// MEASURED 2026-10-12 on hosta: `sync_peers: ["peerbox"]` while `git remote -v`
 // listed only `origin`. The client close-out chain composed its target as
 // `<alias>:<path>`, read the topology alias as if it were a git remote name, and
 // every delivery leg died on git's own
-// `fatal: 'zpeer' does not appear to be a git repository` — a sentence that
+// `fatal: 'peerbox' does not appear to be a git repository` — a sentence that
 // names neither the declared peer nor the remotes that DO exist here.
 //
 // The three properties pinned below, in the order they matter:
@@ -21,7 +21,7 @@ package tools
 //	   resolves to nothing (peerRemoteTarget.SSHTarget carries the measurement);
 //	② when the repo has NO remote of that name the resolution is the same
 //	   explicit `<alias>:<path>` form, which is what ssh can carry on its own —
-//	   that is the arm the sager shape takes, and it is a RESOLUTION, not a
+//	   that is the arm the hosta shape takes, and it is a RESOLUTION, not a
 //	   failure. Both arms therefore agree on the ONE string a leg carries (the
 //	   wire form), and differ only in what they can SAY about the peer;
 //	③ a delivery that FAILS says which arm it was on and lists this repo's
@@ -41,7 +41,7 @@ import (
 	"strings"
 	"testing"
 
-	"github.com/nick/gopi/internal/config"
+	"github.com/nickhuang99/gopi/internal/config"
 )
 
 // prtAliasInRemoteName is the alias used by the remote arm: it is ALSO the
@@ -54,9 +54,9 @@ import (
 const prtAliasInRemoteName = "peer-remote"
 
 // prtAliasNotARemote is the alias used by the mismatch / diagnosis arms: this
-// repo configures NO remote of that name (it has `origin`), which is the sager
+// repo configures NO remote of that name (it has `origin`), which is the hosta
 // shape the epic was filed for.
-const prtAliasNotARemote = "zpeer"
+const prtAliasNotARemote = "peerbox"
 
 // prtChainReport runs the close-out chain for the fixture with the DECLARED
 // topology in force — never with an injected target, so what runs is the
@@ -214,7 +214,7 @@ func TestDeliveryTargetUsesTheReposOwnRemoteName(t *testing.T) {
 // MINIMAL REPRODUCTION of the regression this epic was filed for, and it is the
 // smallest world in which it appears: a REAL repository that configures a git
 // remote whose name IS the declared alias — the shape this checkout itself has
-// (`git remote -v` → `zpeer`), which is why the defect reached master.
+// (`git remote -v` → `peerbox`), which is why the defect reached master.
 //
 // THE TWO SIDES, and which one moved (memory #6569's method: narrow to the
 // smallest sample, then decide with evidence — never by weakening a claim):
@@ -226,8 +226,8 @@ func TestDeliveryTargetUsesTheReposOwnRemoteName(t *testing.T) {
 // contract is real". MEASURED, by executing git in a repository that does NOT
 // configure the name (the state of every repo a leg actually pushes FROM):
 //
-//	git fetch zpeer  →  fatal: 'zpeer' … unknown transport
-//	git push  zpeer  →  fatal: 'zpeer' does not appear to be a git repository
+//	git fetch peerbox  →  fatal: 'peerbox' … unknown transport
+//	git push  peerbox  →  fatal: 'peerbox' does not appear to be a git repository
 //
 // A remote name is not a transport; it is a per-repo local alias, resolvable
 // only where declared. A delivery target is handed to git in the ROW's repo. So
@@ -288,13 +288,13 @@ func TestFinishCleanupTargetHoldsTheWireFormWhenTheAliasIsARemoteName(t *testing
 //	              declared alias, so the resolution FINDS it (`Remote` non-empty,
 //	              the diagnosis names it) — and the leg still carries
 //	              `<alias>:<path>`.
-//	fallback arm  the repo configures no remote of that name — the sager shape —
+//	fallback arm  the repo configures no remote of that name — the hosta shape —
 //	              and the leg carries the SAME wire form.
 //
 // If the two could ever disagree, a delivery would be dialled differently
 // depending on a per-repository config the receiving side cannot see, which is
 // precisely the defect (peerRemoteTarget.SSHTarget carries the measurement:
-// `git push zpeer` → "does not appear to be a git repository").
+// `git push peerbox` → "does not appear to be a git repository").
 //
 // NOTE on the subtest names: they are deliberately shell-safe (no parentheses,
 // no commas). t.TempDir() derives its directory name from the test name, and

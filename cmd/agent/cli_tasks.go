@@ -4,7 +4,7 @@ import (
 	"context"
 	"errors"
 	"fmt"
-	"github.com/nick/gopi/internal/tasksource"
+	"github.com/nickhuang99/gopi/internal/tasksource"
 	"io"
 	"os"
 	"os/exec"
@@ -16,22 +16,22 @@ import (
 	"syscall"
 	"time"
 
-	"github.com/nick/gopi/internal/agencyscan"
-	"github.com/nick/gopi/internal/cliverbs"
-	"github.com/nick/gopi/internal/config"
-	"github.com/nick/gopi/internal/devworkspace"
-	"github.com/nick/gopi/internal/pushfence"
-	"github.com/nick/gopi/internal/runcmd"
-	"github.com/nick/gopi/internal/runend"
-	"github.com/nick/gopi/internal/sessionevent"
-	"github.com/nick/gopi/internal/sessionlayout"
-	"github.com/nick/gopi/internal/signalrec"
-	"github.com/nick/gopi/internal/taskreport"
-	"github.com/nick/gopi/internal/tasktags"
-	"github.com/nick/gopi/internal/taskverbs"
-	"github.com/nick/gopi/internal/toolnames"
-	"github.com/nick/gopi/internal/tools"
-	"github.com/nick/gopi/internal/worktreerelease"
+	"github.com/nickhuang99/gopi/internal/agencyscan"
+	"github.com/nickhuang99/gopi/internal/cliverbs"
+	"github.com/nickhuang99/gopi/internal/config"
+	"github.com/nickhuang99/gopi/internal/devworkspace"
+	"github.com/nickhuang99/gopi/internal/pushfence"
+	"github.com/nickhuang99/gopi/internal/runcmd"
+	"github.com/nickhuang99/gopi/internal/runend"
+	"github.com/nickhuang99/gopi/internal/sessionevent"
+	"github.com/nickhuang99/gopi/internal/sessionlayout"
+	"github.com/nickhuang99/gopi/internal/signalrec"
+	"github.com/nickhuang99/gopi/internal/taskreport"
+	"github.com/nickhuang99/gopi/internal/tasktags"
+	"github.com/nickhuang99/gopi/internal/taskverbs"
+	"github.com/nickhuang99/gopi/internal/toolnames"
+	"github.com/nickhuang99/gopi/internal/tools"
+	"github.com/nickhuang99/gopi/internal/worktreerelease"
 )
 
 // Named constants for the task subcommand family (Rule 1 — no magic
@@ -4427,7 +4427,7 @@ func writebackOutcome(taskID, status, resultSummary, reportTo, repo string) erro
 		// boundary). This boundary had none: it renders its target from the
 		// caller's --repo/--report-to and hands it straight to git, so a test
 		// that drove this leg pointed real bytes at whatever the flag named.
-		// Measured residue (2026-10-26, zpeer): refs/heads/feat/exists, an
+		// Measured residue (2026-10-26, peerbox): refs/heads/feat/exists, an
 		// orphan root of a `t <t@t>` fixture, reflog `push`.
 		if why := pushfence.Refusal(repo); why != "" {
 			fmt.Fprintf(os.Stderr, taskProgName+": report-back push refused before it ran: %s\n", why)
@@ -5876,7 +5876,7 @@ func taskRemovedAdvice(verb string) string {
 		// pointing back at a command that no longer exists. Measured, on the
 		// binary built at `c5548b88`:
 		//
-		//	$ gopi task branch-refs --peer zpeer ; echo $?
+		//	$ gopi task branch-refs --peer peerbox ; echo $?
 		//	… "gopi task finish-cleanup" (what a terminal row's delivery should do) …
 		//	1
 		//	$ gopi task finish-cleanup ; echo $?

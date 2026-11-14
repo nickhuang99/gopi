@@ -38,9 +38,9 @@ import (
 	"testing"
 	"time"
 
-	"github.com/nick/gopi/internal/config"
-	"github.com/nick/gopi/internal/sessionevent"
-	"github.com/nick/gopi/internal/sessionlayout"
+	"github.com/nickhuang99/gopi/internal/config"
+	"github.com/nickhuang99/gopi/internal/sessionevent"
+	"github.com/nickhuang99/gopi/internal/sessionlayout"
 )
 
 // srSessionLogEnv is the child hook that turns the re-executed test binary into

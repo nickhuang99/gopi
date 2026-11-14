@@ -19,7 +19,7 @@ import (
 	"testing"
 	"time"
 
-	"github.com/nick/gopi/internal/scratch"
+	"github.com/nickhuang99/gopi/internal/scratch"
 )
 
 // ── case 1: the dirty refusal speaks two states ──────────────────────────────

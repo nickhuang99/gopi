@@ -6,7 +6,7 @@ import (
 	"strings"
 	"testing"
 
-	"github.com/nick/gopi/internal/sessionevent"
+	"github.com/nickhuang99/gopi/internal/sessionevent"
 )
 
 // writeHeader writes a session JSONL whose first row is a session_start

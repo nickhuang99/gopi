@@ -18,9 +18,9 @@ import (
 	"testing"
 	"time"
 
-	"github.com/nick/gopi/internal/config"
-	"github.com/nick/gopi/internal/heavytest"
-	"github.com/nick/gopi/internal/scratch"
+	"github.com/nickhuang99/gopi/internal/config"
+	"github.com/nickhuang99/gopi/internal/heavytest"
+	"github.com/nickhuang99/gopi/internal/scratch"
 )
 
 // profileArmEnv is the child environment for this arm's cases: a sandbox HOME,

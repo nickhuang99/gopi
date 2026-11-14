@@ -10,7 +10,7 @@ import (
 	"testing"
 	"time"
 
-	"github.com/nick/gopi/internal/scratch"
+	"github.com/nickhuang99/gopi/internal/scratch"
 )
 
 // Scratch-placement verdict tests: the two situations a red ambient placement

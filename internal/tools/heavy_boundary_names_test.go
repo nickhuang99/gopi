@@ -15,7 +15,7 @@ package tools
 import (
 	"testing"
 
-	"github.com/nick/gopi/internal/heavytest"
+	"github.com/nickhuang99/gopi/internal/heavytest"
 )
 
 func TestHeavyBoundaryMirrorsTheTaskChildIdentityNames(t *testing.T) {

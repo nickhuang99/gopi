@@ -45,8 +45,8 @@ import (
 	"testing"
 	"time"
 
-	"github.com/nick/gopi/internal/lineedit"
-	"github.com/nick/gopi/internal/uiclient"
+	"github.com/nickhuang99/gopi/internal/lineedit"
+	"github.com/nickhuang99/gopi/internal/uiclient"
 )
 
 // The park sample's own vocabulary (Rule 1: named, never inline).

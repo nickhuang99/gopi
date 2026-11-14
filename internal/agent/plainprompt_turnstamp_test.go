@@ -46,7 +46,7 @@ import (
 	"strings"
 	"testing"
 
-	"github.com/nick/gopi/internal/deepseek"
+	"github.com/nickhuang99/gopi/internal/deepseek"
 )
 
 // TestPlainPrompt_FirstRequestCarriesNoTurnStamp is the fix's own regression

@@ -56,7 +56,7 @@ import (
 	"strconv"
 	"strings"
 
-	"github.com/nick/gopi/internal/lineedit"
+	"github.com/nickhuang99/gopi/internal/lineedit"
 )
 
 const (

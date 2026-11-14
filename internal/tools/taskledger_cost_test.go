@@ -24,8 +24,8 @@ import (
 	"strings"
 	"testing"
 
-	"github.com/nick/gopi/internal/flaketest"
-	"github.com/nick/gopi/internal/sessionlayout"
+	"github.com/nickhuang99/gopi/internal/flaketest"
+	"github.com/nickhuang99/gopi/internal/sessionlayout"
 )
 
 // hintFixtureLedger points the tasks layer at a private ledger for the test.

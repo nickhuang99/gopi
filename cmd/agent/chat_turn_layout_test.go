@@ -4,7 +4,7 @@ import (
 	"strings"
 	"testing"
 
-	"github.com/nick/gopi/internal/lineedit"
+	"github.com/nickhuang99/gopi/internal/lineedit"
 )
 
 // chat_turn_layout_test.go — the turn structure and the status row's column

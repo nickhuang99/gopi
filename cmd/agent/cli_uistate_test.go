@@ -20,7 +20,7 @@ import (
 	"testing"
 	"time"
 
-	"github.com/nick/gopi/internal/uiclient"
+	"github.com/nickhuang99/gopi/internal/uiclient"
 )
 
 // uiStateAbsentPID is a pid no process of this host can hold (the kernel's

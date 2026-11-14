@@ -52,7 +52,7 @@ import (
 	"testing"
 	"time"
 
-	"github.com/nick/gopi/internal/inputsource"
+	"github.com/nickhuang99/gopi/internal/inputsource"
 )
 
 // prefetchLookupOutcomes is the set of record outcomes that mean THIS RUN RAN A

@@ -41,8 +41,8 @@ import (
 	"fmt"
 	"os"
 
-	"github.com/nick/gopi/internal/cliindex"
-	"github.com/nick/gopi/internal/config"
+	"github.com/nickhuang99/gopi/internal/cliindex"
+	"github.com/nickhuang99/gopi/internal/config"
 )
 
 func main() {

@@ -21,7 +21,7 @@ import (
 	"strings"
 	"testing"
 
-	"github.com/nick/gopi/internal/inputsource"
+	"github.com/nickhuang99/gopi/internal/inputsource"
 )
 
 // chatNoticeFirstMsg is the shape a notify delivery's text actually has: the

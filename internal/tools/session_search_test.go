@@ -20,8 +20,8 @@ import (
 	"strings"
 	"testing"
 
-	"github.com/nick/gopi/internal/sessionevent"
-	"github.com/nick/gopi/internal/sessionlayout"
+	"github.com/nickhuang99/gopi/internal/sessionevent"
+	"github.com/nickhuang99/gopi/internal/sessionlayout"
 )
 
 // writeSessionFixture builds a session JSONL with the REAL row cadence, taken

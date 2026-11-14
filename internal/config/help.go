@@ -4,11 +4,11 @@ import (
 	"fmt"
 	"strings"
 
-	"github.com/nick/gopi/internal/cliverbs"
-	"github.com/nick/gopi/internal/procname"
-	"github.com/nick/gopi/internal/scratch"
-	"github.com/nick/gopi/internal/sessionevent"
-	"github.com/nick/gopi/internal/taskverbs"
+	"github.com/nickhuang99/gopi/internal/cliverbs"
+	"github.com/nickhuang99/gopi/internal/procname"
+	"github.com/nickhuang99/gopi/internal/scratch"
+	"github.com/nickhuang99/gopi/internal/sessionevent"
+	"github.com/nickhuang99/gopi/internal/taskverbs"
 )
 
 // envSection groups EnvVars entries under a section heading for the help.

@@ -38,9 +38,9 @@ import (
 	"strings"
 	"testing"
 
-	"github.com/nick/gopi/internal/heavytest"
-	"github.com/nick/gopi/internal/procname"
-	"github.com/nick/gopi/internal/testutil"
+	"github.com/nickhuang99/gopi/internal/heavytest"
+	"github.com/nickhuang99/gopi/internal/procname"
+	"github.com/nickhuang99/gopi/internal/testutil"
 )
 
 // envHas reports whether name is carried by env. It lives here (not with the

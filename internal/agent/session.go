@@ -14,16 +14,16 @@ import (
 	"sync"
 	"time"
 
-	"github.com/nick/gopi/internal/config"
-	"github.com/nick/gopi/internal/deepseek"
-	"github.com/nick/gopi/internal/inputsource"
-	"github.com/nick/gopi/internal/replaymode"
-	"github.com/nick/gopi/internal/requestusage"
-	"github.com/nick/gopi/internal/sessionevent"
-	"github.com/nick/gopi/internal/sessionid"
-	"github.com/nick/gopi/internal/sessionlayout"
-	"github.com/nick/gopi/internal/terminalgeom"
-	gopiversion "github.com/nick/gopi/internal/version"
+	"github.com/nickhuang99/gopi/internal/config"
+	"github.com/nickhuang99/gopi/internal/deepseek"
+	"github.com/nickhuang99/gopi/internal/inputsource"
+	"github.com/nickhuang99/gopi/internal/replaymode"
+	"github.com/nickhuang99/gopi/internal/requestusage"
+	"github.com/nickhuang99/gopi/internal/sessionevent"
+	"github.com/nickhuang99/gopi/internal/sessionid"
+	"github.com/nickhuang99/gopi/internal/sessionlayout"
+	"github.com/nickhuang99/gopi/internal/terminalgeom"
+	gopiversion "github.com/nickhuang99/gopi/internal/version"
 )
 
 // sessionLogSyncThreshold is the buffer size (in bytes) at which the session

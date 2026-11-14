@@ -27,7 +27,7 @@ import (
 	"strings"
 	"sync"
 
-	"github.com/nick/gopi/internal/config"
+	"github.com/nickhuang99/gopi/internal/config"
 )
 
 // voiceLegacyNoticeOnce makes the migration notice a once-per-process event.

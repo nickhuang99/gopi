@@ -10,7 +10,7 @@ import (
 	"strconv"
 	"strings"
 
-	"github.com/nick/gopi/internal/gifgen"
+	"github.com/nickhuang99/gopi/internal/gifgen"
 )
 
 // The assembler: a frame sequence in, a film directory out. It replaces

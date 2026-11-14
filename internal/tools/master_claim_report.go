@@ -41,7 +41,7 @@ import (
 	"os"
 	"strings"
 
-	"github.com/nick/gopi/internal/taskreport"
+	"github.com/nickhuang99/gopi/internal/taskreport"
 )
 
 // taskReportMasterClaimRecord adjudicates the sealed body's implementation

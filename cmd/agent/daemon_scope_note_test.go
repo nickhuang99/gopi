@@ -21,7 +21,7 @@ import (
 	"strings"
 	"testing"
 
-	"github.com/nick/gopi/internal/cgroupscope"
+	"github.com/nickhuang99/gopi/internal/cgroupscope"
 )
 
 const (

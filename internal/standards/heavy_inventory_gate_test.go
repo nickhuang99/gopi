@@ -44,7 +44,7 @@ const (
 	heavyRequireFunc = "heavytest.Require"
 	// heavyPackagesImportsPath is the helper package; its constant prefix marks
 	// a criterion argument.
-	heavyPackagesImportsPath = "github.com/nick/gopi/internal/heavytest"
+	heavyPackagesImportsPath = "github.com/nickhuang99/gopi/internal/heavytest"
 	// heavyEnvConstName is the ONE opt-in name. A bare "GOPI_HEAVY_TESTS"
 	// outside its definition is the Rule 13 defect this gate reports.
 	heavyEnvConstName = "GOPI_HEAVY_TESTS"

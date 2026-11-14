@@ -5,7 +5,7 @@ import (
 	"testing"
 	"time"
 
-	"github.com/nick/gopi/internal/lineedit"
+	"github.com/nickhuang99/gopi/internal/lineedit"
 )
 
 // chat_status_ctx_provenance_test.go — the re-partition's PROVENANCE contract

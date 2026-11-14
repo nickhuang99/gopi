@@ -38,9 +38,9 @@ import (
 	"testing"
 	"time"
 
-	"github.com/nick/gopi/internal/config"
-	"github.com/nick/gopi/internal/removalaudit"
-	"github.com/nick/gopi/internal/testutil"
+	"github.com/nickhuang99/gopi/internal/config"
+	"github.com/nickhuang99/gopi/internal/removalaudit"
+	"github.com/nickhuang99/gopi/internal/testutil"
 )
 
 // collectCloneFixture is one clone-channel ground inside a workspace root, the

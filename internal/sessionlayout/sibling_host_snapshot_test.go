@@ -14,7 +14,7 @@ package sessionlayout_test
 import (
 	"testing"
 
-	"github.com/nick/gopi/internal/sessionlayout"
+	"github.com/nickhuang99/gopi/internal/sessionlayout"
 )
 
 // locateBackupsTree returns the backups registry, failing the test if the tree
@@ -104,7 +104,7 @@ func TestLedgerSnapshotIsClassifiedByShapeNotHost(t *testing.T) {
 func TestBackupsRegistrySpellsNoHostname(t *testing.T) {
 	// The machine names this host has carried. Their ABSENCE is the contract:
 	// a table that spells one of these only classifies snapshots taken HERE.
-	machines := []string{"zpeer", "nick-HP", "nick@"}
+	machines := []string{"peerbox", "hostb", "nick@"}
 	tree := locateBackupsTree(t)
 	for _, name := range []string{
 		"memory.db.otherhost-backup",

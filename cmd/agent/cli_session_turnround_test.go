@@ -15,8 +15,8 @@ import (
 	"strings"
 	"testing"
 
-	"github.com/nick/gopi/internal/gopilog"
-	"github.com/nick/gopi/internal/sessionevent"
+	"github.com/nickhuang99/gopi/internal/gopilog"
+	"github.com/nickhuang99/gopi/internal/sessionevent"
 )
 
 // The fixture's two quantities, named (Rule 1): THREE turns, TWO rounds each.

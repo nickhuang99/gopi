@@ -29,10 +29,10 @@ import (
 
 	_ "modernc.org/sqlite"
 
-	"github.com/nick/gopi/internal/cjkseg"
-	"github.com/nick/gopi/internal/config"
-	"github.com/nick/gopi/internal/scratch"
-	"github.com/nick/gopi/internal/sessionevent"
+	"github.com/nickhuang99/gopi/internal/cjkseg"
+	"github.com/nickhuang99/gopi/internal/config"
+	"github.com/nickhuang99/gopi/internal/scratch"
+	"github.com/nickhuang99/gopi/internal/sessionevent"
 )
 
 // TierHot / TierWarm / TierCold are the memory tier values, exported so

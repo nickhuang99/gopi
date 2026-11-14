@@ -46,7 +46,7 @@ import (
 	"strings"
 	"syscall"
 
-	"github.com/nick/gopi/internal/boolvocab"
+	"github.com/nickhuang99/gopi/internal/boolvocab"
 )
 
 // cgroup v2 filesystem facts (one spelling each, Rule 1b).

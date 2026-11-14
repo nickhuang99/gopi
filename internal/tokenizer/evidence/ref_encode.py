@@ -32,7 +32,7 @@ CASES = [
     ("special-eos", "hello<｜end▁of▁sentence｜>"),
     ("whitespace", "  \t\n  multiple   spaces\n\n"),
     ("newlines", "line one\nline two\r\nline three\n"),
-    ("url", "https://github.com/nick/gopi/blob/master/internal/tokenizer/pre.go"),
+    ("url", "https://github.com/nickhuang99/gopi/blob/master/internal/tokenizer/pre.go"),
     ("path", "/home/user/.gopi/sessions/e1e22e9f/session.jsonl"),
     ("cyrillic", "Привет, мир! Тестирование токенизатора."),
     ("japanese", "これは日本語のテストです。"),

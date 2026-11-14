@@ -36,7 +36,7 @@ import (
 	"sync"
 	"testing"
 
-	"github.com/nick/gopi/internal/boolvocab"
+	"github.com/nickhuang99/gopi/internal/boolvocab"
 )
 
 const (

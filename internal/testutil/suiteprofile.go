@@ -8,7 +8,7 @@ import (
 	"strings"
 	"testing"
 
-	"github.com/nick/gopi/internal/config"
+	"github.com/nickhuang99/gopi/internal/config"
 )
 
 // Suite gopi-profile isolation — the RESIDUAL internal/tools suite hang

@@ -29,8 +29,8 @@ import (
 	"syscall"
 	"testing"
 
-	"github.com/nick/gopi/internal/borrowedfd"
-	"github.com/nick/gopi/internal/daemonlifetime"
+	"github.com/nickhuang99/gopi/internal/borrowedfd"
+	"github.com/nickhuang99/gopi/internal/daemonlifetime"
 )
 
 // deathPipeFreeFD is a number no process in this suite holds: far above any

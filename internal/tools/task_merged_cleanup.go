@@ -82,7 +82,7 @@ import (
 	"strings"
 	"time"
 
-	"github.com/nick/gopi/internal/removalaudit"
+	"github.com/nickhuang99/gopi/internal/removalaudit"
 )
 
 // Merged-branch cleanup tunables (Rule 1 — every literal in one place).

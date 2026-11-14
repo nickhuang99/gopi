@@ -26,7 +26,7 @@ import (
 	"strings"
 	"testing"
 
-	"github.com/nick/gopi/internal/taskreport"
+	"github.com/nickhuang99/gopi/internal/taskreport"
 )
 
 // taskReportDestinationSandbox points GOPI_HOME at a temp dir and returns the

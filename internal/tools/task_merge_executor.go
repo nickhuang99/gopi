@@ -58,8 +58,8 @@ import (
 	"strings"
 	"time"
 
-	"github.com/nick/gopi/internal/gitcommit"
-	"github.com/nick/gopi/internal/removalaudit"
+	"github.com/nickhuang99/gopi/internal/gitcommit"
+	"github.com/nickhuang99/gopi/internal/removalaudit"
 )
 
 // Merge-executor tunables (Rule 1: every literal in one place).

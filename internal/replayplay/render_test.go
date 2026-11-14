@@ -22,8 +22,8 @@ import (
 	"strings"
 	"testing"
 
-	"github.com/nick/gopi/internal/lineedit"
-	"github.com/nick/gopi/internal/sgr"
+	"github.com/nickhuang99/gopi/internal/lineedit"
+	"github.com/nickhuang99/gopi/internal/sgr"
 )
 
 // csiPattern matches one CSI sequence (the escape, its parameter bytes, and a

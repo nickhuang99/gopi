@@ -25,7 +25,7 @@ import (
 	"strings"
 	"testing"
 
-	"github.com/nick/gopi/internal/sessionlayout"
+	"github.com/nickhuang99/gopi/internal/sessionlayout"
 )
 
 // repoFile reads one repository file, located from this test's own working

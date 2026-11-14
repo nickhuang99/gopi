@@ -25,11 +25,11 @@ import (
 	"strings"
 	"testing"
 
-	"github.com/nick/gopi/internal/agent"
-	"github.com/nick/gopi/internal/lineedit"
-	"github.com/nick/gopi/internal/replaymode"
-	"github.com/nick/gopi/internal/scratch"
-	"github.com/nick/gopi/internal/sessionlayout"
+	"github.com/nickhuang99/gopi/internal/agent"
+	"github.com/nickhuang99/gopi/internal/lineedit"
+	"github.com/nickhuang99/gopi/internal/replaymode"
+	"github.com/nickhuang99/gopi/internal/scratch"
+	"github.com/nickhuang99/gopi/internal/sessionlayout"
 )
 
 const noticeSinkTestModel = "fixture-model"

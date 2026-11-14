@@ -25,10 +25,10 @@ import (
 	"strings"
 	"testing"
 
-	"github.com/nick/gopi/internal/branchform"
-	"github.com/nick/gopi/internal/cliverbs"
-	"github.com/nick/gopi/internal/toolnames"
-	"github.com/nick/gopi/internal/tools"
+	"github.com/nickhuang99/gopi/internal/branchform"
+	"github.com/nickhuang99/gopi/internal/cliverbs"
+	"github.com/nickhuang99/gopi/internal/toolnames"
+	"github.com/nickhuang99/gopi/internal/tools"
 )
 
 // TestChatPADutyQuickOpsNeedNoPermission is clause (1b): the operator's ruling of

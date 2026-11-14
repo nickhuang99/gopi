@@ -8,7 +8,7 @@ import (
 	"os"
 	"strings"
 
-	"github.com/nick/gopi/internal/rawlogfmt"
+	"github.com/nickhuang99/gopi/internal/rawlogfmt"
 )
 
 // The round parser dispatches on a RECORD's identity, never on a line's text:

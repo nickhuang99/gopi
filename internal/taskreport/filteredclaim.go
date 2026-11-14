@@ -21,7 +21,7 @@ package taskreport
 //
 //	go test ./internal/standards/                     → ok … exit 0   (narrow nothing)
 //
-// So the report carried `ok github.com/nick/gopi/internal/standards` — a
+// So the report carried `ok github.com/nickhuang99/gopi/internal/standards` — a
 // PACKAGE-LEVEL reading from a command that narrowed the package away — and the
 // reviewer had no instrument for it. `scripts/test-budget.sh` models the
 // neighbouring gap and closes it: exit 5 (NO TEST EXECUTED) refuses a filtered
@@ -149,7 +149,7 @@ var narrowingFilterFlags = []string{
 }
 
 // filteredPackageResults are the PACKAGE-LEVEL readings: Go's own package line
-// (`ok  github.com/nick/gopi/internal/standards  43.6s`), the whole-package
+// (`ok  github.com/nickhuang99/gopi/internal/standards  43.6s`), the whole-package
 // PASS report line, and the colour words a report uses for the same statement.
 var filteredPackageResults = []string{
 	"ok",
@@ -440,7 +440,7 @@ func sentenceNarrowingFilters(sentence string) []string {
 }
 
 // namesFilterFlag reports whether the lowered sentence names flag f as a FLAG:
-// its own token (`-run 'X|Y'`, `-run=X|Y`, or the fenced `` `-run` `` a report
+// its own token (`-run 'X|Y'`, `-run=X|Y`, or the fenced “ `-run` “ a report
 // quotes), never a substring of a longer word or a path (`-run-not-this`, a
 // directory named `-benchmarks`, `run:` inside prose).
 func namesFilterFlag(low, flag string) bool {

@@ -22,16 +22,16 @@ import (
 	"database/sql"
 	"encoding/json"
 	"errors"
-	"github.com/nick/gopi/internal/heavytest"
+	"github.com/nickhuang99/gopi/internal/heavytest"
 	"os"
 	"path/filepath"
 	"strings"
 	"testing"
 	"time"
 
-	"github.com/nick/gopi/internal/config"
-	"github.com/nick/gopi/internal/memoryprefetch"
-	"github.com/nick/gopi/internal/tools"
+	"github.com/nickhuang99/gopi/internal/config"
+	"github.com/nickhuang99/gopi/internal/memoryprefetch"
+	"github.com/nickhuang99/gopi/internal/tools"
 	_ "modernc.org/sqlite"
 )
 

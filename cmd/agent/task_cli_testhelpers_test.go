@@ -36,10 +36,10 @@ import (
 	"testing"
 	"time"
 
-	"github.com/nick/gopi/internal/config"
-	"github.com/nick/gopi/internal/taskverbs"
-	"github.com/nick/gopi/internal/testutil"
-	"github.com/nick/gopi/internal/tools"
+	"github.com/nickhuang99/gopi/internal/config"
+	"github.com/nickhuang99/gopi/internal/taskverbs"
+	"github.com/nickhuang99/gopi/internal/testutil"
+	"github.com/nickhuang99/gopi/internal/tools"
 )
 
 // Build policy for the E2E binary (Rule 1: named constants, never an inline

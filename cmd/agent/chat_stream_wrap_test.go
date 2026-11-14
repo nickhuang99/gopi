@@ -7,7 +7,7 @@ import (
 	"testing"
 	"time"
 
-	"github.com/nick/gopi/internal/lineedit"
+	"github.com/nickhuang99/gopi/internal/lineedit"
 )
 
 // chat_stream_wrap_test.go — the fallback renderer's byte contract, asserted at

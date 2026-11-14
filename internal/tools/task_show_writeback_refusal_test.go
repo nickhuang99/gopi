@@ -25,7 +25,7 @@ import (
 	"strings"
 	"testing"
 
-	"github.com/nick/gopi/internal/testutil"
+	"github.com/nickhuang99/gopi/internal/testutil"
 )
 
 // TestTaskShowRendersTheWritebackRefusalReason is the repro: the gate's own

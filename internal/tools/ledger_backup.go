@@ -63,8 +63,8 @@ import (
 	"strings"
 	"time"
 
-	"github.com/nick/gopi/internal/config"
-	"github.com/nick/gopi/internal/scratch"
+	"github.com/nickhuang99/gopi/internal/config"
+	"github.com/nickhuang99/gopi/internal/scratch"
 )
 
 // ---------------------------------------------------------------------------

@@ -28,9 +28,9 @@ import (
 	"sync"
 	"testing"
 
-	"github.com/nick/gopi/internal/deepseek"
-	"github.com/nick/gopi/internal/hippocampus"
-	"github.com/nick/gopi/internal/tools"
+	"github.com/nickhuang99/gopi/internal/deepseek"
+	"github.com/nickhuang99/gopi/internal/hippocampus"
+	"github.com/nickhuang99/gopi/internal/tools"
 )
 
 // Seam-test wire literals (Rule 1: one named place per literal).

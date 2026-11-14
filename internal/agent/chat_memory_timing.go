@@ -60,7 +60,7 @@ package agent
 import (
 	"strings"
 
-	"github.com/nick/gopi/internal/toolnames"
+	"github.com/nickhuang99/gopi/internal/toolnames"
 )
 
 // chatMemoryTimingMarker opens the timing paragraph. It is the string the tests

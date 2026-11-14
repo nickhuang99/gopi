@@ -37,7 +37,7 @@ import (
 	"time"
 	"unicode"
 
-	"github.com/nick/gopi/internal/lineedit"
+	"github.com/nickhuang99/gopi/internal/lineedit"
 )
 
 // statusHonestyModel is the model name the fixture composes with.

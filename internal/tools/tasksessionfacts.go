@@ -49,10 +49,10 @@ import (
 	"strconv"
 	"strings"
 
-	"github.com/nick/gopi/internal/checkpoint"
-	"github.com/nick/gopi/internal/procstat"
-	"github.com/nick/gopi/internal/rundir"
-	"github.com/nick/gopi/internal/sessionlayout"
+	"github.com/nickhuang99/gopi/internal/checkpoint"
+	"github.com/nickhuang99/gopi/internal/procstat"
+	"github.com/nickhuang99/gopi/internal/rundir"
+	"github.com/nickhuang99/gopi/internal/sessionlayout"
 )
 
 // The `session:` line's vocabulary. Every word a reader greps for lives here

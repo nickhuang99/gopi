@@ -27,7 +27,7 @@ import (
 	"context"
 	"database/sql"
 	"fmt"
-	"github.com/nick/gopi/internal/heavytest"
+	"github.com/nickhuang99/gopi/internal/heavytest"
 	"os"
 	"path/filepath"
 	"strconv"
@@ -35,9 +35,9 @@ import (
 	"testing"
 	"time"
 
-	"github.com/nick/gopi/internal/scratch"
-	"github.com/nick/gopi/internal/testutil"
-	"github.com/nick/gopi/internal/worktreeroots"
+	"github.com/nickhuang99/gopi/internal/scratch"
+	"github.com/nickhuang99/gopi/internal/testutil"
+	"github.com/nickhuang99/gopi/internal/worktreeroots"
 )
 
 // The in-test A/B's constants. Every one is named (Rule 1a) because the

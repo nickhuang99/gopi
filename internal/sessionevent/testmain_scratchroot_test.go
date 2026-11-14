@@ -3,7 +3,7 @@ package sessionevent_test
 import (
 	"testing"
 
-	"github.com/nick/gopi/internal/testutil"
+	"github.com/nickhuang99/gopi/internal/testutil"
 )
 
 // This file is an EXTERNAL test package (config_test) on purpose: the

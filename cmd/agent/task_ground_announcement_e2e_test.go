@@ -47,10 +47,10 @@ import (
 	"testing"
 	"time"
 
-	"github.com/nick/gopi/internal/config"
-	"github.com/nick/gopi/internal/testutil"
-	"github.com/nick/gopi/internal/tools"
-	"github.com/nick/gopi/internal/worktreeroots"
+	"github.com/nickhuang99/gopi/internal/config"
+	"github.com/nickhuang99/gopi/internal/testutil"
+	"github.com/nickhuang99/gopi/internal/tools"
+	"github.com/nickhuang99/gopi/internal/worktreeroots"
 )
 
 // groundAnnounceTestRow is this walk's row id. It is a FULL uuid, and that is

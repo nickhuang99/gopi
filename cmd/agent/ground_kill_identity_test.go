@@ -39,7 +39,7 @@ import (
 	"testing"
 	"time"
 
-	"github.com/nick/gopi/internal/testutil"
+	"github.com/nickhuang99/gopi/internal/testutil"
 )
 
 // groundKillStaleTickDelta is what makes a record STALE: the same pid number

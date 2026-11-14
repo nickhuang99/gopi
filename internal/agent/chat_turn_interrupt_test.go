@@ -30,7 +30,7 @@ import (
 	"testing"
 	"time"
 
-	"github.com/nick/gopi/internal/sessionevent"
+	"github.com/nickhuang99/gopi/internal/sessionevent"
 )
 
 // interruptStreamGap is how long the stub waits between two answer fragments.

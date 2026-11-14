@@ -5,7 +5,7 @@ import (
 	"strings"
 	"testing"
 
-	"github.com/nick/gopi/internal/testutil"
+	"github.com/nickhuang99/gopi/internal/testutil"
 )
 
 // MULTI-PARENT DEPENDENCY (epic multi-parent).

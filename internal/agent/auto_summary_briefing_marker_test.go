@@ -22,7 +22,7 @@ import (
 	"strings"
 	"testing"
 
-	"github.com/nick/gopi/internal/sessionevent"
+	"github.com/nickhuang99/gopi/internal/sessionevent"
 )
 
 // briefingMarkerDecisiveBody is a real briefing's head, taken from this row's own

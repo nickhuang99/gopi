@@ -9,7 +9,7 @@ import (
 	"strings"
 	"time"
 
-	"github.com/nick/gopi/internal/scratch"
+	"github.com/nickhuang99/gopi/internal/scratch"
 )
 
 // WHICH ENVIRONMENT IS THIS — the READ-ONLY half of a placement verdict.

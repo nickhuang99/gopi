@@ -22,9 +22,9 @@ import (
 	"strings"
 	"testing"
 
-	"github.com/nick/gopi/internal/config"
-	"github.com/nick/gopi/internal/gifgen"
-	"github.com/nick/gopi/internal/lineedit"
+	"github.com/nickhuang99/gopi/internal/config"
+	"github.com/nickhuang99/gopi/internal/gifgen"
+	"github.com/nickhuang99/gopi/internal/lineedit"
 )
 
 // filmTestPNG writes a w×h PNG of one colour and returns its path — the same

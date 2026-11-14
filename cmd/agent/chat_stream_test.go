@@ -7,8 +7,8 @@ import (
 	"time"
 	"unicode/utf8"
 
-	"github.com/nick/gopi/internal/lineedit"
-	"github.com/nick/gopi/internal/uiclient"
+	"github.com/nickhuang99/gopi/internal/lineedit"
+	"github.com/nickhuang99/gopi/internal/uiclient"
 )
 
 // A5 at the REPL's own seam: the answer renderer and the one-line status as the

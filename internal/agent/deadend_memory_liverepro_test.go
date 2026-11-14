@@ -4,8 +4,8 @@ import (
 	"strings"
 	"testing"
 
-	"github.com/nick/gopi/internal/deepseek"
-	"github.com/nick/gopi/internal/toolnames"
+	"github.com/nickhuang99/gopi/internal/deepseek"
+	"github.com/nickhuang99/gopi/internal/toolnames"
 )
 
 // Live-repro regression: the exact prior round that misfired (2026-08-29).

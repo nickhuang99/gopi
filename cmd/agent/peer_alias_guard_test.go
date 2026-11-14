@@ -15,7 +15,7 @@ import (
 	"strings"
 	"testing"
 
-	"github.com/nick/gopi/internal/tools"
+	"github.com/nickhuang99/gopi/internal/tools"
 )
 
 // TestPeerFlagsRefuseOptionShapedAlias — the CLI parse faces. An alias like
@@ -112,7 +112,7 @@ func TestWorkerRunFlagsRefuseOptionShapedAlias(t *testing.T) {
 	}
 	// Well-formed values still scan (the guard is not a blanket refusal).
 	for _, argv := range [][]string{
-		{"t-1", "--report-to", "zpeer", "--repo", "zpeer:/home/user/work/GoPi"},
+		{"t-1", "--report-to", "peerbox", "--repo", "peerbox:/home/user/work/GoPi"},
 		{"t-1"},
 	} {
 		wa, unknown := scanWorkerArgs(argv)

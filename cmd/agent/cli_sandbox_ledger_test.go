@@ -30,9 +30,9 @@ import (
 	"testing"
 	"time"
 
-	"github.com/nick/gopi/internal/config"
-	"github.com/nick/gopi/internal/sandbox"
-	"github.com/nick/gopi/internal/tools"
+	"github.com/nickhuang99/gopi/internal/config"
+	"github.com/nickhuang99/gopi/internal/sandbox"
+	"github.com/nickhuang99/gopi/internal/tools"
 )
 
 // cliSandboxProbeTimeout bounds one probe's child. A correctly routed CLI verb

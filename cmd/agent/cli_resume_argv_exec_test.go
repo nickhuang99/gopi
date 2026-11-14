@@ -33,7 +33,7 @@ import (
 	"strings"
 	"testing"
 
-	"github.com/nick/gopi/internal/runcmd"
+	"github.com/nickhuang99/gopi/internal/runcmd"
 
 	_ "modernc.org/sqlite"
 )

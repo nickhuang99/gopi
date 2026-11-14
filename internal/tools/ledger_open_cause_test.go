@@ -18,7 +18,7 @@ import (
 	"strings"
 	"testing"
 
-	"github.com/nick/gopi/internal/sqlitecode"
+	"github.com/nickhuang99/gopi/internal/sqlitecode"
 )
 
 // cantOpenIndexPath produces a path the DRIVER cannot open while its parent

@@ -6,7 +6,7 @@ import (
 	"strconv"
 	"strings"
 
-	"github.com/nick/gopi/internal/scratch"
+	"github.com/nickhuang99/gopi/internal/scratch"
 )
 
 // The two option spellings this parser knows. A token starting with flagPrefix

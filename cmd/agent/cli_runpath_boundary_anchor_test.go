@@ -41,8 +41,8 @@ import (
 	"strings"
 	"testing"
 
-	"github.com/nick/gopi/internal/agent"
-	"github.com/nick/gopi/internal/config"
+	"github.com/nickhuang99/gopi/internal/agent"
+	"github.com/nickhuang99/gopi/internal/config"
 )
 
 const (

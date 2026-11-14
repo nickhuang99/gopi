@@ -13,8 +13,8 @@ import (
 	"strings"
 	"testing"
 
-	"github.com/nick/gopi/internal/lineedit"
-	"github.com/nick/gopi/internal/testutil"
+	"github.com/nickhuang99/gopi/internal/lineedit"
+	"github.com/nickhuang99/gopi/internal/testutil"
 )
 
 // chatOnceAnswer is the mock's one-turn answer, comfortably longer than the

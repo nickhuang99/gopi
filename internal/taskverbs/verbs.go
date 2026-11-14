@@ -215,7 +215,7 @@ const (
 	// SyncRowReceive for every id, so there is no second reading of the merge
 	// authority and no second anchor decision). The two spellings exist for one
 	// reason: `pull` is the word an operator reaches for when a row is waiting
-	// on a LOADED peer and they want it HERE to run (the on-demand HP←zpeer
+	// on a LOADED peer and they want it HERE to run (the on-demand HP←peerbox
 	// fetch), and a row leg is idempotent (a second pull of a row this ledger
 	// already holds answers `already current`, never a duplicate), so the
 	// friendlier spelling costs nothing in safety. A SYNC verb: see SyncVerbs.

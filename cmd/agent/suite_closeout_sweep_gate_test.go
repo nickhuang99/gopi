@@ -11,7 +11,7 @@ package main
 //	--- PASS: TestSuiteNotifyEnvIsHermetic (0.00s)
 //	suite goroutine sweep: parked repository goroutines: 1
 //	  testutil.armSuiteRunRootReapOnSignal.func1()  suiterootsignal.go:77
-//	FAIL	github.com/nick/gopi/cmd/agent	1.454s
+//	FAIL	github.com/nickhuang99/gopi/cmd/agent	1.454s
 //
 // The consequence is the one that actually hurts: an exit code that stops
 // carrying a signal. Green and red stop being distinguishable, so a real
@@ -36,7 +36,7 @@ package main
 // Arm 1 carries the anti-vacuum assertion. `go test` prints the test binary's
 // stderr (where the sweep reports) ONLY under -v — measured on this tree: with
 // `-run TestSuiteNotifyEnvIsHermetic` and no -v, the whole output is one line,
-// `ok github.com/nick/gopi/cmd/agent 1.402s`, so "the log carries no
+// `ok github.com/nickhuang99/gopi/cmd/agent 1.402s`, so "the log carries no
 // `suite goroutine sweep` line" is satisfied by a run whose sweep never spoke at
 // all. A gate that grepped for the absence of a line would therefore pass over a
 // broken *and* over a silent sweep. This one demands the line, and demands the
@@ -57,7 +57,7 @@ import (
 	"strings"
 	"testing"
 
-	"github.com/nick/gopi/internal/heavytest"
+	"github.com/nickhuang99/gopi/internal/heavytest"
 )
 
 const (

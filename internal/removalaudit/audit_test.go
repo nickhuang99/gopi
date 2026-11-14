@@ -16,8 +16,8 @@ import (
 	"strings"
 	"testing"
 
-	"github.com/nick/gopi/internal/removalaudit"
-	"github.com/nick/gopi/internal/testutil"
+	"github.com/nickhuang99/gopi/internal/removalaudit"
+	"github.com/nickhuang99/gopi/internal/testutil"
 )
 
 // TestRecordNamesEveryAttributingField is the GREEN half: one emitted record
@@ -197,7 +197,7 @@ func TestBranchDeleteAtCarriesTheTipAndTheDeliveryPoint(t *testing.T) {
 	const (
 		branch = "task/01a12b80"
 		tip    = "e81f64fb2e2b2dfd0f1c7b4d9f0a1c2d3e4f5a6b"
-		target = "zpeer:/home/user/work/GoPi"
+		target = "peerbox:/home/user/work/GoPi"
 	)
 
 	removalaudit.BranchDeleteAt(removalaudit.ArmFinishCleanupBranch, "/repo/x", branch,
@@ -285,7 +285,7 @@ func TestBranchDeleteAtIsTheEntryTheDeletionSitesUse(t *testing.T) {
 
 	prev := removalaudit.SetEmitDisabledForTest(true)
 	removalaudit.BranchDeleteAt(removalaudit.ArmFinishCleanupBranch, "/repo", branch, "T",
-		"deadbeef", "zpeer:/repo", "e")
+		"deadbeef", "peerbox:/repo", "e")
 	if why := probe(); why == "" {
 		t.Fatal("RED half: the record was found although the emit is disabled")
 	} else {
@@ -294,7 +294,7 @@ func TestBranchDeleteAtIsTheEntryTheDeletionSitesUse(t *testing.T) {
 	removalaudit.SetEmitDisabledForTest(prev)
 
 	removalaudit.BranchDeleteAt(removalaudit.ArmFinishCleanupBranch, "/repo", branch, "T",
-		"deadbeef", "zpeer:/repo", "e")
+		"deadbeef", "peerbox:/repo", "e")
 	if why := probe(); why != "" {
 		t.Fatalf("GREEN half: %s", why)
 	}

@@ -29,7 +29,7 @@ import (
 	"strings"
 	"testing"
 
-	"github.com/nick/gopi/internal/shot"
+	"github.com/nickhuang99/gopi/internal/shot"
 )
 
 // shotServerBoundTo builds a webServer whose listen address is a REAL listener

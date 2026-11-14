@@ -24,11 +24,11 @@ package main
 //     control — without it the refusal table has become a guess about intent).
 
 import (
-	"github.com/nick/gopi/internal/heavytest"
+	"github.com/nickhuang99/gopi/internal/heavytest"
 	"strings"
 	"testing"
 
-	"github.com/nick/gopi/internal/config"
+	"github.com/nickhuang99/gopi/internal/config"
 )
 
 // TestVerbAliasTableIsWellFormed — the table's own precondition, checked

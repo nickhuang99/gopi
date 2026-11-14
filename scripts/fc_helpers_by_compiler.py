@@ -42,9 +42,9 @@ STD = {
     'bufio': 'bufio', 'rand': 'math/rand',
 }
 THIRD = {
-    'testutil': 'github.com/nick/gopi/internal/testutil',
-    'taskverbs': 'github.com/nick/gopi/internal/taskverbs',
-    'removalaudit': 'github.com/nick/gopi/internal/removalaudit',
+    'testutil': 'github.com/nickhuang99/gopi/internal/testutil',
+    'taskverbs': 'github.com/nickhuang99/gopi/internal/taskverbs',
+    'removalaudit': 'github.com/nickhuang99/gopi/internal/removalaudit',
 }
 
 HEADER = (

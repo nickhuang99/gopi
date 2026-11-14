@@ -28,11 +28,11 @@ import (
 	"strings"
 	"time"
 
-	"github.com/nick/gopi/internal/gopilog"
-	"github.com/nick/gopi/internal/scratch"
-	"github.com/nick/gopi/internal/taskverbs"
-	"github.com/nick/gopi/internal/text2img"
-	"github.com/nick/gopi/internal/tools"
+	"github.com/nickhuang99/gopi/internal/gopilog"
+	"github.com/nickhuang99/gopi/internal/scratch"
+	"github.com/nickhuang99/gopi/internal/taskverbs"
+	"github.com/nickhuang99/gopi/internal/text2img"
+	"github.com/nickhuang99/gopi/internal/tools"
 )
 
 // CommandContext carries the process-level environment a command may need.

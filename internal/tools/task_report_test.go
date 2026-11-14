@@ -19,8 +19,8 @@ import (
 	"strings"
 	"testing"
 
-	"github.com/nick/gopi/internal/config"
-	"github.com/nick/gopi/internal/taskreport"
+	"github.com/nickhuang99/gopi/internal/config"
+	"github.com/nickhuang99/gopi/internal/taskreport"
 )
 
 // reportSandbox points GOPI_HOME at a temp dir and returns the resolved

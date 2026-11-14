@@ -71,7 +71,7 @@ import (
 	"sync"
 	"time"
 
-	"github.com/nick/gopi/internal/tools"
+	"github.com/nickhuang99/gopi/internal/tools"
 )
 
 // taskLifecycleOwnerNever is the owner-pid placeholder for "no worker loop was

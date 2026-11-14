@@ -104,8 +104,8 @@ import (
 	"syscall"
 	"time"
 
-	"github.com/nick/gopi/internal/scratch"
-	"github.com/nick/gopi/internal/testcompile"
+	"github.com/nickhuang99/gopi/internal/scratch"
+	"github.com/nickhuang99/gopi/internal/testcompile"
 )
 
 const (
@@ -165,7 +165,7 @@ const (
 	// contract", and BOTH are needed because two generations refuse it in
 	// different words: git 2.34.1 answers `fatal: unknown rev --write-tree`
 	// (the older parser routes the flag to revision resolution; measured on
-	// zpeer 2026-10-13), while a newer parser's own option table answers
+	// peerbox 2026-10-13), while a newer parser's own option table answers
 	// `unknown option`. They are checked ONLY on the union call (the sole call
 	// that passes a flag younger than `git merge-base`), so an unreadable
 	// revision cannot be mistaken for an old toolchain by a later call's text.
@@ -605,7 +605,7 @@ func mergeUnionGateTree(repo, master, branch string) (tree, conflicts, abortReas
 // mergeUnionGateGitTooOldForWriteTree reports whether a failed merge-tree call
 // failed because THIS GIT does not know `--write-tree` (the flag is git 2.38+):
 // git's own refusal to read the flag — `unknown option` on a newer parser,
-// `unknown rev` on git 2.34.1 (measured on zpeer 2026-10-13). It is read on
+// `unknown rev` on git 2.34.1 (measured on peerbox 2026-10-13). It is read on
 // that call alone, so a
 // revision that does not resolve (a different message) can never be reported as
 // an old toolchain.

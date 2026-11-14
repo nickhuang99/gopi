@@ -36,7 +36,7 @@ import (
 	"testing"
 	"time"
 
-	"github.com/nick/gopi/internal/taskverbs"
+	"github.com/nickhuang99/gopi/internal/taskverbs"
 )
 
 // tasksSSHPassthroughTimeout bounds one probe that legitimately reaches the WEB

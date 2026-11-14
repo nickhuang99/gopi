@@ -10,8 +10,8 @@ import (
 	"unicode"
 	"unicode/utf8"
 
-	"github.com/nick/gopi/internal/sessionevent"
-	"github.com/nick/gopi/internal/sgr"
+	"github.com/nickhuang99/gopi/internal/sessionevent"
+	"github.com/nickhuang99/gopi/internal/sgr"
 )
 
 // answer.go — the scrollback-safe streamed-answer renderer (A5).

@@ -30,7 +30,7 @@ import (
 // UNDER the gopi module path, or Go's internal-visibility rule refuses the
 // import of this package from it.
 const (
-	boundarySentinelModule = "github.com/nick/gopi/internal/heavytest/boundarysentinel"
+	boundarySentinelModule = "github.com/nickhuang99/gopi/internal/heavytest/boundarysentinel"
 	boundarySentinelHeavy  = "TestSentinelHeavy"
 	boundarySentinelMarker = "HEAVY SENTINEL RAN"
 )
@@ -43,7 +43,7 @@ const boundarySentinelSource = `package boundarysentinel
 import (
 	"testing"
 
-	"github.com/nick/gopi/internal/heavytest"
+	"github.com/nickhuang99/gopi/internal/heavytest"
 )
 
 // boundaryCriterion is a free-form string ON PURPOSE: the fixture is not this
@@ -79,7 +79,7 @@ func boundaryRepoRoot(t *testing.T) string {
 func boundaryFixture(t *testing.T) string {
 	t.Helper()
 	dir := t.TempDir()
-	gomod := "module " + boundarySentinelModule + "\n\ngo 1.24.0\n\nrequire github.com/nick/gopi v0.0.0\n\nreplace github.com/nick/gopi => " +
+	gomod := "module " + boundarySentinelModule + "\n\ngo 1.24.0\n\nrequire github.com/nickhuang99/gopi v0.0.0\n\nreplace github.com/nickhuang99/gopi => " +
 		filepath.ToSlash(boundaryRepoRoot(t)) + "\n"
 	if err := os.WriteFile(filepath.Join(dir, "go.mod"), []byte(gomod), 0o644); err != nil {
 		t.Fatalf("write fixture go.mod: %v", err)

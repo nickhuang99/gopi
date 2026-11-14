@@ -15,7 +15,7 @@ import (
 //
 //	suite goroutine sweep: parked repository goroutines: 1
 //	  testutil.armSuiteRunRootReapOnSignal.func1()  suiterootsignal.go:77
-//	FAIL	github.com/nick/gopi/cmd/agent	1.454s      (a run whose only test PASSED)
+//	FAIL	github.com/nickhuang99/gopi/cmd/agent	1.454s      (a run whose only test PASSED)
 //
 // measured 2026-10-22 on `go test ./cmd/agent/` — green tests, red run, and an
 // exit code that stops carrying a signal.

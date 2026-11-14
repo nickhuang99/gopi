@@ -53,10 +53,10 @@ import (
 	"os"
 	"strings"
 
-	"github.com/nick/gopi/internal/sessionevent"
-	"github.com/nick/gopi/internal/taskverdict"
-	"github.com/nick/gopi/internal/toolnames"
-	"github.com/nick/gopi/internal/tools"
+	"github.com/nickhuang99/gopi/internal/sessionevent"
+	"github.com/nickhuang99/gopi/internal/taskverdict"
+	"github.com/nickhuang99/gopi/internal/toolnames"
+	"github.com/nickhuang99/gopi/internal/tools"
 )
 
 // reframeVerdictList renders the verdict vocabulary once, from the constants

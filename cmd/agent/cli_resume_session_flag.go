@@ -5,9 +5,9 @@ import (
 	"os"
 	"strings"
 
-	"github.com/nick/gopi/internal/config"
-	"github.com/nick/gopi/internal/runcmd"
-	"github.com/nick/gopi/internal/sessionid"
+	"github.com/nickhuang99/gopi/internal/config"
+	"github.com/nickhuang99/gopi/internal/runcmd"
+	"github.com/nickhuang99/gopi/internal/sessionid"
 )
 
 // sessionResumeFlag is the NO-VERB spelling of a resume: `gopi --session ID

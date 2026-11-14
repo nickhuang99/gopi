@@ -28,7 +28,7 @@ package tools
 import (
 	"fmt"
 
-	"github.com/nick/gopi/internal/config"
+	"github.com/nickhuang99/gopi/internal/config"
 )
 
 // DeclaredPeerGate is the message TAIL every refusal below ends with — the

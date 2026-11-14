@@ -33,7 +33,7 @@ func TestHasSyncPeersFalseWhenEnvEmpty(t *testing.T) {
 // TestHasSyncPeersTrueWhenEnvSet: GOPI_SYNC_PEERS=a ⇒ a declared peer ⇒ the
 // cross-node machinery may engage.
 func TestHasSyncPeersTrueWhenEnvSet(t *testing.T) {
-	t.Setenv(SyncPeersEnv, "zpeer")
+	t.Setenv(SyncPeersEnv, "peerbox")
 	if !HasSyncPeers() {
 		t.Fatal("a declared GOPI_SYNC_PEERS peer must read as has-peers")
 	}
@@ -61,7 +61,7 @@ func TestHasSyncPeersFalseWhenSettingsHasEmptyArray(t *testing.T) {
 func TestHasSyncPeersTrueWhenSettingsHasPeer(t *testing.T) {
 	t.Setenv(SyncPeersEnv, "")
 	path := t.TempDir() + "/settings.json"
-	if err := writeTempSettingsFile(path, `{"sync_peers":["zpeer"],"compute_nodes":[]}`); err != nil {
+	if err := writeTempSettingsFile(path, `{"sync_peers":["peerbox"],"compute_nodes":[]}`); err != nil {
 		t.Fatalf("write settings: %v", err)
 	}
 	t.Setenv("GOPI_SETTINGS", path)
@@ -129,7 +129,7 @@ func TestResolveMemoryPeersFromSettings(t *testing.T) {
 // memory_peers; and the env var only feeds the memory whitelist — it must
 // never enable task sync (HasSyncPeers stays false with sync_peers=[]).
 func TestResolveMemoryPeersEnvOverride(t *testing.T) {
-	t.Setenv(MemoryPeersEnv, "zpeer")
+	t.Setenv(MemoryPeersEnv, "peerbox")
 	t.Setenv(SyncPeersEnv, "")
 	path := t.TempDir() + "/settings.json"
 	if err := writeTempSettingsFile(path, `{"sync_peers":[],"memory_peers":["hp"]}`); err != nil {
@@ -140,8 +140,8 @@ func TestResolveMemoryPeersEnvOverride(t *testing.T) {
 	if err != nil {
 		t.Fatalf("ResolveMemoryPeers: %v", err)
 	}
-	if len(peers) != 1 || peers[0] != "zpeer" {
-		t.Fatalf("ResolveMemoryPeers = %v, want [zpeer] (env override)", peers)
+	if len(peers) != 1 || peers[0] != "peerbox" {
+		t.Fatalf("ResolveMemoryPeers = %v, want [peerbox] (env override)", peers)
 	}
 	if HasSyncPeers() {
 		t.Fatal("GOPI_MEMORY_PEERS must not license task sync")

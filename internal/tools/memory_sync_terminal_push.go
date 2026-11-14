@@ -26,7 +26,7 @@ import (
 	"strings"
 	"time"
 
-	"github.com/nick/gopi/internal/config"
+	"github.com/nickhuang99/gopi/internal/config"
 )
 
 // terminalPushRetries is the must-succeed push's retry schedule (Rule 1:
@@ -193,14 +193,14 @@ func SyncTaskPushOnlyPeers(taskID string, peers []string) ([]string, error) {
 
 // ── the manual push's RECEIPT, and why it had to change ─────────────────
 //
-// WHAT WENT WRONG (measured 2026-09-21 on zpeer, re-measured 2026-10-12 from
-// sager): the manual push rode `--claim-remote`, a CLAIM-BROADCAST handler
+// WHAT WENT WRONG (measured 2026-09-21 on peerbox, re-measured 2026-10-12 from
+// hosta): the manual push rode `--claim-remote`, a CLAIM-BROADCAST handler
 // that mirrors the row's LOCK and answers an accepted/refused VERDICT. It
-// never stores the row — so `push zpeer: accepted (1 row(s))` was TRUE about
+// never stores the row — so `push peerbox: accepted (1 row(s))` was TRUE about
 // the LOCK and read as "the row arrived", and the operator's own follow-up
-// found zpeer's tasks table missing it entirely (`max(updated_at)` older than
+// found peerbox's tasks table missing it entirely (`max(updated_at)` older than
 // the row's creation). The GLOBAL policy paragraph on the client host pointed
-// at exactly this command as "the way to get a row into zpeer's queue", which
+// at exactly this command as "the way to get a row into peerbox's queue", which
 // turned a lock receipt into a persistence criterion (Rule 15b: prove the
 // EFFECT, never the receipt).
 //

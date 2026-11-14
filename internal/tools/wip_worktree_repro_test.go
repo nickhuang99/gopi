@@ -12,7 +12,7 @@ import (
 	"strings"
 	"testing"
 
-	"github.com/nick/gopi/internal/testutil"
+	"github.com/nickhuang99/gopi/internal/testutil"
 )
 
 // newWIPTipFixture builds the victim shape: a linked worktree created at the

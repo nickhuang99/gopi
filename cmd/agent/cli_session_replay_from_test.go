@@ -14,7 +14,7 @@ import (
 	"strings"
 	"testing"
 
-	"github.com/nick/gopi/internal/replayplay"
+	"github.com/nickhuang99/gopi/internal/replayplay"
 )
 
 // TestSessionReplayFromFlagGrammar pins the three sources and the DEFAULT. The

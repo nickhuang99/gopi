@@ -15,8 +15,8 @@ import (
 	"testing"
 	"time"
 
-	"github.com/nick/gopi/internal/deepseek"
-	"github.com/nick/gopi/internal/toolnames"
+	"github.com/nickhuang99/gopi/internal/deepseek"
+	"github.com/nickhuang99/gopi/internal/toolnames"
 )
 
 // --- REFERENCE ONLY prefix (§5.6.1) ---------------------------------------

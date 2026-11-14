@@ -23,7 +23,7 @@ package main
 import (
 	"strings"
 
-	"github.com/nick/gopi/internal/agent"
+	"github.com/nickhuang99/gopi/internal/agent"
 )
 
 // The command's vocabulary (Rules 1/13/14): every word the switch, the usage

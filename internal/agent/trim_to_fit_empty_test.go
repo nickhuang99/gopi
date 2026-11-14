@@ -5,7 +5,7 @@ import (
 	"strings"
 	"testing"
 
-	"github.com/nick/gopi/internal/deepseek"
+	"github.com/nickhuang99/gopi/internal/deepseek"
 )
 
 // The measured defect (2026-09-30): `gopi chat --once --tools` died with HTTP

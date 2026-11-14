@@ -16,8 +16,8 @@ import (
 	"strings"
 	"testing"
 
-	"github.com/nick/gopi/internal/agent"
-	"github.com/nick/gopi/internal/ctxdump"
+	"github.com/nickhuang99/gopi/internal/agent"
+	"github.com/nickhuang99/gopi/internal/ctxdump"
 )
 
 // chatContextTestRawLogEnv names the switch that disables the raw log. It is

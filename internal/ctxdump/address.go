@@ -49,8 +49,8 @@ import (
 	"os"
 	"path/filepath"
 
-	"github.com/nick/gopi/internal/deepseek"
-	"github.com/nick/gopi/internal/gopilog"
+	"github.com/nickhuang99/gopi/internal/deepseek"
+	"github.com/nickhuang99/gopi/internal/gopilog"
 )
 
 // Axis is the ADDRESS SPACE an export is written in. It is a named type with

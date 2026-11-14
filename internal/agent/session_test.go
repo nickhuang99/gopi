@@ -3,14 +3,14 @@ package agent
 import (
 	"bufio"
 	"encoding/json"
-	"github.com/nick/gopi/internal/sessionevent"
+	"github.com/nickhuang99/gopi/internal/sessionevent"
 	"os"
 	"path/filepath"
 	"strings"
 	"testing"
 
-	"github.com/nick/gopi/internal/config"
-	"github.com/nick/gopi/internal/deepseek"
+	"github.com/nickhuang99/gopi/internal/config"
+	"github.com/nickhuang99/gopi/internal/deepseek"
 )
 
 // tempHome sets HOME to a temporary directory and returns the sessions path.

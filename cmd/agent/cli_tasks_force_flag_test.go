@@ -18,8 +18,8 @@ import (
 	"strings"
 	"testing"
 
-	"github.com/nick/gopi/internal/cliverbs"
-	"github.com/nick/gopi/internal/taskverbs"
+	"github.com/nickhuang99/gopi/internal/cliverbs"
+	"github.com/nickhuang99/gopi/internal/taskverbs"
 )
 
 // TestTaskUpdateForceFlagIsAdmittedAndValueless is the four-site check the

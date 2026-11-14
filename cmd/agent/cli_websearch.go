@@ -6,9 +6,9 @@ import (
 	"strconv"
 	"strings"
 
-	"github.com/nick/gopi/internal/config"
-	"github.com/nick/gopi/internal/toolnames"
-	"github.com/nick/gopi/internal/tools"
+	"github.com/nickhuang99/gopi/internal/config"
+	"github.com/nickhuang99/gopi/internal/toolnames"
+	"github.com/nickhuang99/gopi/internal/tools"
 )
 
 // webSearchMethods is the valid set of method values for the web_search

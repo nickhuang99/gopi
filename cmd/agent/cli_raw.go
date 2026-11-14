@@ -7,9 +7,9 @@ import (
 	"strconv"
 	"strings"
 
-	"github.com/nick/gopi/internal/cliverbs"
-	"github.com/nick/gopi/internal/gopilog"
-	"github.com/nick/gopi/internal/tools"
+	"github.com/nickhuang99/gopi/internal/cliverbs"
+	"github.com/nickhuang99/gopi/internal/gopilog"
+	"github.com/nickhuang99/gopi/internal/tools"
 )
 
 // rawUsage is the help text of the `gopi session raw` verb: the verbatim view of what

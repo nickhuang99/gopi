@@ -51,7 +51,7 @@ import (
 	"testing"
 	"time"
 
-	"github.com/nick/gopi/internal/tools"
+	"github.com/nickhuang99/gopi/internal/tools"
 )
 
 // Reachability fixture constants (Rule 1: every literal lives here).

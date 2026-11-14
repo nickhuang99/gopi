@@ -4,7 +4,7 @@ package main
 // IS SPOKEN (the routing half of task 01a12161: the first-text report itself, and
 // the file-fed pass it was measured with, are cli_voice_first_text.go's).
 //
-// THE DEFECT THIS CLOSES, measured on sager's own microphone (2026-10-09, task
+// THE DEFECT THIS CLOSES, measured on hosta's own microphone (2026-10-09, task
 // 01a120a7's evidence, ev4-bare-streaming-mic.err):
 //
 //	[voice] first text at 14.7s (first partial) (engine doubao-stream) = capture
@@ -54,8 +54,8 @@ import (
 	"sync"
 	"time"
 
-	"github.com/nick/gopi/internal/config"
-	"github.com/nick/gopi/internal/doubaostream"
+	"github.com/nickhuang99/gopi/internal/config"
+	"github.com/nickhuang99/gopi/internal/doubaostream"
 )
 
 const (

@@ -1188,7 +1188,7 @@ func TestSignalIdentityGateCatchesEverySpelling(t *testing.T) {
 	for _, tc := range cases {
 		t.Run(tc.name, func(t *testing.T) {
 			dir := t.TempDir()
-			src := "package main\n\nimport (\n\t\"os\"\n\t\"os/signal\"\n\t\"syscall\"\n\n\t\"github.com/nick/gopi/internal/testutil\"\n)\n\nfunc f(pid int, proc *os.Process, id testutil.ProcIdentity) {\n\t" + tc.body + "\n}\n"
+			src := "package main\n\nimport (\n\t\"os\"\n\t\"os/signal\"\n\t\"syscall\"\n\n\t\"github.com/nickhuang99/gopi/internal/testutil\"\n)\n\nfunc f(pid int, proc *os.Process, id testutil.ProcIdentity) {\n\t" + tc.body + "\n}\n"
 			path := filepath.Join(dir, "fixture_test.go")
 			if err := os.WriteFile(path, []byte(src), 0o600); err != nil {
 				t.Fatalf("write fixture: %v", err)
@@ -1311,7 +1311,7 @@ func f(t *testing.T, got syscall.Signal, pid int) {
 // function that does carry the identity check IS enough. A gate that honoured a
 // bare marker would let the defect back in one comment at a time.
 func TestSignalIdentityGateEscapeIsCheckedNotDeclared(t *testing.T) {
-	const header = "package main\n\nimport (\n\t\"syscall\"\n\n\t\"github.com/nick/gopi/internal/testutil\"\n)\n\n"
+	const header = "package main\n\nimport (\n\t\"syscall\"\n\n\t\"github.com/nickhuang99/gopi/internal/testutil\"\n)\n\n"
 
 	t.Run("a marker with no identity check is still red", func(t *testing.T) {
 		dir := t.TempDir()

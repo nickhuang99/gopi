@@ -107,7 +107,7 @@ func TestGateClaimAcceptsTheRunsTrueClaims(t *testing.T) {
 // exit code, a pasted output, a measured reading, a delegated parenthesis.
 func TestGateClaimAcceptsObservations(t *testing.T) {
 	accepted := []string{
-		"`go test ./internal/tools -run TestSeal -count=1` → ok github.com/nick/gopi/internal/tools 2.1s",
+		"`go test ./internal/tools -run TestSeal -count=1` → ok github.com/nickhuang99/gopi/internal/tools 2.1s",
 		"output: exit=0",
 		"`go vet ./...`: exit code 0",
 		"`gofmt -l internal/tools` output: (empty)",
@@ -131,7 +131,7 @@ func TestGateClaimAcceptsObservations(t *testing.T) {
 // unit is the BULLET (marker + its wrapped lines).
 func TestGateClaimAcceptsAWrappedBulletObservation(t *testing.T) {
 	wrapped := "- post-fix run (t+2019s, this branch): the same `-run` selection →\n" +
-		"  `ok github.com/nick/gopi/internal/tools 3.340s`.\n" +
+		"  `ok github.com/nickhuang99/gopi/internal/tools 3.340s`.\n" +
 		"- bare assertion with nothing behind it: `git status --porcelain` empty\n"
 	v := GateClaimVerdict(evidenceBody(nil, []string{wrapped}))
 	for _, s := range v.MissingSentences {

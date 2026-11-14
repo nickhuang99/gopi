@@ -2,7 +2,7 @@ package agent
 
 // cloneground.go — THE BARE-PROMPT FACE'S CLONE GROUND.
 //
-// THE DEFECT THIS CLOSES (measured on zpeer 2026-10-23, row 01a16520): a bare
+// THE DEFECT THIS CLOSES (measured on peerbox 2026-10-23, row 01a16520): a bare
 // prompt (`echo "…" | gopi`, no ledger row supplied by anybody) auto-registers
 // its own row and, with a non-empty settings `dev_repo`, STILL took the
 // worktree channel — the run created a linked `gopi-<stem>` worktree inside the
@@ -45,9 +45,9 @@ import (
 	"os/exec"
 	"strings"
 
-	"github.com/nick/gopi/internal/config"
-	"github.com/nick/gopi/internal/devworkspace"
-	"github.com/nick/gopi/internal/tools"
+	"github.com/nickhuang99/gopi/internal/config"
+	"github.com/nickhuang99/gopi/internal/devworkspace"
+	"github.com/nickhuang99/gopi/internal/tools"
 )
 
 const (

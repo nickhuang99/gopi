@@ -3,7 +3,7 @@ package tools
 // memory_sync_row.go — the SINGLE-ROW send/receive legs of the task-ledger
 // sync family.
 //
-// THE DEFECT THIS FILE CLOSES (measured 2026-09-21 on zpeer, re-confirmed by
+// THE DEFECT THIS FILE CLOSES (measured 2026-09-21 on peerbox, re-confirmed by
 // this task's own probe):
 //
 //	$ gopi task sync --push-only --task-id <row> --peer hp
@@ -40,8 +40,8 @@ import (
 	"strings"
 	"time"
 
-	"github.com/nick/gopi/internal/config"
-	"github.com/nick/gopi/internal/fullid"
+	"github.com/nickhuang99/gopi/internal/config"
+	"github.com/nickhuang99/gopi/internal/fullid"
 )
 
 // --- constants (Rule 1: every literal in one place) -------------------------

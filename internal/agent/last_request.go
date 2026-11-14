@@ -23,7 +23,7 @@
 // the carrier's job is to COUNT and to quote one line, never to mutate.
 package agent
 
-import "github.com/nick/gopi/internal/deepseek"
+import "github.com/nickhuang99/gopi/internal/deepseek"
 
 // LastClaudeRequest is the request the model was last handed (nil before the
 // first round of a session, and on every run that never built one).

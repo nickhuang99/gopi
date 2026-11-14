@@ -46,11 +46,11 @@ import (
 	"strings"
 	"time"
 
-	"github.com/nick/gopi/internal/agent"
-	"github.com/nick/gopi/internal/deepseek"
-	"github.com/nick/gopi/internal/inputsource"
-	"github.com/nick/gopi/internal/lineedit"
-	"github.com/nick/gopi/internal/tools"
+	"github.com/nickhuang99/gopi/internal/agent"
+	"github.com/nickhuang99/gopi/internal/deepseek"
+	"github.com/nickhuang99/gopi/internal/inputsource"
+	"github.com/nickhuang99/gopi/internal/lineedit"
+	"github.com/nickhuang99/gopi/internal/tools"
 )
 
 // The /cli wire: routes, the field name and the transcript roles this renderer

@@ -33,15 +33,15 @@ package main
 import (
 	"database/sql"
 	"errors"
-	"github.com/nick/gopi/internal/config"
+	"github.com/nickhuang99/gopi/internal/config"
 	"os"
 	"path/filepath"
 	"testing"
 
 	_ "modernc.org/sqlite"
 
-	"github.com/nick/gopi/internal/testutil"
-	"github.com/nick/gopi/internal/tools"
+	"github.com/nickhuang99/gopi/internal/testutil"
+	"github.com/nickhuang99/gopi/internal/tools"
 )
 
 // wrapperFailureDetailProbe is the substring the WRAPPER's own failed-run

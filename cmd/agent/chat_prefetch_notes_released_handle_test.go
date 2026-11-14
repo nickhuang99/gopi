@@ -30,8 +30,8 @@ import (
 	"context"
 	"testing"
 
-	"github.com/nick/gopi/internal/memoryprefetch"
-	"github.com/nick/gopi/internal/tools"
+	"github.com/nickhuang99/gopi/internal/memoryprefetch"
+	"github.com/nickhuang99/gopi/internal/tools"
 )
 
 // prefetchNotesReleasedHandleQuery is the query both tests drive. It carries

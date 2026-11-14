@@ -27,7 +27,7 @@ import (
 	"strings"
 	"testing"
 
-	"github.com/nick/gopi/internal/chatpolicy"
+	"github.com/nickhuang99/gopi/internal/chatpolicy"
 )
 
 // chatOpProjectPolicyRelPath mirrors chatOpProjectPolicyRelPath so the walk

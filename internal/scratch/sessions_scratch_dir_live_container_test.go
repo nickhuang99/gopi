@@ -25,9 +25,9 @@
 //
 // THE THREE CASES, and each is a KEEP or a TAKE for a stated reason:
 //
-//	1. holder cwd == the CONTAINER           → KEEP the directory inside it
-//	2. holder fd  == a FILE in the CONTAINER → KEEP the directory inside it
-//	3. no holder at all (the CONTROL)        → TAKE it (the arm still works)
+//  1. holder cwd == the CONTAINER           → KEEP the directory inside it
+//  2. holder fd  == a FILE in the CONTAINER → KEEP the directory inside it
+//  3. no holder at all (the CONTROL)        → TAKE it (the arm still works)
 //
 // Case 3 is what makes 1 and 2 mean anything: without it, "nothing was collected"
 // is satisfied by an arm that never collects anything.

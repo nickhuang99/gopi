@@ -56,7 +56,7 @@ func TestChatReplayPrefixGuardNamesTheTurnItWaitsFor(t *testing.T) {
 	// At N=3 both prefix waits are eligible once the counter says so.
 	r3 := &chatReplay{fromTurn: 3, witness: &chatTurnWitness{closed: 2}}
 	for _, ordinal := range []int{1, 2} {
-		if !r3.prefixClosureWitnessed(chatReplayWaitTurn(ordinal+1)) {
+		if !r3.prefixClosureWitnessed(chatReplayWaitTurn(ordinal + 1)) {
 			t.Fatalf("--from-turn 3 with %d turns closed did not shorten the wait about turn %d", 2, ordinal)
 		}
 	}

@@ -29,7 +29,7 @@ import (
 	"strings"
 	"testing"
 
-	"github.com/nick/gopi/internal/lineedit"
+	"github.com/nickhuang99/gopi/internal/lineedit"
 )
 
 // The epic's own width requirement: a real over-wide sample, 200+ characters

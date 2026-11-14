@@ -18,7 +18,7 @@ import (
 	"os"
 	"testing"
 
-	"github.com/nick/gopi/internal/config"
+	"github.com/nickhuang99/gopi/internal/config"
 )
 
 func TestReproDebugLogTruthy(t *testing.T) {

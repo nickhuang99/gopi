@@ -35,8 +35,8 @@ import (
 	"testing"
 	"time"
 
-	"github.com/nick/gopi/internal/agent"
-	"github.com/nick/gopi/internal/deepseek"
+	"github.com/nickhuang99/gopi/internal/agent"
+	"github.com/nickhuang99/gopi/internal/deepseek"
 )
 
 // webStateTestToolName is the tool the mock model asks for. It is a real tool
@@ -291,10 +291,10 @@ func TestWebStatePageCarriesTheBadge(t *testing.T) {
 	page := rec.Body.String()
 
 	for _, want := range []string{
-		`id="status"`,                       // the resident node
-		`data-state="idle"`,                 // ...initialised to the default state
-		`data-tool=""`,                      // ...and to no tool
-		`data-interruptible="false"`,        // ...and to "nothing to stop"
+		`id="status"`,                // the resident node
+		`data-state="idle"`,          // ...initialised to the default state
+		`data-tool=""`,               // ...and to no tool
+		`data-interruptible="false"`, // ...and to "nothing to stop"
 		"const API_STATE='" + webStatePath + "'",
 		"const EV_STATE='" + webStateFrame + "'",
 		"const ST_IDLE='" + webStateIdle + "'",

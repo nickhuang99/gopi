@@ -24,7 +24,7 @@ import (
 	"strings"
 	"testing"
 
-	"github.com/nick/gopi/internal/lineedit"
+	"github.com/nickhuang99/gopi/internal/lineedit"
 )
 
 // sgrTurnTestHeader is the renderer's own header row for a turn — the anchor the

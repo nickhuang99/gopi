@@ -20,7 +20,7 @@ import (
 	"strings"
 	"testing"
 
-	"github.com/nick/gopi/internal/cliverbs"
+	"github.com/nickhuang99/gopi/internal/cliverbs"
 )
 
 // TestTaskShowResumeAdviceFollowsTheLiveReading is the classifier: a live

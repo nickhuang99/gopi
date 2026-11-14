@@ -9,7 +9,7 @@ package tools
 //	pre-fix tree (master before this branch): FAILS — the seal returns a digest
 //	  that says nothing about a package-level test reading taken from a
 //	  `-run`-narrowed command, so the delivery run 01a12ee4's report line
-//	  `ok github.com/nick/gopi/internal/standards` reaches the reviewer looking
+//	  `ok github.com/nickhuang99/gopi/internal/standards` reaches the reviewer looking
 //	  like a green gate on a rev where that package printed FAIL exit 1.
 //	post-fix tree: PASSES — the same reading is recorded on the row's digest,
 //	  with the flag that narrowed it and the remedy.
@@ -62,7 +62,7 @@ const zzRedProofFilteredReport = `# Task Report: bound the holder scan
 - **Build**: ` + "`go build ./...`" + ` → exit 0 (no output).
 - **Tests** (branch-scoped, the diff's own packages):
   ` + "`go test -run 'Holder|LiveHolders|ProfileRoot|ScratchGC|Sandbox' ./internal/scratch/ ./internal/tools/`" + `
-  → ` + "`ok github.com/nick/gopi/internal/scratch 23.1s`" + `;
+  → ` + "`ok github.com/nickhuang99/gopi/internal/scratch 23.1s`" + `;
   ` + "`go test -run 'TestConfigDoc|TestCensusGate|TestRepoHygiene' ./internal/standards/`" + ` → ` + "`ok`" + `.
 
 ## Not Done

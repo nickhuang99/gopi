@@ -36,7 +36,7 @@ import (
 	"strings"
 	"testing"
 
-	"github.com/nick/gopi/internal/devworkspace"
+	"github.com/nickhuang99/gopi/internal/devworkspace"
 )
 
 // reclaimCloneGroundFixture builds the incident's exact shape at the smallest

@@ -17,7 +17,7 @@ package cliindex
 import (
 	"testing"
 
-	"github.com/nick/gopi/internal/cliverbs"
+	"github.com/nickhuang99/gopi/internal/cliverbs"
 )
 
 // anchorProbe is a Verb shaped exactly like the ones Load builds for a routed

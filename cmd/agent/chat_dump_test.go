@@ -7,9 +7,9 @@ import (
 	"testing"
 	"time"
 
-	"github.com/nick/gopi/internal/lineedit"
-	"github.com/nick/gopi/internal/sgr"
-	"github.com/nick/gopi/internal/uiclient"
+	"github.com/nickhuang99/gopi/internal/lineedit"
+	"github.com/nickhuang99/gopi/internal/sgr"
+	"github.com/nickhuang99/gopi/internal/uiclient"
 )
 
 // chat_dump_test.go — `gopi chat --dump-screen`: the flag's artifact, and the
@@ -844,7 +844,7 @@ func TestChatDump_QuotedFenceMarkerKeepsTheProseProse(t *testing.T) {
 		fence+"\n",
 		"you> head -3 go.mod\n",
 		quoted+"\n",
-		"module github.com/nick/gopi\n",
+		"module github.com/nickhuang99/gopi\n",
 		fence+"\n",
 		"\n",
 		prose+"\n",

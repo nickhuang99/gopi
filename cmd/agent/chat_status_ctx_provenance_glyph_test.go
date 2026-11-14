@@ -4,7 +4,7 @@ import (
 	"strings"
 	"testing"
 
-	"github.com/nick/gopi/internal/lineedit"
+	"github.com/nickhuang99/gopi/internal/lineedit"
 )
 
 // chat_status_ctx_provenance_glyph_test.go — the epic's gap A: statusOps.ctxMeasured

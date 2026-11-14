@@ -7,7 +7,7 @@ import (
 	"strings"
 	"testing"
 
-	"github.com/nick/gopi/internal/tools"
+	"github.com/nickhuang99/gopi/internal/tools"
 )
 
 // buildGopiForWorkerHelp compiles the test tree's binary once per test run

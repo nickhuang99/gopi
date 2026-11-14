@@ -8,8 +8,8 @@ package testutil
 // Bug row 01a164f6, measured 2026-10-23. Two `cmd/agent` budget runs ended with
 //
 //	failing tests: 0
-//	package verdict: FAIL: github.com/nick/gopi/cmd/agent
-//	PACKAGE FAILED: github.com/nick/gopi/cmd/agent (a package-level verdict — a
+//	package verdict: FAIL: github.com/nickhuang99/gopi/cmd/agent
+//	PACKAGE FAILED: github.com/nickhuang99/gopi/cmd/agent (a package-level verdict — a
 //	  panic or a TestMain exit; no test to name)
 //
 // and the real cause was neither of those things: the test BINARY had been killed

@@ -23,7 +23,7 @@ import (
 	"strings"
 	"testing"
 
-	"github.com/nick/gopi/internal/inputsource"
+	"github.com/nickhuang99/gopi/internal/inputsource"
 )
 
 // mixedFaceSession is the smallest session that separates the two counters:

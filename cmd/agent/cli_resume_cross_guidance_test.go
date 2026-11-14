@@ -40,7 +40,7 @@ import (
 	"testing"
 	"time"
 
-	"github.com/nick/gopi/internal/cliverbs"
+	"github.com/nickhuang99/gopi/internal/cliverbs"
 )
 
 // resumeGuidanceTimeoutSec bounds one `-h` probe. A routing regression that

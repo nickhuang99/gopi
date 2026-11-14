@@ -32,9 +32,9 @@ import (
 	"fmt"
 	"io"
 
-	"github.com/nick/gopi/internal/checkpoint"
-	"github.com/nick/gopi/internal/deepseek"
-	"github.com/nick/gopi/internal/rawlogfmt"
+	"github.com/nickhuang99/gopi/internal/checkpoint"
+	"github.com/nickhuang99/gopi/internal/deepseek"
+	"github.com/nickhuang99/gopi/internal/rawlogfmt"
 )
 
 // ErrNoRequests is returned when the log carries no request record at all.

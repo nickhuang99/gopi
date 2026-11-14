@@ -28,9 +28,9 @@ import (
 	"sort"
 	"strings"
 
-	"github.com/nick/gopi/internal/agent"
-	"github.com/nick/gopi/internal/capturesurvey"
-	"github.com/nick/gopi/internal/gopilog"
+	"github.com/nickhuang99/gopi/internal/agent"
+	"github.com/nickhuang99/gopi/internal/capturesurvey"
+	"github.com/nickhuang99/gopi/internal/gopilog"
 )
 
 const (

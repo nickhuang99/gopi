@@ -40,7 +40,7 @@ import (
 	"strings"
 	"testing"
 
-	"github.com/nick/gopi/internal/testutil"
+	"github.com/nickhuang99/gopi/internal/testutil"
 )
 
 // statusGateRow seeds one row and leaves it at status, with the holder trail in

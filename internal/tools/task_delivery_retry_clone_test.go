@@ -12,7 +12,7 @@ package tools
 // and a permanent block for a row whose whole deliverable is that push:
 //
 //	$ ./bin/gopi task retry-delivery --task 01a16deb-73df-7a96-851d-97297f619246
-//	01a16deb-… blocked branch=master peer=zpeer:/home/user/work/gopi — delivery owed: branch master is exempt
+//	01a16deb-… blocked branch=master peer=peerbox:/home/user/work/gopi — delivery owed: branch master is exempt
 //
 // while the ground's HEAD sat on NO peer ref at all. 99 of 103 failed rows on
 // this host were that shape.
@@ -37,7 +37,7 @@ import (
 	"strings"
 	"testing"
 
-	"github.com/nick/gopi/internal/config"
+	"github.com/nickhuang99/gopi/internal/config"
 )
 
 const (
@@ -311,7 +311,7 @@ func TestDeliveryRetryCloneGroundRouteIsTheChannel(t *testing.T) {
 //
 //	$ ./bin/gopi task retry-delivery --task 01a16deb-…
 //	01a16deb-… delivered branch=master … the peer now advertises it at b7a1ff8…
-//	$ git ls-remote --heads zpeer:/home/user/work/gopi
+//	$ git ls-remote --heads peerbox:/home/user/work/gopi
 //	b7a1ff8…	refs/heads/master          ← the SAME tip as before the run
 //
 // The mechanism: the channel's FIRST step is `pull --rebase origin <branch>`,

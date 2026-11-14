@@ -45,13 +45,13 @@ import (
 	"strings"
 	"unicode/utf8"
 
-	"github.com/nick/gopi/internal/cliverbs"
-	"github.com/nick/gopi/internal/config"
-	"github.com/nick/gopi/internal/deepseek"
-	"github.com/nick/gopi/internal/inputsource"
-	"github.com/nick/gopi/internal/lineedit"
-	"github.com/nick/gopi/internal/toolnames"
-	"github.com/nick/gopi/internal/uiclient"
+	"github.com/nickhuang99/gopi/internal/cliverbs"
+	"github.com/nickhuang99/gopi/internal/config"
+	"github.com/nickhuang99/gopi/internal/deepseek"
+	"github.com/nickhuang99/gopi/internal/inputsource"
+	"github.com/nickhuang99/gopi/internal/lineedit"
+	"github.com/nickhuang99/gopi/internal/toolnames"
+	"github.com/nickhuang99/gopi/internal/uiclient"
 )
 
 // The tool's action verbs — the wire enum of the schema AND the vocabulary the

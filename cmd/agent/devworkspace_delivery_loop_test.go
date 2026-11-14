@@ -25,8 +25,8 @@ import (
 	"strings"
 	"testing"
 
-	"github.com/nick/gopi/internal/devworkspace"
-	"github.com/nick/gopi/internal/tools"
+	"github.com/nickhuang99/gopi/internal/devworkspace"
+	"github.com/nickhuang99/gopi/internal/tools"
 )
 
 // fakeLoopState builds a cloneRunState whose attempts are scripted and whose

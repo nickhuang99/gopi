@@ -6,7 +6,7 @@ import (
 	"strings"
 	"testing"
 
-	"github.com/nick/gopi/internal/sgr"
+	"github.com/nickhuang99/gopi/internal/sgr"
 )
 
 // palette256_test.go — the acceptance for the MIDDLE tier: a terminal that

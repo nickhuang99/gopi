@@ -25,9 +25,9 @@ import (
 	"strings"
 	"testing"
 
-	"github.com/nick/gopi/internal/deepseek"
-	"github.com/nick/gopi/internal/inputsource"
-	"github.com/nick/gopi/internal/sessionevent"
+	"github.com/nickhuang99/gopi/internal/deepseek"
+	"github.com/nickhuang99/gopi/internal/inputsource"
+	"github.com/nickhuang99/gopi/internal/sessionevent"
 )
 
 // TestTheMarkerSetIsTheLeafsOne pins Rule 14 from the writing side: the slice

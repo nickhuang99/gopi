@@ -23,8 +23,8 @@ import (
 	"strings"
 	"testing"
 
-	"github.com/nick/gopi/internal/heavytest"
-	"github.com/nick/gopi/internal/smokegate"
+	"github.com/nickhuang99/gopi/internal/heavytest"
+	"github.com/nickhuang99/gopi/internal/smokegate"
 )
 
 // heavyMakeTargetName is the one named opt-in target (the Makefile's, not a

@@ -4,7 +4,7 @@ import (
 	"encoding/json"
 	"fmt"
 
-	"github.com/nick/gopi/internal/thinkmode"
+	"github.com/nickhuang99/gopi/internal/thinkmode"
 )
 
 // convertRequest translates an Anthropic /v1/messages request into the

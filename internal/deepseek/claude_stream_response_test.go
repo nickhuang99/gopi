@@ -12,7 +12,7 @@ import (
 	"sync"
 	"testing"
 
-	"github.com/nick/gopi/internal/rawlogfmt"
+	"github.com/nickhuang99/gopi/internal/rawlogfmt"
 )
 
 // streamResponseFixture is a SMALL but COMPLETE Anthropic-style stream: a

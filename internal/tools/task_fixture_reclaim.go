@@ -59,8 +59,8 @@ import (
 	"path/filepath"
 	"strings"
 
-	"github.com/nick/gopi/internal/config"
-	"github.com/nick/gopi/internal/tasktags"
+	"github.com/nickhuang99/gopi/internal/config"
+	"github.com/nickhuang99/gopi/internal/tasktags"
 )
 
 const (

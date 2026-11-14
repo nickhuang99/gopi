@@ -52,7 +52,7 @@ import (
 	"sync"
 	"testing"
 
-	"github.com/nick/gopi/internal/config"
+	"github.com/nickhuang99/gopi/internal/config"
 
 	// The sqlite driver is imported HERE, not left to the caller, because the
 	// reader fixture OPENS a database: a test package that never happened to

@@ -29,7 +29,7 @@ import (
 	"fmt"
 	"strings"
 
-	"github.com/nick/gopi/internal/tools"
+	"github.com/nickhuang99/gopi/internal/tools"
 )
 
 // fixtureReclaimLogFmt is the ONE spelling of the arm's per-row line (Rule 1b):

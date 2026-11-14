@@ -32,8 +32,8 @@ import (
 	"sort"
 	"strings"
 
-	"github.com/nick/gopi/internal/config"
-	"github.com/nick/gopi/internal/scratch"
+	"github.com/nickhuang99/gopi/internal/config"
+	"github.com/nickhuang99/gopi/internal/scratch"
 )
 
 // configSubcommandNames is the `gopi config <TAB>` candidate set — the group's

@@ -31,8 +31,8 @@ import (
 	"fmt"
 	"os"
 
-	"github.com/nick/gopi/internal/sessionid"
-	"github.com/nick/gopi/internal/signalrec"
+	"github.com/nickhuang99/gopi/internal/sessionid"
+	"github.com/nickhuang99/gopi/internal/signalrec"
 )
 
 // sessionidOperandSourceClause is the ONE provenance clause an id→path refusal

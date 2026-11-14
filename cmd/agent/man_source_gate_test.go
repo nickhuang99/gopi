@@ -73,7 +73,7 @@ import (
 	"sync"
 	"testing"
 
-	"github.com/nick/gopi/internal/mansource"
+	"github.com/nickhuang99/gopi/internal/mansource"
 )
 
 // manPages is the man sources this gate measures, with the verb whose `-h` page

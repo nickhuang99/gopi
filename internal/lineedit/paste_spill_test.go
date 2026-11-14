@@ -10,7 +10,7 @@ import (
 	"time"
 	"unicode/utf8"
 
-	"github.com/nick/gopi/internal/inputsource"
+	"github.com/nickhuang99/gopi/internal/inputsource"
 )
 
 // paste_spill_test.go — the two coupled defects of pasting into the chat line

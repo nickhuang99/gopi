@@ -63,7 +63,7 @@ import (
 	"sort"
 	"strings"
 
-	"github.com/nick/gopi/internal/toolnames"
+	"github.com/nickhuang99/gopi/internal/toolnames"
 )
 
 // toolUsageTitle is the page's FIRST LINE, and it is a contract: the contract

@@ -12,9 +12,9 @@ import (
 	"strings"
 	"testing"
 
-	"github.com/nick/gopi/internal/agent"
-	"github.com/nick/gopi/internal/deepseek"
-	"github.com/nick/gopi/internal/rawlogfmt"
+	"github.com/nickhuang99/gopi/internal/agent"
+	"github.com/nickhuang99/gopi/internal/deepseek"
+	"github.com/nickhuang99/gopi/internal/rawlogfmt"
 )
 
 // slashSessionFixture is a CommandSession with EVERY fact present, so a row that

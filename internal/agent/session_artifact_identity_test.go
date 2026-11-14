@@ -6,8 +6,8 @@ import (
 	"path/filepath"
 	"testing"
 
-	"github.com/nick/gopi/internal/sessionevent"
-	"github.com/nick/gopi/internal/sessionlayout"
+	"github.com/nickhuang99/gopi/internal/sessionevent"
+	"github.com/nickhuang99/gopi/internal/sessionlayout"
 )
 
 // sessionArtifactIdentity reads the recorded artifact-identity block out of a

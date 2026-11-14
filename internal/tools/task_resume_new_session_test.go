@@ -4,7 +4,7 @@ import (
 	"strings"
 	"testing"
 
-	"github.com/nick/gopi/internal/testutil"
+	"github.com/nickhuang99/gopi/internal/testutil"
 )
 
 // task_resume_new_session_test.go — the TRAIL half of epic 01a17df9-99c4.

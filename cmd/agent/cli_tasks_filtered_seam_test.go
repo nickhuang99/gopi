@@ -14,7 +14,7 @@ package main
 // The motivating shape is run 01a12ee4 (2026-10-12): the run selected
 // `./internal/standards` in its own PKGS, killed that job, and replaced it with a
 // self-authored `-run` filter that matches no gate test — so the report carried
-// `ok github.com/nick/gopi/internal/standards` while the package's whole run on
+// `ok github.com/nickhuang99/gopi/internal/standards` while the package's whole run on
 // the same rev was FAIL exit 1.
 
 import (
@@ -23,10 +23,10 @@ import (
 	"strings"
 	"testing"
 
-	"github.com/nick/gopi/internal/config"
-	"github.com/nick/gopi/internal/taskreport"
-	"github.com/nick/gopi/internal/testutil"
-	"github.com/nick/gopi/internal/tools"
+	"github.com/nickhuang99/gopi/internal/config"
+	"github.com/nickhuang99/gopi/internal/taskreport"
+	"github.com/nickhuang99/gopi/internal/testutil"
+	"github.com/nickhuang99/gopi/internal/tools"
 )
 
 // filteredSeamRedReport is the RED arm: a package-level `ok` taken from a
@@ -43,7 +43,7 @@ const filteredSeamRedReport = `# Task Report: bound the holder scan
 ## Verification
 - **Build**: ` + "`go build ./...`" + ` → exit 0 (no output).
 - **Tests** (branch-scoped, the diff's own packages):
-  ` + "`go test -run 'Holder|LiveHolders|ProfileRoot|ScratchGC|Sandbox' ./internal/scratch/ ./internal/tools/`" + ` → ` + "`ok github.com/nick/gopi/internal/scratch 23.1s`" + `;
+  ` + "`go test -run 'Holder|LiveHolders|ProfileRoot|ScratchGC|Sandbox' ./internal/scratch/ ./internal/tools/`" + ` → ` + "`ok github.com/nickhuang99/gopi/internal/scratch 23.1s`" + `;
   ` + "`go test -run 'TestConfigDoc|TestCensusGate|TestRepoHygiene' ./internal/standards/`" + ` → ` + "`ok`" + `.
 
 ## Not Done
@@ -66,8 +66,8 @@ const filteredSeamWholeReport = `# Task Report: bound the holder scan
 
 ## Verification
 - **Build**: ` + "`go build ./...`" + ` → exit 0 (no output).
-- **Tests**: ` + "`make test-budget PKGS='./internal/scratch'`" + ` → ` + "`ok github.com/nick/gopi/internal/scratch 23.1s`" + `;
-  ` + "`make test-budget PKGS='./internal/standards'`" + ` → ` + "`ok github.com/nick/gopi/internal/standards 17.5s`" + `.
+- **Tests**: ` + "`make test-budget PKGS='./internal/scratch'`" + ` → ` + "`ok github.com/nickhuang99/gopi/internal/scratch 23.1s`" + `;
+  ` + "`make test-budget PKGS='./internal/standards'`" + ` → ` + "`ok github.com/nickhuang99/gopi/internal/standards 17.5s`" + `.
 
 ## Not Done
 - (nothing)

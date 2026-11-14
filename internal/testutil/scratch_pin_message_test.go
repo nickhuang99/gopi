@@ -124,7 +124,7 @@ func TestScratchPinFailureNamesTheRemedyForEachShape(t *testing.T) {
 			t.Errorf("nested FAIL text does not name the module that decides the shape (its own go.mod), so a reader cannot tell the in-tree remedy is out of reach.\ngot: %s", nested)
 		}
 		// The unactionable instruction is the defect this text repairs: for a
-		// nested module Go offers no github.com/nick/gopi edge and internal/ is
+		// nested module Go offers no github.com/nickhuang99/gopi edge and internal/ is
 		// decided by import path, so the import CANNOT be written.
 		impossible := fmt.Sprintf(scratchPinFixInTree, nestedFixturePkgLeaf)
 		if strings.Contains(nested, impossible) {

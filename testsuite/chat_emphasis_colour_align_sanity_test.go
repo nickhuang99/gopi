@@ -27,8 +27,8 @@ import (
 	"strings"
 	"testing"
 
-	"github.com/nick/gopi/internal/lineedit"
-	"github.com/nick/gopi/internal/uiclient"
+	"github.com/nickhuang99/gopi/internal/lineedit"
+	"github.com/nickhuang99/gopi/internal/uiclient"
 )
 
 // alSanityLines are the dump's rows 18..25, verbatim from the real run's artifact

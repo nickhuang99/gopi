@@ -24,8 +24,8 @@ import (
 	"testing"
 	"time"
 
-	"github.com/nick/gopi/internal/config"
-	"github.com/nick/gopi/internal/envctx"
+	"github.com/nickhuang99/gopi/internal/config"
+	"github.com/nickhuang99/gopi/internal/envctx"
 )
 
 // envBlockFixture writes a description into a temp GOPI_HOME's profile and

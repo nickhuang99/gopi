@@ -16,8 +16,8 @@ import (
 	"context"
 	"testing"
 
-	"github.com/nick/gopi/internal/tasksource"
-	"github.com/nick/gopi/internal/testutil"
+	"github.com/nickhuang99/gopi/internal/tasksource"
+	"github.com/nickhuang99/gopi/internal/testutil"
 )
 
 // TestInsertTaskRowRefusesAnUnsupportedHumanClaim pins the funnel's evidence

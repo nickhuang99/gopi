@@ -29,7 +29,7 @@ import (
 	"strings"
 	"testing"
 
-	"github.com/nick/gopi/internal/worktreeroots"
+	"github.com/nickhuang99/gopi/internal/worktreeroots"
 )
 
 // defaultTmpRootFixturePrefix names the fixture directories this file creates

@@ -4,7 +4,7 @@ import (
 	"os"
 	"testing"
 
-	"github.com/nick/gopi/internal/testutil"
+	"github.com/nickhuang99/gopi/internal/testutil"
 )
 
 // This file is an EXTERNAL test package (scratch_test) on purpose: the tests in

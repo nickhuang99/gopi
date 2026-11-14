@@ -13,7 +13,7 @@ import (
 	"strings"
 	"testing"
 
-	"github.com/nick/gopi/internal/agent"
+	"github.com/nickhuang99/gopi/internal/agent"
 )
 
 // webSlashServer builds the production shape: a web server whose ONE persistent
@@ -38,8 +38,10 @@ func webSlashServer(t *testing.T, tools bool, withRaw bool) (*webServer, func())
 		rl := newSlashContextRawLog(t, 1)
 		ws.agent.RawLog = rl
 		inner := cleanup
-		cleanup = func() { _ = rl.Close() //stylegate:ignore the fixture's raw logger is closed after its one record was read
-			inner() }
+		cleanup = func() {
+			_ = rl.Close() //stylegate:ignore the fixture's raw logger is closed after its one record was read
+			inner()
+		}
 	}
 	return ws, cleanup
 }

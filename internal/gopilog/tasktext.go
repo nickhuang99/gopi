@@ -33,7 +33,7 @@ package gopilog
 import (
 	"strings"
 
-	"github.com/nick/gopi/internal/textguard"
+	"github.com/nickhuang99/gopi/internal/textguard"
 )
 
 // sessionTaskText folds the session's captured task text into printable text,

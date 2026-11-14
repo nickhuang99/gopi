@@ -25,7 +25,7 @@ import (
 	"strings"
 	"testing"
 
-	"github.com/nick/gopi/internal/uiclient"
+	"github.com/nickhuang99/gopi/internal/uiclient"
 )
 
 // chatScreenE2ERealTurnCopies is how many frames of the chosen span are appended.

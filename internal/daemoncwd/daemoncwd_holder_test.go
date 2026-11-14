@@ -37,8 +37,8 @@ import (
 	"testing"
 	"time"
 
-	"github.com/nick/gopi/internal/scratch"
-	"github.com/nick/gopi/internal/testutil"
+	"github.com/nickhuang99/gopi/internal/scratch"
+	"github.com/nickhuang99/gopi/internal/testutil"
 )
 
 // TestIsTestScratchHolderRejectsInvalidPids pins the trivial half: a non-process

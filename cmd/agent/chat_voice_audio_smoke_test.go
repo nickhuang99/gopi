@@ -35,7 +35,7 @@ package main
 import (
 	"bytes"
 	"errors"
-	"github.com/nick/gopi/internal/heavytest"
+	"github.com/nickhuang99/gopi/internal/heavytest"
 	"strings"
 	"testing"
 )

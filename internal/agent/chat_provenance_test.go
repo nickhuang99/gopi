@@ -5,8 +5,8 @@ import (
 	"strconv"
 	"testing"
 
-	"github.com/nick/gopi/internal/config"
-	"github.com/nick/gopi/internal/tasksource"
+	"github.com/nickhuang99/gopi/internal/config"
+	"github.com/nickhuang99/gopi/internal/tasksource"
 )
 
 // chat_provenance_test.go — the ordering contract that makes a chat row's

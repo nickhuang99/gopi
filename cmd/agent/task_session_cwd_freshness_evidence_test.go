@@ -60,8 +60,8 @@ import (
 	"testing"
 	"time"
 
-	"github.com/nick/gopi/internal/buildidentity"
-	gopiversion "github.com/nick/gopi/internal/version"
+	"github.com/nickhuang99/gopi/internal/buildidentity"
+	gopiversion "github.com/nickhuang99/gopi/internal/version"
 )
 
 // The freshness refusal's EVIDENCE vocabulary (Rule 1b/14 — one value, named

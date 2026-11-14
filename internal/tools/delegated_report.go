@@ -40,7 +40,7 @@ import (
 	"path/filepath"
 	"strings"
 
-	"github.com/nick/gopi/internal/taskreport"
+	"github.com/nickhuang99/gopi/internal/taskreport"
 )
 
 // TaskShowReportDelegatedLabel is the label of the result-delegation finding in

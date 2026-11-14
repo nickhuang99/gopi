@@ -46,7 +46,7 @@ import (
 	"strings"
 	"time"
 
-	"github.com/nick/gopi/internal/config"
+	"github.com/nickhuang99/gopi/internal/config"
 )
 
 const (
@@ -249,7 +249,7 @@ func osPrettyName() string {
 
 // localIPv4 lists this host's non-loopback IPv4 addresses as "iface  address",
 // interface-sorted, one address per entry (an interface with two addresses
-// yields two entries — zpeer's enp0s25/wlo1 case is exactly why a single
+// yields two entries — peerbox's enp0s25/wlo1 case is exactly why a single
 // "this host's IP" is not a fact).
 func localIPv4() []string {
 	ifaces, err := net.Interfaces()

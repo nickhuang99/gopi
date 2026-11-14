@@ -22,11 +22,11 @@ import (
 	"sync/atomic"
 	"testing"
 
-	"github.com/nick/gopi/internal/deepseek"
-	"github.com/nick/gopi/internal/taskverdict"
-	"github.com/nick/gopi/internal/testutil"
-	"github.com/nick/gopi/internal/toolnames"
-	"github.com/nick/gopi/internal/tools"
+	"github.com/nickhuang99/gopi/internal/deepseek"
+	"github.com/nickhuang99/gopi/internal/taskverdict"
+	"github.com/nickhuang99/gopi/internal/testutil"
+	"github.com/nickhuang99/gopi/internal/toolnames"
+	"github.com/nickhuang99/gopi/internal/tools"
 )
 
 // reframeBigBriefing returns a raw briefing above reframeMinRawLength with a

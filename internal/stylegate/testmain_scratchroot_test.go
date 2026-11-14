@@ -3,7 +3,7 @@ package stylegate
 import (
 	"testing"
 
-	"github.com/nick/gopi/internal/testutil"
+	"github.com/nickhuang99/gopi/internal/testutil"
 )
 
 // TestMain pins this package's scratch root through internal/testutil: the

@@ -4,7 +4,7 @@ import (
 	"fmt"
 	"os"
 
-	"github.com/nick/gopi/internal/scratch"
+	"github.com/nickhuang99/gopi/internal/scratch"
 )
 
 // cli_scratch_gc_roots.go — the WORKTREE-ROOT CENSUS arm:

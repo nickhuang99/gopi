@@ -7,7 +7,7 @@ import (
 	"testing"
 	"time"
 
-	"github.com/nick/gopi/internal/config"
+	"github.com/nickhuang99/gopi/internal/config"
 )
 
 // Tests for HasSessionEnd's tail walk. Regression guard for: a cleanly-ended

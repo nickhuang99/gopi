@@ -35,7 +35,7 @@ import (
 	"strings"
 	"testing"
 
-	"github.com/nick/gopi/internal/deepseek"
+	"github.com/nickhuang99/gopi/internal/deepseek"
 )
 
 // reasoningMockSSE is a Claude-shaped stream: one thinking block (three

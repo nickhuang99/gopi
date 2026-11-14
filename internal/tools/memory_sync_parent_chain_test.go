@@ -7,7 +7,7 @@ package tools
 // {completed, verified, superseded}). It did not travel: SyncTaskRow carried
 // no parent column, so `gopi task send` shipped a five-link chain as five
 // independent rows and the peer's dispatcher took all five at once (measured
-// zpeer→hp, 2026-10-07). These tests pin the three halves of the repair:
+// peerbox→hp, 2026-10-07). These tests pin the three halves of the repair:
 //
 //  1. the edge TRAVELS — a sent row's parent_task_id is present on the peer's
 //     ledger (TestRowSendCarriesTheDependencyEdge), and a patch that carries a
@@ -32,8 +32,8 @@ import (
 	"testing"
 	"time"
 
-	"github.com/nick/gopi/internal/config"
-	"github.com/nick/gopi/internal/testutil"
+	"github.com/nickhuang99/gopi/internal/config"
+	"github.com/nickhuang99/gopi/internal/testutil"
 )
 
 const (

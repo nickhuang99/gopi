@@ -28,7 +28,7 @@ import (
 	"os"
 	"strings"
 
-	"github.com/nick/gopi/internal/tools"
+	"github.com/nickhuang99/gopi/internal/tools"
 )
 
 // captureUsage is the -h text for the capture subcommand.

@@ -27,9 +27,9 @@ import (
 	"strings"
 	"testing"
 
-	"github.com/nick/gopi/internal/config"
-	"github.com/nick/gopi/internal/replaymode"
-	"github.com/nick/gopi/internal/testutil"
+	"github.com/nickhuang99/gopi/internal/config"
+	"github.com/nickhuang99/gopi/internal/replaymode"
+	"github.com/nickhuang99/gopi/internal/testutil"
 )
 
 // replayPrefetchLedgerHash is the ledger file's sha256, or "" when the file does

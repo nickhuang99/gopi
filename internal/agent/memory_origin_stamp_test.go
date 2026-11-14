@@ -16,8 +16,8 @@ import (
 	"path/filepath"
 	"testing"
 
-	"github.com/nick/gopi/internal/sessionevent"
-	"github.com/nick/gopi/internal/tools"
+	"github.com/nickhuang99/gopi/internal/sessionevent"
+	"github.com/nickhuang99/gopi/internal/tools"
 )
 
 // TestMemoryStoreOriginIsSessionFirst is the red-then-green guard: a run with no

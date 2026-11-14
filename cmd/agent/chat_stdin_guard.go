@@ -53,7 +53,7 @@ import (
 	"fmt"
 	"os"
 
-	"github.com/nick/gopi/internal/lineedit"
+	"github.com/nickhuang99/gopi/internal/lineedit"
 )
 
 // The refusal text. It is ONE constant because two readers owe the same

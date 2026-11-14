@@ -20,7 +20,7 @@ import (
 	"strings"
 	"testing"
 
-	"github.com/nick/gopi/internal/shot"
+	"github.com/nickhuang99/gopi/internal/shot"
 )
 
 // captureSeamStubPNG is the payload the stubbed X11 leg returns — the seam

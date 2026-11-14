@@ -8,7 +8,7 @@ import (
 	"testing"
 	"time"
 
-	"github.com/nick/gopi/internal/config"
+	"github.com/nickhuang99/gopi/internal/config"
 )
 
 // Regression tests for the startup orphan backfill's false positives.

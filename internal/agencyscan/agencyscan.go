@@ -30,7 +30,7 @@ import (
 	"strings"
 	"unicode"
 
-	"github.com/nick/gopi/internal/tasksource"
+	"github.com/nickhuang99/gopi/internal/tasksource"
 )
 
 // ---------------------------------------------------------------------------

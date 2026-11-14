@@ -11,7 +11,7 @@ import (
 	"strings"
 	"testing"
 
-	"github.com/nick/gopi/internal/procname"
+	"github.com/nickhuang99/gopi/internal/procname"
 )
 
 // firstField returns a line's first whitespace-separated field ("" when the

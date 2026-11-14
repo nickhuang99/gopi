@@ -25,9 +25,9 @@ import (
 	"strings"
 	"testing"
 
-	"github.com/nick/gopi/internal/agent"
-	"github.com/nick/gopi/internal/taskreport"
-	"github.com/nick/gopi/internal/tools"
+	"github.com/nickhuang99/gopi/internal/agent"
+	"github.com/nickhuang99/gopi/internal/taskreport"
+	"github.com/nickhuang99/gopi/internal/tools"
 )
 
 // reportRoundTestRow is the parent row the round reports on. A fixed spelling

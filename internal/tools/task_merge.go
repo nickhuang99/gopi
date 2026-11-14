@@ -30,10 +30,10 @@ import (
 	"strings"
 	"time"
 
-	"github.com/nick/gopi/internal/config"
-	"github.com/nick/gopi/internal/removalaudit"
-	"github.com/nick/gopi/internal/runcmd"
-	"github.com/nick/gopi/internal/tasksource"
+	"github.com/nickhuang99/gopi/internal/config"
+	"github.com/nickhuang99/gopi/internal/removalaudit"
+	"github.com/nickhuang99/gopi/internal/runcmd"
+	"github.com/nickhuang99/gopi/internal/tasksource"
 )
 
 // --- TaskMerge tunables (Rule 1: every literal in one place) ---

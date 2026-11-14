@@ -18,10 +18,10 @@ import (
 	"testing"
 	"time"
 
-	"github.com/nick/gopi/internal/lineedit"
+	"github.com/nickhuang99/gopi/internal/lineedit"
 
-	"github.com/nick/gopi/internal/text2img"
-	"github.com/nick/gopi/internal/uiclient"
+	"github.com/nickhuang99/gopi/internal/text2img"
+	"github.com/nickhuang99/gopi/internal/uiclient"
 )
 
 // annotateFixtureGrid is a small resolved grid for the cell-anchor tests: 4 rows

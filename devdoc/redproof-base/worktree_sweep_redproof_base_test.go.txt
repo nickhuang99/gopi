@@ -1,0 +1,185 @@
+package tools
+
+import (
+	"context"
+	"strings"
+	"testing"
+	"time"
+
+	"github.com/nick/gopi/internal/worktreeroots"
+)
+
+// This file is the A/B RED PROOF for the guard-③/⑤ change (epic: worktree stay,
+// branch fix/worktree-sweep-ownership). It is the pre-change side of the
+// comparison: the SAME scenarios, asserted at the POST-fix expectation, driven
+// through the SAME entry point (worktreeSweepJudge).
+//
+// The scenarios are expressed with only the evidence the PRE-CHANGE struct can
+// carry (no HolderProvenDead / EndedAt columns exist yet) — which is precisely
+// the point: the old rung had nothing else to judge on, so "a non-terminal row
+// exists" was its whole ownership test. Run on master: the three scenarios
+// below FAIL (the old code protects a foreign tree, honours a stamp with no
+// runner, and lets the age floor shield a finished run). Run on the fix branch
+// (internal/tools/worktree_sweep_ownership_test.go, same scenarios WITH the new
+// evidence): they PASS.
+
+func redProofRoot(t *testing.T) (string, []worktreeroots.Root) {
+	t.Helper()
+	root := sweepFixtureRoot(t)
+	return root, []worktreeroots.Root{{Path: root, Role: worktreeroots.RoleWorktree, Source: worktreeroots.SourceSettingsKey}}
+}
+
+// TestRedProofBranchNameCollisionProtectsAForeignTree: a non-terminal row that
+// names this branch but records a DIFFERENT worktree is working elsewhere. The
+// buggy rung keeps the registration on the name collision alone.
+func TestRedProofBranchNameCollisionProtectsAForeignTree(t *testing.T) {
+	root, roots := redProofRoot(t)
+	reg := sweepFixtureReg(root, "gopi-collided", "fix/shared-name")
+	opts := sweepOptionsNow(true)
+	ho := worktreeSweepHostObservations{CreatedAt: opts.Now.Add(-72 * time.Hour)}
+
+	collision := []tasksRowForSweep{{
+		TaskID:   "T-collide",
+		Status:   taskStatusInProgress,
+		Branch:   reg.Branch,
+		Worktree: root + "/somewhere-else",
+	}}
+	if f := worktreeSweepJudge(reg, collision, nil, roots, opts, ho); f.Disposition != string(worktreeReclaim) {
+		t.Fatalf("RED: a branch-name collision protected a foreign tree: %s (%s)", f.Disposition, f.Reason)
+	}
+}
+
+// TestRedProofPersistedStampWithNoRunnerProtects: the persisted false
+// deliverable.worktree stamp, on a row whose run is over. The buggy rung has no
+// way to distrust it, so the stamp alone keeps the tree forever.
+func TestRedProofPersistedStampWithNoRunnerProtects(t *testing.T) {
+	root, roots := redProofRoot(t)
+	reg := sweepFixtureReg(root, "gopi-false-stamp", "fix/false-stamp")
+	opts := sweepOptionsNow(true)
+	ho := worktreeSweepHostObservations{CreatedAt: opts.Now.Add(-72 * time.Hour)}
+
+	stale := []tasksRowForSweep{{
+		TaskID:   "T-false-stamp",
+		Status:   taskStatusInProgress,
+		Worktree: reg.Path,
+		Branch:   reg.Branch,
+	}}
+	if f := worktreeSweepJudge(reg, stale, nil, roots, opts, ho); f.Disposition != string(worktreeReclaim) {
+		t.Fatalf("RED: a persisted stamp with no living runner still owned the tree: %s (%s)", f.Disposition, f.Reason)
+	}
+}
+
+// TestRedProofSameDayOrphanOfAnEndedOwnerIsKept: a registration created TODAY
+// whose owning row is over. On the buggy rungs the row keeps it alive on its
+// status alone, and — with the ownership rungs satisfied but no path/branch tie
+// to compare — the age floor (measured on the registration's own creation
+// record) is what makes a same-day orphan unreachable for the rest of the day.
+// The two are the compounding causes; what the fix adds is the ledger's OWN
+// ended stamp as evidence, which this pre-change evidence set cannot express.
+func TestRedProofAgeFloorShieldsAnEndedOwner(t *testing.T) {
+	root, roots := redProofRoot(t)
+	reg := sweepFixtureReg(root, "gopi-same-day-orphan", "fix/same-day")
+	opts := sweepOptionsNow(true)
+	ho := worktreeSweepHostObservations{CreatedAt: opts.Now.Add(-10 * time.Minute)}
+
+	ended := []tasksRowForSweep{{
+		TaskID:   "T-ended",
+		Status:   taskStatusInProgress,
+		Worktree: reg.Path,
+		Branch:   reg.Branch,
+	}}
+	f := worktreeSweepJudge(reg, ended, nil, roots, opts, ho)
+	if f.Disposition != string(worktreeReclaim) {
+		t.Fatalf("RED: the age floor shielded a registration whose owner had ended: %s (%s)", f.Disposition, f.Reason)
+	}
+	if !strings.Contains(f.Reason, "T-ended") {
+		t.Errorf("RED: the reclaim reason must name the row that licensed it, got %q", f.Reason)
+	}
+}
+
+// TestRedProofLiveRowStillProtects is the no-regression half, and it must pass
+// on BOTH sides: a plainly live row keeps its worktree.
+func TestRedProofLiveRowStillProtects(t *testing.T) {
+	root, roots := redProofRoot(t)
+	reg := sweepFixtureReg(root, "gopi-truly-live", "fix/truly-live")
+	opts := sweepOptionsNow(true)
+	ho := worktreeSweepHostObservations{CreatedAt: opts.Now.Add(-72 * time.Hour)}
+
+	live := []tasksRowForSweep{{TaskID: "T-live", Status: taskStatusInProgress, Worktree: reg.Path, Branch: reg.Branch}}
+	if f := worktreeSweepJudge(reg, live, nil, roots, opts, ho); f.Disposition != string(worktreeKeep) ||
+		!strings.Contains(f.Reason, "T-live") {
+		t.Fatalf("a genuinely live run's worktree was not kept: %s (%s)", f.Disposition, f.Reason)
+	}
+}
+
+// TestRedProofAgeFloorKeepsAnOwnerlessSameDayRegistration documents the ground
+// the floor KEEPS on both sides of the fix: a young registration with no
+// ended-owner evidence stays put — the change sharpened ownership, it did not
+// licence reclaiming anything fresh.
+func TestRedProofAgeFloorKeepsAnOwnerlessSameDayRegistration(t *testing.T) {
+	root, roots := redProofRoot(t)
+	reg := sweepFixtureReg(root, "gopi-fresh", "fix/fresh")
+	opts := sweepOptionsNow(true)
+	ho := worktreeSweepHostObservations{CreatedAt: opts.Now.Add(-10 * time.Minute)}
+	if f := worktreeSweepJudge(reg, nil, nil, roots, opts, ho); f.Disposition != string(worktreeKeep) {
+		t.Fatalf("a fresh unowned registration was %s (%s), want keep", f.Disposition, f.Reason)
+	}
+}
+
+// TestRedProofLoaderDropsABranchOnlyRow is the loader-level red proof: the
+// branch arm cannot protect a row the evidence loader never delivers, and the
+// loader used to scan for the "worktree" needle alone.
+func TestRedProofLoaderDropsABranchOnlyRow(t *testing.T) {
+	hintFixtureLedger(t)
+	seedSubmitterRow(t, "t-sweep-branch-only", "55555555-6666-4777-8888-000000000001")
+	seedDeliverableBranchOnlyBase(t, "t-sweep-branch-only", "/fixture/repo", "fix/branch-only")
+	rows, err := worktreeSweepTaskRows(context.Background())
+	if err != nil {
+		t.Fatalf("ledger read: %v", err)
+	}
+	for _, r := range rows {
+		if r.TaskID == "t-sweep-branch-only" {
+			return // the loader delivered it — nothing to red-prove
+		}
+	}
+	t.Fatalf("RED: the loader dropped a branch-only row (%d rows): the branch arm can never protect it", len(rows))
+}
+
+func seedDeliverableBranchOnlyBase(t *testing.T, taskID, repo, branch string) {
+	t.Helper()
+	ctx := context.Background()
+	db := openTestTasksDB(t, memoryDBPath())
+	defer db.Close()
+	blob := `{"repo":"` + repo + `","branch":"` + branch + `"}`
+	if _, err := db.ExecContext(ctx, `UPDATE tasks SET deliverable = ? WHERE task_id = ?`, blob, taskID); err != nil {
+		t.Fatalf("deliverable %s: %v", taskID, err)
+	}
+}
+
+// TestRedProofAgeFloorShieldsATerminalOwner is the guard-⑤ red proof for the
+// ORDINARY same-day orphan: the registration was created today (well inside the
+// 24 h floor) and its owning row is TERMINAL. The floor was measured on the
+// registration record alone, so the same-day orphan reported age=0h and stayed
+// unreclaimable for the rest of the day however plainly the ledger said the run
+// was over. Asserted at the post-fix expectation: the registration is reclaimed
+// and the reason names the row that licensed it.
+func TestRedProofAgeFloorShieldsATerminalOwner(t *testing.T) {
+	root, roots := redProofRoot(t)
+	reg := sweepFixtureReg(root, "gopi-same-day-terminal", "fix/same-day-terminal")
+	opts := sweepOptionsNow(true)
+	ho := worktreeSweepHostObservations{CreatedAt: opts.Now.Add(-10 * time.Minute)}
+
+	owner := []tasksRowForSweep{{
+		TaskID:   "T-finished",
+		Status:   taskStatusCompleted,
+		Worktree: reg.Path,
+		Branch:   reg.Branch,
+	}}
+	f := worktreeSweepJudge(reg, owner, nil, roots, opts, ho)
+	if f.Disposition != string(worktreeReclaim) {
+		t.Fatalf("RED: the age floor shielded a same-day registration whose owner is terminal: %s (%s)", f.Disposition, f.Reason)
+	}
+	if !strings.Contains(f.Reason, "T-finished") {
+		t.Fatalf("RED: the reclaim reason does not name the row that licensed it: %q", f.Reason)
+	}
+}

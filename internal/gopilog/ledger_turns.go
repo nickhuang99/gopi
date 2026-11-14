@@ -45,7 +45,7 @@ import (
 	"strconv"
 	"strings"
 
-	"github.com/nick/gopi/internal/sessionevent"
+	"github.com/nickhuang99/gopi/internal/sessionevent"
 )
 
 // LedgerTurnCount reads a session's LEDGER turn count (`chats.turn_count`).

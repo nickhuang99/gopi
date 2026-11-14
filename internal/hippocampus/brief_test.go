@@ -11,7 +11,7 @@ package hippocampus
 import (
 	"testing"
 
-	"github.com/nick/gopi/internal/tools"
+	"github.com/nickhuang99/gopi/internal/tools"
 )
 
 // hit builds one lead with an explicit tier/coverage; EffConfidence is left

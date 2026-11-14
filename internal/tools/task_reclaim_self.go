@@ -51,11 +51,11 @@ import (
 	"strings"
 	"time"
 
-	"github.com/nick/gopi/internal/boolvocab"
-	"github.com/nick/gopi/internal/removalaudit"
-	"github.com/nick/gopi/internal/scratch"
-	"github.com/nick/gopi/internal/worktreerelease"
-	"github.com/nick/gopi/internal/worktreeroots"
+	"github.com/nickhuang99/gopi/internal/boolvocab"
+	"github.com/nickhuang99/gopi/internal/removalaudit"
+	"github.com/nickhuang99/gopi/internal/scratch"
+	"github.com/nickhuang99/gopi/internal/worktreerelease"
+	"github.com/nickhuang99/gopi/internal/worktreeroots"
 )
 
 const (

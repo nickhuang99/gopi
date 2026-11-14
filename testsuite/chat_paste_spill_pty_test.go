@@ -7,11 +7,11 @@ import (
 	"testing"
 	"time"
 
-	"github.com/nick/gopi/internal/config"
-	"github.com/nick/gopi/internal/inputsource"
-	"github.com/nick/gopi/internal/lineedit"
-	"github.com/nick/gopi/internal/sessionlayout"
-	"github.com/nick/gopi/internal/testutil"
+	"github.com/nickhuang99/gopi/internal/config"
+	"github.com/nickhuang99/gopi/internal/inputsource"
+	"github.com/nickhuang99/gopi/internal/lineedit"
+	"github.com/nickhuang99/gopi/internal/sessionlayout"
+	"github.com/nickhuang99/gopi/internal/testutil"
 )
 
 // chat_paste_spill_pty_test.go — the paste spill on the carrier the defect was

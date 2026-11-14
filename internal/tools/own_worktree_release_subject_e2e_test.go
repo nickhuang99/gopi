@@ -37,7 +37,7 @@ import (
 	"testing"
 	"time"
 
-	"github.com/nick/gopi/internal/scratch"
+	"github.com/nickhuang99/gopi/internal/scratch"
 )
 
 // ownSubjectE2EWorktreeAge is how far back the two fixture registrations are

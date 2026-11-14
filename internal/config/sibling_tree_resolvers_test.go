@@ -22,8 +22,8 @@ import (
 	"path/filepath"
 	"testing"
 
-	"github.com/nick/gopi/internal/scratch"
-	"github.com/nick/gopi/internal/sessionlayout"
+	"github.com/nickhuang99/gopi/internal/scratch"
+	"github.com/nickhuang99/gopi/internal/sessionlayout"
 )
 
 // TestProfileSiblingTreeResolversAreWired pins the seam: with GOPI_HOME set to a

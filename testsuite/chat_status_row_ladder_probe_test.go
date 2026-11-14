@@ -45,11 +45,11 @@ import (
 	"time"
 	"unicode/utf8"
 
-	"github.com/nick/gopi/internal/agent"
-	"github.com/nick/gopi/internal/heavytest"
-	"github.com/nick/gopi/internal/lineedit"
-	"github.com/nick/gopi/internal/testutil"
-	"github.com/nick/gopi/internal/uiclient"
+	"github.com/nickhuang99/gopi/internal/agent"
+	"github.com/nickhuang99/gopi/internal/heavytest"
+	"github.com/nickhuang99/gopi/internal/lineedit"
+	"github.com/nickhuang99/gopi/internal/testutil"
+	"github.com/nickhuang99/gopi/internal/uiclient"
 )
 
 const (

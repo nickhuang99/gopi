@@ -43,10 +43,10 @@ import (
 	"strings"
 	"testing"
 
-	"github.com/nick/gopi/internal/agent"
-	"github.com/nick/gopi/internal/config"
-	"github.com/nick/gopi/internal/replaymode"
-	"github.com/nick/gopi/internal/sessionlayout"
+	"github.com/nickhuang99/gopi/internal/agent"
+	"github.com/nickhuang99/gopi/internal/config"
+	"github.com/nickhuang99/gopi/internal/replaymode"
+	"github.com/nickhuang99/gopi/internal/sessionlayout"
 )
 
 const (
@@ -68,8 +68,8 @@ const (
 	// replayMintTestProfileFile is a second file in the profile, outside the
 	// sessions tree, so the case measures a profile WITH content rather than an
 	// empty home that any writer could pass by accident on the first write.
-	replayMintTestProfileFile = "settings.json"
-	replayMintTestSettingsBody  = `{"model":"test-model"}`
+	replayMintTestProfileFile  = "settings.json"
+	replayMintTestSettingsBody = `{"model":"test-model"}`
 )
 
 // replayMintTestProfile builds the scratch profile: a real sessions root holding

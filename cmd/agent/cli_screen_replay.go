@@ -32,9 +32,9 @@ import (
 	"os"
 	"strings"
 
-	"github.com/nick/gopi/internal/cliverbs"
-	"github.com/nick/gopi/internal/replayplay"
-	"github.com/nick/gopi/internal/uiclient"
+	"github.com/nickhuang99/gopi/internal/cliverbs"
+	"github.com/nickhuang99/gopi/internal/replayplay"
+	"github.com/nickhuang99/gopi/internal/uiclient"
 )
 
 // screenReplayVerifyFlag is `--verify OTHER`: the measurement, not the picture.

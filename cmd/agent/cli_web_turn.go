@@ -33,9 +33,9 @@ import (
 	"os"
 	"time"
 
-	"github.com/nick/gopi/internal/deepseek"
-	"github.com/nick/gopi/internal/gopilog"
-	"github.com/nick/gopi/internal/sessionevent"
+	"github.com/nickhuang99/gopi/internal/deepseek"
+	"github.com/nickhuang99/gopi/internal/gopilog"
+	"github.com/nickhuang99/gopi/internal/sessionevent"
 )
 
 // webTurnFrameField is the `turn` frame's one field: the session's ordinal for

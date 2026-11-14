@@ -12,7 +12,7 @@ package main
 // line the verb refuses, which is exactly what the sibling dump flags' contract
 // test guards against.
 
-import "github.com/nick/gopi/internal/config"
+import "github.com/nickhuang99/gopi/internal/config"
 
 // chatGeometryUsage is that section. It states the three facts a reader needs:
 // the size, that a wider terminal draws the canvas at that size rather than

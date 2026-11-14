@@ -24,7 +24,7 @@ import (
 	"strings"
 	"testing"
 
-	"github.com/nick/gopi/internal/sessionevent"
+	"github.com/nickhuang99/gopi/internal/sessionevent"
 )
 
 // accountingStats is the smallest block that shows the defect: a measured total,

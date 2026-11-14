@@ -34,9 +34,9 @@ import (
 	"path/filepath"
 	"strings"
 
-	"github.com/nick/gopi/internal/gopilog"
-	"github.com/nick/gopi/internal/sessionlayout"
-	"github.com/nick/gopi/internal/uiclient"
+	"github.com/nickhuang99/gopi/internal/gopilog"
+	"github.com/nickhuang99/gopi/internal/sessionlayout"
+	"github.com/nickhuang99/gopi/internal/uiclient"
 )
 
 // The compare flag vocabulary (Rule 1b: the parser, the usage page and the tests

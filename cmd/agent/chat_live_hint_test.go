@@ -5,7 +5,7 @@ import (
 	"testing"
 	"time"
 
-	"github.com/nick/gopi/internal/lineedit"
+	"github.com/nickhuang99/gopi/internal/lineedit"
 )
 
 // chat_live_hint_test.go — Defect A: the status row's live hint during a turn.

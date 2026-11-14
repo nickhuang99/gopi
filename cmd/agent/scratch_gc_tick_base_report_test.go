@@ -7,8 +7,8 @@ import (
 	"testing"
 	"time"
 
-	"github.com/nick/gopi/internal/config"
-	"github.com/nick/gopi/internal/scratch"
+	"github.com/nickhuang99/gopi/internal/config"
+	"github.com/nickhuang99/gopi/internal/scratch"
 )
 
 // THE RESIDENT TICK MUST NOT DELETE THE SHARED BASE'S SUITE ROOTS.

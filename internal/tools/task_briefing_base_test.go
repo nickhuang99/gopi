@@ -440,7 +440,7 @@ func incidentPopulationBriefing(base string) string {
 		"On THIS run's worktree (base commit `" + base + "`, plus the banner change):\n\n" +
 		"```\n" +
 		"$ make test-budget PKGS='./internal/docclass ./internal/standards'\n" +
-		"  package verdict: FAIL: github.com/nick/gopi/internal/docclass\n" +
+		"  package verdict: FAIL: github.com/nickhuang99/gopi/internal/docclass\n" +
 		"    failing tests: 3\n" +
 		"```\n\n" +
 		"So: the table carries **168 rows** and the tree now produces **167** incoherent\n" +

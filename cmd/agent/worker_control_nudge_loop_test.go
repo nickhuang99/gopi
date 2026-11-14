@@ -46,7 +46,7 @@ import (
 	"testing"
 	"time"
 
-	"github.com/nick/gopi/internal/tools"
+	"github.com/nickhuang99/gopi/internal/tools"
 )
 
 // nudgeLoopQuietWindow is how long the drain must stay quiet for the assertion

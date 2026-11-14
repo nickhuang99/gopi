@@ -2,7 +2,7 @@ package devworkspace
 
 // delivery_head_dir_test.go — WHERE DOES THIS DIRECTORY'S HEAD LIVE?
 //
-// THE DEFECT THIS FILE PINS (measured 2026-10-29 on nick-HP): every git step of
+// THE DEFECT THIS FILE PINS (measured 2026-10-29 on hostb): every git step of
 // the delivery leg runs `git -C <dir> …`, and GIT WALKS UP. A `dir` that is not
 // a work tree of its own makes every count about the ENCLOSING repository, while
 // the refusal names `dir` — so a leg that never looked at its own ground reported

@@ -19,7 +19,7 @@ import (
 	"strings"
 	"testing"
 
-	"github.com/nick/gopi/internal/tools"
+	"github.com/nickhuang99/gopi/internal/tools"
 )
 
 // attIdxBriefTaskID is the fixture row id (task-unique prefix: sibling

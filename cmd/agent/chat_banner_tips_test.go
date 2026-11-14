@@ -4,7 +4,7 @@ import (
 	"strings"
 	"testing"
 
-	"github.com/nick/gopi/internal/lineedit"
+	"github.com/nickhuang99/gopi/internal/lineedit"
 )
 
 // chat_banner_tips_test.go — the startup screen's TIPS: the two properties the

@@ -60,7 +60,7 @@ import (
 	"os"
 	"path/filepath"
 
-	"github.com/nick/gopi/internal/config"
+	"github.com/nickhuang99/gopi/internal/config"
 )
 
 // resumeUnlockedDirNotice is printed when NO run directory can be named for

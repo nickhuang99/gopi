@@ -8,8 +8,8 @@ import (
 	"strings"
 	"sync"
 
-	"github.com/nick/gopi/internal/boolvocab"
-	"github.com/nick/gopi/internal/scratch"
+	"github.com/nickhuang99/gopi/internal/boolvocab"
+	"github.com/nickhuang99/gopi/internal/scratch"
 )
 
 // ExecveMaxStringBytes is the kernel's ceiling on ONE string in an execve

@@ -9,8 +9,8 @@ import (
 
 	"golang.org/x/sys/unix"
 
-	"github.com/nick/gopi/internal/borrowedfd"
-	"github.com/nick/gopi/internal/sessionevent"
+	"github.com/nickhuang99/gopi/internal/borrowedfd"
+	"github.com/nickhuang99/gopi/internal/sessionevent"
 )
 
 // TestStandardReportsNoTerminalUnderTestRun is the reason the unknown state

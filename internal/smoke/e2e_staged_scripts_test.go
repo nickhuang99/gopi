@@ -401,17 +401,17 @@ func unresolvableScriptSources(t *testing.T, tree string, staged []string) ([]sc
 // classes were read as directives, were demanded of the fixture, and turned this
 // guard red for paths the scripts never source:
 //
-//	1. usage/help text and path splices — `scripts/${VENDOR_DIR_NAME}/${arch}`
-//	   (an OUTPUT directory), `<repo>/scripts/${VENDOR_DIR_NAME}/ARCH/` in a
-//	   usage line;
-//	2. a parameter-expansion default — `${GOPI_MATERIALS_ENTRIES:-$ROOT/scripts/
-//	   materials/entries-topB.sh}`: the variable names the real path, the literal
-//	   after `:-` is a fallback VALUE. It resolves to a path for a DIFFERENT
-//	   variable, so the token is left carrying a `$` and dropped rather than
-//	   demanded of the fixture;
-//	3. a plain constant assignment — `DEL_REPLAY_SH='scripts/replay/replay.sh'`,
-//	   used to LOOK the file up later, possibly in another package. It is a
-//	   recorded assignment, so it is an expansion SOURCE and never a directive.
+//  1. usage/help text and path splices — `scripts/${VENDOR_DIR_NAME}/${arch}`
+//     (an OUTPUT directory), `<repo>/scripts/${VENDOR_DIR_NAME}/ARCH/` in a
+//     usage line;
+//  2. a parameter-expansion default — `${GOPI_MATERIALS_ENTRIES:-$ROOT/scripts/
+//     materials/entries-topB.sh}`: the variable names the real path, the literal
+//     after `:-` is a fallback VALUE. It resolves to a path for a DIFFERENT
+//     variable, so the token is left carrying a `$` and dropped rather than
+//     demanded of the fixture;
+//  3. a plain constant assignment — `DEL_REPLAY_SH='scripts/replay/replay.sh'`,
+//     used to LOOK the file up later, possibly in another package. It is a
+//     recorded assignment, so it is an expansion SOURCE and never a directive.
 //
 // Text, not a file list — that is what keeps the guard correct when a source
 // line is added. The predicate is intentionally narrow; the red-proof

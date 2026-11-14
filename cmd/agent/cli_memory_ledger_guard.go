@@ -37,7 +37,7 @@ import (
 	"io/fs"
 	"os"
 
-	"github.com/nick/gopi/internal/tools"
+	"github.com/nickhuang99/gopi/internal/tools"
 )
 
 // The static sentences are constants, not inline literals (Rule 1b/13): the

@@ -23,9 +23,9 @@ import (
 	"os"
 	"strings"
 
-	"github.com/nick/gopi/internal/config"
-	"github.com/nick/gopi/internal/sandbox"
-	"github.com/nick/gopi/internal/scratch"
+	"github.com/nickhuang99/gopi/internal/config"
+	"github.com/nickhuang99/gopi/internal/sandbox"
+	"github.com/nickhuang99/gopi/internal/scratch"
 )
 
 // The verb's own constants (Rule 1b). Every spelling an operator can type or

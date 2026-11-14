@@ -43,9 +43,9 @@ import (
 	"testing"
 	"time"
 
-	"github.com/nick/gopi/internal/config"
-	"github.com/nick/gopi/internal/heavytest"
-	"github.com/nick/gopi/internal/procname"
+	"github.com/nickhuang99/gopi/internal/config"
+	"github.com/nickhuang99/gopi/internal/heavytest"
+	"github.com/nickhuang99/gopi/internal/procname"
 )
 
 // reapIdentityWait bounds the wait for a freshly started worker to appear with

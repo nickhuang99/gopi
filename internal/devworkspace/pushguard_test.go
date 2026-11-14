@@ -2,7 +2,7 @@ package devworkspace
 
 // THE CLONE CHANNEL'S TEST FENCE, proved on real git.
 //
-// The measured residue this pins (2026-10-26, zpeer's own repository):
+// The measured residue this pins (2026-10-26, peerbox's own repository):
 //
 //	$ git log --format='%H|%an <%ae>|%s' feat/exists
 //	3043963598210ca6d6edb4075feb389a77de7c5e|t <t@t>|work
@@ -27,8 +27,8 @@ import (
 	"testing"
 	"time"
 
-	"github.com/nick/gopi/internal/pushfence"
-	"github.com/nick/gopi/internal/scratch"
+	"github.com/nickhuang99/gopi/internal/pushfence"
+	"github.com/nickhuang99/gopi/internal/scratch"
 )
 
 // outsideOriginMovesTheRootsAway makes the fixture origin OUTSIDE test space

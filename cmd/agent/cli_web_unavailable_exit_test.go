@@ -30,7 +30,7 @@ import (
 	"strings"
 	"testing"
 
-	"github.com/nick/gopi/internal/config"
+	"github.com/nickhuang99/gopi/internal/config"
 )
 
 // webEmptyStatusStub answers with the plugin's OTHER natural status: a search

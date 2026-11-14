@@ -28,7 +28,7 @@ import (
 	"testing"
 	"time"
 
-	"github.com/nick/gopi/internal/testutil"
+	"github.com/nickhuang99/gopi/internal/testutil"
 )
 
 // localeLocalized — a locale whose git diagnostics are NOT English. It is a

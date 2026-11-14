@@ -50,8 +50,8 @@ import (
 	"os"
 	"strings"
 
-	"github.com/nick/gopi/internal/devworkspace"
-	"github.com/nick/gopi/internal/taskreport"
+	"github.com/nickhuang99/gopi/internal/devworkspace"
+	"github.com/nickhuang99/gopi/internal/taskreport"
 )
 
 // NothingToDeliverDeclaredEvent is the attributed trail record for the case

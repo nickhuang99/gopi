@@ -9,7 +9,7 @@ import (
 	"strings"
 	"testing"
 
-	"github.com/nick/gopi/internal/toolnames"
+	"github.com/nickhuang99/gopi/internal/toolnames"
 )
 
 // The subtask-beat pointer (brief: briefings/brief-memory-prefetch-at-subtask-beats.md).

@@ -29,8 +29,8 @@ import (
 	"strings"
 	"testing"
 
-	"github.com/nick/gopi/internal/toolnames"
-	"github.com/nick/gopi/internal/tools"
+	"github.com/nickhuang99/gopi/internal/toolnames"
+	"github.com/nickhuang99/gopi/internal/tools"
 )
 
 // kwSessionFixtureID is the id the fixtures below file their run record under.

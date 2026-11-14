@@ -6,16 +6,16 @@ import (
 	"strings"
 	"testing"
 
-	"github.com/nick/gopi/internal/config"
-	"github.com/nick/gopi/internal/sessionid"
+	"github.com/nickhuang99/gopi/internal/config"
+	"github.com/nickhuang99/gopi/internal/sessionid"
 )
 
 // The ONE RUN, TWO DIRECTORIES defect, in the shape it was measured on this
 // host (2026-10-17, task 01a1452c). The row id and the container minted beside
 // it differ by ONE hexadecimal digit:
 //
-//   row / canonical spelling  01a1452c-928d-7e0f-9ef3-52c1482cfbc3  (32 hex)
-//   the sibling container     01a1452c-928d-7e0f9-9ef3-52c1482cfbc3  (33 hex)
+//	row / canonical spelling  01a1452c-928d-7e0f-9ef3-52c1482cfbc3  (32 hex)
+//	the sibling container     01a1452c-928d-7e0f9-9ef3-52c1482cfbc3  (33 hex)
 //
 // The sibling holds a DIFFERENT 16 bytes — it names no row at all (the ledger
 // answers "no task with task_id" for it) — yet the session-dir seam joined it

@@ -16,8 +16,8 @@ import (
 	"strings"
 	"testing"
 
-	"github.com/nick/gopi/internal/config"
-	"github.com/nick/gopi/internal/heavytest"
+	"github.com/nickhuang99/gopi/internal/config"
+	"github.com/nickhuang99/gopi/internal/heavytest"
 )
 
 // hasSessionEndWholeFile is the PRE-CHANGE implementation, verbatim from

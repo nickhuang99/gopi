@@ -27,10 +27,10 @@ import (
 	"testing"
 	"time"
 
-	"github.com/nick/gopi/internal/cliverbs"
-	"github.com/nick/gopi/internal/procname"
-	"github.com/nick/gopi/internal/scratch"
-	"github.com/nick/gopi/internal/testutil"
+	"github.com/nickhuang99/gopi/internal/cliverbs"
+	"github.com/nickhuang99/gopi/internal/procname"
+	"github.com/nickhuang99/gopi/internal/scratch"
+	"github.com/nickhuang99/gopi/internal/testutil"
 )
 
 // unitReclaimEnv gives the test its own registry (inside a private scratch

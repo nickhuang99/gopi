@@ -28,7 +28,7 @@ import (
 	"strings"
 	"testing"
 
-	"github.com/nick/gopi/internal/sessionevent"
+	"github.com/nickhuang99/gopi/internal/sessionevent"
 )
 
 // resumedSessionFixturePasses is the pass count the FIRST segment recorded; it

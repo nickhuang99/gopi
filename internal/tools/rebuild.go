@@ -33,8 +33,8 @@ import (
 	"syscall"
 	"time"
 
-	"github.com/nick/gopi/internal/config"
-	gopiversion "github.com/nick/gopi/internal/version"
+	"github.com/nickhuang99/gopi/internal/config"
+	gopiversion "github.com/nickhuang99/gopi/internal/version"
 )
 
 // BuildFailedEvent is the synthetic notify event fired when the post-merge
@@ -505,8 +505,8 @@ func runBuild(repo, cmdLine string, timeoutSec int) (int, string) {
 		if ctx.Err() == context.DeadlineExceeded {
 			if cmd.Process != nil {
 				// The group id is RE-VERIFIED before delivery: it is this child's pid, and the
-		// kernel may have recycled that number to an unrelated group (see killGroupGuard.go).
-		_, _ = signalProcessGroup(cmd.Process.Pid, cmd.Process.Pid, syscall.SIGKILL) //stylegate:ignore signal to a process group we are already abandoning; ESRCH is the expected error
+				// kernel may have recycled that number to an unrelated group (see killGroupGuard.go).
+				_, _ = signalProcessGroup(cmd.Process.Pid, cmd.Process.Pid, syscall.SIGKILL) //stylegate:ignore signal to a process group we are already abandoning; ESRCH is the expected error
 			}
 			return -1, "build timed out after " + buildItos(timeoutSec) + "s: " + outputTail(string(out))
 		}

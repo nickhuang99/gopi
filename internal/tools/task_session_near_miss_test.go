@@ -35,7 +35,7 @@ import (
 	"strings"
 	"testing"
 
-	"github.com/nick/gopi/internal/sessionid"
+	"github.com/nickhuang99/gopi/internal/sessionid"
 )
 
 // nearMissDropIndex is the position of the FOURTH dash in a canonical uuid

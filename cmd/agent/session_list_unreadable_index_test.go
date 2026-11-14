@@ -40,7 +40,7 @@ import (
 	"strings"
 	"testing"
 
-	"github.com/nick/gopi/internal/config"
+	"github.com/nickhuang99/gopi/internal/config"
 )
 
 // sessionListEmptyProfileEnv points GOPI_HOME at a directory that exists and

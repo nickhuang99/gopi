@@ -20,8 +20,8 @@ import (
 	"strings"
 	"testing"
 
-	"github.com/nick/gopi/internal/gopilog"
-	"github.com/nick/gopi/internal/tools"
+	"github.com/nickhuang99/gopi/internal/gopilog"
+	"github.com/nickhuang99/gopi/internal/tools"
 )
 
 // TestSessionCostBlockRendersForARun — a task run: `session_end` carries all

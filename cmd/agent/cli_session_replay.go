@@ -46,13 +46,13 @@ import (
 	"strconv"
 	"strings"
 
-	"github.com/nick/gopi/internal/cliverbs"
-	"github.com/nick/gopi/internal/gopilog"
-	"github.com/nick/gopi/internal/replayplay"
-	"github.com/nick/gopi/internal/sessionevent"
-	"github.com/nick/gopi/internal/shot"
-	"github.com/nick/gopi/internal/tools"
-	"github.com/nick/gopi/internal/uiclient"
+	"github.com/nickhuang99/gopi/internal/cliverbs"
+	"github.com/nickhuang99/gopi/internal/gopilog"
+	"github.com/nickhuang99/gopi/internal/replayplay"
+	"github.com/nickhuang99/gopi/internal/sessionevent"
+	"github.com/nickhuang99/gopi/internal/shot"
+	"github.com/nickhuang99/gopi/internal/tools"
+	"github.com/nickhuang99/gopi/internal/uiclient"
 )
 
 // sessionReplayUsage is the sub-verb's own -h page (reached as

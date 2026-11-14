@@ -5,9 +5,9 @@ import (
 	"strconv"
 	"strings"
 
-	"github.com/nick/gopi/internal/inputsource"
-	"github.com/nick/gopi/internal/sessionevent"
-	"github.com/nick/gopi/internal/toolnames"
+	"github.com/nickhuang99/gopi/internal/inputsource"
+	"github.com/nickhuang99/gopi/internal/sessionevent"
+	"github.com/nickhuang99/gopi/internal/toolnames"
 )
 
 // Round-scoped views of a SESSION (`gopi session log <session-id> <round>`).

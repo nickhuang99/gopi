@@ -35,7 +35,7 @@ import (
 	"strings"
 	"syscall"
 
-	"github.com/nick/gopi/internal/procname"
+	"github.com/nickhuang99/gopi/internal/procname"
 )
 
 // SignalOutcome is what one incarnation-guarded signal did. The three values

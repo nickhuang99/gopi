@@ -33,8 +33,8 @@ import (
 	"fmt"
 	"strings"
 
-	"github.com/nick/gopi/internal/agent"
-	"github.com/nick/gopi/internal/ctxdump"
+	"github.com/nickhuang99/gopi/internal/agent"
+	"github.com/nickhuang99/gopi/internal/ctxdump"
 )
 
 // The command's vocabulary. Every word the switch, the parser, the usage page

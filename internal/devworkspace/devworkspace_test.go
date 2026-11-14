@@ -13,7 +13,7 @@ import (
 	"context"
 	"errors"
 	"fmt"
-	"github.com/nick/gopi/internal/testutil"
+	"github.com/nickhuang99/gopi/internal/testutil"
 	"os"
 	"os/exec"
 	"path/filepath"

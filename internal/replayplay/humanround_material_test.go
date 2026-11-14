@@ -20,7 +20,7 @@ import (
 	"strings"
 	"testing"
 
-	"github.com/nick/gopi/internal/gopilog"
+	"github.com/nickhuang99/gopi/internal/gopilog"
 )
 
 // TestOneOperatorRowWithManyCallsIsOneRound is the regression guard for the

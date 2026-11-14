@@ -47,7 +47,7 @@ import (
 	"fmt"
 	"strings"
 
-	"github.com/nick/gopi/internal/lineedit"
+	"github.com/nickhuang99/gopi/internal/lineedit"
 )
 
 // The two classes this file adds are DECLARED in audit.go (the vocabulary a reader

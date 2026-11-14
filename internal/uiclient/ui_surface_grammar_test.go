@@ -30,7 +30,7 @@ import (
 	"strings"
 	"testing"
 
-	"github.com/nick/gopi/internal/lineedit"
+	"github.com/nickhuang99/gopi/internal/lineedit"
 )
 
 // uiGrammarLine is the model's line as the AUTHORITY holds it — the text, which

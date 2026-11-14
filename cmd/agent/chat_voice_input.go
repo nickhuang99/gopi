@@ -3,7 +3,7 @@ package main
 import (
 	"strings"
 
-	"github.com/nick/gopi/internal/sessionevent"
+	"github.com/nickhuang99/gopi/internal/sessionevent"
 )
 
 // chat_voice_input.go — WHERE THE VOICE-INPUT PREFIX IS COMPOSED, and why it is

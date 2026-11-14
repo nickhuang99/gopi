@@ -11,10 +11,10 @@ import (
 	"strings"
 	"testing"
 
-	"github.com/nick/gopi/internal/cliverbs"
-	"github.com/nick/gopi/internal/shot"
-	"github.com/nick/gopi/internal/testutil"
-	"github.com/nick/gopi/internal/text2img"
+	"github.com/nickhuang99/gopi/internal/cliverbs"
+	"github.com/nickhuang99/gopi/internal/shot"
+	"github.com/nickhuang99/gopi/internal/testutil"
+	"github.com/nickhuang99/gopi/internal/text2img"
 )
 
 // The surface capture's E2E geometry (Rule 1). The CELL width is the renderer's

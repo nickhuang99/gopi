@@ -5,7 +5,7 @@
 //	export: HP runs `gopi memory memsync --export --since <unix>` → a JSON patch file
 //	        containing ONLY its own brew rows (sources tag gate), each row
 //	        tagged sources=node:hp.
-//	import: zpeer runs `gopi memory memsync --import patch.json` → every row goes
+//	import: peerbox runs `gopi memory memsync --import patch.json` → every row goes
 //	        through MemoryStore — the SAME dedup (exact + trigram-similarity)
 //	        and merge (sources union) path that brew/LLM writes use. A row
 //	        already present is merged (sources only), never duplicated; a
@@ -28,7 +28,7 @@ import (
 	"strings"
 	"time"
 
-	gopiversion "github.com/nick/gopi/internal/version"
+	gopiversion "github.com/nickhuang99/gopi/internal/version"
 )
 
 // Sync tunables (Rule 1: every literal in one place).
@@ -90,7 +90,7 @@ type SyncPatch struct {
 	// Generator identifies the exporting binary (VCS revision, "dev" on
 	// unstamped builds). Informational — import never gates on it; it
 	// exists so a refusing import can point at which node's build to
-	// upgrade (epic: zpeer 新 HP 旧 版本错位排障).
+	// upgrade (epic: peerbox 新 HP 旧 版本错位排障).
 	Generator string `json:"generator,omitempty"`
 	// ImportStats is the PEER's tally of what it just imported from the
 	// patch this node sent — a REPLY-only report field (the peer's serve

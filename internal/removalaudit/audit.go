@@ -72,7 +72,7 @@ import (
 	"sync"
 	"time"
 
-	"github.com/nick/gopi/internal/config"
+	"github.com/nickhuang99/gopi/internal/config"
 )
 
 // The sink's spelling. LogDirName mirrors the gopi data root's component-log

@@ -5,7 +5,7 @@ import (
 	"os"
 	"strings"
 
-	"github.com/nick/gopi/internal/cliverbs"
+	"github.com/nickhuang99/gopi/internal/cliverbs"
 )
 
 // memory_prefetch — the TYPING-TIME MEMORY PREFETCH switch (one knob, one

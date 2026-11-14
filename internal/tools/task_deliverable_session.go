@@ -26,7 +26,7 @@
 // would be a SECOND answer to "where is this session's log?" — and it cannot be
 // the gopilog one: internal/gopilog imports internal/agent, which imports
 // internal/tools, so a tools → gopilog edge closes an import cycle
-// (go build: "imports github.com/nick/gopi/internal/gopilog from
+// (go build: "imports github.com/nickhuang99/gopi/internal/gopilog from
 // task_deliverable_session.go → … → import cycle not allowed"). A hand-joined
 // layout probe here would also be the staler answer: internal/tools' own
 // resolution (taskFindSessionJSONLForRow) reads session heads for layouts

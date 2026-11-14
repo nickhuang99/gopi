@@ -37,14 +37,14 @@ import (
 	"strings"
 	"time"
 
-	"github.com/nick/gopi/internal/agent"
-	"github.com/nick/gopi/internal/config"
-	"github.com/nick/gopi/internal/devworkspace"
-	"github.com/nick/gopi/internal/removalaudit"
-	"github.com/nick/gopi/internal/sessionevent"
-	"github.com/nick/gopi/internal/taskreport"
-	"github.com/nick/gopi/internal/tools"
-	"github.com/nick/gopi/internal/worktreeroots"
+	"github.com/nickhuang99/gopi/internal/agent"
+	"github.com/nickhuang99/gopi/internal/config"
+	"github.com/nickhuang99/gopi/internal/devworkspace"
+	"github.com/nickhuang99/gopi/internal/removalaudit"
+	"github.com/nickhuang99/gopi/internal/sessionevent"
+	"github.com/nickhuang99/gopi/internal/taskreport"
+	"github.com/nickhuang99/gopi/internal/tools"
+	"github.com/nickhuang99/gopi/internal/worktreeroots"
 )
 
 // cloneRunState is what the prepare half hands to the close-out half: the

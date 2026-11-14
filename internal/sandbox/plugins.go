@@ -52,8 +52,8 @@ import (
 	"path/filepath"
 	"strings"
 
-	"github.com/nick/gopi/internal/config"
-	"github.com/nick/gopi/internal/scratch"
+	"github.com/nickhuang99/gopi/internal/config"
+	"github.com/nickhuang99/gopi/internal/scratch"
 )
 
 // pluginsLinkName is the name of the linked plugin tree inside the profile

@@ -59,7 +59,7 @@ import (
 	"strings"
 	"testing"
 
-	"github.com/nick/gopi/internal/removalaudit"
+	"github.com/nickhuang99/gopi/internal/removalaudit"
 )
 
 const (
@@ -1268,7 +1268,7 @@ func removalAuditProbeClassify(t *testing.T, name, src string, vocab removalAudi
 // must not accept a werkTree record for a branch site. Each probe pins one half.
 func TestRemovalAuditGateRedProof(t *testing.T) {
 	vocab := removalAuditDeriveVocabulary(t, repoRoot(t))
-	const head = "package probe\n\nimport (\n\t\"github.com/nick/gopi/internal/removalaudit\"\n\t\"os/exec\"\n)\n\n"
+	const head = "package probe\n\nimport (\n\t\"github.com/nickhuang99/gopi/internal/removalaudit\"\n\t\"os/exec\"\n)\n\n"
 
 	probes := []struct {
 		name     string
@@ -1681,7 +1681,7 @@ func TestRemovalAuditGateDerivesTheEmitterVocabulary(t *testing.T) {
 	}
 
 	// (5) reading the sink back is not emitting a record.
-	const head = "package probe\n\nimport (\n\t\"github.com/nick/gopi/internal/removalaudit\"\n\t\"os/exec\"\n)\n\n"
+	const head = "package probe\n\nimport (\n\t\"github.com/nickhuang99/gopi/internal/removalaudit\"\n\t\"os/exec\"\n)\n\n"
 	readerSite := head + `func f(repo, wt string) {
 	if _, err := removalaudit.Records("/some/sink"); err != nil {
 		return

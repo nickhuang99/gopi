@@ -19,7 +19,7 @@ package tools
 // about the LOADING/JUDGING axis and starts no process.
 
 import (
-	"github.com/nick/gopi/internal/heavytest"
+	"github.com/nickhuang99/gopi/internal/heavytest"
 	"path/filepath"
 	"testing"
 )

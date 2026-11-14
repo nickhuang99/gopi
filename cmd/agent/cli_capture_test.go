@@ -11,15 +11,15 @@ import (
 	"bytes"
 	"encoding/json"
 	"errors"
-	"github.com/nick/gopi/internal/heavytest"
+	"github.com/nickhuang99/gopi/internal/heavytest"
 	"os"
 	"os/exec"
 	"path/filepath"
 	"strings"
 	"testing"
 
-	"github.com/nick/gopi/internal/shot"
-	"github.com/nick/gopi/internal/tools"
+	"github.com/nickhuang99/gopi/internal/shot"
+	"github.com/nickhuang99/gopi/internal/tools"
 )
 
 // TestCaptureVerbIsDispatchedAndDocumented pins the three exposure surfaces a

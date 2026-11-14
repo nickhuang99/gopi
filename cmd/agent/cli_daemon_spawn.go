@@ -57,13 +57,13 @@ import (
 	"syscall"
 	"time"
 
-	"github.com/nick/gopi/internal/borrowedfd"
-	"github.com/nick/gopi/internal/cgroupscope"
-	"github.com/nick/gopi/internal/config"
-	"github.com/nick/gopi/internal/daemoncwd"
-	"github.com/nick/gopi/internal/daemonlifetime"
-	"github.com/nick/gopi/internal/runcmd"
-	"github.com/nick/gopi/internal/worktreerelease"
+	"github.com/nickhuang99/gopi/internal/borrowedfd"
+	"github.com/nickhuang99/gopi/internal/cgroupscope"
+	"github.com/nickhuang99/gopi/internal/config"
+	"github.com/nickhuang99/gopi/internal/daemoncwd"
+	"github.com/nickhuang99/gopi/internal/daemonlifetime"
+	"github.com/nickhuang99/gopi/internal/runcmd"
+	"github.com/nickhuang99/gopi/internal/worktreerelease"
 )
 
 // daemonChildExecutableEnv is the launcher convention that publishes the REAL

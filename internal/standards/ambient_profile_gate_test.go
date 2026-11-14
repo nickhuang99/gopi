@@ -271,7 +271,7 @@ func TestNoTestResolvesTheAmbientGopiProfile(t *testing.T) {
 func TestAmbientProfileGateRedProof(t *testing.T) {
 	const preFix = `package main
 
-import "github.com/nick/gopi/internal/tools"
+import "github.com/nickhuang99/gopi/internal/tools"
 
 func TestStatusWithActingActionTouchesNoRequestFile(t *testing.T) {
 	home := t.TempDir()

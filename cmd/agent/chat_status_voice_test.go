@@ -16,7 +16,7 @@ import (
 	"testing"
 	"time"
 
-	"github.com/nick/gopi/internal/lineedit"
+	"github.com/nickhuang99/gopi/internal/lineedit"
 )
 
 // voiceStatusRowWith composes the PRODUCTION row at the pinned width with the

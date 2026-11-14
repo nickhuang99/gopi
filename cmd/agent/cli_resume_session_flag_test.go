@@ -30,8 +30,8 @@ import (
 	"strings"
 	"testing"
 
-	"github.com/nick/gopi/internal/config"
-	"github.com/nick/gopi/internal/runcmd"
+	"github.com/nickhuang99/gopi/internal/config"
+	"github.com/nickhuang99/gopi/internal/runcmd"
 )
 
 // sessionFlagSessionsDir is the profile path a leaked run would populate

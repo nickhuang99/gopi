@@ -9,7 +9,7 @@ import (
 	"fmt"
 	"os"
 
-	"github.com/nick/gopi/internal/text2img"
+	"github.com/nickhuang99/gopi/internal/text2img"
 )
 
 // text2imgMaxFileBytes caps the input text file size at 8 MiB.

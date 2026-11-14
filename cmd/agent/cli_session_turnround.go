@@ -21,9 +21,9 @@ import (
 	"os"
 	"strings"
 
-	"github.com/nick/gopi/internal/gopilog"
-	"github.com/nick/gopi/internal/sessionevent"
-	"github.com/nick/gopi/internal/tools"
+	"github.com/nickhuang99/gopi/internal/gopilog"
+	"github.com/nickhuang99/gopi/internal/sessionevent"
+	"github.com/nickhuang99/gopi/internal/tools"
 )
 
 const (

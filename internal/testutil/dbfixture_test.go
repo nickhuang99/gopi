@@ -8,7 +8,7 @@ import (
 	"testing"
 	"time"
 
-	"github.com/nick/gopi/internal/config"
+	"github.com/nickhuang99/gopi/internal/config"
 )
 
 // TestNewTestDBPathIsFreshPinnedAndOffRoot is the WRITER shape's contract test:

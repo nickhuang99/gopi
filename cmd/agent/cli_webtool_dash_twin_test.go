@@ -47,7 +47,7 @@ import (
 	"strings"
 	"testing"
 
-	"github.com/nick/gopi/internal/toolnames"
+	"github.com/nickhuang99/gopi/internal/toolnames"
 )
 
 // legacyFlatVerbPromise is the sentence the web usage pages used to carry. It

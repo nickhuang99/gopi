@@ -19,8 +19,8 @@ import (
 	"fmt"
 	"io"
 
-	"github.com/nick/gopi/internal/config"
-	"github.com/nick/gopi/internal/lineedit"
+	"github.com/nickhuang99/gopi/internal/config"
+	"github.com/nickhuang99/gopi/internal/lineedit"
 )
 
 // chatGeometryNoticeFmt is the ONE sentence that states a degraded geometry.

@@ -17,7 +17,7 @@ import (
 	"strings"
 	"testing"
 
-	"github.com/nick/gopi/internal/worktreeroots"
+	"github.com/nickhuang99/gopi/internal/worktreeroots"
 )
 
 // fakeDevice builds a deps whose device table is a path→id map, so "on /" and

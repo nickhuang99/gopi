@@ -40,9 +40,9 @@ import (
 	"strings"
 	"testing"
 
-	"github.com/nick/gopi/internal/config"
-	"github.com/nick/gopi/internal/testutil"
-	gopiversion "github.com/nick/gopi/internal/version"
+	"github.com/nickhuang99/gopi/internal/config"
+	"github.com/nickhuang99/gopi/internal/testutil"
+	gopiversion "github.com/nickhuang99/gopi/internal/version"
 )
 
 // topLevelUsageMarker identifies the top-level `gopi -h` page. It is the page's

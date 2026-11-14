@@ -7,7 +7,7 @@ import (
 	"strings"
 	"testing"
 
-	"github.com/nick/gopi/internal/replay"
+	"github.com/nickhuang99/gopi/internal/replay"
 )
 
 // TestParseChatBeatFlags pins the beat protocol's own vocabulary: the values a

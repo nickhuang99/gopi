@@ -9,8 +9,8 @@ import (
 	"strings"
 	"time"
 
-	"github.com/nick/gopi/internal/toolnames"
-	"github.com/nick/gopi/internal/workerownership"
+	"github.com/nickhuang99/gopi/internal/toolnames"
+	"github.com/nickhuang99/gopi/internal/workerownership"
 )
 
 // Write overwrites or creates a file at path with the given content.

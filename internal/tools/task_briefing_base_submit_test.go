@@ -31,9 +31,9 @@ import (
 	"strings"
 	"testing"
 
-	"github.com/nick/gopi/internal/taskreport"
-	"github.com/nick/gopi/internal/testutil"
-	"github.com/nick/gopi/internal/worktreeroots"
+	"github.com/nickhuang99/gopi/internal/taskreport"
+	"github.com/nickhuang99/gopi/internal/testutil"
+	"github.com/nickhuang99/gopi/internal/worktreeroots"
 )
 
 // The git spellings this fixture drives directly (Rule 1: a meaningful literal

@@ -3,7 +3,7 @@ package tools
 // Shared push-back core for the (merged-branch flood) bugfix
 // (epic: the default git push-back pushed EVERY non-master local branch to
 // the peer, resurrecting branches the server had adopted-into-master and
-// then deleted — the 2026-09-02 14:39 stale-branch flood on zpeer).
+// then deleted — the 2026-09-02 14:39 stale-branch flood on peerbox).
 //
 // The server's adoption chain integrates a deliverable branch into server
 // master and then DELETES the branch ref (task_adoption.go ③a). A stale
@@ -44,7 +44,7 @@ import (
 	"strings"
 	"time"
 
-	"github.com/nick/gopi/internal/config"
+	"github.com/nickhuang99/gopi/internal/config"
 )
 
 // Push-back filtering tunables (Rule 1 — every literal in one place).
@@ -184,9 +184,9 @@ const (
 	// diagnostic, the config key, its value and the command that clears it —
 	// the four things a reader needs to turn the refusal into an action.
 	//
-	// MEASURED 2026-10-08 on HP: `remote.zpeer.pushurl = DISABLED-no-push`
-	// (installed 2026-10-03 by the hermes-agent session as a guardrail) makes
-	// `git push zpeer master:master` fail with git's own
+	// MEASURED 2026-10-08 on HP: `remote.peerbox.pushurl = DISABLED-no-push`
+	// (installed 2026-10-03 by an earlier session as a guardrail) makes
+	// `git push peerbox master:master` fail with git's own
 	// `fatal: 'DISABLED-no-push' does not appear to be a git repository`, and
 	// the operator-facing report said only "the peer rejected the push". The
 	// same measurement shows the guardrail does NOT govern this lane: gopi
@@ -207,9 +207,9 @@ const (
 	// repo's remotes, not a config block. Before this line the operator got
 	// git's sentence and no way to see WHICH of the two worlds they were in.
 	//
-	// MEASURED 2026-10-12 on sager: `sync_peers: ["zpeer"]` while
+	// MEASURED 2026-10-12 on hosta: `sync_peers: ["peerbox"]` while
 	// `git remote -v` lists only `origin` — the report said only "the peer
-	// rejected the push — git said: fatal: 'zpeer' does not appear to be a
+	// rejected the push — git said: fatal: 'peerbox' does not appear to be a
 	// git repository", naming neither the declared peer, nor the remotes
 	// that DO exist here, nor that a push is allowed to fail purely because
 	// the two names disagree.
@@ -579,7 +579,7 @@ func gitPushbackTargetFailureDetail(ctx context.Context, dir, target, detail str
 // push" reads identically for three different worlds, two of which this lane
 // can measure and one of which it cannot. MEASURED 2026-10-08 on HP: the
 // operator-facing report of a push refused by
-// `remote.zpeer.pushurl = DISABLED-no-push` was that sentence, with no mention
+// `remote.peerbox.pushurl = DISABLED-no-push` was that sentence, with no mention
 // of the key, its value or the command that clears it.
 func gitPushbackRefusal(ctx context.Context, repoDir, target, name, gitMsg string) string {
 	base := fmt.Sprintf(pushbackPushRefusedReasonFmt, name)
@@ -941,7 +941,7 @@ func gitPushbackPlan(ctx context.Context, repoDir, target string) gitPushbackFlu
 		// The decoration is owed HERE more than anywhere: this fetch is the
 		// FIRST target-git call a pass makes, so a peer name this machine
 		// cannot resolve breaks the pass before any push runs — the shape
-		// measured on sager 2026-10-12, where the entire report was git's
+		// measured on hosta 2026-10-12, where the entire report was git's
 		// bare sentence with no mention of the declared topology or of the
 		// remotes that DO exist there.
 		flush.Failed = append(flush.Failed,

@@ -24,7 +24,7 @@ import (
 	"errors"
 	"fmt"
 
-	"github.com/nick/gopi/internal/sessionevent"
+	"github.com/nickhuang99/gopi/internal/sessionevent"
 )
 
 // The three ways a reverse lookup can have no answer. They are THREE errors and

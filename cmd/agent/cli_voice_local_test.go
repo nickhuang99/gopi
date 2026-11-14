@@ -9,7 +9,7 @@ import (
 	"strings"
 	"testing"
 
-	"github.com/nick/gopi/internal/config"
+	"github.com/nickhuang99/gopi/internal/config"
 )
 
 // cli_voice_local_test.go — the BARE `gopi tool voice_input` contract: what the

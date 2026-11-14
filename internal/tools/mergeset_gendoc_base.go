@@ -76,7 +76,7 @@ import (
 	"fmt"
 	"strings"
 
-	"github.com/nick/gopi/internal/gendoc"
+	"github.com/nickhuang99/gopi/internal/gendoc"
 )
 
 // gendocBaseGateName is how this leg identifies itself in every message. It is

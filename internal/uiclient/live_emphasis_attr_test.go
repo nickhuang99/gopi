@@ -5,7 +5,7 @@ import (
 	"strings"
 	"testing"
 
-	"github.com/nick/gopi/internal/lineedit"
+	"github.com/nickhuang99/gopi/internal/lineedit"
 )
 
 // TestLiveSurfaceEmphasisReachesAttrs is the LIVE-SURFACE half of §2.3 of

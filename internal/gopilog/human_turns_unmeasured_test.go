@@ -31,7 +31,7 @@ import (
 	"strings"
 	"testing"
 
-	"github.com/nick/gopi/internal/sessionevent"
+	"github.com/nickhuang99/gopi/internal/sessionevent"
 )
 
 // humanTurnsReproRounds is how many exchanges (and therefore how many derived

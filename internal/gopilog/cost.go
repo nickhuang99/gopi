@@ -32,8 +32,8 @@ package gopilog
 import (
 	"fmt"
 
-	"github.com/nick/gopi/internal/cliverbs"
-	"github.com/nick/gopi/internal/sessionevent"
+	"github.com/nickhuang99/gopi/internal/cliverbs"
+	"github.com/nickhuang99/gopi/internal/sessionevent"
 )
 
 // The block's own words. Named (Rule 1) because the renderer, the tests that

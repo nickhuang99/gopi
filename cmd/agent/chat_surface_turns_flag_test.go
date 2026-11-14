@@ -20,7 +20,7 @@ import (
 	"strings"
 	"testing"
 
-	"github.com/nick/gopi/internal/config"
+	"github.com/nickhuang99/gopi/internal/config"
 )
 
 // pinTurnsSurfaceEnv clears every channel of the knob and points the settings

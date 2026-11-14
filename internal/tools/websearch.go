@@ -16,8 +16,8 @@ import (
 	"syscall"
 	"time"
 
-	"github.com/nick/gopi/internal/config"
-	"github.com/nick/gopi/internal/scratch"
+	"github.com/nickhuang99/gopi/internal/config"
+	"github.com/nickhuang99/gopi/internal/scratch"
 )
 
 // Web search tool (race #6): routes to the gopi websearch plugin scripts

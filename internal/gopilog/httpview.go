@@ -5,7 +5,7 @@ import (
 	"strconv"
 	"strings"
 
-	"github.com/nick/gopi/internal/rawlogfmt"
+	"github.com/nickhuang99/gopi/internal/rawlogfmt"
 )
 
 // The `all|last|N` selector grammar's keyword spellings and its grammar text

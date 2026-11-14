@@ -39,7 +39,7 @@ import (
 	"strings"
 	"testing"
 
-	"github.com/nick/gopi/internal/branchform"
+	"github.com/nickhuang99/gopi/internal/branchform"
 )
 
 // refGuardGitVersionVerb asks the host's git to identify itself; the RED half

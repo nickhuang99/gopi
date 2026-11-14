@@ -20,7 +20,7 @@ import (
 	"strings"
 	"testing"
 
-	"github.com/nick/gopi/internal/chatpolicy"
+	"github.com/nickhuang99/gopi/internal/chatpolicy"
 )
 
 // writeProjectPolicyRepo builds a throwaway repository whose root carries the

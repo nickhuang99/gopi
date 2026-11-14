@@ -5,7 +5,7 @@ import (
 	"os"
 	"testing"
 
-	"github.com/nick/gopi/internal/testutil"
+	"github.com/nickhuang99/gopi/internal/testutil"
 )
 
 // TestClaimedThenInProgressIsWrittenOnlyAfterAChildExists pins the STATE

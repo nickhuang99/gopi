@@ -11,8 +11,8 @@ import (
 	"strings"
 	"testing"
 
-	"github.com/nick/gopi/internal/config"
-	"github.com/nick/gopi/internal/taskverbs"
+	"github.com/nickhuang99/gopi/internal/config"
+	"github.com/nickhuang99/gopi/internal/taskverbs"
 )
 
 // helpTextMinConsts is the floor on how many help constants the AST sweep must

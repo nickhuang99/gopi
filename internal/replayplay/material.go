@@ -43,13 +43,13 @@ import (
 
 	"github.com/mattn/go-runewidth"
 
-	"github.com/nick/gopi/internal/gopilog"
-	"github.com/nick/gopi/internal/lineedit"
-	"github.com/nick/gopi/internal/sessionevent"
-	"github.com/nick/gopi/internal/sessionlayout"
-	"github.com/nick/gopi/internal/sgr"
-	"github.com/nick/gopi/internal/terminalgeom"
-	"github.com/nick/gopi/internal/uiclient"
+	"github.com/nickhuang99/gopi/internal/gopilog"
+	"github.com/nickhuang99/gopi/internal/lineedit"
+	"github.com/nickhuang99/gopi/internal/sessionevent"
+	"github.com/nickhuang99/gopi/internal/sessionlayout"
+	"github.com/nickhuang99/gopi/internal/sgr"
+	"github.com/nickhuang99/gopi/internal/terminalgeom"
+	"github.com/nickhuang99/gopi/internal/uiclient"
 )
 
 // The artifact names a session directory is read for. They are the OWNERS'
@@ -700,7 +700,7 @@ func LoadSession(dir string) (Material, error) {
 // directory: the screen dump is looked for under dumpDir, and the event timeline
 // is read from the EXACT path jsonlPath (empty = look for it beside the dump).
 //
-// WHY A SECOND ENTRY POINT (measured on this host, 2026-10-06). zpeer's session
+// WHY A SECOND ENTRY POINT (measured on this host, 2026-10-06). peerbox's session
 // tree has TWO layouts, and only ONE of them puts the log beside the artifacts:
 //
 //	sessions/<session-id>/session.jsonl            a bare session/chat run

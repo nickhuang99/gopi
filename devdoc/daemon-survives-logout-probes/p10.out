@@ -1,0 +1,56 @@
+### probe script: p10-mechanism-baseline.sh
+=== 1. user@.service verbatim (Delegate= ? dependencies ?) ===
+#  SPDX-License-Identifier: LGPL-2.1-or-later
+#
+#  This file is part of systemd.
+#
+#  systemd is free software; you can redistribute it and/or modify it
+#  under the terms of the GNU Lesser General Public License as published by
+#  the Free Software Foundation; either version 2.1 of the License, or
+#  (at your option) any later version.
+
+[Unit]
+Description=User Manager for UID %i
+Documentation=man:user@.service(5)
+After=systemd-user-sessions.service user-runtime-dir@%i.service dbus.service
+Requires=user-runtime-dir@%i.service
+IgnoreOnIsolate=yes
+
+[Service]
+User=%i
+PAMName=systemd-user
+Type=notify
+ExecStart=/lib/systemd/systemd --user
+Slice=user-%i.slice
+KillMode=mixed
+Delegate=pids memory
+TasksMax=infinity
+TimeoutStopSec=120s
+KeyringMode=inherit
+=== 2. delegation proof: controllers the manager subtree exposes ===
+memory pids
+memory pids
+=== 3. is the USER dbus.socket unit in the manager's default.target? (usr presets) ===
+total 4
+-rw-r--r-- 1 root root 580 Mar 11  2022 90-systemd.preset
+=== 4. linger state file (the on-disk truth for enable-linger) ===
+total 8
+drwxr-xr-x  2 root root 4096 Sep 13 12:16 .
+drwxr-xr-x 13 root root 4096 Aug 23  2024 ..
+-rw-r--r--  1 root root    0 Sep 13 12:16 nick
+=== 5. KillUserProcesses / logind.conf on-disk (verbatim, effective file) ===
+[Login]
+ls: cannot access '/etc/systemd/logind.conf.d/': No such file or directory
+=== 6. the exact failure of every rung, re-run now (one line each) ===
+rung1 systemd-run --user --scope : Failed to connect to bus: No such file or directory
+rung1b explicit bus address     : Failed to connect to bus: No such file or directory
+rung2 cgroupfs: slice writable? : access(W_OK) on user-1000.slice = False
+rung3 setsid cgroup             : setsid ok (membership unchanged, see table)
+=== 7. the manager's uptime vs boot: has it EVER restarted? ===
+boot:              2026-07-15 21:33:20
+user@1000 started: Wed 2026-07-15 21:44:21 CST
+=== 8. how many processes a manager restart would kill ===
+0
+=== 9. the runtime dir is tmpfs: what happens on reboot ===
+tmpfs  tmpfs  rw,nosuid,nodev,relatime,size=1621380k,nr_inodes=405345,mode=700,uid=1000,gid=1000,inode64
+=== end p10 ===

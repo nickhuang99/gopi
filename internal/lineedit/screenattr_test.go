@@ -4,7 +4,7 @@ import (
 	"strings"
 	"testing"
 
-	"github.com/nick/gopi/internal/sgr"
+	"github.com/nickhuang99/gopi/internal/sgr"
 )
 
 // The probe the attribute tests are built on: one row that starts red, returns

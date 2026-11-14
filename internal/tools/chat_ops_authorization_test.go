@@ -25,10 +25,10 @@ import (
 	"strings"
 	"testing"
 
-	"github.com/nick/gopi/internal/cliverbs"
-	"github.com/nick/gopi/internal/config"
-	"github.com/nick/gopi/internal/runcmd"
-	"github.com/nick/gopi/internal/taskverbs"
+	"github.com/nickhuang99/gopi/internal/cliverbs"
+	"github.com/nickhuang99/gopi/internal/config"
+	"github.com/nickhuang99/gopi/internal/runcmd"
+	"github.com/nickhuang99/gopi/internal/taskverbs"
 )
 
 // --- helpers ------------------------------------------------------------------
@@ -61,7 +61,7 @@ func TestChatOpCategoryOperatorWorkRuns(t *testing.T) {
 	operatorWork := []string{
 		// ops / DevOps / network / machine operation
 		"ls -la", "git status", "git worktree list", "git log --oneline -5", "df -h", "systemctl status gopi",
-		"ip addr show", "ping -c3 192.168.7.6", "ssh zpeer 'gopi task list'", "scp a.tar gopi@gopi:/tmp/a.tar",
+		"ip addr show", "ping -c3 192.168.7.6", "ssh peerbox 'gopi task list'", "scp a.tar gopi@gopi:/tmp/a.tar",
 		// a script, a document, a query, a diagnosis
 		"./scripts/gopi-stats.sh", `read -p "?" x`, "grep -rn todo internal/", "ps -p 1234",
 		// the ledger, the session, the self-inspection verbs

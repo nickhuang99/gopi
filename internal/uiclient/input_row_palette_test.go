@@ -6,8 +6,8 @@ import (
 	"strings"
 	"testing"
 
-	"github.com/nick/gopi/internal/lineedit"
-	"github.com/nick/gopi/internal/sgr"
+	"github.com/nickhuang99/gopi/internal/lineedit"
+	"github.com/nickhuang99/gopi/internal/sgr"
 )
 
 // input_row_palette_test.go — the persistent input row's two palette halves.

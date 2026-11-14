@@ -33,8 +33,8 @@ import (
 	"testing"
 	"time"
 
-	"github.com/nick/gopi/internal/procname"
-	"github.com/nick/gopi/internal/scratch"
+	"github.com/nickhuang99/gopi/internal/procname"
+	"github.com/nickhuang99/gopi/internal/scratch"
 )
 
 // suiteBusyRefusalBannedFragment is the EXACT wording retired by this change: it

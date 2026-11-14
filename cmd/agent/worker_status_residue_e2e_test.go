@@ -34,8 +34,8 @@ import (
 	"strings"
 	"testing"
 
-	"github.com/nick/gopi/internal/procname"
-	"github.com/nick/gopi/internal/tools"
+	"github.com/nickhuang99/gopi/internal/procname"
+	"github.com/nickhuang99/gopi/internal/tools"
 )
 
 // wsrStatusEnv is the private profile the child runs against: a temp GOPI_HOME

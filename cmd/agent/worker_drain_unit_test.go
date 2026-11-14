@@ -15,7 +15,7 @@ package main
 import (
 	"context"
 	"encoding/json"
-	"github.com/nick/gopi/internal/config"
+	"github.com/nickhuang99/gopi/internal/config"
 	"os"
 	"path/filepath"
 	"strings"
@@ -23,7 +23,7 @@ import (
 	"testing"
 	"time"
 
-	"github.com/nick/gopi/internal/tools"
+	"github.com/nickhuang99/gopi/internal/tools"
 )
 
 // drainTestDir is the sandbox control directory (one per test, never the real

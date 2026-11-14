@@ -53,7 +53,7 @@ import (
 	"syscall"
 	"time"
 
-	"github.com/nick/gopi/internal/procname"
+	"github.com/nickhuang99/gopi/internal/procname"
 )
 
 // LockFileName is the lock file's name INSIDE a run directory (Rule 1: one

@@ -42,7 +42,7 @@ import (
 	"io"
 	"os"
 
-	"github.com/nick/gopi/internal/tools"
+	"github.com/nickhuang99/gopi/internal/tools"
 )
 
 // writebackFailure runs a terminal writeback on a FAILING branch and gives a

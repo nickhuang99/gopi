@@ -25,10 +25,10 @@ import (
 	"os"
 	"strings"
 
-	"github.com/nick/gopi/internal/agent"
-	"github.com/nick/gopi/internal/chatpolicy"
-	"github.com/nick/gopi/internal/config"
-	"github.com/nick/gopi/internal/tools"
+	"github.com/nickhuang99/gopi/internal/agent"
+	"github.com/nickhuang99/gopi/internal/chatpolicy"
+	"github.com/nickhuang99/gopi/internal/config"
+	"github.com/nickhuang99/gopi/internal/tools"
 )
 
 // chatPolicyFlag is the CLI spelling, taken from the resolver's own constant so

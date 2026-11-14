@@ -28,11 +28,11 @@ package main
 //     the vocabulary has become a guess about what the operator meant.
 
 import (
-	"github.com/nick/gopi/internal/heavytest"
+	"github.com/nickhuang99/gopi/internal/heavytest"
 	"strings"
 	"testing"
 
-	"github.com/nick/gopi/internal/config"
+	"github.com/nickhuang99/gopi/internal/config"
 )
 
 // TestCommandHintVocabularyIsWellFormed — the table's own precondition.

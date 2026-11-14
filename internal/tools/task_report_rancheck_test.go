@@ -19,7 +19,7 @@ import (
 	"strings"
 	"testing"
 
-	"github.com/nick/gopi/internal/taskreport"
+	"github.com/nickhuang99/gopi/internal/taskreport"
 )
 
 // ranCheckSealPreRule31 is the pre-Rule-31 report shape (Build:/Tests: only,

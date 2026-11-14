@@ -35,8 +35,8 @@ import (
 	"strings"
 	"testing"
 
-	"github.com/nick/gopi/internal/testutil"
-	"github.com/nick/gopi/internal/worktreeroots"
+	"github.com/nickhuang99/gopi/internal/testutil"
+	"github.com/nickhuang99/gopi/internal/worktreeroots"
 )
 
 // groundTestRepo builds a REAL git repo with one commit and returns its path.

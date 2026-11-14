@@ -22,7 +22,7 @@ import (
 	"testing"
 	"time"
 
-	"github.com/nick/gopi/internal/doubaostream"
+	"github.com/nickhuang99/gopi/internal/doubaostream"
 )
 
 // liveScriptedRecorder is a recorder that implements BOTH halves of the seam: the

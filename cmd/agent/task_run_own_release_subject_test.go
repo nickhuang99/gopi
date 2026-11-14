@@ -15,7 +15,7 @@ import (
 	"strings"
 	"testing"
 
-	"github.com/nick/gopi/internal/tools"
+	"github.com/nickhuang99/gopi/internal/tools"
 )
 
 const taskRunOwnReleaseTestRow = "01a17dcd-c59c-7344-a99a-83133d4416c7"

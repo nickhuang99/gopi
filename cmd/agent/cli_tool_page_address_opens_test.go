@@ -146,7 +146,7 @@ func TestToolRefusalNoRowArmIsTheGroupsPage(t *testing.T) {
 // or one that starts listening (`gopi tool voice_input`) exits non-zero or runs
 // forever without `-h` — the command's own contract, not a dead end. What the
 // no-session half is for is still real, and it was measured on the pre-patch
-// binary 2026-10-07: the printed address `` `gopi nosuchword` `` run BARE exits 0
+// binary 2026-10-07: the printed address “ `gopi nosuchword` “ run BARE exits 0
 // and leaves 2 session directories and a ledger behind (the bare-prompt path,
 // one agent run bought by a typo), while its `-h` leg exits 0 with nothing. So
 // the load-bearing assertion for THAT defect is the address identity above

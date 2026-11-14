@@ -83,7 +83,7 @@ import (
 	"strings"
 	"syscall"
 
-	"github.com/nick/gopi/internal/taskreport"
+	"github.com/nickhuang99/gopi/internal/taskreport"
 )
 
 // reportDestinationUsable reports whether path can be used as a report

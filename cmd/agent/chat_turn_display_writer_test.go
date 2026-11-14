@@ -37,10 +37,10 @@ import (
 	"strconv"
 	"testing"
 
-	"github.com/nick/gopi/internal/agent"
-	"github.com/nick/gopi/internal/config"
-	"github.com/nick/gopi/internal/gopilog"
-	"github.com/nick/gopi/internal/inputsource"
+	"github.com/nickhuang99/gopi/internal/agent"
+	"github.com/nickhuang99/gopi/internal/config"
+	"github.com/nickhuang99/gopi/internal/gopilog"
+	"github.com/nickhuang99/gopi/internal/inputsource"
 )
 
 // The two session ids model the resume shape: the CONTINUED record is one

@@ -45,10 +45,10 @@ import (
 	"testing"
 	"unicode/utf8"
 
-	"github.com/nick/gopi/internal/lineedit"
-	"github.com/nick/gopi/internal/sgr"
-	"github.com/nick/gopi/internal/testutil"
-	"github.com/nick/gopi/internal/uiclient"
+	"github.com/nickhuang99/gopi/internal/lineedit"
+	"github.com/nickhuang99/gopi/internal/sgr"
+	"github.com/nickhuang99/gopi/internal/testutil"
+	"github.com/nickhuang99/gopi/internal/uiclient"
 	"golang.org/x/sys/unix"
 )
 

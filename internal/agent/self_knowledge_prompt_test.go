@@ -8,8 +8,8 @@ import (
 	"strings"
 	"testing"
 
-	"github.com/nick/gopi/internal/cliverbs"
-	"github.com/nick/gopi/internal/lineedit"
+	"github.com/nickhuang99/gopi/internal/cliverbs"
+	"github.com/nickhuang99/gopi/internal/lineedit"
 )
 
 // TestSystemPrompt_SelfKnowledgeSection is the acceptance guard for the

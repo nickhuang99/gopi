@@ -23,7 +23,7 @@ package tools
 import (
 	"context"
 	"encoding/json"
-	"github.com/nick/gopi/internal/scratch"
+	"github.com/nickhuang99/gopi/internal/scratch"
 	"os"
 	"path/filepath"
 	"strings"

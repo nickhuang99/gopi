@@ -33,9 +33,9 @@ import (
 	"strings"
 	"testing"
 
-	"github.com/nick/gopi/internal/inputsource"
-	"github.com/nick/gopi/internal/lineedit"
-	"github.com/nick/gopi/internal/uiclient"
+	"github.com/nickhuang99/gopi/internal/inputsource"
+	"github.com/nickhuang99/gopi/internal/lineedit"
+	"github.com/nickhuang99/gopi/internal/uiclient"
 )
 
 // spillPtyPayloadLines is how many lines the fixture payload holds. Three

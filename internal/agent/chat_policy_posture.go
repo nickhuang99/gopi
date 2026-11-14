@@ -45,9 +45,9 @@ import (
 	"os"
 	"strings"
 
-	"github.com/nick/gopi/internal/chatpolicy"
-	"github.com/nick/gopi/internal/cliverbs"
-	"github.com/nick/gopi/internal/config"
+	"github.com/nickhuang99/gopi/internal/chatpolicy"
+	"github.com/nickhuang99/gopi/internal/cliverbs"
+	"github.com/nickhuang99/gopi/internal/config"
 )
 
 const (

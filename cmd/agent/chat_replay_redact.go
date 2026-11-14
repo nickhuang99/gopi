@@ -41,7 +41,7 @@ package main
 import (
 	"fmt"
 
-	"github.com/nick/gopi/internal/replay"
+	"github.com/nickhuang99/gopi/internal/replay"
 )
 
 // maskText masks one COMPLETE text (a typed line, a tool-activity row). A

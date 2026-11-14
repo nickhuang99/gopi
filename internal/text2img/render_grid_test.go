@@ -9,7 +9,7 @@ import (
 	"strings"
 	"testing"
 
-	"github.com/nick/gopi/internal/lineedit"
+	"github.com/nickhuang99/gopi/internal/lineedit"
 )
 
 // gridCellW is the cell width the grid tests render at, and gridLh its line

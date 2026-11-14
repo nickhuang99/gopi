@@ -68,17 +68,17 @@ import (
 	"sync"
 	"time"
 
-	"github.com/nick/gopi/internal/agent"
-	"github.com/nick/gopi/internal/config"
-	"github.com/nick/gopi/internal/deepseek"
-	"github.com/nick/gopi/internal/fullid"
-	"github.com/nick/gopi/internal/gifgen"
-	"github.com/nick/gopi/internal/inputsource"
-	"github.com/nick/gopi/internal/lineedit"
-	"github.com/nick/gopi/internal/sessionevent"
-	"github.com/nick/gopi/internal/sessionid"
-	"github.com/nick/gopi/internal/signalrec"
-	"github.com/nick/gopi/internal/tools"
+	"github.com/nickhuang99/gopi/internal/agent"
+	"github.com/nickhuang99/gopi/internal/config"
+	"github.com/nickhuang99/gopi/internal/deepseek"
+	"github.com/nickhuang99/gopi/internal/fullid"
+	"github.com/nickhuang99/gopi/internal/gifgen"
+	"github.com/nickhuang99/gopi/internal/inputsource"
+	"github.com/nickhuang99/gopi/internal/lineedit"
+	"github.com/nickhuang99/gopi/internal/sessionevent"
+	"github.com/nickhuang99/gopi/internal/sessionid"
+	"github.com/nickhuang99/gopi/internal/signalrec"
+	"github.com/nickhuang99/gopi/internal/tools"
 )
 
 // webGroupServerFlags is the flag set that makes a bare `gopi web …`

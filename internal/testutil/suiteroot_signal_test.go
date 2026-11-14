@@ -13,7 +13,7 @@ import (
 	"testing"
 	"time"
 
-	"github.com/nick/gopi/internal/scratch"
+	"github.com/nickhuang99/gopi/internal/scratch"
 )
 
 // A suite ended by a TERMINATING SIGNAL must not leave its per-run root behind —
@@ -255,7 +255,7 @@ func TestSuiteRunRootSignalChild(t *testing.T) {
 // later test in that run met ENOENT.
 //
 //	$ go test ./cmd/agent/ -run 'TestWorkerDrainsOnSIGHUP' -count=1 ; echo $?
-//	FAIL	github.com/nick/gopi/cmd/agent	1.497s      ("signal: hangup")
+//	FAIL	github.com/nickhuang99/gopi/cmd/agent	1.497s      ("signal: hangup")
 //	1                                    ← pre-fix, this file at 117/200
 //	0                                    ← post-fix, same command, twice re-measured
 //

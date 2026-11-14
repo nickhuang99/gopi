@@ -38,14 +38,14 @@ import (
 	"path/filepath"
 	"strings"
 
-	"github.com/nick/gopi/internal/agent"
-	"github.com/nick/gopi/internal/cliverbs"
-	"github.com/nick/gopi/internal/config"
-	"github.com/nick/gopi/internal/replaymode"
-	"github.com/nick/gopi/internal/scratch"
-	"github.com/nick/gopi/internal/sessionlayout"
-	"github.com/nick/gopi/internal/uiclient"
-	"github.com/nick/gopi/internal/version"
+	"github.com/nickhuang99/gopi/internal/agent"
+	"github.com/nickhuang99/gopi/internal/cliverbs"
+	"github.com/nickhuang99/gopi/internal/config"
+	"github.com/nickhuang99/gopi/internal/replaymode"
+	"github.com/nickhuang99/gopi/internal/scratch"
+	"github.com/nickhuang99/gopi/internal/sessionlayout"
+	"github.com/nickhuang99/gopi/internal/uiclient"
+	"github.com/nickhuang99/gopi/internal/version"
 )
 
 // The switch's own vocabulary (Rule 1b/13): the parser, the help page, the

@@ -3,7 +3,7 @@ package config
 import (
 	"os"
 
-	"github.com/nick/gopi/internal/boolvocab"
+	"github.com/nickhuang99/gopi/internal/boolvocab"
 )
 
 // resume_session.go — the ONE explicit opt-in that lets a resume MINT A NEW

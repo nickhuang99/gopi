@@ -27,7 +27,7 @@ import (
 	"strings"
 	"testing"
 
-	"github.com/nick/gopi/internal/rawlogfmt"
+	"github.com/nickhuang99/gopi/internal/rawlogfmt"
 )
 
 // The two fixtures' bodies. They are tiny on purpose (Rules: minimal sample) —

@@ -7,10 +7,10 @@ import (
 	"strings"
 	"testing"
 
-	"github.com/nick/gopi/internal/config"
-	"github.com/nick/gopi/internal/gopilog"
-	"github.com/nick/gopi/internal/sessionevent"
-	"github.com/nick/gopi/internal/tools"
+	"github.com/nickhuang99/gopi/internal/config"
+	"github.com/nickhuang99/gopi/internal/gopilog"
+	"github.com/nickhuang99/gopi/internal/sessionevent"
+	"github.com/nickhuang99/gopi/internal/tools"
 )
 
 // chat_resume_turn_baseline_test.go — the regression guard for task 01a16fb3:

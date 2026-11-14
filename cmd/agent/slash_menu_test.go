@@ -6,7 +6,7 @@ import (
 	"testing"
 	"time"
 
-	"github.com/nick/gopi/internal/lineedit"
+	"github.com/nickhuang99/gopi/internal/lineedit"
 )
 
 // slash_menu_test.go — what the `/`-menu OFFERS, and what pressing Enter on it

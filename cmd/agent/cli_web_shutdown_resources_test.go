@@ -37,12 +37,12 @@ import (
 	"testing"
 	"time"
 
-	"github.com/nick/gopi/internal/agent"
-	"github.com/nick/gopi/internal/config"
-	"github.com/nick/gopi/internal/deepseek"
-	"github.com/nick/gopi/internal/heavytest"
-	"github.com/nick/gopi/internal/sessionevent"
-	"github.com/nick/gopi/internal/testutil"
+	"github.com/nickhuang99/gopi/internal/agent"
+	"github.com/nickhuang99/gopi/internal/config"
+	"github.com/nickhuang99/gopi/internal/deepseek"
+	"github.com/nickhuang99/gopi/internal/heavytest"
+	"github.com/nickhuang99/gopi/internal/sessionevent"
+	"github.com/nickhuang99/gopi/internal/testutil"
 )
 
 // --- 1. SIGTERM mid-turn -------------------------------------------------

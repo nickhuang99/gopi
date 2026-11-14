@@ -32,8 +32,8 @@ import (
 	"strings"
 	"testing"
 
-	"github.com/nick/gopi/internal/scratch"
-	"github.com/nick/gopi/internal/shot"
+	"github.com/nickhuang99/gopi/internal/scratch"
+	"github.com/nickhuang99/gopi/internal/shot"
 )
 
 // g6DeclaredTreesForms are the two arms this gate covers: the full sweep and

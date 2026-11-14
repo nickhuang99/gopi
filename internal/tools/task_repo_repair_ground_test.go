@@ -42,7 +42,7 @@ import (
 	"strings"
 	"testing"
 
-	"github.com/nick/gopi/internal/testutil"
+	"github.com/nickhuang99/gopi/internal/testutil"
 )
 
 // repairGroundFixture pins a private ledger, builds a real repo with a real

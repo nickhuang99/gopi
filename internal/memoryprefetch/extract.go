@@ -6,7 +6,7 @@ import (
 	"unicode"
 	"unicode/utf8"
 
-	"github.com/nick/gopi/internal/cjkseg"
+	"github.com/nickhuang99/gopi/internal/cjkseg"
 )
 
 // CandidateKind names HOW a candidate term was obtained. The distinction is the

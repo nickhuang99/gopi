@@ -14,7 +14,7 @@ package tools
 //   - reclassify is a pure function of `sources` (same input → same labels).
 
 import (
-	"github.com/nick/gopi/internal/heavytest"
+	"github.com/nickhuang99/gopi/internal/heavytest"
 	"path/filepath"
 	"testing"
 )

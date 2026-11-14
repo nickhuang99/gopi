@@ -9,8 +9,8 @@ import (
 	"strings"
 	"testing"
 
-	"github.com/nick/gopi/internal/deepseek"
-	"github.com/nick/gopi/internal/sessionevent"
+	"github.com/nickhuang99/gopi/internal/deepseek"
+	"github.com/nickhuang99/gopi/internal/sessionevent"
 )
 
 // token_reconciliation_test.go — the epic's gap B: the local prediction and the

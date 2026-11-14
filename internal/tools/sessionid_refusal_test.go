@@ -4,7 +4,7 @@ import (
 	"strings"
 	"testing"
 
-	"github.com/nick/gopi/internal/signalrec"
+	"github.com/nickhuang99/gopi/internal/signalrec"
 )
 
 // TestSessionidRefusalCarriesTheOperandProvenance pins the clause this change

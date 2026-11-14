@@ -21,7 +21,7 @@ import (
 	"strings"
 	"testing"
 
-	"github.com/nick/gopi/internal/sgr"
+	"github.com/nickhuang99/gopi/internal/sgr"
 )
 
 // gridSnapshot is the whole screen read as cells: each row's text and its

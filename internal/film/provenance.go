@@ -5,8 +5,8 @@ import (
 	"regexp"
 	"strings"
 
-	"github.com/nick/gopi/internal/lineedit"
-	"github.com/nick/gopi/internal/replay"
+	"github.com/nickhuang99/gopi/internal/lineedit"
+	"github.com/nickhuang99/gopi/internal/replay"
 )
 
 // This file is verify.py's TEXT LAYER, ported: what a beat's text IS, what the

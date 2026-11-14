@@ -55,8 +55,8 @@ import (
 	"syscall"
 	"time"
 
-	"github.com/nick/gopi/internal/procname"
-	"github.com/nick/gopi/internal/signalrec"
+	"github.com/nickhuang99/gopi/internal/procname"
+	"github.com/nickhuang99/gopi/internal/signalrec"
 )
 
 // workerStopSignals is the set of signals meaning "finish the in-flight round
@@ -507,7 +507,7 @@ const stopReasonSignalSuffix = " received"
 // clean drain.
 //
 // BOTH SHAPES CARRY THE PROVENANCE SUFFIX (epic: "terminated received" is
-// unattributable). Measured before this work: 31 termination lines on zpeer,
+// unattributable). Measured before this work: 31 termination lines on peerbox,
 // 31/31 reading exactly this text with no sender, no signal, no task and no
 // wallclock, and only 3/31 resolvable to a task id at all — so "who killed the
 // workers?" had no answer derivable from the artifact the system kept. The

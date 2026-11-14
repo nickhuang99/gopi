@@ -8,8 +8,8 @@ import (
 	"unicode"
 	"unicode/utf8"
 
-	"github.com/nick/gopi/internal/config"
-	"github.com/nick/gopi/internal/sgr"
+	"github.com/nickhuang99/gopi/internal/config"
+	"github.com/nickhuang99/gopi/internal/sgr"
 )
 
 // Renderer draws one editing line (prompt + buffer) onto a terminal, re-drawing

@@ -33,7 +33,7 @@ package main
 import (
 	"fmt"
 
-	"github.com/nick/gopi/internal/sqlitecode"
+	"github.com/nickhuang99/gopi/internal/sqlitecode"
 )
 
 const (

@@ -4,7 +4,7 @@ import (
 	"unicode"
 	"unicode/utf8"
 
-	"github.com/nick/gopi/internal/sgr"
+	"github.com/nickhuang99/gopi/internal/sgr"
 )
 
 // wrap_whole_word_move.go — the wrap policy's FOURTH disposition, implemented.

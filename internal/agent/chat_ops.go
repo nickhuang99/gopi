@@ -7,9 +7,9 @@ import (
 	"strings"
 	"time"
 
-	"github.com/nick/gopi/internal/deepseek"
-	"github.com/nick/gopi/internal/thinkmode"
-	"github.com/nick/gopi/internal/tools"
+	"github.com/nickhuang99/gopi/internal/deepseek"
+	"github.com/nickhuang99/gopi/internal/thinkmode"
+	"github.com/nickhuang99/gopi/internal/tools"
 )
 
 // chatOpsSystemPrompt composes the tool-enabled chat path's system prompt: the

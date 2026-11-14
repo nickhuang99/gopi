@@ -25,9 +25,9 @@ import (
 	"strings"
 	"testing"
 
-	"github.com/nick/gopi/internal/config"
-	"github.com/nick/gopi/internal/scratch"
-	"github.com/nick/gopi/internal/text2img"
+	"github.com/nickhuang99/gopi/internal/config"
+	"github.com/nickhuang99/gopi/internal/scratch"
+	"github.com/nickhuang99/gopi/internal/text2img"
 )
 
 // TestCovIsImagePathExtensions pins the accepted-extension table (case

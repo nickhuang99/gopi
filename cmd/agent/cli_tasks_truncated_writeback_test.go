@@ -15,8 +15,8 @@ import (
 	"strings"
 	"testing"
 
-	"github.com/nick/gopi/internal/runend"
-	"github.com/nick/gopi/internal/tools"
+	"github.com/nickhuang99/gopi/internal/runend"
+	"github.com/nickhuang99/gopi/internal/tools"
 )
 
 // TestWritebackOutcomeRefusesCompletedOnTruncatedRow: a row whose run recorded

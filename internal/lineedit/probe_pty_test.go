@@ -33,8 +33,8 @@ import (
 	"testing"
 	"time"
 
-	"github.com/nick/gopi/internal/flaketest"
-	"github.com/nick/gopi/internal/sgr"
+	"github.com/nickhuang99/gopi/internal/flaketest"
+	"github.com/nickhuang99/gopi/internal/sgr"
 	"golang.org/x/sys/unix"
 )
 

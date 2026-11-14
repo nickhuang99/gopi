@@ -11,9 +11,9 @@ import (
 	"time"
 	"unicode/utf8"
 
-	"github.com/nick/gopi/internal/deepseek"
-	"github.com/nick/gopi/internal/thinkmode"
-	"github.com/nick/gopi/internal/toolnames"
+	"github.com/nickhuang99/gopi/internal/deepseek"
+	"github.com/nickhuang99/gopi/internal/thinkmode"
+	"github.com/nickhuang99/gopi/internal/toolnames"
 )
 
 // LLM-assisted context compaction (memory management).
@@ -338,7 +338,7 @@ const referenceOnlyPrefix = `The text below is a MEMORY COMPACTION of earlier wo
 //
 // The hard "do NOT echo" rules exist because live evaluation showed the
 // model reproducing raw tool calls and message text instead of distilling
-// (hermes-agent analysis run, 2026-08-06).
+// (earlier analysis run, 2026-08-06).
 //
 // THE CARVE-OUT IS THE FIX FOR A MEASURED DEFECT (task
 // 01a198cd-9ae8-7ca9-ad04-2bd87f72a917, 2026-11-01). The original rule said

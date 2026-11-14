@@ -28,7 +28,7 @@ import (
 	"strings"
 	"testing"
 
-	"github.com/nick/gopi/internal/testcompile"
+	"github.com/nickhuang99/gopi/internal/testcompile"
 )
 
 // gateScanRoots are the production trees. `cmd/` is included because a

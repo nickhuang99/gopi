@@ -30,10 +30,10 @@ import (
 	"strings"
 	"testing"
 
-	"github.com/nick/gopi/internal/config"
-	"github.com/nick/gopi/internal/flaketest"
-	"github.com/nick/gopi/internal/heavytest"
-	"github.com/nick/gopi/internal/tools"
+	"github.com/nickhuang99/gopi/internal/config"
+	"github.com/nickhuang99/gopi/internal/flaketest"
+	"github.com/nickhuang99/gopi/internal/heavytest"
+	"github.com/nickhuang99/gopi/internal/tools"
 )
 
 // NOTE: this file declares no time import on purpose — the worker round arms no

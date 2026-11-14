@@ -50,9 +50,9 @@ var procStatParseGateSites = []procStatParseGate{
 			"its own n<=0 guard kept on the caller side)",
 	},
 	{
-		rel:         "internal/tools/finish_cleanup_survivors.go",
-		delegation:  "procname.StatFieldString(",
-		forbidden:   []string{`LastIndex(string(b), ")")`, `LastIndexByte(b, ')')`},
+		rel:        "internal/tools/finish_cleanup_survivors.go",
+		delegation: "procname.StatFieldString(",
+		forbidden:  []string{`LastIndex(string(b), ")")`, `LastIndexByte(b, ')')`},
 		description: "tools.finishCleanupProcParent — the parent column (field 4) of the same parse " +
 			"(moved here from task_finish_cleanup.go by 58b5618, which retired the mechanism " +
 			"and kept this symbol on a live reader's path)",

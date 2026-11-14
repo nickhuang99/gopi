@@ -26,7 +26,7 @@ import (
 	"strings"
 	"testing"
 
-	"github.com/nick/gopi/internal/config"
+	"github.com/nickhuang99/gopi/internal/config"
 )
 
 // archTestRepo initializes a temp repo with a seed commit and one branch

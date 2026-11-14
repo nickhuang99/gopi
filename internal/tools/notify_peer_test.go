@@ -25,8 +25,8 @@ import (
 	"strings"
 	"testing"
 
-	"github.com/nick/gopi/internal/config"
-	"github.com/nick/gopi/internal/sessionlayout"
+	"github.com/nickhuang99/gopi/internal/config"
+	"github.com/nickhuang99/gopi/internal/sessionlayout"
 )
 
 const (
@@ -271,7 +271,7 @@ func TestNotifyPeerRefusesBeforeItDials(t *testing.T) {
 		peer string
 		want string
 	}{
-		{"undeclared peer", "zpeer", "not in the memory_peers whitelist"},
+		{"undeclared peer", "peerbox", "not in the memory_peers whitelist"},
 		{"option-shaped alias", "-oProxyCommand=sh", "invalid peer alias"},
 		{"blank alias", "   ", "invalid peer alias"},
 		{"alias carrying a colon", "hp:/tmp", "invalid peer alias"},

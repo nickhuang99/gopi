@@ -55,7 +55,7 @@ import (
 	"syscall"
 	"time"
 
-	"github.com/nick/gopi/internal/cgroupscope"
+	"github.com/nickhuang99/gopi/internal/cgroupscope"
 )
 
 // --- named constants (PROJECT.md Rule 1: one place to find and change) ---

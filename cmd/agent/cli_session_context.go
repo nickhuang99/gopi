@@ -37,8 +37,8 @@ import (
 	"strconv"
 	"strings"
 
-	"github.com/nick/gopi/internal/ctxdump"
-	"github.com/nick/gopi/internal/gopilog"
+	"github.com/nickhuang99/gopi/internal/ctxdump"
+	"github.com/nickhuang99/gopi/internal/gopilog"
 )
 
 // The sub-verb's vocabulary. Every word the dispatcher, the argument parser,

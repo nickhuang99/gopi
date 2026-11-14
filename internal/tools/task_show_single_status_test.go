@@ -44,8 +44,8 @@ import (
 	"strings"
 	"testing"
 
-	"github.com/nick/gopi/internal/taskreport"
-	"github.com/nick/gopi/internal/testutil"
+	"github.com/nickhuang99/gopi/internal/taskreport"
+	"github.com/nickhuang99/gopi/internal/testutil"
 )
 
 // The same-prefix siblings. The fixture deliberately gives THREE rows one

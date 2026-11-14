@@ -32,15 +32,15 @@ import (
 	"strings"
 	"testing"
 
-	"github.com/nick/gopi/internal/agencyscan"
-	"github.com/nick/gopi/internal/config"
-	"github.com/nick/gopi/internal/tasksource"
-	"github.com/nick/gopi/internal/testutil"
+	"github.com/nickhuang99/gopi/internal/agencyscan"
+	"github.com/nickhuang99/gopi/internal/config"
+	"github.com/nickhuang99/gopi/internal/tasksource"
+	"github.com/nickhuang99/gopi/internal/testutil"
 )
 
 // taskForwardPeer is the authoritative alias the test node declares; the
 // value is opaque (no ssh is ever dialled — the seam replaces the transport).
-const taskForwardPeer = "zpeer"
+const taskForwardPeer = "peerbox"
 
 // taskForwardScene builds the two ledgers and points the process at the
 // MIRROR one, with the node declaring itself a client of taskForwardPeer.

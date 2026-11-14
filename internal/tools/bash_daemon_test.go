@@ -11,7 +11,7 @@ import (
 	"testing"
 	"time"
 
-	"github.com/nick/gopi/internal/procname"
+	"github.com/nickhuang99/gopi/internal/procname"
 )
 
 // Named constants for the daemon-spawn regression tests (Rule 1: no magic

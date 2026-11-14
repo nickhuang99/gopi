@@ -48,8 +48,8 @@ import (
 	"testing"
 	"time"
 
-	"github.com/nick/gopi/internal/config"
-	"github.com/nick/gopi/internal/testutil"
+	"github.com/nickhuang99/gopi/internal/config"
+	"github.com/nickhuang99/gopi/internal/testutil"
 )
 
 const (
@@ -189,9 +189,9 @@ func TestSelfPeerSendIsRefusedAndTheOperatorResolvedLedgerGainsNoRow(t *testing.
 
 	contacted := false
 	_, err := SyncRowSendEx(SyncRowSendOptions{
-		TaskID: selfPeerTestRow,
+		TaskID:       selfPeerTestRow,
 		CancelSource: true, // a send IS a move (epic task-send-is-a-move)
-		Peers:  []string{selfPeerLocalAlias},
+		Peers:        []string{selfPeerLocalAlias},
 		Exchange: func(peer string, body []byte) ([]byte, error) {
 			contacted = true
 			// What the ssh hop does when no --remote-home binds it: the peer
@@ -253,10 +253,10 @@ func TestSelfPeerSendStillWorksWithRemoteHome(t *testing.T) {
 	peerRoot := t.TempDir() // the peer's private profile root (GOPI_HOME on the peer side)
 	contacted := false
 	lines, err := SyncRowSend(SyncRowSendOptions{
-		TaskID:     selfPeerTestRow,
+		TaskID:       selfPeerTestRow,
 		CancelSource: true, // a send IS a move (epic task-send-is-a-move)
-		Peers:      []string{selfPeerLocalAlias},
-		RemoteHome: peerRoot,
+		Peers:        []string{selfPeerLocalAlias},
+		RemoteHome:   peerRoot,
 		Exchange: func(peer string, body []byte) ([]byte, error) {
 			contacted = true
 			// What the ssh prefix does on the peer side: GOPI_HOME=<dir>.
@@ -307,9 +307,9 @@ func TestRemotePeerSendIsNotTouchedByTheSelfPeerGate(t *testing.T) {
 
 	contacted := false
 	lines, err := SyncRowSend(SyncRowSendOptions{
-		TaskID: selfPeerTestRow,
+		TaskID:       selfPeerTestRow,
 		CancelSource: true, // a send IS a move (epic task-send-is-a-move)
-		Peers:  []string{selfPeerRemoteAlias},
+		Peers:        []string{selfPeerRemoteAlias},
 		Exchange: func(peer string, body []byte) ([]byte, error) {
 			contacted = true
 			return SyncRowRemote(body) // the peer's own profile answers, as in production
@@ -349,9 +349,9 @@ func TestSelfPeerGateDoesNotFireWhenTheLedgerIsAlreadyPrivate(t *testing.T) {
 
 	contacted := false
 	_, err := SyncRowSendEx(SyncRowSendOptions{
-		TaskID: selfPeerTestRow,
+		TaskID:       selfPeerTestRow,
 		CancelSource: true, // a send IS a move (epic task-send-is-a-move)
-		Peers:  []string{selfPeerLocalAlias},
+		Peers:        []string{selfPeerLocalAlias},
 		Exchange: func(peer string, body []byte) ([]byte, error) {
 			contacted = true
 			return SyncRowRemote(body)

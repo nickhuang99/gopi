@@ -32,8 +32,8 @@ import (
 	"strings"
 	"testing"
 
-	"github.com/nick/gopi/internal/scratch"
-	"github.com/nick/gopi/internal/text2img"
+	"github.com/nickhuang99/gopi/internal/scratch"
+	"github.com/nickhuang99/gopi/internal/text2img"
 )
 
 // text2imgOutputPaths extracts the `output: <path>` lines a render summary

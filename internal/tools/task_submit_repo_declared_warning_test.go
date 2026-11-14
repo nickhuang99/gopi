@@ -36,8 +36,8 @@ import (
 	"strings"
 	"testing"
 
-	"github.com/nick/gopi/internal/config"
-	"github.com/nick/gopi/internal/testutil"
+	"github.com/nickhuang99/gopi/internal/config"
+	"github.com/nickhuang99/gopi/internal/testutil"
 )
 
 // repoDeclaredWarningDefinitionFile is the single definition site of the
@@ -87,7 +87,7 @@ func TestRepoUndeclaredWarningFiresForARepoOutsideTheTable(t *testing.T) {
 	const repo = "/home/user/work/GoPi"
 	const declaredRepo = "/home/user/work/gopi"
 	repoDeclaredSettings(t, declaredRepo)
-	t.Setenv(config.DevRepoEnvName, "zpeer:"+declaredRepo) // the clone channel is ON
+	t.Setenv(config.DevRepoEnvName, "peerbox:"+declaredRepo) // the clone channel is ON
 
 	got := TaskSubmitRepoUndeclaredWarning(repo)
 	if got == "" {
@@ -105,7 +105,7 @@ func TestRepoUndeclaredWarningFiresForARepoOutsideTheTable(t *testing.T) {
 func TestRepoUndeclaredWarningSilentWhenDeclared(t *testing.T) {
 	const repo = "/home/user/work/gopi"
 	repoDeclaredSettings(t, repo)
-	for _, devRepo := range []string{"", "zpeer:" + repo} {
+	for _, devRepo := range []string{"", "peerbox:" + repo} {
 		t.Setenv(config.DevRepoEnvName, devRepo)
 		if got := TaskSubmitRepoUndeclaredWarning(repo); got != "" {
 			t.Errorf("dev_repo=%q: declared repo %q still warned:\n%s", devRepo, repo, got)

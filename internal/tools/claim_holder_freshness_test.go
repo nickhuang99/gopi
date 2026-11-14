@@ -28,7 +28,7 @@ import (
 	"testing"
 	"time"
 
-	"github.com/nick/gopi/internal/config"
+	"github.com/nickhuang99/gopi/internal/config"
 )
 
 // holderSeedRow submits a row and moves it to in_progress through the REAL

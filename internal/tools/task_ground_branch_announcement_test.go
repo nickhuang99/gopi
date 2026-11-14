@@ -45,8 +45,8 @@ import (
 	"strings"
 	"testing"
 
-	"github.com/nick/gopi/internal/fullid"
-	"github.com/nick/gopi/internal/testutil"
+	"github.com/nickhuang99/gopi/internal/fullid"
+	"github.com/nickhuang99/gopi/internal/testutil"
 )
 
 // The row ids these arms hammer. Three of them, because the property is "the

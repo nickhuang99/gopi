@@ -25,11 +25,11 @@ import (
 	"strings"
 	"testing"
 
-	"github.com/nick/gopi/internal/chatpolicy"
-	"github.com/nick/gopi/internal/cliverbs"
-	"github.com/nick/gopi/internal/testutil"
-	"github.com/nick/gopi/internal/toolnames"
-	"github.com/nick/gopi/internal/tools"
+	"github.com/nickhuang99/gopi/internal/chatpolicy"
+	"github.com/nickhuang99/gopi/internal/cliverbs"
+	"github.com/nickhuang99/gopi/internal/testutil"
+	"github.com/nickhuang99/gopi/internal/toolnames"
+	"github.com/nickhuang99/gopi/internal/tools"
 )
 
 // chatGroundWrittenFile is the file the mocked turn asks the engine to write,

@@ -20,8 +20,8 @@ import (
 	"strings"
 	"time"
 
-	"github.com/nick/gopi/internal/config"
-	"github.com/nick/gopi/internal/thinkmode"
+	"github.com/nickhuang99/gopi/internal/config"
+	"github.com/nickhuang99/gopi/internal/thinkmode"
 )
 
 // Brew pipeline constants — single place for every tunable (Rule 1/2: no

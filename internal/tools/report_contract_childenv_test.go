@@ -32,8 +32,8 @@ import (
 	"path/filepath"
 	"testing"
 
-	"github.com/nick/gopi/internal/signalrec"
-	"github.com/nick/gopi/internal/taskreport"
+	"github.com/nickhuang99/gopi/internal/signalrec"
+	"github.com/nickhuang99/gopi/internal/taskreport"
 )
 
 // reportContractSessionName is the directory name of the session this test

@@ -7,10 +7,10 @@ import (
 	"strconv"
 	"strings"
 
-	"github.com/nick/gopi/internal/config"
-	"github.com/nick/gopi/internal/gopilog"
-	"github.com/nick/gopi/internal/pricing"
-	"github.com/nick/gopi/internal/tools"
+	"github.com/nickhuang99/gopi/internal/config"
+	"github.com/nickhuang99/gopi/internal/gopilog"
+	"github.com/nickhuang99/gopi/internal/pricing"
+	"github.com/nickhuang99/gopi/internal/tools"
 )
 
 // statsUsage is the help text of the `gopi session stats` subcommand: the numeric view

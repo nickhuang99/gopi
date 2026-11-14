@@ -47,12 +47,12 @@ package tools
 
 import (
 	"context"
-	"github.com/nick/gopi/internal/heavytest"
+	"github.com/nickhuang99/gopi/internal/heavytest"
 	"path/filepath"
 	"testing"
 	"time"
 
-	"github.com/nick/gopi/internal/scratch"
+	"github.com/nickhuang99/gopi/internal/scratch"
 )
 
 // firstOpenGuardRepetitions is how many fresh ledgers the guard opens per run.

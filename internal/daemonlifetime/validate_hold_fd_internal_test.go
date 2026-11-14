@@ -33,7 +33,7 @@ import (
 	"syscall"
 	"testing"
 
-	"github.com/nick/gopi/internal/borrowedfd"
+	"github.com/nickhuang99/gopi/internal/borrowedfd"
 )
 
 // claimPipeAt dup's a fresh pipe's read end onto the lowest free number >= min and

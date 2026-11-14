@@ -25,7 +25,7 @@ import (
 	"strings"
 	"testing"
 
-	"github.com/nick/gopi/internal/testutil"
+	"github.com/nickhuang99/gopi/internal/testutil"
 )
 
 // reworkLandingTestSubject is the measured subject, verbatim (both the branch's
@@ -223,7 +223,7 @@ func TestReworkLandingProbeFiresOnSubjectEquality(t *testing.T) {
 
 // TestReworkLandingProbeFindsADeeplyBuriedLanding is the regression for the
 // probe's FIRST implementation, which read only the newest 400 commits of the
-// integration branch. Measured on zpeer: the landed commit of the case this file
+// integration branch. Measured on peerbox: the landed commit of the case this file
 // exists for (ffa1cf4f8) is 1313 commits below master's tip, so that window
 // returned "NOT ALREADY LANDED (probe ran)" — a confident FALSE NEGATIVE on the
 // probe's own case. This test buries the equivalent commit deeper than any such

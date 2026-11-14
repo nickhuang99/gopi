@@ -21,7 +21,7 @@ import (
 	"strings"
 	"testing"
 
-	"github.com/nick/gopi/internal/taskreport"
+	"github.com/nickhuang99/gopi/internal/taskreport"
 )
 
 // masterClaimSealLabel is the finding's full operator label — the family

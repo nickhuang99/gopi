@@ -55,7 +55,7 @@ import (
 	"strings"
 	"sync"
 
-	"github.com/nick/gopi/internal/scratch"
+	"github.com/nickhuang99/gopi/internal/scratch"
 )
 
 // selfGroundReleaseMu guards the mark below. The producers' passes are

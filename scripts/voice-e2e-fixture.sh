@@ -28,7 +28,7 @@
 # is what that rig feeds to FIXTURE_WAV/FIXTURE_REF.
 set -euo pipefail
 
-readonly SOURCE_HOST=${SOURCE_HOST:-zpeer}
+readonly SOURCE_HOST=${SOURCE_HOST:-peerbox}
 # The fixture is a LOCAL sample the caller points at: a fixed absolute
 # path only exists on one machine, so the default is a shape, not a home.
 readonly SOURCE_DIR=${SOURCE_DIR:-${SOURCE_MP3:+$(dirname "$SOURCE_MP3")}}

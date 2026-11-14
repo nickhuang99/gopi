@@ -34,11 +34,11 @@ import (
 	"strings"
 	"testing"
 
-	"github.com/nick/gopi/internal/checkpoint"
-	"github.com/nick/gopi/internal/config"
-	"github.com/nick/gopi/internal/gopilog"
-	"github.com/nick/gopi/internal/sessionevent"
-	"github.com/nick/gopi/internal/testutil"
+	"github.com/nickhuang99/gopi/internal/checkpoint"
+	"github.com/nickhuang99/gopi/internal/config"
+	"github.com/nickhuang99/gopi/internal/gopilog"
+	"github.com/nickhuang99/gopi/internal/sessionevent"
+	"github.com/nickhuang99/gopi/internal/testutil"
 )
 
 // chatResumeE2EPrompt1 / …2 are the two operator turns: one per run, so "the

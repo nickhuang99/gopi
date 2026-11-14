@@ -42,7 +42,7 @@ import (
 	"sync"
 	"time"
 
-	"github.com/nick/gopi/internal/replay"
+	"github.com/nickhuang99/gopi/internal/replay"
 )
 
 // The flag vocabulary of the beat protocol on the chat surface. The SCRATCH is

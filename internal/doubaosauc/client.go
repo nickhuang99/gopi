@@ -20,7 +20,7 @@ import (
 	"strings"
 	"time"
 
-	"github.com/nick/gopi/internal/doubaostream"
+	"github.com/nickhuang99/gopi/internal/doubaostream"
 )
 
 // ── sequence numbering of one conversation ─────────────────────────────

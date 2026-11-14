@@ -35,7 +35,7 @@ import (
 	"strings"
 	"testing"
 
-	"github.com/nick/gopi/internal/devworkspace"
+	"github.com/nickhuang99/gopi/internal/devworkspace"
 )
 
 // reclaimCoDeathCloneGroundFixture builds the epic's exact shape: a real origin

@@ -10,7 +10,7 @@ package tools
 //	$ go test ./internal/standards/ -run 'Rule13|Rule16|NamedLimits|ErrorWrap' -count=1 -v
 //	=== RUN   TestGate1ErrorWrapRedProof
 //	--- PASS: TestGate1ErrorWrapRedProof (0.00s)
-//	ok  	github.com/nick/gopi/internal/standards	0.736s
+//	ok  	github.com/nickhuang99/gopi/internal/standards	0.736s
 //
 // Four alternatives, ONE match (`ErrorWrap` is a fragment of
 // `TestGate1ErrorWrapRedProof`), three dead (`Rule13`, `Rule16`, `NamedLimits`

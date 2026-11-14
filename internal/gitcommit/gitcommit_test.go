@@ -253,7 +253,7 @@ func TestGitCommitSeamRendersTheDocumentedLines(t *testing.T) {
 	if got, want := TaskTrailerLine(" abc123 "), TaskTrailerKey+": abc123"; got != want {
 		t.Fatalf("TaskTrailerLine = %q, want %q (an id is trimmed once)", got, want)
 	}
-	if got, want := HostTrailerLine("zpeer"), HostTrailerKey+": zpeer"; got != want {
+	if got, want := HostTrailerLine("peerbox"), HostTrailerKey+": peerbox"; got != want {
 		t.Fatalf("HostTrailerLine = %q, want %q", got, want)
 	}
 	if TaskTrailerKey == HostTrailerKey {

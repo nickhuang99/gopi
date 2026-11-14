@@ -32,8 +32,8 @@ import (
 	"strings"
 	"testing"
 
-	"github.com/nick/gopi/internal/testutil"
-	"github.com/nick/gopi/internal/toolnames"
+	"github.com/nickhuang99/gopi/internal/testutil"
+	"github.com/nickhuang99/gopi/internal/toolnames"
 )
 
 // editE2EFixtureFile is the file both cases edit: the minimal sample of the

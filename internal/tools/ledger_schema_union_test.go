@@ -8,7 +8,7 @@ import (
 	"strings"
 	"testing"
 
-	"github.com/nick/gopi/internal/testutil"
+	"github.com/nickhuang99/gopi/internal/testutil"
 )
 
 // LEDGER SCHEMA UNION — the regression suite for ledger_schema_union.go.

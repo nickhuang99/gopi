@@ -9,10 +9,10 @@ import (
 	"syscall"
 	"testing"
 
-	"github.com/nick/gopi/internal/scratch"
-	"github.com/nick/gopi/internal/signalrec"
-	"github.com/nick/gopi/internal/testutil"
-	"github.com/nick/gopi/internal/worktreeroots"
+	"github.com/nickhuang99/gopi/internal/scratch"
+	"github.com/nickhuang99/gopi/internal/signalrec"
+	"github.com/nickhuang99/gopi/internal/testutil"
+	"github.com/nickhuang99/gopi/internal/worktreeroots"
 )
 
 // toolsSuiteName labels this suite's scratch root (its name appears in the
@@ -45,7 +45,7 @@ var toolsBuildCacheSandboxSignal chan os.Signal
 // asserts what the refusal carries must not depend on the host's ambient
 // locale.
 //
-// MEASURED 2026-10-12 on sager, `LC_ALL=zh_CN.utf8 LANG=zh_CN.utf8`:
+// MEASURED 2026-10-12 on hosta, `LC_ALL=zh_CN.utf8 LANG=zh_CN.utf8`:
 // TestPushbackUnresolvedRemoteNameIsDiagnosedByTheRealLane failed with
 //
 //	the refusal must keep git's own words: "... ssh: Could not resolve hostname

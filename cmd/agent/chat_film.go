@@ -74,10 +74,10 @@ import (
 	"strings"
 	"time"
 
-	"github.com/nick/gopi/internal/config"
-	"github.com/nick/gopi/internal/replay"
-	"github.com/nick/gopi/internal/scratch"
-	"github.com/nick/gopi/internal/shot"
+	"github.com/nickhuang99/gopi/internal/config"
+	"github.com/nickhuang99/gopi/internal/replay"
+	"github.com/nickhuang99/gopi/internal/scratch"
+	"github.com/nickhuang99/gopi/internal/shot"
 )
 
 // The film driver's vocabulary and its bounds. Every literal is a named constant

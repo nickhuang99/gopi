@@ -16,8 +16,8 @@ import (
 	"strings"
 	"testing"
 
-	"github.com/nick/gopi/internal/config"
-	"github.com/nick/gopi/internal/tools"
+	"github.com/nickhuang99/gopi/internal/config"
+	"github.com/nickhuang99/gopi/internal/tools"
 )
 
 // TestStripDaemonContextEnvRemovesTheSpawnersOwnHandle is Fix B's unit guard:

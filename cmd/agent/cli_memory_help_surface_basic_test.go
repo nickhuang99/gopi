@@ -33,7 +33,7 @@ import (
 	"encoding/json"
 	"errors"
 	"fmt"
-	"github.com/nick/gopi/internal/heavytest"
+	"github.com/nickhuang99/gopi/internal/heavytest"
 	"os"
 	"os/exec"
 	"path/filepath"
@@ -45,9 +45,9 @@ import (
 
 	_ "modernc.org/sqlite"
 
-	"github.com/nick/gopi/internal/capturesurvey"
-	"github.com/nick/gopi/internal/config"
-	"github.com/nick/gopi/internal/tools"
+	"github.com/nickhuang99/gopi/internal/capturesurvey"
+	"github.com/nickhuang99/gopi/internal/config"
+	"github.com/nickhuang99/gopi/internal/tools"
 )
 
 // g3MemoryVerbTimeout bounds ONE probe's child (Rule 27: a probe that can park

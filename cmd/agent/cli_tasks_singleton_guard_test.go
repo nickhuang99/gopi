@@ -11,7 +11,7 @@ package main
 import (
 	"database/sql"
 	"errors"
-	"github.com/nick/gopi/internal/config"
+	"github.com/nickhuang99/gopi/internal/config"
 	"os"
 	"os/exec"
 	"path/filepath"
@@ -21,8 +21,8 @@ import (
 
 	_ "modernc.org/sqlite"
 
-	"github.com/nick/gopi/internal/testutil"
-	"github.com/nick/gopi/internal/tools"
+	"github.com/nickhuang99/gopi/internal/testutil"
+	"github.com/nickhuang99/gopi/internal/tools"
 )
 
 // guardProbeShell is the shell the fixture holder runs (Rule 1b: no bare path

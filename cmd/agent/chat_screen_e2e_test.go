@@ -34,11 +34,11 @@ import (
 	"strings"
 	"testing"
 
-	"github.com/nick/gopi/internal/agent"
-	"github.com/nick/gopi/internal/deepseek"
-	"github.com/nick/gopi/internal/lineedit"
-	"github.com/nick/gopi/internal/sessionlayout"
-	"github.com/nick/gopi/internal/uiclient"
+	"github.com/nickhuang99/gopi/internal/agent"
+	"github.com/nickhuang99/gopi/internal/deepseek"
+	"github.com/nickhuang99/gopi/internal/lineedit"
+	"github.com/nickhuang99/gopi/internal/sessionlayout"
+	"github.com/nickhuang99/gopi/internal/uiclient"
 )
 
 // chatScreenE2EPainted is the marker the fixture PICKS INTO THE SCREEN before the

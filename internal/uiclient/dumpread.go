@@ -10,11 +10,11 @@ import (
 	"strings"
 	"time"
 
-	"github.com/nick/gopi/internal/cliverbs"
-	"github.com/nick/gopi/internal/config"
-	"github.com/nick/gopi/internal/lineedit"
-	"github.com/nick/gopi/internal/procname"
-	"github.com/nick/gopi/internal/sessionlayout"
+	"github.com/nickhuang99/gopi/internal/cliverbs"
+	"github.com/nickhuang99/gopi/internal/config"
+	"github.com/nickhuang99/gopi/internal/lineedit"
+	"github.com/nickhuang99/gopi/internal/procname"
+	"github.com/nickhuang99/gopi/internal/sessionlayout"
 )
 
 // sessionDirWalkLevelsMax bounds how far above a dump the session-directory

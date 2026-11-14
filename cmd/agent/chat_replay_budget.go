@@ -41,9 +41,9 @@ package main
 import (
 	"sync"
 
-	"github.com/nick/gopi/internal/agent"
-	"github.com/nick/gopi/internal/lineedit"
-	"github.com/nick/gopi/internal/replaydrive"
+	"github.com/nickhuang99/gopi/internal/agent"
+	"github.com/nickhuang99/gopi/internal/lineedit"
+	"github.com/nickhuang99/gopi/internal/replaydrive"
 )
 
 const (

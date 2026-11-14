@@ -26,7 +26,7 @@ import (
 	"strings"
 	"testing"
 
-	"github.com/nick/gopi/internal/devworkspace"
+	"github.com/nickhuang99/gopi/internal/devworkspace"
 )
 
 // TestCloneChannelExhaustedReasonCarriesThePrefixExactlyOnce is ①: the

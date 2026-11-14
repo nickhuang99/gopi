@@ -4,7 +4,7 @@ import (
 	"strconv"
 	"strings"
 
-	"github.com/nick/gopi/internal/sgr"
+	"github.com/nickhuang99/gopi/internal/sgr"
 )
 
 // This file is the Screen's ATTRIBUTE side: the per-cell style the grid records

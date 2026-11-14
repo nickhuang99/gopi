@@ -10,7 +10,7 @@ package tools
 //	  the harvest gitPushbackDefault logic reused) → fast-forward the
 //	  local INTEGRATION BRANCH to the peer's tip (--ff-only; a diverged
 //	  branch is skipped, never merged here) → db sync → notify.
-//	zpeer (server) pass — syncGitServerPass:
+//	peerbox (server) pass — syncGitServerPass:
 //	  stale sweep → fetch the client's feat/* → clean branches merge
 //	  + branch delete (the adoption chain's ③a path reused; conflicts
 //	  stay the adoption chain's ③b dispatch → a Bond session) →
@@ -33,7 +33,7 @@ import (
 	"strings"
 	"time"
 
-	"github.com/nick/gopi/internal/config"
+	"github.com/nickhuang99/gopi/internal/config"
 )
 
 // gitSync constants — Rule 1: every literal in one place.
@@ -300,13 +300,13 @@ func gitSyncPruneDetail(before, after int) string {
 //
 // MEASURED 2026-09-26 on HP, and it is the whole reason the ghosts survived:
 // the sync target is spelled "<alias>:<path>" (sync_peers declares a git
-// REMOTE's name, e.g. "zpeer", and the path is the resolver's
+// REMOTE's name, e.g. "peerbox", and the path is the resolver's
 // (peer_repo_path.go)). Fetching that
 // full target is an scp-style URL, and a URL fetch updates NO remote-tracking
 // ref — it writes FETCH_HEAD and returns. So `git fetch <alias>:<path>` cannot
 // prune refs/remotes/<alias>/*: the pass reported "0 pruned" while the repo
 // held 184 ghost refs, and the same repo pruned 182 of them the moment the
-// fetch named the remote (`git fetch --prune --no-tags zpeer`) instead of its
+// fetch named the remote (`git fetch --prune --no-tags peerbox`) instead of its
 // URL. The refspec lives on the REMOTE, so the remote's name is what the
 // prune must be given; the URL form stays as the fallback for a target that
 // names no configured remote (a bare path, a one-off host).
@@ -605,7 +605,7 @@ func GitSyncClientPass(repo, server string) *GitPassReport {
 	// makes that deletion cross the wire; without it the mirror never goes
 	// away.
 	//
-	// MEASURED 2026-09-26 on HP: `git ls-remote --heads zpeer` = 3 refs
+	// MEASURED 2026-09-26 on HP: `git ls-remote --heads peerbox` = 3 refs
 	// (master + 2 live task branches) while `git branch -a` printed 187 — 184
 	// local ghost refs, the oldest from 2026-09-16, i.e. every branch the peer
 	// had ever adopted and reaped. That is the operator-visible symptom "my
@@ -615,7 +615,7 @@ func GitSyncClientPass(repo, server string) *GitPassReport {
 	//
 	// A SEPARATE step, deliberately NOT folded into the pull below. The pull is
 	// refused whenever the two masters have diverged (`--ff-only`), and HP was
-	// measured in exactly that state on 2026-09-26 (`zpeer/master...master` =
+	// measured in exactly that state on 2026-09-26 (`peerbox/master...master` =
 	// 5 behind / 1 ahead). Riding the prune on the pull would therefore stop
 	// pruning precisely when the checkout is out of step — the state a
 	// long-lived client host is in most of the time. The prune is a fact about
@@ -1103,9 +1103,9 @@ func gitSyncBranchHolderPath(worktrees []string, branch string) string {
 	return ""
 }
 
-// --- the server (zpeer) pass ---
+// --- the server (peerbox) pass ---
 
-// GitSyncServerPass runs the zpeer-side git pass: fetch the client's
+// GitSyncServerPass runs the peerbox-side git pass: fetch the client's
 // branches, then hand the clean-merge/delete decision to the adoption
 // chain (③a lands here; ③b conflicts dispatch a Bond task — the
 // red line ④ contract: Go discovers/tries/dispatches, the agent judges).
@@ -1157,8 +1157,8 @@ func GitSyncServerPass(repo string) *GitPassReport {
 // GitSyncServerTarget renders the ssh push target the CLIENT uses: the
 // first sync peer whose name is NOT this host (the peer list may contain
 // this node's own alias — pushing to yourself is a permission error, the
-// live HP incident of 2026-09-01: peers=[hp,zpeer], target must be
-// zpeer). No such peer = no server (the caller skips, fail-soft).
+// live HP incident of 2026-09-01: peers=[hp,peerbox], target must be
+// peerbox). No such peer = no server (the caller skips, fail-soft).
 func GitSyncServerTarget() string {
 	peers, err := config.ResolveSyncPeers(nil)
 	if err != nil {

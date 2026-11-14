@@ -34,8 +34,8 @@ import (
 	"strings"
 	"time"
 
-	"github.com/nick/gopi/internal/sessionlayout"
-	"github.com/nick/gopi/internal/tools"
+	"github.com/nickhuang99/gopi/internal/sessionlayout"
+	"github.com/nickhuang99/gopi/internal/tools"
 )
 
 // The IDLE half's two numbers (Rule 1).

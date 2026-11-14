@@ -4,7 +4,7 @@ import (
 	"fmt"
 	"os"
 
-	"github.com/nick/gopi/internal/deepseek"
+	"github.com/nickhuang99/gopi/internal/deepseek"
 )
 
 // token_reconciliation.go — the RUNTIME reconciliation of the two prompt counts a

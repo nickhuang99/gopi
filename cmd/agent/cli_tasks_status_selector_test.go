@@ -34,10 +34,10 @@ import (
 	"strings"
 	"testing"
 
-	"github.com/nick/gopi/internal/flaketest"
-	"github.com/nick/gopi/internal/taskverbs"
-	"github.com/nick/gopi/internal/testutil"
-	"github.com/nick/gopi/internal/tools"
+	"github.com/nickhuang99/gopi/internal/flaketest"
+	"github.com/nickhuang99/gopi/internal/taskverbs"
+	"github.com/nickhuang99/gopi/internal/testutil"
+	"github.com/nickhuang99/gopi/internal/tools"
 )
 
 // statusSelectorNoOwner is a branch shape NO row records — the selector the

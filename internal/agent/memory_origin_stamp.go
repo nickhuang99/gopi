@@ -26,8 +26,8 @@ package agent
 import (
 	"strings"
 
-	"github.com/nick/gopi/internal/sessionevent"
-	"github.com/nick/gopi/internal/tools"
+	"github.com/nickhuang99/gopi/internal/sessionevent"
+	"github.com/nickhuang99/gopi/internal/tools"
 )
 
 // storeSessionID resolves the session a memory store call belongs to: THIS

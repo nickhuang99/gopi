@@ -45,7 +45,7 @@ import (
 	"strings"
 	"testing"
 
-	"github.com/nick/gopi/internal/testutil"
+	"github.com/nickhuang99/gopi/internal/testutil"
 )
 
 // dpcgCutEpoch is when the fixture's base commit (the cut point) was made, and

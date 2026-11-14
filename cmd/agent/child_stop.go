@@ -37,7 +37,7 @@ import (
 	"syscall"
 	"time"
 
-	"github.com/nick/gopi/internal/signalrec"
+	"github.com/nickhuang99/gopi/internal/signalrec"
 )
 
 // childExit is the observable exit of ONE spawned child: a channel that is

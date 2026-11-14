@@ -10,12 +10,12 @@ import (
 	"testing"
 	"time"
 
-	"github.com/nick/gopi/internal/config"
-	"github.com/nick/gopi/internal/flaketest"
-	"github.com/nick/gopi/internal/runcmd"
-	"github.com/nick/gopi/internal/taskverbs"
-	"github.com/nick/gopi/internal/testutil"
-	"github.com/nick/gopi/internal/tools"
+	"github.com/nickhuang99/gopi/internal/config"
+	"github.com/nickhuang99/gopi/internal/flaketest"
+	"github.com/nickhuang99/gopi/internal/runcmd"
+	"github.com/nickhuang99/gopi/internal/taskverbs"
+	"github.com/nickhuang99/gopi/internal/testutil"
+	"github.com/nickhuang99/gopi/internal/tools"
 )
 
 // ---------------------------------------------------------------------------
@@ -912,8 +912,8 @@ func TestRunMethodFor(t *testing.T) {
 		t.Fatalf("single-row = %q / %q, want manual / gopi worker t-abc", m, c)
 	}
 	// Manual with the remote return path (the dispatched node's own row).
-	m, c = runMethodFor("t-abc", &tasksOptions{taskID: "t-abc", reportTo: "zpeer", repo: "zpeer:/home/user/work/GoPi"})
-	if m != runcmd.MethodManual || c != "gopi worker t-abc --report-to zpeer --repo zpeer:/home/user/work/GoPi" {
+	m, c = runMethodFor("t-abc", &tasksOptions{taskID: "t-abc", reportTo: "peerbox", repo: "peerbox:/home/user/work/GoPi"})
+	if m != runcmd.MethodManual || c != "gopi worker t-abc --report-to peerbox --repo peerbox:/home/user/work/GoPi" {
 		t.Fatalf("single-row+return = %q / %q, want the full re-runnable command", m, c)
 	}
 	// Worker round: the latch holds the target. The recorded command is the

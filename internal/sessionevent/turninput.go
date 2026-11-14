@@ -44,7 +44,7 @@ package sessionevent
 import (
 	"strings"
 
-	"github.com/nick/gopi/internal/inputsource"
+	"github.com/nickhuang99/gopi/internal/inputsource"
 )
 
 // The three framework CARRIERS that are not chatter — the markers a COMPLETE

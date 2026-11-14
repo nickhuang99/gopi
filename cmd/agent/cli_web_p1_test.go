@@ -24,9 +24,9 @@ import (
 	"testing"
 	"time"
 
-	"github.com/nick/gopi/internal/agent"
-	"github.com/nick/gopi/internal/deepseek"
-	"github.com/nick/gopi/internal/tools"
+	"github.com/nickhuang99/gopi/internal/agent"
+	"github.com/nickhuang99/gopi/internal/deepseek"
+	"github.com/nickhuang99/gopi/internal/tools"
 )
 
 // webServerForTestWithModel builds the standard test webServer and records

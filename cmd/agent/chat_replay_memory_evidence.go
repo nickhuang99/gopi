@@ -23,8 +23,8 @@ package main
 // worse than the sentence the epic exists to keep off the screen.
 
 import (
-	"github.com/nick/gopi/internal/agent"
-	"github.com/nick/gopi/internal/replaymode"
+	"github.com/nickhuang99/gopi/internal/agent"
+	"github.com/nickhuang99/gopi/internal/replaymode"
 )
 
 // announceReplayMemoryRefusal records one memory-write refusal for `what`,

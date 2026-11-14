@@ -36,7 +36,7 @@ import (
 	"strconv"
 	"strings"
 
-	"github.com/nick/gopi/internal/taskreport"
+	"github.com/nickhuang99/gopi/internal/taskreport"
 )
 
 // TaskBriefingPremiseLabel is the stamped clause's leading marker — spelled

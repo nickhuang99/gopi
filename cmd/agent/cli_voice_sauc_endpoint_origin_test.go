@@ -30,8 +30,8 @@ import (
 	"strings"
 	"testing"
 
-	"github.com/nick/gopi/internal/config"
-	"github.com/nick/gopi/internal/doubaosauc"
+	"github.com/nickhuang99/gopi/internal/config"
+	"github.com/nickhuang99/gopi/internal/doubaosauc"
 )
 
 // saucSettingsDoc is the settings document of ONE host, spelled the way the

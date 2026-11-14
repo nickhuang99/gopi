@@ -8,7 +8,7 @@ import (
 	"testing"
 	"time"
 
-	"github.com/nick/gopi/internal/lineedit"
+	"github.com/nickhuang99/gopi/internal/lineedit"
 )
 
 // chatTestEpoch anchors the fake clock the input tests drive the editor's

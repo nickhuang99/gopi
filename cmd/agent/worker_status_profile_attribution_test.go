@@ -41,8 +41,8 @@ import (
 	"syscall"
 	"testing"
 
-	"github.com/nick/gopi/internal/config"
-	"github.com/nick/gopi/internal/procname"
+	"github.com/nickhuang99/gopi/internal/config"
+	"github.com/nickhuang99/gopi/internal/procname"
 )
 
 // --- ① the attribution rule -------------------------------------------------

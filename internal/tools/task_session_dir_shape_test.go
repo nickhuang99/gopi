@@ -6,7 +6,7 @@ import (
 	"strings"
 	"testing"
 
-	"github.com/nick/gopi/internal/config"
+	"github.com/nickhuang99/gopi/internal/config"
 )
 
 // The two spellings of ONE row, measured on this host (task 01a12dc6): the

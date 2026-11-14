@@ -14,7 +14,7 @@ package tools
 //	              `git reflog expire --expire=now --all && git gc --prune=now`
 //	              and it is gone.
 //
-// Measured on the peer zpeer (/home/user/work/GoPi, 2026-10-12): 1672 commits
+// Measured on the peer peerbox (/home/user/work/GoPi, 2026-10-12): 1672 commits
 // unreachable from any ref, 329 of them TIPS (parents of no other unreachable
 // commit) — each one the last holder of a line of work that no ref records.
 //

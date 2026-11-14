@@ -34,7 +34,7 @@ import (
 	"strings"
 	"testing"
 
-	"github.com/nick/gopi/internal/testutil"
+	"github.com/nickhuang99/gopi/internal/testutil"
 )
 
 // seedBarePromptRow writes the row a bare-prompt/chat run registers: no

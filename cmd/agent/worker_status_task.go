@@ -40,9 +40,9 @@ import (
 	"path/filepath"
 	"strconv"
 
-	"github.com/nick/gopi/internal/config"
-	"github.com/nick/gopi/internal/procname"
-	"github.com/nick/gopi/internal/sessionid"
+	"github.com/nickhuang99/gopi/internal/config"
+	"github.com/nickhuang99/gopi/internal/procname"
+	"github.com/nickhuang99/gopi/internal/sessionid"
 )
 
 const (

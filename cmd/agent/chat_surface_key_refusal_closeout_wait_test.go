@@ -31,7 +31,7 @@ import (
 	"testing"
 	"time"
 
-	"github.com/nick/gopi/internal/heavytest"
+	"github.com/nickhuang99/gopi/internal/heavytest"
 )
 
 // TestKeyRefusalCloseoutWaitFiresOnStallAndIsNotTheLegacyWindow is the REFUSAL leg's

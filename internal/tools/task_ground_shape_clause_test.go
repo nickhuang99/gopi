@@ -8,7 +8,7 @@ package tools
 //
 //	$ test -d .git && echo DIRECTORY            → DIRECTORY
 //	$ git rev-parse --git-common-dir            → .git
-//	$ git remote -v                             → origin zpeer:/home/user/work/gopi
+//	$ git remote -v                             → origin peerbox:/home/user/work/gopi
 //
 // — and its OWN briefing said, in one and the same message, both
 //
@@ -32,7 +32,7 @@ import (
 	"strings"
 	"testing"
 
-	"github.com/nick/gopi/internal/devworkspace"
+	"github.com/nickhuang99/gopi/internal/devworkspace"
 )
 
 // groundShapeFixture builds the TWO real shapes in one throwaway tree: a

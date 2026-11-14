@@ -40,8 +40,8 @@ import (
 	"strings"
 	"testing"
 
-	"github.com/nick/gopi/internal/replaymode"
-	"github.com/nick/gopi/internal/tools"
+	"github.com/nickhuang99/gopi/internal/replaymode"
+	"github.com/nickhuang99/gopi/internal/tools"
 )
 
 // chatGroundReplayNoticeRecording is the recording this case arms the process

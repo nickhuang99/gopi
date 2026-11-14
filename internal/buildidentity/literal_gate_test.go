@@ -37,7 +37,7 @@ import (
 	"strings"
 	"testing"
 
-	"github.com/nick/gopi/internal/buildidentity"
+	"github.com/nickhuang99/gopi/internal/buildidentity"
 )
 
 // gateDefinitionFile is the ONE production file allowed to carry the literals:

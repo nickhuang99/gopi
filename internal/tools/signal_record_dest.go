@@ -34,7 +34,7 @@ package tools
 import (
 	"os"
 
-	"github.com/nick/gopi/internal/signalrec"
+	"github.com/nickhuang99/gopi/internal/signalrec"
 )
 
 // SignalRecordDestination is the resolved provenance handoff of a spawned

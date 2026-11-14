@@ -20,8 +20,8 @@ package inputsource_test
 import (
 	"testing"
 
-	"github.com/nick/gopi/internal/inputsource"
-	"github.com/nick/gopi/internal/lineedit"
+	"github.com/nickhuang99/gopi/internal/inputsource"
+	"github.com/nickhuang99/gopi/internal/lineedit"
 )
 
 // The old spellings. They were the VALUES before this change (`notify` was

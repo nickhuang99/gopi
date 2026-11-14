@@ -40,7 +40,7 @@ import (
 	"fmt"
 	"strings"
 
-	"github.com/nick/gopi/internal/devworkspace"
+	"github.com/nickhuang99/gopi/internal/devworkspace"
 )
 
 // ResumeNoCommitToken is the ONE spelling of the conclusion, asserted by the

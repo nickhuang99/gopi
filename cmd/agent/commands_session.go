@@ -42,8 +42,8 @@ import (
 	"os"
 	"strings"
 
-	"github.com/nick/gopi/internal/agent"
-	"github.com/nick/gopi/internal/tools"
+	"github.com/nickhuang99/gopi/internal/agent"
+	"github.com/nickhuang99/gopi/internal/tools"
 )
 
 // CommandSession is the carrier-supplied description of the session a shared

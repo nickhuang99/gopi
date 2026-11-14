@@ -8,7 +8,7 @@ import (
 	"testing"
 	"time"
 
-	"github.com/nick/gopi/internal/sessionlayout"
+	"github.com/nickhuang99/gopi/internal/sessionlayout"
 )
 
 // writeRefRecord writes a session record whose session_start names id — the

@@ -19,11 +19,11 @@ import (
 	"strings"
 	"testing"
 
-	"github.com/nick/gopi/internal/agent"
-	"github.com/nick/gopi/internal/lineedit"
-	"github.com/nick/gopi/internal/runcmd"
-	"github.com/nick/gopi/internal/sessionlayout"
-	"github.com/nick/gopi/internal/tools"
+	"github.com/nickhuang99/gopi/internal/agent"
+	"github.com/nickhuang99/gopi/internal/lineedit"
+	"github.com/nickhuang99/gopi/internal/runcmd"
+	"github.com/nickhuang99/gopi/internal/sessionlayout"
+	"github.com/nickhuang99/gopi/internal/tools"
 )
 
 // The literal the block must NEVER carry, and the prefix every copyable line must
@@ -60,7 +60,7 @@ func infoFixture() chatInfoFields {
 		Dir:         "/home/user/workspace/gopi-task",
 		Repo:        "/home/user/workspace/gopi-task",
 		InRepo:      true,
-		Node:        "zpeer (server→hp)",
+		Node:        "peerbox (server→hp)",
 		ToolsOn:     true,
 	}
 }

@@ -29,8 +29,8 @@ import (
 	"testing"
 	"time"
 
-	"github.com/nick/gopi/internal/gopilog"
-	"github.com/nick/gopi/internal/sessionevent"
+	"github.com/nickhuang99/gopi/internal/gopilog"
+	"github.com/nickhuang99/gopi/internal/sessionevent"
 )
 
 // turnFrameStamp pulls `session_turn_opened_at` out of a raw SSE body's `turn`

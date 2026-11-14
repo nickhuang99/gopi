@@ -4,7 +4,7 @@ import (
 	"fmt"
 	"os"
 
-	"github.com/nick/gopi/internal/gopilog"
+	"github.com/nickhuang99/gopi/internal/gopilog"
 )
 
 // This file is the READ half of the status row's Σ reading on a RESUMED chat:

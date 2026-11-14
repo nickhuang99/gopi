@@ -17,7 +17,7 @@
 // compacted context, so the distilled record is still in front of the model
 // after the history it came from has been folded away.
 //
-// NOT HERMES' SHAPE. The sibling implementation (hermes-agent/agent/
+// NOT HERMES' SHAPE. The sibling implementation (a sibling agent implementation/
 // hot_notes.py) STRIPS the block out of the visible text (strip_notes) and
 // keeps only the side-channel file. gopi does the opposite, deliberately: here
 // the block stays in the message, and the file is a durable COPY rather than a
@@ -39,10 +39,10 @@ import (
 	"strings"
 	"unicode/utf8"
 
-	"github.com/nick/gopi/internal/config"
-	"github.com/nick/gopi/internal/deepseek"
-	"github.com/nick/gopi/internal/replaymode"
-	"github.com/nick/gopi/internal/sessionevent"
+	"github.com/nickhuang99/gopi/internal/config"
+	"github.com/nickhuang99/gopi/internal/deepseek"
+	"github.com/nickhuang99/gopi/internal/replaymode"
+	"github.com/nickhuang99/gopi/internal/sessionevent"
 )
 
 const (

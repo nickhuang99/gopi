@@ -37,7 +37,7 @@ import (
 	"strings"
 	"testing"
 
-	"github.com/nick/gopi/internal/config"
+	"github.com/nickhuang99/gopi/internal/config"
 )
 
 const (
@@ -48,8 +48,8 @@ const (
 	dtfPeerAlias = "delivery-faces-peer"
 
 	// dtfOtherRemoteName is the fixture client's OWN remote — a name that is NOT
-	// the declared alias, which is the ordinary shape of a client (sager:
-	// sync_peers ["zpeer"], `git remote -v` = origin). It is what makes the
+	// the declared alias, which is the ordinary shape of a client (hosta:
+	// sync_peers ["peerbox"], `git remote -v` = origin). It is what makes the
 	// assertion "the answer is about THIS repo" observable rather than a tautology.
 	dtfOtherRemoteName = "faces-client-remote"
 )

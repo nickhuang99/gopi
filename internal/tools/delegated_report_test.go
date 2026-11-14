@@ -19,7 +19,7 @@ import (
 	"strings"
 	"testing"
 
-	"github.com/nick/gopi/internal/taskreport"
+	"github.com/nickhuang99/gopi/internal/taskreport"
 )
 
 // delegatedSealPath is the artifact the motivating sentence delegates to, named

@@ -10,9 +10,9 @@ import (
 
 	_ "modernc.org/sqlite" // the repo's zero-CGO driver (Rule 7)
 
-	"github.com/nick/gopi/internal/config"
-	"github.com/nick/gopi/internal/ledgerwindow"
-	"github.com/nick/gopi/internal/tools"
+	"github.com/nickhuang99/gopi/internal/config"
+	"github.com/nickhuang99/gopi/internal/ledgerwindow"
+	"github.com/nickhuang99/gopi/internal/tools"
 )
 
 // cli_ledger_window.go — the `gopi tool ledger-window` verb, answering the ONE

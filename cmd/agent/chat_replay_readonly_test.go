@@ -23,7 +23,7 @@ import (
 	"testing"
 	"time"
 
-	"github.com/nick/gopi/internal/lineedit"
+	"github.com/nickhuang99/gopi/internal/lineedit"
 )
 
 // controlBannedCoordinates are the internal words an OSD line on this surface may

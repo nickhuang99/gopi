@@ -21,7 +21,7 @@ package tools
 // "pressure" is the gate's own subprocess against its own budget.
 
 import (
-	"github.com/nick/gopi/internal/heavytest"
+	"github.com/nickhuang99/gopi/internal/heavytest"
 	"os"
 	"path/filepath"
 	"strings"

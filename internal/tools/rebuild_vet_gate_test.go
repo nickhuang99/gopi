@@ -18,7 +18,7 @@ package tools
 
 import (
 	"encoding/json"
-	"github.com/nick/gopi/internal/heavytest"
+	"github.com/nickhuang99/gopi/internal/heavytest"
 	"os"
 	"path/filepath"
 	"strings"

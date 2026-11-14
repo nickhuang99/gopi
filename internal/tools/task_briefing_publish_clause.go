@@ -73,7 +73,7 @@ import (
 	"fmt"
 	"strings"
 
-	"github.com/nick/gopi/internal/devworkspace"
+	"github.com/nickhuang99/gopi/internal/devworkspace"
 )
 
 // TaskBriefingPublishLabel is the clause's leading marker, spelled once so a

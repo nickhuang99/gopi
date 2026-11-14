@@ -39,8 +39,8 @@ import (
 	"testing"
 	"time"
 
-	"github.com/nick/gopi/internal/sessionevent"
-	"github.com/nick/gopi/internal/sessionlayout"
+	"github.com/nickhuang99/gopi/internal/sessionevent"
+	"github.com/nickhuang99/gopi/internal/sessionlayout"
 )
 
 // repeatFixture sets up a session dir OWNED by this process plus a live session

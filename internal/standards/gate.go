@@ -57,7 +57,7 @@ import (
 	"testing"
 	"unicode"
 
-	"github.com/nick/gopi/internal/sitekey"
+	"github.com/nickhuang99/gopi/internal/sitekey"
 )
 
 // maxBaselineEntries is the review budget for one gate's allow-list. A baseline

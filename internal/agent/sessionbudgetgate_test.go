@@ -18,7 +18,7 @@ import (
 	"testing"
 	"time"
 
-	"github.com/nick/gopi/internal/taskverdict"
+	"github.com/nickhuang99/gopi/internal/taskverdict"
 )
 
 // budgetTestAgent builds an agent whose ONLY variable is the clock, so a test

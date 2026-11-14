@@ -37,7 +37,7 @@ import (
 	"strings"
 	"testing"
 
-	"github.com/nick/gopi/internal/config"
+	"github.com/nickhuang99/gopi/internal/config"
 )
 
 // oversizedPrompt builds a prompt ONE byte past the per-string execve limit —

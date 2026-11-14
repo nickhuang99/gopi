@@ -9,7 +9,7 @@ package agent
 // error's TEXT against a keyword switch, and that switch matched
 // `"timeout"` — while the message says "timed out" (one space apart, no
 // substring). The message therefore fell to `default:`, which asserted
-// `RecoverableHint = false`. Two real zpeer ledger rows consequently read
+// `RecoverableHint = false`. Two real peerbox ledger rows consequently read
 //
 //	error(category=unknown iter=52 recoverable=false)
 //	error(category=unknown iter=43 recoverable=false)
@@ -34,7 +34,7 @@ import (
 	"testing"
 )
 
-// measuredTimeoutIters is the iteration figure the two real zpeer rows carry
+// measuredTimeoutIters is the iteration figure the two real peerbox rows carry
 // (52 and 43 in that batch; this is the count the row that reproduced the
 // defect on the live surface printed). It is only a payload — the classifier
 // must reach its verdict from the WORDING, never from the number.

@@ -16,8 +16,8 @@ import (
 	"strings"
 	"testing"
 
-	"github.com/nick/gopi/internal/scratch"
-	"github.com/nick/gopi/internal/text2img"
+	"github.com/nickhuang99/gopi/internal/scratch"
+	"github.com/nickhuang99/gopi/internal/text2img"
 )
 
 // toolInkFloor is the minimum dark-pixel count a 20px text page must carry.

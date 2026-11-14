@@ -6,7 +6,7 @@ import (
 	"strings"
 	"testing"
 
-	"github.com/nick/gopi/internal/config"
+	"github.com/nickhuang99/gopi/internal/config"
 )
 
 // The voice_input argument layer is what a user hits first, and every failure

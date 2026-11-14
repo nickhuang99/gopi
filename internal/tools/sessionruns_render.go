@@ -4,8 +4,8 @@ import (
 	"fmt"
 	"strconv"
 
-	"github.com/nick/gopi/internal/procstat"
-	"github.com/nick/gopi/internal/sessionevent"
+	"github.com/nickhuang99/gopi/internal/procstat"
+	"github.com/nickhuang99/gopi/internal/sessionevent"
 )
 
 // sessionruns_render.go — THE MERGED LISTING'S ROW RENDERING.

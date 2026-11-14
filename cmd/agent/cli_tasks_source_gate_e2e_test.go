@@ -10,9 +10,9 @@ import (
 	"testing"
 	"time"
 
-	"github.com/nick/gopi/internal/config"
-	"github.com/nick/gopi/internal/tasksource"
-	"github.com/nick/gopi/internal/testutil"
+	"github.com/nickhuang99/gopi/internal/config"
+	"github.com/nickhuang99/gopi/internal/tasksource"
+	"github.com/nickhuang99/gopi/internal/testutil"
 )
 
 // This file pins the `gopi task submit --source` gate as an END-TO-END

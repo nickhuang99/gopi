@@ -29,7 +29,7 @@ import (
 	"testing"
 	"time"
 
-	"github.com/nick/gopi/internal/deepseek"
+	"github.com/nickhuang99/gopi/internal/deepseek"
 )
 
 // stampWallclockPattern is the absolute half's shape as a REGEXP — the form the

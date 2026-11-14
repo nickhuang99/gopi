@@ -30,7 +30,7 @@ import (
 	"strings"
 	"unicode"
 
-	"github.com/nick/gopi/internal/scratch"
+	"github.com/nickhuang99/gopi/internal/scratch"
 )
 
 // Default rendering parameters — the validated claude-version settings

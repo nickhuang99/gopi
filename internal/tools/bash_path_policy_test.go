@@ -6,8 +6,8 @@ import (
 	"strings"
 	"testing"
 
-	"github.com/nick/gopi/internal/scratch"
-	"github.com/nick/gopi/internal/worktreeroots"
+	"github.com/nickhuang99/gopi/internal/scratch"
+	"github.com/nickhuang99/gopi/internal/worktreeroots"
 )
 
 // guardPolicyFixture points the ambient layers at sandbox trees so the policy's

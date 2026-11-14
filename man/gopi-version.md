@@ -26,7 +26,7 @@ gopi version
       On a ground the toolchain never stamps — a linked worktree (the shape
       every gopi task runs in) — the build RECIPE can name the revision it
       built instead:
-        CGO_ENABLED=0 go build -ldflags "-X github.com/nick/gopi/internal/version.Revision=$(git rev-parse HEAD)" -o bin/gopi ./cmd/agent/
+        CGO_ENABLED=0 go build -ldflags "-X github.com/nickhuang99/gopi/internal/version.Revision=$(git rev-parse HEAD)" -o bin/gopi ./cmd/agent/
       and the report then prints that value with revision-source: on
       the line below it, so a declared revision is never read as an attested
       one. A toolchain stamp always wins: it is attested, this is declared.

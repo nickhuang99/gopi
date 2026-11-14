@@ -3,7 +3,7 @@ package config
 import (
 	"os"
 
-	"github.com/nick/gopi/internal/boolvocab"
+	"github.com/nickhuang99/gopi/internal/boolvocab"
 )
 
 // resume_ground.go — the ONE explicit escape hatch out of the resume ground

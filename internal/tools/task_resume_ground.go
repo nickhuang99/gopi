@@ -45,8 +45,8 @@ import (
 	"fmt"
 	"strings"
 
-	"github.com/nick/gopi/internal/config"
-	"github.com/nick/gopi/internal/devworkspace"
+	"github.com/nickhuang99/gopi/internal/config"
+	"github.com/nickhuang99/gopi/internal/devworkspace"
 )
 
 // The NO-ROW verdicts of the `--branch` spelling, one sentence per measured

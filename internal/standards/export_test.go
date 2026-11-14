@@ -20,7 +20,7 @@ package standardgate
 // (not a defined type) is what lets the tests' []generatedDocDep literals stay
 // exactly as written.
 
-import gendocpkg "github.com/nick/gopi/internal/gendoc"
+import gendocpkg "github.com/nickhuang99/gopi/internal/gendoc"
 
 // generatedDocDep is an ALIAS of the leaf package's Dep, not a second type.
 type generatedDocDep = gendocpkg.Dep

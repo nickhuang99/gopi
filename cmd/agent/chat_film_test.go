@@ -12,7 +12,7 @@ import (
 	"strings"
 	"testing"
 
-	"github.com/nick/gopi/internal/replay"
+	"github.com/nickhuang99/gopi/internal/replay"
 )
 
 // filmFixtureDir is the fixture's own directory spelling: the parent a bare

@@ -51,7 +51,7 @@ import (
 	"strings"
 	"testing"
 
-	"github.com/nick/gopi/internal/config"
+	"github.com/nickhuang99/gopi/internal/config"
 )
 
 // The deployed sink's location and the repo's copy, each spelled ONCE (Rule 1/13).

@@ -3,7 +3,7 @@ package tools
 import (
 	"context"
 
-	"github.com/nick/gopi/internal/agencyscan"
+	"github.com/nickhuang99/gopi/internal/agencyscan"
 )
 
 // agencyscan wiring (epic agency-proposals).

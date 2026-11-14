@@ -52,8 +52,8 @@ import (
 	"strings"
 	"testing"
 
-	"github.com/nick/gopi/internal/config"
-	"github.com/nick/gopi/internal/taskverbs"
+	"github.com/nickhuang99/gopi/internal/config"
+	"github.com/nickhuang99/gopi/internal/taskverbs"
 )
 
 // atomsHelpFlag is the help spelling this file drives: the package's OWN

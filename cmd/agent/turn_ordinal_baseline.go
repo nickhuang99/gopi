@@ -37,7 +37,7 @@ package main
 import (
 	"fmt"
 
-	"github.com/nick/gopi/internal/gopilog"
+	"github.com/nickhuang99/gopi/internal/gopilog"
 )
 
 // chatTurnOrdinalAt is the derivation itself, over a session JSONL path: the

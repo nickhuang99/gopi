@@ -41,10 +41,10 @@ import (
 	"testing"
 	"time"
 
-	"github.com/nick/gopi/internal/agent"
-	"github.com/nick/gopi/internal/deepseek"
-	"github.com/nick/gopi/internal/lineedit"
-	"github.com/nick/gopi/internal/uiclient"
+	"github.com/nickhuang99/gopi/internal/agent"
+	"github.com/nickhuang99/gopi/internal/deepseek"
+	"github.com/nickhuang99/gopi/internal/lineedit"
+	"github.com/nickhuang99/gopi/internal/uiclient"
 )
 
 // longCmd runs to >200 cells so it cannot survive the digest cap, and carries

@@ -33,8 +33,8 @@ import (
 	"fmt"
 	"io"
 
-	"github.com/nick/gopi/internal/config"
-	"github.com/nick/gopi/internal/replaydrive"
+	"github.com/nickhuang99/gopi/internal/config"
+	"github.com/nickhuang99/gopi/internal/replaydrive"
 )
 
 // The notices. Each names the SOURCE of the number, because "this canvas is the

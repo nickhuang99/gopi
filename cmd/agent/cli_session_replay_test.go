@@ -20,7 +20,7 @@ package main
 import (
 	"encoding/json"
 	"fmt"
-	"github.com/nick/gopi/internal/heavytest"
+	"github.com/nickhuang99/gopi/internal/heavytest"
 	"os"
 	"os/exec"
 	"path/filepath"
@@ -32,9 +32,9 @@ import (
 
 	"golang.org/x/sys/unix"
 
-	"github.com/nick/gopi/internal/config"
-	"github.com/nick/gopi/internal/gopilog"
-	"github.com/nick/gopi/internal/replayplay"
+	"github.com/nickhuang99/gopi/internal/config"
+	"github.com/nickhuang99/gopi/internal/gopilog"
+	"github.com/nickhuang99/gopi/internal/replayplay"
 )
 
 // A session directory the pty cases replay: a 3x8 dump with two scrollback lines

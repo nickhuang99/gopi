@@ -24,7 +24,7 @@ import (
 	"testing"
 	"time"
 
-	"github.com/nick/gopi/internal/heavytest"
+	"github.com/nickhuang99/gopi/internal/heavytest"
 )
 
 // queueFixture builds a scratch home holding a queue subtree with one stale

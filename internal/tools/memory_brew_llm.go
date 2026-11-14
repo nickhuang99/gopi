@@ -15,7 +15,7 @@ import (
 	"strings"
 	"time"
 
-	"github.com/nick/gopi/internal/deepseek"
+	"github.com/nickhuang99/gopi/internal/deepseek"
 )
 
 // brewJudgePrompt is the batch judgment prompt: the three-condition gate

@@ -36,8 +36,8 @@ import (
 	"fmt"
 	"os"
 
-	"github.com/nick/gopi/internal/gopilog"
-	"github.com/nick/gopi/internal/tools"
+	"github.com/nickhuang99/gopi/internal/gopilog"
+	"github.com/nickhuang99/gopi/internal/tools"
 )
 
 // findSessionLogPath resolves a session-verb operand to the JSONL record it

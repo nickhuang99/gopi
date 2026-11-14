@@ -9,7 +9,7 @@ import (
 	"sort"
 	"strings"
 
-	"github.com/nick/gopi/internal/tools"
+	"github.com/nickhuang99/gopi/internal/tools"
 )
 
 // memoryConvergeKeywordsVerb is the sub-verb word dispatched by

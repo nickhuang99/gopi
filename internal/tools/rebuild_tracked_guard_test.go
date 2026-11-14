@@ -27,7 +27,7 @@ import (
 	"strings"
 	"testing"
 
-	gopiversion "github.com/nick/gopi/internal/version"
+	gopiversion "github.com/nickhuang99/gopi/internal/version"
 )
 
 // TestAdoptionGitStatusTrackedIgnoresUntracked is the predicate's red-proof:

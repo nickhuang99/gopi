@@ -27,7 +27,7 @@ package tools
 
 import (
 	"context"
-	"github.com/nick/gopi/internal/heavytest"
+	"github.com/nickhuang99/gopi/internal/heavytest"
 	"os/exec"
 	"path/filepath"
 	"strings"

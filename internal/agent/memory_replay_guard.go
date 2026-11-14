@@ -36,8 +36,8 @@ import (
 	"path/filepath"
 	"time"
 
-	"github.com/nick/gopi/internal/config"
-	"github.com/nick/gopi/internal/replaymode"
+	"github.com/nickhuang99/gopi/internal/config"
+	"github.com/nickhuang99/gopi/internal/replaymode"
 )
 
 // replayMemoryRefusalLogName is the file, inside the gopi data root's logs

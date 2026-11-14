@@ -32,8 +32,8 @@ import (
 	"strings"
 	"testing"
 
-	"github.com/nick/gopi/internal/ctxdump"
-	"github.com/nick/gopi/internal/testutil"
+	"github.com/nickhuang99/gopi/internal/ctxdump"
+	"github.com/nickhuang99/gopi/internal/testutil"
 )
 
 // The fixtures. The prompt's first line is distinctive on purpose: the

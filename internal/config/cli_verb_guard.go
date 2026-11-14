@@ -5,9 +5,9 @@ import (
 	"os"
 	"strings"
 
-	"github.com/nick/gopi/internal/cliverbs"
-	"github.com/nick/gopi/internal/taskverbs"
-	"github.com/nick/gopi/internal/toolnames"
+	"github.com/nickhuang99/gopi/internal/cliverbs"
+	"github.com/nickhuang99/gopi/internal/taskverbs"
+	"github.com/nickhuang99/gopi/internal/toolnames"
 )
 
 // PromptEnvVar is the environment channel that carries an explicit prompt

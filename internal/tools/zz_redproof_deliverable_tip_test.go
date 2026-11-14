@@ -30,7 +30,7 @@ import (
 	"strings"
 	"testing"
 
-	"github.com/nick/gopi/internal/removalaudit"
+	"github.com/nickhuang99/gopi/internal/removalaudit"
 )
 
 // zzRedProofTipMarker is the sentence's load-bearing phrase, spelled as a

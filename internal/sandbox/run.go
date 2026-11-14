@@ -31,7 +31,7 @@ import (
 	"strings"
 	"syscall"
 
-	"github.com/nick/gopi/internal/config"
+	"github.com/nickhuang99/gopi/internal/config"
 )
 
 // RunSpec is what to execute inside a sandbox. The zero value is not runnable

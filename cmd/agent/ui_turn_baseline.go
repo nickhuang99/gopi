@@ -29,8 +29,8 @@ import (
 	"os"
 	"strings"
 
-	"github.com/nick/gopi/internal/gopilog"
-	"github.com/nick/gopi/internal/sessionevent"
+	"github.com/nickhuang99/gopi/internal/gopilog"
+	"github.com/nickhuang99/gopi/internal/sessionevent"
 )
 
 // uiSessionIDFor resolves the id of the session this surface is attached to: the

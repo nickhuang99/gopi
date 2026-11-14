@@ -71,9 +71,9 @@ import (
 	"path/filepath"
 	"time"
 
-	"github.com/nick/gopi/internal/agent"
-	"github.com/nick/gopi/internal/scratch"
-	"github.com/nick/gopi/internal/sessionlayout"
+	"github.com/nickhuang99/gopi/internal/agent"
+	"github.com/nickhuang99/gopi/internal/scratch"
+	"github.com/nickhuang99/gopi/internal/sessionlayout"
 )
 
 const (
@@ -225,7 +225,7 @@ func (m *chatExitMark) write() error {
 	}
 	tmp := f.Name()
 	if _, err := f.Write(blob); err != nil {
-		_ = f.Close() //stylegate:ignore the write already failed; this is the teardown of THIS call's own descriptor
+		_ = f.Close()      //stylegate:ignore the write already failed; this is the teardown of THIS call's own descriptor
 		_ = os.Remove(tmp) //stylegate:ignore best-effort removal of THIS call's own temp file
 		return fmt.Errorf("chat exit marker: write %s: %w", tmp, err)
 	}
@@ -233,7 +233,7 @@ func (m *chatExitMark) write() error {
 	// process is gone, possibly after a power loss, so a page-cache-only file
 	// would defeat it. One small write, twice per run.
 	if err := f.Sync(); err != nil {
-		_ = f.Close() //stylegate:ignore the write already failed; this is the teardown of THIS call's own descriptor
+		_ = f.Close()      //stylegate:ignore the write already failed; this is the teardown of THIS call's own descriptor
 		_ = os.Remove(tmp) //stylegate:ignore best-effort removal of THIS call's own temp file
 		return fmt.Errorf("chat exit marker: flush %s: %w", tmp, err)
 	}

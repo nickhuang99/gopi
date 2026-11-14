@@ -26,7 +26,7 @@ import (
 	"strings"
 	"testing"
 
-	"github.com/nick/gopi/internal/testutil"
+	"github.com/nickhuang99/gopi/internal/testutil"
 )
 
 // chatOnceTextMockAnswer is what the mock answers IF a line reaches it — a

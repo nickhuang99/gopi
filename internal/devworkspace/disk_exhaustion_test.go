@@ -91,7 +91,7 @@ func TestBlockerDecisiveLines_DiskKindNamesTheRefusal(t *testing.T) {
 		Kind:   BlockerKindDiskExhaustion,
 		Marker: "no space left on device",
 		Words: "go: downloading example.com/x | " +
-			"# github.com/nick/gopi/internal/devworkspace | " +
+			"# github.com/nickhuang99/gopi/internal/devworkspace | " +
 			"link: writing /home/user/workspace/x/a.out: no space left on device | " +
 			"make: *** [Makefile:42: build] Error 1",
 	}

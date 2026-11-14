@@ -32,7 +32,7 @@ import (
 	"strings"
 	"sync"
 
-	"github.com/nick/gopi/internal/deepseek"
+	"github.com/nickhuang99/gopi/internal/deepseek"
 )
 
 // Named constants — Project Rule 1.

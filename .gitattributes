@@ -1,24 +1,16 @@
-# devdoc/DOC-INDEX.tsv is DERIVED, and it is merged by UNION.
+# Attributes for the published tree.
 #
-# The manifest carries one row per file under devdoc/, and its rows are a SET:
-# line order carries no meaning (the file already holds rows appended out of
-# sequence, and the writer splices a new row at the whole-corpus sort position
-# without moving any existing line). Two branches that each add a document
-# therefore never disagree ABOUT the file — they each hold one line the other has
-# not seen — but git's default three-way merge calls that a content conflict
-# (measured 2026-10-19 on a fixture clone: `CONFLICT (content): Merge conflict in
-# devdoc/DOC-INDEX.tsv`). The same fixture with this attribute merged with ZERO
-# conflicted paths and BOTH rows present.
+# Kept deliberately SHORT: the private working tree carried a `merge=union` rule
+# for a generated manifest of devdoc rows, and both the manifest and the tool
+# that produced it are gone from this release, so the rule is gone with them —
+# an attribute naming a file this tree does not carry is a promise nothing keeps.
 #
-# THE ATTRIBUTE IS SPELLED FOR ONE PATH, NOT A PATTERN. Union concatenates
-# conflicting hunks, which is correct exactly where the file is a set of
-# INDEPENDENT lines and catastrophic where two edits touch one function — so
-# nothing else in this tree may inherit it.
-#
-# A UNION MERGE IS CONFLICT-FREE, NOT CONVERGED: the result can carry a
-# duplicated path, and a resolution that kept one side silently parts with the
-# other's line. `gopi tool doccheck` prints how far behind the tree is
-# (`N row(s) behind`, with the per-shape breakdown) and the writer converges it
-# in one idempotent command (`python3 tools/docclass/classify.py <repo>`) — see
-# internal/docindex/docindex_behind.go and devdoc/derived-manifest-merge.md.
-devdoc/DOC-INDEX.tsv merge=union
+# What remains is the line-ending contract: the scripts in this tree are run by
+# shells that fail on a CRLF shebang, and the Go/TSV/Markdown files are read by
+# tools on both sides, so they are pinned to LF on checkout whatever the
+# platform's core.autocrlf says.
+* text=auto eol=lf
+*.go text eol=lf
+*.sh text eol=lf
+*.md text eol=lf
+*.tsv text eol=lf

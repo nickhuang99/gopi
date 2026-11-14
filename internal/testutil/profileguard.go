@@ -36,7 +36,7 @@ import (
 	"path/filepath"
 	"testing"
 
-	"github.com/nick/gopi/internal/scratch"
+	"github.com/nickhuang99/gopi/internal/scratch"
 )
 
 // GopiProfileDirName is the gopi data-root directory name under a HOME

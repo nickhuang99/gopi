@@ -20,8 +20,8 @@ import (
 	"strings"
 	"testing"
 
-	"github.com/nick/gopi/internal/config"
-	"github.com/nick/gopi/internal/toolnames"
+	"github.com/nickhuang99/gopi/internal/config"
+	"github.com/nickhuang99/gopi/internal/toolnames"
 )
 
 // TestChatUnattended_ContextIsCarriedOnlyByADeclaredRun is the presence gate, in

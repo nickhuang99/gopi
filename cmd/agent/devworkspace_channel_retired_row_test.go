@@ -21,8 +21,8 @@ import (
 	"strings"
 	"testing"
 
-	"github.com/nick/gopi/internal/devworkspace"
-	"github.com/nick/gopi/internal/tools"
+	"github.com/nickhuang99/gopi/internal/devworkspace"
+	"github.com/nickhuang99/gopi/internal/tools"
 )
 
 const retiredRowTaskID = "01a18392-0000-7000-8000-00000000e7e1"

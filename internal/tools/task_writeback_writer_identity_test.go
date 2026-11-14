@@ -59,7 +59,7 @@ import (
 	"testing"
 	"time"
 
-	"github.com/nick/gopi/internal/testutil"
+	"github.com/nickhuang99/gopi/internal/testutil"
 )
 
 // twSeedClaimedRow inserts an OPEN row carrying a claim stamp, the way the

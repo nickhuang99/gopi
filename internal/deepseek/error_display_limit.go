@@ -10,7 +10,7 @@ package deepseek
 // the classified length.
 //
 // Why a separate file rather than the top of retry.go: normative devdocs cite
-// lines in retry.go by LINE NUMBER (devdoc/audit-ab3-zpeer-2026-09-04.md names
+// lines in retry.go by LINE NUMBER (devdoc/audit-ab3-peerbox-2026-09-04.md names
 // `internal/deepseek/retry.go:141` and `:186`; 39 such citations exist across
 // the corpus), and an inserted declaration block shifts them off their symbols.
 // A new file adds no line to any existing file, so those citations stay put —

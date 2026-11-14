@@ -10,8 +10,8 @@ import (
 	"testing"
 	"time"
 
-	"github.com/nick/gopi/internal/text2img"
-	"github.com/nick/gopi/internal/toolnames"
+	"github.com/nickhuang99/gopi/internal/text2img"
+	"github.com/nickhuang99/gopi/internal/toolnames"
 )
 
 // ---------------------------------------------------------------------------

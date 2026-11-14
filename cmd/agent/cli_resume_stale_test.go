@@ -24,8 +24,8 @@ import (
 	"testing"
 	"time"
 
-	"github.com/nick/gopi/internal/testutil"
-	"github.com/nick/gopi/internal/tools"
+	"github.com/nickhuang99/gopi/internal/testutil"
+	"github.com/nickhuang99/gopi/internal/tools"
 )
 
 // TestResumePathDoesNotSweep is the inverse of the retired

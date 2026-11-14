@@ -24,7 +24,7 @@ package tools
 import (
 	"testing"
 
-	"github.com/nick/gopi/internal/removalaudit"
+	"github.com/nickhuang99/gopi/internal/removalaudit"
 )
 
 // TestArchiveReclaimBranchDeleteIsAudited is the resident defect's own

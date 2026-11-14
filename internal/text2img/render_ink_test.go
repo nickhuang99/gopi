@@ -14,7 +14,7 @@ import (
 	"strings"
 	"testing"
 
-	"github.com/nick/gopi/internal/scratch"
+	"github.com/nickhuang99/gopi/internal/scratch"
 )
 
 // inkFileExists is a one-line existence probe: the default-output test asserts a

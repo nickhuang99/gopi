@@ -63,7 +63,7 @@ import (
 	"path/filepath"
 	"strings"
 
-	"github.com/nick/gopi/internal/procname"
+	"github.com/nickhuang99/gopi/internal/procname"
 )
 
 // The sentences a self-reap reports. Constants for the usual reason (Rule 1b):

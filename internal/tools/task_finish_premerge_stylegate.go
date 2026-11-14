@@ -58,7 +58,7 @@ import (
 	"os"
 	"path/filepath"
 
-	"github.com/nick/gopi/internal/smoke"
+	"github.com/nickhuang99/gopi/internal/smoke"
 )
 
 const (

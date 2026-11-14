@@ -1,0 +1,57 @@
+<!-- WORKER-OWNERSHIP: OPERATOR-ONLY — devdoc/worker-ownership.md -->
+
+
+=== 2026-09-13T16:03:36+08:00 precondition: start a daemon (idle-exit disabled while the probe runs) ===
+worker daemon started: pid 3230930, log /home/user/scratch/drain-accept/home3/.gopi/logs/worker.log
+worker daemon: alive
+lock file:   /home/user/scratch/drain-accept/home3/.gopi/worker.lock
+
+=== 2026-09-13T16:03:45+08:00 enqueue the long task, wait for the round to be in flight ===
+Task queued: drain-long-6 (status=pending, source=human, tags=—)
+round in flight: {"pid":3230930,"started":"2026-09-13T16:03:42+08:00","rounds":0,"last_round_start":"2026-09-13T16:04:19+08:00","note":"running drain-long-6","version":"dev"}
+
+=== 2026-09-13T16:04:19+08:00 REPEATED --restart #1 (drains + replaces) ===
+
+=== 2026-09-13T16:04:34+08:00 REPEATED --restart #2, 15s into the drain (must be an honest no-op) ===
+
+=== 2026-09-13T16:05:09+08:00 transcript B (the repeated request) ===
+gopi worker: pid 3230930 is already draining (draining since 2026-09-13T16:04:20+08:00) — nothing to do
+gopi worker: current state — pid 3230930, started 2026-09-13T16:03:42+08:00, rounds 0, binary dev, draining since 2026-09-13T16:04:20+08:00, IN-FLIGHT round (started 2026-09-13T16:04:19+08:00), note: stop request file /home/user/scratch/drain-accept/home3/.gopi/worker/TERM_3230930
+[gopi] signal provenance NOT FILED (no public-dir fallback): signalrec: session dir "/home/user/scratch/drain-accept/home3/.gopi/sessions/01a097bb-c937-7c3e-be68-4145388f68ae" for task 01a097bb-c937-7c3e-be68-4145388f68ae is missing or unusable — refusing to write (no public-dir fallback)
+{"ts":"2026-09-13T16:04:54+08:00","kind":"signal","signal":"SIGTERM","pid":3232191,"ppid":3232190,"pgid":3232190,"sid":3230894,"cgroup":"0::/user.slice/user-1000.slice/session-18200.scope","role":"worker","argv":"/home/user/scratch/drain-accept/gopi-drain worker --restart --wait 10m","agent_anchor":"3165903","cwd":"/home/user/scratch/drain-accept/repo3","session":"7656ad9a-e189-4670-8379-d1789c9131cd","task_run":"01a097bb-c937-7c3e-be68-4145388f68ae","parent_pid":3232190,"parent_name":"timeout","parent_argv":"timeout 20 /home/user/scratch/drain-accept/gopi-drain worker --restart --wait 10m"}
+gopi worker: still working — pid 3230930, started 2026-09-13T16:03:42+08:00, rounds 0, binary dev, draining since 2026-09-13T16:04:20+08:00, IN-FLIGHT round (started 2026-09-13T16:04:19+08:00), note: stop request file /home/user/scratch/drain-accept/home3/.gopi/worker/TERM_3230930
+gopi worker: a graceful stop never interrupts a round; to interrupt it, run `gopi worker --stop --force`
+gopi worker: pid 3230930 exited 34.045s after the graceful stop request
+gopi worker: WARNING: could not leave the login session scope (Failed to connect to bus: No such file or directory; in-process escape: cgroup scope escape unavailable: read /sys/fs/cgroup/user.slice/user-1000.slice/user@1000.service: open /sys/fs/cgroup/user.slice/user-1000.slice/user@1000.service: is a directory); starting with setsid only — this daemon WILL die when the session scope is torn down
+gopi worker: starting a detached worker daemon (idle wait 30s between rounds, self-exits after 3 idle round(s))
+gopi worker: cgroup escape: setsid-only (Failed to connect to bus: No such file or directory; in-process escape: cgroup scope escape unavailable: read /sys/fs/cgroup/user.slice/user-1000.slice/user@1000.service: open /sys/fs/cgroup/user.slice/user-1000.slice/user@1000.service: is a directory)
+worker daemon started: pid 3233787, log /home/user/scratch/drain-accept/home3/.gopi/logs/worker.log
+gopi worker: new daemon pid 3233787, binary dev (replaced pid 3230930, binary dev)
+B exit=124
+
+=== 2026-09-13T16:05:09+08:00 transcript A ===
+gopi worker: asking pid 3230930 to finish the in-flight round and exit (SIGTERM, bound 10m0s)
+gopi worker: current state — pid 3230930, started 2026-09-13T16:03:42+08:00, rounds 0, binary dev, IN-FLIGHT round (started 2026-09-13T16:04:19+08:00), note: running drain-long-6
+gopi worker: could not record kill intent for pid 3230930: signalrec: session dir "/home/user/scratch/drain-accept/home3/.gopi/sessions/01a097bb-c937-7c3e-be68-4145388f68ae" for task 01a097bb-c937-7c3e-be68-4145388f68ae is missing or unusable — refusing to write (no public-dir fallback)
+gopi worker: still working — pid 3230930, started 2026-09-13T16:03:42+08:00, rounds 0, binary dev, draining since 2026-09-13T16:04:20+08:00, IN-FLIGHT round (started 2026-09-13T16:04:19+08:00), note: stop request file /home/user/scratch/drain-accept/home3/.gopi/worker/TERM_3230930
+gopi worker: a graceful stop never interrupts a round; to interrupt it, run `gopi worker --stop --force`
+gopi worker: pid 3230930 exited 49.062s after the graceful stop request
+gopi worker: a concurrent restart already started the replacement (pid 3233787, binary dev) — this start was refused by the single-instance lock, and the restart end state holds; not starting a second
+gopi worker: new daemon pid 3233787, binary dev (replaced pid 3230930, binary dev)
+A exit=0
+
+=== 2026-09-13T16:05:09+08:00 VERDICT: exactly ONE daemon, state files = 1 ===
+worker daemon: alive
+lock file:   /home/user/scratch/drain-accept/home3/.gopi/worker.lock
+lock holder: pid 3233787
+state:       pid 3233787, started 2026-09-13T16:05:09+08:00, rounds 0, binary dev, idle since 2026-09-13T16:05:09+08:00, note: queue drained
+log:         /home/user/scratch/drain-accept/home3/.gopi/logs/worker.log
+note:        a FOREGROUND `gopi worker` holds no lock and is not reported here (run one in the front to watch it)
+state files: 1
+
+=== 2026-09-13T16:05:09+08:00 task drain-long-6 must be completed (NOT failed by the restart) ===
+status:         completed
+session_id:     c42acc61-d7a8-41ce-a1b5-4ff5d6edfefb
+result:         gopi run completed — run: elapsed=48s — task-report: /home/user/scratch/drain-accept/home3/.gopi/sessions/drain-long-6/task-report.md (1140 bytes)
+SCRIPT_EXIT=0
+SCRIPT_EXIT=0

@@ -6,7 +6,7 @@ import (
 	"strings"
 	"testing"
 
-	"github.com/nick/gopi/internal/scratch"
+	"github.com/nickhuang99/gopi/internal/scratch"
 )
 
 // TestGate8ScratchEnvHomeRedProof is the red proof the acceptance criteria
@@ -56,7 +56,7 @@ func TestGate8ScratchEnvHomeRedProof(t *testing.T) {
 	// COMPLIANT 1 — a reference to the constant (what every consumer must do).
 	referencing := `package p
 
-import "github.com/nick/gopi/internal/scratch"
+import "github.com/nickhuang99/gopi/internal/scratch"
 
 func f() string { return scratch.MemoryBaseEnvName }
 `
@@ -70,7 +70,7 @@ func f() string { return scratch.MemoryBaseEnvName }
 	// internal/testutil.
 	aliasing := `package p
 
-import "github.com/nick/gopi/internal/scratch"
+import "github.com/nickhuang99/gopi/internal/scratch"
 
 const MemoryBaseEnvName = scratch.MemoryBaseEnvName
 `
@@ -121,7 +121,7 @@ func TestGate8ScratchEnvHomeInjectionRedProof(t *testing.T) {
 			t.Fatal(err)
 		}
 	}
-	cleanSrc := "package clean\n\nimport \"github.com/nick/gopi/internal/scratch\"\n\nconst n = scratch.MemoryBaseEnvName\n"
+	cleanSrc := "package clean\n\nimport \"github.com/nickhuang99/gopi/internal/scratch\"\n\nconst n = scratch.MemoryBaseEnvName\n"
 	if err := os.WriteFile(filepath.Join(cleanDir, "clean.go"), []byte(cleanSrc), 0o644); err != nil {
 		t.Fatal(err)
 	}

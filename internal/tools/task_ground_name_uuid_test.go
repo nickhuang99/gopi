@@ -36,9 +36,9 @@ import (
 	"strings"
 	"testing"
 
-	"github.com/nick/gopi/internal/fullid"
-	"github.com/nick/gopi/internal/testutil"
-	"github.com/nick/gopi/internal/worktreeroots"
+	"github.com/nickhuang99/gopi/internal/fullid"
+	"github.com/nickhuang99/gopi/internal/testutil"
+	"github.com/nickhuang99/gopi/internal/worktreeroots"
 )
 
 // The two REAL rows whose 8-character prefixes collide. Kept verbatim (not

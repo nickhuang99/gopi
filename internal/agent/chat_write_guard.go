@@ -35,8 +35,8 @@ package agent
 //     quoted argument naming `git add` reads as prose.
 
 import (
-	"github.com/nick/gopi/internal/toolnames"
-	"github.com/nick/gopi/internal/tools"
+	"github.com/nickhuang99/gopi/internal/toolnames"
+	"github.com/nickhuang99/gopi/internal/tools"
 )
 
 // chatToolWriteGuard returns the refusal for a chat turn's tool call, or "" when

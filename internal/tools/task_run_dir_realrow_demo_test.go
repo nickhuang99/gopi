@@ -19,7 +19,7 @@ import (
 	"testing"
 	"time"
 
-	"github.com/nick/gopi/internal/config"
+	"github.com/nickhuang99/gopi/internal/config"
 )
 
 // demoRealRowTaskIDEnv names the ledger row to demo on, so the test is not

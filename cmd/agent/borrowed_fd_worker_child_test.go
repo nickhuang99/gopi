@@ -22,8 +22,8 @@ import (
 	"strings"
 	"testing"
 
-	"github.com/nick/gopi/internal/borrowedfd"
-	"github.com/nick/gopi/internal/heavytest"
+	"github.com/nickhuang99/gopi/internal/borrowedfd"
+	"github.com/nickhuang99/gopi/internal/heavytest"
 )
 
 const (

@@ -24,7 +24,7 @@ import (
 	"os"
 	"strings"
 
-	"github.com/nick/gopi/internal/cliverbs"
+	"github.com/nickhuang99/gopi/internal/cliverbs"
 )
 
 // The states one channel's answer can take. They are named constants rather

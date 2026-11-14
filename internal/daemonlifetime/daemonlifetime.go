@@ -45,7 +45,7 @@ import (
 	"sync"
 	"syscall"
 
-	"github.com/nick/gopi/internal/borrowedfd"
+	"github.com/nickhuang99/gopi/internal/borrowedfd"
 )
 
 const (

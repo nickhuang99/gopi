@@ -36,8 +36,8 @@ import (
 	"time"
 	"unicode/utf8"
 
-	"github.com/nick/gopi/internal/agent"
-	"github.com/nick/gopi/internal/devworkspace"
+	"github.com/nickhuang99/gopi/internal/agent"
+	"github.com/nickhuang99/gopi/internal/devworkspace"
 )
 
 // emptyBehindBlockerDir is the workspace path these arms render with. It is the

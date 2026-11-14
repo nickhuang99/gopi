@@ -7,7 +7,7 @@ import (
 	"sort"
 	"strings"
 
-	"github.com/nick/gopi/internal/scratch"
+	"github.com/nickhuang99/gopi/internal/scratch"
 )
 
 // cli_scratch_gc_profile.go — the OPERATOR-FACING half of the PROFILE-ROOT arm:

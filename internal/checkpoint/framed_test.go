@@ -16,7 +16,7 @@ import (
 	"path/filepath"
 	"testing"
 
-	"github.com/nick/gopi/internal/rawlogfmt"
+	"github.com/nickhuang99/gopi/internal/rawlogfmt"
 )
 
 // framedRec is one record of the fixture session.

@@ -49,7 +49,7 @@ const (
 	// under the scratch queue (`budget_subdir`).
 	budgetConcurrentBudgetSubdir = "test-budget"
 	// budgetConcurrentModuleFallback is used only if go.mod cannot be read.
-	budgetConcurrentModuleFallback = "github.com/nick/gopi"
+	budgetConcurrentModuleFallback = "github.com/nickhuang99/gopi"
 	// budgetConcurrentRawJSONLabel is the summary line naming the stream a run
 	// rendered its numbers from.
 	budgetConcurrentRawJSONLabel = "raw json: "

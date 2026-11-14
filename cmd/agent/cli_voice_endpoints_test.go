@@ -24,9 +24,9 @@ import (
 	"strings"
 	"testing"
 
-	"github.com/nick/gopi/internal/config"
-	"github.com/nick/gopi/internal/doubaoasr"
-	"github.com/nick/gopi/internal/doubaostream"
+	"github.com/nickhuang99/gopi/internal/config"
+	"github.com/nickhuang99/gopi/internal/doubaoasr"
+	"github.com/nickhuang99/gopi/internal/doubaostream"
 )
 
 // writeSettingsJSON writes a settings document into a temp dir and points the

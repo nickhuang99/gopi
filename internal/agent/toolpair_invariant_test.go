@@ -9,8 +9,8 @@ import (
 	"strings"
 	"testing"
 
-	"github.com/nick/gopi/internal/deepseek"
-	"github.com/nick/gopi/internal/toolnames"
+	"github.com/nickhuang99/gopi/internal/deepseek"
+	"github.com/nickhuang99/gopi/internal/toolnames"
 )
 
 // This file proves the Claude Messages tool_use/tool_result pairing invariant

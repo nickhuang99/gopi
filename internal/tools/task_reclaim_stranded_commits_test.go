@@ -57,7 +57,7 @@ import (
 	"strings"
 	"testing"
 
-	"github.com/nick/gopi/internal/devworkspace"
+	"github.com/nickhuang99/gopi/internal/devworkspace"
 )
 
 // reclaimStrandedEvents returns the `reclaim-stranded-commits` trail entries
@@ -174,7 +174,7 @@ func TestReclaimStrandedCommitsAreNamedOnTheRow(t *testing.T) {
 		plural(1),                    // the measured count
 		stranded,                     // the commit id itself
 		refsRemotesPrefix + deliveryProofOriginRemote, // the delivery point it was measured against
-		"the ground is KEPT",                         // the disposition: nothing will be removed
+		"the ground is KEPT",                          // the disposition: nothing will be removed
 	} {
 		if !strings.Contains(body, want) {
 			t.Errorf("the record must name %q — a record a reader cannot act on is a tombstone:\n%s",

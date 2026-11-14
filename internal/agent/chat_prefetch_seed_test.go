@@ -21,8 +21,8 @@ import (
 	"sync"
 	"testing"
 
-	"github.com/nick/gopi/internal/deepseek"
-	"github.com/nick/gopi/internal/toolnames"
+	"github.com/nickhuang99/gopi/internal/deepseek"
+	"github.com/nickhuang99/gopi/internal/toolnames"
 )
 
 // seedMarkerText is the needle every assertion looks for: a distinctive string

@@ -42,7 +42,7 @@ import (
 	"strings"
 	"testing"
 
-	"github.com/nick/gopi/internal/worktreeroots"
+	"github.com/nickhuang99/gopi/internal/worktreeroots"
 )
 
 const (
@@ -506,9 +506,9 @@ const testutilPackageDir = "internal/testutil"
 // `package foo_test`, so a directory carrying two TestMain functions does not
 // compile at all —
 //
-//	# github.com/nick/gopi/internal/daemoncwd
+//	# github.com/nickhuang99/gopi/internal/daemoncwd
 //	multiple definitions of TestMain
-//	FAIL	github.com/nick/gopi/internal/daemoncwd [setup failed]
+//	FAIL	github.com/nickhuang99/gopi/internal/daemoncwd [setup failed]
 //
 // and `go build ./...` stays GREEN while it does, because test files are not
 // part of it. That is what made the real defect (2026-09-15) survive a merge

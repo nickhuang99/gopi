@@ -37,7 +37,7 @@ import (
 	"strings"
 	"time"
 
-	"github.com/nick/gopi/internal/sessionevent"
+	"github.com/nickhuang99/gopi/internal/sessionevent"
 )
 
 // webIdentityPath is the read-only identity endpoint. Named (Rule 1b) because

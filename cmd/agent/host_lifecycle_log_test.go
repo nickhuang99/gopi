@@ -21,7 +21,7 @@ package main
 import (
 	"context"
 	"fmt"
-	"github.com/nick/gopi/internal/heavytest"
+	"github.com/nickhuang99/gopi/internal/heavytest"
 	"os"
 	"os/exec"
 	"path/filepath"
@@ -31,8 +31,8 @@ import (
 	"testing"
 	"time"
 
-	"github.com/nick/gopi/internal/config"
-	"github.com/nick/gopi/internal/procname"
+	"github.com/nickhuang99/gopi/internal/config"
+	"github.com/nickhuang99/gopi/internal/procname"
 )
 
 // The E2E's budgets and probes (Rule 1: named constants, one place to change).

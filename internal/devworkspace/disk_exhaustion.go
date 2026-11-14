@@ -37,7 +37,7 @@ import (
 	"regexp"
 	"strings"
 
-	"github.com/nick/gopi/internal/scratch"
+	"github.com/nickhuang99/gopi/internal/scratch"
 )
 
 // diskExhaustionDiagnosticShape is scratch's diagnostic shape compiled once

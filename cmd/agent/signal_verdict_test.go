@@ -16,7 +16,7 @@ import (
 	"strings"
 	"testing"
 
-	"github.com/nick/gopi/internal/signalrec"
+	"github.com/nickhuang99/gopi/internal/signalrec"
 )
 
 // stopVerdictTestTaskID is a ledger-shaped id for the fixture. It is the id from

@@ -7,8 +7,8 @@ import (
 	"strconv"
 	"strings"
 
-	"github.com/nick/gopi/internal/sessionevent"
-	"github.com/nick/gopi/internal/tools"
+	"github.com/nickhuang99/gopi/internal/sessionevent"
+	"github.com/nickhuang99/gopi/internal/tools"
 )
 
 // memoryUsage is the help text for the `gopi memory` group. It is printed

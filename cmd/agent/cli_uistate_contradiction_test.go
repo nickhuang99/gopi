@@ -31,7 +31,7 @@ import (
 	"strings"
 	"testing"
 
-	"github.com/nick/gopi/internal/uiclient"
+	"github.com/nickhuang99/gopi/internal/uiclient"
 )
 
 // contradictionLine is the subject line for these cases. The report's own line was 95

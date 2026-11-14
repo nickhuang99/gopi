@@ -57,8 +57,8 @@ import (
 	"fmt"
 	"strings"
 
-	"github.com/nick/gopi/internal/toolnames"
-	"github.com/nick/gopi/internal/tools"
+	"github.com/nickhuang99/gopi/internal/toolnames"
+	"github.com/nickhuang99/gopi/internal/tools"
 )
 
 // The chain note's wording (Rule 1: the strings that carry meaning are named).

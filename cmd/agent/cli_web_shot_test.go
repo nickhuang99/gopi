@@ -26,7 +26,7 @@ import (
 	"sync/atomic"
 	"testing"
 
-	"github.com/nick/gopi/internal/shot"
+	"github.com/nickhuang99/gopi/internal/shot"
 )
 
 // webShotTestPNG is a minimal byte string standing in for the capture: the

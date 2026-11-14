@@ -26,7 +26,7 @@ package tools
 // gitargv.GitHead exactly (the assignment-word and leading-`-` skips are the same
 // two steps). This function only substitutes the table.
 
-import "github.com/nick/gopi/internal/gitargv"
+import "github.com/nickhuang99/gopi/internal/gitargv"
 
 // gitCommandHeadIdx reports the index of the `git` command word in words when
 // every word before it is a wrapper from wrappers, one of the wrapper's own

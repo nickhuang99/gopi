@@ -50,7 +50,7 @@ import (
 	"fmt"
 	"os"
 
-	"github.com/nick/gopi/internal/cgroupscope"
+	"github.com/nickhuang99/gopi/internal/cgroupscope"
 )
 
 // isWorkerFaceArgv is the ONE predicate for which argv the worker-face notices

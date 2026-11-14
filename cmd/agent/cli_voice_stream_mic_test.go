@@ -27,13 +27,13 @@ package main
 //	  cli_voice_stream_mic.go:170:54: undefined: voiceFirstTextBudgetMS
 //	  cli_voice_stream_mic.go:282:18: feed.sendFailure undefined (type *voiceLiveFeeder has no field or method sendFailure)
 //	  cli_voice_stream_mic_test.go:120:10: undefined: voiceFirstTextReport
-//	  FAIL github.com/nick/gopi/cmd/agent [build failed]
+//	  FAIL github.com/nickhuang99/gopi/cmd/agent [build failed]
 //
 //	b0bd44d34 (the prerequisite IS in it, this routing is not — the honest
 //	"pre-change tree" for the routing, and still a build failure):
 //	  cli_voice_stream_mic_test.go:123:28: undefined: voiceFirstTextWindowTermLabel
 //	  cli_voice_stream_mic_test.go:126:29: undefined: voiceFirstTextEngineTermLabel
-//	  FAIL github.com/nick/gopi/cmd/agent [build failed]
+//	  FAIL github.com/nickhuang99/gopi/cmd/agent [build failed]
 //
 //	controlled revert — this file present and compiling, the dispatch in
 //	voiceCaptureTakesLiveStream answering false the way the old code behaved:
@@ -57,7 +57,7 @@ import (
 	"strings"
 	"testing"
 
-	"github.com/nick/gopi/internal/config"
+	"github.com/nickhuang99/gopi/internal/config"
 )
 
 // micStreamOptions is the bare capture's options as the parser builds them: no
@@ -125,7 +125,7 @@ func TestBareCaptureStreamingTakesTheLiveStream(t *testing.T) {
 // dropped the term would pass the first half and fail the second.
 func TestMicStreamSplitCarriesNoCaptureWindowTerm(t *testing.T) {
 	opts := micStreamOptions(config.AudioEngineStreaming)
-	// The figures a live run observed on sager's microphone: the first partial
+	// The figures a live run observed on hosta's microphone: the first partial
 	// 2.2s after the tool started, of which the channel's own latency was 600ms and
 	// the rest was this process's startup and the channel handshake — and NOTHING
 	// is a recording, so WindowMS is left at its zero value exactly as

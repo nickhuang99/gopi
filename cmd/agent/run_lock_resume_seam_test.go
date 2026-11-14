@@ -26,9 +26,9 @@ import (
 	"testing"
 	"time"
 
-	"github.com/nick/gopi/internal/config"
-	"github.com/nick/gopi/internal/runlock"
-	"github.com/nick/gopi/internal/scratch"
+	"github.com/nickhuang99/gopi/internal/config"
+	"github.com/nickhuang99/gopi/internal/runlock"
+	"github.com/nickhuang99/gopi/internal/scratch"
 )
 
 // resumeSeamRunID is the run directory this file's fixtures live in. It is a

@@ -8,7 +8,7 @@ package tools
 // WHY THIS EXISTS (measured 2026-10-08, master 087f506df, task 01a117c9-1111).
 // A probe running inside a private sandbox (Rule 34) ran
 //
-//	GOPI_HOME=$SB GOPI_SYNC_PEERS=zpeer gopi task sync --peer zpeer --next-eligible <id>
+//	GOPI_HOME=$SB GOPI_SYNC_PEERS=peerbox gopi task sync --peer peerbox --next-eligible <id>
 //
 // and FOUR fixture rows landed in the OPERATOR's real `~/.gopi/memory.db` — two
 // of them were then dispatched as real work. The rows carried the
@@ -17,9 +17,9 @@ package tools
 //
 // The two halves of the mechanism, both measured:
 //
-//	①  the alias names THIS machine. `~/.ssh/config` carries `Host zpeer` →
+//	①  the alias names THIS machine. `~/.ssh/config` carries `Host peerbox` →
 //	   192.168.7.6, and 192.168.7.6 IS this host's own address. So `--peer
-//	   zpeer` is not a remote machine at all: it is an `ssh` to self, and the
+//	   peerbox` is not a remote machine at all: it is an `ssh` to self, and the
 //	   peer-side argv runs HERE.
 //	②  nothing binds the profile. The peer-side argv is prefixed with
 //	   `GOPI_HOME=… PATH=…` ONLY when `--remote-home` is non-empty
@@ -64,7 +64,7 @@ import (
 	"path/filepath"
 	"strings"
 
-	"github.com/nick/gopi/internal/config"
+	"github.com/nickhuang99/gopi/internal/config"
 )
 
 const (
@@ -249,7 +249,7 @@ func selfPeerOperatorHome() string {
 // MATCHING IS LITERAL ON PURPOSE. ssh itself matches patterns and honours
 // `Host *` defaults; reproducing that grammar would be a second ssh
 // implementation whose disagreements with the real client stay invisible until
-// they matter. The configs this leg must read — a `Host zpeer / HostName
+// they matter. The configs this leg must read — a `Host peerbox / HostName
 // 192.168.7.6` self-reference, and ordinary named stanzas — are literal ones,
 // and anything fancier yields "" = unknown, which the caller treats as "not
 // provably local" rather than as a fact.
@@ -303,9 +303,9 @@ func splitSSHConfigLine(line string) (key, value string) {
 //
 //   - the alias IS one of this host's own addresses (written literally in the
 //     config) → local;
-//   - the alias RESOLVES to one of them (`Host zpeer` → 192.168.7.6, this
+//   - the alias RESOLVES to one of them (`Host peerbox` → 192.168.7.6, this
 //     host's own address) → local, and this is the measured case;
-//   - the alias is this host's own NAME (`zpeer` on zpeer) → local — the same
+//   - the alias is this host's own NAME (`peerbox` on peerbox) → local — the same
 //     identity check the claim leg already performs before filtering a peer
 //     equal to the node's own name (claimBroadcastNodeName);
 //   - everything else, including an unmeasurable address set or a name that

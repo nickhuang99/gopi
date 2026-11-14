@@ -43,10 +43,10 @@ import (
 	"syscall"
 	"testing"
 
-	"github.com/nick/gopi/internal/heavytest"
-	"github.com/nick/gopi/internal/sessionevent"
-	"github.com/nick/gopi/internal/signalrec"
-	"github.com/nick/gopi/internal/testutil"
+	"github.com/nickhuang99/gopi/internal/heavytest"
+	"github.com/nickhuang99/gopi/internal/sessionevent"
+	"github.com/nickhuang99/gopi/internal/signalrec"
+	"github.com/nickhuang99/gopi/internal/testutil"
 )
 
 // The argv this guard drives and the stream/ledger facts it asserts. Named

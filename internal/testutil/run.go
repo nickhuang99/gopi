@@ -12,8 +12,8 @@ import (
 	"testing"
 	"time"
 
-	"github.com/nick/gopi/internal/config"
-	"github.com/nick/gopi/internal/worktreeroots"
+	"github.com/nickhuang99/gopi/internal/config"
+	"github.com/nickhuang99/gopi/internal/worktreeroots"
 )
 
 // Subprocess timeouts (Rule 1: named constants, no magic numbers).

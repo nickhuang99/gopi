@@ -57,7 +57,7 @@ package tools
 // tell "a binary was captured here" from "the summary was short". The marker
 // says both what happened and which bytes it was.
 
-import "github.com/nick/gopi/internal/textguard"
+import "github.com/nickhuang99/gopi/internal/textguard"
 
 const (
 	// taskSummaryMaxRunes is the ledger-side ceiling on a summary: the STORE

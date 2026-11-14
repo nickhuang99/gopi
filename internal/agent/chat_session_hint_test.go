@@ -34,7 +34,7 @@ import (
 	"strings"
 	"testing"
 
-	"github.com/nick/gopi/internal/cliverbs"
+	"github.com/nickhuang99/gopi/internal/cliverbs"
 )
 
 // chatHintRunUUID is the fixed run uuid of the wire-log arm, so a failure message

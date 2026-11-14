@@ -43,8 +43,8 @@ import (
 	"strings"
 	"testing"
 
-	"github.com/nick/gopi/internal/cliindex"
-	"github.com/nick/gopi/internal/testutil"
+	"github.com/nickhuang99/gopi/internal/cliindex"
+	"github.com/nickhuang99/gopi/internal/testutil"
 )
 
 const (

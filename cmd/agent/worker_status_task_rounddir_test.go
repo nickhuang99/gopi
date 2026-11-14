@@ -34,8 +34,8 @@ import (
 	"strings"
 	"testing"
 
-	"github.com/nick/gopi/internal/config"
-	"github.com/nick/gopi/internal/procname"
+	"github.com/nickhuang99/gopi/internal/config"
+	"github.com/nickhuang99/gopi/internal/procname"
 )
 
 // wstRoundCwd plants /proc/<pid>/cwd for a fixture pid: a REAL symlink, so the

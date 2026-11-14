@@ -20,9 +20,9 @@ import (
 	"testing"
 	"time"
 
-	"github.com/nick/gopi/internal/heavytest"
-	"github.com/nick/gopi/internal/procname"
-	"github.com/nick/gopi/internal/scratch"
+	"github.com/nickhuang99/gopi/internal/heavytest"
+	"github.com/nickhuang99/gopi/internal/procname"
+	"github.com/nickhuang99/gopi/internal/scratch"
 )
 
 // TestMain is this package's OWN entry point: it pins the scratch root the

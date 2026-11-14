@@ -34,7 +34,7 @@ import (
 	"strings"
 	"testing"
 
-	"github.com/nick/gopi/internal/gifgen"
+	"github.com/nickhuang99/gopi/internal/gifgen"
 )
 
 // TestChatParseWechatArg pins the bare switch and its one refusal: a value the

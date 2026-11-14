@@ -30,7 +30,7 @@ import (
 	"os"
 	"time"
 
-	"github.com/nick/gopi/internal/sessionevent"
+	"github.com/nickhuang99/gopi/internal/sessionevent"
 )
 
 // The two event names this scan looks for. They reference the OWNER's

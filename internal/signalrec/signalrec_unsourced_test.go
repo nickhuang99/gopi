@@ -10,7 +10,7 @@ package signalrec
 //	(a) wrote a KindSignal record with NO statement about who sent it, and
 //	(b) printed the word "draining" on the operator's console,
 //
-// so a reader could not tell the two apart. Measured on zpeer: at
+// so a reader could not tell the two apart. Measured on peerbox: at
 // 2026-09-16T22:23:13-14, EIGHT gopi processes (three worker daemons, their
 // three run children, the merger daemon and the web server) took SIGTERM inside
 // one second while the tree held ZERO kind=intent records — a mass kill nobody

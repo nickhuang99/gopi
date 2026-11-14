@@ -5,7 +5,7 @@ import (
 	"strings"
 	"testing"
 
-	"github.com/nick/gopi/internal/testutil"
+	"github.com/nickhuang99/gopi/internal/testutil"
 )
 
 // Parent-task dependency GATE (D5): parent_task_id stops being a lineage
@@ -425,7 +425,7 @@ func TestParentGateListingAgreesWithFunnel(t *testing.T) {
 // Before this, `cancelled` was the only terminal status such a row could
 // carry, and `cancelled` parks by design — so the child waited on a
 // dependency that was in fact satisfied, forever, with the queue looking
-// clean. Measured on zpeer's live ledger: 1 such pending child.
+// clean. Measured on peerbox's live ledger: 1 such pending child.
 func TestParentGateSupersededParentReleasesChild(t *testing.T) {
 	parentGateDB(t)
 

@@ -30,8 +30,8 @@ package replaydrive
 import (
 	"testing"
 
-	"github.com/nick/gopi/internal/inputsource"
-	"github.com/nick/gopi/internal/sessionevent"
+	"github.com/nickhuang99/gopi/internal/inputsource"
+	"github.com/nickhuang99/gopi/internal/sessionevent"
 )
 
 // notifyCarrier is the sentence `gopi notify --session … --message …` writes into

@@ -5,7 +5,7 @@ import (
 	"context"
 	"testing"
 
-	"github.com/nick/gopi/internal/testutil"
+	"github.com/nickhuang99/gopi/internal/testutil"
 )
 
 // kwTailAnswer builds the exact answer shape memoryStoreRow produced before

@@ -22,7 +22,7 @@ import (
 	"strings"
 	"testing"
 
-	"github.com/nick/gopi/internal/lineedit"
+	"github.com/nickhuang99/gopi/internal/lineedit"
 )
 
 // TestChatReplayInstallTurnsTheMarkerKeyRowOff pins the ONE act that removes the

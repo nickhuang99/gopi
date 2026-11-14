@@ -6,7 +6,7 @@ package shot
 // WHY THIS EXISTS. Filming a terminal used to be a shell pipeline whose display
 // logic lived in scripts/replay/display.sh, and its failure path was a GUESS
 // written as a conclusion ("no free X display in :62..:73 — a leaked server is
-// holding them"). Three defects were measured in that one sentence (zpeer
+// holding them"). Three defects were measured in that one sentence (peerbox
 // 2026-10-02): the range was the AUTHOR'S MACHINE written as a constant (this
 // host held servers at :0 :1 :62 :85 :97 :240); Xvfb's OWN diagnostic for every
 // attempt was already on disk at <scratch>/xvfb-<n>.log and was never read, so
@@ -47,7 +47,7 @@ import (
 	"syscall"
 	"time"
 
-	"github.com/nick/gopi/internal/procname"
+	"github.com/nickhuang99/gopi/internal/procname"
 )
 
 // The search shape and the probe cadence. Every one of these is a NAMED

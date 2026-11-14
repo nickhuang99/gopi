@@ -28,8 +28,8 @@ import (
 	"strings"
 	"testing"
 
-	"github.com/nick/gopi/internal/film"
-	"github.com/nick/gopi/internal/lineedit"
+	"github.com/nickhuang99/gopi/internal/film"
+	"github.com/nickhuang99/gopi/internal/lineedit"
 )
 
 // writeGroundFilm writes a one-frame GIF of the given ground with a few gold

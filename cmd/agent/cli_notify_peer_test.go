@@ -32,10 +32,10 @@ import (
 	"testing"
 	"time"
 
-	"github.com/nick/gopi/internal/cliverbs"
-	"github.com/nick/gopi/internal/config"
-	"github.com/nick/gopi/internal/sessionlayout"
-	"github.com/nick/gopi/internal/tools"
+	"github.com/nickhuang99/gopi/internal/cliverbs"
+	"github.com/nickhuang99/gopi/internal/config"
+	"github.com/nickhuang99/gopi/internal/sessionlayout"
+	"github.com/nickhuang99/gopi/internal/tools"
 )
 
 const (
@@ -276,7 +276,7 @@ func TestNotifyPeerCLIIdempotentAndNamedRefusals(t *testing.T) {
 }
 
 // TestNotifyPeerCLIWakesTheFarSessionWithNoInput is the Rule 31 acceptance on
-// the ZBOOK→HP SHAPE, with the second machine stood in for by a second profile
+// the PEERBOX→HP SHAPE, with the second machine stood in for by a second profile
 // and a real process boundary: a live console on the PEER side, sitting at its
 // prompt with an open stdin that carries NO line at all, and one
 // `gopi notify --peer hp --session <that session> --message <text>` on the

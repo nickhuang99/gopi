@@ -8,8 +8,8 @@ import (
 	"strings"
 	"testing"
 
-	"github.com/nick/gopi/internal/agent"
-	"github.com/nick/gopi/internal/devworkspace"
+	"github.com/nickhuang99/gopi/internal/agent"
+	"github.com/nickhuang99/gopi/internal/devworkspace"
 )
 
 // diskBlocker is the blocker a clone-channel run gets on a full filesystem: the

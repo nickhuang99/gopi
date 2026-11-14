@@ -34,7 +34,7 @@ import (
 	"strings"
 	"time"
 
-	"github.com/nick/gopi/internal/scratch"
+	"github.com/nickhuang99/gopi/internal/scratch"
 )
 
 // SyncSessionStats reports one bidirectional peer session.

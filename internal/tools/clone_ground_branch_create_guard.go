@@ -112,8 +112,8 @@ import (
 	"path/filepath"
 	"strings"
 
-	"github.com/nick/gopi/internal/config"
-	"github.com/nick/gopi/internal/toolnames"
+	"github.com/nickhuang99/gopi/internal/config"
+	"github.com/nickhuang99/gopi/internal/toolnames"
 )
 
 // ── THE REF-WRITING VOCABULARY (Rules 1/13/14) ─────────────────────────────

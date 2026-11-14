@@ -57,7 +57,7 @@ import (
 	"strings"
 	"testing"
 
-	"github.com/nick/gopi/internal/deepseek"
+	"github.com/nickhuang99/gopi/internal/deepseek"
 )
 
 // foldLogMeasuredPromptTokens is the API-measured prompt count the fixture pins:

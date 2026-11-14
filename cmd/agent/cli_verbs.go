@@ -1,9 +1,9 @@
 package main
 
 import (
-	"github.com/nick/gopi/internal/cliverbs"
-	"github.com/nick/gopi/internal/taskverbs"
-	"github.com/nick/gopi/internal/tools"
+	"github.com/nickhuang99/gopi/internal/cliverbs"
+	"github.com/nickhuang99/gopi/internal/taskverbs"
+	"github.com/nickhuang99/gopi/internal/tools"
 )
 
 // cliVerbs is the single source of truth for the TOP-LEVEL gopi CLI verb

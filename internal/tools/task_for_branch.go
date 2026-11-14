@@ -40,7 +40,7 @@ import (
 	"sort"
 	"strings"
 
-	"github.com/nick/gopi/internal/config"
+	"github.com/nickhuang99/gopi/internal/config"
 )
 
 // THE RESOLUTION POLICY — WHICH OWNER ROW IS *THE* OWNER (epic

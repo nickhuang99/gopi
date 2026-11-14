@@ -30,7 +30,7 @@ import (
 	"strings"
 	"time"
 
-	"github.com/nick/gopi/internal/scratch"
+	"github.com/nickhuang99/gopi/internal/scratch"
 )
 
 // Reconciliation tunables — Rule 1: every literal in one place.

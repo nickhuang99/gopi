@@ -9,7 +9,7 @@ package tools
 // two worlds is the same sentence: `fatal: '<alias>' does not appear to be a
 // git repository`.
 //
-// MEASURED 2026-10-12 on sager: `sync_peers: ["zpeer"]` while `git remote -v`
+// MEASURED 2026-10-12 on hosta: `sync_peers: ["peerbox"]` while `git remote -v`
 // lists only `origin`. The operator-facing report carried git's sentence and
 // nothing else: not the declared peer, not the remotes that DO exist here, and
 // not the fact that the push was refused purely because two NAME SPACES

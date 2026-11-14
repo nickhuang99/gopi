@@ -14,7 +14,7 @@ import (
 	"syscall"
 	"testing"
 
-	"github.com/nick/gopi/internal/testutil"
+	"github.com/nickhuang99/gopi/internal/testutil"
 )
 
 // taskCompleteAnswer is the mock's final answer for a task run: a completed

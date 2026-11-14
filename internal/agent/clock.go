@@ -4,7 +4,7 @@ import (
 	"fmt"
 	"time"
 
-	"github.com/nick/gopi/internal/deepseek"
+	"github.com/nickhuang99/gopi/internal/deepseek"
 )
 
 // SessionClock is a cheap monotonic session clock (CLOCK-TICK design, nick

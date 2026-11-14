@@ -37,8 +37,8 @@ import (
 	"strings"
 	"testing"
 
-	"github.com/nick/gopi/internal/config"
-	"github.com/nick/gopi/internal/devworkspace"
+	"github.com/nickhuang99/gopi/internal/config"
+	"github.com/nickhuang99/gopi/internal/devworkspace"
 )
 
 // mainCheckoutCloneGroundFixture builds THIS RUN'S CLONE GROUND: a standalone repository

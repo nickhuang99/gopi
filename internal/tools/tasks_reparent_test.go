@@ -7,7 +7,7 @@ import (
 	"testing"
 	"time"
 
-	"github.com/nick/gopi/internal/testutil"
+	"github.com/nickhuang99/gopi/internal/testutil"
 )
 
 // TaskReparent (Rule 33's missing write path: the EDGE becomes movable).

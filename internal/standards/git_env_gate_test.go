@@ -48,7 +48,7 @@ func fixture(root string) {
 import (
 	"os/exec"
 
-	"github.com/nick/gopi/internal/testutil"
+	"github.com/nickhuang99/gopi/internal/testutil"
 )
 
 func fixture(root string) {

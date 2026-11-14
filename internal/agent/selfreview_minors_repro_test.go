@@ -24,7 +24,7 @@ import (
 	"strings"
 	"testing"
 
-	"github.com/nick/gopi/internal/deepseek"
+	"github.com/nickhuang99/gopi/internal/deepseek"
 )
 
 // claudeTextPlusToolStream writes a Claude SSE stream carrying BOTH a text

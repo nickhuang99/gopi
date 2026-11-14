@@ -37,7 +37,7 @@ import (
 	"strings"
 	"testing"
 
-	"github.com/nick/gopi/internal/sessionlayout"
+	"github.com/nickhuang99/gopi/internal/sessionlayout"
 )
 
 // The fixture's seed names, one per family the sibling registries claim. They

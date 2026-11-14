@@ -27,8 +27,8 @@ import (
 	"strings"
 	"testing"
 
-	"github.com/nick/gopi/internal/config"
-	"github.com/nick/gopi/internal/uiclient"
+	"github.com/nickhuang99/gopi/internal/config"
+	"github.com/nickhuang99/gopi/internal/uiclient"
 )
 
 // TestChatDumpArming_MakesTheCheckRunAndUnarmedDoesNot is the RED-then-GREEN proof

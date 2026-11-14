@@ -1,0 +1,64 @@
+### CMD1: grep -rn 'os.Chdir|worktreerelease\.|ProcessRootPath' --include=*.go cmd internal (production only)
+cmd/agent/cli_resume.go:433:		worktreerelease.ReleaseReporting(os.Stderr, resumeProgName)
+cmd/agent/cli_resume.go:443:	worktreerelease.ReleaseReporting(os.Stderr, resumeProgName)
+cmd/agent/cli_resume.go:475:	if err := os.Chdir(wtx); err != nil {
+cmd/agent/cli_tasks_worker.go:165:	worktreerelease.ReleaseReporting(workerRoundOut(), workerProgTopLevel)
+cmd/agent/merge_resolve_child.go:142:		worktreerelease.ReleaseReporting(os.Stderr, mergerResolveProg)
+cmd/agent/merger_verify_child.go:563:		worktreerelease.ReleaseReporting(os.Stderr, mergerVerifyProg)
+cmd/agent/task_session_cwd.go:176:	// outcome available here: os.Chdir SUCCEEDS on a deleted directory (the
+cmd/agent/task_session_cwd.go:193:	if err := os.Chdir(origin); err != nil {
+cmd/agent/cli_tasks.go:1858:	worktreerelease.ReleaseReporting(os.Stderr, taskProgName)
+cmd/agent/cli_tasks.go:2384:	worktreerelease.ReleaseReporting(os.Stderr, mergerProgTopLevel)
+cmd/agent/cli_worker_status.go:596:	return tools.ProcessRootPath
+internal/tools/task_reclaim_self.go:66:	// ProcessRootPath is the directory a producer's own close-out re-parents
+internal/tools/task_reclaim_self.go:68:	// ALIAS of worktreerelease.ProcessRootPath — the one definition (Rules
+internal/tools/task_reclaim_self.go:76:	// internal/worktreerelease.Release (that package is importable by
+internal/tools/task_reclaim_self.go:79:	ProcessRootPath = worktreerelease.ProcessRootPath
+internal/tools/worker_output.go:189:	if err := os.Chdir(dir); err != nil {
+internal/agent/taskregister.go:402:	// ONE implementation (GOPI.md Rules 13/14): internal/worktreerelease. The
+internal/agent/taskregister.go:405:	worktreerelease.ReleaseReporting(a.taskLogWriter(), agentProgName)
+internal/agent/loop.go:2771:			worktreerelease.ReleaseReporting(os.Stderr, agentProgName)
+internal/stylegate/stylegate.go:1280:// chdirFuncName is the os.Chdir call the cwd-restore rule watches (Rule 1b:
+internal/stylegate/stylegate.go:1286:// The scanned shape is a STATEMENT-position os.Chdir — `defer os.Chdir(dir)`,
+internal/stylegate/stylegate.go:1287:// `t.Cleanup(func() { os.Chdir(dir) })`, or a bare `os.Chdir(dir)`. All three
+internal/stylegate/stylegate.go:1288:// discard the error: an os.Chdir returns an error, and in statement position
+internal/stylegate/stylegate.go:1291:// Why this site class is worse than an ordinary swallowed error: os.Chdir
+internal/stylegate/stylegate.go:1301://	defer func() { if err := os.Chdir(dir); err != nil { t.Errorf("restore cwd: %v", err) } }()
+internal/stylegate/stylegate.go:1304:// `defer func() { _ = os.Chdir(dir) }()` (the ignore marker at a statement
+internal/stylegate/stylegate.go:1326:		"cwd change with its error discarded (statement-position os.Chdir) — use t.Chdir(dir), which restores the process cwd and fails the test if it cannot; where no *testing.T is in scope, check the error explicitly or discard it visibly with `_ =`",
+internal/stylegate/stylegate.go:1327:		"os.Chdir", "os.Chdir")
+internal/worktreerelease/release.go:18:// is exactly one spelling of the destination (ProcessRootPath) in the tree.
+internal/worktreerelease/release.go:40:// ProcessRootPath is the directory a producer's close-out re-parents its CWD
+internal/worktreerelease/release.go:44:const ProcessRootPath = "/"
+internal/worktreerelease/release.go:46:// Release re-parents THIS process's CWD to ProcessRootPath and returns an
+internal/worktreerelease/release.go:50:// A process that is already standing at ProcessRootPath is a no-op — the
+internal/worktreerelease/release.go:58:	if wd, err := os.Getwd(); err == nil && wd == ProcessRootPath {
+internal/worktreerelease/release.go:61:	if err := os.Chdir(ProcessRootPath); err != nil {
+internal/worktreerelease/release.go:62:		return fmt.Errorf("release cwd to %s: %w", ProcessRootPath, err)
+
+### CMD2: grep -rn 'worktree.*remove|reclaimGitRemove|ReclaimOwnFinishedWorktrees|TaskFinishCleanupSessionID' --include=*.go cmd internal (production only)
+cmd/agent/cli_tasks_worker.go:162:	for _, line := range tools.ReclaimOwnFinishedWorktreesWithin() {
+cmd/agent/merge_resolve_child.go:144:		exec.Command("git", "-C", repo, "worktree", "remove", "--force", wtdir).Run()
+cmd/agent/merger_verify_child.go:564:		_ = exec.Command("git", "-C", repo, "worktree", "remove", "--force", dir).Run()
+cmd/agent/cli_tasks.go:1820:	if rep, err := tools.TaskFinishCleanupSessionID(target); err != nil {
+cmd/agent/cli_tasks.go:1844:	for _, line := range tools.ReclaimOwnFinishedWorktreesWithin() {
+cmd/agent/cli_tasks.go:2883:// serveFinishCleanupSweep runs TaskFinishCleanupSessionID over terminal
+cmd/agent/cli_tasks.go:2943:		rep, err := tools.TaskFinishCleanupSessionID(id)
+cmd/agent/cli_tasks.go:3029:		rep, cerr := tools.TaskFinishCleanupSessionID(row.TaskID)
+internal/tools/worktree_sweep.go:985:					if rerr := reclaimGitRemove(repo, reg.Path); rerr != nil {
+internal/tools/task_reclaim.go:216:		if err := reclaimGitRemove(r.Repo, r.Worktree); err != nil {
+internal/tools/task_reclaim.go:839:// reclaimGitRemove runs the ordinary `git worktree remove` (never --force):
+internal/tools/task_reclaim.go:842:func reclaimGitRemove(repo, worktree string) error {
+internal/tools/task_reclaim_self.go:28:// and the removal is reclaimGitRemove (the ordinary `git worktree remove`,
+internal/tools/task_reclaim_self.go:101:// ReclaimOwnFinishedWorktrees releases the linked worktrees of the rows THIS
+internal/tools/task_reclaim_self.go:111:func ReclaimOwnFinishedWorktrees() []string {
+internal/tools/task_reclaim_self.go:162:	if err := reclaimGitRemove(r.Repo, r.Worktree); err != nil {
+internal/tools/task_reclaim_self.go:305:// ReclaimOwnFinishedWorktreesWithin runs the producer release under a wall
+internal/tools/task_reclaim_self.go:308:func ReclaimOwnFinishedWorktreesWithin() []string {
+internal/tools/task_reclaim_self.go:310:	go func() { done <- ReclaimOwnFinishedWorktrees() }()
+internal/tools/task_sync_git_pushback.go:27:// (TaskFinishCleanupSessionID pushes the JUST-finished task's deliverable
+internal/tools/task_finish_cleanup.go:453:// TaskFinishCleanupSessionID runs the 4-step close-out chain for ONE
+internal/tools/task_finish_cleanup.go:459:func TaskFinishCleanupSessionID(taskID string) (*FinishCleanupReport, error) {
+internal/tools/taskstate.go:71:// per-task worktree is gone — TaskFinishCleanupSessionID recycled it), so
+internal/tools/taskstate.go:101:	// (TaskFinishCleanupSessionID recycled it after a delivered run).
+internal/agent/taskregister.go:386:	if rep, err := tools.TaskFinishCleanupSessionID(taskID); err != nil {

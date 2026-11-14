@@ -13,7 +13,7 @@ import (
 	"strings"
 	"unicode/utf8"
 
-	"github.com/nick/gopi/internal/replay"
+	"github.com/nickhuang99/gopi/internal/replay"
 )
 
 // The five criteria, ported. Each function cites the verify.py line range it came

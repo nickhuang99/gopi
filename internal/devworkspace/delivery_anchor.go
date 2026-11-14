@@ -313,7 +313,7 @@ const (
 	deliveryFileURLScheme = "file://"
 
 	// pathSeparator / currentDirPrefix are what tell "a repository address some
-	// transport serves" (`zpeer:/home/user/work/gopi`, `git@host:repo`) from "a
+	// transport serves" (`peerbox:/home/user/work/gopi`, `git@host:repo`) from "a
 	// directory on this machine" (`/srv/repo`, `./repo`). A file:// address is
 	// built ONLY from the second kind — prefixing an ssh address with file://
 	// would ask the wrong transport and the answer would be a failure that looks
@@ -458,7 +458,7 @@ func deliveryHeadDirGate(ctx context.Context, cfg Config, dir string) error {
 		}
 		return nil
 	}
-	return fmt.Errorf(CloneChannelPrefix + deliveryHeadElsewhereFmt,
+	return fmt.Errorf(CloneChannelPrefix+deliveryHeadElsewhereFmt,
 		dir, head, deliveryTopLevelVerb, deliveryTopLevelFlag, dir, head)
 }
 
@@ -712,7 +712,7 @@ func deliveryBaseTip(ctx context.Context, dir, base, ground string) (tip, integr
 	ground = strings.TrimSpace(ground)
 	base = strings.TrimSpace(base)
 	if base == "" || base == ground {
-		return "", "", fmt.Errorf(CloneChannelPrefix + "the integration base of %s is %q, which cannot be "+
+		return "", "", fmt.Errorf(CloneChannelPrefix+"the integration base of %s is %q, which cannot be "+
 			"measured (a ground branch is never its own base)", dir, base)
 	}
 	ref := deliveryFullRef(base)
@@ -724,7 +724,7 @@ func deliveryBaseTip(ctx context.Context, dir, base, ground string) (tip, integr
 	// spelling with the tip it resolved to.
 	out, err := runCommand(ctx, dir, gitBinary, gateTipVerb, "--verify", "--quiet", base)
 	if err != nil {
-		return "", "", fmt.Errorf(CloneChannelPrefix + "the integration base %s cannot be resolved in %s "+
+		return "", "", fmt.Errorf(CloneChannelPrefix+"the integration base %s cannot be resolved in %s "+
 			"(neither %s nor %q): %w (output: %s)", base, dir, ref, base, err, tail(out))
 	}
 	return strings.TrimSpace(out), base, nil
@@ -814,12 +814,12 @@ func deliveryOutstanding(ctx context.Context, dir, tip, baseTip string) (int, er
 	out, err := runCommand(ctx, dir, gitBinary, deliveryRevListVerb, deliveryCountFlag, tip,
 		deliveryNotFlag, baseTip)
 	if err != nil {
-		return 0, fmt.Errorf(CloneChannelPrefix + "count the commits %s carries against %s in %s: %w (output: %s)",
+		return 0, fmt.Errorf(CloneChannelPrefix+"count the commits %s carries against %s in %s: %w (output: %s)",
 			tip, baseTip, dir, err, tail(out))
 	}
 	n, perr := strconv.Atoi(strings.TrimSpace(out))
 	if perr != nil {
-		return 0, fmt.Errorf(CloneChannelPrefix + "`%s` printed %q, which is not a commit count: %w",
+		return 0, fmt.Errorf(CloneChannelPrefix+"`%s` printed %q, which is not a commit count: %w",
 			deliveryRevListVerb+" "+deliveryCountFlag+" "+tip+" "+deliveryNotFlag+" "+baseTip,
 			strings.TrimSpace(out), perr)
 	}
@@ -901,7 +901,7 @@ func deliveryAnchorGate(ctx context.Context, cfg Config, dir, base string) error
 	if here == "" || there == "" {
 		// Unmeasurable is not a pass: name the side that could not be resolved
 		// instead of publishing from a directory nobody could identify.
-		return fmt.Errorf(CloneChannelPrefix + "cannot decide whether %q is the directory this row's deliverable lives in "+
+		return fmt.Errorf(CloneChannelPrefix+"cannot decide whether %q is the directory this row's deliverable lives in "+
 			"(%q): one side resolves to no path; refusing to publish from %q", dir, recorded, dir)
 	}
 	if here == there {
@@ -919,11 +919,11 @@ func deliveryAnchorGate(ctx context.Context, cfg Config, dir, base string) error
 	}
 	switch {
 	case recAhead > 0 && pubAhead > 0:
-		return fmt.Errorf(CloneChannelPrefix + deliveryAnchorRefusalFmt,
+		return fmt.Errorf(CloneChannelPrefix+deliveryAnchorRefusalFmt,
 			recorded, dir,
 			fmt.Sprintf(deliveryAnchorBothFmt, deliveryOriginPrefix+base, recAhead, pubAhead))
 	case recAhead > 0:
-		return fmt.Errorf(CloneChannelPrefix + deliveryAnchorRefusalFmt,
+		return fmt.Errorf(CloneChannelPrefix+deliveryAnchorRefusalFmt,
 			recorded, dir,
 			fmt.Sprintf("%d commit(s) ahead of %s live there; this directory carries %d",
 				recAhead, deliveryIntegrationFmt, pubAhead))

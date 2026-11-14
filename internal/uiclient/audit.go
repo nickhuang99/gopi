@@ -62,7 +62,7 @@ import (
 	"fmt"
 	"strings"
 
-	"github.com/nick/gopi/internal/lineedit"
+	"github.com/nickhuang99/gopi/internal/lineedit"
 )
 
 // AuditBound is how many transcript lines one audit checks. Unlike --compare's

@@ -8,8 +8,8 @@ import (
 	"testing"
 	"time"
 
-	"github.com/nick/gopi/internal/sgr"
-	"github.com/nick/gopi/internal/testutil"
+	"github.com/nickhuang99/gopi/internal/sgr"
+	"github.com/nickhuang99/gopi/internal/testutil"
 )
 
 // palette_test.go — the acceptance for the colour/emphasis layer.

@@ -12,7 +12,7 @@ import (
 	"strconv"
 	"time"
 
-	"github.com/nick/gopi/internal/config"
+	"github.com/nickhuang99/gopi/internal/config"
 )
 
 // non200BodyProbeMax caps how many bytes of a non-200 response body are read

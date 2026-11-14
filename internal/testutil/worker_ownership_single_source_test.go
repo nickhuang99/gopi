@@ -42,7 +42,7 @@ import (
 	"strings"
 	"testing"
 
-	"github.com/nick/gopi/internal/workerownership"
+	"github.com/nickhuang99/gopi/internal/workerownership"
 )
 
 // adrDefinedOnce asserts that a string value is defined as a constant in

@@ -15,7 +15,7 @@ import (
 	"strings"
 	"testing"
 
-	"github.com/nick/gopi/internal/film"
+	"github.com/nickhuang99/gopi/internal/film"
 )
 
 // THE REAL ARTIFACTS THIS SUITE DRIVES.

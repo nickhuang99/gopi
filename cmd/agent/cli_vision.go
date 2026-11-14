@@ -5,8 +5,8 @@ import (
 	"os"
 	"strings"
 
-	"github.com/nick/gopi/internal/toolnames"
-	"github.com/nick/gopi/internal/tools"
+	"github.com/nickhuang99/gopi/internal/toolnames"
+	"github.com/nickhuang99/gopi/internal/tools"
 )
 
 // visionUsage is the help text for the vision_analyze CLI subcommand. It is

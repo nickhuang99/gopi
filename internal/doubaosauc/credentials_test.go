@@ -18,7 +18,7 @@ import (
 	"strings"
 	"testing"
 
-	"github.com/nick/gopi/internal/doubaostream"
+	"github.com/nickhuang99/gopi/internal/doubaostream"
 )
 
 // secretToken is a stand-in credential whose DISTINCTIVE text makes the

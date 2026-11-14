@@ -16,7 +16,7 @@ package tools
 // standing (its recorded runner (pid N) is still running)" about the asker
 // itself, for every candidate, forever. Measured on the acceptance rig, verbatim:
 //
-//	[own-release] claimed by this worker: zpeer:771230      ← the asker's own stamp
+//	[own-release] claimed by this worker: peerbox:771230      ← the asker's own stamp
 //	own worktree release refused: feat/own-release (rig-own-release-own) — live
 //	  task rig-own-release-own still has a run standing (its recorded runner
 //	  (pid 771230) is still running)
@@ -53,7 +53,7 @@ import (
 	"testing"
 	"time"
 
-	"github.com/nick/gopi/internal/config"
+	"github.com/nickhuang99/gopi/internal/config"
 )
 
 // ownReleaseSelfMatchLedger points the ledger + settings at sandboxed files

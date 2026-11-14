@@ -38,7 +38,7 @@ func countFileWatcherGoroutines() int {
 // suite's own close-out sweep caught and failed the run over (2026-10-13):
 //
 //	suite goroutine sweep: parked repository goroutines: 6
-//	  github.com/nick/gopi/cmd/agent.workerDaemonCtx.installFileWatcher.func1()
+//	  github.com/nickhuang99/gopi/cmd/agent.workerDaemonCtx.installFileWatcher.func1()
 //
 // The watcher used to be ends-only-by-exit — a `for range t.C` loop with no exit
 // path — which is correct for a production worker (the process exits when the

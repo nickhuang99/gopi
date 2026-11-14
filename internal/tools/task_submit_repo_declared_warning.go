@@ -56,7 +56,7 @@ import (
 	"fmt"
 	"strings"
 
-	"github.com/nick/gopi/internal/config"
+	"github.com/nickhuang99/gopi/internal/config"
 )
 
 // TaskSubmitRepoUndeclaredWarningFmt is the ONE spelling of "this repo is not

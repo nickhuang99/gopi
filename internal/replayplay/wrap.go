@@ -45,7 +45,7 @@ package replayplay
 import (
 	"strings"
 
-	"github.com/nick/gopi/internal/lineedit"
+	"github.com/nickhuang99/gopi/internal/lineedit"
 )
 
 // wrapPrefixed lays text out as rows of at most cols CELLS. The first row of

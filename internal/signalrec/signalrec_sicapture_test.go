@@ -44,7 +44,7 @@ import (
 	"syscall"
 	"testing"
 
-	"github.com/nick/gopi/internal/sigsource"
+	"github.com/nickhuang99/gopi/internal/sigsource"
 )
 
 // srCaptureDisarmedEnv makes the fixture victim RELEASE its capture right after

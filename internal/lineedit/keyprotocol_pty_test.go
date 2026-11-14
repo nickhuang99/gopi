@@ -34,7 +34,7 @@ import (
 	"testing"
 	"time"
 
-	"github.com/nick/gopi/internal/sgr"
+	"github.com/nickhuang99/gopi/internal/sgr"
 )
 
 // The bounds the pty cases need. Each is a bound on a scheduling or wire

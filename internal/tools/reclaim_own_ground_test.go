@@ -37,7 +37,7 @@
 package tools
 
 import (
-	"github.com/nick/gopi/internal/scratch"
+	"github.com/nickhuang99/gopi/internal/scratch"
 	"os"
 	"path/filepath"
 	"strconv"
@@ -45,7 +45,7 @@ import (
 	"sync/atomic"
 	"testing"
 
-	"github.com/nick/gopi/internal/worktreeroots"
+	"github.com/nickhuang99/gopi/internal/worktreeroots"
 )
 
 // ownGroundCloseoutRepo holds the claim stamp the close-out pass reads: a row

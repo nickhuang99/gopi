@@ -46,9 +46,9 @@ import (
 	"sync"
 	"time"
 
-	"github.com/nick/gopi/internal/config"
-	"github.com/nick/gopi/internal/doubaostream"
-	"github.com/nick/gopi/internal/lineedit"
+	"github.com/nickhuang99/gopi/internal/config"
+	"github.com/nickhuang99/gopi/internal/doubaostream"
+	"github.com/nickhuang99/gopi/internal/lineedit"
 )
 
 // The command's vocabulary, in ONE const block (Rule 1): the word the switch

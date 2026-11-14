@@ -25,7 +25,7 @@ import (
 	"testing"
 	"time"
 
-	"github.com/nick/gopi/internal/lineedit"
+	"github.com/nickhuang99/gopi/internal/lineedit"
 )
 
 // controlWait bounds a wait for a state change. It is a deadline that turns a hang

@@ -29,8 +29,8 @@ import (
 	"testing"
 	"time"
 
-	"github.com/nick/gopi/internal/testutil"
-	"github.com/nick/gopi/internal/tools"
+	"github.com/nickhuang99/gopi/internal/testutil"
+	"github.com/nickhuang99/gopi/internal/tools"
 )
 
 // statusWordTestDeadPid returns a pid number this host can prove is gone, so

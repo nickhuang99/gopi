@@ -49,7 +49,7 @@ import (
 	"fmt"
 	"strings"
 
-	"github.com/nick/gopi/internal/taskreport"
+	"github.com/nickhuang99/gopi/internal/taskreport"
 )
 
 // TaskSubmitBaseStaleLabel is the warning's leading marker — spelled once,

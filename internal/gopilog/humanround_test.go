@@ -22,7 +22,7 @@ import (
 	"strings"
 	"testing"
 
-	"github.com/nick/gopi/internal/sessionevent"
+	"github.com/nickhuang99/gopi/internal/sessionevent"
 )
 
 // writeHumanRoundFixture writes a log of one human round carrying `calls` tool

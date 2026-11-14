@@ -20,7 +20,7 @@ import (
 	"strings"
 	"testing"
 
-	"github.com/nick/gopi/internal/testutil"
+	"github.com/nickhuang99/gopi/internal/testutil"
 )
 
 // The probe row. The store refuses a body with no distilled content (the
@@ -73,7 +73,7 @@ func TestMemoryStoreReturnSaysNothingAboutSync(t *testing.T) {
 		t.Fatal("MemoryStore returned an empty reply: a store that says nothing cannot be told from one that failed")
 	}
 	lower := strings.ToLower(reply)
-	for _, banned := range []string{"peer", "push", "sync", "zpeer", "hp"} {
+	for _, banned := range []string{"peer", "push", "sync", "peerbox", "hp"} {
 		if strings.Contains(lower, banned) {
 			t.Fatalf("the store reply mentions %q — a store's success is the LOCAL write and nothing else: %q", banned, reply)
 		}

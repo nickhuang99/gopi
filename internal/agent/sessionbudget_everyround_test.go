@@ -37,8 +37,8 @@ import (
 	"testing"
 	"time"
 
-	"github.com/nick/gopi/internal/deepseek"
-	"github.com/nick/gopi/internal/taskverdict"
+	"github.com/nickhuang99/gopi/internal/deepseek"
+	"github.com/nickhuang99/gopi/internal/taskverdict"
 )
 
 // The two numbers a reader checks in the tag, parsed out of the rendered text

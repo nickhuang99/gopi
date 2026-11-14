@@ -23,7 +23,7 @@ import (
 	"fmt"
 	"os"
 
-	"github.com/nick/gopi/internal/sessionevent"
+	"github.com/nickhuang99/gopi/internal/sessionevent"
 )
 
 // geometryHeaderScanRows bounds how many leading JSONL rows this reader will

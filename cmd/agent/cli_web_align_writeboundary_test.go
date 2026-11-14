@@ -28,8 +28,8 @@ import (
 	"path/filepath"
 	"testing"
 
-	"github.com/nick/gopi/internal/chatpolicy"
-	"github.com/nick/gopi/internal/tools"
+	"github.com/nickhuang99/gopi/internal/chatpolicy"
+	"github.com/nickhuang99/gopi/internal/tools"
 )
 
 // TestWebTestToolFixtureFreezesTheChatWriteBoundary is the guard: it goes red if

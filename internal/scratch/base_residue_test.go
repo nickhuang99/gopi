@@ -22,7 +22,7 @@ import (
 	"testing"
 	"time"
 
-	"github.com/nick/gopi/internal/heavytest"
+	"github.com/nickhuang99/gopi/internal/heavytest"
 )
 
 // baseResidueStaleAge is comfortably past the sweep's threshold (the same

@@ -8,9 +8,9 @@ import (
 	"os"
 	"strconv"
 
-	"github.com/nick/gopi/internal/deepseek"
-	"github.com/nick/gopi/internal/thinkmode"
-	"github.com/nick/gopi/internal/tokenizer"
+	"github.com/nickhuang99/gopi/internal/deepseek"
+	"github.com/nickhuang99/gopi/internal/thinkmode"
+	"github.com/nickhuang99/gopi/internal/tokenizer"
 )
 
 // The SEND-TIME token ceiling: the last thing that happens to a request before

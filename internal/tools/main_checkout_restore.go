@@ -7,10 +7,10 @@ import (
 	"path/filepath"
 	"strings"
 
-	"github.com/nick/gopi/internal/config"
-	"github.com/nick/gopi/internal/devworkspace"
-	"github.com/nick/gopi/internal/fullid"
-	"github.com/nick/gopi/internal/worktreerelease"
+	"github.com/nickhuang99/gopi/internal/config"
+	"github.com/nickhuang99/gopi/internal/devworkspace"
+	"github.com/nickhuang99/gopi/internal/fullid"
+	"github.com/nickhuang99/gopi/internal/worktreerelease"
 )
 
 // main_checkout_restore.go — the WORKER half of the epic "`gopi merge --fast`

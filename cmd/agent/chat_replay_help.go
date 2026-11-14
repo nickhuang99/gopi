@@ -17,7 +17,7 @@ package main
 import (
 	"fmt"
 
-	"github.com/nick/gopi/internal/config"
+	"github.com/nickhuang99/gopi/internal/config"
 )
 
 // chatReplayExamples is that section: five real command lines in the order a

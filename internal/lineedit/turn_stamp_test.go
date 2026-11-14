@@ -20,7 +20,7 @@ import (
 	"testing"
 	"time"
 
-	"github.com/nick/gopi/internal/sessionevent"
+	"github.com/nickhuang99/gopi/internal/sessionevent"
 )
 
 // TestTurnHeaderCarriesTheTurnsOwnMoment pins 1 and 2.

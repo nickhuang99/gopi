@@ -23,8 +23,8 @@ import (
 	"strings"
 	"testing"
 
-	"github.com/nick/gopi/internal/hippocampus"
-	"github.com/nick/gopi/internal/tools"
+	"github.com/nickhuang99/gopi/internal/hippocampus"
+	"github.com/nickhuang99/gopi/internal/tools"
 )
 
 // briefTestConfidence is the hit confidence of the synthesized leads — above

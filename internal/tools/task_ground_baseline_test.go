@@ -17,9 +17,9 @@ import (
 	"strings"
 	"testing"
 
-	"github.com/nick/gopi/internal/config"
-	"github.com/nick/gopi/internal/testutil"
-	"github.com/nick/gopi/internal/worktreeroots"
+	"github.com/nickhuang99/gopi/internal/config"
+	"github.com/nickhuang99/gopi/internal/testutil"
+	"github.com/nickhuang99/gopi/internal/worktreeroots"
 )
 
 // The three fixture rows' ids, and they MUST be full uuids.
@@ -324,7 +324,7 @@ func TestTaskRunGroundTurnsAPeerHeadsupIntoItsOwnDiff(t *testing.T) {
 	repo, server := groundBaselineFixture(t, groundBaselineDeltaRow, peerAlias)
 	groundBaselinePointPeerAt(t, repo, server)
 
-	// The PEER advances, exactly as zpeer's master did while the host slept.
+	// The PEER advances, exactly as peerbox's master did while the host slept.
 	adv := filepath.Join(filepath.Dir(server), "advance")
 	peerFetchGit(t, filepath.Dir(server), "clone", server, adv)
 	peerFetchGit(t, adv, "config", "user.email", "t@t")

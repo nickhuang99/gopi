@@ -36,7 +36,7 @@ import (
 	"strings"
 	"testing"
 
-	"github.com/nick/gopi/internal/taskverbs"
+	"github.com/nickhuang99/gopi/internal/taskverbs"
 )
 
 const (
@@ -1432,7 +1432,7 @@ func TestSubmitSpawnersGiveTheChildAResolvableRepo_ExactMatchRule(t *testing.T) 
 import (
 	"testing"
 
-	"github.com/nick/gopi/internal/testutil"
+	"github.com/nickhuang99/gopi/internal/testutil"
 )
 
 func TestThing(t *testing.T) {
@@ -1449,7 +1449,7 @@ func TestThing(t *testing.T) {
 import (
 	"testing"
 
-	"github.com/nick/gopi/internal/testutil"
+	"github.com/nickhuang99/gopi/internal/testutil"
 )
 
 func TestThing(t *testing.T) {
@@ -1465,7 +1465,7 @@ func TestThing(t *testing.T) {
 import (
 	"testing"
 
-	"github.com/nick/gopi/internal/testutil"
+	"github.com/nickhuang99/gopi/internal/testutil"
 )
 
 func TestThing(t *testing.T) {
@@ -1492,7 +1492,7 @@ func TestThing(t *testing.T) {
 import (
 	"testing"
 
-	"github.com/nick/gopi/internal/testutil"
+	"github.com/nickhuang99/gopi/internal/testutil"
 )
 
 func TestThing(t *testing.T) {
@@ -1514,7 +1514,7 @@ func TestThing(t *testing.T) {
 import (
 	"testing"
 
-	"github.com/nick/gopi/internal/testutil"
+	"github.com/nickhuang99/gopi/internal/testutil"
 )
 
 func TestThing(t *testing.T) {

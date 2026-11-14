@@ -38,7 +38,7 @@ package main
 import (
 	"strings"
 
-	"github.com/nick/gopi/internal/tools"
+	"github.com/nickhuang99/gopi/internal/tools"
 )
 
 // taskClaimGroundStamp stamps the branch + linked worktree the executor child

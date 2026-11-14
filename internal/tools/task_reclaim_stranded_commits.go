@@ -82,7 +82,7 @@ import (
 	"context"
 	"strings"
 
-	"github.com/nick/gopi/internal/devworkspace"
+	"github.com/nickhuang99/gopi/internal/devworkspace"
 )
 
 const (

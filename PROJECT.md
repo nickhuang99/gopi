@@ -823,18 +823,18 @@ Heavy tests are **off by default** (`heavytest.Require`; `GOPI_HEAVY_TESTS` trut
 **On the merge/verify path the rule is: SMOKE, BRANCH-SCOPED — never the whole
 tree** (`internal/smokegate`; `TestSmokePathPrescribesNoWholeTreeSuite`).
 
-## Rule 28: Two Hosts, Two Jobs — zpeer Owns the System Layer, HP Owns Features
+## Rule 28: Two Hosts, Two Jobs — peerbox Owns the System Layer, HP Owns Features
 
 **The division** (operator's decision, 2026-09-16):
 
 | host | role | work |
 |---|---|---|
-| **zpeer** | server | **system-level**: worktree lifecycle, branch/merge machinery, the merger, task ledger, sync, scheduling — the parts that define how work flows |
+| **peerbox** | server | **system-level**: worktree lifecycle, branch/merge machinery, the merger, task ledger, sync, scheduling — the parts that define how work flows |
 | **HP** | client | **feature development** that does **not** touch the system layer |
 
 **Why it is a rule and not a preference**: everything that went wrong in
 2026-09-16's incidents went wrong *because both hosts worked the same layer at
-once* — fourteen HP branches sat on a stale baseline while zpeer reworked the
+once* — fourteen HP branches sat on a stale baseline while peerbox reworked the
 same areas, so each one needed a rebase to land and then a compile fix anyway
 (`fix/dump-name-collision` merged with "zero conflicts" and did not build). The
 division exists so a feature branch comes back **mergeable**, not so the hosts
@@ -848,7 +848,7 @@ HP-shaped if it:
   (`cli_tasks*.go` runner paths, `merger*`, `task_reclaim*`, `worktree*` sweep,
   `internal/testutil` gates, `internal/standards` gates).
 
-A task that needs both is two tasks; the system half goes to zpeer, the feature
+A task that needs both is two tasks; the system half goes to peerbox, the feature
 half to HP.
 
 **Migrating a task to the other host is a three-step move, and the cancel is not
@@ -856,7 +856,7 @@ optional**: export the payload, submit it on the target host, and **cancel the
 original row** with a reason naming the new row id. Without the cancel both hosts
 claim it and the work runs twice (Rule 26's duplicate-dispatch allowance is for
 *repair*, not for an unowned second run). Tag the new row so its origin is
-visible (e.g. `migrated-from-zpeer`).
+visible (e.g. `migrated-from-peerbox`).
 
 **Before dispatching to HP, check the briefing's own assumptions.** The GUI tasks
 migrated on 2026-09-16 each opened with "read
@@ -1303,8 +1303,7 @@ caller.** `scripts/peer-worker/peer-launcher-autostart.sh` and its sister
 `peer-launcher-nightsafe.sh` exit non-zero and print the ruling when invoked from a
 scheduler context (no terminal on stdin, or a `cron`/`atd`/`anacron` ancestor in the
 process table); an operator in a terminal may still run them by hand. **Do not
-re-install the cron line: no replacement auto-launcher, no escape hatch** — see
-`devdoc/peer-launcher-autostart-retired-20260926.md`.
+re-install the cron line: no replacement auto-launcher, no escape hatch**.
 
 and then, as a standing principle:
 
@@ -1857,70 +1856,6 @@ same run's scan reports; an absolute row count could only tighten as the table
 legitimately ratchets down), so a gate that read an empty tree or a fragmentary
 table cannot pass.
 
-## Rule 40: hermes-agent Is HP's Work — zpeer Is Only Its git Upstream
-
-**The division.** `hermes-agent` (host-b, `~/work/hermes-agent`)
-is developed and RUN on **HP**. **zpeer is its git upstream and nothing
-else** — a checkout of it exists on zpeer, but no hermes-agent work is
-commissioned there and no hermes-agent row is filed on zpeer's ledger.
-
-**The operable criteria — how a hermes task is filed correctly:**
-
-- The task row goes on **HP's ledger**, not zpeer's.
-- Its `deliverable.repo` resolves to the **HP-local** path
-  (`/home/user/work/hermes-agent` on `host-b`), i.e. the path that
-  exists on the machine that will RUN it.
-- **A verified repo is NOT evidence the row was filed on the right host.**
-  This is the dangerous signal, and it is measured, not hypothetical:
-  `/home/user/work/hermes-agent` exists on **both** hosts (on zpeer it is a
-  real work tree, non-bare, on branch `hot-note`), so `task_submit`'s
-  repo verification — `taskRepoVerifiable`, `git rev-parse
-  --is-inside-work-tree` — passes on the **wrong** host and the row goes out
-  looking correct. What it proves is path existence on a filesystem; what it
-  cannot prove is which machine owns the work. A row not claimed by HP's
-  workers is not "slow"; it is **never dispatched at all** (zpeer's ledger
-  holds it, `sync_peers` forwards nothing).
-
-**Migration, when a hermes task WAS filed on the wrong host — three steps, in
-this order** (structurally the same move as Rule 28's host migration, applied
-to one project instead of to a layer):
-
-1. **Export the payload** — read the row's briefing text and any attachments
-   off the wrong ledger, so nothing is re-typed from memory.
-2. **Re-submit on the target host and verify `deliverable.repo`** — file the
-   row on HP, then confirm the stamped repo resolves to HP's own
-   `/home/user/work/hermes-agent`, not to a path that merely looks the same.
-3. **Cancel the original row, naming the new id in the reason** — the cancel
-   is not optional: without it the work is live in two places and both hosts
-   may claim it. The reason names the new row id so a reader of the cancelled
-   row can follow the trail (Rule 26: an incomplete fix is repaired by
-   dispatching again, never by waiting).
-
-**Relation to Rule 28 — a specialisation, not a conflict.** Rule 28 draws the
-host line by LAYER (zpeer owns the system layer, HP owns features). Rule 40
-pins **one project** that the same division places on HP regardless of which
-layer a particular change touches: hermes-agent work is HP's even when it
-touches machinery that would otherwise be zpeer-shaped. Where the two appear
-to disagree, **Rule 40 is the narrower and decides for hermes-agent**; Rule 28
-governs everything else.
-
-**Machine check — the honest answer.** There is **no gate** that can decide
-this. Ownership is a fact about a *machine*, and the only instrument at the
-submit seam compares *paths*, which are identical on both hosts — so a check
-that refused would be guessing, and its false positives (a renamed host, a
-container, a peer shell, and the legitimate HP-side submit itself) would be
-worse than the defect. What exists is a **warning at the submit seam, never a
-refusal**: `internal/tools/task_hermes_host_warning.go` — when a submit's
-`deliverable.repo` names the hermes-agent tree and the submitting host is not
-`host-b`, `TaskSubmit` appends
-`TaskSubmitHermesHostWarning` to its confirmation, the same place the
-attachment false-claim warning lands (`task_attachment_claim.go`), so the
-submitter learns BEFORE the row is dispatched. The row still queues. The table
-has exactly **one** entry because exactly one such collision has been measured
-— a general host-ownership model invented from one incident would be a guess
-wearing a rule's clothes. Check:
-`go test ./internal/tools/ -run 'TestHermesHostWarning|TestTaskSubmitWarnsButStillQueues'`.
-
 ## Rule 41: Capturing the evidence the moment something stops adding up, and filing the bug right there — the bar is set deliberately low
 
 **The rule.** Whenever a run, in the middle of its work, **sees something that does not add up** — a measurement contradicting
@@ -1958,7 +1893,7 @@ make the complete hop: **you need not fix it, nor prove it — you need to let i
 **Scope.** It holds for all three surfaces — **PA / worker / chat**. It belongs to the **rules region**: it is a constraint
 every node shares, not the local policy of any single node. A PA dispatches a row like this as usual; the chat surface can
 file a row too (Rule 37: chat does not commit code, but filing tasks is its work). **The discoverer does not fix it** (Rule
-28: system-layer defects are filed on zpeer) — filing the row is itself the delivery.
+28: system-layer defects are filed on peerbox) — filing the row is itself the delivery.
 
 ## The second half of Rule 41: after the discovery, you do it yourself — never push a decided job back
 

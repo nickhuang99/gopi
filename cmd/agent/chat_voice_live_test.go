@@ -22,9 +22,9 @@ import (
 	"testing"
 	"time"
 
-	"github.com/nick/gopi/internal/config"
-	"github.com/nick/gopi/internal/doubaostream"
-	"github.com/nick/gopi/internal/lineedit"
+	"github.com/nickhuang99/gopi/internal/config"
+	"github.com/nickhuang99/gopi/internal/doubaostream"
+	"github.com/nickhuang99/gopi/internal/lineedit"
 )
 
 // voiceLiveLoopBoundForTest is how long a case waits for the live loop to reach

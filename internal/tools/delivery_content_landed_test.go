@@ -34,7 +34,7 @@ import (
 	"strings"
 	"testing"
 
-	"github.com/nick/gopi/internal/testutil"
+	"github.com/nickhuang99/gopi/internal/testutil"
 )
 
 // The fixture's git identity: fixed so a fixture commit is byte-reproducible,

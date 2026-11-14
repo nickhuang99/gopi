@@ -9,7 +9,7 @@ import (
 	"testing"
 	"time"
 
-	"github.com/nick/gopi/internal/deepseek"
+	"github.com/nickhuang99/gopi/internal/deepseek"
 )
 
 // writeRawLog writes a raw log exactly as RawLogger.LogFunc does: each entry

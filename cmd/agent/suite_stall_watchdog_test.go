@@ -34,7 +34,7 @@ import (
 	"testing"
 	"time"
 
-	"github.com/nick/gopi/internal/testutil"
+	"github.com/nickhuang99/gopi/internal/testutil"
 )
 
 const (
@@ -121,7 +121,7 @@ const (
 	// repoModuleMarker identifies a frame that belongs to THIS project inside a
 	// goroutine dump. The module path, not a worktree path: a worktree's absolute
 	// path changes per checkout and would silently match nothing.
-	repoModuleMarker = "github.com/nick/gopi/"
+	repoModuleMarker = "github.com/nickhuang99/gopi/"
 
 	// goroutineHeaderPrefix is the line every goroutine block in a runtime.Stack
 	// dump starts with (`goroutine <n> [<state>]:`) — named, never spelled inline.
@@ -796,7 +796,7 @@ func TestSuiteTempRootIsOffTheRootFilesystem(t *testing.T) {
 const stallSyntheticDump = `goroutine 1 [chan receive]:
 testing.(*T).Run(0xc000102000, {0xef5440?, 0xc000289ae8?}, 0xef5440)
 	/usr/local/go/src/testing/testing.go:1859 +0x431
-github.com/nick/gopi/cmd/agent.TestTaskRunBriefingInlinePayloadUnchanged(0xc000308c40)
+github.com/nickhuang99/gopi/cmd/agent.TestTaskRunBriefingInlinePayloadUnchanged(0xc000308c40)
 	/home/user/wl2/cmd/agent/cli_tasks_payload_spill_test.go:125 +0x178
 created by testing.(*T).Run in goroutine 1
 	/usr/local/go/src/testing/testing.go:1851 +0x413

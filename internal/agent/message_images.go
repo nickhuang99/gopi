@@ -1,6 +1,6 @@
 package agent
 
-import "github.com/nick/gopi/internal/deepseek"
+import "github.com/nickhuang99/gopi/internal/deepseek"
 
 // derefImages converts the image pointers a caller collected (positional image
 // arguments, each validated before it reaches an Agent method) into the value

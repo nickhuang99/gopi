@@ -31,14 +31,14 @@ import (
 	"context"
 	"encoding/json"
 	"fmt"
-	"github.com/nick/gopi/internal/tasksource"
-	"github.com/nick/gopi/internal/tasktags"
+	"github.com/nickhuang99/gopi/internal/tasksource"
+	"github.com/nickhuang99/gopi/internal/tasktags"
 	"os"
 	"path/filepath"
 	"strings"
 	"time"
 
-	"github.com/nick/gopi/internal/smokegate"
+	"github.com/nickhuang99/gopi/internal/smokegate"
 )
 
 // --- gate vocabulary (Rule 1 / 1b / 14: one named place per value) ---
@@ -1040,4 +1040,3 @@ func mergeVerifyStampReworkDeliverable(summary string, o MergeVerifyReworkOption
 	}
 	return taskID
 }
-

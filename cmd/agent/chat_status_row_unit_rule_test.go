@@ -39,7 +39,7 @@ import (
 	"strings"
 	"testing"
 
-	"github.com/nick/gopi/internal/lineedit"
+	"github.com/nickhuang99/gopi/internal/lineedit"
 )
 
 // statusRowUnitRuleProblems reports every way the pair a side string pair spells

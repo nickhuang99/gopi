@@ -4,7 +4,7 @@ import (
 	"fmt"
 	"os"
 
-	"github.com/nick/gopi/internal/gopilog"
+	"github.com/nickhuang99/gopi/internal/gopilog"
 )
 
 // Round-scoped views of `gopi session log`: the positional <round> and --rounds.

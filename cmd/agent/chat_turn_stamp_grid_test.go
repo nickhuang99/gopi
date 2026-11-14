@@ -24,8 +24,8 @@ import (
 	"testing"
 	"time"
 
-	"github.com/nick/gopi/internal/lineedit"
-	"github.com/nick/gopi/internal/sessionevent"
+	"github.com/nickhuang99/gopi/internal/lineedit"
+	"github.com/nickhuang99/gopi/internal/sessionevent"
 )
 
 // TestChatTurnBandPaintsTheTurnsMomentOnTheGrid drives ONE stamped turn and ONE

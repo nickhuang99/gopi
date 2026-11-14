@@ -7,8 +7,8 @@ import (
 	"strings"
 	"testing"
 
-	"github.com/nick/gopi/internal/shot"
-	"github.com/nick/gopi/internal/toolnames"
+	"github.com/nickhuang99/gopi/internal/shot"
+	"github.com/nickhuang99/gopi/internal/toolnames"
 )
 
 // TestShotUsageShowsSurfaces — the subcommand's own -h must advertise the three

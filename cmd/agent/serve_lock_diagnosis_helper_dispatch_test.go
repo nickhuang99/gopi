@@ -6,7 +6,7 @@ import (
 	"testing"
 	"time"
 
-	"github.com/nick/gopi/internal/testutil"
+	"github.com/nickhuang99/gopi/internal/testutil"
 )
 
 // The serve-lock diagnosis rig's re-exec'd helper must run as a FIXTURE, not as

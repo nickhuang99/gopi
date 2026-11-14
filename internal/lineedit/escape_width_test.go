@@ -12,7 +12,7 @@ import (
 	"strings"
 	"testing"
 
-	"github.com/nick/gopi/internal/sgr"
+	"github.com/nickhuang99/gopi/internal/sgr"
 )
 
 // TestDisplayWidth_ControlSequenceIsZeroCells is the measurement the band's

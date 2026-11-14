@@ -16,9 +16,9 @@ import (
 	"testing"
 	"unicode/utf8"
 
-	"github.com/nick/gopi/internal/deepseek"
-	"github.com/nick/gopi/internal/sessionevent"
-	"github.com/nick/gopi/internal/toolnames"
+	"github.com/nickhuang99/gopi/internal/deepseek"
+	"github.com/nickhuang99/gopi/internal/sessionevent"
+	"github.com/nickhuang99/gopi/internal/toolnames"
 )
 
 // THE SUBSTITUTE FORM IS THE POLICY (task 01a1bafd-d5f6-7c1e-b88e-42373f79ae1c):
@@ -498,7 +498,7 @@ func TestTurnFoldChatModeFoldsItsFirstTurn(t *testing.T) {
 			Name:      toolnames.ToolRead,
 			Arguments: map[string]interface{}{"path": "go.mod"},
 		}}},
-		{Role: roleToolMessage, ToolCallID: "call_chat_2", Content: "module github.com/nick/gopi"},
+		{Role: roleToolMessage, ToolCallID: "call_chat_2", Content: "module github.com/nickhuang99/gopi"},
 		{Role: roleUserMessage, Content: sessionevent.HarnessMessageBoundaryPrefix + "third chat input, in flight"},
 	}
 
@@ -1029,7 +1029,7 @@ func TestTurnFoldAskNamesWhatItDropped(t *testing.T) {
 // removes (Rule 1/13/14).
 func TestTurnFoldStripsHarnessPostmarks(t *testing.T) {
 	// The exact wire shape: `<tick> <header>\n<payload>`.
-	stamped := fmt.Sprintf("%s %s call_x]\nexit=0\nok  \tgithub.com/nick/gopi/internal/agent\t0.9s",
+	stamped := fmt.Sprintf("%s %s call_x]\nexit=0\nok  \tgithub.com/nickhuang99/gopi/internal/agent\t0.9s",
 		fmt.Sprintf(tickExactFmt, "58s"), toolResultHeaderMarker)
 	msgs := []deepseek.Message{
 		{Role: roleUserMessage, Content: sessionevent.HarnessMessageBoundaryPrefix + "run the suite"},

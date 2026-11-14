@@ -38,10 +38,10 @@ import (
 	"strings"
 	"testing"
 
-	"github.com/nick/gopi/internal/ctxdump"
-	"github.com/nick/gopi/internal/deepseek"
-	"github.com/nick/gopi/internal/gopilog"
-	"github.com/nick/gopi/internal/rawlogfmt"
+	"github.com/nickhuang99/gopi/internal/ctxdump"
+	"github.com/nickhuang99/gopi/internal/deepseek"
+	"github.com/nickhuang99/gopi/internal/gopilog"
+	"github.com/nickhuang99/gopi/internal/rawlogfmt"
 )
 
 // The fixture's two quantities, named once (Rule 1). The round count is NOT a

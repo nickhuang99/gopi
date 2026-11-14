@@ -18,7 +18,7 @@ import (
 	"testing"
 	"time"
 
-	"github.com/nick/gopi/internal/scratch"
+	"github.com/nickhuang99/gopi/internal/scratch"
 )
 
 // scratchGCEnv is the child environment for the E2E cases: a sandbox home, a

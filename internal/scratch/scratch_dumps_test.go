@@ -29,7 +29,7 @@ import (
 	"testing"
 	"time"
 
-	"github.com/nick/gopi/internal/sessionlayout"
+	"github.com/nickhuang99/gopi/internal/sessionlayout"
 )
 
 // scratchDumpGateRepoRoot finds the repository root for the SOURCE reads below —

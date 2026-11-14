@@ -18,7 +18,7 @@ import (
 	"io"
 	"os"
 
-	"github.com/nick/gopi/internal/lineedit"
+	"github.com/nickhuang99/gopi/internal/lineedit"
 )
 
 // PlaybackCommand is what this package's chrome CALLS the operation it performs:

@@ -22,8 +22,8 @@ import (
 	"syscall"
 	"time"
 
-	"github.com/nick/gopi/internal/shot"
-	"github.com/nick/gopi/internal/tools"
+	"github.com/nickhuang99/gopi/internal/shot"
+	"github.com/nickhuang99/gopi/internal/tools"
 )
 
 // voice_input --client — Phase 3 of the voice-input feature (capture side).
@@ -89,7 +89,7 @@ const (
 	// fragment, and it is the second half of task 01a11853's latency fix.
 	//
 	// parecord's default fragment is large (2 s on this host) and two costs
-	// follow from it, both measured on zpeer 2026-10-08 (strace on the recorder's
+	// follow from it, both measured on peerbox 2026-10-08 (strace on the recorder's
 	// stdout, real card and rig):
 	//
 	//   - the first byte of audio is not written until 0.08-2.32 s after the
@@ -143,7 +143,7 @@ const (
 	// let run to that deadline, so the operator paid 10 s of DEAD AIR on every
 	// round before --seconds of audio even began: a `--seconds 6` round
 	// measured 16.0 s of recorder wall time, 10.0 s of it recording nothing
-	// (measured on zpeer, 2026-10-08, task 01a11829; the same flat cost at
+	// (measured on peerbox, 2026-10-08, task 01a11829; the same flat cost at
 	// --seconds 3 → 13.03 s and --seconds 10 → 20.03 s).
 	//
 	// WHAT IT IS NOW. The grace is spent ONLY when the device is genuinely slow
@@ -175,7 +175,7 @@ const (
 	// constant that expressed it (`time.Duration(500 * time.Millisecond) *
 	// time.Second`, 5e8 s) is what made every round run to the caller's context
 	// deadline instead: `--seconds 6` took seconds+voiceCaptureGraceSec = 16.03 s
-	// (measured on zpeer, 2026-10-08).
+	// (measured on peerbox, 2026-10-08).
 	voiceCaptureSignalGraceSec = 2 * time.Second
 
 	// voiceCaptureForceKillGraceSec is the SECOND grace: the extra wait for a

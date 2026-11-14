@@ -31,7 +31,7 @@ import (
 	"strings"
 	"testing"
 
-	"github.com/nick/gopi/internal/toolnames"
+	"github.com/nickhuang99/gopi/internal/toolnames"
 )
 
 const (

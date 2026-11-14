@@ -28,8 +28,8 @@ import (
 	"strings"
 	"testing"
 
-	"github.com/nick/gopi/internal/config"
-	"github.com/nick/gopi/internal/testutil"
+	"github.com/nickhuang99/gopi/internal/config"
+	"github.com/nickhuang99/gopi/internal/testutil"
 )
 
 // assetSimNode is one simulated node's knowledge store.
@@ -46,7 +46,7 @@ type assetSim struct {
 	nodes map[string]*assetSimNode
 }
 
-// newAssetSim builds two real temp knowledge DBs (nodes "zpeer" and "hp")
+// newAssetSim builds two real temp knowledge DBs (nodes "peerbox" and "hp")
 // and wires the ssh hook to route each peer name to its DB. The sim pins
 // BOTH whitelists: memory_peers declares the asset peers (the channel now
 // validates against memory_peers, decoupled 2026-09-02) and sync_peers
@@ -54,9 +54,9 @@ type assetSim struct {
 // exercises the memory_peers path.
 func newAssetSim(t *testing.T) *assetSim {
 	t.Helper()
-	t.Setenv(config.MemoryPeersEnv, "zpeer,hp")
-	t.Setenv(config.SyncPeersEnv, "zpeer,hp")
-	t.Setenv("GOPI_SYNC_NODE", "zpeer") // deterministic node identity
+	t.Setenv(config.MemoryPeersEnv, "peerbox,hp")
+	t.Setenv(config.SyncPeersEnv, "peerbox,hp")
+	t.Setenv("GOPI_SYNC_NODE", "peerbox") // deterministic node identity
 	t.Setenv(config.RoleEnv, "client")
 	// Sandbox settings resolution: the ambient GOPI_SETTINGS points at the
 	// live settings.json (which carries memory_peers=["hp"] post-bugfix).
@@ -72,7 +72,7 @@ func newAssetSim(t *testing.T) *assetSim {
 	t.Cleanup(config.ResetNodeIdentityForTest)
 
 	s := &assetSim{t: t, nodes: map[string]*assetSimNode{}}
-	for _, name := range []string{"zpeer", "hp"} {
+	for _, name := range []string{"peerbox", "hp"} {
 		path := filepath.Join(t.TempDir(), name, "memory.db")
 		if err := os.MkdirAll(filepath.Dir(path), 0o755); err != nil {
 			t.Fatal(err)
@@ -206,13 +206,13 @@ func (s *assetSim) syncFrom(name, peer string) *MemoryAssetSyncStats {
 // newer-wins, no merge, no overwrite); the second session imports 0.
 func TestMemoryAssetsUniqueOnlySuperset(t *testing.T) {
 	s := newAssetSim(t)
-	// A (zpeer): rows 1,2. B (hp): rows 2(divergent),3.
-	s.store("zpeer", "t1", "q1 what is alpha?", "zpeer answer alpha")
-	s.store("zpeer", "t2", "q2 how to beta?", "zpeer answer beta — DIVERGENT")
+	// A (peerbox): rows 1,2. B (hp): rows 2(divergent),3.
+	s.store("peerbox", "t1", "q1 what is alpha?", "peerbox answer alpha")
+	s.store("peerbox", "t2", "q2 how to beta?", "peerbox answer beta — DIVERGENT")
 	s.store("hp", "t2", "q2 how to beta?", "hp answer beta — DIVERGENT")
 	s.store("hp", "t3", "q3 how to gamma?", "hp answer gamma")
 
-	stats := s.syncFrom("zpeer", "hp")
+	stats := s.syncFrom("peerbox", "hp")
 
 	// B must have imported row 1 only (row 2 existing-skipped).
 	if stats.PullStats.Imported != 1 {
@@ -222,7 +222,7 @@ func TestMemoryAssetsUniqueOnlySuperset(t *testing.T) {
 		t.Fatalf("hp existing=%d, want 1 (row 2 skipped): %+v", stats.PullStats.Existing, stats.PullStats)
 	}
 	// Both stores now hold all three questions.
-	for _, n := range []string{"zpeer", "hp"} {
+	for _, n := range []string{"peerbox", "hp"} {
 		for _, q := range []string{"q1 what is alpha?", "q2 how to beta?", "q3 how to gamma?"} {
 			if s.qCount(n, q) != 1 {
 				t.Fatalf("%s: question %q count=%d, want 1", n, q, s.qCount(n, q))
@@ -230,8 +230,8 @@ func TestMemoryAssetsUniqueOnlySuperset(t *testing.T) {
 		}
 	}
 	// Row 2 divergent copies UNTOUCHED: each side keeps its own answer.
-	if got := s.answerOf("zpeer", "q2 how to beta?"); got != "zpeer answer beta — DIVERGENT" {
-		t.Fatalf("zpeer row 2 was modified: %q", got)
+	if got := s.answerOf("peerbox", "q2 how to beta?"); got != "peerbox answer beta — DIVERGENT" {
+		t.Fatalf("peerbox row 2 was modified: %q", got)
 	}
 	if got := s.answerOf("hp", "q2 how to beta?"); got != "hp answer beta — DIVERGENT" {
 		t.Fatalf("hp row 2 was modified: %q", got)
@@ -239,18 +239,18 @@ func TestMemoryAssetsUniqueOnlySuperset(t *testing.T) {
 
 	// Second session: converged → 0 imported on both pull sides. (existing
 	// counts only rows the peer re-sends that we already hold: hp re-exports
-	// its OWN brew rows q2,q3 — q1 is node:zpeer there, anti-reflow keeps it
+	// its OWN brew rows q2,q3 — q1 is node:peerbox there, anti-reflow keeps it
 	// home — so 2 re-sent rows find q2,q3 already present.)
-	stats2 := s.syncFrom("hp", "zpeer") // other direction also converges to 0
+	stats2 := s.syncFrom("hp", "peerbox") // other direction also converges to 0
 	if stats2.PullStats.Imported != 0 {
-		t.Fatalf("2nd sync hp→zpeer imported=%d, want 0 (converged): %+v", stats2.PullStats.Imported, stats2.PullStats)
+		t.Fatalf("2nd sync hp→peerbox imported=%d, want 0 (converged): %+v", stats2.PullStats.Imported, stats2.PullStats)
 	}
 	if stats2.PullStats.Existing != 2 {
-		t.Fatalf("2nd sync hp→zpeer existing=%d, want 2 (q2,q3 re-sent and present)", stats2.PullStats.Existing)
+		t.Fatalf("2nd sync hp→peerbox existing=%d, want 2 (q2,q3 re-sent and present)", stats2.PullStats.Existing)
 	}
-	stats3 := s.syncFrom("zpeer", "hp")
+	stats3 := s.syncFrom("peerbox", "hp")
 	if stats3.PullStats.Imported != 0 {
-		t.Fatalf("3rd sync zpeer→hp imported=%d, want 0 (converged): %+v", stats3.PullStats.Imported, stats3.PullStats)
+		t.Fatalf("3rd sync peerbox→hp imported=%d, want 0 (converged): %+v", stats3.PullStats.Imported, stats3.PullStats)
 	}
 }
 
@@ -260,33 +260,33 @@ func TestMemoryAssetsUniqueOnlySuperset(t *testing.T) {
 // ping-pong.
 func TestMemoryAssetsProvenanceAndAntiReflow(t *testing.T) {
 	s := newAssetSim(t)
-	s.store("zpeer", "t1", "q1 what is alpha?", "zpeer alpha")
+	s.store("peerbox", "t1", "q1 what is alpha?", "peerbox alpha")
 	s.store("hp", "t2", "q2 what is beta?", "hp beta")
 
-	s.syncFrom("zpeer", "hp")
+	s.syncFrom("peerbox", "hp")
 
 	// hp's row 2 existed locally (brew) → stays brew. hp's row 1 was
-	// IMPORTED from zpeer → sources must carry node:zpeer.
-	if src := s.sourcesOf("hp", "q1 what is alpha?"); !strings.Contains(src, "node:zpeer") {
-		t.Fatalf("hp row 1 sources=%q, want node:zpeer provenance", src)
+	// IMPORTED from peerbox → sources must carry node:peerbox.
+	if src := s.sourcesOf("hp", "q1 what is alpha?"); !strings.Contains(src, "node:peerbox") {
+		t.Fatalf("hp row 1 sources=%q, want node:peerbox provenance", src)
 	}
 	if src := s.sourcesOf("hp", "q2 what is beta?"); !strings.Contains(src, BrewSourceTag) {
 		t.Fatalf("hp row 2 sources=%q, want brew (untouched local row)", src)
 	}
-	// zpeer's row 2 was imported from hp → carries node:hp.
-	if src := s.sourcesOf("zpeer", "q2 what is beta?"); !strings.Contains(src, "node:hp") {
-		t.Fatalf("zpeer row 2 sources=%q, want node:hp provenance", src)
+	// peerbox's row 2 was imported from hp → carries node:hp.
+	if src := s.sourcesOf("peerbox", "q2 what is beta?"); !strings.Contains(src, "node:hp") {
+		t.Fatalf("peerbox row 2 sources=%q, want node:hp provenance", src)
 	}
 
-	// Anti-reflow: zpeer now exports ONLY its own brew row 1 — row 2
+	// Anti-reflow: peerbox now exports ONLY its own brew row 1 — row 2
 	// (node:hp) must be excluded. Same for hp.
-	z := s.exportRows("zpeer")
+	z := s.exportRows("peerbox")
 	if len(z) != 1 || z[0].Question != "q1 what is alpha?" {
-		t.Fatalf("zpeer re-export carries %d rows %+v, want only q1 (node:hp row excluded)", len(z), qs(z))
+		t.Fatalf("peerbox re-export carries %d rows %+v, want only q1 (node:hp row excluded)", len(z), qs(z))
 	}
 	h := s.exportRows("hp")
 	if len(h) != 1 || h[0].Question != "q2 what is beta?" {
-		t.Fatalf("hp re-export carries %d rows %+v, want only q2 (node:zpeer row excluded)", len(h), qs(h))
+		t.Fatalf("hp re-export carries %d rows %+v, want only q2 (node:peerbox row excluded)", len(h), qs(h))
 	}
 }
 
@@ -316,10 +316,10 @@ func qs(rows []SyncRow) []string {
 func TestMemoryAssetsIdenticalRowsExistingSkipped(t *testing.T) {
 	s := newAssetSim(t)
 	// Both sides brewed the same lesson independently.
-	s.store("zpeer", "t", "q how to sync?", "shared answer")
+	s.store("peerbox", "t", "q how to sync?", "shared answer")
 	s.store("hp", "t", "q how to sync?", "shared answer")
 
-	stats := s.syncFrom("zpeer", "hp")
+	stats := s.syncFrom("peerbox", "hp")
 	if stats.PullStats.Imported != 0 || stats.PullStats.Existing != 1 {
 		t.Fatalf("pull stats imported=%d existing=%d, want 0/1", stats.PullStats.Imported, stats.PullStats.Existing)
 	}
@@ -337,7 +337,7 @@ func TestMemoryAssetsImportRejectsGarbage(t *testing.T) {
 		t.Fatal(err)
 	}
 	t.Setenv("GOPI_MEMORY_DB", dbPath)
-	t.Setenv("GOPI_SYNC_NODE", "zpeer")
+	t.Setenv("GOPI_SYNC_NODE", "peerbox")
 	patch := &SyncPatch{
 		Version: syncPatchVersion,
 		Node:    "hp",
@@ -363,14 +363,14 @@ func TestMemoryAssetsImportRejectsGarbage(t *testing.T) {
 func TestMemoryAssetsServeRemoteRoundTrip(t *testing.T) {
 	s := newAssetSim(t)
 	s.store("hp", "t2", "q2 what is beta?", "hp beta")
-	s.use("zpeer")
+	s.use("peerbox")
 
-	// zpeer's export toward hp.
+	// peerbox's export toward hp.
 	patch, _, err := SyncExport(SyncExportOptions{})
 	if err != nil {
 		t.Fatal(err)
 	}
-	patch.Node = "zpeer"
+	patch.Node = "peerbox"
 	body, _ := json.Marshal(patch) //stylegate:ignore marshalling a value built in-process cannot fail (no channels/funcs reach these sites)
 
 	// The hp serve handler (in-process, hp's DB active).
@@ -386,8 +386,8 @@ func TestMemoryAssetsServeRemoteRoundTrip(t *testing.T) {
 	if out.Node != "hp" {
 		t.Fatalf("reply node=%q, want hp", out.Node)
 	}
-	// hp imported zpeer's q1; hp's reply carries its own brew row q2 only
-	// (q1 now node:zpeer → anti-reflow excluded from the reply).
+	// hp imported peerbox's q1; hp's reply carries its own brew row q2 only
+	// (q1 now node:peerbox → anti-reflow excluded from the reply).
 	got := qs(out.Rows)
 	if len(got) != 1 || got[0] != "q2 what is beta?" {
 		t.Fatalf("reply rows=%v, want only q2 (imported q1 excluded)", got)
@@ -408,13 +408,13 @@ func TestMemoryAssetsServeRemoteRoundTrip(t *testing.T) {
 // ③ an undeclared asset peer is refused even with other memory_peers set.
 func TestMemoryAssetsPeerWhitelistDecoupled(t *testing.T) {
 	s := newAssetSim(t)
-	s.store("zpeer", "t1", "q1 what is alpha?", "zpeer alpha")
+	s.store("peerbox", "t1", "q1 what is alpha?", "peerbox alpha")
 	s.store("hp", "t2", "q2 what is beta?", "hp beta")
 
 	// ① memory_peers cleared → whitelist refusal regardless of sync_peers.
 	s.t.Setenv(config.MemoryPeersEnv, "")
 	s.t.Setenv(config.SyncPeersEnv, "hp") // task peer alone must NOT license asset sync
-	s.use("zpeer")
+	s.use("peerbox")
 	_, err := MemoryAssetsPeerSession("hp", nil, "")
 	if err == nil {
 		t.Fatal("memory sync with empty memory_peers must refuse (whitelist message)")
@@ -435,7 +435,7 @@ func TestMemoryAssetsPeerWhitelistDecoupled(t *testing.T) {
 		t.Fatalf("hp imported=%d, want 1 (q1 copied over)", stats.PullStats.Imported)
 	}
 	if s.qCount("hp", "q1 what is alpha?") != 1 {
-		t.Fatal("hp missing zpeer's row after asset sync in single-node task mode")
+		t.Fatal("hp missing peerbox's row after asset sync in single-node task mode")
 	}
 
 	// ③ an undeclared asset peer is refused even when another peer is declared.

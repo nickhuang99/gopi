@@ -45,11 +45,11 @@ import (
 	"time"
 
 	"github.com/google/uuid"
-	"github.com/nick/gopi/internal/config"
-	"github.com/nick/gopi/internal/devworkspace"
-	"github.com/nick/gopi/internal/fullid"
-	"github.com/nick/gopi/internal/taskreport"
-	"github.com/nick/gopi/internal/worktreeroots"
+	"github.com/nickhuang99/gopi/internal/config"
+	"github.com/nickhuang99/gopi/internal/devworkspace"
+	"github.com/nickhuang99/gopi/internal/fullid"
+	"github.com/nickhuang99/gopi/internal/taskreport"
+	"github.com/nickhuang99/gopi/internal/worktreeroots"
 )
 
 // The ground's naming and its git verbs, each spelled once (Rule 1b/14).

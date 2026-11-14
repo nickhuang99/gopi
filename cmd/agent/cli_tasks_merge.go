@@ -10,7 +10,7 @@ import (
 	"fmt"
 	"os"
 
-	"github.com/nick/gopi/internal/tools"
+	"github.com/nickhuang99/gopi/internal/tools"
 )
 
 // runTaskMerge executes the merge face. Positional branches merge in order;

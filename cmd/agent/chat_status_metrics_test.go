@@ -6,7 +6,7 @@ import (
 	"testing"
 	"time"
 
-	"github.com/nick/gopi/internal/lineedit"
+	"github.com/nickhuang99/gopi/internal/lineedit"
 )
 
 // This file is the status row's GEOMETRY test: the row is a fixed-width layout

@@ -17,7 +17,7 @@ import (
 	"strings"
 	"testing"
 
-	"github.com/nick/gopi/internal/deepseek"
+	"github.com/nickhuang99/gopi/internal/deepseek"
 )
 
 const testImageB64 = "aGVsbG8tcG5n" // "hello-png" — shape is what matters, not pixels

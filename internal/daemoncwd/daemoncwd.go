@@ -48,9 +48,9 @@ import (
 	"strconv"
 	"strings"
 
-	"github.com/nick/gopi/internal/procname"
-	"github.com/nick/gopi/internal/scratch"
-	"github.com/nick/gopi/internal/worktreeroots"
+	"github.com/nickhuang99/gopi/internal/procname"
+	"github.com/nickhuang99/gopi/internal/scratch"
+	"github.com/nickhuang99/gopi/internal/worktreeroots"
 )
 
 // --- named constants (Rules 1/1b/13: one place, referenced by name) ---

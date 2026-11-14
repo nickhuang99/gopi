@@ -3,7 +3,7 @@ package tools
 import (
 	"testing"
 
-	gopiversion "github.com/nick/gopi/internal/version"
+	gopiversion "github.com/nickhuang99/gopi/internal/version"
 )
 
 // Producer-shaped dirty TAGGED display (what Info.Display() actually prints).

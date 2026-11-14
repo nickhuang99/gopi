@@ -29,7 +29,7 @@ import (
 	"strings"
 	"testing"
 
-	"github.com/nick/gopi/internal/testutil"
+	"github.com/nickhuang99/gopi/internal/testutil"
 )
 
 // trailerTestTaskID is the row this test cites. It is a REAL spelling (hex and
@@ -259,7 +259,7 @@ func TestGitCommitTrailersSkipOnlyUnspellableValues(t *testing.T) {
 // reader that greps `host: <name>` (a person, a report, a triage script) and a
 // writer that renders it cannot drift apart (Rules 1/13/14).
 func TestGitCommitHostTrailerLineShape(t *testing.T) {
-	if got, want := HostTrailerLine("zpeer"), HostTrailerKey+": zpeer"; got != want {
+	if got, want := HostTrailerLine("peerbox"), HostTrailerKey+": peerbox"; got != want {
 		t.Fatalf("HostTrailerLine = %q, want %q", got, want)
 	}
 	if HostTrailerKey != "host" {

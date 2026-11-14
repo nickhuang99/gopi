@@ -31,10 +31,10 @@ import (
 	"fmt"
 	"strings"
 
-	"github.com/nick/gopi/internal/cliverbs"
-	"github.com/nick/gopi/internal/gitargv"
-	"github.com/nick/gopi/internal/runcmd"
-	"github.com/nick/gopi/internal/taskverbs"
+	"github.com/nickhuang99/gopi/internal/cliverbs"
+	"github.com/nickhuang99/gopi/internal/gitargv"
+	"github.com/nickhuang99/gopi/internal/runcmd"
+	"github.com/nickhuang99/gopi/internal/taskverbs"
 )
 
 // categoryFenceInfoWord is the info string of the category fence

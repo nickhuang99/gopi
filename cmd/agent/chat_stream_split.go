@@ -49,7 +49,7 @@ import (
 	"io"
 	"os"
 
-	"github.com/nick/gopi/internal/lineedit"
+	"github.com/nickhuang99/gopi/internal/lineedit"
 )
 
 // The two descriptors, named (Rule 1: the decision is data, not an incidental

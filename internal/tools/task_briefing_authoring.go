@@ -61,7 +61,7 @@ import (
 	"fmt"
 	"strings"
 
-	"github.com/nick/gopi/internal/tasktags"
+	"github.com/nickhuang99/gopi/internal/tasktags"
 )
 
 // BriefingPayloadCopyEventName is the `task_events.event` value the rework

@@ -41,8 +41,8 @@ import (
 	"path/filepath"
 	"strings"
 
-	"github.com/nick/gopi/internal/sessionevent"
-	"github.com/nick/gopi/internal/tools"
+	"github.com/nickhuang99/gopi/internal/sessionevent"
+	"github.com/nickhuang99/gopi/internal/tools"
 )
 
 // indexSelfNotes writes the turn's notes into the retrieval index. It returns

@@ -41,9 +41,9 @@ package main
 import (
 	"fmt"
 
-	"github.com/nick/gopi/internal/config"
-	"github.com/nick/gopi/internal/taskverbs"
-	"github.com/nick/gopi/internal/toolnames"
+	"github.com/nickhuang99/gopi/internal/config"
+	"github.com/nickhuang99/gopi/internal/taskverbs"
+	"github.com/nickhuang99/gopi/internal/toolnames"
 )
 
 // verbAlias is ONE retired synonym of a command: the word somebody types, the

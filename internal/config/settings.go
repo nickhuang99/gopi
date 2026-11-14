@@ -6,8 +6,8 @@ import (
 	"os"
 	"strings"
 
-	"github.com/nick/gopi/internal/boolvocab"
-	"github.com/nick/gopi/internal/scratch"
+	"github.com/nickhuang99/gopi/internal/boolvocab"
+	"github.com/nickhuang99/gopi/internal/scratch"
 )
 
 // SkipClaimBroadcastEnv is the claim-broadcast kill-switch: a caller that

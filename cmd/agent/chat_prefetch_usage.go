@@ -34,7 +34,7 @@ package main
 // the block reads correctly in an 80-column terminal, and no line is a flag
 // definition at two-space indent (the shape the derivation would count).
 
-import "github.com/nick/gopi/internal/config"
+import "github.com/nickhuang99/gopi/internal/config"
 
 const chatPrefetchUsage = `                   Typing-time MEMORY PREFETCH — written BEFORE the verb,
                    as ` + "`gopi " + config.MemoryPrefetchInvocation + "`" + `, because the flag

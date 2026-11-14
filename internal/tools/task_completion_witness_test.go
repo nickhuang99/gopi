@@ -34,7 +34,7 @@ import (
 	"strings"
 	"testing"
 
-	"github.com/nick/gopi/internal/removalaudit"
+	"github.com/nickhuang99/gopi/internal/removalaudit"
 )
 
 // cwFixture builds the incident's HOST state: a repo with a branch that has

@@ -39,8 +39,8 @@ import (
 	"testing"
 	"time"
 
-	"github.com/nick/gopi/internal/config"
-	"github.com/nick/gopi/internal/inputsource"
+	"github.com/nickhuang99/gopi/internal/config"
+	"github.com/nickhuang99/gopi/internal/inputsource"
 )
 
 // prefetchEventLine is one record line as a READER sees it: the decoded object

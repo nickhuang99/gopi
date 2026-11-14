@@ -3,7 +3,7 @@ package hippocampus
 import (
 	"context"
 
-	"github.com/nick/gopi/internal/tools"
+	"github.com/nickhuang99/gopi/internal/tools"
 )
 
 // Client is the narrow LLM surface the hippocampus uses — deliberately the

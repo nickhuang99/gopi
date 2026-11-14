@@ -29,7 +29,7 @@ const (
 	// composes `-X <this>=<40-hex>`, and the reader in cmd/agent accepts nothing
 	// else, so a build that names any other variable carries no identity and the
 	// freshness verdict says so instead of guessing.
-	RevisionLdflagPath = "github.com/nick/gopi/internal/version.Revision"
+	RevisionLdflagPath = "github.com/nickhuang99/gopi/internal/version.Revision"
 
 	// LdflagXKey is the linker flag that writes a string variable; with its
 	// operand it reads `-X <importpath>.<name>=<value>`.

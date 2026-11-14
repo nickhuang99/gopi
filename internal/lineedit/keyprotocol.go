@@ -36,7 +36,7 @@ import (
 
 	"golang.org/x/sys/unix"
 
-	"github.com/nick/gopi/internal/sgr"
+	"github.com/nickhuang99/gopi/internal/sgr"
 )
 
 // KeyboardProtocol is the probe's verdict, and it is a three-state answer on

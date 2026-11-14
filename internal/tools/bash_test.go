@@ -10,7 +10,7 @@ import (
 	"testing"
 	"time"
 
-	"github.com/nick/gopi/internal/heavytest"
+	"github.com/nickhuang99/gopi/internal/heavytest"
 )
 
 // Exit-status prefixes of the Bash result string ("exit=N\n", bash.go). Named

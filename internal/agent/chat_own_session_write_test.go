@@ -29,12 +29,12 @@ import (
 	"strings"
 	"testing"
 
-	"github.com/nick/gopi/internal/chatpolicy"
-	"github.com/nick/gopi/internal/deepseek"
-	"github.com/nick/gopi/internal/signalrec"
-	"github.com/nick/gopi/internal/testutil"
-	"github.com/nick/gopi/internal/toolnames"
-	"github.com/nick/gopi/internal/tools"
+	"github.com/nickhuang99/gopi/internal/chatpolicy"
+	"github.com/nickhuang99/gopi/internal/deepseek"
+	"github.com/nickhuang99/gopi/internal/signalrec"
+	"github.com/nickhuang99/gopi/internal/testutil"
+	"github.com/nickhuang99/gopi/internal/toolnames"
+	"github.com/nickhuang99/gopi/internal/tools"
 )
 
 // freezeDefaultChatTableForDispatch restores the SHIPPED default rule table

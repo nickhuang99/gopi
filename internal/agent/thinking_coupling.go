@@ -3,7 +3,7 @@ package agent
 import (
 	"os"
 
-	"github.com/nick/gopi/internal/config"
+	"github.com/nickhuang99/gopi/internal/config"
 )
 
 // The three environment names the thinking resolution reads. They are declared

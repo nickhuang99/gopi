@@ -37,7 +37,7 @@ import (
 	"testing"
 	"time"
 
-	"github.com/nick/gopi/internal/uiclient"
+	"github.com/nickhuang99/gopi/internal/uiclient"
 )
 
 // The contract's words, spelled as a caller reads them.

@@ -33,7 +33,7 @@ import (
 	"testing"
 	"time"
 
-	"github.com/nick/gopi/internal/sessionlayout"
+	"github.com/nickhuang99/gopi/internal/sessionlayout"
 )
 
 // legacyFixture is one planted sessions tree, with its members named by role.

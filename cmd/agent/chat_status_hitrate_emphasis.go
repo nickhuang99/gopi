@@ -3,7 +3,7 @@ package main
 import (
 	"strings"
 
-	"github.com/nick/gopi/internal/lineedit"
+	"github.com/nickhuang99/gopi/internal/lineedit"
 )
 
 // The PRODUCER half of the status row's measured-quality emphasis: WHICH spans of

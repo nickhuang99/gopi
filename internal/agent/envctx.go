@@ -38,7 +38,7 @@ package agent
 // this function returns the project context unchanged. Nothing here can fail a
 // run.
 
-import "github.com/nick/gopi/internal/envctx"
+import "github.com/nickhuang99/gopi/internal/envctx"
 
 // withEnvironmentBlock appends this host's environment description (summary +
 // pointer to the full file) to the agent's context string.

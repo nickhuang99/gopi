@@ -34,7 +34,7 @@ import (
 	"strings"
 	"testing"
 
-	"github.com/nick/gopi/internal/devdoc"
+	"github.com/nickhuang99/gopi/internal/devdoc"
 )
 
 // devdocClassOf reads the truth class rel under root declares on its first

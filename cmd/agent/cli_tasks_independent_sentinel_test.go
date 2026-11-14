@@ -41,9 +41,9 @@ import (
 	"strings"
 	"testing"
 
-	"github.com/nick/gopi/internal/taskverbs"
-	"github.com/nick/gopi/internal/testutil"
-	"github.com/nick/gopi/internal/toolnames"
+	"github.com/nickhuang99/gopi/internal/taskverbs"
+	"github.com/nickhuang99/gopi/internal/testutil"
+	"github.com/nickhuang99/gopi/internal/toolnames"
 )
 
 // independentSentinelProbeID is a real uuid: `task submit` refuses an id that

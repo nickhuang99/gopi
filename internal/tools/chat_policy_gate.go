@@ -38,8 +38,8 @@ import (
 	"strings"
 	"sync"
 
-	"github.com/nick/gopi/internal/chatpolicy"
-	"github.com/nick/gopi/internal/toolnames"
+	"github.com/nickhuang99/gopi/internal/chatpolicy"
+	"github.com/nickhuang99/gopi/internal/toolnames"
 )
 
 // chatWriteApprovalPrefix opens the text a PROMPT decision returns.

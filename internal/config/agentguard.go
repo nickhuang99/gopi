@@ -6,9 +6,9 @@ import (
 	"strconv"
 	"strings"
 
-	"github.com/nick/gopi/internal/boolvocab"
-	"github.com/nick/gopi/internal/cliverbs"
-	"github.com/nick/gopi/internal/procname"
+	"github.com/nickhuang99/gopi/internal/boolvocab"
+	"github.com/nickhuang99/gopi/internal/cliverbs"
+	"github.com/nickhuang99/gopi/internal/procname"
 )
 
 // agentguard.go — the SIGNAL + GUARD behind the operator's 2026-09-12 ruling:

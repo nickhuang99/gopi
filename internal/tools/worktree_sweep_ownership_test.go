@@ -2,12 +2,12 @@ package tools
 
 import (
 	"context"
-	"github.com/nick/gopi/internal/scratch"
+	"github.com/nickhuang99/gopi/internal/scratch"
 	"strings"
 	"testing"
 	"time"
 
-	"github.com/nick/gopi/internal/worktreeroots"
+	"github.com/nickhuang99/gopi/internal/worktreeroots"
 )
 
 // sweepOwnershipRoot declares a root for the ownership-rung tests.

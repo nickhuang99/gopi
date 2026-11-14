@@ -31,9 +31,9 @@ import (
 	"syscall"
 	"testing"
 
-	"github.com/nick/gopi/internal/cliverbs"
-	"github.com/nick/gopi/internal/sessionevent"
-	"github.com/nick/gopi/internal/testutil"
+	"github.com/nickhuang99/gopi/internal/cliverbs"
+	"github.com/nickhuang99/gopi/internal/sessionevent"
+	"github.com/nickhuang99/gopi/internal/testutil"
 )
 
 // signalVerdictEventType is the event the recorder appends, spelled through the

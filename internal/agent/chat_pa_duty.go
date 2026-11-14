@@ -143,11 +143,11 @@ package agent
 import (
 	"strings"
 
-	"github.com/nick/gopi/internal/branchform"
-	"github.com/nick/gopi/internal/cliverbs"
-	"github.com/nick/gopi/internal/tasktags"
-	"github.com/nick/gopi/internal/toolnames"
-	"github.com/nick/gopi/internal/tools"
+	"github.com/nickhuang99/gopi/internal/branchform"
+	"github.com/nickhuang99/gopi/internal/cliverbs"
+	"github.com/nickhuang99/gopi/internal/tasktags"
+	"github.com/nickhuang99/gopi/internal/toolnames"
+	"github.com/nickhuang99/gopi/internal/tools"
 )
 
 // chatPADutyMarker opens the duty paragraph. It is the string the tests (and a

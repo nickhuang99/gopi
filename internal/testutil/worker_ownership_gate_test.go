@@ -52,9 +52,9 @@ import (
 	"strings"
 	"testing"
 
-	"github.com/nick/gopi/internal/config"
-	"github.com/nick/gopi/internal/procname"
-	"github.com/nick/gopi/internal/workerownership"
+	"github.com/nickhuang99/gopi/internal/config"
+	"github.com/nickhuang99/gopi/internal/procname"
+	"github.com/nickhuang99/gopi/internal/workerownership"
 )
 
 const (
@@ -246,10 +246,10 @@ var workerOwnershipDismissed = map[string]string{
 	// "devdoc/chat-table-design.md" REMOVED 2026-10-31: the doc now carries
 	// the pointer itself (header line 4, added by d4deb20), so the dismissal
 	// had become a permit hiding a real annotation — the ratchet turns.
-	"devdoc/help-task-serve-to-merger-20260903.md":        "usage-help rewrite record: quotes the help text it changed",
-	"devdoc/positional-submit-payload.md":                 "CLI-input design note",
-	"devdoc/post-receive-hook-v5.md":                      "hook design note: names who drains the queue",
-	"devdoc/review-cli-task-core.md":                      "CLI core review: quotes the repro commands OF THE REVIEW",
+	"devdoc/help-task-serve-to-merger-20260903.md": "usage-help rewrite record: quotes the help text it changed",
+	"devdoc/positional-submit-payload.md":          "CLI-input design note",
+	"devdoc/post-receive-hook-v5.md":               "hook design note: names who drains the queue",
+	"devdoc/review-cli-task-core.md":               "CLI core review: quotes the repro commands OF THE REVIEW",
 	// "devdoc/review2-tasksync.md" REMOVED 2026-11-08: the doc carries the
 	// pointer itself (header line 4), so the dismissal had become a permit
 	// hiding a real annotation from the audit — the ratchet turns down, never up.
@@ -275,7 +275,6 @@ var workerOwnershipDismissed = map[string]string{
 	"briefings/brief-worker-cohort-kill.md":  "evidence: the forensic timeline of the 04:12 cohort kill (which workers died, via what launcher) — the count IS the bug report",
 	"briefings/brief-worktree-recycle-2.md":  "evidence: quotes the operator's recollection of a past fix ('I thought ... gopi worker or task ... should remove git [worktree]') while reporting a recycling symptom",
 	"briefings/brief-task-ledger-hygiene.md": "evidence: a ledger-hygiene inventory listing `gopi worker -h` usage-fix commits by subject line",
-
 
 	// Design/architecture records: they state which process owns which path
 	// (so they name the verb) and explicitly assign the launch to the

@@ -6,7 +6,7 @@ import (
 	"fmt"
 	"os"
 
-	"github.com/nick/gopi/internal/tools"
+	"github.com/nickhuang99/gopi/internal/tools"
 )
 
 // memoryBackfillVerb is the sub-verb word dispatched by `gopi memory <sub>`

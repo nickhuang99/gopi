@@ -5,7 +5,7 @@ import (
 	"fmt"
 	"os"
 
-	"github.com/nick/gopi/internal/sessionevent"
+	"github.com/nickhuang99/gopi/internal/sessionevent"
 )
 
 // The wire field names of the resume_options event live in the LEAF package

@@ -3,7 +3,7 @@ package tasksource
 import (
 	"strings"
 
-	"github.com/nick/gopi/internal/config"
+	"github.com/nickhuang99/gopi/internal/config"
 )
 
 // Derive resolves the source value ONE row is written with. It is the single

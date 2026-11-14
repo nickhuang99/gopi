@@ -40,8 +40,8 @@ import (
 	"strings"
 	"testing"
 
-	"github.com/nick/gopi/internal/sessionlayout"
-	"github.com/nick/gopi/internal/tools"
+	"github.com/nickhuang99/gopi/internal/sessionlayout"
+	"github.com/nickhuang99/gopi/internal/tools"
 )
 
 // sessionMessageNoticeOnceText is the delivered text: distinctive, so that the

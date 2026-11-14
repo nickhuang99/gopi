@@ -48,7 +48,7 @@ import (
 	"testing"
 	"time"
 
-	"github.com/nick/gopi/internal/testutil"
+	"github.com/nickhuang99/gopi/internal/testutil"
 )
 
 // The pure-interrupt harness's own bounds. Every value is named (Rule 1).

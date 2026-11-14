@@ -12,8 +12,8 @@ import (
 	"fmt"
 	"os"
 
-	"github.com/nick/gopi/internal/gopilog"
-	"github.com/nick/gopi/internal/tokenizer"
+	"github.com/nickhuang99/gopi/internal/gopilog"
+	"github.com/nickhuang99/gopi/internal/tokenizer"
 )
 
 // tokensFileReportFmt is the one line `--file` prints. It names the PATH it

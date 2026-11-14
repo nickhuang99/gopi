@@ -6,7 +6,7 @@ import (
 	"strings"
 	"testing"
 
-	"github.com/nick/gopi/internal/shot"
+	"github.com/nickhuang99/gopi/internal/shot"
 )
 
 // typableForTest is the typability pre-flight the voice path runs, reached

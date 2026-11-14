@@ -60,7 +60,7 @@ import (
 	"path/filepath"
 	"strconv"
 
-	"github.com/nick/gopi/internal/scratch"
+	"github.com/nickhuang99/gopi/internal/scratch"
 )
 
 // The step markers of the one sentence this rung appends to a Running verdict's

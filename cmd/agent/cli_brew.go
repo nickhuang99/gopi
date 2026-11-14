@@ -13,8 +13,8 @@ import (
 	"strconv"
 	"time"
 
-	"github.com/nick/gopi/internal/config"
-	"github.com/nick/gopi/internal/tools"
+	"github.com/nickhuang99/gopi/internal/config"
+	"github.com/nickhuang99/gopi/internal/tools"
 )
 
 // brew CLI constants (Rule 1/2: every tunable in one place).

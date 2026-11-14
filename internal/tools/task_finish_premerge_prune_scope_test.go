@@ -41,7 +41,7 @@ import (
 	"database/sql"
 	"testing"
 
-	"github.com/nick/gopi/internal/testutil"
+	"github.com/nickhuang99/gopi/internal/testutil"
 )
 
 // pstRowID is the fixture row. A literal, not a generated id: the assertion is

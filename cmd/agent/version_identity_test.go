@@ -24,8 +24,8 @@ import (
 	"strings"
 	"testing"
 
-	"github.com/nick/gopi/internal/testutil"
-	gopiversion "github.com/nick/gopi/internal/version"
+	"github.com/nickhuang99/gopi/internal/testutil"
+	gopiversion "github.com/nickhuang99/gopi/internal/version"
 )
 
 const (

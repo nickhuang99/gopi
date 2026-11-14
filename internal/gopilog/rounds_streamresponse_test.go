@@ -18,7 +18,7 @@ import (
 	"path/filepath"
 	"testing"
 
-	"github.com/nick/gopi/internal/rawlogfmt"
+	"github.com/nickhuang99/gopi/internal/rawlogfmt"
 )
 
 // streamedRoundLog writes a one-request streamed round: a request asking for a

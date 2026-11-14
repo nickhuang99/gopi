@@ -49,7 +49,7 @@ import (
 	"io"
 	"strings"
 
-	"github.com/nick/gopi/internal/sgr"
+	"github.com/nickhuang99/gopi/internal/sgr"
 )
 
 // termSystemStyle is the ONE role a system explanation wears out of the run's

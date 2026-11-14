@@ -25,7 +25,7 @@ import (
 	"strings"
 	"testing"
 
-	"github.com/nick/gopi/internal/envctx"
+	"github.com/nickhuang99/gopi/internal/envctx"
 )
 
 // configEnvFixtureHome creates a temp HOME with the given ssh config and pins

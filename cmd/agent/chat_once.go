@@ -55,7 +55,7 @@ import (
 	"sync"
 	"time"
 
-	"github.com/nick/gopi/internal/agent"
+	"github.com/nickhuang99/gopi/internal/agent"
 )
 
 // The `gopi chat --once` vocabulary (Rule 1b: every word this face compares

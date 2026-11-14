@@ -117,7 +117,7 @@ package main
 
 import (
 	"bytes"
-	"github.com/nick/gopi/internal/heavytest"
+	"github.com/nickhuang99/gopi/internal/heavytest"
 	"os"
 	"os/exec"
 	"path/filepath"
@@ -128,12 +128,12 @@ import (
 	"testing"
 	"time"
 
-	"github.com/nick/gopi/internal/config"
-	"github.com/nick/gopi/internal/scratch"
-	"github.com/nick/gopi/internal/taskverbs"
-	"github.com/nick/gopi/internal/testutil"
-	"github.com/nick/gopi/internal/tools"
-	"github.com/nick/gopi/internal/worktreerelease"
+	"github.com/nickhuang99/gopi/internal/config"
+	"github.com/nickhuang99/gopi/internal/scratch"
+	"github.com/nickhuang99/gopi/internal/taskverbs"
+	"github.com/nickhuang99/gopi/internal/testutil"
+	"github.com/nickhuang99/gopi/internal/tools"
+	"github.com/nickhuang99/gopi/internal/worktreerelease"
 )
 
 // The CLI spellings this fixture hands the REAL binary. They are argv words of
@@ -468,7 +468,7 @@ func crcDeviceOf(t *testing.T, path string) uint64 {
 // composition, and the shape a neutered release cannot survive.
 //
 // The repo/role table is the sibling E2E's (settings.json: role omitted = the
-// real zpeer shape, an empty repos table for the sweep, no peers), the LLM is
+// real peerbox shape, an empty repos table for the sweep, no peers), the LLM is
 // the shared scripted mock, and the ledger is a throwaway file. Returns the env
 // and the session container the fixture must be able to see (Rule 15: the
 // fixture states its premise instead of assuming it).

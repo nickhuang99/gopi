@@ -29,8 +29,8 @@ package agent
 import (
 	"fmt"
 
-	"github.com/nick/gopi/internal/deepseek"
-	"github.com/nick/gopi/internal/toolnames"
+	"github.com/nickhuang99/gopi/internal/deepseek"
+	"github.com/nickhuang99/gopi/internal/toolnames"
 )
 
 // SeededRetrieval is a retrieval the harness ran for the model before the turn

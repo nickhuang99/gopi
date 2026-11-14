@@ -27,7 +27,7 @@ import (
 	"strings"
 	"testing"
 
-	"github.com/nick/gopi/internal/config"
+	"github.com/nickhuang99/gopi/internal/config"
 )
 
 // pinTurnsChannels clears the knob's channels and points the settings channel at

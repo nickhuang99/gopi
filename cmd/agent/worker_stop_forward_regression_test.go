@@ -33,7 +33,7 @@ import (
 	"testing"
 	"time"
 
-	"github.com/nick/gopi/internal/heavytest"
+	"github.com/nickhuang99/gopi/internal/heavytest"
 )
 
 // workerStopForwardHoldSeconds is how long the synthetic in-flight child stays

@@ -6,7 +6,7 @@ import (
 	"strings"
 	"testing"
 
-	gopiversion "github.com/nick/gopi/internal/version"
+	gopiversion "github.com/nickhuang99/gopi/internal/version"
 )
 
 // The producer's REAL dirty TAGGED display, not a fabricated one: Info.Display

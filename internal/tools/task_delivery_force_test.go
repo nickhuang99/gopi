@@ -27,8 +27,8 @@ import (
 	"strings"
 	"testing"
 
-	"github.com/nick/gopi/internal/cliverbs"
-	"github.com/nick/gopi/internal/testutil"
+	"github.com/nickhuang99/gopi/internal/cliverbs"
+	"github.com/nickhuang99/gopi/internal/testutil"
 )
 
 // dpForceFixture builds one undelivered row of the incident's exact shape and

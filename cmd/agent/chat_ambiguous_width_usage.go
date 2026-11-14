@@ -14,7 +14,7 @@ package main
 // no way to learn what the two words mean, which is the half the synopsis
 // cannot carry.
 
-import "github.com/nick/gopi/internal/config"
+import "github.com/nickhuang99/gopi/internal/config"
 
 // chatAmbiguousWidthUsage is that section. It states the ONE question the knob
 // answers (how many cells an East-Asian AMBIGUOUS rune occupies), the two named

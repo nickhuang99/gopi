@@ -15,7 +15,7 @@ import (
 	"testing"
 	"time"
 
-	"github.com/nick/gopi/internal/testutil"
+	"github.com/nickhuang99/gopi/internal/testutil"
 )
 
 // holderGoneMarkerFor renders the exact suffix the implementation emits for one

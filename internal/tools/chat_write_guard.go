@@ -46,10 +46,10 @@ import (
 	"path/filepath"
 	"strings"
 
-	"github.com/nick/gopi/internal/chatpolicy"
-	"github.com/nick/gopi/internal/gitargv"
-	"github.com/nick/gopi/internal/sessionlayout"
-	"github.com/nick/gopi/internal/toolnames"
+	"github.com/nickhuang99/gopi/internal/chatpolicy"
+	"github.com/nickhuang99/gopi/internal/gitargv"
+	"github.com/nickhuang99/gopi/internal/sessionlayout"
+	"github.com/nickhuang99/gopi/internal/toolnames"
 )
 
 // ChatWriteToolBash / ChatWriteToolWrite name the two tool arms this guard can

@@ -24,7 +24,7 @@ import (
 	"os/exec"
 	"strings"
 
-	"github.com/nick/gopi/internal/buildidentity"
+	"github.com/nickhuang99/gopi/internal/buildidentity"
 )
 
 // gitExecutable resolves the revision a build stands at. Named (Rule 1a) so a

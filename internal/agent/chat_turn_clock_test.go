@@ -26,7 +26,7 @@ import (
 	"testing"
 	"time"
 
-	"github.com/nick/gopi/internal/deepseek"
+	"github.com/nickhuang99/gopi/internal/deepseek"
 )
 
 // turnWireRoleUser is the wire role of a user message, named once because

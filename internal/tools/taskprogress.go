@@ -57,10 +57,10 @@ import (
 	"strings"
 	"time"
 
-	"github.com/nick/gopi/internal/config"
-	"github.com/nick/gopi/internal/procname"
-	"github.com/nick/gopi/internal/rundir"
-	"github.com/nick/gopi/internal/runlock"
+	"github.com/nickhuang99/gopi/internal/config"
+	"github.com/nickhuang99/gopi/internal/procname"
+	"github.com/nickhuang99/gopi/internal/rundir"
+	"github.com/nickhuang99/gopi/internal/runlock"
 )
 
 // The progress vocabulary. The words are the vocabulary — a renderer must not

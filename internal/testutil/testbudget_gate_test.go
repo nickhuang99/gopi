@@ -9,7 +9,7 @@ package testutil
 // minutes. On a loaded 4-core host shared with other agents, internal/tools
 // (1080 tests, hundreds of fresh SQLite scratch DBs) needs longer than that:
 // measured 189 s / 266 s / 386 s quiet, >600 s at load 42-63. The verdict a
-// reader sees is then `FAIL github.com/nick/gopi/internal/tools 600.3xx s` —
+// reader sees is then `FAIL github.com/nickhuang99/gopi/internal/tools 600.3xx s` —
 // text that reads like a failing assertion while proving nothing about the
 // code (Rule 15: a failure must NAME itself).
 //

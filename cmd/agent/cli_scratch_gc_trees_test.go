@@ -24,9 +24,9 @@ import (
 	"testing"
 	"time"
 
-	"github.com/nick/gopi/internal/heavytest"
-	"github.com/nick/gopi/internal/scratch"
-	"github.com/nick/gopi/internal/worktreeroots"
+	"github.com/nickhuang99/gopi/internal/heavytest"
+	"github.com/nickhuang99/gopi/internal/scratch"
+	"github.com/nickhuang99/gopi/internal/worktreeroots"
 )
 
 // declaredTreesEnv is the child environment for the declared-trees cases: a

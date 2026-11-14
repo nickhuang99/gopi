@@ -10,7 +10,7 @@ import (
 	"strings"
 	"testing"
 
-	"github.com/nick/gopi/internal/config"
+	"github.com/nickhuang99/gopi/internal/config"
 )
 
 // writeLegacySettings documents at a scratch path with the test's own body and

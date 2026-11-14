@@ -11,7 +11,7 @@ import (
 	"strconv"
 	"testing"
 
-	"github.com/nick/gopi/internal/scratch"
+	"github.com/nickhuang99/gopi/internal/scratch"
 )
 
 // TestScratchGCStaleMinFlagParsing pins the flag's two spellings, the value it

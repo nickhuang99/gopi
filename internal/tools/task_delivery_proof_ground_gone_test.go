@@ -45,7 +45,7 @@ import (
 	"path/filepath"
 	"testing"
 
-	"github.com/nick/gopi/internal/testutil"
+	"github.com/nickhuang99/gopi/internal/testutil"
 )
 
 // dpggChannel builds the post-2026-10-28 clone-channel shape and returns the

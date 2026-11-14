@@ -28,8 +28,8 @@ import (
 	"strings"
 	"testing"
 
-	"github.com/nick/gopi/internal/sessionevent"
-	gopiversion "github.com/nick/gopi/internal/version"
+	"github.com/nickhuang99/gopi/internal/sessionevent"
+	gopiversion "github.com/nickhuang99/gopi/internal/version"
 )
 
 // The flag VALUES the probes carry. Named, not inline (Rule 1): a bare literal

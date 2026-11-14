@@ -19,7 +19,7 @@ import (
 	"testing"
 	"time"
 
-	"github.com/nick/gopi/internal/uiclient"
+	"github.com/nickhuang99/gopi/internal/uiclient"
 )
 
 // compareLine is the CJK+latin line the grid is painted with and the transcript

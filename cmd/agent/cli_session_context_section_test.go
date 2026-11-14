@@ -15,7 +15,7 @@ import (
 	"strings"
 	"testing"
 
-	"github.com/nick/gopi/internal/ctxdump"
+	"github.com/nickhuang99/gopi/internal/ctxdump"
 )
 
 // TestSessionContextUsageDocumentsTheSectionFlags pins the page/parser agreement:

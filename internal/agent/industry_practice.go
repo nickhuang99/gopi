@@ -106,7 +106,7 @@ import (
 	"sort"
 	"strings"
 
-	"github.com/nick/gopi/internal/toolnames"
+	"github.com/nickhuang99/gopi/internal/toolnames"
 )
 
 // systemPromptKernel is the prompt registry's own join — the KERNEL, without

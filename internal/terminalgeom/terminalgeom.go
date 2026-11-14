@@ -24,8 +24,8 @@ package terminalgeom
 import (
 	"os"
 
-	"github.com/nick/gopi/internal/lineedit"
-	"github.com/nick/gopi/internal/sessionevent"
+	"github.com/nickhuang99/gopi/internal/lineedit"
+	"github.com/nickhuang99/gopi/internal/sessionevent"
 )
 
 // Standard measures the geometry of this process's own standard descriptors.

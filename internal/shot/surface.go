@@ -15,7 +15,7 @@ import (
 	"os"
 	"strings"
 
-	"github.com/nick/gopi/internal/text2img"
+	"github.com/nickhuang99/gopi/internal/text2img"
 )
 
 // Surface names (Rule 1b: the accepted values live here, once) — the CLI, the

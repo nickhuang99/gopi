@@ -39,7 +39,7 @@ import (
 	"strings"
 	"testing"
 
-	"github.com/nick/gopi/internal/testutil"
+	"github.com/nickhuang99/gopi/internal/testutil"
 )
 
 // axisGit runs git in dir for a fixture and fails the test on error.

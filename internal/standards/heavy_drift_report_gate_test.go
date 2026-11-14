@@ -231,8 +231,8 @@ func TestHeavyDriftReportNamesAnUnclassifiedSlowTest(t *testing.T) {
 	// Three top-level tests: one slow and unclassified (must be named), one slow
 	// but classified (must NOT be named), one fast (below the floor).
 	const (
-		classifiedPkg = "github.com/nick/gopi/internal/tools"
-		slowPkg       = "github.com/nick/gopi/internal/agent"
+		classifiedPkg = "github.com/nickhuang99/gopi/internal/tools"
+		slowPkg       = "github.com/nickhuang99/gopi/internal/agent"
 		sentinelTest  = "TestProbeUnclassifiedSlow"
 		classifiedT   = "TestProbeClassifiedSlow"
 		fastT         = "TestProbeFast"
@@ -295,7 +295,7 @@ func TestHeavyDriftReportAgreesWithTheInventoryAlone(t *testing.T) {
 			continue
 		}
 		rows = append(rows, probeTest{
-			pkg:  "github.com/nick/gopi/" + path.Dir(cols[2]),
+			pkg:  "github.com/nickhuang99/gopi/" + path.Dir(cols[2]),
 			test: cols[0],
 			sec:  heavyProbeSlowSeconds,
 		})

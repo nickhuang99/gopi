@@ -16,10 +16,10 @@ import (
 	"testing"
 	"time"
 
-	"github.com/nick/gopi/internal/config"
-	"github.com/nick/gopi/internal/procname"
-	"github.com/nick/gopi/internal/runlock"
-	"github.com/nick/gopi/internal/sessionlayout"
+	"github.com/nickhuang99/gopi/internal/config"
+	"github.com/nickhuang99/gopi/internal/procname"
+	"github.com/nickhuang99/gopi/internal/runlock"
+	"github.com/nickhuang99/gopi/internal/sessionlayout"
 )
 
 // TestStatusReportKeepsTheStampAndTheFlockApart drives the real path —

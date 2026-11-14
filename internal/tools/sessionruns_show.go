@@ -5,8 +5,8 @@ import (
 	"strings"
 	"time"
 
-	"github.com/nick/gopi/internal/procstat"
-	"github.com/nick/gopi/internal/rundir"
+	"github.com/nickhuang99/gopi/internal/procstat"
+	"github.com/nickhuang99/gopi/internal/rundir"
 )
 
 // sessionruns_show.go — ONE SESSION, RESOLVED ACROSS BOTH SOURCES.

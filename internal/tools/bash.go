@@ -13,8 +13,8 @@ import (
 	"syscall"
 	"time"
 
-	"github.com/nick/gopi/internal/procname"
-	"github.com/nick/gopi/internal/scratch"
+	"github.com/nickhuang99/gopi/internal/procname"
+	"github.com/nickhuang99/gopi/internal/scratch"
 )
 
 const (

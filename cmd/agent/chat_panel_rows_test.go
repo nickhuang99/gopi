@@ -9,7 +9,7 @@ import (
 	"testing"
 	"time"
 
-	"github.com/nick/gopi/internal/lineedit"
+	"github.com/nickhuang99/gopi/internal/lineedit"
 )
 
 // chat_panel_rows_test.go — the REPL's OWN text (the /help panel, a slash

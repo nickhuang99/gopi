@@ -1,7 +1,7 @@
 // x11route_fallback_test.go — the route-resolution guards for the defect
 // "`gopi tool act info` → connect … no such file or directory".
 //
-// THE DEFECT (measured on zpeer, 2026-09-20): `DISPLAY=localhost:17.0` (an SSH
+// THE DEFECT (measured on peerbox, 2026-09-20): `DISPLAY=localhost:17.0` (an SSH
 // forward whose forward is gone) made every X11 path fail with ENOENT — while
 // the SAME HOST had live displays (:1, :98) and the same display NUMBER was
 // often served locally by the durable Xvfb. The resolver mapped a `localhost`
@@ -9,15 +9,15 @@
 // socket was gone never looked for the same number over the other local
 // transport. This file pins the corrected resolution:
 //
-//	1. the route ORDER (the transport the DISPLAY names first, the other local
-//	   transport only as a fallback — and no fabricated route for a remote host);
-//	2. the FALLBACK actually reaching a server that answers on it, through the
-//	   same entry points the CLI uses (dialX11 for capture, OpenXActuator for
-//	   `gopi tool act`) — a test that only checks the route TABLE would pass with a
-//	   resolver that computes the right list and never dials it;
-//	3. the LOUD failure when nothing answers: every route tried, named with its
-//	   own error, plus this host's live displays as the remedy (Rule 15 — the
-//	   bare `no such file or directory` was the whole complaint).
+//  1. the route ORDER (the transport the DISPLAY names first, the other local
+//     transport only as a fallback — and no fabricated route for a remote host);
+//  2. the FALLBACK actually reaching a server that answers on it, through the
+//     same entry points the CLI uses (dialX11 for capture, OpenXActuator for
+//     `gopi tool act`) — a test that only checks the route TABLE would pass with a
+//     resolver that computes the right list and never dials it;
+//  3. the LOUD failure when nothing answers: every route tried, named with its
+//     own error, plus this host's live displays as the remedy (Rule 15 — the
+//     bare `no such file or directory` was the whole complaint).
 //
 // The fixtures reuse the fake X server in cov_shot_x11_test.go (a protocol-
 // level server that replays the connection-setup reply and answers the requests
@@ -172,7 +172,7 @@ func TestDialX11FallsBackToTCPWhenTheLocalSocketIsGone(t *testing.T) {
 
 // TestDialX11FallsBackToTheLocalSocketForALocalhostDisplay is the other half:
 // the DISPLAY names `localhost:N` (TCP over a forward that has died) while the
-// same display NUMBER is served locally on the unix socket. That is the zpeer
+// same display NUMBER is served locally on the unix socket. That is the peerbox
 // case the worker's display preflight reports as an unreachable GUI, and the
 // local server is the display the operator meant.
 func TestDialX11FallsBackToTheLocalSocketForALocalhostDisplay(t *testing.T) {

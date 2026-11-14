@@ -34,8 +34,8 @@ import (
 	"testing"
 	"time"
 
-	"github.com/nick/gopi/internal/agent"
-	"github.com/nick/gopi/internal/deepseek"
+	"github.com/nickhuang99/gopi/internal/agent"
+	"github.com/nickhuang99/gopi/internal/deepseek"
 )
 
 // webQueueTestToolDelay is how long the stubbed tool blocks: long enough that a

@@ -53,8 +53,8 @@ import (
 	"strings"
 	"testing"
 
-	"github.com/nick/gopi/internal/taskverbs"
-	"github.com/nick/gopi/internal/toolnames"
+	"github.com/nickhuang99/gopi/internal/taskverbs"
+	"github.com/nickhuang99/gopi/internal/toolnames"
 )
 
 // helpPageTimeout bounds one `gopi <verb> -h` probe. It mirrors

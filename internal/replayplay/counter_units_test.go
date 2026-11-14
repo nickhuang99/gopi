@@ -28,7 +28,7 @@ import (
 	"path/filepath"
 	"testing"
 
-	"github.com/nick/gopi/internal/gopilog"
+	"github.com/nickhuang99/gopi/internal/gopilog"
 )
 
 // TestPlayableUnitsIsTheTurnCountWhenTurnsExist: with a log present the playback

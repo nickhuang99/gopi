@@ -956,8 +956,8 @@ echo "surface:           $(printf '%s\n' "$TOOLS" | cnt) LLM tool names, $(print
 echo "direct deps:       $(printf '%s\n' "$DIRECT_DEPS" | tr '\n' ' ')"
 # What the code actually imports, which is the number an outsider can compare:
 # count DISTINCT third-party roots across production files. The module path
-# (github.com/nick/gopi) is this repo, not a dependency, so it is dropped.
-THIRD_PARTY=$(git grep -hE "$THIRD_PARTY_PREFIX_RE" -- '*.go' ':(exclude)*_test.go' 2>/dev/null | tr -d ' \t"' | sed 's/".*//' | grep -v '^github.com/nick/gopi' | sed 's#\(^[^/]*/[^/]*\).*#\1#' | sort -u)
+# (github.com/nickhuang99/gopi) is this repo, not a dependency, so it is dropped.
+THIRD_PARTY=$(git grep -hE "$THIRD_PARTY_PREFIX_RE" -- '*.go' ':(exclude)*_test.go' 2>/dev/null | tr -d ' \t"' | sed 's/".*//' | grep -v '^github.com/nickhuang99/gopi' | sed 's#\(^[^/]*/[^/]*\).*#\1#' | sort -u)
 echo "imported 3rd-party roots (production): $(printf '%s\n' "$THIRD_PARTY" | cnt) — $(printf '%s\n' "$THIRD_PARTY" | tr '\n' ' ')"
 
 # --- working tree & recent activity -------------------------------------------

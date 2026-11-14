@@ -3,7 +3,7 @@ package tools
 import (
 	"context"
 	"database/sql"
-	"github.com/nick/gopi/internal/heavytest"
+	"github.com/nickhuang99/gopi/internal/heavytest"
 	"path/filepath"
 	"strings"
 	"sync"

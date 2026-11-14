@@ -55,8 +55,8 @@ IMPORTS = [
     ('time', r'\btime\.'),
 ]
 THIRD = [
-    ('github.com/nick/gopi/internal/taskverbs', r'\btaskverbs\.'),
-    ('github.com/nick/gopi/internal/testutil', r'\btestutil\.'),
+    ('github.com/nickhuang99/gopi/internal/taskverbs', r'\btaskverbs\.'),
+    ('github.com/nickhuang99/gopi/internal/testutil', r'\btestutil\.'),
 ]
 
 

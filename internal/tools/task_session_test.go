@@ -31,7 +31,7 @@ import (
 	"strings"
 	"testing"
 
-	"github.com/nick/gopi/internal/tasksource"
+	"github.com/nickhuang99/gopi/internal/tasksource"
 )
 
 // phase1AttachEnv points GOPI_HOME and the memory DB at temp dirs so the

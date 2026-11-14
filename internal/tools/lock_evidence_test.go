@@ -29,7 +29,7 @@ import (
 	"testing"
 	"time"
 
-	"github.com/nick/gopi/internal/testutil"
+	"github.com/nickhuang99/gopi/internal/testutil"
 )
 
 // leHolderScript is the child's "inherit the lock and keep it" recipe: fd 3 is

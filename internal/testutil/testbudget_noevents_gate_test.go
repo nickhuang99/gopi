@@ -84,7 +84,7 @@ const (
 	// for go's own diagnostic, quoted back by the report.
 	budgetStubDiagnosis = "go: writing test output: no space left on device (stub go, no disk was filled)"
 	// budgetStubEvent is the one structured event the control arm emits.
-	budgetStubEvent = `{"Action":"fail","Package":"github.com/nick/gopi/internal/smokegate","Test":"TestStubGoNeverRan"}`
+	budgetStubEvent = `{"Action":"fail","Package":"github.com/nickhuang99/gopi/internal/smokegate","Test":"TestStubGoNeverRan"}`
 	// budgetStubBuildCase is the stub's answer to the script's tested-binary
 	// build: success, so the run's own "not evidence about this tree" preflight
 	// stays out of the way and only the test run is under test.

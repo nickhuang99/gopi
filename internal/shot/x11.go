@@ -561,7 +561,7 @@ func connectedDisplayName(display string, r x11Route, authBadge string) string {
 // answers. That server is the display the operator meant in every sense that
 // matters to actuation, and refusing to look for it made `gopi tool act`,
 // `screen_capture` and the worker's display preflight report a broken GUI
-// capability on a host where the GUI demonstrably worked (measured on zpeer:
+// capability on a host where the GUI demonstrably worked (measured on peerbox:
 // DISPLAY=localhost:17.0 dead, :1 and :98 live).
 //
 // A REMOTE host gets NO fallback: its unix socket is not ours to invent, so no
@@ -620,7 +620,7 @@ func x11AuthRetryable(err error) bool {
 
 // x11CredentialBadge names the accepted credential in one short token for the
 // display name a result echoes (Rule 15: a credential substitution is visible,
-// never silent). A Local entry is named by its address spelling ("zpeer"),
+// never silent). A Local entry is named by its address spelling ("peerbox"),
 // an Internet one has none and says so.
 func x11CredentialBadge(c x11Credential) string {
 	if c.address != "" {
@@ -1143,7 +1143,7 @@ func x11CredentialLabel(c x11Credential, number int) string {
 // carries SEVERAL entries for one display number — the same number is forwarded
 // to this host under different client-side address spellings (a per-session
 // `localhost:N` entry injected by sshd's xauth, plus whatever spelling a real
-// client host used: on this host `host-b:N`, `zpeer:N`, `localhost:N`
+// client host used: on this host `host-b:N`, `peerbox:N`, `localhost:N`
 // and an empty Internet-name entry all coexist). Only the SERVER knows which
 // cookie its forward demon holds, so the client must offer them in the most
 // likely order:

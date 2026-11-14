@@ -10,7 +10,7 @@ import (
 	"syscall"
 	"time"
 
-	"github.com/nick/gopi/internal/scratch"
+	"github.com/nickhuang99/gopi/internal/scratch"
 )
 
 // Job management helpers backing the merged job tool (job family merge;

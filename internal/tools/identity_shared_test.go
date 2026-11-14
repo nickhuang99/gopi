@@ -28,7 +28,7 @@ package tools
 // rows.
 
 import (
-	"github.com/nick/gopi/internal/heavytest"
+	"github.com/nickhuang99/gopi/internal/heavytest"
 	"os"
 	"path/filepath"
 	"regexp"
@@ -36,7 +36,7 @@ import (
 	"strings"
 	"testing"
 
-	"github.com/nick/gopi/internal/procname"
+	"github.com/nickhuang99/gopi/internal/procname"
 )
 
 const (

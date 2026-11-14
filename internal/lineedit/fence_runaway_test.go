@@ -114,7 +114,7 @@ func TestLineComposerEndStreamIsNotABlockClose(t *testing.T) {
 		FenceMarker,
 		"you> head -3 go.mod",
 		quotedMarkerIndent + FenceMarker, // quoted INSIDE the block: literal text
-		"module github.com/nick/gopi",
+		"module github.com/nickhuang99/gopi",
 		FenceMarker, // the block's own delimiter: closes it
 		BoldMarker + "prose after the closed block" + BoldMarker,
 	}

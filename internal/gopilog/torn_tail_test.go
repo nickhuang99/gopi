@@ -36,7 +36,7 @@ import (
 	"strings"
 	"testing"
 
-	"github.com/nick/gopi/internal/config"
+	"github.com/nickhuang99/gopi/internal/config"
 )
 
 // tornTailFixture is a copy of one of the three real torn session records.

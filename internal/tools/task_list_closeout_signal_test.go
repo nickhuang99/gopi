@@ -27,7 +27,7 @@ import (
 	"strings"
 	"testing"
 
-	"github.com/nick/gopi/internal/testutil"
+	"github.com/nickhuang99/gopi/internal/testutil"
 )
 
 // The HALF-CHAIN CLAIMS the header used to carry, and must never carry again.

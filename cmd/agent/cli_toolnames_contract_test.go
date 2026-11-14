@@ -29,7 +29,7 @@ import (
 	"strings"
 	"testing"
 
-	"github.com/nick/gopi/internal/toolnames"
+	"github.com/nickhuang99/gopi/internal/toolnames"
 )
 
 // toolMirrorArgvVerb is one argv verb the CLI exposes under a tool wire name.

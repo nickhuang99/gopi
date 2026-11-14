@@ -32,7 +32,7 @@ import (
 	"strings"
 	"testing"
 
-	"github.com/nick/gopi/internal/lineedit"
+	"github.com/nickhuang99/gopi/internal/lineedit"
 )
 
 // turnBodyCallCount counts the tool-call rows in a laid-out body: rows OPENING

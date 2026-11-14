@@ -37,7 +37,7 @@ package agent
 import (
 	"fmt"
 
-	"github.com/nick/gopi/internal/cliverbs"
+	"github.com/nickhuang99/gopi/internal/cliverbs"
 )
 
 // The note's two halves (Rule 1: every meaning-carrying string is a named

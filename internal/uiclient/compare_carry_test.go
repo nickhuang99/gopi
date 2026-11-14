@@ -17,7 +17,7 @@ package uiclient
 import (
 	"testing"
 
-	"github.com/nick/gopi/internal/lineedit"
+	"github.com/nickhuang99/gopi/internal/lineedit"
 )
 
 // cjkAnswerLine is the line the defect was measured on, verbatim.

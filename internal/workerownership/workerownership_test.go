@@ -13,7 +13,7 @@ package workerownership
 import (
 	"testing"
 
-	"github.com/nick/gopi/internal/procname"
+	"github.com/nickhuang99/gopi/internal/procname"
 )
 
 // TestLaunchShapeSeparatorIsTheCorpusSeparator pins the exported constant and

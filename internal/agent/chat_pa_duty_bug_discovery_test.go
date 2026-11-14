@@ -30,9 +30,9 @@ import (
 	"strings"
 	"testing"
 
-	"github.com/nick/gopi/internal/cliverbs"
-	"github.com/nick/gopi/internal/tasktags"
-	"github.com/nick/gopi/internal/toolnames"
+	"github.com/nickhuang99/gopi/internal/cliverbs"
+	"github.com/nickhuang99/gopi/internal/tasktags"
+	"github.com/nickhuang99/gopi/internal/toolnames"
 )
 
 // chatPADutyBugRendered is the clause as it renders on each limb, keyed the way a

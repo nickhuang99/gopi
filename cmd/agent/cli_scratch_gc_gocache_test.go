@@ -20,7 +20,7 @@ import (
 	"testing"
 	"time"
 
-	"github.com/nick/gopi/internal/scratch"
+	"github.com/nickhuang99/gopi/internal/scratch"
 )
 
 // gocacheArmEntryBytes is the size of one fixture cache entry's DATA file. It is

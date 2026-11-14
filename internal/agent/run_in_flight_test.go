@@ -35,7 +35,7 @@ import (
 	"testing"
 	"time"
 
-	"github.com/nick/gopi/internal/deepseek"
+	"github.com/nickhuang99/gopi/internal/deepseek"
 )
 
 // runInFlightTextServer answers every request with one short text stream: the

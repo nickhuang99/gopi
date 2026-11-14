@@ -43,8 +43,8 @@ import (
 	"os"
 	"strings"
 
-	"github.com/nick/gopi/internal/config"
-	"github.com/nick/gopi/internal/tools"
+	"github.com/nickhuang99/gopi/internal/config"
+	"github.com/nickhuang99/gopi/internal/tools"
 )
 
 // Rule 1 constants for the seam's two decisions (see cli_tasks.go): the

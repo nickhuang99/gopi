@@ -9,7 +9,7 @@ import (
 	"testing"
 	"time"
 
-	"github.com/nick/gopi/internal/heavytest"
+	"github.com/nickhuang99/gopi/internal/heavytest"
 )
 
 // tempMemoryDB points the memory DB at a throwaway file for the test.

@@ -7,7 +7,7 @@ import (
 	"strings"
 	"testing"
 
-	"github.com/nick/gopi/internal/boolvocab"
+	"github.com/nickhuang99/gopi/internal/boolvocab"
 )
 
 // boundary.go — WHO MAY ENABLE THE HEAVY SET.

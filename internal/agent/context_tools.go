@@ -5,7 +5,7 @@ import (
 	"hash/fnv"
 	"unicode/utf8"
 
-	"github.com/nick/gopi/internal/deepseek"
+	"github.com/nickhuang99/gopi/internal/deepseek"
 )
 
 // Tool definitions are part of the request body and part of the prompt the

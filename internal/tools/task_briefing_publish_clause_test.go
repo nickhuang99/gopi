@@ -38,7 +38,7 @@ import (
 	"strings"
 	"testing"
 
-	"github.com/nick/gopi/internal/devworkspace"
+	"github.com/nickhuang99/gopi/internal/devworkspace"
 )
 
 // TestBriefingPublishClauseNamesTheRouteAndTheBan is the clause's behaviour on a

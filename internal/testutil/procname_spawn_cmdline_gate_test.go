@@ -399,7 +399,7 @@ import (
 	"strconv"
 	"testing"
 
-	"github.com/nick/gopi/internal/procname"
+	"github.com/nickhuang99/gopi/internal/procname"
 )
 
 func fixture(t *testing.T, root string, pid int) {
@@ -421,7 +421,7 @@ import (
 	"strconv"
 	"testing"
 
-	"github.com/nick/gopi/internal/procname"
+	"github.com/nickhuang99/gopi/internal/procname"
 )
 
 func fixture(t *testing.T, root string, pid int) {

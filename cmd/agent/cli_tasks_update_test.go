@@ -16,8 +16,8 @@ import (
 	"strings"
 	"testing"
 
-	"github.com/nick/gopi/internal/taskverbs"
-	"github.com/nick/gopi/internal/tools"
+	"github.com/nickhuang99/gopi/internal/taskverbs"
+	"github.com/nickhuang99/gopi/internal/tools"
 )
 
 // TestTaskFlagMemberUpdateResult — bugfix-task-p1 regression: the verify

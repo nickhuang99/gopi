@@ -23,7 +23,7 @@ import (
 	"testing"
 	"time"
 
-	"github.com/nick/gopi/internal/config"
+	"github.com/nickhuang99/gopi/internal/config"
 )
 
 // countingTailReader redirects the tail-read seam onto a counting file and

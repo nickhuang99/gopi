@@ -19,10 +19,10 @@ import (
 	"strings"
 	"sync/atomic"
 
-	"github.com/nick/gopi/internal/boolvocab"
-	"github.com/nick/gopi/internal/replaymode"
-	"github.com/nick/gopi/internal/tasksource"
-	"github.com/nick/gopi/internal/tools"
+	"github.com/nickhuang99/gopi/internal/boolvocab"
+	"github.com/nickhuang99/gopi/internal/replaymode"
+	"github.com/nickhuang99/gopi/internal/tasksource"
+	"github.com/nickhuang99/gopi/internal/tools"
 )
 
 // chatRegisterEnv is the chat-registration kill switch (default ON).

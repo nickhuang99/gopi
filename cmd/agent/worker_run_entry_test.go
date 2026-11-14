@@ -40,7 +40,7 @@ import (
 	"strings"
 	"testing"
 
-	"github.com/nick/gopi/internal/taskverbs"
+	"github.com/nickhuang99/gopi/internal/taskverbs"
 )
 
 // workerRunEntryRemovedExit is the exit code the retired `gopi task run`
@@ -69,7 +69,7 @@ func TestTaskRunIsRetiredAndPointsAtTheWorker(t *testing.T) {
 		{"with row", []string{CliVerbTask, taskverbs.Run, "t-anything"}},
 		{"next (the old claim spelling)", []string{CliVerbTask, taskverbs.Run, taskverbs.Next}},
 		{ // The exact shape the dispatch path records as run_cmd.
-			"remote report-back argv", []string{CliVerbTask, taskverbs.Run, "t-dispatch", flagReportTo, "zpeer", flagRepo, "zpeer:~/work/GoPi"}},
+			"remote report-back argv", []string{CliVerbTask, taskverbs.Run, "t-dispatch", flagReportTo, "peerbox", flagRepo, "peerbox:~/work/GoPi"}},
 		{"takeover", []string{CliVerbTask, taskverbs.Run, "t-held", workerFlagTakeover, workerFlagAs, "taker:1"}},
 	} {
 		t.Run(tc.name, func(t *testing.T) {
@@ -195,7 +195,7 @@ func TestWorkerRejectsContradictorySelection(t *testing.T) {
 		},
 		{
 			name:        "report-to without a row",
-			argv:        []string{CliVerbWorker, flagReportTo, "zpeer"},
+			argv:        []string{CliVerbWorker, flagReportTo, "peerbox"},
 			mustMention: []string{flagReportTo, "<task-id>"},
 		},
 	} {

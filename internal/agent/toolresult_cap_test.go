@@ -6,7 +6,7 @@ import (
 	"testing"
 	"time"
 
-	"github.com/nick/gopi/internal/deepseek"
+	"github.com/nickhuang99/gopi/internal/deepseek"
 )
 
 // logShapedText builds n bytes of the text a real tool actually emits — many

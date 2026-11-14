@@ -6,15 +6,15 @@ import (
 	"testing"
 	"time"
 
-	"github.com/nick/gopi/internal/config"
+	"github.com/nickhuang99/gopi/internal/config"
 )
 
 // Anti-reflow export gate (brew double-gate semantics, epic ⑦ hardening):
 // rows tagged from-<THIS node> arrived through the task-sync channel — the
 // exporter never re-exports them. Without the gate a relay/loop topology
-// (HP holding rows it received FROM zpeer) ships them back, and any local
+// (HP holding rows it received FROM peerbox) ships them back, and any local
 // touch on hp (tag edit bumps updated_at) makes the echo look like NEWER
-// work to zpeer's merge — the peer's own state gets overwritten by its own
+// work to peerbox's merge — the peer's own state gets overwritten by its own
 // stale mirror round-tripping through hp.
 
 // TestReflowExportExcludesFromPeerRows — the delta exporter (v2 session
@@ -30,16 +30,16 @@ func TestReflowExportExcludesFromPeerRows(t *testing.T) {
 
 	// hp's own row (never synced) — must export.
 	n.submit(t, "t-hp-own", "hp original work", "module:p", "p1")
-	// A row hp received from zpeer (from-zpeer tag = the PEER's provenance)
-	// — must NOT export toward zpeer. It stays PENDING on hp (untouched
+	// A row hp received from peerbox (from-peerbox tag = the PEER's provenance)
+	// — must NOT export toward peerbox. It stays PENDING on hp (untouched
 	// mirror) — the echo-loop face the gate exists for.
-	deltaInsertRaw(t, "t-echo-peer", "echoed row", taskStatusPending, 1, 1, SyncTaskTagPrefix+"zpeer")
+	deltaInsertRaw(t, "t-echo-peer", "echoed row", taskStatusPending, 1, 1, SyncTaskTagPrefix+"peerbox")
 	// A row from a third node — must export (relay legitimacy: forwarding
-	// it to zpeer is the M4.24 repair path for third-node rows). Terminal,
-	// but from-hp2 ≠ from-zpeer, so the gate tag doesn't bite anyway.
+	// it to peerbox is the M4.24 repair path for third-node rows). Terminal,
+	// but from-hp2 ≠ from-peerbox, so the gate tag doesn't bite anyway.
 	deltaInsertRaw(t, "t-third", "third-node row", taskStatusCompleted, 2, 2, SyncTaskTagPrefix+"hp2")
 
-	patch, _, err := SyncTaskExportDelta(SyncTaskDeltaOptions{Peer: "zpeer"})
+	patch, _, err := SyncTaskExportDelta(SyncTaskDeltaOptions{Peer: "peerbox"})
 	if err != nil {
 		t.Fatal(err)
 	}
@@ -72,7 +72,7 @@ func TestReflowExportLegacySelfFallback(t *testing.T) {
 	base := float64(time.Now().Unix())
 
 	deltaInsertRaw(t, "t-echo-self", "echoed row", taskStatusPending, base, base, SyncTaskTagPrefix+"hp")
-	deltaInsertRaw(t, "t-foreign", "foreign row", taskStatusCompleted, base+1, base+1, SyncTaskTagPrefix+"zpeer")
+	deltaInsertRaw(t, "t-foreign", "foreign row", taskStatusCompleted, base+1, base+1, SyncTaskTagPrefix+"peerbox")
 
 	patch, _, err := SyncTaskExportDelta(SyncTaskDeltaOptions{})
 	if err != nil {
@@ -126,18 +126,18 @@ func TestReflowExportGateV1Export(t *testing.T) {
 	}
 }
 
-// TestReflowEchoStaleMirrorNoReturn — the epic's死循环 end-to-end: zpeer
-// self-submits with a briefing → hp imports it (from-zpeer) → hp locally
+// TestReflowEchoStaleMirrorNoReturn — the epic's死循环 end-to-end: peerbox
+// self-submits with a briefing → hp imports it (from-peerbox) → hp locally
 // tags the row (its anchor advances; WITHOUT the gate hp re-exports it, and
-// zpeer's merge would see its own row as "remote newer" and let hp's stale
-// mirror tags overwrite zpeer's newer local tags). With the peer gate
-// (pushTo exports with Peer=dst): hp's re-export toward zpeer excludes the
-// from-zpeer row — zpeer's next session is a pure echo.
+// peerbox's merge would see its own row as "remote newer" and let hp's stale
+// mirror tags overwrite peerbox's newer local tags). With the peer gate
+// (pushTo exports with Peer=dst): hp's re-export toward peerbox excludes the
+// from-peerbox row — peerbox's next session is a pure echo.
 func TestReflowEchoStaleMirrorNoReturn(t *testing.T) {
 	hp := newBidirNode(t, "hp")
-	zb := newBidirNode(t, "zpeer")
+	zb := newBidirNode(t, "peerbox")
 
-	zb.submit(t, "t-z1", "zpeer briefing row", "module:x", "briefing-v1")
+	zb.submit(t, "t-z1", "peerbox briefing row", "module:x", "briefing-v1")
 	s1 := zb.pushTo(t, hp, "")
 	if s1.RowsImported != 1 {
 		t.Fatalf("hp imported=%d want 1: %+v", s1.RowsImported, s1)
@@ -157,7 +157,7 @@ func TestReflowEchoStaleMirrorNoReturn(t *testing.T) {
 	}
 	closeDB()
 
-	// hp → zpeer re-delivery of the SAME id: with the export gate the row
+	// hp → peerbox re-delivery of the SAME id: with the export gate the row
 	// never leaves hp → nothing to merge.
 	s2 := hp.pushTo(t, zb, "")
 	t.Logf("echo push stats: %+v", s2)
@@ -165,11 +165,11 @@ func TestReflowEchoStaleMirrorNoReturn(t *testing.T) {
 		t.Fatalf("echo re-delivery must no-op, got: %+v", s2)
 	}
 	if zb.rowCount(t) != 1 {
-		t.Fatalf("zpeer row count drifted: %d", zb.rowCount(t))
+		t.Fatalf("peerbox row count drifted: %d", zb.rowCount(t))
 	}
-	// zpeer's row content is untouched by the round trip.
+	// peerbox's row content is untouched by the round trip.
 	zr := zb.row(t, "t-z1")
 	if zr.Payload != "briefing-v1" || !hasTag(zr.Tags, "module:x") {
-		t.Fatalf("zpeer row mutated by reflow: %+v", zr)
+		t.Fatalf("peerbox row mutated by reflow: %+v", zr)
 	}
 }

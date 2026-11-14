@@ -12,7 +12,7 @@ import (
 	"testing"
 	"time"
 
-	"github.com/nick/gopi/internal/deepseek"
+	"github.com/nickhuang99/gopi/internal/deepseek"
 )
 
 // tickRe matches a tick label produced by SessionClock.TickLabel in EITHER

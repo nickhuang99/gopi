@@ -38,7 +38,7 @@ package tools
 // ── THE SECOND REFERENCE: WHICH MACHINE MADE IT ─────────────────────────────
 //
 // `git log` says nothing about the HOST that produced a commit, so across the
-// fleet (host-a / hp / zpeer) review and triage are blind on that axis: a
+// fleet (host-a / hp / peerbox) review and triage are blind on that axis: a
 // commit is visible but its author-machine is not. The same seam carries a
 // second trailer, `<HostTrailerKey>: <local hostname>`.
 //
@@ -103,7 +103,7 @@ import (
 	"os"
 	"strings"
 
-	"github.com/nick/gopi/internal/gitcommit"
+	"github.com/nickhuang99/gopi/internal/gitcommit"
 )
 
 // The trailer's TWO spellings have one home each (Rules 1/13/14): the key and

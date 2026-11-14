@@ -4,9 +4,9 @@ import (
 	"fmt"
 	"strings"
 
-	"github.com/nick/gopi/internal/config"
-	"github.com/nick/gopi/internal/signalrec"
-	"github.com/nick/gopi/internal/taskreport"
+	"github.com/nickhuang99/gopi/internal/config"
+	"github.com/nickhuang99/gopi/internal/signalrec"
+	"github.com/nickhuang99/gopi/internal/taskreport"
 )
 
 // GopiHomeEnvName is the ALIAS of the profile-home variable (config.GopiDirEnv —

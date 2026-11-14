@@ -31,9 +31,9 @@ import (
 	"strconv"
 	"strings"
 
-	"github.com/nick/gopi/internal/config"
-	"github.com/nick/gopi/internal/rundir"
-	"github.com/nick/gopi/internal/sessionevent"
+	"github.com/nickhuang99/gopi/internal/config"
+	"github.com/nickhuang99/gopi/internal/rundir"
+	"github.com/nickhuang99/gopi/internal/sessionevent"
 )
 
 // taskRunTimeLayout renders a run's start on the run lines. It is the RFC3339

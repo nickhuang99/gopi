@@ -46,12 +46,12 @@ import (
 	"path/filepath"
 	"sync"
 
-	"github.com/nick/gopi/internal/cliverbs"
-	"github.com/nick/gopi/internal/config"
-	"github.com/nick/gopi/internal/replayplay"
-	"github.com/nick/gopi/internal/tools"
-	"github.com/nick/gopi/internal/uiclient"
-	"github.com/nick/gopi/internal/version"
+	"github.com/nickhuang99/gopi/internal/cliverbs"
+	"github.com/nickhuang99/gopi/internal/config"
+	"github.com/nickhuang99/gopi/internal/replayplay"
+	"github.com/nickhuang99/gopi/internal/tools"
+	"github.com/nickhuang99/gopi/internal/uiclient"
+	"github.com/nickhuang99/gopi/internal/version"
 )
 
 // The worker's own vocabulary (Rule 1/13): the decision words, the report shapes

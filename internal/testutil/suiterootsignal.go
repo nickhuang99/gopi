@@ -51,7 +51,7 @@
 // calls it a SAFETY NET) — this arm's Reset cancelled exactly that net:
 //
 //	$ go test ./cmd/agent/ -run 'TestWorkerDrainsOnSIGHUP' -count=1 ; echo $?
-//	FAIL	github.com/nick/gopi/cmd/agent	2.475s      ("signal: hangup")
+//	FAIL	github.com/nickhuang99/gopi/cmd/agent	2.475s      ("signal: hangup")
 //	1
 //
 // WHY NOT "DETECT THAT THIS PROCESS WILL SURVIVE, THEN REAP": measured in the
@@ -98,7 +98,7 @@
 //
 //	suite goroutine sweep: parked repository goroutines: 1
 //	  testutil.armSuiteRunRootReapOnSignal.func1()  suiterootsignal.go:77
-//	FAIL	github.com/nick/gopi/cmd/agent	1.454s      (a run whose only test PASSED)
+//	FAIL	github.com/nickhuang99/gopi/cmd/agent	1.454s      (a run whose only test PASSED)
 //
 // i.e. green tests, red run, and an exit code that stops carrying a signal. The
 // answer is NOT to widen the sweep (that hides the false positive AND every
@@ -116,7 +116,7 @@ import (
 	"syscall"
 	"time"
 
-	"github.com/nick/gopi/internal/scratch"
+	"github.com/nickhuang99/gopi/internal/scratch"
 )
 
 // suiteRunRootSignalJoinWait bounds how long the join waits for the handler to

@@ -33,7 +33,7 @@ import (
 	"strings"
 	"testing"
 
-	"github.com/nick/gopi/internal/config"
+	"github.com/nickhuang99/gopi/internal/config"
 )
 
 // replayBannedVerbWord is the top-level word the abolition removed. It is a

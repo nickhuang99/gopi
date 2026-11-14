@@ -30,9 +30,9 @@ import (
 	"strings"
 	"testing"
 
-	"github.com/nick/gopi/internal/procname"
-	"github.com/nick/gopi/internal/testutil"
-	"github.com/nick/gopi/internal/tools"
+	"github.com/nickhuang99/gopi/internal/procname"
+	"github.com/nickhuang99/gopi/internal/testutil"
+	"github.com/nickhuang99/gopi/internal/tools"
 )
 
 // --- (1) the word is routed -------------------------------------------------

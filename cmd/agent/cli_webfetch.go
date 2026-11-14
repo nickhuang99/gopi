@@ -6,8 +6,8 @@ import (
 	"strconv"
 	"strings"
 
-	"github.com/nick/gopi/internal/toolnames"
-	"github.com/nick/gopi/internal/tools"
+	"github.com/nickhuang99/gopi/internal/toolnames"
+	"github.com/nickhuang99/gopi/internal/tools"
 )
 
 // webFetchDefaultMaxChars is the default --max-chars value (mirrors

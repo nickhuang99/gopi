@@ -6,8 +6,8 @@ import (
 	"path/filepath"
 	"strconv"
 
-	"github.com/nick/gopi/internal/scratch"
-	"github.com/nick/gopi/internal/text2img"
+	"github.com/nickhuang99/gopi/internal/scratch"
+	"github.com/nickhuang99/gopi/internal/text2img"
 )
 
 // cli_text2img_verify.go — the `gopi tool text2img-verify` verb: render `知` through

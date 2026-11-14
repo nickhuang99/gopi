@@ -33,7 +33,7 @@ const tmpRootSpelling = "/tmp"
 // project package" — compare against ONE spelling each rather than repeating the
 // strings (Rule 1b/13).
 const (
-	projectImportPrefix = "github.com/nick/gopi/"
+	projectImportPrefix = "github.com/nickhuang99/gopi/"
 	segmenterImportPath = "internal/cjkseg"
 	segmenterImportFull = projectImportPrefix + segmenterImportPath
 )

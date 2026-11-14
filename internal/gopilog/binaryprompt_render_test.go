@@ -22,7 +22,7 @@ import (
 	"testing"
 	"unicode/utf8"
 
-	"github.com/nick/gopi/internal/sessionevent"
+	"github.com/nickhuang99/gopi/internal/sessionevent"
 )
 
 // nulByte is the byte `file(1)` uses to decide a file is "data" rather than

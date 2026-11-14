@@ -39,9 +39,9 @@ import (
 	"strings"
 	"testing"
 
-	"github.com/nick/gopi/internal/cliindex"
-	"github.com/nick/gopi/internal/gendoc"
-	"github.com/nick/gopi/internal/smokegate"
+	"github.com/nickhuang99/gopi/internal/cliindex"
+	"github.com/nickhuang99/gopi/internal/gendoc"
+	"github.com/nickhuang99/gopi/internal/smokegate"
 )
 
 // The fixture's own names.

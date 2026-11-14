@@ -2,7 +2,7 @@ package lineedit
 
 // draft_repaint_visibility_test.go — THE READ LOOP OWES A DRAFT A FRAME.
 //
-// THE DEFECT (measured on sager, `gopi chat /voice`): the streaming recogniser
+// THE DEFECT (measured on hosta, `gopi chat /voice`): the streaming recogniser
 // states a draft from its own goroutine, the line shows NOTHING, and the text
 // appears only when the operator presses a key (or Escape). draft.go's segment is
 // correct — the draft is applied by the OWNER of the model (repaint → drainDraft)

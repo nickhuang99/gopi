@@ -5,9 +5,9 @@ import (
 	"os"
 	"sort"
 
-	"github.com/nick/gopi/internal/config"
-	"github.com/nick/gopi/internal/scratch"
-	"github.com/nick/gopi/internal/worktreeroots"
+	"github.com/nickhuang99/gopi/internal/config"
+	"github.com/nickhuang99/gopi/internal/scratch"
+	"github.com/nickhuang99/gopi/internal/worktreeroots"
 )
 
 // cli_scratch_gc_stubs.go — the OPERATOR-FACING half of the worktree-stub sweep:

@@ -29,7 +29,7 @@ import (
 	"strings"
 	"testing"
 
-	"github.com/nick/gopi/internal/workerownership"
+	"github.com/nickhuang99/gopi/internal/workerownership"
 )
 
 const (

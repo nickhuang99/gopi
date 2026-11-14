@@ -33,9 +33,9 @@ import (
 	"strings"
 	"testing"
 
-	"github.com/nick/gopi/internal/config"
-	"github.com/nick/gopi/internal/rundir"
-	"github.com/nick/gopi/internal/sessionevent"
+	"github.com/nickhuang99/gopi/internal/config"
+	"github.com/nickhuang99/gopi/internal/rundir"
+	"github.com/nickhuang99/gopi/internal/sessionevent"
 )
 
 // taskRunDigitSecondsRe finds the elapsed rendering ("12s"): a digit run

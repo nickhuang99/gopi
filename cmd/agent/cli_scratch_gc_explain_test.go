@@ -23,8 +23,8 @@ import (
 	"testing"
 	"time"
 
-	"github.com/nick/gopi/internal/procname"
-	"github.com/nick/gopi/internal/scratch"
+	"github.com/nickhuang99/gopi/internal/procname"
+	"github.com/nickhuang99/gopi/internal/scratch"
 )
 
 // writeOwnerRegistration writes a v2 owner record into dir, exactly as a scratch

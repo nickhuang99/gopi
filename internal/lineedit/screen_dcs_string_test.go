@@ -25,8 +25,8 @@ import (
 	"strings"
 	"testing"
 
-	"github.com/nick/gopi/internal/sgr"
-	"github.com/nick/gopi/internal/version"
+	"github.com/nickhuang99/gopi/internal/sgr"
+	"github.com/nickhuang99/gopi/internal/version"
 )
 
 // dcsQuery is the exact shape the capability probe emits (sgr.GetCapabilityQuery):

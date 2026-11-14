@@ -21,7 +21,7 @@ import (
 	"testing"
 	"time"
 
-	"github.com/nick/gopi/internal/sessionlayout"
+	"github.com/nickhuang99/gopi/internal/sessionlayout"
 )
 
 // taskIDOperandBaseTime is the fixed timestamp the ordering test writes, so the

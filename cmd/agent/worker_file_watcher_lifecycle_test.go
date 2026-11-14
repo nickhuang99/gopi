@@ -17,7 +17,7 @@
 // close-out sweep turned that into
 //
 //	suite goroutine sweep: parked repository goroutines: 7
-//	FAIL	github.com/nick/gopi/cmd/agent	…	(exit 1)
+//	FAIL	github.com/nickhuang99/gopi/cmd/agent	…	(exit 1)
 //
 // with NO failing test named — the run's only defect was a leak in the
 // instrument-free zone between the last test and TestMain's os.Exit.

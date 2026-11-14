@@ -3,7 +3,7 @@ package sessionlayout_test
 import (
 	"testing"
 
-	"github.com/nick/gopi/internal/testutil"
+	"github.com/nickhuang99/gopi/internal/testutil"
 )
 
 // TestMain pins this suite's scratch root OFF the / partition: the tests below

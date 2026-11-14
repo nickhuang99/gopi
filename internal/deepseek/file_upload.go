@@ -58,7 +58,7 @@ import (
 	"net/textproto"
 	"strings"
 
-	"github.com/nick/gopi/internal/rawlogfmt"
+	"github.com/nickhuang99/gopi/internal/rawlogfmt"
 )
 
 // Named constants — Project Rule 1. Every literal this file compares, stores or

@@ -24,7 +24,7 @@ import (
 	"strings"
 	"testing"
 
-	"github.com/nick/gopi/internal/testutil"
+	"github.com/nickhuang99/gopi/internal/testutil"
 )
 
 // deliveryProofAbsenceSpellings is every value the criterion has ever used for a

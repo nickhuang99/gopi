@@ -50,7 +50,7 @@ import (
 	"strings"
 	"time"
 
-	"github.com/nick/gopi/internal/shot"
+	"github.com/nickhuang99/gopi/internal/shot"
 )
 
 // webShotPath is the endpoint's route (Rule 1b: the mux registration and the

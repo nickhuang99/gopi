@@ -45,10 +45,10 @@ import (
 	"sync"
 	"time"
 
-	"github.com/nick/gopi/internal/boolvocab"
-	"github.com/nick/gopi/internal/config"
-	"github.com/nick/gopi/internal/devworkspace"
-	"github.com/nick/gopi/internal/removalaudit"
+	"github.com/nickhuang99/gopi/internal/boolvocab"
+	"github.com/nickhuang99/gopi/internal/config"
+	"github.com/nickhuang99/gopi/internal/devworkspace"
+	"github.com/nickhuang99/gopi/internal/removalaudit"
 )
 
 const (
@@ -368,7 +368,7 @@ type reclaimDeadHolderRow struct {
 // alive by construction (the worker's round-end defer runs inside the very
 // process the claim stamp names). Measured, verbatim:
 //
-//	[own-release] claimed by this worker: zpeer:771230        ← the asker's own stamp
+//	[own-release] claimed by this worker: peerbox:771230        ← the asker's own stamp
 //	own worktree release refused: feat/own-release (rig-own-release-own)
 //	  — live task rig-own-release-own still has a run standing
 //	    (its recorded runner (pid 771230) is still running)

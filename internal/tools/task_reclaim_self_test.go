@@ -27,7 +27,7 @@ import (
 
 	"time"
 
-	"github.com/nick/gopi/internal/config"
+	"github.com/nickhuang99/gopi/internal/config"
 )
 
 // selfReleasePollInterval is how often the fixture waits for a freshly started

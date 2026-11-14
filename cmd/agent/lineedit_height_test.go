@@ -6,8 +6,8 @@ import (
 	"testing"
 	"time"
 
-	"github.com/nick/gopi/internal/flaketest"
-	"github.com/nick/gopi/internal/lineedit"
+	"github.com/nickhuang99/gopi/internal/flaketest"
+	"github.com/nickhuang99/gopi/internal/lineedit"
 )
 
 // lineedit_height_test.go — the editing line at SMALL terminal heights, asserted

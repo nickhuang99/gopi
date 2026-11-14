@@ -9,9 +9,9 @@ import (
 	"os"
 	"strings"
 
-	"github.com/nick/gopi/internal/deepseek"
-	"github.com/nick/gopi/internal/rawlogfmt"
-	"github.com/nick/gopi/internal/scratch"
+	"github.com/nickhuang99/gopi/internal/deepseek"
+	"github.com/nickhuang99/gopi/internal/rawlogfmt"
+	"github.com/nickhuang99/gopi/internal/scratch"
 )
 
 // Raw log markers. A REQUEST record's payload is the exact bytes handed to the

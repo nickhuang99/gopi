@@ -35,7 +35,7 @@ import (
 	"testing"
 	"time"
 
-	"github.com/nick/gopi/internal/flaketest"
+	"github.com/nickhuang99/gopi/internal/flaketest"
 )
 
 // TestScratchGCDepsOriginReadsExeNotArgv0 is the guard with TEETH: it drives

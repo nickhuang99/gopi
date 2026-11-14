@@ -57,7 +57,7 @@ import (
 	"os"
 	"strings"
 
-	"github.com/nick/gopi/internal/taskreport"
+	"github.com/nickhuang99/gopi/internal/taskreport"
 )
 
 // TaskBriefingPathSetLabel heads the pinned-set clause, spelled once and exported

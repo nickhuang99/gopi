@@ -44,7 +44,7 @@ package agent
 import (
 	"strings"
 
-	"github.com/nick/gopi/internal/cliverbs"
+	"github.com/nickhuang99/gopi/internal/cliverbs"
 )
 
 // chatUnattendedMarker opens the block, and it is the ONE substring a caller

@@ -20,7 +20,7 @@ import (
 	"strings"
 	"testing"
 
-	"github.com/nick/gopi/internal/sessionevent"
+	"github.com/nickhuang99/gopi/internal/sessionevent"
 )
 
 // originTestDB returns a fresh ledger path under the per-test scratch root, the
@@ -169,7 +169,7 @@ func TestOriginPointerRoundTrip(t *testing.T) {
 	const (
 		session = "a11d0e73-test-session"
 		round   = 4
-		host    = "test-host-zpeer"
+		host    = "test-host-peerbox"
 	)
 	origin := MemoryOrigin{SessionID: session, Round: round, Host: host}
 	if _, err := MemoryStoreWithOrigin("origin probe topic", "does the pointer round-trip",

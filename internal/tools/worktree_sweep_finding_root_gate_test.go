@@ -28,7 +28,7 @@ package tools
 
 import (
 	"fmt"
-	"github.com/nick/gopi/internal/scratch"
+	"github.com/nickhuang99/gopi/internal/scratch"
 	"os"
 	"path/filepath"
 	"runtime"
@@ -36,8 +36,8 @@ import (
 	"testing"
 	"time"
 
-	"github.com/nick/gopi/internal/testutil"
-	"github.com/nick/gopi/internal/worktreeroots"
+	"github.com/nickhuang99/gopi/internal/testutil"
+	"github.com/nickhuang99/gopi/internal/worktreeroots"
 )
 
 // findingRootGateCase is one rung of the ladder: the fixture that reaches it,

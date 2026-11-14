@@ -11,7 +11,7 @@ package tools
 // `go test ./internal/tools/ -run '<those two names>'` and got
 //
 //	testing: warning: no tests to run
-//	ok  	github.com/nick/gopi/internal/tools	4.299s [no tests to run]
+//	ok  	github.com/nickhuang99/gopi/internal/tools	4.299s [no tests to run]
 //
 // — exit 0, a green that measured nothing. Its own report states it: 「两个名字
 // 在本树上匹配不到任何测试，这个"绿"是真空绿」.

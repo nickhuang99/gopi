@@ -63,7 +63,7 @@ const (
 	TaskTrailerLineFmt = TaskTrailerKey + ": %s"
 
 	// HostTrailerKey is the second trailer's key word: the machine that made
-	// the commit, so `git log --grep="host: zpeer"` isolates one machine's
+	// the commit, so `git log --grep="host: peerbox"` isolates one machine's
 	// commits across the fleet.
 	HostTrailerKey = "host"
 

@@ -50,7 +50,7 @@ import (
 	"syscall"
 	"time"
 
-	"github.com/nick/gopi/internal/config"
+	"github.com/nickhuang99/gopi/internal/config"
 )
 
 // Notification delivery timeouts and env-var names — every literal lives

@@ -73,8 +73,8 @@ import (
 	"testing"
 	"time"
 
-	"github.com/nick/gopi/internal/config"
-	"github.com/nick/gopi/internal/memoryprefetch"
+	"github.com/nickhuang99/gopi/internal/config"
+	"github.com/nickhuang99/gopi/internal/memoryprefetch"
 )
 
 // The typing-prefix fixture, named (Rule 1) because the claims below are made

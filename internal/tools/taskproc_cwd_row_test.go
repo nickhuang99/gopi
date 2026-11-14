@@ -28,7 +28,7 @@ import (
 	"syscall"
 	"testing"
 
-	"github.com/nick/gopi/internal/config"
+	"github.com/nickhuang99/gopi/internal/config"
 )
 
 const (
@@ -55,11 +55,11 @@ const (
 
 // cwdRowFixture describes the synthetic procfs tree the rung is driven over.
 type cwdRowFixture struct {
-	pid       int
+	pid        int
 	startTicks int64
-	procRoot  string // the fixture procfs root (identityProcRoot)
-	rowDirA   string // session container of row A
-	rowDirB   string // session container of row B
+	procRoot   string // the fixture procfs root (identityProcRoot)
+	rowDirA    string // session container of row A
+	rowDirB    string // session container of row B
 }
 
 // newCwdRowFixture builds the two ledger rows, the two session containers and a

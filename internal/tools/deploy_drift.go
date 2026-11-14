@@ -43,7 +43,7 @@ import (
 	"path/filepath"
 	"strings"
 
-	"github.com/nick/gopi/internal/devworkspace"
+	"github.com/nickhuang99/gopi/internal/devworkspace"
 )
 
 // DeployDriftRefs are the refs a deployed artifact may be measured against, in

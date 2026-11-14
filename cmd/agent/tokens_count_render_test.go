@@ -24,7 +24,7 @@ import (
 	"strings"
 	"testing"
 
-	"github.com/nick/gopi/internal/tokenizer"
+	"github.com/nickhuang99/gopi/internal/tokenizer"
 )
 
 // renderFixtureMessages is the conversation both tool arms share: one user turn,

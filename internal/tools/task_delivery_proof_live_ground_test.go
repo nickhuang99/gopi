@@ -40,7 +40,7 @@ import (
 	"path/filepath"
 	"testing"
 
-	"github.com/nick/gopi/internal/testutil"
+	"github.com/nickhuang99/gopi/internal/testutil"
 )
 
 // dplgLiveGround builds the DISPATCHED-row shape: a CLONE ground that is STILL

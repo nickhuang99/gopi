@@ -28,8 +28,8 @@ import (
 	"strings"
 	"sync/atomic"
 
-	"github.com/nick/gopi/internal/config"
-	"github.com/nick/gopi/internal/procstat"
+	"github.com/nickhuang99/gopi/internal/config"
+	"github.com/nickhuang99/gopi/internal/procstat"
 )
 
 const (

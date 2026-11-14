@@ -63,7 +63,7 @@ import (
 	"sync"
 	"time"
 
-	"github.com/nick/gopi/internal/config"
+	"github.com/nickhuang99/gopi/internal/config"
 )
 
 // The route vocabulary (Rule 1: one const block; the page's copies are pinned to

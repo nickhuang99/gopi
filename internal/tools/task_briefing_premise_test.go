@@ -22,7 +22,7 @@ import (
 	"testing"
 	"time"
 
-	"github.com/nick/gopi/internal/taskreport"
+	"github.com/nickhuang99/gopi/internal/taskreport"
 )
 
 // premiseGitTimeout bounds every git child this file spawns (Rule 27: a test

@@ -4,8 +4,8 @@ import (
 	"fmt"
 	"os"
 
-	"github.com/nick/gopi/internal/gopilog"
-	"github.com/nick/gopi/internal/sessionevent"
+	"github.com/nickhuang99/gopi/internal/gopilog"
+	"github.com/nickhuang99/gopi/internal/sessionevent"
 )
 
 // runSessionToolCall prints ONE tool call of a session in full: `gopi session

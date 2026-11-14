@@ -49,7 +49,7 @@ import (
 	"strings"
 	"time"
 
-	"github.com/nick/gopi/internal/rawlogfmt"
+	"github.com/nickhuang99/gopi/internal/rawlogfmt"
 )
 
 const (

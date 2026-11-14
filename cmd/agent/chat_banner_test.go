@@ -13,9 +13,9 @@ import (
 	"strings"
 	"testing"
 
-	"github.com/nick/gopi/internal/fullid"
-	"github.com/nick/gopi/internal/lineedit"
-	gopiversion "github.com/nick/gopi/internal/version"
+	"github.com/nickhuang99/gopi/internal/fullid"
+	"github.com/nickhuang99/gopi/internal/lineedit"
+	gopiversion "github.com/nickhuang99/gopi/internal/version"
 )
 
 // bannerTestSpec is the fixed input these tests compose from: one geometry, one
@@ -25,7 +25,7 @@ func bannerTestSpec(cols int, pal lineedit.Palette) chatBannerSpec {
 		cols:      cols,
 		version:   gopiversion.Version,
 		model:     "deepseek-v4-flash",
-		node:      "zpeer",
+		node:      "peerbox",
 		dir:       "/home/user/workspace/gopi-example",
 		sessionID: bannerTestSessionID,
 		toolsOn:   true,

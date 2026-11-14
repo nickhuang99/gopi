@@ -40,9 +40,9 @@ import (
 	"strings"
 	"testing"
 
-	"github.com/nick/gopi/internal/heavytest"
-	"github.com/nick/gopi/internal/testutil"
-	"github.com/nick/gopi/internal/tools"
+	"github.com/nickhuang99/gopi/internal/heavytest"
+	"github.com/nickhuang99/gopi/internal/testutil"
+	"github.com/nickhuang99/gopi/internal/tools"
 )
 
 // TestPublishClauseReachesTheCloneChannelChildAndOnlyThere is the delivery walk

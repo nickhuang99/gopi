@@ -50,7 +50,7 @@ import (
 	"sync"
 	"time"
 
-	"github.com/nick/gopi/internal/agent"
+	"github.com/nickhuang99/gopi/internal/agent"
 )
 
 // The four states, as the wire spells them (Rule 1b/13/14: the page carries its

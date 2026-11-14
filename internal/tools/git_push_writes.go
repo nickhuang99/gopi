@@ -22,7 +22,7 @@ package tools
 import (
 	"strings"
 
-	"github.com/nick/gopi/internal/gitargv"
+	"github.com/nickhuang99/gopi/internal/gitargv"
 )
 
 // The DRY-RUN spellings (git-push(1): `-n`, `--dry-run`, and git's boolean

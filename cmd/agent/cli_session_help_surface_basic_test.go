@@ -49,11 +49,11 @@ import (
 	"testing"
 	"time"
 
-	"github.com/nick/gopi/internal/config"
-	"github.com/nick/gopi/internal/devdoc"
-	"github.com/nick/gopi/internal/gopilog"
-	"github.com/nick/gopi/internal/scratch"
-	"github.com/nick/gopi/internal/tools"
+	"github.com/nickhuang99/gopi/internal/config"
+	"github.com/nickhuang99/gopi/internal/devdoc"
+	"github.com/nickhuang99/gopi/internal/gopilog"
+	"github.com/nickhuang99/gopi/internal/scratch"
+	"github.com/nickhuang99/gopi/internal/tools"
 )
 
 // g4VerbTimeout bounds ONE probe's child. A CLI routing regression that

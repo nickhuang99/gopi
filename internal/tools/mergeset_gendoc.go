@@ -84,8 +84,8 @@ import (
 	"sort"
 	"strings"
 
-	"github.com/nick/gopi/internal/config"
-	"github.com/nick/gopi/internal/gendoc"
+	"github.com/nickhuang99/gopi/internal/config"
+	"github.com/nickhuang99/gopi/internal/gendoc"
 )
 
 // gendocUnionGateName is how this step identifies itself in every message. It is

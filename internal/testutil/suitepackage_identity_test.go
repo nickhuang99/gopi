@@ -7,7 +7,7 @@ import (
 	"strings"
 	"testing"
 
-	"github.com/nick/gopi/internal/scratch"
+	"github.com/nickhuang99/gopi/internal/scratch"
 )
 
 // The regression guard for the lock's IDENTITY (suitepackage_identity.go): two
@@ -18,7 +18,7 @@ import (
 // ./...` failed with
 //
 //	FATAL: suite "stylegate": another run of this package is in flight.
-//	FAIL	github.com/nick/gopi/internal/stylegate/cmd/stylegate
+//	FAIL	github.com/nickhuang99/gopi/internal/stylegate/cmd/stylegate
 //
 // — no second RUN existed; internal/stylegate and internal/stylegate/cmd/stylegate
 // both declare the label "stylegate", the key WAS the label, and `go test` starts
@@ -26,8 +26,8 @@ import (
 // the whole invocation.
 func TestSuitePackageLockIsKeyedOnThePackageNotTheLabel(t *testing.T) {
 	const label = "stylegate"
-	outer := "github.com/nick/gopi/internal/stylegate"
-	inner := "github.com/nick/gopi/internal/stylegate/cmd/stylegate"
+	outer := "github.com/nickhuang99/gopi/internal/stylegate"
+	inner := "github.com/nickhuang99/gopi/internal/stylegate/cmd/stylegate"
 
 	gotOuter, gotInner := suitePackageLockKeyFor(outer, label), suitePackageLockKeyFor(inner, label)
 	if gotOuter == gotInner {
@@ -54,8 +54,8 @@ func TestSuitePackageLockIsKeyedOnThePackageNotTheLabel(t *testing.T) {
 func TestSuitePackageLockAddressesDifferForPackagesSharingALabel(t *testing.T) {
 	home := t.TempDir()
 	const label = "stylegate"
-	a := scratchDirFor(t, home, "github.com/nick/gopi/internal/stylegate", label)
-	b := scratchDirFor(t, home, "github.com/nick/gopi/internal/stylegate/cmd/stylegate", label)
+	a := scratchDirFor(t, home, "github.com/nickhuang99/gopi/internal/stylegate", label)
+	b := scratchDirFor(t, home, "github.com/nickhuang99/gopi/internal/stylegate/cmd/stylegate", label)
 	if a == b {
 		t.Fatalf("the lock ADDRESS is the same for two packages sharing label %q: %s", label, a)
 	}
@@ -114,7 +114,7 @@ func TestNoTwoPackagesShareTheIdentityTheLockUses(t *testing.T) {
 // modulePathOfThisRepo is the module path the scan anchors on. It is a literal here
 // rather than read from go.mod: the file that FINDS go.mod cannot take its search key
 // from the file it has not found yet.
-const modulePathOfThisRepo = "module github.com/nick/gopi"
+const modulePathOfThisRepo = "module github.com/nickhuang99/gopi"
 
 // lockIdentityScanFloor is how many declaring packages the scan must reach for its
 // green to mean anything (a scan that read nothing must not pass — Rule 15).

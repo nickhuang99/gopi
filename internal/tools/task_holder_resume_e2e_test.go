@@ -20,9 +20,9 @@ import (
 	"database/sql"
 	"encoding/json"
 	"fmt"
-	"github.com/nick/gopi/internal/config"
-	"github.com/nick/gopi/internal/heavytest"
-	"github.com/nick/gopi/internal/procname"
+	"github.com/nickhuang99/gopi/internal/config"
+	"github.com/nickhuang99/gopi/internal/heavytest"
+	"github.com/nickhuang99/gopi/internal/procname"
 	"os"
 	"os/exec"
 	"path/filepath"
@@ -36,7 +36,7 @@ import (
 
 	_ "modernc.org/sqlite"
 
-	"github.com/nick/gopi/internal/testutil"
+	"github.com/nickhuang99/gopi/internal/testutil"
 )
 
 // dhE2EGit runs one git command in dir and returns its trimmed stdout.

@@ -44,7 +44,7 @@ import (
 	"strings"
 
 	"github.com/google/uuid"
-	"github.com/nick/gopi/internal/fullid"
+	"github.com/nickhuang99/gopi/internal/fullid"
 )
 
 // TaskIDPrefix is the prefix of every NON-uuid task id this tree mints: the

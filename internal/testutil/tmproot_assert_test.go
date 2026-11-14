@@ -39,7 +39,7 @@ import (
 	"testing"
 	"time"
 
-	"github.com/nick/gopi/internal/scratch"
+	"github.com/nickhuang99/gopi/internal/scratch"
 )
 
 // probeMarkerPrefix names the assertion probe's self-describing output lines.

@@ -58,8 +58,8 @@ import (
 	"syscall"
 	"time"
 
-	"github.com/nick/gopi/internal/inputsource"
-	"github.com/nick/gopi/internal/sessionlayout"
+	"github.com/nickhuang99/gopi/internal/inputsource"
+	"github.com/nickhuang99/gopi/internal/sessionlayout"
 )
 
 // The inbox's names and numbers (Rule 1: every literal is a named constant).

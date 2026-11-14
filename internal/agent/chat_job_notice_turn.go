@@ -16,8 +16,8 @@ import (
 	"fmt"
 	"strings"
 
-	"github.com/nick/gopi/internal/sessionevent"
-	"github.com/nick/gopi/internal/tools"
+	"github.com/nickhuang99/gopi/internal/sessionevent"
+	"github.com/nickhuang99/gopi/internal/tools"
 )
 
 // jobNoticeFact is the ONE statement of what a completion notice says, without

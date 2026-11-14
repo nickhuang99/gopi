@@ -35,17 +35,17 @@ import (
 
 	"github.com/google/uuid"
 
-	"github.com/nick/gopi/internal/cliverbs"
-	"github.com/nick/gopi/internal/config"
-	"github.com/nick/gopi/internal/devworkspace"
-	"github.com/nick/gopi/internal/fullid"
-	"github.com/nick/gopi/internal/runcmd"
-	"github.com/nick/gopi/internal/runend"
-	"github.com/nick/gopi/internal/sessionevent"
-	"github.com/nick/gopi/internal/sessionid"
-	"github.com/nick/gopi/internal/sessionlayout"
-	"github.com/nick/gopi/internal/tasksource"
-	"github.com/nick/gopi/internal/tasktags"
+	"github.com/nickhuang99/gopi/internal/cliverbs"
+	"github.com/nickhuang99/gopi/internal/config"
+	"github.com/nickhuang99/gopi/internal/devworkspace"
+	"github.com/nickhuang99/gopi/internal/fullid"
+	"github.com/nickhuang99/gopi/internal/runcmd"
+	"github.com/nickhuang99/gopi/internal/runend"
+	"github.com/nickhuang99/gopi/internal/sessionevent"
+	"github.com/nickhuang99/gopi/internal/sessionid"
+	"github.com/nickhuang99/gopi/internal/sessionlayout"
+	"github.com/nickhuang99/gopi/internal/tasksource"
+	"github.com/nickhuang99/gopi/internal/tasktags"
 )
 
 // Task status values — the CHECK constraint on tasks.status mirrors these
@@ -82,7 +82,7 @@ const (
 	// work" and "the work is someone else's now" — and Rule 33's dependency
 	// gate releases a parked child only on a release-set status, so a child
 	// whose parent was MIGRATED (not abandoned) was parked forever while the
-	// queue looked clean (Rule 15 silent failure). Measured on zpeer's live
+	// queue looked clean (Rule 15 silent failure). Measured on peerbox's live
 	// ledger 2026-10-07: 426 cancelled rows, exactly 1 parking a pending
 	// child, and its reason is the three-step migration recipe verbatim.
 	//
@@ -2791,7 +2791,7 @@ func TaskList(statusFilter string) (string, error) {
 		// # column (cross-node reconciliation): renders the task_id's numeric
 		// part, NOT the local SQLite rowid. rowid is allocated per-node at
 		// INSERT, so sync'd replicas of the same task show different #s
-		// (zpeer #180 vs HP #220); the t-<unix> task_id is the shared primary
+		// (peerbox #180 vs HP #220); the t-<unix> task_id is the shared primary
 		// key, so its digits are identical on every node.
 		// via suffix (run provenance): a compact "how was this run launched"
 		// marker — [via auto] (a self-registering bare run), [via manual],
@@ -8294,17 +8294,6 @@ func TaskSubmitReturningID(opts TaskSubmitOptions) (string, string, error) {
 		if phrase, ok := TaskAttachmentClaimScan(opts.Summary, opts.Payload); ok {
 			out += "\n" + TaskSubmitAttachmentClaimWarningText(phrase)
 		}
-	}
-	// HOST-OWNERSHIP warning (Rule 40): a hermes-agent row is HP's work, and
-	// a hermes-agent PATH exists on both hosts — so the repo verification
-	// above (which passed) says nothing about WHICH host this row was filed
-	// on. The measured misroute (2026-10-03, 01a0fe63 → 01a0fe67) is exactly
-	// that: verified repo, wrong ledger, a row no worker would ever claim.
-	// Reported where the submitter looks and NEVER refused — the row is
-	// dispatched by the ledger that holds it, and a submit that blocks on a
-	// hostname guess would block the legitimate HP-side submit too.
-	if w := TaskHermesHostWarning(repo); w != "" {
-		out += "\n" + w
 	}
 	// REPO-DECLARED warning (the uppercase-checkout family, rows 01a159a9 and
 	// the repeats). The git verification above answers "is this a work tree"

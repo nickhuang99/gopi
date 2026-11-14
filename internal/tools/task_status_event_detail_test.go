@@ -6,8 +6,8 @@ import (
 	"strings"
 	"testing"
 
-	"github.com/nick/gopi/internal/config"
-	"github.com/nick/gopi/internal/testutil"
+	"github.com/nickhuang99/gopi/internal/config"
+	"github.com/nickhuang99/gopi/internal/testutil"
 )
 
 // The regression suite for the three-element status-event record (epic
@@ -380,7 +380,7 @@ func TestTaskStatusEventUnclassifiedDetailKeepsTheRecordedGrounds(t *testing.T) 
 	}
 
 	// The sync lane's spelling, appended by its own writer AFTER the transition.
-	syncDetail := "sync harvest from zpeer: in_progress → completed"
+	syncDetail := "sync harvest from peerbox: in_progress → completed"
 	taskEventWrite(context.Background(), sweepTestDB(t), taskID, TaskStatusCompleted, syncDetail)
 
 	db := sweepTestDB(t)

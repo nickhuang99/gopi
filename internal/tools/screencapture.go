@@ -30,8 +30,8 @@ import (
 	"os"
 	"path/filepath"
 
-	"github.com/nick/gopi/internal/scratch"
-	"github.com/nick/gopi/internal/shot"
+	"github.com/nickhuang99/gopi/internal/scratch"
+	"github.com/nickhuang99/gopi/internal/shot"
 )
 
 const (

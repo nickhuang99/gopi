@@ -6,7 +6,7 @@ import (
 	"strconv"
 	"strings"
 
-	"github.com/nick/gopi/internal/sgr"
+	"github.com/nickhuang99/gopi/internal/sgr"
 )
 
 // colour.go — THE capability decision, in exactly one place.

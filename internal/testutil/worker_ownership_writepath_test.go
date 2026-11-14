@@ -30,8 +30,8 @@ import (
 	"strings"
 	"testing"
 
-	"github.com/nick/gopi/internal/tools"
-	"github.com/nick/gopi/internal/workerownership"
+	"github.com/nickhuang99/gopi/internal/tools"
+	"github.com/nickhuang99/gopi/internal/workerownership"
 )
 
 // workerOwnershipWriteFixture builds the smallest audited tree the gate's walk

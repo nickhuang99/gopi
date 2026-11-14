@@ -30,7 +30,7 @@ import (
 	"strings"
 	"testing"
 
-	"github.com/nick/gopi/internal/testutil"
+	"github.com/nickhuang99/gopi/internal/testutil"
 )
 
 // mgDeclareBuild writes a settings document that declares repo's build contract,

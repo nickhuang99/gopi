@@ -28,7 +28,7 @@ import (
 	"testing"
 	"time"
 
-	"github.com/nick/gopi/internal/tools"
+	"github.com/nickhuang99/gopi/internal/tools"
 )
 
 // The dead-holder fixture's bounds and names (Rule 1: no inline literals).

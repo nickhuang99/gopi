@@ -37,10 +37,10 @@ import (
 	"syscall"
 	"time"
 
-	"github.com/nick/gopi/internal/borrowedfd"
-	"github.com/nick/gopi/internal/daemonlifetime"
-	"github.com/nick/gopi/internal/runcmd"
-	"github.com/nick/gopi/internal/tools"
+	"github.com/nickhuang99/gopi/internal/borrowedfd"
+	"github.com/nickhuang99/gopi/internal/daemonlifetime"
+	"github.com/nickhuang99/gopi/internal/runcmd"
+	"github.com/nickhuang99/gopi/internal/tools"
 )
 
 // --- named constants (PROJECT.md Rule 1: one place to find and change) ---

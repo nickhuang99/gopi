@@ -14,14 +14,14 @@ package devworkspace
 import (
 	"bytes"
 	"context"
-	"github.com/nick/gopi/internal/testutil"
+	"github.com/nickhuang99/gopi/internal/testutil"
 	"os"
 	"os/exec"
 	"path/filepath"
 	"strings"
 	"testing"
 
-	"github.com/nick/gopi/internal/config"
+	"github.com/nickhuang99/gopi/internal/config"
 )
 
 // traceFixture makes: a SOURCE repository, a CLONE of it inside the workspace

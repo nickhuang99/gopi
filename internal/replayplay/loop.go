@@ -26,9 +26,9 @@ import (
 	"syscall"
 	"time"
 
-	"github.com/nick/gopi/internal/lineedit"
-	"github.com/nick/gopi/internal/sgr"
-	"github.com/nick/gopi/internal/signalrec"
+	"github.com/nickhuang99/gopi/internal/lineedit"
+	"github.com/nickhuang99/gopi/internal/sgr"
+	"github.com/nickhuang99/gopi/internal/signalrec"
 )
 
 // Key is one playback decision, decoded from a byte sequence.

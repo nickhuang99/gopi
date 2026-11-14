@@ -1,8 +1,8 @@
 package main
 
 import (
-	"github.com/nick/gopi/internal/cliverbs"
-	"github.com/nick/gopi/internal/gopilog"
+	"github.com/nickhuang99/gopi/internal/cliverbs"
+	"github.com/nickhuang99/gopi/internal/gopilog"
 	"os"
 	"path/filepath"
 	"strings"

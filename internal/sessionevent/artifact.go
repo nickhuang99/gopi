@@ -62,7 +62,7 @@ import (
 	"runtime/debug"
 	"strings"
 
-	"github.com/nick/gopi/internal/buildidentity"
+	"github.com/nickhuang99/gopi/internal/buildidentity"
 )
 
 // ArtifactIdentityOf resolves the identity of the RUNNING artifact into the

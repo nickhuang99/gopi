@@ -18,7 +18,7 @@ import (
 	"sync"
 	"testing"
 
-	"github.com/nick/gopi/internal/lineedit"
+	"github.com/nickhuang99/gopi/internal/lineedit"
 )
 
 // voiceStatusPtyWidth is the terminal this case gives the layout: the PIN, so the

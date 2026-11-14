@@ -17,7 +17,7 @@ import (
 	"fmt"
 	"strings"
 
-	"github.com/nick/gopi/internal/sessionevent"
+	"github.com/nickhuang99/gopi/internal/sessionevent"
 )
 
 // SessionToolCall is one tool invocation of a session, addressed by its place in

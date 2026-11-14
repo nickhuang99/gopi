@@ -27,7 +27,7 @@
 package main
 
 import (
-	"github.com/nick/gopi/internal/heavytest"
+	"github.com/nickhuang99/gopi/internal/heavytest"
 	"go/ast"
 	"go/parser"
 	"go/token"
@@ -40,7 +40,7 @@ import (
 	"strings"
 	"testing"
 
-	"github.com/nick/gopi/internal/testutil"
+	"github.com/nickhuang99/gopi/internal/testutil"
 )
 
 const (
@@ -162,7 +162,7 @@ func censusSelectorDir(repoRoot, modulePath, src, qualifier string) (string, boo
 }
 
 // censusModulePath reads `module <path>` out of go.mod — the only thing that
-// turns an import path (github.com/nick/gopi/internal/cliverbs) into a directory
+// turns an import path (github.com/nickhuang99/gopi/internal/cliverbs) into a directory
 // in this tree. Unreadable or absent → "", which makes censusSelectorDir try the
 // import path as if it were repo-relative; an unresolvable alias then stays loud
 // (censusDispatched fails by name) rather than resolving to the wrong directory.

@@ -46,7 +46,7 @@ package tools
 import (
 	"strings"
 
-	"github.com/nick/gopi/internal/removalaudit"
+	"github.com/nickhuang99/gopi/internal/removalaudit"
 )
 
 // RecordGroundRemovalTip writes the worktree-removal record for a ground about

@@ -26,7 +26,7 @@ import (
 	"syscall"
 	"time"
 
-	"github.com/nick/gopi/internal/lineedit"
+	"github.com/nickhuang99/gopi/internal/lineedit"
 	"golang.org/x/sys/unix"
 )
 

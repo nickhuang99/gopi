@@ -19,8 +19,8 @@ import (
 	"os"
 	"path/filepath"
 
-	"github.com/nick/gopi/internal/daemonlifetime"
-	"github.com/nick/gopi/internal/scratch"
+	"github.com/nickhuang99/gopi/internal/daemonlifetime"
+	"github.com/nickhuang99/gopi/internal/scratch"
 )
 
 // ArmAndSweepForSuite is what a suite's TestMain calls (after

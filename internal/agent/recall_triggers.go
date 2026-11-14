@@ -45,7 +45,7 @@ package agent
 import (
 	"strings"
 
-	"github.com/nick/gopi/internal/toolnames"
+	"github.com/nickhuang99/gopi/internal/toolnames"
 )
 
 // memoryRecallTriggers is the RECALL-TRIGGER clause of the search action's

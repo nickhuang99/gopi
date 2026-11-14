@@ -15,14 +15,14 @@ import (
 	"context"
 	"database/sql"
 	"fmt"
-	"github.com/nick/gopi/internal/tasksource"
+	"github.com/nickhuang99/gopi/internal/tasksource"
 	"os/exec"
 	"path/filepath"
 	"strings"
 	"time"
 
-	"github.com/nick/gopi/internal/gitcommit"
-	"github.com/nick/gopi/internal/removalaudit"
+	"github.com/nickhuang99/gopi/internal/gitcommit"
+	"github.com/nickhuang99/gopi/internal/removalaudit"
 )
 
 // Adoption tunables (Rule 1: every literal in one place).

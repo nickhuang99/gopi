@@ -24,9 +24,9 @@ import (
 	"strconv"
 	"strings"
 
-	"github.com/nick/gopi/internal/lineedit"
-	"github.com/nick/gopi/internal/sessionevent"
-	"github.com/nick/gopi/internal/sgr"
+	"github.com/nickhuang99/gopi/internal/lineedit"
+	"github.com/nickhuang99/gopi/internal/sessionevent"
+	"github.com/nickhuang99/gopi/internal/sgr"
 )
 
 // Palette is the colour scheme this package paints with, per ROLE rather than

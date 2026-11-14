@@ -62,7 +62,7 @@ import (
 	"fmt"
 	"strings"
 
-	"github.com/nick/gopi/internal/devworkspace"
+	"github.com/nickhuang99/gopi/internal/devworkspace"
 )
 
 // TaskShowDeliveryLabel is the line's label, named once (Rule 1b) so the

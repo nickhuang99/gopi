@@ -42,7 +42,7 @@ package agent
 import (
 	"strings"
 
-	"github.com/nick/gopi/internal/tools"
+	"github.com/nickhuang99/gopi/internal/tools"
 )
 
 // reframePreservedClauseLabels is the set of briefing clauses a reframe keeps.

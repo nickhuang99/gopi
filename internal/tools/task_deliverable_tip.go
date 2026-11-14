@@ -12,13 +12,13 @@ package tools
 //	$ git cat-file -t 6446222744…                → commit     (the object is ALIVE)
 //	$ git for-each-ref --contains 6446222744…    → (empty)    (no ref holds it)
 //	$ git rev-parse --verify --quiet refs/heads/task/01a13ae1…  → rc=1 (the ref is gone)
-//	$ ssh zpeer 'git for-each-ref --contains 6446222744…'       → (empty)
+//	$ ssh peerbox 'git for-each-ref --contains 6446222744…'       → (empty)
 //	$ git merge-base --is-ancestor 6446222744… master           → rc=1
 //
 // The removal-audit sink has FOUR records naming that branch, and the two
 // branch-delete ones (`finish-cleanup-branch` @18:24:43 and
 // `finish-cleanup-branch-force` @18:24:50) carry sha=6446222744… with
-// delivery_point=zpeer:~/work/GoPi — i.e. the close-out chain force-deleted the
+// delivery_point=peerbox:~/work/GoPi — i.e. the close-out chain force-deleted the
 // ref on the strength of a push whose landing the delivery point does not
 // actually hold. The row was then written back `completed` HOURS LATER with
 // nothing left holding its work: the loss is SILENT, because every surface that
@@ -65,8 +65,8 @@ import (
 	"os"
 	"strings"
 
-	"github.com/nick/gopi/internal/config"
-	"github.com/nick/gopi/internal/removalaudit"
+	"github.com/nickhuang99/gopi/internal/config"
+	"github.com/nickhuang99/gopi/internal/removalaudit"
 )
 
 // The criterion's one event name and its ONE reader of the operator switch

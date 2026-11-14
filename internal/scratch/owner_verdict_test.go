@@ -26,7 +26,7 @@ import (
 	"testing"
 	"time"
 
-	"github.com/nick/gopi/internal/procname"
+	"github.com/nickhuang99/gopi/internal/procname"
 )
 
 // ownerIdentity is a recorded owner: the pid, its kernel start ticks and its

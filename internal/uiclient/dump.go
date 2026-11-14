@@ -10,7 +10,7 @@ import (
 	"sync"
 	"time"
 
-	"github.com/nick/gopi/internal/lineedit"
+	"github.com/nickhuang99/gopi/internal/lineedit"
 )
 
 // dump.go — the LIVE dump sink for the `gopi ui` surface.

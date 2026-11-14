@@ -36,9 +36,9 @@ import (
 	"strings"
 	"testing"
 
-	"github.com/nick/gopi/internal/config"
-	"github.com/nick/gopi/internal/sandbox"
-	"github.com/nick/gopi/internal/tools"
+	"github.com/nickhuang99/gopi/internal/config"
+	"github.com/nickhuang99/gopi/internal/sandbox"
+	"github.com/nickhuang99/gopi/internal/tools"
 )
 
 // cliSandboxSeedRowID is the task id the probe seeds the ledger with. It is a

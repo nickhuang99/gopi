@@ -15,7 +15,7 @@ package main
 import (
 	"strconv"
 
-	"github.com/nick/gopi/internal/config"
+	"github.com/nickhuang99/gopi/internal/config"
 )
 
 // chatSurfaceTurnsUsage is that section. It states the number, what a PERIOD is

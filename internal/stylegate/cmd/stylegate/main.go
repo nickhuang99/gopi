@@ -21,7 +21,7 @@ import (
 	"os"
 	"sort"
 
-	"github.com/nick/gopi/internal/stylegate"
+	"github.com/nickhuang99/gopi/internal/stylegate"
 )
 
 func main() {

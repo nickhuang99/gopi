@@ -27,7 +27,7 @@ import (
 	"testing"
 	"time"
 
-	"github.com/nick/gopi/internal/lineedit"
+	"github.com/nickhuang99/gopi/internal/lineedit"
 )
 
 // blankIdleDump builds the MEASURED artifact: a real dump whose sink interpreted

@@ -36,8 +36,8 @@ import (
 	"strings"
 	"testing"
 
-	"github.com/nick/gopi/internal/tools"
-	"github.com/nick/gopi/internal/workerownership"
+	"github.com/nickhuang99/gopi/internal/tools"
+	"github.com/nickhuang99/gopi/internal/workerownership"
 )
 
 // wodRounds is how many successive merge advances the proof replays. Two is

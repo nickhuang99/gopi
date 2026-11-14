@@ -26,7 +26,7 @@ import (
 	"testing"
 	"time"
 
-	"github.com/nick/gopi/internal/sessionevent"
+	"github.com/nickhuang99/gopi/internal/sessionevent"
 )
 
 // replayBandMoment walks the production seam for one line and returns the value

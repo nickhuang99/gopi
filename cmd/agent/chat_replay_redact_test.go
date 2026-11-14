@@ -19,8 +19,8 @@ import (
 	"testing"
 	"unicode/utf8"
 
-	"github.com/nick/gopi/internal/replay"
-	"github.com/nick/gopi/internal/uiclient"
+	"github.com/nickhuang99/gopi/internal/replay"
+	"github.com/nickhuang99/gopi/internal/uiclient"
 )
 
 // The identifying runs these cases use, as literals: a test that read them from

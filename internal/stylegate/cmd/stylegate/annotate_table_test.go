@@ -6,7 +6,7 @@ import (
 	"strings"
 	"testing"
 
-	"github.com/nick/gopi/internal/stylegate"
+	"github.com/nickhuang99/gopi/internal/stylegate"
 )
 
 // TestAnnotateRefusesGroupReasonKeys is the annotator's half of the per-SITE

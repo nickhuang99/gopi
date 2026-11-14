@@ -1,0 +1,1 @@
+ok  	github.com/nick/gopi/internal/tools	8.864s

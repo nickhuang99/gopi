@@ -12,8 +12,8 @@ import (
 	"os"
 	"strings"
 
-	"github.com/nick/gopi/internal/rawlogfmt"
-	"github.com/nick/gopi/internal/thinkmode"
+	"github.com/nickhuang99/gopi/internal/rawlogfmt"
+	"github.com/nickhuang99/gopi/internal/thinkmode"
 )
 
 // Claude Messages API (Anthropic-compatible) support.

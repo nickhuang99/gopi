@@ -126,7 +126,7 @@ pkill -x xterm 2>/dev/null
 sleep 1
 
 # ── leg 2: the user's OWN terminal + profile (nothing overridden) ──────────
-command -v xfce4-terminal >/dev/null || die "this comparison needs the host's own terminal (xfce4-terminal on zpeer)"
+command -v xfce4-terminal >/dev/null || die "this comparison needs the host's own terminal (xfce4-terminal on peerbox)"
 log "leg user-terminal: xfce4-terminal, GDK_DPI_SCALE=$VTE_SCALE, profile = the operator's own terminalrc (untouched)"
 env LC_ALL=C.utf8 LANG=C.utf8 GDK_DPI_SCALE="$VTE_SCALE" \
   xfce4-terminal --disable-server --geometry "${COLS}x${ROWS}" -T termcmp-user \

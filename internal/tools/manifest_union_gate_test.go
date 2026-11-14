@@ -36,7 +36,7 @@ import (
 
 	"strconv"
 
-	"github.com/nick/gopi/internal/devdoc"
+	"github.com/nickhuang99/gopi/internal/devdoc"
 )
 
 const (

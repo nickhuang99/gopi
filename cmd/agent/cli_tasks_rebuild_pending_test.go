@@ -17,7 +17,7 @@ import (
 	"strings"
 	"testing"
 
-	"github.com/nick/gopi/internal/tools"
+	"github.com/nickhuang99/gopi/internal/tools"
 )
 
 // writeFileRaw writes a fixture file the production primitives deliberately

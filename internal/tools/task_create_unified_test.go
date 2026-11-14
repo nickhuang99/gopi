@@ -15,9 +15,9 @@ import (
 	"strings"
 	"testing"
 
-	"github.com/nick/gopi/internal/tasktags"
-	"github.com/nick/gopi/internal/tasksource"
-	"github.com/nick/gopi/internal/testutil"
+	"github.com/nickhuang99/gopi/internal/tasksource"
+	"github.com/nickhuang99/gopi/internal/tasktags"
+	"github.com/nickhuang99/gopi/internal/testutil"
 )
 
 // TestInsertTaskRowWritesFullColumnSurface pins the single-INSERT contract:

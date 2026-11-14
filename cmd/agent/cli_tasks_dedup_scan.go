@@ -21,7 +21,7 @@ import (
 	"fmt"
 	"os"
 
-	"github.com/nick/gopi/internal/tools"
+	"github.com/nickhuang99/gopi/internal/tools"
 )
 
 // taskDedupScanProg is the canonical spelling of the twin-task audit (the

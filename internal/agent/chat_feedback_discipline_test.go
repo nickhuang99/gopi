@@ -42,7 +42,7 @@ import (
 	"strings"
 	"testing"
 
-	"github.com/nick/gopi/internal/toolnames"
+	"github.com/nickhuang99/gopi/internal/toolnames"
 )
 
 // memoryVoteRuleHead opens memory clause c of the kernel's if-then block (loop.go

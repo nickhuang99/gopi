@@ -27,7 +27,7 @@ import (
 	"strings"
 	"testing"
 
-	"github.com/nick/gopi/internal/config"
+	"github.com/nickhuang99/gopi/internal/config"
 )
 
 // chatReplayScopeInteractiveOnly are the words that must NEVER reach the scoped

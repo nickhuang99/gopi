@@ -15,7 +15,7 @@ import (
 	"testing"
 	"time"
 
-	"github.com/nick/gopi/internal/config"
+	"github.com/nickhuang99/gopi/internal/config"
 )
 
 // TestVoiceFirstTextReportNamesTheSplit is the report's primary contract: the

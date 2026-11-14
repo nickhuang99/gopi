@@ -3,7 +3,7 @@ package agent
 import (
 	"context"
 	"encoding/json"
-	"github.com/nick/gopi/internal/sessionevent"
+	"github.com/nickhuang99/gopi/internal/sessionevent"
 	"net/http"
 	"net/http/httptest"
 	"os"
@@ -12,10 +12,10 @@ import (
 	"testing"
 	"time"
 
-	"github.com/nick/gopi/internal/config"
-	"github.com/nick/gopi/internal/deepseek"
-	"github.com/nick/gopi/internal/sessionlayout"
-	"github.com/nick/gopi/internal/signalrec"
+	"github.com/nickhuang99/gopi/internal/config"
+	"github.com/nickhuang99/gopi/internal/deepseek"
+	"github.com/nickhuang99/gopi/internal/sessionlayout"
+	"github.com/nickhuang99/gopi/internal/signalrec"
 )
 
 // newTestSession builds a SessionLogger in an isolated GOPI_HOME.

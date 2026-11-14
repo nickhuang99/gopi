@@ -61,9 +61,9 @@ import (
 	"strings"
 	"testing"
 
-	"github.com/nick/gopi/internal/config"
-	"github.com/nick/gopi/internal/testutil"
-	gopiversion "github.com/nick/gopi/internal/version"
+	"github.com/nickhuang99/gopi/internal/config"
+	"github.com/nickhuang99/gopi/internal/testutil"
+	gopiversion "github.com/nickhuang99/gopi/internal/version"
 )
 
 // The refusal's two signature phrases come from the PRODUCTION constants

@@ -8,7 +8,7 @@ import (
 	"strconv"
 	"testing"
 
-	"github.com/nick/gopi/internal/config"
+	"github.com/nickhuang99/gopi/internal/config"
 )
 
 // attachment-index positional contract regression (devdoc/attachment-index-

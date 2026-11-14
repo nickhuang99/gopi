@@ -18,7 +18,7 @@ import (
 	"strings"
 	"testing"
 
-	"github.com/nick/gopi/internal/uiclient"
+	"github.com/nickhuang99/gopi/internal/uiclient"
 )
 
 // recordStream writes one real recording at cols×rows and returns its path. It

@@ -32,9 +32,9 @@ import (
 	"errors"
 	"fmt"
 
-	"github.com/nick/gopi/internal/config"
-	"github.com/nick/gopi/internal/doubaosauc"
-	"github.com/nick/gopi/internal/doubaostream"
+	"github.com/nickhuang99/gopi/internal/config"
+	"github.com/nickhuang99/gopi/internal/doubaosauc"
+	"github.com/nickhuang99/gopi/internal/doubaostream"
 )
 
 // voiceLiveSessionV2 adapts the v2 channel's session to the runner's vocabulary.

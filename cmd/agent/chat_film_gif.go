@@ -70,9 +70,9 @@ import (
 	"strconv"
 	"strings"
 
-	"github.com/nick/gopi/internal/config"
-	"github.com/nick/gopi/internal/gifgen"
-	"github.com/nick/gopi/internal/shot"
+	"github.com/nickhuang99/gopi/internal/config"
+	"github.com/nickhuang99/gopi/internal/gifgen"
+	"github.com/nickhuang99/gopi/internal/shot"
 )
 
 const (

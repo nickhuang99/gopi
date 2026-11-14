@@ -57,9 +57,9 @@ import (
 	"sync"
 	"time"
 
-	"github.com/nick/gopi/internal/config"
-	"github.com/nick/gopi/internal/scratch"
-	"github.com/nick/gopi/internal/shot"
+	"github.com/nickhuang99/gopi/internal/config"
+	"github.com/nickhuang99/gopi/internal/scratch"
+	"github.com/nickhuang99/gopi/internal/shot"
 )
 
 const (
@@ -521,9 +521,9 @@ func scratchGCSweep(role string) { scratchGCSweepBody(role) }
 //     that instant is indistinguishable — in the dump — from a leak:
 //
 //     suite goroutine sweep: parked repository goroutines: 1
-//     github.com/nick/gopi/internal/scratch.readProcFile(...)
+//     github.com/nickhuang99/gopi/internal/scratch.readProcFile(...)
 //     (...scratchGCTick → scratch.BaseSuiteRunReport → pathHeldByProcesses)
-//     FAIL github.com/nick/gopi/cmd/agent   (a fully green -run set, exit 1)
+//     FAIL github.com/nickhuang99/gopi/cmd/agent   (a fully green -run set, exit 1)
 //
 //     The answer to "is this frame a leak?" is that the sweep is a RESIDENT
 //     instrument of a host process: when the process exits it is withdrawn by

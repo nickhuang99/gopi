@@ -9,7 +9,7 @@
 // `failed`, with a synthetic error and elapsed=0s. A resident `gopi worker`
 // inherited the variable from its launcher shell, claimed 5 REAL operator rows
 // and terminally burned them in 6 seconds (claimed_at 15:57:26–15:58:11,
-// claimed_by zpeer:558874, every writeback detail "synthetic child failure (test
+// claimed_by peerbox:558874, every writeback detail "synthetic child failure (test
 // escape)"). Nothing was attempted and nothing was judged — a test seam was
 // remotely deciding production task outcomes.
 //
@@ -49,8 +49,8 @@ import (
 	"path/filepath"
 	"strings"
 
-	"github.com/nick/gopi/internal/config"
-	"github.com/nick/gopi/internal/scratch"
+	"github.com/nickhuang99/gopi/internal/config"
+	"github.com/nickhuang99/gopi/internal/scratch"
 )
 
 const (

@@ -92,7 +92,7 @@ func TestCompileOnlyRunTakesNoPackageLock(t *testing.T) {
 // whose TestMain arms the pins through testutil.RunSuiteMain, so the arm exercises
 // the real chain (TestMain → PinSuiteForTestMain → AcquireSuitePackageLock) for one
 // compile instead of a whole suite's tests.
-const runlessArmSubjectPkg = "github.com/nick/gopi/internal/replay"
+const runlessArmSubjectPkg = "github.com/nickhuang99/gopi/internal/replay"
 
 // runNothingFilterForTest is the `-run` value the arm above passes. It is a const
 // so the arm cannot drift from the shape it is testing, and it is deliberately a

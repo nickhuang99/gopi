@@ -13,9 +13,9 @@ import (
 	"sort"
 	"strings"
 
-	"github.com/nick/gopi/internal/config"
-	"github.com/nick/gopi/internal/rawlogfmt"
-	"github.com/nick/gopi/internal/scratch"
+	"github.com/nickhuang99/gopi/internal/config"
+	"github.com/nickhuang99/gopi/internal/rawlogfmt"
+	"github.com/nickhuang99/gopi/internal/scratch"
 )
 
 // The raw log's two layouts, spelled with the WRITER's own constants (Rules
@@ -75,7 +75,7 @@ const (
 // descent is a directory listing PER CHILD — the price of finding the co-located
 // layout (<sessions>/<run-dir>/<run-uuid>.raw.log). That price is invisible on
 // an ordinary profile (tens of run directories) and unbounded on a root that has
-// accumulated years of runs: measured on zpeer 2026-10-07, ~/.gopi/sessions held
+// accumulated years of runs: measured on peerbox 2026-10-07, ~/.gopi/sessions held
 // 83960 first-level entries and each child listing cost 8.7 ms, so the walk
 // projects to ~12 minutes. `gopi session checkpoint list` was killed at 30 s
 // with rc=137 having printed NOTHING (real 4m40s / user 0.002s in the operator's

@@ -45,8 +45,8 @@ import (
 	"fmt"
 	"strings"
 
-	"github.com/nick/gopi/internal/inputsource"
-	"github.com/nick/gopi/internal/sessionevent"
+	"github.com/nickhuang99/gopi/internal/inputsource"
+	"github.com/nickhuang99/gopi/internal/sessionevent"
 )
 
 // ChatFirstMsgPlaceholder is the head a chat row carries while the operator has

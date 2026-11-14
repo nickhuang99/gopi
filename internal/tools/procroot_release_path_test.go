@@ -27,7 +27,7 @@ import (
 	"strconv"
 	"testing"
 
-	"github.com/nick/gopi/internal/worktreerelease"
+	"github.com/nickhuang99/gopi/internal/worktreerelease"
 )
 
 func TestProcRootAndCwdReleasePathAreDistinctFacts(t *testing.T) {

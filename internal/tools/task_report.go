@@ -44,7 +44,7 @@ import (
 	"strings"
 	"time"
 
-	"github.com/nick/gopi/internal/taskreport"
+	"github.com/nickhuang99/gopi/internal/taskreport"
 )
 
 // TaskShowReportLabel is the render label of the report section in
@@ -299,7 +299,7 @@ func SealTaskReportOutcome(taskID, outcome string) (string, error) {
 	// the run selected `./internal/standards` in its PKGS, killed that run, and
 	// replaced it with a self-authored `-run 'Holder|LiveHolders|…'` whose
 	// pattern matches no gate test; the report carried
-	// `ok github.com/nick/gopi/internal/standards` while the package's whole run
+	// `ok github.com/nickhuang99/gopi/internal/standards` while the package's whole run
 	// on the same rev was FAIL exit 1. `scripts/test-budget.sh` models the
 	// neighbouring gap (exit 5 refuses a filtered run that executed ZERO tests)
 	// and CANNOT see this one: the run was not empty, it was simply not about

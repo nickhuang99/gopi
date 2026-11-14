@@ -53,9 +53,9 @@ import (
 	"strings"
 	"sync"
 
-	"github.com/nick/gopi/internal/chatpolicy"
-	"github.com/nick/gopi/internal/cliverbs"
-	"github.com/nick/gopi/internal/signalrec"
+	"github.com/nickhuang99/gopi/internal/chatpolicy"
+	"github.com/nickhuang99/gopi/internal/cliverbs"
+	"github.com/nickhuang99/gopi/internal/signalrec"
 )
 
 // chatOperatorAbsent is the process-wide PRESENCE flag. It is a value under a

@@ -11,7 +11,7 @@ import (
 	"testing"
 	"time"
 
-	"github.com/nick/gopi/internal/deepseek"
+	"github.com/nickhuang99/gopi/internal/deepseek"
 )
 
 // compact_p2_test.go — P2 acceptance tests: mechanical Anchor Index
@@ -27,7 +27,7 @@ func TestBuildAnchorIndex_HarvestsNeedleFacts(t *testing.T) {
 	msgs := []deepseek.Message{
 		{Role: "user", Content: "fix the flaky test in internal/agent/compact.go related to commit 8b0a704"},
 		{Role: "assistant", Content: "fixed, saw a nil pointer dereference: panic: index out of range"},
-		{Role: "user", Content: "bump to v2.7.1 and reference https://github.com/nick/gopi/pull/42"},
+		{Role: "user", Content: "bump to v2.7.1 and reference https://github.com/nickhuang99/gopi/pull/42"},
 	}
 
 	anchors := buildAnchorIndex(msgs)
@@ -55,7 +55,7 @@ func TestBuildAnchorIndex_HarvestsNeedleFacts(t *testing.T) {
 		t.Fatalf("expected version anchor, got %q", anchors)
 	}
 	// URL.
-	if !strings.Contains(anchors, "https://github.com/nick/gopi/pull/42") {
+	if !strings.Contains(anchors, "https://github.com/nickhuang99/gopi/pull/42") {
 		t.Fatalf("expected URL anchor, got %q", anchors)
 	}
 }
@@ -80,7 +80,7 @@ func TestCompact_SummaryGetsAnchorsAppended(t *testing.T) {
 	}, 2000)
 	fillHistorySized(ag.Ctx, []deepseek.Message{
 		{Role: "user", Content: "commit 8b0a704 broke internal/agent/compact.go with panic: index out of range"},
-		{Role: "assistant", Content: "reverted to v2.7.1 at https://github.com/nick/gopi/pull/42"},
+		{Role: "assistant", Content: "reverted to v2.7.1 at https://github.com/nickhuang99/gopi/pull/42"},
 	})
 	ag.trimContext(context.Background())
 	if *calls != 1 {
@@ -97,7 +97,7 @@ func TestCompact_SummaryGetsAnchorsAppended(t *testing.T) {
 	if !strings.Contains(head.Content, anchorHeading) {
 		t.Fatalf("expected anchor heading in memory block, got %q", head.Content)
 	}
-	for _, want := range []string{"8b0a704", "internal/agent/compact.go", "index out of range", "2.7.1", "https://github.com/nick/gopi/pull/42"} {
+	for _, want := range []string{"8b0a704", "internal/agent/compact.go", "index out of range", "2.7.1", "https://github.com/nickhuang99/gopi/pull/42"} {
 		if !strings.Contains(head.Content, want) {
 			t.Fatalf("expected anchor %q in memory block, got %q", want, head.Content)
 		}

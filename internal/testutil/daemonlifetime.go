@@ -16,7 +16,7 @@ package testutil
 // test while everything looks right (measured 2026-09-14). Every site therefore
 // derives its number from the helpers below instead of writing one.
 
-import "github.com/nick/gopi/internal/daemonlifetime"
+import "github.com/nickhuang99/gopi/internal/daemonlifetime"
 
 const (
 	// DaemonDeathHoldEnv is the environment variable that names the fd, IN THE

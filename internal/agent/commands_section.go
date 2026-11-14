@@ -3,7 +3,7 @@ package agent
 import (
 	"strings"
 
-	"github.com/nick/gopi/internal/config"
+	"github.com/nickhuang99/gopi/internal/config"
 )
 
 // commandsSectionName is the registry Name of the derived command index

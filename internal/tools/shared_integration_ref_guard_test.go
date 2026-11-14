@@ -32,7 +32,7 @@ import (
 	"strings"
 	"testing"
 
-	"github.com/nick/gopi/internal/branchform"
+	"github.com/nickhuang99/gopi/internal/branchform"
 )
 
 // Fixture spellings, named because several cases and assertions share them

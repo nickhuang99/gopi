@@ -3,7 +3,7 @@ package tasksource
 import (
 	"testing"
 
-	"github.com/nick/gopi/internal/config"
+	"github.com/nickhuang99/gopi/internal/config"
 )
 
 // The derivation table: every (signature, request) pair the ruling speaks to.

@@ -24,7 +24,7 @@ import (
 	"fmt"
 	"regexp"
 
-	"github.com/nick/gopi/internal/buildidentity"
+	"github.com/nickhuang99/gopi/internal/buildidentity"
 )
 
 // DefaultVersion is the version of the gopi SOURCE TREE this binary was
@@ -54,7 +54,15 @@ import (
 // and a test pins that this default satisfies it — a malformed default is the
 // one failure nobody would notice until a release.
 //
-// CURRENT VALUE — why v0.4.0 (MINOR bump, 2026-11-01): THREE user-visible
+// CURRENT VALUE — why v0.5.0 (MINOR bump, 2026-11-14): the OPEN-SOURCE
+// READINESS bump. No verb changed shape and no output format a consumer parses
+// moved; what earned the MINOR is that the tree can now be published as it
+// stands — the module path is the public one, and the fleet-specific material a
+// stranger cannot use is gone. A reader comparing v0.4.0 and v0.5.0 sees one
+// history: v0.4.0 was the last version of the private working tree, v0.5.0 is
+// the first of the public one.
+//
+// PREVIOUS — why v0.4.0 (MINOR bump, 2026-11-01): THREE user-visible
 // surfaces changed shape in the two weeks since v0.3.0, and each one is read by
 // somebody outside this repository.
 //
@@ -108,7 +116,7 @@ import (
 // task's GROUND (a row carries the workspace as its ground, not a derived
 // worktree name) and that row is driven through a dev_repo switch plus a
 // pull/build/push loop.
-const DefaultVersion = "v0.4.0"
+const DefaultVersion = "v0.5.0"
 
 // MilestoneDate is WHEN THIS VERSION WAS DECLARED — the calendar fact of the
 // milestone, not the date of whichever commit happened to carry this file.
@@ -138,7 +146,7 @@ const MilestoneDate = "2026-11-01T19:10:00Z"
 // constant, for exactly one reason: a release build may stamp an artifact
 // that is not the tree's default with
 //
-//	go build -ldflags "-X github.com/nick/gopi/internal/version.Version=v1.2.3"
+//	go build -ldflags "-X github.com/nickhuang99/gopi/internal/version.Version=v1.2.3"
 //
 // and only a variable can be set by the linker. The compile-time default is
 // DefaultVersion, so a build with NO ldflags — the documented build (Rule 12,

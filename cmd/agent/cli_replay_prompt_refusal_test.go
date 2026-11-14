@@ -37,12 +37,12 @@ package main
 //     this vocabulary is forbidden to become.
 
 import (
-	"github.com/nick/gopi/internal/heavytest"
+	"github.com/nickhuang99/gopi/internal/heavytest"
 	"regexp"
 	"strings"
 	"testing"
 
-	"github.com/nick/gopi/internal/config"
+	"github.com/nickhuang99/gopi/internal/config"
 )
 
 // replayPromptWord is the word under test: the session family's PLAYBACK

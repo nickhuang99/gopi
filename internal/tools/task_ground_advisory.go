@@ -40,8 +40,8 @@ import (
 	"path/filepath"
 	"strings"
 
-	"github.com/nick/gopi/internal/cliverbs"
-	"github.com/nick/gopi/internal/devworkspace"
+	"github.com/nickhuang99/gopi/internal/cliverbs"
+	"github.com/nickhuang99/gopi/internal/devworkspace"
 )
 
 // ── the AUTHORITY clause: what the run's briefing says about its tree ────────

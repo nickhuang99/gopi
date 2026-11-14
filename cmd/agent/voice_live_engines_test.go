@@ -21,9 +21,9 @@ import (
 	"testing"
 	"time"
 
-	"github.com/nick/gopi/internal/config"
-	"github.com/nick/gopi/internal/doubaosauc"
-	"github.com/nick/gopi/internal/doubaostream"
+	"github.com/nickhuang99/gopi/internal/config"
+	"github.com/nickhuang99/gopi/internal/doubaosauc"
+	"github.com/nickhuang99/gopi/internal/doubaostream"
 )
 
 // TestVoiceLiveEngineSelected_TruthTable pins the selection for EVERY engine: the

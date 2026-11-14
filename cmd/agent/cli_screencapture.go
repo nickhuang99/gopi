@@ -13,8 +13,8 @@ import (
 	"os"
 	"strings"
 
-	"github.com/nick/gopi/internal/toolnames"
-	"github.com/nick/gopi/internal/tools"
+	"github.com/nickhuang99/gopi/internal/toolnames"
+	"github.com/nickhuang99/gopi/internal/tools"
 )
 
 // screenCaptureUsage is the -h text for the screen_capture subcommand.

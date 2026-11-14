@@ -18,7 +18,7 @@ package tools
 //	              refused — while an ordinary merged branch is still reaped.
 
 import (
-	"github.com/nick/gopi/internal/scratch"
+	"github.com/nickhuang99/gopi/internal/scratch"
 	"os"
 	"os/exec"
 	"path/filepath"
@@ -27,8 +27,8 @@ import (
 	"testing"
 	"time"
 
-	"github.com/nick/gopi/internal/config"
-	"github.com/nick/gopi/internal/worktreeroots"
+	"github.com/nickhuang99/gopi/internal/config"
+	"github.com/nickhuang99/gopi/internal/worktreeroots"
 )
 
 // sessionVetoFixtureRoot gives the sweep a declared root on the suite's scratch
@@ -120,7 +120,7 @@ func TestReclaimRefusesADirectoryALiveRowsSessionStandsIn(t *testing.T) {
 
 	row := reclaimDeadHolderRow{
 		TaskID: "t-live-session", Status: taskStatusInProgress,
-		ClaimedBy: "zpeer:" + strconv.Itoa(deadPID(t)),
+		ClaimedBy: "peerbox:" + strconv.Itoa(deadPID(t)),
 		Repo:      repo, Branch: branch, Worktree: worktree,
 	}
 	// Before the stand-in: dead claim pid, no recorded runner → the arm frees.

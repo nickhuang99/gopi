@@ -26,7 +26,7 @@ import (
 	"strings"
 	"testing"
 
-	"github.com/nick/gopi/internal/lineedit"
+	"github.com/nickhuang99/gopi/internal/lineedit"
 )
 
 // TestThinkingFrameBecomesAReasoningRowNotAnAnswer drives the frame through the

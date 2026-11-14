@@ -3,13 +3,13 @@ package tools
 import (
 	"context"
 	"database/sql"
-	"github.com/nick/gopi/internal/heavytest"
+	"github.com/nickhuang99/gopi/internal/heavytest"
 	"os"
 	"path/filepath"
 	"strings"
 	"testing"
 
-	"github.com/nick/gopi/internal/agencyscan"
+	"github.com/nickhuang99/gopi/internal/agencyscan"
 )
 
 // Historical-replay harness (epic agency-proposals, deliverable 3).

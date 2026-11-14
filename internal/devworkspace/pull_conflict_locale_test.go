@@ -10,7 +10,7 @@ import (
 	"testing"
 	"time"
 
-	"github.com/nick/gopi/internal/testutil"
+	"github.com/nickhuang99/gopi/internal/testutil"
 )
 
 // THE REGRESSION THIS FILE GUARDS (epic 01a1847f): this package PARSES git's

@@ -40,7 +40,7 @@ import (
 	"strings"
 	"testing"
 
-	"github.com/nick/gopi/internal/tools"
+	"github.com/nickhuang99/gopi/internal/tools"
 )
 
 // rule6cRetiredWording is the claim this task REMOVED. It is spelled here, not

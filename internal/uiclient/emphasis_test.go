@@ -6,8 +6,8 @@ import (
 	"strings"
 	"testing"
 
-	"github.com/nick/gopi/internal/lineedit"
-	"github.com/nick/gopi/internal/sgr"
+	"github.com/nickhuang99/gopi/internal/lineedit"
+	"github.com/nickhuang99/gopi/internal/sgr"
 )
 
 // emphasis_test.go — `gopi ui`'s half of the intra-line emphasis layer.
@@ -290,7 +290,7 @@ const quotedFenceAnswer = "here is what I saw:\n" +
 	lineedit.FenceMarker + "\n" +
 	"you> head -3 go.mod\n" +
 	"      " + lineedit.FenceMarker + "\n" +
-	"module github.com/nick/gopi\n" +
+	"module github.com/nickhuang99/gopi\n" +
 	lineedit.FenceMarker + "\n" +
 	"the **bold conclusion** follows"
 
@@ -345,7 +345,7 @@ func TestSpanPathDrawsBoldAfterAQuotedFenceMarker(t *testing.T) {
 	if strings.Contains(mv, lineedit.BoldMarker) {
 		t.Fatalf("the monochrome frame still spells the marker:\n%s", mv)
 	}
-	if !strings.Contains(mv, "module github.com/nick/gopi") {
+	if !strings.Contains(mv, "module github.com/nickhuang99/gopi") {
 		t.Fatalf("the quoted capture was lost from the frame:\n%s", mv)
 	}
 	if !strings.Contains(mv, "the bold conclusion follows") {

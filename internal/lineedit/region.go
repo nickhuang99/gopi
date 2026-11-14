@@ -5,7 +5,7 @@ import (
 	"strings"
 	"sync"
 
-	"github.com/nick/gopi/internal/sgr"
+	"github.com/nickhuang99/gopi/internal/sgr"
 )
 
 // region.go — the top-region compositor (A5).

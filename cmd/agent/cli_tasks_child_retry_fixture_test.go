@@ -22,7 +22,7 @@ import (
 	"strconv"
 	"testing"
 
-	"github.com/nick/gopi/internal/tools"
+	"github.com/nickhuang99/gopi/internal/tools"
 )
 
 func TestRetryDeadHolderFixtureHoldsAReservedPid(t *testing.T) {

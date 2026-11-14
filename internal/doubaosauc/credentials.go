@@ -30,7 +30,7 @@ import (
 	"os"
 	"strings"
 
-	"github.com/nick/gopi/internal/doubaostream"
+	"github.com/nickhuang99/gopi/internal/doubaostream"
 )
 
 // Credentials is a resolved v3 credential: the values plus, when they came from

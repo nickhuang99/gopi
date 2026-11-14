@@ -57,11 +57,11 @@ func newGuardFixture(t *testing.T) guardFixture {
 	dir := t.TempDir()
 	path := filepath.Join(dir, "settings.json")
 	document := map[string]any{
-		"api_key":       "sk-fixture-not-a-real-key",
-		"model":         "fixture-model",
+		"api_key":      "sk-fixture-not-a-real-key",
+		"model":        "fixture-model",
 		"memory_peers": []any{},
-		"task_sync":     false,
-		"tmpdir":        filepath.Join(dir, "tmp"),
+		"task_sync":    false,
+		"tmpdir":       filepath.Join(dir, "tmp"),
 	}
 	fx := guardFixture{dir: dir, path: path, backup: SettingsBackupPath(path), document: document}
 	fx.write(t, document)

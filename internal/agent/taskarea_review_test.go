@@ -30,8 +30,8 @@ import (
 	"testing"
 	"time"
 
-	"github.com/nick/gopi/internal/deepseek"
-	"github.com/nick/gopi/internal/tools"
+	"github.com/nickhuang99/gopi/internal/deepseek"
+	"github.com/nickhuang99/gopi/internal/tools"
 )
 
 // R1 — unit: handleTaskReview validates, latches, receipts, and returns the

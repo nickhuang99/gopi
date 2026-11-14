@@ -10,20 +10,20 @@ import (
 	"path/filepath"
 	"strings"
 
-	"github.com/nick/gopi/internal/agent"
-	"github.com/nick/gopi/internal/cliverbs"
-	"github.com/nick/gopi/internal/closeouthandoff"
-	"github.com/nick/gopi/internal/config"
-	"github.com/nick/gopi/internal/deepseek"
-	"github.com/nick/gopi/internal/devworkspace"
-	"github.com/nick/gopi/internal/gopilog"
-	"github.com/nick/gopi/internal/runcmd"
-	"github.com/nick/gopi/internal/rundir"
-	"github.com/nick/gopi/internal/scratch"
-	"github.com/nick/gopi/internal/sessionlayout"
-	"github.com/nick/gopi/internal/signalrec"
-	"github.com/nick/gopi/internal/tools"
-	"github.com/nick/gopi/internal/worktreerelease"
+	"github.com/nickhuang99/gopi/internal/agent"
+	"github.com/nickhuang99/gopi/internal/cliverbs"
+	"github.com/nickhuang99/gopi/internal/closeouthandoff"
+	"github.com/nickhuang99/gopi/internal/config"
+	"github.com/nickhuang99/gopi/internal/deepseek"
+	"github.com/nickhuang99/gopi/internal/devworkspace"
+	"github.com/nickhuang99/gopi/internal/gopilog"
+	"github.com/nickhuang99/gopi/internal/runcmd"
+	"github.com/nickhuang99/gopi/internal/rundir"
+	"github.com/nickhuang99/gopi/internal/scratch"
+	"github.com/nickhuang99/gopi/internal/sessionlayout"
+	"github.com/nickhuang99/gopi/internal/signalrec"
+	"github.com/nickhuang99/gopi/internal/tools"
+	"github.com/nickhuang99/gopi/internal/worktreerelease"
 )
 
 // The cross-guidance fragments of the session resume page (Rules 1b/13/14): the
@@ -1427,7 +1427,7 @@ var resumeRowExists = tools.TaskStatusOf
 // ordering are only assertable by reading the file.
 //
 // ONE WRITER PER CHAIN RUN (epic worker-resume-report-once, measured 2026-09-26
-// on zpeer: one `gopi worker --resume` run printed its close-out report twice
+// on peerbox: one `gopi worker --resume` run printed its close-out report twice
 // and its `skipped:` summary three times — /tmp/strange_python.txt, 66 lines).
 //
 // The chain itself has always been idempotent; the REPORT was not, because one

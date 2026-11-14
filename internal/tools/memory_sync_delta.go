@@ -49,7 +49,7 @@ import (
 	"strings"
 	"time"
 
-	"github.com/nick/gopi/internal/tasksource"
+	"github.com/nickhuang99/gopi/internal/tasksource"
 )
 
 // syncParentColumnExpr is the ONE spelling of "read a row's dependency edge
@@ -309,7 +309,7 @@ func syncTagTokenPattern(token string) string {
 // EVERY Go consumer of these tokens is case-sensitive — hasTag
 // (t == want), syncDeltaMergeTags (strings.HasPrefix(t, SyncTaskTagPrefix)),
 // syncGateTag's own from-<node> comparison, and the task-tag predicates in
-// tasks.go. Under LIKE a row tagged "BUG" (or "FROM-ZBOOK") passed the sync
+// tasks.go. Under LIKE a row tagged "BUG" (or "FROM-PEERBOX") passed the sync
 // gate yet was invisible to the token readers, and — the mirror direction,
 // the dangerous one — a wrong-case from-<peer> tag ESCAPED the anti-reflow
 // exclusion and reflowed the peer's row back at it. The persisted ledger
@@ -888,7 +888,7 @@ func syncDeltaMergeRow(ctx context.Context, db *sql.DB, bus *taskNotifyBus, exis
 		// M4.16 semantic fix (bug053): the blind server ruling — write
 		// completed + sync-resolved + advance the anchor — is ONLY legal
 		// for source=auto registration/mirror rows (登记噪音: a pending
-		// row on zpeer that a HP mirror cancelled, or an auto-registered
+		// row on peerbox that a HP mirror cancelled, or an auto-registered
 		// row whose peer echo differs). A REAL ticket (source human/llm,
 		// non-empty payload — the 登记噪音 vs 真工单 distinction) can NEVER
 		// be blind-flattened: bug050/051/052 were all fake-closed by
@@ -1042,7 +1042,7 @@ func syncRowIsMirrorNoise(existing *Task) bool {
 // syncDeltaTagConflictNoRuling unions the conflict tag onto a real ticket's
 // row WITHOUT advancing status/ended_at/anchor — the bug053 guard: a human
 // ticket that the server refused to flatten stays exactly where it was
-// (pending on zpeer), only tagged so the next sync re-echo is a known
+// (pending on peerbox), only tagged so the next sync re-echo is a known
 // conflict no-op. Returns (conflictAlreadyKnown, echoNoOp, error) — a
 // known-conflict re-echo with equal tags is a pure no-op (RowsAlready).
 func syncDeltaTagConflictNoRuling(ctx context.Context, db *sql.DB, existing *Task, merged string) (bool, bool, error) {
@@ -1171,7 +1171,7 @@ func syncDeltaApplyNewer(ctx context.Context, db *sql.DB, bus *taskNotifyBus, ex
 	// WHY THIS IS A DEFECT AND NOT A TASTE QUESTION (measured 2026-10-29, rows
 	// 01a16f98/01a17866/01a17a10/01a17a6a/01a17a8a/01a17c53/01a17d07/01a17e23):
 	// a PA cancelled those rows on ONE node to de-duplicate two ledgers, with a
-	// reason that said "keep the sager side, cancel the HP side" — and the
+	// reason that said "keep the hosta side, cancel the HP side" — and the
 	// ladder wrote `cancelled` onto the KEPT side within the same second, with
 	// the peer's reason verbatim, the peer's updated_at verbatim, the peer's
 	// `from-<node>` tag filtered out by syncDeltaMergeTags, and ZERO

@@ -36,7 +36,7 @@ import (
 	"strings"
 	"testing"
 
-	"github.com/nick/gopi/internal/inputsource"
+	"github.com/nickhuang99/gopi/internal/inputsource"
 )
 
 // briefingFixtureBodies are the two producers' real renderings, one per point.

@@ -60,8 +60,8 @@ import (
 
 	_ "modernc.org/sqlite" // the ONE driver the tree uses; named by sandboxLedgerDriverName below
 
-	"github.com/nick/gopi/internal/config"
-	"github.com/nick/gopi/internal/scratch"
+	"github.com/nickhuang99/gopi/internal/config"
+	"github.com/nickhuang99/gopi/internal/scratch"
 )
 
 // The ledger's own shape constants (Rule 1a: no bare literals in a mode, a

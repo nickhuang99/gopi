@@ -4,7 +4,7 @@ import (
 	"fmt"
 	"sort"
 
-	"github.com/nick/gopi/internal/toolnames"
+	"github.com/nickhuang99/gopi/internal/toolnames"
 )
 
 // editArgRefusalKeysLimit caps how many received argument NAMES a refusal
@@ -18,7 +18,7 @@ const editArgRefusalKeysLimit = 8
 // arrives with an empty replacement.
 //
 // WHY AN EMPTY REPLACEMENT IS REFUSED RATHER THAN PERFORMED — measured
-// 2026-10-04 (task 01a103c2-36e2-7808-bc42-d652762c4691, host zpeer). One
+// 2026-10-04 (task 01a103c2-36e2-7808-bc42-d652762c4691, host peerbox). One
 // session's raw log recorded 17 `edit` tool_use blocks; 6 of them carried
 // their replacement under the key `newText` instead of `newStr`. The
 // dispatcher read the absent `newStr` as "" and called

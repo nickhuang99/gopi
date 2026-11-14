@@ -4,7 +4,7 @@ import (
 	"strings"
 	"testing"
 
-	"github.com/nick/gopi/internal/chatpolicy"
+	"github.com/nickhuang99/gopi/internal/chatpolicy"
 )
 
 // chat_ref_move_class_test.go — A PUBLISHED-REF MOVE IS ITS OWN CLASS, AND IT IS
@@ -110,7 +110,7 @@ func TestTheOperatorRulingSurvivesTheNewClass(t *testing.T) {
 		"git status",
 		"ls -la",
 		"gopi task list",
-		"ssh zpeer true",
+		"ssh peerbox true",
 	} {
 		if adm := ChatOpAdmit(cmd, ""); !adm.Allowed() {
 			t.Errorf("%q was REFUSED (class=%s, reason=%q) — the 2026-10-24 ruling makes this the "+

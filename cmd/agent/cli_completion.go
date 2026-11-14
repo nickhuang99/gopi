@@ -40,7 +40,7 @@ import (
 	"sort"
 	"strings"
 
-	"github.com/nick/gopi/internal/taskverbs"
+	"github.com/nickhuang99/gopi/internal/taskverbs"
 )
 
 // completionUsage is the -h text for `gopi config completion` (the "every command

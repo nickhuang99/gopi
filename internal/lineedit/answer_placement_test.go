@@ -30,7 +30,7 @@ package lineedit
 import (
 	"fmt"
 
-	"github.com/nick/gopi/internal/sgr"
+	"github.com/nickhuang99/gopi/internal/sgr"
 	"strings"
 	"testing"
 	"time"

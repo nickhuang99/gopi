@@ -43,8 +43,8 @@ import (
 	"os"
 	"path/filepath"
 
-	"github.com/nick/gopi/internal/chatpolicy"
-	"github.com/nick/gopi/internal/config"
+	"github.com/nickhuang99/gopi/internal/chatpolicy"
+	"github.com/nickhuang99/gopi/internal/config"
 )
 
 // ChatPolicyProjectFileName is the tracked project policy file's name, and

@@ -36,7 +36,7 @@ import (
 	"strconv"
 	"strings"
 
-	"github.com/nick/gopi/internal/sitekey"
+	"github.com/nickhuang99/gopi/internal/sitekey"
 )
 
 const (

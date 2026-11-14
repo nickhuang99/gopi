@@ -30,7 +30,7 @@ import (
 	"strings"
 	"testing"
 
-	"github.com/nick/gopi/internal/toolnames"
+	"github.com/nickhuang99/gopi/internal/toolnames"
 )
 
 // chatPADutyBashFenceClause is the sentence that must exist somewhere in the duty

@@ -20,7 +20,7 @@ import (
 	"io"
 	"os"
 
-	"github.com/nick/gopi/internal/tools"
+	"github.com/nickhuang99/gopi/internal/tools"
 )
 
 // memoryBackupUsage is the help page for `gopi memory backup`. Rule 5 /

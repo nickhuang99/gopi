@@ -4,7 +4,7 @@ import (
 	"strings"
 	"testing"
 
-	"github.com/nick/gopi/internal/testutil"
+	"github.com/nickhuang99/gopi/internal/testutil"
 )
 
 // The epic failed-reason-attribution (measured 2026-10-07): 179 of 330 failed
@@ -64,7 +64,7 @@ func TestFailedReasonCarriesTheWritebackDigest(t *testing.T) {
 	const id = "t-failed-reason-digest"
 	failedReasonSeedRow(t, id)
 
-	const cause = "zombie disposal (zombie: heartbeat stalled past grace); claimed pid 4242 dead (zpeer)"
+	const cause = "zombie disposal (zombie: heartbeat stalled past grace); claimed pid 4242 dead (peerbox)"
 	if _, err := TaskUpdateWithResult(id, taskStatusFailed, cause); err != nil {
 		t.Fatalf("failed writeback: %v", err)
 	}

@@ -19,9 +19,9 @@ import (
 	"strings"
 	"testing"
 
-	"github.com/nick/gopi/internal/gifgen"
-	"github.com/nick/gopi/internal/shot"
-	"github.com/nick/gopi/internal/testutil"
+	"github.com/nickhuang99/gopi/internal/gifgen"
+	"github.com/nickhuang99/gopi/internal/shot"
+	"github.com/nickhuang99/gopi/internal/testutil"
 )
 
 // the faces this host's two terminals published (measured 2026-10-04 by reading

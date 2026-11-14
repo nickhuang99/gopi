@@ -7,8 +7,8 @@ import (
 	"runtime/debug"
 	"strings"
 
-	"github.com/nick/gopi/internal/tools"
-	gopiversion "github.com/nick/gopi/internal/version"
+	"github.com/nickhuang99/gopi/internal/tools"
+	gopiversion "github.com/nickhuang99/gopi/internal/version"
 )
 
 // versionUsage is the one-line help for the version subcommand.

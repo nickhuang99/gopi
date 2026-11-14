@@ -21,7 +21,7 @@ import (
 	"strings"
 	"testing"
 
-	"github.com/nick/gopi/internal/devworkspace"
+	"github.com/nickhuang99/gopi/internal/devworkspace"
 )
 
 const resumeNoCommitTestRow = "01a19d78-4733-7c54-a20a-be52db1ce8b0"

@@ -23,7 +23,7 @@ import (
 	"testing"
 	"time"
 
-	"github.com/nick/gopi/internal/config"
+	"github.com/nickhuang99/gopi/internal/config"
 )
 
 // selfFixturePIDs are the two surfaces the cases below install. The first is a

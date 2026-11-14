@@ -4,7 +4,7 @@ import (
 	"fmt"
 	"os"
 
-	"github.com/nick/gopi/internal/config"
+	"github.com/nickhuang99/gopi/internal/config"
 )
 
 // agent_spawn_guard.go — the two CMD-AGENT call sites of the agent-spawn guard

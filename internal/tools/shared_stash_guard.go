@@ -54,7 +54,7 @@ import (
 	"strings"
 	"time"
 
-	"github.com/nick/gopi/internal/gitargv"
+	"github.com/nickhuang99/gopi/internal/gitargv"
 )
 
 // Shared-stash guard constants (Rule 1: no bare literals).

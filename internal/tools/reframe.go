@@ -9,7 +9,7 @@ import (
 	"strconv"
 	"strings"
 
-	"github.com/nick/gopi/internal/taskverdict"
+	"github.com/nickhuang99/gopi/internal/taskverdict"
 )
 
 // Reframe telemetry (SPEC-reframe-evaluate-merge.md §4, §7.7): the anti-

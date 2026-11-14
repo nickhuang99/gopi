@@ -23,7 +23,7 @@ import (
 	"os"
 	"strings"
 
-	"github.com/nick/gopi/internal/config"
+	"github.com/nickhuang99/gopi/internal/config"
 )
 
 // IsServerNode reports whether THIS node is the sync server — the only

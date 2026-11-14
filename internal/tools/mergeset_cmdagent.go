@@ -26,7 +26,7 @@ package tools
 //	    -run '^(TestManSourcesMatchTheirHelpPage|TestManUnmeasuredCensusIsFullyClassified)$' ./cmd/agent
 //	--- FAIL: TestManSourcesMatchTheirHelpPage (6.09s)
 //	--- FAIL: TestManUnmeasuredCensusIsFullyClassified (0.00s)
-//	FAIL	github.com/nick/gopi/cmd/agent	6.958s
+//	FAIL	github.com/nickhuang99/gopi/cmd/agent	6.958s
 //
 // — a red that stood on the integration tip and that no post-merge gate asked
 // for. AND IT WAS INTRODUCED BY A DOCUMENT-ONLY LANDING, which is this leg's whole
@@ -37,8 +37,8 @@ package tools
 // spoken about it: the gate-package leg needs a touched gate DIRECTORY, and the
 // whole-repo leg needs touched Go source. Measured with the same two-test command:
 //
-//	git checkout 54ac8a9  → ok   github.com/nick/gopi/cmd/agent	8.503s   (base, GREEN)
-//	git checkout 0a2791e  → FAIL github.com/nick/gopi/cmd/agent	6.958s   (landed, RED)
+//	git checkout 54ac8a9  → ok   github.com/nickhuang99/gopi/cmd/agent	8.503s   (base, GREEN)
+//	git checkout 0a2791e  → FAIL github.com/nickhuang99/gopi/cmd/agent	6.958s   (landed, RED)
 //
 // HOW LONG IT STOOD is the other half of the measurement, and it is why this is a
 // leg and not a one-off: the red was repaired by hand four commits later, by

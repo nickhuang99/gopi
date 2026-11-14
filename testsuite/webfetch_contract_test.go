@@ -9,7 +9,7 @@ import (
 	"strings"
 	"testing"
 
-	"github.com/nick/gopi/internal/heavytest"
+	"github.com/nickhuang99/gopi/internal/heavytest"
 )
 
 // web_fetch contract tests — the fetch side of the search/fetch split

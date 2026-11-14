@@ -48,9 +48,9 @@ import (
 	"syscall"
 	"time"
 
-	"github.com/nick/gopi/internal/agent"
-	"github.com/nick/gopi/internal/deepseek"
-	"github.com/nick/gopi/internal/signalrec"
+	"github.com/nickhuang99/gopi/internal/agent"
+	"github.com/nickhuang99/gopi/internal/deepseek"
+	"github.com/nickhuang99/gopi/internal/signalrec"
 )
 
 // The `gopi cli` service verbs (Rule 1b/14: the dispatch, the usage page and

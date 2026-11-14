@@ -27,9 +27,9 @@ package smoke
 // cite. (The alternative — grepping human output — cannot work: the script
 // deliberately prints NOTHING about passing tests.)
 //
-// The fixture module is named `github.com/nick/gopi/smokefixture` and hot-links
+// The fixture module is named `github.com/nickhuang99/gopi/smokefixture` and hot-links
 // the repo with a `replace` directive, which is what lets it import
-// github.com/nick/gopi/internal/heavytest (Go's internal-visibility rule is a
+// github.com/nickhuang99/gopi/internal/heavytest (Go's internal-visibility rule is a
 // PATH rule, not a module rule). Nothing is written into the repo's working
 // tree and no fixture is checked in, so the repo's own scans (the heavy
 // inventory, the `go test`-budget gate) never see it.
@@ -48,16 +48,16 @@ import (
 	"strings"
 	"testing"
 
-	"github.com/nick/gopi/internal/heavytest"
-	"github.com/nick/gopi/internal/scratch"
-	"github.com/nick/gopi/internal/testutil"
+	"github.com/nickhuang99/gopi/internal/heavytest"
+	"github.com/nickhuang99/gopi/internal/scratch"
+	"github.com/nickhuang99/gopi/internal/testutil"
 )
 
 const (
 	// e2eFixtureModule is the fixture's module path. It deliberately lives
-	// under github.com/nick/gopi/ so the fixture may import this repo's
+	// under github.com/nickhuang99/gopi/ so the fixture may import this repo's
 	// internal packages (internal visibility is a path-prefix rule).
-	e2eFixtureModule = "github.com/nick/gopi/smokefixture"
+	e2eFixtureModule = "github.com/nickhuang99/gopi/smokefixture"
 	// e2eGoModPath locates the module root (of both the repo and the fixture).
 	e2eGoModPath = "go.mod"
 	// e2eTopicBranch is the branch under test in the fixture repo.
@@ -192,7 +192,7 @@ func e2eFixtureTree(t *testing.T) string {
 
 	gitIn(t, tree, "init", "-q", "-b", "master")
 	writeFixtureFile(t, tree, e2eGoModPath, "module "+e2eFixtureModule+"\n\ngo "+e2eRepoGoDirective(t, repoRoot)+
-		"\n\nrequire github.com/nick/gopi v0.0.0\n\nreplace github.com/nick/gopi => "+repoRoot+"\n")
+		"\n\nrequire github.com/nickhuang99/gopi v0.0.0\n\nreplace github.com/nickhuang99/gopi => "+repoRoot+"\n")
 	writeFixtureFile(t, tree, filepath.ToSlash(filepath.Join(e2eSelectedPackage, "foo.go")),
 		"// Package foo is the package the topic branch touches.\npackage foo\n")
 	writeFixtureFile(t, tree, filepath.ToSlash(filepath.Join(e2eSelectedPackage, "foo_test.go")), e2eTestSources)
@@ -230,7 +230,7 @@ const e2eTestSources = `package foo
 import (
 	"testing"
 
-	"github.com/nick/gopi/internal/heavytest"
+	"github.com/nickhuang99/gopi/internal/heavytest"
 )
 
 // TestSmokeE2ESelectedPackageRuns is the marker that the selected package ran.

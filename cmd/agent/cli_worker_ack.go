@@ -52,7 +52,7 @@ import (
 	"strings"
 	"time"
 
-	"github.com/nick/gopi/internal/tools"
+	"github.com/nickhuang99/gopi/internal/tools"
 )
 
 // workerAck is one parsed receipt. Its zero value means "no receipt": only a

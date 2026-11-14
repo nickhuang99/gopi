@@ -7,8 +7,8 @@ import (
 	"sort"
 	"strings"
 
-	"github.com/nick/gopi/internal/rundir"
-	"github.com/nick/gopi/internal/tools"
+	"github.com/nickhuang99/gopi/internal/rundir"
+	"github.com/nickhuang99/gopi/internal/tools"
 )
 
 // The TWO absences behind ONE old refusal (measurement: 2026-11-05, this host).

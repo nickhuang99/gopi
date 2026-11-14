@@ -45,7 +45,7 @@ import (
 	"os"
 	"strings"
 
-	"github.com/nick/gopi/internal/testcompile"
+	"github.com/nickhuang99/gopi/internal/testcompile"
 )
 
 const (

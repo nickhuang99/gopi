@@ -38,11 +38,11 @@ import (
 	"strings"
 	"time"
 
-	"github.com/nick/gopi/internal/config"
-	"github.com/nick/gopi/internal/scratch"
-	"github.com/nick/gopi/internal/shot"
-	"github.com/nick/gopi/internal/text2img"
-	"github.com/nick/gopi/internal/uiclient"
+	"github.com/nickhuang99/gopi/internal/config"
+	"github.com/nickhuang99/gopi/internal/scratch"
+	"github.com/nickhuang99/gopi/internal/shot"
+	"github.com/nickhuang99/gopi/internal/text2img"
+	"github.com/nickhuang99/gopi/internal/uiclient"
 )
 
 // annotateUsage is the -h text for the annotate subcommand.

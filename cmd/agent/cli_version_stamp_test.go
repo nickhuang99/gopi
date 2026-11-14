@@ -2,14 +2,14 @@ package main
 
 import (
 	"fmt"
-	"github.com/nick/gopi/internal/heavytest"
+	"github.com/nickhuang99/gopi/internal/heavytest"
 	"os"
 	"os/exec"
 	"path/filepath"
 	"strings"
 	"testing"
 
-	gopiversion "github.com/nick/gopi/internal/version"
+	gopiversion "github.com/nickhuang99/gopi/internal/version"
 )
 
 // This file is the red proof for the ONE thing `gopi version` must not get
@@ -75,7 +75,7 @@ const (
 	// versionProofModulePath is the module the fixture must be a clone OF. A
 	// checkout of any other module would build a different program, so the guard
 	// skips instead of proving something meaningless.
-	versionProofModulePath = "module github.com/nick/gopi"
+	versionProofModulePath = "module github.com/nickhuang99/gopi"
 	// versionProofInsideWorkTree is git's own answer inside a git checkout.
 	versionProofInsideWorkTree = "true"
 	// versionProofNoStampAbsence is the clause the message must keep, wherever

@@ -38,7 +38,7 @@ package main
 import (
 	"fmt"
 
-	"github.com/nick/gopi/internal/shot"
+	"github.com/nickhuang99/gopi/internal/shot"
 )
 
 // workerDisplayLabel is the one-word prefix of every line this file prints. It

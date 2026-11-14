@@ -4,7 +4,7 @@ import (
 	"strings"
 	"testing"
 
-	"github.com/nick/gopi/internal/lineedit"
+	"github.com/nickhuang99/gopi/internal/lineedit"
 )
 
 // TestFilmTerminalEveryUsableRowCarriesTheGround is the GROUND regression, and
@@ -278,17 +278,17 @@ func TestWindowForSpecPrefersTheRealWindowOverThePlaceholder(t *testing.T) {
 // change was made for. It asserts three things a reader can check without a
 // display (the pixel-level half lives in devdoc/film-cjk-default-terminal.md):
 //
-//	1. FilmTerminalDefault IS xfce4-terminal — the operator's 2026-10-04 ruling
-//	   that a CJK surface is never filmed in xterm's ISO8859-1 font, pinned so a
-//	   later edit cannot quietly walk it back;
-//	2. the default RESOLVES — a default that named a refused row would make
-//	   `gopi chat --film` fail for every caller who said nothing, so the default
-//	   is held to the same usability every other row is (Rule 15: the refusal is
-//	   an outcome for a NAME, never for the value nobody had to ask for);
-//	3. xterm is still SELECTABLE and its launch shape is untouched — the ruling
-//	   demoted it from the default, it did not remove it, and every historical
-//	   measurement of this pipeline (706x342 = 117x26 x 6.034 px/cell, 106/106
-//	   settled frames) was taken with it.
+//  1. FilmTerminalDefault IS xfce4-terminal — the operator's 2026-10-04 ruling
+//     that a CJK surface is never filmed in xterm's ISO8859-1 font, pinned so a
+//     later edit cannot quietly walk it back;
+//  2. the default RESOLVES — a default that named a refused row would make
+//     `gopi chat --film` fail for every caller who said nothing, so the default
+//     is held to the same usability every other row is (Rule 15: the refusal is
+//     an outcome for a NAME, never for the value nobody had to ask for);
+//  3. xterm is still SELECTABLE and its launch shape is untouched — the ruling
+//     demoted it from the default, it did not remove it, and every historical
+//     measurement of this pipeline (706x342 = 117x26 x 6.034 px/cell, 106/106
+//     settled frames) was taken with it.
 func TestFilmTerminalDefaultRendersCJK(t *testing.T) {
 	if FilmTerminalDefault != FilmTerminalNameXfce4 {
 		t.Fatalf("the built-in default is %q, want %q: xterm's default font fixed(6x13) is ISO8859-1 and carries no CJK glyph, so a Chinese chat surface films as boxes",

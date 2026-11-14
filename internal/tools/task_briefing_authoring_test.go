@@ -37,8 +37,8 @@ import (
 	"strings"
 	"testing"
 
-	"github.com/nick/gopi/internal/tasktags"
-	"github.com/nick/gopi/internal/testutil"
+	"github.com/nickhuang99/gopi/internal/tasktags"
+	"github.com/nickhuang99/gopi/internal/testutil"
 )
 
 // The two clocks the measured defect was made of, both NAMED (Rule 1) so the

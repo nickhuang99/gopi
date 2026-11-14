@@ -312,7 +312,7 @@ entry 014 task-sweep-worktrees "gopi task sweep-worktrees --dry-run" no \
 # （015 空缺：原条目 task-diff-nopeer 已删除。它的前提是"本机没有声明 peer"，
 #   而那个前提在这个生成器里**永远不成立**：Rule 34 的沙盒 profile 是操作员
 #   settings 文档的一份 COPY（不是空文档），所以 `sync_peers` 被原样继承。
-#   实测（2026-10-31）：`gopi task diff` 在沙盒里真的 ssh 出去问 zpeer 与 hp，
+#   实测（2026-10-31）：`gopi task diff` 在沙盒里真的 ssh 出去问 peerbox 与 hp，
 #   打印 DIVERGED（local=7 peer=7028 / peer=5210），根本不会出现它断言的
 #   `no sync peers declared`。一个永远无法满足的期望值不是素材，是谎——删掉。）
 
@@ -369,7 +369,7 @@ FINDING_EOF
 # finding 016 已删除（原条目 016-task-diff-nopeer 一同删除）：那条 finding 的**第一行**
 # 断言 `task diff` 在空台账上打印 `no sync peers declared … exit=0`，而这个前提在这个
 # 生成器里被实测推翻——沙盒 profile 继承操作员的 `sync_peers`，`task diff` 真的会 ssh
-# 出去问 zpeer/hp 并打印 DIVERGED（local=7 peer=7028）。一张表格的第一行是伪测量，
+# 出去问 peerbox/hp 并打印 DIVERGED（local=7 peer=7028）。一张表格的第一行是伪测量，
 # 整条 finding 就不再是"真跑挖到的缝"，删掉比留着诚实（README §2）。
 # 那段"族内退出码不一致"的观察本身仍然成立（`for-branch`=4 / `list`=0），但它需要
 # 一次**重新实测**才能重新落笔——不是把旧文字改个数字。

@@ -57,8 +57,8 @@ package tools
 import (
 	"context"
 	"fmt"
-	"github.com/nick/gopi/internal/heavytest"
-	"github.com/nick/gopi/internal/testutil"
+	"github.com/nickhuang99/gopi/internal/heavytest"
+	"github.com/nickhuang99/gopi/internal/testutil"
 	"os"
 	"path/filepath"
 	"sort"

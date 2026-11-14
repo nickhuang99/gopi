@@ -25,7 +25,7 @@ import (
 	"fmt"
 	"os"
 
-	"github.com/nick/gopi/internal/lineedit"
+	"github.com/nickhuang99/gopi/internal/lineedit"
 )
 
 // The words this run says. Named (Rule 1b) because they are a vocabulary a test

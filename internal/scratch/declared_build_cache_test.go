@@ -23,7 +23,7 @@ import (
 	"testing"
 	"time"
 
-	"github.com/nick/gopi/internal/worktreeroots"
+	"github.com/nickhuang99/gopi/internal/worktreeroots"
 )
 
 // buildCacheFixtureKey is a well-formed key name (16 lowercase hex characters)

@@ -34,8 +34,8 @@ import (
 	"os"
 	"path/filepath"
 
-	"github.com/nick/gopi/internal/agent"
-	"github.com/nick/gopi/internal/sessionlayout"
+	"github.com/nickhuang99/gopi/internal/agent"
+	"github.com/nickhuang99/gopi/internal/sessionlayout"
 )
 
 // chatDiagnosticsFile is the open console.log an agent's logger is currently

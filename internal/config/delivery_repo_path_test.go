@@ -40,7 +40,7 @@ func deliveryRepoTestSettings(t *testing.T, doc map[string]any) string {
 // travels back with the value so a caller can say which declaration is in
 // force rather than presenting a value with no provenance.
 func TestDeliveryRepoDeclaredPrefersTheEnvChannel(t *testing.T) {
-	deliveryRepoTestSettings(t, map[string]any{DevRepoSettingsKey: "zpeer:/home/user/work/gopi"})
+	deliveryRepoTestSettings(t, map[string]any{DevRepoSettingsKey: "peerbox:/home/user/work/gopi"})
 	t.Setenv(DevRepoEnvName, "peer:/srv/from-env")
 
 	got, source, err := DeliveryRepoDeclared()
@@ -59,14 +59,14 @@ func TestDeliveryRepoDeclaredPrefersTheEnvChannel(t *testing.T) {
 // the same precedence: with no env value the document decides, and the channel
 // names the KEY, not the file.
 func TestDeliveryRepoDeclaredFallsBackToTheSettingsDocument(t *testing.T) {
-	deliveryRepoTestSettings(t, map[string]any{DevRepoSettingsKey: "zpeer:/home/user/work/gopi"})
+	deliveryRepoTestSettings(t, map[string]any{DevRepoSettingsKey: "peerbox:/home/user/work/gopi"})
 	t.Setenv(DevRepoEnvName, "")
 
 	got, source, err := DeliveryRepoDeclared()
 	if err != nil {
 		t.Fatalf("DeliveryRepoDeclared: %v", err)
 	}
-	if got != "zpeer:/home/user/work/gopi" {
+	if got != "peerbox:/home/user/work/gopi" {
 		t.Fatalf("DeliveryRepoDeclared = %q, want the settings value", got)
 	}
 	if source != "settings "+DevRepoSettingsKey {

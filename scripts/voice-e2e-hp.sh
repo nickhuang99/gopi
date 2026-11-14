@@ -4,10 +4,10 @@
 #
 #   HP   (`ssh hp`,    host-b) = capture node. Owns the microphone, the
 #                                       ALSA/Pulse stack and the client binary.
-#   zpeer(`ssh zpeer`)                 = engine node. Owns gopi + the
+#   peerbox(`ssh peerbox`)                 = engine node. Owns gopi + the
 #                                       Fun-ASR-Nano weights (~/work/funasr-models).
 #
-# Claim proven: audio captured on HP crosses to zpeer and comes back as text.
+# Claim proven: audio captured on HP crosses to peerbox and comes back as text.
 # Why it needs no human: nothing is spoken live. A fixed WAV (a spoken Chinese
 # paragraph with a written reference transcript) is played into a PulseAudio
 # null-sink and the sink's `.monitor` is captured as the "microphone" — the same
@@ -42,7 +42,7 @@ trap gopi_scratch_cleanup EXIT INT TERM
 # Every device string / rate / path / volume is named here; nothing is typed
 # inline at a use site (Rule 1). Any of them can be overridden from the env.
 readonly HP_HOST=${HP_HOST:-hp}
-readonly ZBOOK_HOST=${ZBOOK_HOST:-zpeer}
+readonly PEER_HOST=${PEER_HOST:-peerbox}
 # WORKDIR: the scratch directory on BOTH nodes (default above; an explicit env
 # override is honoured for a reader who already has a prepared workspace).
 readonly WORKDIR=${WORKDIR:-$WORK_ROOT}
@@ -121,13 +121,13 @@ trap cleanup_all EXIT INT TERM
 # ------------------------------------------------------------------ preflight
 command -v ssh >/dev/null || { echo "FAIL: ssh not found"; exit 1; }
 ssh -o BatchMode=yes "$HP_HOST" true 2>/dev/null || { echo "FAIL: no ssh to $HP_HOST"; exit 1; }
-ssh -o BatchMode=yes "$ZBOOK_HOST" 'command -v gopi' >/dev/null 2>&1 \
-  || { echo "FAIL: gopi not on $ZBOOK_HOST PATH"; exit 1; }
+ssh -o BatchMode=yes "$PEER_HOST" 'command -v gopi' >/dev/null 2>&1 \
+  || { echo "FAIL: gopi not on $PEER_HOST PATH"; exit 1; }
 run_hp "test -x '$CLIENT_BIN'" || { echo "FAIL: client binary not executable: $CLIENT_BIN"; exit 1; }
 
 section "preflight"
 echo "# hp          : $HP_HOST  ($(run_hp hostname))"
-echo "# zpeer       : $ZBOOK_HOST  ($(ssh "$ZBOOK_HOST" hostname))"
+echo "# peerbox       : $PEER_HOST  ($(ssh "$PEER_HOST" hostname))"
 echo "# client bin  : $CLIENT_BIN  built from $(cd "$HERE/.." && git rev-parse --short HEAD)"
 echo "# capture     : $CAP_RATE Hz, $CAP_CHANNELS ch, PCM${CAP_BITS}LE"
 echo "# fixture wav : $FIXTURE_WAV  sha256=$(run_hp "sha256sum '$FIXTURE_WAV' | cut -c1-32")"
@@ -143,7 +143,7 @@ run_hp "test \"\$(stat -c %d '$WORKDIR')\" != \"\$(stat -c %d /)\"" \
 mkdir -p "$LOGDIR"
 
 # ---------------------------------------------------------------------- leg A
-section "LEG A — null-sink monitor ($NULL_SINK_MONITOR) -> $SERVER_CMD @ $ZBOOK_HOST"
+section "LEG A — null-sink monitor ($NULL_SINK_MONITOR) -> $SERVER_CMD @ $PEER_HOST"
 run_hp bash -s <<HPSCRIPT
 set -euo pipefail
 cd $WORKDIR
@@ -175,8 +175,8 @@ if [ "$NEEDS_F32_CONVERSION" = 1 ]; then
 fi
 HPSCRIPT
 
-echo "# transport   : ssh $ZBOOK_HOST \"$SERVER_CMD\" < legA.f32"
-run_hp "ssh $ZBOOK_HOST '$SERVER_CMD' < $WORKDIR/legA.f32" > "$LOGDIR/legA.txt" 2>"$LOGDIR/legA.err" || true
+echo "# transport   : ssh $PEER_HOST \"$SERVER_CMD\" < legA.f32"
+run_hp "ssh $PEER_HOST '$SERVER_CMD' < $WORKDIR/legA.f32" > "$LOGDIR/legA.txt" 2>"$LOGDIR/legA.err" || true
 echo "# engine      : $(tr '\n' ' ' < "$LOGDIR/legA.err")"
 echo "# transcript  : $(cat "$LOGDIR/legA.txt")"
 run_hp "cat '$FIXTURE_REF'" > "$LOGDIR/reference.txt"
@@ -184,7 +184,7 @@ echo "# CER (scripts/asr_score.py):"
 python3 "$HERE/asr_score.py" "$LOGDIR/legA.txt" "$LOGDIR/reference.txt" | sed -n '1,12p'
 
 # ---------------------------------------------------------------------- leg B
-section "LEG B — physical device ($LEG_B_ALSA_DEVICE, $LEG_B_SOURCE) -> $SERVER_CMD @ $ZBOOK_HOST"
+section "LEG B — physical device ($LEG_B_ALSA_DEVICE, $LEG_B_SOURCE) -> $SERVER_CMD @ $PEER_HOST"
 run_hp bash -s <<HPSCRIPT
 set -euo pipefail
 cd $WORKDIR
@@ -207,8 +207,8 @@ if [ "$NEEDS_F32_CONVERSION" = 1 ]; then
 fi
 HPSCRIPT
 
-echo "# transport   : ssh $ZBOOK_HOST \"$SERVER_CMD\" < legB.f32"
-run_hp "ssh $ZBOOK_HOST '$SERVER_CMD' < $WORKDIR/legB.f32" > "$LOGDIR/legB.txt" 2>"$LOGDIR/legB.err" || true
+echo "# transport   : ssh $PEER_HOST \"$SERVER_CMD\" < legB.f32"
+run_hp "ssh $PEER_HOST '$SERVER_CMD' < $WORKDIR/legB.f32" > "$LOGDIR/legB.txt" 2>"$LOGDIR/legB.err" || true
 echo "# engine      : $(tr '\n' ' ' < "$LOGDIR/legB.err")"
 echo "# transcript  : $(cat "$LOGDIR/legB.txt")"
 echo "# CER (scripts/asr_score.py):"

@@ -19,7 +19,7 @@ import (
 
 	"strconv"
 
-	"github.com/nick/gopi/internal/sgr"
+	"github.com/nickhuang99/gopi/internal/sgr"
 )
 
 // TestPaletteAnswerHexIsTheTablesOwnColour pins both directions for both gold

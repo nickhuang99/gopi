@@ -4,7 +4,7 @@ import (
 	"strings"
 	"testing"
 
-	"github.com/nick/gopi/internal/text2img"
+	"github.com/nickhuang99/gopi/internal/text2img"
 )
 
 // ---------------------------------------------------------------------------

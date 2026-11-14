@@ -6,7 +6,7 @@ import (
 	"strings"
 	"testing"
 
-	"github.com/nick/gopi/internal/taskverdict"
+	"github.com/nickhuang99/gopi/internal/taskverdict"
 )
 
 // ---------------------------------------------------------------------------

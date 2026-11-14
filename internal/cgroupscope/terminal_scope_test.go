@@ -27,7 +27,7 @@ const (
 	// daemon seam: named from EscapeTargetPrefix, so it must NEVER read as a
 	// terminal — that is the whole point of the escape.
 	daemonScopeFixture = "/user.slice/user-1000.slice/user@1000.service/app.slice/" +
-		"gopi-daemon-worker-nicksager.scope"
+		"gopi-daemon-worker-hosta.scope"
 )
 
 // TestTerminalScope_RecognizesATerminalTab pins case (a): the measured vte

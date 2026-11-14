@@ -23,10 +23,10 @@ import (
 	"strconv"
 	"strings"
 
-	"github.com/nick/gopi/internal/config"
-	"github.com/nick/gopi/internal/rawlogfmt"
-	"github.com/nick/gopi/internal/thinkmode"
-	"github.com/nick/gopi/internal/tokenizer"
+	"github.com/nickhuang99/gopi/internal/config"
+	"github.com/nickhuang99/gopi/internal/rawlogfmt"
+	"github.com/nickhuang99/gopi/internal/thinkmode"
+	"github.com/nickhuang99/gopi/internal/tokenizer"
 )
 
 // markerScanWindow bounds how many RECORDS past a request the matching usage

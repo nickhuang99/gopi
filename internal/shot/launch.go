@@ -1,7 +1,7 @@
 // launch.go — HOW `gopi tool shot` starts headless chrome, and the clamp it must
 // escape first.
 //
-// WHY THIS FILE EXISTS (measured on zpeer, 2026-09-19): the SPA capture path
+// WHY THIS FILE EXISTS (measured on peerbox, 2026-09-19): the SPA capture path
 // was dead in every gopi-worker context. `bash` children carry scratch's child
 // clamp (`internal/scratch`: `ulimit -v 12582912 -u 4096`), and the hard limit
 // is inherited, so chrome died at startup with a V8 CHECK failure
@@ -51,7 +51,7 @@ import (
 	"syscall"
 	"time"
 
-	"github.com/nick/gopi/internal/scratch"
+	"github.com/nickhuang99/gopi/internal/scratch"
 )
 
 // Named constants (Rule 1) — no magic numbers below this comment block.

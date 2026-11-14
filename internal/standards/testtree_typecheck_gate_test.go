@@ -4,7 +4,7 @@
 // THE MEASURED DEFECT (task 01a14162, master tip adafe54b2, 2026-10-15):
 //
 //	go vet ./...
-//	# github.com/nick/gopi/<some-package>
+//	# github.com/nickhuang99/gopi/<some-package>
 //	vet: <some-package>/anchor_number_material_test.go:158:14: undefined: gitDirEnvName
 //	→ rc=1
 //

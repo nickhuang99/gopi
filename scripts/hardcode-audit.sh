@@ -3,7 +3,7 @@
 #
 # A "hardcoded element" is a literal that binds the software to ONE operator or
 # ONE machine instead of deriving the value from configuration: an absolute
-# personal path (/home/<user>), a personal/machine identifier (nick-HP, zpeer,
+# personal path (/home/<user>), a personal/machine identifier (a machine name such as nick-<initials>, hostb,
 # nick@), a private LAN address, or an embedded secret. This script finds them,
 # and — that is the point — says what each hit IS:
 #
@@ -76,7 +76,7 @@ NEUTRAL_HOME_USERS="${HARDCODE_NEUTRAL_HOME_USERS:-runner user app ci ubuntu vag
 CLASSES="PERSONAL_PATH OPERATOR_IDENT PRIVATE_IP SECRET SECRET_INLINE"
 PATS="\
 [/]home[/][A-Za-z0-9_.-]+|[/]Users[/][A-Za-z0-9_.-]+\
-@@nick-HP|nick@|zpeer\
+@@nick-[A-Z][A-Za-z]|nick@|peerbox\
 @@(192[.]168|10[.][0-9]+|172[.](1[6-9]|2[0-9]|3[01]))[.][0-9]+[.][0-9]+\
 @@sk-[A-Za-z0-9][A-Za-z0-9][A-Za-z0-9][A-Za-z0-9][A-Za-z0-9][A-Za-z0-9][A-Za-z0-9][A-Za-z0-9][A-Za-z0-9][A-Za-z0-9][A-Za-z0-9][A-Za-z0-9][A-Za-z0-9][A-Za-z0-9][A-Za-z0-9][A-Za-z0-9]\
 |AKIA[0-9A-Z][0-9A-Z][0-9A-Z][0-9A-Z][0-9A-Z][0-9A-Z][0-9A-Z][0-9A-Z][0-9A-Z][0-9A-Z]\
@@ -235,7 +235,7 @@ BEGIN {
 	# PRE is a cheap union of the literal core of every class. A line matching
 	# none of it CANNOT produce a hit, so the per-class match loops are skipped,
 	# which is what keeps the census at seconds, not minutes.
-	PRE = "[/]home[/]|[/]Users[/]|nick-HP|nick@|zpeer|192[.]168|10[.]|172[.]|sk-|AKIA|ghp_|xox|PRIVATE KEY|key|apikey|secret|token|password|passwd"
+	PRE = "[/]home[/]|[/]Users[/]|nick-[A-Z][A-Za-z]|nick@|peerbox|192[.]168|10[.]|172[.]|sk-|AKIA|ghp_|xox|PRIVATE KEY|key|apikey|secret|token|password|passwd"
 }
 FNR == 1 {
 	if (FILENAME != fname) {
@@ -372,7 +372,7 @@ fi
 # git grep -l cuts the scan to files that can possibly hit; the awk pass then
 # re-reads the WHOLE file, because comment state needs every preceding line.
 candidates="$(
-	git grep -l -I -E '/home/[A-Za-z0-9_.]|/Users/[A-Za-z0-9_.]|nick-HP|nick@|zpeer|\b19[0-9]\.|\b10\.[0-9]|sk-[A-Za-z0-9]|AKIA|ghp_|gh[osu]_|xox[baprs]-|PRIVATE KEY|api[_-]?key[[:space:]]*=[[:space:]]*"' \
+	git grep -l -I -E '/home/[A-Za-z0-9_.]|/Users/[A-Za-z0-9_.]|nick-[A-Z][A-Za-z]|nick@|peerbox|\b19[0-9]\.|\b10\.[0-9]|sk-[A-Za-z0-9]|AKIA|ghp_|gh[osu]_|xox[baprs]-|PRIVATE KEY|api[_-]?key[[:space:]]*=[[:space:]]*"' \
 		-- . 2>/dev/null | grep -v -F -x "$DEFAULT_BASELINE"
 )" || true
 

@@ -48,10 +48,10 @@ import (
 	"sync"
 	"time"
 
-	"github.com/nick/gopi/internal/config"
-	"github.com/nick/gopi/internal/memoryprefetch"
-	"github.com/nick/gopi/internal/replaymode"
-	"github.com/nick/gopi/internal/tools"
+	"github.com/nickhuang99/gopi/internal/config"
+	"github.com/nickhuang99/gopi/internal/memoryprefetch"
+	"github.com/nickhuang99/gopi/internal/replaymode"
+	"github.com/nickhuang99/gopi/internal/tools"
 	_ "modernc.org/sqlite" // driver name "sqlite", the name tools.LedgerReadOnlyDSNIn's DSN is built for
 )
 
@@ -91,7 +91,7 @@ const (
 	// 2026-10-07). The ladder is a series of COUNT probes over subsets, so a
 	// query whose AND is 0 costs a walk, not a query: MEASURED full walks of
 	// `254 321 426 cancelled e2e help merger 条积压` 861ms,
-	// `zpeer 现在 上任务积压太多了 上任 任务 务积 积压 压太` 1723ms,
+	// `peerbox 现在 上任务积压太多了 上任 任务 务积 积压 压太` 1723ms,
 	// `还没 没修 修复 复的 的问 问题` 3203ms. Handing the ladder the whole
 	// 1500ms would therefore turn the prefetch's outcome into "gave up" on
 	// exactly the queries this change exists to fix. With the walk bounded
@@ -99,7 +99,7 @@ const (
 	// in time (measured: the six real recorded queries pick at 0/39/45/200/245/
 	// 465ms) and otherwise falls back to OR, which is measured at 1-175ms.
 	//
-	// The value is the measured knee: 400ms already loses the `zpeer …` walk,
+	// The value is the measured knee: 400ms already loses the `peerbox …` walk,
 	// 900 leaves ~600ms for the fallback — more than 3x the worst OR measured
 	// on this ledger.
 	prefetchLadderBudgetMs = 900
@@ -1574,7 +1574,7 @@ func prefetchRetryOnBusy(ctx context.Context, fn func() error) (int, error) {
 // document table.
 //
 // WHY THE NESTED FORM AND NOT `JOIN ... ORDER BY bm25(...) LIMIT ?` (measured,
-// zpeer 2026-10-06, 8076 rows / 236MB / the operator's own ledger, load ~18):
+// peerbox 2026-10-06, 8076 rows / 236MB / the operator's own ledger, load ~18):
 // the flat form is also a TOP-N to SQLite's planner, and it cost 75-88ms on the
 // query shapes the live chat actually typed against 40-55ms for this one,
 // because its ORDER BY carries a SECOND key (d.confidence DESC) that defeats the

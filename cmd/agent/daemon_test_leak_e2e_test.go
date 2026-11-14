@@ -38,8 +38,8 @@ import (
 	"testing"
 	"time"
 
-	"github.com/nick/gopi/internal/daemonlifetime"
-	"github.com/nick/gopi/internal/testutil"
+	"github.com/nickhuang99/gopi/internal/daemonlifetime"
+	"github.com/nickhuang99/gopi/internal/testutil"
 )
 
 const (

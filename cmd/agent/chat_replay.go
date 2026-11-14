@@ -53,11 +53,11 @@ import (
 	"sync"
 	"time"
 
-	"github.com/nick/gopi/internal/agent"
-	"github.com/nick/gopi/internal/deepseek"
-	"github.com/nick/gopi/internal/gopilog"
-	"github.com/nick/gopi/internal/replaydrive"
-	"github.com/nick/gopi/internal/replaymode"
+	"github.com/nickhuang99/gopi/internal/agent"
+	"github.com/nickhuang99/gopi/internal/deepseek"
+	"github.com/nickhuang99/gopi/internal/gopilog"
+	"github.com/nickhuang99/gopi/internal/replaydrive"
+	"github.com/nickhuang99/gopi/internal/replaymode"
 )
 
 // The replay vocabulary and its bounds. Every number is a named constant

@@ -20,8 +20,8 @@ import (
 	"testing"
 	"time"
 
-	"github.com/nick/gopi/internal/taskverbs"
-	"github.com/nick/gopi/internal/tools"
+	"github.com/nickhuang99/gopi/internal/taskverbs"
+	"github.com/nickhuang99/gopi/internal/tools"
 )
 
 // archCLIRepo builds a temp git repo with one branch, returning its path.
@@ -152,7 +152,7 @@ func TestArchiveCLIRefusesACompletedOwnerThenRecordsTheReason(t *testing.T) {
 }
 
 // TestArchiveCLIRefusesALiveOwnerDespiteACancelledSibling is the REAL-VERB
-// regression for the four-owner-row incident (zpeer 2026-10-07, run 01a115c3,
+// regression for the four-owner-row incident (peerbox 2026-10-07, run 01a115c3,
 // branch task/01a113e467767eb9a4c33cb1df1cdfbb): two rows named one branch, the
 // `cancelled` one was the pick, and `gopi task archive <branch> --reason
 // hand-mistake` exited 0 with `archive/<branch>` written over a run that was
@@ -617,7 +617,7 @@ func archCLIGitNoFatal(repo string, args ...string) string {
 }
 
 // TestArchiveCLIRefusesTheIntegrationBranchBeforeAnyWrite is the REAL-VERB
-// regression for the measured defect 01a12f0d (sager, 2026-10-12): in a
+// regression for the measured defect 01a12f0d (hosta, 2026-10-12): in a
 // throwaway repo,
 //
 //	$ gopi task archive master --reason hand-mistake --detail probe
@@ -699,7 +699,7 @@ func TestArchiveCLIRefusesTheIntegrationBranchBeforeAnyWrite(t *testing.T) {
 }
 
 // TestArchiveCLIBranchLaneHonoursRepoFlag is the REAL-VERB regression for the
-// measured defect 01a1301b (sager, 2026-10-12): `--repo` was parsed, advertised
+// measured defect 01a1301b (hosta, 2026-10-12): `--repo` was parsed, advertised
 // in the usage text and HONOURED by every census mode (--check/--reclaim/
 // --unreachable/--verify-commit), while the BRANCH lane called
 // tools.ArchiveBranchCwd, which resolved the repo from the PROCESS CWD and never

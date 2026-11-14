@@ -28,8 +28,8 @@ package main
 import (
 	"testing"
 
-	"github.com/nick/gopi/internal/devworkspace"
-	"github.com/nick/gopi/internal/tools"
+	"github.com/nickhuang99/gopi/internal/devworkspace"
+	"github.com/nickhuang99/gopi/internal/tools"
 )
 
 // TestLandedRecordNamesTheRowsOwnAddress is the regression: a ground-branch run

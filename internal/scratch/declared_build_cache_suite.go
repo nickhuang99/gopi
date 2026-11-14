@@ -55,7 +55,7 @@ import (
 	"strings"
 	"time"
 
-	"github.com/nick/gopi/internal/worktreeroots"
+	"github.com/nickhuang99/gopi/internal/worktreeroots"
 )
 
 const (

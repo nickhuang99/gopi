@@ -42,7 +42,7 @@ import (
 	"sync"
 	"time"
 
-	"github.com/nick/gopi/internal/doubaostream"
+	"github.com/nickhuang99/gopi/internal/doubaostream"
 )
 
 // ── the read budgets of ONE live session ───────────────────────────────

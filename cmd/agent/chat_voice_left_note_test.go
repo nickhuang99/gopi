@@ -32,7 +32,7 @@ import (
 	"strings"
 	"testing"
 
-	"github.com/nick/gopi/internal/lineedit"
+	"github.com/nickhuang99/gopi/internal/lineedit"
 )
 
 // voiceLeftNoteProbeErr is the failed round's error in the case below: an engine

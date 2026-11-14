@@ -13,7 +13,7 @@ package main
 // mock LLM); sandboxed GOPI_HOME/GOPI_MEMORY_DB.
 
 import (
-	"github.com/nick/gopi/internal/config"
+	"github.com/nickhuang99/gopi/internal/config"
 	"os"
 	"os/exec"
 	"path/filepath"
@@ -23,9 +23,9 @@ import (
 	"testing"
 	"time"
 
-	"github.com/nick/gopi/internal/testutil"
-	"github.com/nick/gopi/internal/toolnames"
-	"github.com/nick/gopi/internal/tools"
+	"github.com/nickhuang99/gopi/internal/testutil"
+	"github.com/nickhuang99/gopi/internal/toolnames"
+	"github.com/nickhuang99/gopi/internal/tools"
 )
 
 // childKillPollMax bounds how long the test waits for the child to spawn

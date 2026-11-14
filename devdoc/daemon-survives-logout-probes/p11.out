@@ -1,0 +1,52 @@
+### probe script: p11-discriminators.sh
+=== A. a SIBLING user's runtime dir (uid 117, lightdm) — the control group ===
+ls: cannot open directory '/run/user/117/': Permission denied
+--- its systemd/ subdir ---
+ls: cannot access '/run/user/117/systemd/': Permission denied
+--- does the control user's user manager exist? ---
+active
+--- its socket list, if any ---
+0000000000000000: 00000002 00000000 00000000 0002 01 50161111 /run/user/117/systemd/notify
+0000000000000000: 00000002 00000000 00010000 0001 01 50161114 /run/user/117/systemd/private
+0000000000000000: 00000002 00000000 00010000 0001 01 50161159 /run/user/117/bus
+0000000000000000: 00000002 00000000 00010000 0001 01 50161161 /run/user/117/gnupg/S.dirmngr
+0000000000000000: 00000002 00000000 00010000 0001 01 50161163 /run/user/117/gnupg/S.gpg-agent.browser
+0000000000000000: 00000002 00000000 00010000 0001 01 50161165 /run/user/117/gnupg/S.gpg-agent.extra
+0000000000000000: 00000002 00000000 00010000 0001 01 50161167 /run/user/117/gnupg/S.gpg-agent.ssh
+0000000000000000: 00000002 00000000 00010000 0001 01 50161169 /run/user/117/gnupg/S.gpg-agent
+0000000000000000: 00000002 00000000 00010000 0001 01 50161171 /run/user/117/pipewire-0
+0000000000000000: 00000002 00000000 00010000 0001 01 50161173 /run/user/117/pk-debconf-socket
+0000000000000000: 00000002 00000000 00010000 0001 01 50161175 /run/user/117/pulse/native
+0000000000000000: 00000002 00000000 00010000 0001 01 50161177 /run/user/117/snapd-session-agent.socket
+0000000000000000: 00000002 00000000 00010000 0001 01 50161179 /run/user/117/speech-dispatcher/speechd.sock
+0000000000000000: 00000002 00000000 00010000 0001 01 50163753 /run/user/117/at-spi/bus
+0000000000000000: 00000003 00000000 00000000 0001 03 50174535 /run/user/117/at-spi/bus
+0000000000000000: 00000003 00000000 00000000 0001 03 50174532 /run/user/117/bus
+0000000000000000: 00000003 00000000 00000000 0001 03 50174547 /run/user/117/bus
+0000000000000000: 00000003 00000000 00000000 0001 03 50164738 /run/user/117/bus
+0000000000000000: 00000003 00000000 00000000 0001 03 50163944 /run/user/117/bus
+0000000000000000: 00000003 00000000 00000000 0001 03 50164737 /run/user/117/bus
+0000000000000000: 00000003 00000000 00000000 0001 03 50164742 /run/user/117/pipewire-0
+0000000000000000: 00000003 00000000 00000000 0001 03 50163808 /run/user/117/bus
+0000000000000000: 00000003 00000000 00000000 0001 03 50164740 /run/user/117/bus
+0000000000000000: 00000003 00000000 00000000 0001 03 50164874 /run/user/117/bus
+0000000000000000: 00000003 00000000 00000000 0001 03 50164739 /run/user/117/bus
+0000000000000000: 00000003 00000000 00000000 0001 03 50164743 /run/user/117/pipewire-0
+0000000000000000: 00000003 00000000 00000000 0001 03 50164895 /run/user/117/bus
+0000000000000000: 00000003 00000000 00000000 0001 03 50163739 /run/user/117/bus
+0000000000000000: 00000003 00000000 00000000 0001 03 50162481 /run/user/117/at-spi/bus
+=== B. exact journal window 07:26:10 .. 07:26:30 today (all units) ===
+Sep 15 07:26:20 peerbox org.xfce.ScreenSaver[2586]: Xlib:  extension "DPMS" missing on display ":1".
+=== C. exact journal window 2026-09-14 22:39:05 .. 22:39:15 (the dir unlink) ===
+=== D. any process whose cwd/fd lives directly under /run/user/1000 (potential unlinker) ===
+=== E. the destructive primitives that COULD unlink a socket path ===
+--- recent shell history mentioning the runtime dir ---
+--- gopi repo: any code that removes entries it did not create (unnamed/unknown) ---
+273:		_ = os.RemoveAll(root) //stylegate:ignore best-effort temp cleanup; the OS/harness sweeps leftovers too
+410:	if err := os.RemoveAll(root); err != nil {
+430:		if err := os.RemoveAll(dir); err != nil {
+=== F. surviving evidence of what a sweep matches (name patterns only) ===
+=== G. private/notify socket presence in OTHER users' managers (container/system managers) ===
+/run/user/1000/systemd : inaccessible 
+=== H. is there a systemd unit/timer/cron that touches /run/user/1000? ===
+=== end p11 ===

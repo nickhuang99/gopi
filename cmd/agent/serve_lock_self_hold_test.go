@@ -31,8 +31,8 @@ import (
 	"syscall"
 	"testing"
 
-	"github.com/nick/gopi/internal/config"
-	"github.com/nick/gopi/internal/tools"
+	"github.com/nickhuang99/gopi/internal/config"
+	"github.com/nickhuang99/gopi/internal/tools"
 )
 
 // selfHoldLockEnv pins the lock into a per-test gopi dir, so a contention here

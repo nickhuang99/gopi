@@ -23,14 +23,14 @@ package tools
 
 import (
 	"context"
-	"github.com/nick/gopi/internal/testutil"
+	"github.com/nickhuang99/gopi/internal/testutil"
 	"os"
 	"os/exec"
 	"path/filepath"
 	"strings"
 	"testing"
 
-	"github.com/nick/gopi/internal/config"
+	"github.com/nickhuang99/gopi/internal/config"
 )
 
 // zzRedProofFixture builds a repo + linked worktree on a feat branch and a row

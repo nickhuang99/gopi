@@ -61,7 +61,7 @@ import (
 	"os"
 	"strings"
 
-	"github.com/nick/gopi/internal/text2img"
+	"github.com/nickhuang99/gopi/internal/text2img"
 )
 
 // The numbers this package obeys, in ONE place (Rule 1: a literal that carries

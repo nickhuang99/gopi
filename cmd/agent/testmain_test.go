@@ -5,7 +5,7 @@ import (
 	"os"
 	"testing"
 
-	"github.com/nick/gopi/internal/testutil"
+	"github.com/nickhuang99/gopi/internal/testutil"
 )
 
 // TestMain: scratch-root isolation + notify-env hermeticity, both installed by
@@ -152,7 +152,7 @@ func TestMain(m *testing.M) {
 	//
 	//	suite goroutine sweep: parked repository goroutines: 1
 	//	  internal/scratch.readProcFile(...)  (scratchGCTick → BaseSuiteRunReport)
-	//	FAIL github.com/nick/gopi/cmd/agent
+	//	FAIL github.com/nickhuang99/gopi/cmd/agent
 	//
 	// The threshold is NOT relaxed for it and no frame is excluded by name (that
 	// would hide the false positive AND every genuine instance): the tick
@@ -168,7 +168,7 @@ func TestMain(m *testing.M) {
 	//
 	//	suite goroutine sweep: parked repository goroutines: 1
 	//	  testutil.armSuiteRunRootReapOnSignal.func1()  suiterootsignal.go:77
-	//	FAIL	github.com/nick/gopi/cmd/agent	1.454s
+	//	FAIL	github.com/nickhuang99/gopi/cmd/agent	1.454s
 	//
 	// — green tests, red run, an exit code that stops carrying a signal. The
 	// threshold below is NOT relaxed for it and no frame is excluded by name (the

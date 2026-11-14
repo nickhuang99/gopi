@@ -26,7 +26,7 @@ import (
 	"testing"
 	"time"
 
-	"github.com/nick/gopi/internal/testutil"
+	"github.com/nickhuang99/gopi/internal/testutil"
 )
 
 // holderGoneRow builds an in_progress row with BOTH records present and

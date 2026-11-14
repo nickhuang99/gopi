@@ -10,7 +10,7 @@ import (
 	"strings"
 	"testing"
 
-	"github.com/nick/gopi/internal/chatpolicy"
+	"github.com/nickhuang99/gopi/internal/chatpolicy"
 )
 
 // envOf builds a getenv for a fixed map — the ladder is testable without

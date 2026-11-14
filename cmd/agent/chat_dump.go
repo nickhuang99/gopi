@@ -46,14 +46,14 @@ import (
 	"strings"
 	"sync"
 
-	"github.com/nick/gopi/internal/agent"
-	"github.com/nick/gopi/internal/cliverbs"
-	"github.com/nick/gopi/internal/config"
-	"github.com/nick/gopi/internal/lineedit"
-	"github.com/nick/gopi/internal/replaymode"
-	"github.com/nick/gopi/internal/scratch"
-	"github.com/nick/gopi/internal/sessionlayout"
-	"github.com/nick/gopi/internal/uiclient"
+	"github.com/nickhuang99/gopi/internal/agent"
+	"github.com/nickhuang99/gopi/internal/cliverbs"
+	"github.com/nickhuang99/gopi/internal/config"
+	"github.com/nickhuang99/gopi/internal/lineedit"
+	"github.com/nickhuang99/gopi/internal/replaymode"
+	"github.com/nickhuang99/gopi/internal/scratch"
+	"github.com/nickhuang99/gopi/internal/sessionlayout"
+	"github.com/nickhuang99/gopi/internal/uiclient"
 )
 
 // The chat dump's flag and env vocabulary. Named once here and referenced by
@@ -392,10 +392,10 @@ func chatArmDump(path string, cols, rows int, tools bool, onFallback func(), sgr
 			// The DISCRIMINATOR: this artifact says `chat` in its record's own
 			// prefix and in its JSON twin, so a reader holding both dumps never
 			// has to guess which surface it is looking at.
-			Surface:  uiclient.SurfaceChat,
-			PID:      os.Getpid(),
-			Target:   chatDumpTarget(tools),
-			Tools:    tools,
+			Surface: uiclient.SurfaceChat,
+			PID:     os.Getpid(),
+			Target:  chatDumpTarget(tools),
+			Tools:   tools,
 			// THE HINT ONLY. These are the numbers the caller measured before the
 			// layout existed; they are recorded here so a reader of the artifact
 			// never sees a zero, and they are OVERWRITTEN by the first

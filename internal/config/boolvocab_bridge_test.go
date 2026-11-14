@@ -13,7 +13,7 @@ package config
 import (
 	"testing"
 
-	"github.com/nick/gopi/internal/boolvocab"
+	"github.com/nickhuang99/gopi/internal/boolvocab"
 )
 
 // TestEnvBoolOnIsATruthySpelling pins the exported canonical ON value to the

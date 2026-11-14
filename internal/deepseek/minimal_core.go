@@ -23,9 +23,9 @@ import (
 	"os"
 	"time"
 
-	"github.com/nick/gopi/internal/rawlogfmt"
+	"github.com/nickhuang99/gopi/internal/rawlogfmt"
 
-	"github.com/nick/gopi/internal/scratch"
+	"github.com/nickhuang99/gopi/internal/scratch"
 )
 
 // minimalCoreDumpDir returns the directory for deterministic-death dumps.

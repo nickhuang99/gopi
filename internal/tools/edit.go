@@ -7,8 +7,8 @@ import (
 	"strings"
 	"time"
 
-	"github.com/nick/gopi/internal/toolnames"
-	"github.com/nick/gopi/internal/workerownership"
+	"github.com/nickhuang99/gopi/internal/toolnames"
+	"github.com/nickhuang99/gopi/internal/workerownership"
 )
 
 // Edit replaces oldStr with newStr in a file. By default oldStr must be

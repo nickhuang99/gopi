@@ -24,8 +24,8 @@ import (
 	"strings"
 	"testing"
 
-	"github.com/nick/gopi/internal/chatpolicy"
-	"github.com/nick/gopi/internal/devdoc"
+	"github.com/nickhuang99/gopi/internal/chatpolicy"
+	"github.com/nickhuang99/gopi/internal/devdoc"
 )
 
 // chatApprovalRepoRoot is the repository root the write arm resolves paths

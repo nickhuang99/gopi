@@ -9,7 +9,7 @@ package config
 // delivery legs — the serve/`gopi task push` pass, the harvest push-back and
 // the close-out push — each carried its OWN constant for the peer's checkout
 // path, and all three spelled `~/work/GoPi`. The host declares its delivery
-// point elsewhere and under another spelling (`dev_repo` = `zpeer:/home/user/work/gopi`,
+// point elsewhere and under another spelling (`dev_repo` = `peerbox:/home/user/work/gopi`,
 // `repos` = `/home/user/work/gopi`), and the two paths are DIFFERENT
 // REPOSITORIES on the peer (measured: `rev-list --max-parents=0` answers
 // disjoint root commits, 12025 vs 359 commits). Consequences measured in the

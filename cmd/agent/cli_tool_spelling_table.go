@@ -34,7 +34,7 @@ package main
 import (
 	"strings"
 
-	"github.com/nick/gopi/internal/toolnames"
+	"github.com/nickhuang99/gopi/internal/toolnames"
 )
 
 // toolSpellingRow is one TOOL-named surface of this CLI: the underscore spelling

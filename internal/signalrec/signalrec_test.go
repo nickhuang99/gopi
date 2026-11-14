@@ -35,11 +35,11 @@ import (
 	"testing"
 	"time"
 
-	"github.com/nick/gopi/internal/config"
-	"github.com/nick/gopi/internal/heavytest"
-	"github.com/nick/gopi/internal/procname"
-	"github.com/nick/gopi/internal/sigsource"
-	"github.com/nick/gopi/internal/testutil"
+	"github.com/nickhuang99/gopi/internal/config"
+	"github.com/nickhuang99/gopi/internal/heavytest"
+	"github.com/nickhuang99/gopi/internal/procname"
+	"github.com/nickhuang99/gopi/internal/sigsource"
+	"github.com/nickhuang99/gopi/internal/testutil"
 )
 
 // srChildEnv turns the test binary into a stand-in gopi process: it installs

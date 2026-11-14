@@ -23,9 +23,9 @@ import (
 	"strings"
 	"testing"
 
-	"github.com/nick/gopi/internal/config"
-	"github.com/nick/gopi/internal/lineedit"
-	"github.com/nick/gopi/internal/replayplay"
+	"github.com/nickhuang99/gopi/internal/config"
+	"github.com/nickhuang99/gopi/internal/lineedit"
+	"github.com/nickhuang99/gopi/internal/replayplay"
 )
 
 // replayFullFlagSpelling is this test's OWN spelling of the flag, and it is a

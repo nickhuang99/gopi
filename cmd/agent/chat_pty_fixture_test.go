@@ -50,7 +50,7 @@ import (
 
 	"golang.org/x/sys/unix"
 
-	"github.com/nick/gopi/internal/lineedit"
+	"github.com/nickhuang99/gopi/internal/lineedit"
 )
 
 // chatPtyDevicePath is the ptmx device every allocation starts from; the slave

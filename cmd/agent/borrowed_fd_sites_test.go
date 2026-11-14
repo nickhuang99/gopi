@@ -43,8 +43,8 @@ import (
 	"testing"
 	"time"
 
-	"github.com/nick/gopi/internal/borrowedfd"
-	"github.com/nick/gopi/internal/daemonlifetime"
+	"github.com/nickhuang99/gopi/internal/borrowedfd"
+	"github.com/nickhuang99/gopi/internal/daemonlifetime"
 )
 
 const (

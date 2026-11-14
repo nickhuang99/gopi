@@ -5,12 +5,12 @@ import (
 	"strings"
 	"testing"
 
-	"github.com/nick/gopi/internal/testutil"
-	"github.com/nick/gopi/internal/tools"
+	"github.com/nickhuang99/gopi/internal/testutil"
+	"github.com/nickhuang99/gopi/internal/tools"
 )
 
 // TestCLIPositionalSubmitIsDispatchable is the regression pin for the
-// 2026-09-10 positional-submit defect (zpeer memory.db rows pay=0):
+// 2026-09-10 positional-submit defect (peerbox memory.db rows pay=0):
 // `gopi task submit "<text>"` — the obvious first command anyone types, and
 // the form --help advertises with --payload optional — wrote the text into
 // the summary column and left payload EMPTY. TaskNextFiltered deliberately
@@ -88,7 +88,7 @@ func TestCLIPositionalSubmitIsDispatchable(t *testing.T) {
 }
 
 // TestCLIPositionalSubmitRunsThroughDispatcherE2E closes the loop reported in
-// the zpeer incident: a positionally submitted row must be picked up and RUN
+// the peerbox incident: a positionally submitted row must be picked up and RUN
 // by the dispatcher's own claim path. Before the fix `gopi task run next`
 // (and `worker`, which claims through workerRound→TaskNextFiltered) reported
 // an empty queue while `task list --status pending` showed the row — the work

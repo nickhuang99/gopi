@@ -38,8 +38,8 @@ import (
 	"strings"
 	"testing"
 
-	"github.com/nick/gopi/internal/removalaudit"
-	"github.com/nick/gopi/internal/testutil"
+	"github.com/nickhuang99/gopi/internal/removalaudit"
+	"github.com/nickhuang99/gopi/internal/testutil"
 )
 
 // dpgpChannel builds a clone-channel shape whose ground has been DELETED the way

@@ -4,9 +4,9 @@ import (
 	"path/filepath"
 	"sort"
 
-	"github.com/nick/gopi/internal/scratch"
-	"github.com/nick/gopi/internal/sessionlayout"
-	"github.com/nick/gopi/internal/worktreeroots"
+	"github.com/nickhuang99/gopi/internal/scratch"
+	"github.com/nickhuang99/gopi/internal/sessionlayout"
+	"github.com/nickhuang99/gopi/internal/worktreeroots"
 )
 
 // scratch_trees.go — the ONE place the declared-tree resolvers of

@@ -34,8 +34,8 @@ package tools
 import (
 	"context"
 	"fmt"
-	"github.com/nick/gopi/internal/scratch"
-	"github.com/nick/gopi/internal/testutil"
+	"github.com/nickhuang99/gopi/internal/scratch"
+	"github.com/nickhuang99/gopi/internal/testutil"
 	"os"
 	"os/exec"
 	"path/filepath"
@@ -44,9 +44,9 @@ import (
 	"testing"
 	"time"
 
-	"github.com/nick/gopi/internal/heavytest"
-	"github.com/nick/gopi/internal/procname"
-	"github.com/nick/gopi/internal/worktreeroots"
+	"github.com/nickhuang99/gopi/internal/heavytest"
+	"github.com/nickhuang99/gopi/internal/procname"
+	"github.com/nickhuang99/gopi/internal/worktreeroots"
 )
 
 // --- command-line measurability (the fork→exec window) ---------------------

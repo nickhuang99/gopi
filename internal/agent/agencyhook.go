@@ -8,8 +8,8 @@ import (
 	"sync"
 	"time"
 
-	"github.com/nick/gopi/internal/agencyscan"
-	"github.com/nick/gopi/internal/config"
+	"github.com/nickhuang99/gopi/internal/agencyscan"
+	"github.com/nickhuang99/gopi/internal/config"
 )
 
 // The agency-proposal pass — the task-end hook's LEVEL-3 face.

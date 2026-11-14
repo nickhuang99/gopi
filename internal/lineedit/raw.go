@@ -13,8 +13,8 @@ import (
 
 	"golang.org/x/sys/unix"
 
-	"github.com/nick/gopi/internal/sgr"
-	"github.com/nick/gopi/internal/signalrec"
+	"github.com/nickhuang99/gopi/internal/sgr"
+	"github.com/nickhuang99/gopi/internal/signalrec"
 )
 
 // Raw-mode flag sets. Each value is named (Rule 1) because "which flags raw

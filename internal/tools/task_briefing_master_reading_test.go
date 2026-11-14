@@ -43,7 +43,7 @@ import (
 	"strings"
 	"testing"
 
-	"github.com/nick/gopi/internal/testutil"
+	"github.com/nickhuang99/gopi/internal/testutil"
 )
 
 // masterReadingFixture is the repository the arms measure against.
@@ -252,7 +252,7 @@ func firstClauseLine(clause string) string {
 //
 // THREE ARMS, and the positive control is what makes the red arm mean anything:
 //
-//	① NO REMOTE UNDER THAT NAME (the measured host shape: one remote, `zpeer`):
+//	① NO REMOTE UNDER THAT NAME (the measured host shape: one remote, `peerbox`):
 //	   the clause must say the name is NOT a remote, quote git's own sentence and
 //	   its exit status, name the remotes the tree DOES have, and render a refresh
 //	   command built from the lane's own refspec — reaching the ref without

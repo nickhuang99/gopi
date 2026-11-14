@@ -56,8 +56,8 @@ import (
 	"path/filepath"
 	"strings"
 
-	"github.com/nick/gopi/internal/boolvocab"
-	"github.com/nick/gopi/internal/config"
+	"github.com/nickhuang99/gopi/internal/boolvocab"
+	"github.com/nickhuang99/gopi/internal/config"
 )
 
 // daemonProfileRefusalExitCode is the exit status of a refused daemon spawn. It

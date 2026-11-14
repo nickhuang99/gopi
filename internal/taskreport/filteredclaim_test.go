@@ -36,13 +36,13 @@ const filteredClaimMeasuredSentence = "`go test -run 'TestConfigDoc|TestCensusGa
 // filters — the shape `scripts/test-budget.sh` itself records as `filter:` and
 // answers with exit 5 only when the filter matched NOTHING.
 const filteredClaimBudgetSentence = "`make test-budget PKGS='./internal/tools' -run 'Holder|Sweep'` → " +
-	"`ok github.com/nick/gopi/internal/tools 61.1s`"
+	"`ok github.com/nickhuang99/gopi/internal/tools 61.1s`"
 
 // filteredClaimHonestWholePackage is the counterexample: the whole package ran,
 // so the package-level line IS a reading of the package. On the red rev it
 // printed FAIL; on a green one `ok`. Both spellings must stay silent.
 const filteredClaimHonestWholePackage = "`go test ./internal/standards/` → FAIL exit 1 (88.9s); " +
-	"on master `make test-budget PKGS='./internal/standards'` → `ok github.com/nick/gopi/internal/standards 17.5s`"
+	"on master `make test-budget PKGS='./internal/standards'` → `ok github.com/nickhuang99/gopi/internal/standards 17.5s`"
 
 // filteredClaimTestLevelMeasurement is the shape the record's remedy asks for:
 // the run states WHICH tests ran instead of a package verdict.
@@ -125,7 +125,7 @@ func TestFilteredClaimFiresOnEveryNarrowingFlag(t *testing.T) {
 func TestFilteredClaimIgnoresTheWholePackageReading(t *testing.T) {
 	for _, body := range []string{
 		filteredClaimBody(filteredClaimHonestWholePackage),
-		filteredClaimBody("`make test-budget PKGS='./internal/standards'` → `ok github.com/nick/gopi/internal/standards 17.5s`"),
+		filteredClaimBody("`make test-budget PKGS='./internal/standards'` → `ok github.com/nickhuang99/gopi/internal/standards 17.5s`"),
 		filteredClaimBody("`go build ./...` → exit 0; `go vet ./internal/tools/` → exit 0"),
 	} {
 		if v := FilteredClaimsIn(body); len(v.Claims) != 0 {

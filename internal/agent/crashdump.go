@@ -11,10 +11,10 @@ import (
 	"sync/atomic"
 	"time"
 
-	"github.com/nick/gopi/internal/config"
-	"github.com/nick/gopi/internal/deepseek"
-	"github.com/nick/gopi/internal/sessionevent"
-	"github.com/nick/gopi/internal/sessionlayout"
+	"github.com/nickhuang99/gopi/internal/config"
+	"github.com/nickhuang99/gopi/internal/deepseek"
+	"github.com/nickhuang99/gopi/internal/sessionevent"
+	"github.com/nickhuang99/gopi/internal/sessionlayout"
 )
 
 // Crash-dump epic (devdoc/crash-dump-design.md): ONE error-collection path
@@ -234,7 +234,7 @@ func (a *Agent) collectErrorRecord(runErr error, iterations, tokens int, elapsed
 			// verdicts about the same run. Measured 2026-10-16: the
 			// round-boundary fallback spelled its timeouts "agent timed out
 			// after N iterations", which matched NONE of the arms above
-			// ("timeout" is not a substring of "timed out"), so two real zpeer
+			// ("timeout" is not a substring of "timed out"), so two real peerbox
 			// rows read `category=unknown recoverable=false`.
 			//
 			// NO VERDICT IS ISSUED HERE. The field keeps its type (it is

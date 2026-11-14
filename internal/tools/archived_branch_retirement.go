@@ -5,14 +5,14 @@ package tools
 // project's one archive writer leaves, and plumbed into every seam that decides
 // what to do with a branch-shaped row.
 //
-// THE MEASURED DEFECT (task 01a1446e's bug row; measured on zpeer by run
+// THE MEASURED DEFECT (task 01a1446e's bug row; measured on peerbox by run
 // 01a141c4, 2026-10-16). A merge-backlog row ("merge task/probe-zombie into
 // master") stayed LIVE after the branch was retired — archive tag
 // refs/tags/archive/task/probe-zombie plus its companion reason record
 // refs/gopi/archive-reason/task/probe-zombie, code `unrelated-history`, written
 // 2026-10-16T06:57:41. The row was then handed over cross-host by `gopi task
 // sync --handover` (its cancel reason names the handover and says nothing about
-// the retirement) and claimed on sager nine seconds later, so a worker session
+// the retirement) and claimed on hosta nine seconds later, so a worker session
 // was spent on a void premise twelve hours after the branch had been taken out
 // of every merge lane. The sibling reconciler (archive_row_reconcile.go) existed
 // and did not close that row: its own doctrine says why, in its header — it

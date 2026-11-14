@@ -30,7 +30,7 @@ import (
 	"testing"
 	"time"
 
-	"github.com/nick/gopi/internal/testutil"
+	"github.com/nickhuang99/gopi/internal/testutil"
 )
 
 // freshnessBinRel is the built artifact's path inside a fixture tree, named

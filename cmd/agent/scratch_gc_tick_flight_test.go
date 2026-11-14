@@ -49,7 +49,7 @@ const suiteSweepFlightHoldObservation = 200 * time.Millisecond
 //
 //	suite goroutine sweep: parked repository goroutines: 1
 //	  internal/scratch.readProcFile(...)
-//	FAIL github.com/nick/gopi/cmd/agent      (a fully GREEN -run set, exit 1)
+//	FAIL github.com/nickhuang99/gopi/cmd/agent      (a fully GREEN -run set, exit 1)
 //
 // That frame is not a leak — a resident instrument of a host process is
 // withdrawn by the kernel when the process exits. What was missing was the

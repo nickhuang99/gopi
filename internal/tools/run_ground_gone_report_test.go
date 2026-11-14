@@ -42,7 +42,7 @@ import (
 	"testing"
 	"time"
 
-	"github.com/nick/gopi/internal/testutil"
+	"github.com/nickhuang99/gopi/internal/testutil"
 )
 
 // goneReportFixture is one sink holding two anchored grounds: one whose

@@ -154,7 +154,7 @@ func TestGitSyncPushLocalBranchesExcludesMaster(t *testing.T) {
 // has reaped the local ref (step ④ — the branch has been delivered), the
 // client's MIRROR of the peer's branch must go too.
 //
-// Measured 2026-09-26 on HP: `git ls-remote --heads zpeer` = 3 refs while
+// Measured 2026-09-26 on HP: `git ls-remote --heads peerbox` = 3 refs while
 // `git branch -a` printed 187 — 184 local ghost refs, the oldest from
 // 2026-09-16. The operator symptom is "my branches stay in the repo". Two
 // independent causes were measured, and the fixture reproduces BOTH:

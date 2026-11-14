@@ -2,7 +2,7 @@ package tools
 
 import (
 	"context"
-	"github.com/nick/gopi/internal/heavytest"
+	"github.com/nickhuang99/gopi/internal/heavytest"
 
 	"path/filepath"
 
@@ -10,7 +10,7 @@ import (
 	"strings"
 	"testing"
 
-	"github.com/nick/gopi/internal/taskverdict"
+	"github.com/nickhuang99/gopi/internal/taskverdict"
 )
 
 // ---------------------------------------------------------------------------

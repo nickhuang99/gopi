@@ -6,9 +6,9 @@ import (
 	"strings"
 	"testing"
 
-	"github.com/nick/gopi/internal/config"
-	"github.com/nick/gopi/internal/doubaosauc"
-	"github.com/nick/gopi/internal/doubaostream"
+	"github.com/nickhuang99/gopi/internal/config"
+	"github.com/nickhuang99/gopi/internal/doubaosauc"
+	"github.com/nickhuang99/gopi/internal/doubaostream"
 )
 
 // ── the FOURTH arm of the engine dispatch ──────────────────────────────

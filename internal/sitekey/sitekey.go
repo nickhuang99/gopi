@@ -17,18 +17,18 @@
 //
 // THE KEY. A site is identified by WHAT IS ON IT, not by where it is:
 //
-//	<path> \t <normalized line text> \t #<ordinal>
+//		<path> \t <normalized line text> \t #<ordinal>
 //
-//   - path — repo-relative, slash-separated: the same string the scan and the
-//     baseline always used;
-//   - normalized line text — the offending line with every whitespace run
-//     collapsed to one space and the ends trimmed (Normalize). Indentation and
-//     gofmt's own column alignment are therefore NOT part of the identity, so a
-//     de-indent or a re-aligned comment does not rot the entry;
-//   - ordinal — 1-based, the position of this line among the lines of the SAME
-//     file whose normalized text is identical. It exists because two identical
-//     lines in one file (a repeated fixture line, a table row) must get two
-//     DIFFERENT keys, or one permit would silently cover both.
+//	  - path — repo-relative, slash-separated: the same string the scan and the
+//	    baseline always used;
+//	  - normalized line text — the offending line with every whitespace run
+//	    collapsed to one space and the ends trimmed (Normalize). Indentation and
+//	    gofmt's own column alignment are therefore NOT part of the identity, so a
+//	    de-indent or a re-aligned comment does not rot the entry;
+//	  - ordinal — 1-based, the position of this line among the lines of the SAME
+//	    file whose normalized text is identical. It exists because two identical
+//	    lines in one file (a repeated fixture line, a table row) must get two
+//	    DIFFERENT keys, or one permit would silently cover both.
 //
 // The line NUMBER is deliberately absent from the key, which is the whole
 // point: the key is a function of the file's CONTENT at the site, so an

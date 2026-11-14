@@ -10,7 +10,7 @@ import (
 	"sync"
 	"testing"
 
-	"github.com/nick/gopi/internal/rawlogfmt"
+	"github.com/nickhuang99/gopi/internal/rawlogfmt"
 )
 
 // WHY THIS FILE SETS GOPI_RAW_LOG TO "" INSTEAD OF UNSETTING IT (Rule 17).

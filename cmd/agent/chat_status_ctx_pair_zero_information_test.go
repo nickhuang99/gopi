@@ -5,7 +5,7 @@ import (
 	"testing"
 	"time"
 
-	"github.com/nick/gopi/internal/lineedit"
+	"github.com/nickhuang99/gopi/internal/lineedit"
 )
 
 // TestStatusCtxPairNeverDrawsDistinctCountersAsOneFigure is the regression guard for

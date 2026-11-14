@@ -1,0 +1,69 @@
+### probe script: p9-repair-feasibility.sh
+=== 1. user dbus units shipped + their activation state ===
+-rw-r--r-- 1 root root 360 Oct 25  2022 /usr/lib/systemd/user/dbus.service
+-rw-r--r-- 1 root root 174 Oct 25  2022 /usr/lib/systemd/user/dbus.socket
+static
+* dbus.socket - D-Bus System Message Bus Socket
+     Loaded: loaded (/lib/systemd/system/dbus.socket; static)
+     Active: active (running) since Wed 2026-07-15 21:34:54 CST; 2 months 0 days ago
+   Triggers: * dbus.service
+     Listen: /run/dbus/system_bus_socket (Stream)
+     CGroup: /system.slice/dbus.socket
+
+Notice: journal has been rotated since unit was started, output may be incomplete.
+--- was the user manager EVER asked to start it this boot (uid 1000) ---
+3
+=== 2. dbus-daemon 2342: cgroup, start reference, what started it ===
+0::/user.slice/user-1000.slice/user@1000.service/app.slice/dbus.service
+    PID    PPID                  STARTED CMD
+   2342    2321 Wed Jul 15 21:44:21 2026 /usr/bin/dbus-daemon --session --address=systemd: --nofork --nopidfile --systemd-activation --syslog-only
+--- its parent ---
+ppid=2321
+--- its command line ---
+/usr/bin/dbus-daemon --session --address=systemd: --nofork --nopidfile --systemd-activation --syslog-only 
+--- its own environment (bus address it advertises) ---
+XDG_RUNTIME_DIR=/run/user/1000
+XDG_DATA_DIRS=/usr/local/share/:/usr/share/:/var/lib/snapd/desktop
+DBUS_SESSION_BUS_ADDRESS=unix:path=/run/user/1000/bus
+=== 3. did the bus advertise an address anywhere durable? ===
+cat: /run/user/1000/dbus-1/machine-id: No such file or directory
+total 0
+drwx------  3 nick nick   60 Aug 27 07:18 .
+drwx------ 53 nick nick 1140 Sep 14 22:39 ..
+drwx------  2 nick nick   40 Aug 27 07:18 services
+0
+=== 4. is a restart of user@1000.service permitted WITHOUT root? (pkcheck, no action taken) ===
+/usr/bin/pkcheck
+Error checking for authorization org.freedesktop.systemd1.manage-units: GDBus.Error:org.freedesktop.PolicyKit1.Error.NotAuthorized: Only trusted callers (e.g. uid 0 or an action owner) can use CheckAuthorization() and pass details
+pkcheck(user@1000 unit manage) exit=127
+Error checking for authorization org.freedesktop.systemd1.manage-units: GDBus.Error:org.freedesktop.PolicyKit1.Error.NotAuthorized: Only trusted callers (e.g. uid 0 or an action owner) can use CheckAuthorization() and pass details
+pkcheck(user-runtime-dir@1000) exit=127
+=== 5. what a restart would cost (units under the manager, count only) ===
+8
+=== 6. session scopes with live processes (logout-survival evidence) ===
+session-15158.scope procs=2
+session-15164.scope procs=3
+session-15425.scope procs=3
+session-17674.scope procs=6
+session-18199.scope procs=44
+session-18200.scope procs=6
+session-18205.scope procs=5
+session-18252.scope procs=5
+session-18257.scope procs=10
+session-18661.scope procs=20
+session-18855.scope procs=17
+session-18893.scope procs=3
+session-19166.scope procs=3
+session-19205.scope procs=4
+=== 7. the verification instruments themselves (present? usable?) ===
+systemd-run  /usr/bin/systemd-run
+busctl       /usr/bin/busctl
+loginctl     /usr/bin/loginctl
+systemd-cgls /usr/bin/systemd-cgls
+systemctl    /usr/bin/systemctl
+setsid       /usr/bin/setsid
+nohup        /usr/bin/nohup
+screen       /usr/bin/screen
+tmux         /usr/bin/tmux
+unshare      /usr/bin/unshare
+=== end p9 ===

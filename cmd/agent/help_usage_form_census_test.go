@@ -74,7 +74,7 @@ import (
 	"strings"
 	"testing"
 
-	"github.com/nick/gopi/internal/mansource"
+	"github.com/nickhuang99/gopi/internal/mansource"
 )
 
 // publishedVerbHelpPages are the published top-level help pages this census

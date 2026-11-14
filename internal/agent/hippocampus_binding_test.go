@@ -29,8 +29,8 @@ import (
 	"sync/atomic"
 	"testing"
 
-	"github.com/nick/gopi/internal/deepseek"
-	"github.com/nick/gopi/internal/hippocampus"
+	"github.com/nickhuang99/gopi/internal/deepseek"
+	"github.com/nickhuang99/gopi/internal/hippocampus"
 )
 
 // liveBindClientTimeoutEnv is the organ package's per-call knob

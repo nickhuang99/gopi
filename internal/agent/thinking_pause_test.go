@@ -12,8 +12,8 @@ import (
 	"sync"
 	"testing"
 
-	"github.com/nick/gopi/internal/deepseek"
-	"github.com/nick/gopi/internal/thinkmode"
+	"github.com/nickhuang99/gopi/internal/deepseek"
+	"github.com/nickhuang99/gopi/internal/thinkmode"
 )
 
 // ---------------------------------------------------------------------------

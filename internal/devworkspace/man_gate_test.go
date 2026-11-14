@@ -31,7 +31,7 @@ import (
 	"strings"
 	"testing"
 
-	"github.com/nick/gopi/internal/mansource"
+	"github.com/nickhuang99/gopi/internal/mansource"
 )
 
 const (
@@ -88,7 +88,7 @@ func manFixtureBuildCommand() string {
 //
 // IT IMPORTS NOTHING FROM THIS MODULE, and that is measured, not stylistic: the
 // fixture repo is its own module (that is what `go.mod` is there for), so a
-// `go run` inside it cannot resolve `github.com/nick/gopi/internal/mansource` —
+// `go run` inside it cannot resolve `github.com/nickhuang99/gopi/internal/mansource` —
 // the first version did exactly that and the gate abstained with
 // "no required module provides package …", i.e. the red arm would have PASSED for
 // the wrong reason. The marker strings are therefore spliced into the source from

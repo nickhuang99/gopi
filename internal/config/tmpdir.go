@@ -4,7 +4,7 @@ import (
 	"os"
 	"strings"
 
-	"github.com/nick/gopi/internal/scratch"
+	"github.com/nickhuang99/gopi/internal/scratch"
 )
 
 // The temp-workspace knob's resolution (tmpdir epic, parameterised 2026-09-16).

@@ -3,7 +3,7 @@ package gopilog
 import (
 	"testing"
 
-	"github.com/nick/gopi/internal/scratch"
+	"github.com/nickhuang99/gopi/internal/scratch"
 )
 
 // TestRawLogDirNameMatchesScratchTree pins this package's raw-directory leaf

@@ -1,0 +1,127 @@
+# WORKER-OWNERSHIP: OPERATOR-ONLY — devdoc/worker-ownership.md
+# (verbatim transcript of the operator's closing run: the `gopi worker` lines
+#  below are CAPTURED OUTPUT, not a recipe — an agent must never run them.)
+
+===== run started 2026-09-13T18:06:44+08:00 host=peerbox =====
+### scratch device ids (Rule 22): dev(scratch)=2052 dev(/)=2051
+### binary: /home/user/work/GoPi/bin/gopi
+v20260913-0934-13acf700 (13acf7000395)
+revision: 13acf70003950bb9be22cdd097fce5380575cb5a
+tag:      version/v20260913-0934-13acf700
+
+### git HEAD of the acceptance build
+13acf70003950bb9be22cdd097fce5380575cb5a
+
+### real worker pool BEFORE (must be unchanged at the end)
+2164223 gopi-merger merger
+2413370 gopi-merger merger
+3651476 gopi-merger merger
+3834825 gopi-merger merger
+
+### (a) zero-worker honesty (clean seam GOPI_PROC_ROOT -> empty dir)
+$ GOPI_HOME=/home/user/scratch/close2/home GOPI_PROC_ROOT=/home/user/scratch/close2/home/emptyproc /home/user/work/GoPi/bin/gopi worker --status
+gopi worker: no workers running
+exit=0
+
+### (c) --daemon refused from an agent session (no override)
+gopi worker: refusing to start: this process is inside an agent session (GOPI_AGENT_SESSION(inherited), GOPI_EXECUTOR_SESSION_ID).
+  `gopi worker` is a never-returning process — waiting on it stalls the agent
+  and it cannot be detached (setsid leaves the process tree/cgroup intact).
+  The operator runs workers himself:   ~/bin/gopi-worker-up.sh N
+    (a script cannot launder this: the guard judges the SCRIPT's environment,
+     so a launcher run by an agent is refused exactly like the bare verb)
+  To hand work to the queue instead:   gopi task submit "<summary>" --payload "<brief>"
+  Operator escape (HIS shell only — never ~/.bashrc: hermes would inherit it):
+                                       GOPI_HUMAN_TERMINAL=1 gopi worker
+  Deliberate one-off override:         GOPI_ALLOW_AGENT_SPAWN=1 gopi worker
+exit=3
+
+### (b) detach --start, then one honest --status line per live worker
+$ /home/user/work/GoPi/bin/gopi worker --start
+gopi worker: WARNING: could not leave the login session scope (Failed to connect to bus: No such file or directory; in-process escape: cgroup scope escape unavailable: read /sys/fs/cgroup/user.slice/user-1000.slice/user@1000.service: open /sys/fs/cgroup/user.slice/user-1000.slice/user@1000.service: is a directory); starting with setsid only — this daemon WILL die when the session scope is torn down
+gopi worker: starting a detached worker daemon (idle wait 5s between rounds, never self-exits (GOPI_WORKER_IDLE_EXITS=0))
+gopi worker: cgroup escape: setsid-only (Failed to connect to bus: No such file or directory; in-process escape: cgroup scope escape unavailable: read /sys/fs/cgroup/user.slice/user-1000.slice/user@1000.service: open /sys/fs/cgroup/user.slice/user-1000.slice/user@1000.service: is a directory)
+worker daemon started: pid 3856386, log /home/user/scratch/close2/home/.gopi/logs/worker.log
+exit=0
+
+$ /home/user/work/GoPi/bin/gopi worker --status
+gopi worker pid 2140436: idle — gopi-worker worker (no state file — identified by argv; it predates the state record or could not write it)
+gopi worker pid 2140461: idle — gopi-worker worker (no state file — identified by argv; it predates the state record or could not write it)
+gopi worker pid 3849474: idle — /home/user/scratch/control-13acf700/bin/gopi worker --worker-log-root /dev/shm/gopi-test-scratch/suite-internal-testutil-run-2958459719/TestGlmNightWatchOperatorPathStartsWorkersUnattended273173904/001/.gopi/sessions (no state file — identified by argv; it predates the state record or could not write it)
+gopi worker pid 3849604: idle — /home/user/scratch/control-13acf700/bin/gopi worker --worker-log-root /dev/shm/gopi-test-scratch/suite-internal-testutil-run-2958459719/TestGlmNightWatchOperatorPathStartsWorkersUnattended273173904/001/.gopi/sessions (no state file — identified by argv; it predates the state record or could not write it)
+gopi worker pid 3856386: idle — drained queue [state /home/user/scratch/close2/home/.gopi/worker/worker-state-3856386, updated 2026-09-13T10:06:47+00:00]
+exit=0
+
+### daemon identity (PPID 1 / own SID / own state record)
+state record: worker-state-3856386 
+    PID    PPID     SID    PGID     ELAPSED STAT CMD
+3856386       1 3856386 3856386       00:03 Ssl  gopi-worker worker
+
+### (e) --daemon twice = refused, naming the holder
+[gopi] worker: agent-spawn guard bypassed (GOPI_ALLOW_AGENT_SPAWN or GOPI_AGENT_SPAWN_GUARD_OFF is set) — the operator ruling of 2026-09-12 forbids this from an agent
+gopi worker: daemon start failed: another worker daemon is already running (lock /home/user/scratch/close2/home/.gopi/worker.lock held by pid 3856386) — refusing a second resident worker: run `gopi worker --status`, or `gopi worker --restart` to replace it (a FOREGROUND `gopi worker` is unaffected and needs no lock)
+exit=1
+
+### (e) --restart = drain the old daemon THEN spawn a fresh one
+$ /home/user/work/GoPi/bin/gopi worker --restart
+gopi worker: asking pid 3856386 to finish the in-flight round and exit (SIGTERM, bound 10m0s)
+gopi worker: current state — pid 3856386, started 2026-09-13T10:06:46+00:00, rounds 0, binary v20260913-0934-13acf700 (13acf7000395)
+revision: 13acf70003950bb9be22cdd097fce5380575cb5a
+tag:      version/v20260913-0934-13acf700, idle since 2026-09-13T10:06:47+00:00, note: queue drained — waiting 5s
+gopi worker: could not record kill intent for pid 3856386: signalrec: session dir "/home/user/scratch/close2/home/.gopi/sessions/01a097bb-cb0f-7a13-a404-2ab3dcae5b5a" for task 01a097bb-cb0f-7a13-a404-2ab3dcae5b5a is missing or unusable — refusing to write (no public-dir fallback)
+gopi worker: pid 3856386 exited 3.503s after the graceful stop request
+gopi worker: WARNING: could not leave the login session scope (Failed to connect to bus: No such file or directory; in-process escape: cgroup scope escape unavailable: read /sys/fs/cgroup/user.slice/user-1000.slice/user@1000.service: open /sys/fs/cgroup/user.slice/user-1000.slice/user@1000.service: is a directory); starting with setsid only — this daemon WILL die when the session scope is torn down
+gopi worker: starting a detached worker daemon (idle wait 5s between rounds, never self-exits (GOPI_WORKER_IDLE_EXITS=0))
+gopi worker: cgroup escape: setsid-only (Failed to connect to bus: No such file or directory; in-process escape: cgroup scope escape unavailable: read /sys/fs/cgroup/user.slice/user-1000.slice/user@1000.service: open /sys/fs/cgroup/user.slice/user-1000.slice/user@1000.service: is a directory)
+worker daemon started: pid 3857050, log /home/user/scratch/close2/home/.gopi/logs/worker.log
+gopi worker: new daemon pid 3857050, binary v20260913-0934-13acf700 (13acf7000395)
+revision: 13acf70003950bb9be22cdd097fce5380575cb5a
+tag:      version/v20260913-0934-13acf700 (replaced pid 3856386, binary v20260913-0934-13acf700 (13acf7000395)
+revision: 13acf70003950bb9be22cdd097fce5380575cb5a
+tag:      version/v20260913-0934-13acf700)
+exit=0
+
+old daemon pid 3856386 -> new daemon pid 3857050
+    PID    PPID     SID    PGID     ELAPSED STAT CMD
+3857050       1 3857050 3857050       00:02 Ssl  gopi-worker worker
+
+$ /home/user/work/GoPi/bin/gopi worker --status
+gopi worker pid 2140436: idle — gopi-worker worker (no state file — identified by argv; it predates the state record or could not write it)
+gopi worker pid 2140461: idle — gopi-worker worker (no state file — identified by argv; it predates the state record or could not write it)
+gopi worker pid 3849474: idle — /home/user/scratch/control-13acf700/bin/gopi worker --worker-log-root /dev/shm/gopi-test-scratch/suite-internal-testutil-run-2958459719/TestGlmNightWatchOperatorPathStartsWorkersUnattended273173904/001/.gopi/sessions (no state file — identified by argv; it predates the state record or could not write it)
+gopi worker pid 3849604: idle — /home/user/scratch/control-13acf700/bin/gopi worker --worker-log-root /dev/shm/gopi-test-scratch/suite-internal-testutil-run-2958459719/TestGlmNightWatchOperatorPathStartsWorkersUnattended273173904/001/.gopi/sessions (no state file — identified by argv; it predates the state record or could not write it)
+gopi worker pid 3857050: idle — drained queue [state /home/user/scratch/close2/home/.gopi/worker/worker-state-3857050, updated 2026-09-13T10:06:54+00:00]
+exit=0
+
+### (d) --stop, graceful at the claim boundary + idempotent repeat
+$ /home/user/work/GoPi/bin/gopi worker --stop
+gopi worker: asking pid 3857050 to finish the in-flight round and exit (SIGTERM, bound 10m0s)
+gopi worker: current state — pid 3857050, started 2026-09-13T10:06:53+00:00, rounds 0, binary v20260913-0934-13acf700 (13acf7000395)
+revision: 13acf70003950bb9be22cdd097fce5380575cb5a
+tag:      version/v20260913-0934-13acf700, idle since 2026-09-13T10:06:54+00:00, note: queue drained — waiting 5s
+gopi worker: could not record kill intent for pid 3857050: signalrec: session dir "/home/user/scratch/close2/home/.gopi/sessions/01a097bb-cb0f-7a13-a404-2ab3dcae5b5a" for task 01a097bb-cb0f-7a13-a404-2ab3dcae5b5a is missing or unusable — refusing to write (no public-dir fallback)
+gopi worker: pid 3857050 exited 3.503s after the graceful stop request
+exit=0
+
+$ /home/user/work/GoPi/bin/gopi worker --stop
+gopi worker: no worker daemon is running (no live worker state under /home/user/scratch/close2/home/.gopi/worker); a FOREGROUND `gopi worker` holds no lock and is unaffected
+exit=0
+
+### daemon log tail (drain consumed at the claim boundary)
+[gopi] [lifecycle] resident task-lifecycle sweep (stale report + confirmed-zombie disposal + finish cleanup) active on this process; every 10m0s
+[worker] [lifecycle] stale reported=0 disposed=0 sink=cat >> /home/user/.gopi/notify/task-events.jsonl
+worker: queue drained — waiting 5s (new tasks picked up next tick; kill to stop)
+[gopi] signal provenance NOT FILED (no public-dir fallback): signalrec: session dir "/home/user/scratch/close2/home/.gopi/sessions/01a097bb-cb0f-7a13-a404-2ab3dcae5b5a" for task 01a097bb-cb0f-7a13-a404-2ab3dcae5b5a is missing or unusable — refusing to write (no public-dir fallback)
+{"ts":"2026-09-13T18:06:56+08:00","kind":"signal","signal":"SIGTERM","pid":3857050,"ppid":1,"pgid":3857050,"sid":3857050,"cgroup":"0::/user.slice/user-1000.slice/session-18200.scope","role":"worker","argv":"gopi-worker worker","agent_anchor":"3474757","cwd":"/home/user/work/GoPi","session":"2de8db94-a561-42e7-8426-b9a1c419c2fa","task_run":"01a097bb-cb0f-7a13-a404-2ab3dcae5b5a","parent_pid":1,"parent_name":"systemd","parent_argv":"/lib/systemd/systemd --system --deserialize 107"}
+worker: terminated received — draining (consumed at the claim boundary: nothing new claimed, leaving)
+
+### isolation proof: real worker pool AFTER (must equal BEFORE)
+2164223 gopi-merger merger
+2413370 gopi-merger merger
+3651476 gopi-merger merger
+3834825 gopi-merger merger
+
+### operator drain/TERM request files (must be empty)
+(none)
+
+===== run finished 2026-09-13T18:07:03+08:00 =====

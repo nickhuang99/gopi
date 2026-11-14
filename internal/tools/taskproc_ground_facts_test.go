@@ -40,8 +40,8 @@ import (
 	"strings"
 	"testing"
 
-	"github.com/nick/gopi/internal/devworkspace"
-	"github.com/nick/gopi/internal/testutil"
+	"github.com/nickhuang99/gopi/internal/devworkspace"
+	"github.com/nickhuang99/gopi/internal/testutil"
 )
 
 // groundFactsTestID is the row this test cites. It is a REAL uuid-v7 spelling

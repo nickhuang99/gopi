@@ -34,8 +34,8 @@ import (
 	"syscall"
 	"testing"
 
-	"github.com/nick/gopi/internal/flaketest"
-	"github.com/nick/gopi/internal/sigsource"
+	"github.com/nickhuang99/gopi/internal/flaketest"
+	"github.com/nickhuang99/gopi/internal/sigsource"
 )
 
 // TestSignalRecordCarriesTheKernelsSICode is arms ①②: a real second process

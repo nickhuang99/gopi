@@ -6,8 +6,8 @@ import (
 	"strconv"
 	"unicode/utf8"
 
-	"github.com/nick/gopi/internal/deepseek"
-	"github.com/nick/gopi/internal/tokenizer"
+	"github.com/nickhuang99/gopi/internal/deepseek"
+	"github.com/nickhuang99/gopi/internal/tokenizer"
 )
 
 // CalibratedTokens is the token total the STATUS ROW reports: the best

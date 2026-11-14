@@ -17,7 +17,7 @@ import (
 	"os/exec"
 	"strings"
 
-	"github.com/nick/gopi/internal/tools"
+	"github.com/nickhuang99/gopi/internal/tools"
 )
 
 // gitBinaryName is the git executable the command shells out to. Named

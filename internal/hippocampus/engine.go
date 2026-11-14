@@ -7,7 +7,7 @@ import (
 	"fmt"
 	"strings"
 
-	"github.com/nick/gopi/internal/tools"
+	"github.com/nickhuang99/gopi/internal/tools"
 )
 
 // Engine is the bounded retrieve → judge → act cycle (spec §6). Both

@@ -15,14 +15,14 @@ package tools
 import (
 	"context"
 	"encoding/json"
-	"github.com/nick/gopi/internal/heavytest"
+	"github.com/nickhuang99/gopi/internal/heavytest"
 	"os"
 	"path/filepath"
 	"strings"
 	"testing"
 	"time"
 
-	"github.com/nick/gopi/internal/config"
+	"github.com/nickhuang99/gopi/internal/config"
 )
 
 // newDeltaTestDB creates an isolated ledger (the same memory.db shape the
@@ -55,7 +55,7 @@ func newDeltaTestDB(t *testing.T) string {
 }
 
 // newDeltaTestDBClient pins the CLIENT face for the delta suite (M4.20-B: the
-// default sandbox must NOT rule — a server-role host (zpeer's settings or
+// default sandbox must NOT rule — a server-role host (peerbox's settings or
 // hostname fallback) turns every equal-rank residue into a ruling, which
 // breaks the echo-absorption semantics the client tests assert). Tests
 // that exercise the ruling path set the role themselves.
@@ -270,7 +270,7 @@ func TestSyncDeltaContentDivergenceEqualAnchorClient(t *testing.T) {
 	}
 	t.Setenv(config.SyncPeersEnv, self)
 	// Explicit CLIENT role: the N1 fix made role explicit (config/env)
-	// primary — without this, ambient settings (role=server on zpeer)
+	// primary — without this, ambient settings (role=server on peerbox)
 	// overrides the peer-planting below and flips the test to the server
 	// path. GOPI_NODE_ROLE=client + identity reset keeps the test honest.
 	t.Setenv("GOPI_NODE_ROLE", "client")
@@ -1255,7 +1255,7 @@ func TestSyncDeltaServerRulingFiresLegacyConflictNotify(t *testing.T) {
 
 // TestSyncDeltaServerRulingBlocksHumanTicket — bug053 M4.16 semantic-fix
 // regression: a REAL human ticket (source=human, non-empty payload) sitting
-// pending on the server (zpeer) whose peer mirror row — same task_id, SAME
+// pending on the server (peerbox) whose peer mirror row — same task_id, SAME
 // status (pending), SAME anchor, differing peer tags — collides with it
 // (the exact bug050/051/052 signature: equal non-terminal status + equal
 // anchor → the server blind-ruling fired) must NEVER be blind-flattened to
@@ -1276,7 +1276,7 @@ func TestSyncDeltaServerRulingBlocksHumanTicket(t *testing.T) {
 	t.Setenv("GOPI_TASK_NOTIFY_EVENTS", "all")
 
 	base := float64(time.Now().Unix())
-	// zpeer's REAL pending human ticket — the exact bug053 row class
+	// peerbox's REAL pending human ticket — the exact bug053 row class
 	// (source=human, payload = the briefing).
 	db, closeDB, err := taskSyncDB()
 	if err != nil {

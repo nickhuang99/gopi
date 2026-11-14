@@ -38,8 +38,8 @@ import (
 	"sort"
 	"strings"
 
-	"github.com/nick/gopi/internal/config"
-	"github.com/nick/gopi/internal/tools"
+	"github.com/nickhuang99/gopi/internal/config"
+	"github.com/nickhuang99/gopi/internal/tools"
 )
 
 // mergerRebuildSkipDirty is the log line for the dirty-tree guard.

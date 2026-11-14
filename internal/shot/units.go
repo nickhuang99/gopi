@@ -34,8 +34,8 @@ import (
 	"os"
 	"strings"
 
-	"github.com/nick/gopi/internal/procname"
-	"github.com/nick/gopi/internal/scratch"
+	"github.com/nickhuang99/gopi/internal/procname"
+	"github.com/nickhuang99/gopi/internal/scratch"
 )
 
 // The roles this package hands its callers, so a log line says WHICH event fired

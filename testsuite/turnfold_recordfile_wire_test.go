@@ -20,8 +20,8 @@ import (
 	"strings"
 	"testing"
 
-	"github.com/nick/gopi/internal/agent"
-	"github.com/nick/gopi/internal/testutil"
+	"github.com/nickhuang99/gopi/internal/agent"
+	"github.com/nickhuang99/gopi/internal/testutil"
 )
 
 // turnFoldWireFileNote is the note the mock's answer records. CJK on purpose: a

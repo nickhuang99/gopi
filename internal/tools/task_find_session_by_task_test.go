@@ -6,7 +6,7 @@ import (
 	"strings"
 	"testing"
 
-	"github.com/nick/gopi/internal/sessionid"
+	"github.com/nickhuang99/gopi/internal/sessionid"
 )
 
 // tsrsRowID is the ROW spelling used by the tests below: a canonical uuid,

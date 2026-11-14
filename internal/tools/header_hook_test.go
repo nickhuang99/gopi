@@ -25,8 +25,8 @@ import (
 	"testing"
 	"time"
 
-	"github.com/nick/gopi/internal/devdoc"
-	"github.com/nick/gopi/internal/testutil"
+	"github.com/nickhuang99/gopi/internal/devdoc"
+	"github.com/nickhuang99/gopi/internal/testutil"
 )
 
 // headerHookCostBound is the ceiling for one corpus write's header handling. It

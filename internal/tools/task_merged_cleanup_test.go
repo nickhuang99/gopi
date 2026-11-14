@@ -23,7 +23,7 @@ import (
 	"strings"
 	"testing"
 
-	"github.com/nick/gopi/internal/testutil"
+	"github.com/nickhuang99/gopi/internal/testutil"
 )
 
 // mergedCleanupFixture is a real git world: a main checkout (on master)
@@ -615,7 +615,7 @@ func TestMergedCleanupStaleOwnerRowIsReleased(t *testing.T) {
 
 	block, note := finishCleanupForeignOwnerReason([]TaskWorktreeRow{
 		{TaskID: "t-stale-owner", Status: TaskStatusCancelled,
-			ClaimedBy: "zpeer:" + strconv.Itoa(deadOwnerPid), Deliverable: f.wtDir, HolderLive: false},
+			ClaimedBy: "peerbox:" + strconv.Itoa(deadOwnerPid), Deliverable: f.wtDir, HolderLive: false},
 	}, f.wtDir)
 	if block != "" {
 		t.Fatalf("a provably-dead holder must not block the sweep: %q", block)

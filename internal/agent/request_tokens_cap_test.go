@@ -14,7 +14,7 @@ import (
 	"testing"
 	"time"
 
-	"github.com/nick/gopi/internal/deepseek"
+	"github.com/nickhuang99/gopi/internal/deepseek"
 )
 
 // request_tokens_cap_test.go — the send-time token ceiling's two behaviours and

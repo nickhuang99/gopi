@@ -7,7 +7,7 @@ package tools
 //
 //	its deliverable is not at the destination it declared:
 //	the tip eaaf6b43ab0e … is in NEITHER the ancestry NOR the patches NOR the
-//	content of refs/remotes/origin/master (zpeer:/home/user/work/gopi = eaaf6b43ab0e)
+//	content of refs/remotes/origin/master (peerbox:/home/user/work/gopi = eaaf6b43ab0e)
 //
 // whose own parenthetical named the destination as the SAME SHA. The row's
 // `completed` writeback was refused, it stayed `in_progress`, its ground was never
@@ -36,7 +36,7 @@ import (
 	"strings"
 	"testing"
 
-	"github.com/nick/gopi/internal/testutil"
+	"github.com/nickhuang99/gopi/internal/testutil"
 )
 
 // TestDeliveryProof_DestinationIsTheTipButUnreadableIsNotAbsent is the repair's

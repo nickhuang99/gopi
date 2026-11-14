@@ -40,8 +40,8 @@ import (
 	"strings"
 	"testing"
 
-	"github.com/nick/gopi/internal/config"
-	"github.com/nick/gopi/internal/doubaoasr"
+	"github.com/nickhuang99/gopi/internal/config"
+	"github.com/nickhuang99/gopi/internal/doubaoasr"
 )
 
 // doubaoNoSpeechStatus is the service's silence verdict, spelled through its ONE

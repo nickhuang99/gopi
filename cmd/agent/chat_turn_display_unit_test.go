@@ -5,8 +5,8 @@ import (
 	"strings"
 	"testing"
 
-	"github.com/nick/gopi/internal/inputsource"
-	"github.com/nick/gopi/internal/sessionevent"
+	"github.com/nickhuang99/gopi/internal/inputsource"
+	"github.com/nickhuang99/gopi/internal/sessionevent"
 )
 
 // TestChatCountsAsOperatorTurn pins WHICH FACES open a turn the session log

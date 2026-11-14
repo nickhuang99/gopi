@@ -36,8 +36,8 @@ import (
 	"sync"
 	"time"
 
-	"github.com/nick/gopi/internal/memoryprefetch"
-	"github.com/nick/gopi/internal/tools"
+	"github.com/nickhuang99/gopi/internal/memoryprefetch"
+	"github.com/nickhuang99/gopi/internal/tools"
 )
 
 // The note leg's own numbers, named (Rule 1).

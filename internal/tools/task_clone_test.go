@@ -24,8 +24,8 @@ import (
 	"strings"
 	"testing"
 
-	"github.com/nick/gopi/internal/fullid"
-	"github.com/nick/gopi/internal/tasktags"
+	"github.com/nickhuang99/gopi/internal/fullid"
+	"github.com/nickhuang99/gopi/internal/tasktags"
 )
 
 // cloneSeedTerminal submits a row and walks it to `status` through the ledger's

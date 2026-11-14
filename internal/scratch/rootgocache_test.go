@@ -16,7 +16,7 @@ import (
 	"strings"
 	"testing"
 
-	"github.com/nick/gopi/internal/worktreeroots"
+	"github.com/nickhuang99/gopi/internal/worktreeroots"
 )
 
 // TestSharedBuildCacheLeafMatchesWorktreeRoots pins the alias contract: this

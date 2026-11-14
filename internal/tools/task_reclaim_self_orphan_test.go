@@ -30,7 +30,7 @@ import (
 	"testing"
 	"time"
 
-	"github.com/nick/gopi/internal/scratch"
+	"github.com/nickhuang99/gopi/internal/scratch"
 )
 
 // ageSelfOwnRegistration backdates the registration's creation record past

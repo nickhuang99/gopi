@@ -5,7 +5,7 @@ package main
 // THE LAYERING PROBLEM IT SOLVES, measured rather than assumed (`go build
 // ./internal/tools` with the import in place, 2026-10-26):
 //
-//	github.com/nick/gopi/internal/tools
+//	github.com/nickhuang99/gopi/internal/tools
 //		imports internal/gopilog
 //		imports internal/agent      (formatter.go)
 //		imports internal/hippocampus
@@ -28,8 +28,8 @@ package main
 // surface must be executed, not merely built).
 
 import (
-	"github.com/nick/gopi/internal/gopilog"
-	"github.com/nick/gopi/internal/tools"
+	"github.com/nickhuang99/gopi/internal/gopilog"
+	"github.com/nickhuang99/gopi/internal/tools"
 )
 
 // sessionTurnsFromLog is the injected implementation: parse the row's own

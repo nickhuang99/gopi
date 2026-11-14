@@ -25,9 +25,9 @@ import (
 	"strconv"
 	"strings"
 
-	"github.com/nick/gopi/internal/scratch"
-	"github.com/nick/gopi/internal/thinkmode"
-	"github.com/nick/gopi/internal/worktreeroots"
+	"github.com/nickhuang99/gopi/internal/scratch"
+	"github.com/nickhuang99/gopi/internal/thinkmode"
+	"github.com/nickhuang99/gopi/internal/worktreeroots"
 )
 
 // ThinkingMode is the settings.json "thinking" value: the canonical strings
@@ -781,7 +781,7 @@ func envBoolValue(v string) bool {
 // --- memsync peers (M4.13 delta sync) ---
 
 // SyncPeersSettingsKey is the settings.json key carrying the memsync peer
-// whitelist ("sync_peers": ["zpeer", "hp"]). Same philosophy as
+// whitelist ("sync_peers": ["peerbox", "hp"]). Same philosophy as
 // compute_nodes: topology is DECLARED, never discovered — a sync peer name
 // is an ssh config alias the transport connects through (`ssh <name> ...`),
 // and a name not on the whitelist is never synced with.

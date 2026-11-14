@@ -12,7 +12,7 @@ import (
 	"testing"
 	"time"
 
-	"github.com/nick/gopi/internal/config"
+	"github.com/nickhuang99/gopi/internal/config"
 )
 
 // TestTaskTickTockRendersAgeAndVerdict pins the tick-tock contract: a liveness

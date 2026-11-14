@@ -30,7 +30,7 @@ import (
 	"strings"
 	"testing"
 
-	"github.com/nick/gopi/internal/config"
+	"github.com/nickhuang99/gopi/internal/config"
 )
 
 // optionShapedAliases are the injection shapes the guard MUST refuse: each
@@ -52,7 +52,7 @@ var optionShapedAliases = []string{
 func TestValidateSSHPeerAliasRefusalTable(t *testing.T) {
 	valid := map[string]string{
 		"hp":              "hp",
-		"zpeer":           "zpeer",
+		"peerbox":         "peerbox",
 		"user@host":       "user@host",
 		"hp-1":            "hp-1",
 		"hp.example.com":  "hp.example.com",
@@ -112,7 +112,7 @@ func TestValidateSSHPeerAliasRefusalTable(t *testing.T) {
 // "<alias>:<path>" themselves; the alias HALF is what git hands to ssh, so
 // the validator splints exactly that half (the path is git's business).
 func TestValidateSSHGitTargetSplitsAliasHalf(t *testing.T) {
-	for _, ok := range []string{"hp:~/work/GoPi", "zpeer:/srv/repo", "  hp:/x  "} {
+	for _, ok := range []string{"hp:~/work/GoPi", "peerbox:/srv/repo", "  hp:/x  "} {
 		got, err := ValidateSSHGitTarget(ok)
 		if err != nil {
 			t.Errorf("ValidateSSHGitTarget(%q) refused a valid target: %v", ok, err)
@@ -218,9 +218,9 @@ func TestSSHPeerAliasGuardRefusesOptionShapedAliasAtEveryLeg(t *testing.T) {
 	// ...and a well-formed declared peer still renders (the guard is not a
 	// blanket refusal).
 	t.Setenv("GOPI_SYNC_NODE", "hp")
-	t.Setenv(config.SyncPeersEnv, "zpeer")
-	if got := GitSyncServerTarget(); got != "zpeer:"+peerRepoPath() {
-		t.Errorf("GitSyncServerTarget = %q, want zpeer:%s", got, peerRepoPath())
+	t.Setenv(config.SyncPeersEnv, "peerbox")
+	if got := GitSyncServerTarget(); got != "peerbox:"+peerRepoPath() {
+		t.Errorf("GitSyncServerTarget = %q, want peerbox:%s", got, peerRepoPath())
 	}
 }
 

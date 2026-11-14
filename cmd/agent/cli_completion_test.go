@@ -13,7 +13,7 @@ import (
 	"strings"
 	"testing"
 
-	"github.com/nick/gopi/internal/taskverbs"
+	"github.com/nickhuang99/gopi/internal/taskverbs"
 )
 
 // TestCompletionCandidateSetsCoverTopLevel locks the first-level candidate

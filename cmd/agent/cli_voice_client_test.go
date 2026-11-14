@@ -20,7 +20,7 @@ import (
 // separately (see devdoc/voice-input-client.md).
 
 // voiceRealArecordList is the verbatim `arecord -l` output of the HP laptop
-// (the only capture-capable machine here: the zpeer reports "no soundcards
+// (the only capture-capable machine here: the peerbox reports "no soundcards
 // found"). Kept as a fixture because the parser exists to handle exactly this
 // real formatting, not an idealized one.
 const voiceRealArecordList = `**** List of CAPTURE Hardware Devices ****
@@ -224,7 +224,7 @@ func TestVoiceParseArecordListIgnoresNonDeviceLines(t *testing.T) {
 }
 
 func TestVoiceParseArecordListEmptyMeansNoCaptureHardware(t *testing.T) {
-	// The zpeer's real answer: arecord runs fine and lists nothing.
+	// The peerbox's real answer: arecord runs fine and lists nothing.
 	if got := voiceParseArecordList("**** List of CAPTURE Hardware Devices ****\n"); len(got) != 0 {
 		t.Errorf("got %d devices, want 0", len(got))
 	}
@@ -318,7 +318,7 @@ func TestVoiceListDevicesSurvivesMissingPulse(t *testing.T) {
 }
 
 func TestVoiceListDevicesReportsNothingToRecordFrom(t *testing.T) {
-	// The zpeer's situation: both enumerators run, neither sees a capture
+	// The peerbox's situation: both enumerators run, neither sees a capture
 	// device. The message must say what was tried and where to go instead.
 	run := func(name string, args ...string) (string, error) { return "", nil }
 	devices, _, err := voiceListDevices(run)

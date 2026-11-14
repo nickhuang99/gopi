@@ -37,8 +37,8 @@ package tools
 import (
 	"strings"
 
-	"github.com/nick/gopi/internal/config"
-	"github.com/nick/gopi/internal/devworkspace"
+	"github.com/nickhuang99/gopi/internal/config"
+	"github.com/nickhuang99/gopi/internal/devworkspace"
 )
 
 // reclaimRunCloneGroundIdentity answers "is this directory the clone channel's

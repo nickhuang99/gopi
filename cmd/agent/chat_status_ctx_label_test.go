@@ -5,7 +5,7 @@ import (
 	"testing"
 	"time"
 
-	"github.com/nick/gopi/internal/lineedit"
+	"github.com/nickhuang99/gopi/internal/lineedit"
 )
 
 // chat_status_ctx_label_test.go — the LABEL + FOLD decision (task 01a0ddab),

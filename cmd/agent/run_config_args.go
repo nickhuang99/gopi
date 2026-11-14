@@ -1,6 +1,6 @@
 package main
 
-import "github.com/nick/gopi/internal/config"
+import "github.com/nickhuang99/gopi/internal/config"
 
 // catalogConfigArgs reduces a VERB FACE's argv to the words the configuration
 // resolution may see.

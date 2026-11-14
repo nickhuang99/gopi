@@ -35,7 +35,7 @@ import (
 	"testing"
 	"unicode"
 
-	"github.com/nick/gopi/internal/lineedit"
+	"github.com/nickhuang99/gopi/internal/lineedit"
 )
 
 // statusMetricsPreFixUnmeasured is the content the group's all-unmeasured arm

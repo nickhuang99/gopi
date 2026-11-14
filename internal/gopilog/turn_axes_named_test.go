@@ -52,7 +52,7 @@ import (
 	"strings"
 	"testing"
 
-	"github.com/nick/gopi/internal/sessionevent"
+	"github.com/nickhuang99/gopi/internal/sessionevent"
 )
 
 // turnAxesFixture builds a session whose ledger turn count and logged turn

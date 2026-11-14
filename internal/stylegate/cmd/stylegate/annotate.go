@@ -10,7 +10,7 @@ import (
 	"sort"
 	"strings"
 
-	"github.com/nick/gopi/internal/stylegate"
+	"github.com/nickhuang99/gopi/internal/stylegate"
 )
 
 // annotatableRules are the rules whose violation is cleared by a documented

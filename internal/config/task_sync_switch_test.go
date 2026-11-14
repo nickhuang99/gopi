@@ -41,7 +41,7 @@ func writeTaskSyncSettings(t *testing.T, content string) string {
 // a stale role=client + sync_to stop forwarding without touching its settings
 // file.
 func TestTaskSyncDefaultIsOff(t *testing.T) {
-	writeTaskSyncSettings(t, `{"role":"client","sync_to":"zpeer","sync_peers":["zpeer"]}`)
+	writeTaskSyncSettings(t, `{"role":"client","sync_to":"peerbox","sync_peers":["peerbox"]}`)
 	if TaskSyncEnabled() {
 		t.Fatal("task_sync absent from settings AND env must resolve OFF — a stale role/sync_to must not keep automatic exchange on")
 	}

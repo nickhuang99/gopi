@@ -31,9 +31,9 @@ package main
 import (
 	"testing"
 
-	"github.com/nick/gopi/internal/inputsource"
-	"github.com/nick/gopi/internal/replaydrive"
-	"github.com/nick/gopi/internal/sessionevent"
+	"github.com/nickhuang99/gopi/internal/inputsource"
+	"github.com/nickhuang99/gopi/internal/replaydrive"
+	"github.com/nickhuang99/gopi/internal/sessionevent"
 )
 
 // notifyCarrierText is the sentence a `gopi notify` delivery writes into a

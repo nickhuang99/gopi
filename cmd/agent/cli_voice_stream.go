@@ -8,9 +8,9 @@ import (
 	"strings"
 	"time"
 
-	"github.com/nick/gopi/internal/config"
-	"github.com/nick/gopi/internal/doubaosauc"
-	"github.com/nick/gopi/internal/doubaostream"
+	"github.com/nickhuang99/gopi/internal/config"
+	"github.com/nickhuang99/gopi/internal/doubaosauc"
+	"github.com/nickhuang99/gopi/internal/doubaostream"
 )
 
 // THE THIRD ARM of the engine dispatch: the v2 real-time STREAMING channel

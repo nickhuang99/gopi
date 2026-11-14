@@ -23,7 +23,7 @@ import (
 	"strconv"
 	"strings"
 
-	"github.com/nick/gopi/internal/sessionlayout"
+	"github.com/nickhuang99/gopi/internal/sessionlayout"
 )
 
 // ChatExitMarker is the marker as a READER sees it — the fields a verdict is

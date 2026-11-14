@@ -49,7 +49,7 @@ readonly SUDO_TIMEOUT_SEC=5            # `sudo -n` must never block on a prompt
 # SIGKILL escalation for the privileged path. sudoers here carries `use_pty`,
 # so sudo runs the child on a new pty and does NOT die on timeout's SIGTERM: a
 # privileged arecord blocking on a busy PCM held the probe for minutes (measured
-# 3m41s on zpeer 2026-09-13) despite the timeout. -k makes the time cap real.
+# 3m41s on peerbox 2026-09-13) despite the timeout. -k makes the time cap real.
 readonly SUDO_KILL_GRACE_SEC=2
 readonly DEFAULT_RATE=16000            # the voice-client contract rate
 readonly DEFAULT_CHANNELS=1            # the voice-client contract channel count
@@ -217,7 +217,7 @@ classify() {             # classify <rc> <data_bytes> <stderr_file> -> stdout
 #   fast instead of hanging the probe);
 #   inner `timeout -k` runs the command AS ROOT, which is the only way to bound
 #   it — sudoers' `use_pty` puts the child on a new pty, so killing sudo (even
-#   with SIGKILL) leaves the child alive and holding the PCM. Measured on zpeer
+#   with SIGKILL) leaves the child alive and holding the PCM. Measured on peerbox
 #   2026-09-13: an orphaned privileged `arecord --dump-hw-params` outlived two
 #   killed probe runs and made every later privileged cell read BUSY.
 run_sudo() {             # run_sudo <timeout_sec> <cmd...>
@@ -351,7 +351,7 @@ have() { command -v "$1" >/dev/null 2>&1; }
 # ALSA resolves a card by opening its /dev/snd control node. A uid outside group
 # `audio` with no ACL entry is refused, and libasound then reports the refusal as
 # "no soundcards found" / "Cannot get card index for N" — phrasing that reads as
-# "no hardware" while it is access control. Measured on zpeer 2026-09-13:
+# "no hardware" while it is access control. Measured on peerbox 2026-09-13:
 # /dev/snd is mode 660 root:audio with an ACL for the display manager only, so
 # `arecord -l` is empty for uid 1000 while the ALC3228 capture node is present
 # and capturing (the same uid + group audio, or root, records 32000 B/s).
@@ -489,7 +489,7 @@ esac
 # capture stream that no client can actually open.
 # node_mode_marks prints the ACL grants that decide whether THIS uid may open the
 # node — the fact a bare mode string hides. /dev/snd is 660 root:audio with an
-# ACL for the display manager on zpeer, which is why a uid outside group `audio`
+# ACL for the display manager on peerbox, which is why a uid outside group `audio`
 # is refused the card and ALSA then says there is no sound card. The ACL lines
 # are the same for every node in a directory, so a missing getfacl is recorded,
 # not fatal.
@@ -643,7 +643,7 @@ while read -r dev; do
 done < <(awk -F'\t' 'NR>0 && $2!="" {print $2}' "$TABLE_ROWS_FILE" | sort -u)
 
 # The node's capture truth — the line a reader must not have to derive from 60
-# table rows, and the one the earlier revision got wrong for zpeer.
+# table rows, and the one the earlier revision got wrong for peerbox.
 section "CAPTURE_TRUTH"
 best_user="$(awk -F'\t' '$9=="OK" && $11=="'"$PRIV_MODE_USER"'" {n++} END{print n+0}' "$TABLE_ROWS_FILE")"
 best_root="$(awk -F'\t' '$9=="OK" && $11=="'"$PRIV_MODE_ROOT"'" {n++} END{print n+0}' "$TABLE_ROWS_FILE")"

@@ -19,7 +19,7 @@ import (
 	"strings"
 	"testing"
 
-	"github.com/nick/gopi/internal/config"
+	"github.com/nickhuang99/gopi/internal/config"
 )
 
 // projectCtxTestBody is the marker body a resolved file must carry, so a test

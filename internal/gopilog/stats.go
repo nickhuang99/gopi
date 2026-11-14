@@ -10,8 +10,8 @@ import (
 	"strings"
 	"time"
 
-	"github.com/nick/gopi/internal/pricing"
-	"github.com/nick/gopi/internal/sessionevent"
+	"github.com/nickhuang99/gopi/internal/pricing"
+	"github.com/nickhuang99/gopi/internal/sessionevent"
 )
 
 // Session statistics (`gopi session stats`). PRIMARY source is the paired raw HTTP

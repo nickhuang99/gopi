@@ -25,7 +25,7 @@ import (
 	"testing"
 	"time"
 
-	"github.com/nick/gopi/internal/tools"
+	"github.com/nickhuang99/gopi/internal/tools"
 )
 
 // ---------------------------------------------------------------------------

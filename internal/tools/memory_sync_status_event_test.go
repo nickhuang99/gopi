@@ -23,12 +23,12 @@ import (
 	"strings"
 	"testing"
 
-	"github.com/nick/gopi/internal/testutil"
+	"github.com/nickhuang99/gopi/internal/testutil"
 )
 
 // syncEventPeer is the peer name the fixtures import from — the detail must
 // name it, so one constant serves the seeding and the assertion (Rule 1b).
-const syncEventPeer = "zpeer"
+const syncEventPeer = "peerbox"
 
 // syncEventFixture pins a fresh ledger (Rule 32 scaffold) and returns its path
 // with the schema built.

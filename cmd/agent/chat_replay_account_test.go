@@ -15,9 +15,9 @@ import (
 	"strings"
 	"testing"
 
-	"github.com/nick/gopi/internal/deepseek"
-	"github.com/nick/gopi/internal/heavytest"
-	"github.com/nick/gopi/internal/replaydrive"
+	"github.com/nickhuang99/gopi/internal/deepseek"
+	"github.com/nickhuang99/gopi/internal/heavytest"
+	"github.com/nickhuang99/gopi/internal/replaydrive"
 )
 
 // measuredRecording is the shape of the real session this epic is about: 152

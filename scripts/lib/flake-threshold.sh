@@ -145,7 +145,7 @@ flake_replay_cases="all nothing"
 
 # flake_replay_pkg — the synthetic package the replay events claim, so a replayed
 # stream is recognisable in a report and can never be mistaken for a real run.
-flake_replay_pkg="github.com/nick/gopi/internal/orderfixture"
+flake_replay_pkg="github.com/nickhuang99/gopi/internal/orderfixture"
 
 # flake_replay_verdicts — test:verdict pairs for the `all` case. `pass` verifies
 # quiet, `fail` verifies the plain-defect reading (exit 3), `moved` verifies the

@@ -16,7 +16,7 @@ import (
 	"strings"
 	"testing"
 
-	"github.com/nick/gopi/internal/config"
+	"github.com/nickhuang99/gopi/internal/config"
 )
 
 // TestPathShapedReason is the classifier contract: the SHAPE decides, never a

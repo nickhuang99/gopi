@@ -32,7 +32,7 @@ import (
 // always took a ctx — it simply never read it between probes, which is
 // affordable for a foreground memory_search and NOT affordable on a keystroke
 // path with a hard 1500ms budget: MEASURED, a full walk of
-// `zpeer 现在 上任务积压太多了 上任 任务 务积 积压 压太` costs 1723ms and of
+// `peerbox 现在 上任务积压太多了 上任 任务 务积 积压 压太` costs 1723ms and of
 // `还没 没修 修复 复的 的问 问题` costs 3203ms on that ledger. The guard is what
 // lets the SAME algorithm serve both budgets: memory_search keeps its unbounded
 // walk (its ctx has no deadline), the prefetch's walk stops at its own bound.

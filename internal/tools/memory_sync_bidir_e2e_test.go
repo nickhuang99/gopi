@@ -8,7 +8,7 @@ import (
 	"testing"
 	"time"
 
-	"github.com/nick/gopi/internal/config"
+	"github.com/nickhuang99/gopi/internal/config"
 )
 
 // syncBidirTestSleep separates two same-node status writes past the 1s
@@ -17,7 +17,7 @@ import (
 const syncBidirTestSleep = 1100 * time.Millisecond
 
 // memory_sync_bidir_e2e_test.go — the bidirectional-sync epic's 实测
-// (devdoc/memsync-bidirectional.md). Two isolated ledgers (A=HP, B=zpeer)
+// (devdoc/memsync-bidirectional.md). Two isolated ledgers (A=HP, B=peerbox)
 // driven through the REAL export/merge/serve-remote primitives in both
 // directions — the same code path an ssh session transports, minus the
 // ssh byte pipe itself (that leg is TestSyncRemoteServeRoundTrip's).
@@ -46,7 +46,7 @@ func newBidirNode(t *testing.T, name string) *bidirNode {
 	t.Setenv("GOPI_MEMORY_DB", path) // t.Setenv restores it at test end
 	// Node identity = the SIMULATED name (memory_sync_delta.go's documented
 	// GOPI_SYNC_NODE rule). Without this a host whose hostname equals a
-	// simulated node name (running ON zpeer) collides with the anti-reflow
+	// simulated node name (running ON peerbox) collides with the anti-reflow
 	// export gate (56fd84a): imported rows carry from-<self> and the node's
 	// next export SQL-filters them away (all-zero pushTo stats, the round-6
 	// redlist root cause — devdoc/tools-redlist-round6.md).
@@ -144,7 +144,7 @@ func (n *bidirNode) pushTo(t *testing.T, dst *bidirNode, tagsFilter string) *Syn
 	t.Setenv("GOPI_SYNC_NODE", n.name)
 	// Direction-aware peers pin (388be0a pattern): the import side's
 	// IsServerNode() must be deterministic regardless of the ambient
-	// settings.json. The node named "zpeer" imports as the SERVER (foreign
+	// settings.json. The node named "peerbox" imports as the SERVER (foreign
 	// peer name — hostname never matches → server ruling runs); any other
 	// node imports as the CLIENT (peers pinned to THIS host's real hostname
 	// → the client keep-row + conflict-tag path). Without the pin the
@@ -186,7 +186,7 @@ func (n *bidirNode) pushTo(t *testing.T, dst *bidirNode, tagsFilter string) *Syn
 // with every row's content byte-identical to A's.
 func TestBidirEpic1SelfSubmittedAndTerminal(t *testing.T) {
 	a := newBidirNode(t, "hp")
-	b := newBidirNode(t, "zpeer")
+	b := newBidirNode(t, "peerbox")
 
 	a.submit(t, "t-hp-1", "hp self task one", "module:pipeline", "payload-1")
 	a.submit(t, "t-hp-2", "hp self task two", "module:ui", "payload-2")
@@ -239,17 +239,17 @@ func TestBidirEpic1SelfSubmittedAndTerminal(t *testing.T) {
 // sides' statuses untouched (never-overwrite), and tag 'conflict' for a
 // human. A later echo stays a no-op.
 func TestBidirEpic2StateConflictExplicitReport(t *testing.T) {
-	// Pin the peer whitelist: this host's settings.json lists hp/zpeer, so
+	// Pin the peer whitelist: this host's settings.json lists hp/peerbox, so
 	// ambient config could flip syncIsServerNode mid-test (388be0a pattern —
 	// the test needs the SERVER RULING path, not the ruling's input).
 	t.Setenv(config.SyncPeersEnv, "peer-under-test")
 	a := newBidirNode(t, "hp")
-	b := newBidirNode(t, "zpeer")
+	b := newBidirNode(t, "peerbox")
 
 	a.submit(t, "t-c1", "contested work", "module:x", "payload-c")
 	a.pushTo(t, b, "") // B now holds t-c1 pending (same content)
 
-	// Both sides advance — HP says completed, zpeer says failed — and the
+	// Both sides advance — HP says completed, peerbox says failed — and the
 	// anchors are forced equal (the merge's equal-anchor branch).
 	a.setStatus(t, "t-c1", "in_progress")
 	a.setStatus(t, "t-c1", "completed")
@@ -320,7 +320,7 @@ func equalizeAnchors(t *testing.T, taskID string, nodes ...*bidirNode) {
 // syncs free.
 func TestBidirEpic4IdempotentRoundTrip(t *testing.T) {
 	a := newBidirNode(t, "hp")
-	b := newBidirNode(t, "zpeer")
+	b := newBidirNode(t, "peerbox")
 
 	a.submit(t, "t-r1", "roundtrip row", "module:pipeline", "p")
 	a.pushTo(t, b, "")
@@ -359,7 +359,7 @@ func TestBidirEpic4IdempotentRoundTrip(t *testing.T) {
 // unchanged unless the row was forward-migrated (status-only move).
 func TestBidirEpic3MixedAssetsHashInvariant(t *testing.T) {
 	a := newBidirNode(t, "hp")
-	b := newBidirNode(t, "zpeer")
+	b := newBidirNode(t, "peerbox")
 
 	a.submit(t, "t-h1", "hp row", "module:pipeline", "payload-h")
 	a.submit(t, "t-h2", "hp row 2", "module:ui", "payload-h2")

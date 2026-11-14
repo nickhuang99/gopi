@@ -12,8 +12,8 @@ import (
 	"strings"
 	"testing"
 
-	"github.com/nick/gopi/internal/config"
-	"github.com/nick/gopi/internal/runlock"
+	"github.com/nickhuang99/gopi/internal/config"
+	"github.com/nickhuang99/gopi/internal/runlock"
 )
 
 // TestWebServerLockIsOnePerProfile — the second server is refused, naming the

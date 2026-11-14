@@ -33,7 +33,7 @@ import (
 	"strings"
 	"testing"
 
-	"github.com/nick/gopi/internal/deepseek"
+	"github.com/nickhuang99/gopi/internal/deepseek"
 )
 
 // The signal spellings the guard exercises, as signalrec.SignalName renders them

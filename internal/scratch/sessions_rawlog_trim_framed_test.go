@@ -29,7 +29,7 @@ import (
 	"testing"
 	"time"
 
-	"github.com/nick/gopi/internal/rawlogfmt"
+	"github.com/nickhuang99/gopi/internal/rawlogfmt"
 )
 
 // framedRawLogFixture writes a framed raw log of roughly size bytes, opening with

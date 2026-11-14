@@ -65,7 +65,7 @@ func wt(task string) string { return filepath.Join("/dev/shm/gopi-"+task, "wt") 
 import (
 	"path/filepath"
 
-	"github.com/nick/gopi/internal/worktreeroots"
+	"github.com/nickhuang99/gopi/internal/worktreeroots"
 )
 
 func wt(task string) string {
@@ -172,7 +172,7 @@ import (
 	"path/filepath"
 	"testing"
 
-	"github.com/nick/gopi/internal/worktreeroots"
+	"github.com/nickhuang99/gopi/internal/worktreeroots"
 )
 
 func TestX(t *testing.T) {
@@ -253,7 +253,7 @@ func TestGate7WorktreeRootLiteralInjectionRedProof(t *testing.T) {
 			t.Fatal(err)
 		}
 	}
-	cleanSrc := "package clean\n\nimport \"github.com/nick/gopi/internal/worktreeroots\"\n\nfunc Root() string { r, _ := worktreeroots.DefaultRoot(); return r }\n"
+	cleanSrc := "package clean\n\nimport \"github.com/nickhuang99/gopi/internal/worktreeroots\"\n\nfunc Root() string { r, _ := worktreeroots.DefaultRoot(); return r }\n"
 	if err := os.WriteFile(filepath.Join(cleanDir, "clean.go"), []byte(cleanSrc), 0o644); err != nil {
 		t.Fatal(err)
 	}

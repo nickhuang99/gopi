@@ -32,7 +32,7 @@ import (
 	"slices"
 	"strings"
 
-	"github.com/nick/gopi/internal/gifgen"
+	"github.com/nickhuang99/gopi/internal/gifgen"
 )
 
 // gifUsage is the -h text for the gif subcommand.

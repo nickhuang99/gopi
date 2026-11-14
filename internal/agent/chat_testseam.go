@@ -15,7 +15,7 @@ import (
 	"fmt"
 	"net/http"
 
-	"github.com/nick/gopi/internal/deepseek"
+	"github.com/nickhuang99/gopi/internal/deepseek"
 )
 
 // WriteClaudeSSEEvent writes one Claude SSE event (event: + data: lines) and

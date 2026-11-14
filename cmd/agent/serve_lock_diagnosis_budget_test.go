@@ -32,7 +32,7 @@ import (
 	"testing"
 	"time"
 
-	"github.com/nick/gopi/internal/heavytest"
+	"github.com/nickhuang99/gopi/internal/heavytest"
 )
 
 // diagnosisRecordedFailure is the diagnosisTestSink of the regression case: it

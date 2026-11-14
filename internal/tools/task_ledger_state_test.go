@@ -13,7 +13,7 @@ import (
 	"strings"
 	"testing"
 
-	"github.com/nick/gopi/internal/testutil"
+	"github.com/nickhuang99/gopi/internal/testutil"
 )
 
 // taskIDFromQueued extracts the generated task id from TaskSubmit's

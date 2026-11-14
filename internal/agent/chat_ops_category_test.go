@@ -26,12 +26,12 @@ import (
 	"strings"
 	"testing"
 
-	"github.com/nick/gopi/internal/chatpolicy"
-	"github.com/nick/gopi/internal/cliverbs"
-	"github.com/nick/gopi/internal/config"
-	"github.com/nick/gopi/internal/runcmd"
-	"github.com/nick/gopi/internal/taskverbs"
-	"github.com/nick/gopi/internal/tools"
+	"github.com/nickhuang99/gopi/internal/chatpolicy"
+	"github.com/nickhuang99/gopi/internal/cliverbs"
+	"github.com/nickhuang99/gopi/internal/config"
+	"github.com/nickhuang99/gopi/internal/runcmd"
+	"github.com/nickhuang99/gopi/internal/taskverbs"
+	"github.com/nickhuang99/gopi/internal/tools"
 )
 
 // chatOpLongMergeLiveFlag is a real flag of the LIVE merge spelling, taken from
@@ -95,7 +95,7 @@ func TestChatOpCategoryThreePathsAgree(t *testing.T) {
 
 	// PATH 1 — operator work RUNS: the prompt states it is the console's own, and
 	// the guard admits it with nothing declared.
-	for _, cmd := range []string{"git status", "ls internal/agent", "gopi task list", "ssh zpeer 'gopi task list'"} {
+	for _, cmd := range []string{"git status", "ls internal/agent", "gopi task list", "ssh peerbox 'gopi task list'"} {
 		if adm := tools.ChatOpAdmit(cmd, ""); !adm.Allowed() {
 			t.Errorf("the prompt says operator work is the console's, but the guard refuses %q (%s)",
 				cmd, adm.Reason())

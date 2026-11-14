@@ -32,7 +32,7 @@ import (
 
 	_ "modernc.org/sqlite"
 
-	"github.com/nick/gopi/internal/tools"
+	"github.com/nickhuang99/gopi/internal/tools"
 )
 
 const (

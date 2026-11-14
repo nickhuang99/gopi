@@ -4,7 +4,7 @@ import (
 	"strings"
 	"testing"
 
-	"github.com/nick/gopi/internal/cjkseg"
+	"github.com/nickhuang99/gopi/internal/cjkseg"
 )
 
 // ---------------------------------------------------------------------------

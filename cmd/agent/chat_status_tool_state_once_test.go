@@ -29,7 +29,7 @@ import (
 	"testing"
 	"unicode"
 
-	"github.com/nick/gopi/internal/lineedit"
+	"github.com/nickhuang99/gopi/internal/lineedit"
 )
 
 // statusToolStateColumnName is the ONE column name allowed to state the tool

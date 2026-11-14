@@ -58,8 +58,8 @@ import (
 	"fmt"
 	"os"
 
-	"github.com/nick/gopi/internal/daemoncwd"
-	"github.com/nick/gopi/internal/tools"
+	"github.com/nickhuang99/gopi/internal/daemoncwd"
+	"github.com/nickhuang99/gopi/internal/tools"
 )
 
 // taskRunWorkdir is the directory the CURRENT task-serving process started

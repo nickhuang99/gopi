@@ -53,7 +53,7 @@ import (
 	"syscall"
 	"time"
 
-	"github.com/nick/gopi/internal/procname"
+	"github.com/nickhuang99/gopi/internal/procname"
 )
 
 // The terminal's vocabulary. Every literal is a named constant (Rule 1/1b): the

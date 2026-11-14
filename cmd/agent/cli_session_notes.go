@@ -21,7 +21,7 @@ import (
 	"strconv"
 	"strings"
 
-	"github.com/nick/gopi/internal/tools"
+	"github.com/nickhuang99/gopi/internal/tools"
 )
 
 // sessionSubcmdNotes is the sub-verb word. It is a named constant because the

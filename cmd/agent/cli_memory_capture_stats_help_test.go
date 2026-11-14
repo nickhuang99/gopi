@@ -24,7 +24,7 @@ import (
 	"strings"
 	"testing"
 
-	"github.com/nick/gopi/internal/mansource"
+	"github.com/nickhuang99/gopi/internal/mansource"
 )
 
 // TestMemoryCaptureStatsHelpIsItsOwnPage pins the PAGE: `-h` exits 0, prints

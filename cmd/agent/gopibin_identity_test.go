@@ -33,7 +33,7 @@ import (
 	"testing"
 	"time"
 
-	"github.com/nick/gopi/internal/buildidentity"
+	"github.com/nickhuang99/gopi/internal/buildidentity"
 )
 
 const (

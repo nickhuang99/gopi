@@ -65,9 +65,9 @@ func TestSignatureFromPattern(t *testing.T) {
 	cases := map[string]string{
 		`/^func NewClient() (*Client, error) {$/;"`: "func NewClient() (*Client, error) {",
 		`/^type Thing struct {$/;"`:                 "type Thing struct {",
-		`/^	Name string$/;"`: "	Name string",
-		`/^func Esc() \/\\ {$/;"`: "func Esc() /\\ {",
-		`garbage-pattern-field`:   "garbage-pattern-field",
+		`/^	Name string$/;"`:                        "	Name string",
+		`/^func Esc() \/\\ {$/;"`:                   "func Esc() /\\ {",
+		`garbage-pattern-field`:                     "garbage-pattern-field",
 	}
 	for in, want := range cases {
 		if got := signatureFromPattern(in); got != want {

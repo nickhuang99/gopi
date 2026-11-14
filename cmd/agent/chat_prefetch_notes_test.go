@@ -28,8 +28,8 @@ import (
 	"strings"
 	"testing"
 
-	"github.com/nick/gopi/internal/memoryprefetch"
-	"github.com/nick/gopi/internal/tools"
+	"github.com/nickhuang99/gopi/internal/memoryprefetch"
+	"github.com/nickhuang99/gopi/internal/tools"
 )
 
 // seedPrefetchNotesLedger writes the note index's own rows and READS THEM BACK

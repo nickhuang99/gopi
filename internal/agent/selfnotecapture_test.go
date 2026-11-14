@@ -30,9 +30,9 @@ import (
 	"testing"
 	"unicode/utf8"
 
-	"github.com/nick/gopi/internal/config"
-	"github.com/nick/gopi/internal/testutil"
-	"github.com/nick/gopi/internal/tools"
+	"github.com/nickhuang99/gopi/internal/config"
+	"github.com/nickhuang99/gopi/internal/testutil"
+	"github.com/nickhuang99/gopi/internal/tools"
 )
 
 // ---------------------------------------------------------------------------
@@ -121,7 +121,7 @@ func selfNoteCases() []struct {
 			name: "status-shell/positive: the same status report WITH a node table is a candidate",
 			form: "空壳状态报告",
 			note: selfNoteProse(selfNoteMinRunes, "节点状态逐个记下来了") +
-				" | 节点 | 角色 | 状态 | | zpeer | server | 忙 | | hp | client | 闲 |",
+				" | 节点 | 角色 | 状态 | | peerbox | server | 忙 | | hp | client | 闲 |",
 			wantTier: selfNoteTierTable,
 		},
 		{

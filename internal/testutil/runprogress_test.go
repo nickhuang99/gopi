@@ -37,7 +37,7 @@ import (
 	"testing"
 	"time"
 
-	"github.com/nick/gopi/internal/procname"
+	"github.com/nickhuang99/gopi/internal/procname"
 )
 
 // The arm scale: every interval below is the FUNCTION's parameter, deliberately

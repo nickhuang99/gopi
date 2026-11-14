@@ -23,7 +23,7 @@ import (
 	"strings"
 	"testing"
 
-	"github.com/nick/gopi/internal/textguard"
+	"github.com/nickhuang99/gopi/internal/textguard"
 )
 
 // importToolsRe matches an actual IMPORT of the ledger package: the quoted full
@@ -83,7 +83,7 @@ func TestGopilogDoesNotImportToolsNorMirrorThePredicate(t *testing.T) {
 		}
 		body := string(src)
 		scanned++
-		if strings.Contains(body, `"github.com/nick/gopi/internal/textguard"`) {
+		if strings.Contains(body, `"github.com/nickhuang99/gopi/internal/textguard"`) {
 			importsGuard = true
 		}
 		if importToolsRe.MatchString(body) {

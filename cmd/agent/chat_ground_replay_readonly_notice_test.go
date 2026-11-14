@@ -44,8 +44,8 @@ import (
 	"strings"
 	"testing"
 
-	"github.com/nick/gopi/internal/replaymode"
-	"github.com/nick/gopi/internal/tools"
+	"github.com/nickhuang99/gopi/internal/replaymode"
+	"github.com/nickhuang99/gopi/internal/tools"
 )
 
 // chatGroundReplayOrdinaryWriteClaims are the phrases of the ORDINARY line that

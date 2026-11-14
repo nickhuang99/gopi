@@ -8,8 +8,8 @@ import (
 	"sort"
 	"strings"
 
-	"github.com/nick/gopi/internal/config"
-	"github.com/nick/gopi/internal/sessionlayout"
+	"github.com/nickhuang99/gopi/internal/config"
+	"github.com/nickhuang99/gopi/internal/sessionlayout"
 )
 
 // cli_resume_record_gap.go — THE REFUSAL for "a resume resolved a checkpoint but

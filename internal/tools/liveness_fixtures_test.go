@@ -16,7 +16,7 @@ import (
 	"encoding/json"
 	"testing"
 
-	"github.com/nick/gopi/internal/testutil"
+	"github.com/nickhuang99/gopi/internal/testutil"
 )
 
 // spawnAndKill returns a (kill func, pid) pair for a real child process:

@@ -29,8 +29,8 @@ import (
 	"os"
 	"strings"
 
-	"github.com/nick/gopi/internal/signalrec"
-	"github.com/nick/gopi/internal/tools"
+	"github.com/nickhuang99/gopi/internal/signalrec"
+	"github.com/nickhuang99/gopi/internal/tools"
 )
 
 // The two phrases the operator-facing stop line gains. They are the words the

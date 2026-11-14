@@ -2,7 +2,7 @@ package agent
 
 import (
 	"encoding/json"
-	"github.com/nick/gopi/internal/sessionevent"
+	"github.com/nickhuang99/gopi/internal/sessionevent"
 	"io"
 	"log"
 	"net/http"
@@ -11,7 +11,7 @@ import (
 	"strings"
 	"testing"
 
-	"github.com/nick/gopi/internal/deepseek"
+	"github.com/nickhuang99/gopi/internal/deepseek"
 )
 
 // singleSessionAgent builds an Agent with a real SessionLogger + RawLogger so

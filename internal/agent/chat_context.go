@@ -40,8 +40,8 @@ import (
 	"os/exec"
 	"strings"
 
-	"github.com/nick/gopi/internal/cliverbs"
-	"github.com/nick/gopi/internal/config"
+	"github.com/nickhuang99/gopi/internal/cliverbs"
+	"github.com/nickhuang99/gopi/internal/config"
 )
 
 // chatContextSectionName is the registry Name of the chat-context block. It is

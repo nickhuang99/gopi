@@ -31,9 +31,9 @@ import (
 	"os"
 	"strings"
 
-	"github.com/nick/gopi/internal/deepseek"
-	"github.com/nick/gopi/internal/rawlogfmt"
-	"github.com/nick/gopi/internal/scratch"
+	"github.com/nickhuang99/gopi/internal/deepseek"
+	"github.com/nickhuang99/gopi/internal/rawlogfmt"
+	"github.com/nickhuang99/gopi/internal/scratch"
 )
 
 // Marker lines in the raw log (exactly these bytes at a line boundary).

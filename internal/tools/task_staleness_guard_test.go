@@ -91,11 +91,13 @@ func guardReworkPayload(repo, branch string) string {
 // stays compact: marker + verdict + evidence, so `task list` stays scannable).
 //
 // Two traps this helper exists to avoid, both measured here:
-//   · `task show` TRUNCATES the text it renders, so an ABSENCE assertion made
-//     against it passes VACUOUSLY (the clause sits past the cut and the check
-//     can never see it — green under a mutation that restores the retired
-//     sentence);
-//   · the `reason` column is not the text either. Only the event detail is.
+//
+//	· `task show` TRUNCATES the text it renders, so an ABSENCE assertion made
+//	  against it passes VACUOUSLY (the clause sits past the cut and the check
+//	  can never see it — green under a mutation that restores the retired
+//	  sentence);
+//	· the `reason` column is not the text either. Only the event detail is.
+//
 // Rule 10.4 — a check that cannot fail is not a check.
 func guardRowRefusalText(t *testing.T, taskID string) string {
 	t.Helper()

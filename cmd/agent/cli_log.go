@@ -7,10 +7,10 @@ import (
 	"strconv"
 	"strings"
 
-	"github.com/nick/gopi/internal/gopilog"
-	"github.com/nick/gopi/internal/sessionevent"
-	"github.com/nick/gopi/internal/toolnames"
-	"github.com/nick/gopi/internal/tools"
+	"github.com/nickhuang99/gopi/internal/gopilog"
+	"github.com/nickhuang99/gopi/internal/sessionevent"
+	"github.com/nickhuang99/gopi/internal/toolnames"
+	"github.com/nickhuang99/gopi/internal/tools"
 )
 
 // roundSelectionFor parses a --http value with gopilog.ParseHTTPSelector — the
@@ -283,8 +283,8 @@ type logOptions struct {
 	// reader really asks — "show me that command's complete output again" —
 	// where the whole block IS the answer.
 	grepFull bool
-	all     bool
-	summary bool
+	all      bool
+	summary  bool
 	// lastN > 0 means --last [N] was given (1 when no explicit N).
 	lastN int
 	// filterNames are the tool names collected from --filter (repeatable).

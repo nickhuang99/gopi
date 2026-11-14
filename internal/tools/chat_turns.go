@@ -3,7 +3,7 @@ package tools
 import (
 	"fmt"
 
-	"github.com/nick/gopi/internal/sessionevent"
+	"github.com/nickhuang99/gopi/internal/sessionevent"
 )
 
 // chat_turns.go — THE PERSON-ONLY SUBSET OF A SESSION'S TURNS, read from the

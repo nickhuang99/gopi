@@ -70,7 +70,7 @@ import (
 	"encoding/json"
 	"flag"
 	"fmt"
-	"github.com/nick/gopi/internal/devworkspace"
+	"github.com/nickhuang99/gopi/internal/devworkspace"
 	"os"
 	"os/exec"
 	"sort"

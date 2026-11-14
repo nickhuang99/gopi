@@ -60,7 +60,7 @@ import (
 	"fmt"
 	"strings"
 
-	"github.com/nick/gopi/internal/fullid"
+	"github.com/nickhuang99/gopi/internal/fullid"
 )
 
 // TaskSubmitGroundNameDenied reports whether a submit of this row id must be

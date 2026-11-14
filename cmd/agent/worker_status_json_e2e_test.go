@@ -22,7 +22,7 @@ import (
 	"os/exec"
 	"testing"
 
-	"github.com/nick/gopi/internal/procname"
+	"github.com/nickhuang99/gopi/internal/procname"
 )
 
 // wsjRun drives `gopi worker --status --json` with the given env and returns

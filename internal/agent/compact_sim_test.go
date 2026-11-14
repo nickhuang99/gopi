@@ -29,7 +29,7 @@ import (
 	"strings"
 	"testing"
 
-	"github.com/nick/gopi/internal/deepseek"
+	"github.com/nickhuang99/gopi/internal/deepseek"
 )
 
 const simSessionPath = "/home/user/.gopi/sessions/da75915d-4990-4017-9dbe-27a58babe723.jsonl"

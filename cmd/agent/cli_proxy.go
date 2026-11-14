@@ -7,7 +7,7 @@ import (
 	"net/http"
 	"os"
 
-	"github.com/nick/gopi/internal/proxy"
+	"github.com/nickhuang99/gopi/internal/proxy"
 )
 
 // Proxy startup banner (Rule 1/13). The readiness phrase is a CONSTANT because

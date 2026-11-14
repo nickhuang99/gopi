@@ -27,8 +27,8 @@ import (
 	"strings"
 	"testing"
 
-	"github.com/nick/gopi/internal/checkpoint"
-	"github.com/nick/gopi/internal/config"
+	"github.com/nickhuang99/gopi/internal/checkpoint"
+	"github.com/nickhuang99/gopi/internal/config"
 )
 
 // cpbOversizedProfile builds a private profile whose sessions root holds one

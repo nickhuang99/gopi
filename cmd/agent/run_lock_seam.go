@@ -49,8 +49,8 @@ import (
 	"fmt"
 	"os"
 
-	"github.com/nick/gopi/internal/runlock"
-	"github.com/nick/gopi/internal/tools"
+	"github.com/nickhuang99/gopi/internal/runlock"
+	"github.com/nickhuang99/gopi/internal/tools"
 )
 
 // taskRunLockDir resolves the run directory whose lock this process must hold.

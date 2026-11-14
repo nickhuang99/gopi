@@ -1,6 +1,6 @@
 package main
 
-import "github.com/nick/gopi/internal/taskverbs"
+import "github.com/nickhuang99/gopi/internal/taskverbs"
 
 // The cross-node sync family's REMOVAL SENTENCES, in one place (Rule 13/14: a
 // spelling is stated once; every face that refuses it renders the same words,

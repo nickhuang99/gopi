@@ -13,7 +13,7 @@ package testutil
 //	FATAL: suite "stylegate": another run of this package is in flight.
 //	  lock:     .../gopi-test-scratch/suite-package-stylegate
 //	  holder:   pid …, directory …/internal/stylegate, verdict live
-//	FAIL	github.com/nick/gopi/internal/stylegate/cmd/stylegate
+//	FAIL	github.com/nickhuang99/gopi/internal/stylegate/cmd/stylegate
 //
 // Nothing was concurrent: the "sibling run" was the OTHER package, started by the
 // same `go test` invocation. A refusal that fires on a correct command is a false
@@ -36,7 +36,7 @@ import (
 	"runtime/debug"
 	"strings"
 
-	"github.com/nick/gopi/internal/scratch"
+	"github.com/nickhuang99/gopi/internal/scratch"
 )
 
 // SuitePackageLockDir is the ONE definition of a package's lock address under THIS
@@ -53,7 +53,7 @@ func SuitePackageLockDir(suite string) string {
 func IsSuitePackageLock(name string) bool { return scratch.IsSuitePackageLockEntry(name) }
 
 // testBinaryImportPath returns the import path of the package this test binary was
-// built from ("github.com/nick/gopi/internal/stylegate"), or "" when the binary
+// built from ("github.com/nickhuang99/gopi/internal/stylegate"), or "" when the binary
 // carries no build info (a stripped/hand-rolled binary — never a `go test` one).
 //
 // The go tool names the TEST binary "<import path>.test", which is the one suffix

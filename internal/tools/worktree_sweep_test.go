@@ -2,7 +2,7 @@ package tools
 
 import (
 	"context"
-	"github.com/nick/gopi/internal/scratch"
+	"github.com/nickhuang99/gopi/internal/scratch"
 	"os"
 	"os/exec"
 	"path/filepath"
@@ -10,7 +10,7 @@ import (
 	"testing"
 	"time"
 
-	"github.com/nick/gopi/internal/worktreeroots"
+	"github.com/nickhuang99/gopi/internal/worktreeroots"
 )
 
 // sweepFixtureRoot returns a declared root for the sweeper's tests: a real

@@ -9,8 +9,8 @@ import (
 	"strings"
 	"testing"
 
-	"github.com/nick/gopi/internal/deepseek"
-	"github.com/nick/gopi/internal/scratch"
+	"github.com/nickhuang99/gopi/internal/deepseek"
+	"github.com/nickhuang99/gopi/internal/scratch"
 )
 
 // buildTrimFixture writes a raw log big enough for the REAL trim arm to rewrite

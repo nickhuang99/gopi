@@ -90,9 +90,9 @@ import (
 	"path/filepath"
 	"strings"
 
-	"github.com/nick/gopi/internal/config"
-	"github.com/nick/gopi/internal/scratch"
-	"github.com/nick/gopi/internal/worktreeroots"
+	"github.com/nickhuang99/gopi/internal/config"
+	"github.com/nickhuang99/gopi/internal/scratch"
+	"github.com/nickhuang99/gopi/internal/worktreeroots"
 )
 
 const (
@@ -300,12 +300,12 @@ func mergeBuildGateGoCache(repo string) (cacheDir string, ok bool) {
 //
 // THE BANS, in order (see the file header for the incidents they come from):
 //
-//	1. off `/`  — measured at the ROOT, so a root that only LOOKS like disk (a
-//	   symlink onto `/`, a pin at /tmp) is refused.
-//	2. off RAM  — measured at the CACHE DIRECTORY, where the bytes would land.
-//	3. outside the collected scratch tree — measured at the CACHE DIRECTORY
-//	   (the deepest spelling), so a symlinked scratch home is resolved by the
-//	   predicate rather than matched by prefix.
+//  1. off `/`  — measured at the ROOT, so a root that only LOOKS like disk (a
+//     symlink onto `/`, a pin at /tmp) is refused.
+//  2. off RAM  — measured at the CACHE DIRECTORY, where the bytes would land.
+//  3. outside the collected scratch tree — measured at the CACHE DIRECTORY
+//     (the deepest spelling), so a symlinked scratch home is resolved by the
+//     predicate rather than matched by prefix.
 //
 // ALL THREE ARE ANSWERABLE BEFORE CREATION, and that is not an accident of this
 // code: the two device measurements resolve a path that does not exist yet to

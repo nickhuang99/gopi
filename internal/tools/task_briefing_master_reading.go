@@ -117,7 +117,7 @@ const (
 	//
 	// The peer row ALSO says what the mirrored name is and is NOT — a REF, not a
 	// remote. Measured 2026-10-17 on host-a (row 01a14877): `git remote -v`
-	// listed only `zpeer`, while refs/remotes/gitPushcheck/master existed and was
+	// listed only `peerbox`, while refs/remotes/gitPushcheck/master existed and was
 	// the ground's cut point, so `git fetch --quiet gitPushcheck` answered
 	// `fatal: 'gitPushcheck' does not appear to be a git repository` (exit 128)
 	// — and several briefings told executors to run exactly that. The ref table
@@ -162,7 +162,7 @@ const (
 	// above carries the name of the lane that writes it, and a reader told only
 	// the ref's NAME will try `git fetch <that name>` — which is rc=128 on a host
 	// whose remotes are named otherwise (measured here: `git remote -v` lists
-	// `zpeer` only). So the clause states, from a measurement of `git remote`,
+	// `peerbox` only). So the clause states, from a measurement of `git remote`,
 	// whether that name is a remote at all, and gives the refresh that is really
 	// runnable when it is not.
 	//

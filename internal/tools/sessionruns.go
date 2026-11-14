@@ -7,8 +7,8 @@ import (
 	"sort"
 	"strings"
 
-	"github.com/nick/gopi/internal/procstat"
-	"github.com/nick/gopi/internal/rundir"
+	"github.com/nickhuang99/gopi/internal/procstat"
+	"github.com/nickhuang99/gopi/internal/rundir"
 )
 
 // sessionruns.go — THE RUN DIRECTORY AS A SESSION SOURCE.

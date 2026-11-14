@@ -46,7 +46,7 @@ import (
 	"strings"
 	"unicode/utf8"
 
-	"github.com/nick/gopi/internal/textguard"
+	"github.com/nickhuang99/gopi/internal/textguard"
 )
 
 // decisiveEllipsis is the ONE marker for a line this file shortened: the

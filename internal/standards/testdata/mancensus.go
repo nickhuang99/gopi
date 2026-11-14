@@ -40,7 +40,7 @@ import (
 	"path/filepath"
 	"strings"
 
-	"github.com/nick/gopi/internal/mansource"
+	"github.com/nickhuang99/gopi/internal/mansource"
 )
 
 // usage is the argv contract, printed on misuse (Rule 15: a refusal names the
