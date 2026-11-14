@@ -16,6 +16,13 @@ go: go1.24.0
 > If you already use it and want the arguments of some verb — that manual is
 > [`COMMANDS.md`](COMMANDS.md), not this page.
 
+![what gopi does, in four frames: build it, read the ledger, file a task, let a worker run it in its own clone](docs/quickstart.gif)
+
+That animation is not a mock-up: every frame is a real command's real output, rendered by
+`gopi tool text2img` and assembled by `gopi tool gif` — both of them this binary, with no
+ffmpeg and no ImageMagick anywhere in the chain (the recipe is
+[`docs/quickstart.md`](docs/quickstart.md)).
+
 ---
 
 ## Three ways it differs from the mainstream agents
