@@ -558,7 +558,7 @@ declaration is only for a shell the operator opens *inside* hermes.
    and instead **claimed a real pending row** (`01a092ba-e1fa-7dcd-ba23-fa45014da5cd`,
    "BUG: `gopi merger` is not a verb") and began executing it as a live agent
    session before the smoke was reaped by command timeout. The row was left
-   `in_progress` with a dead claimer (`claimed_by peerbox:1316350`, pid gone);
+   `in_progress` with a dead claimer (`claimed_by peer1:1316350`, pid gone);
    it was released to `cancelled` at 08:03:58 with the stale-claim reason (the
    hazard it tracked is already fixed on master — the top-level `gopi merger`
    verb). **Lesson: never smoke-test the override against the live queue.**
@@ -587,7 +587,7 @@ declaration is only for a shell the operator opens *inside* hermes.
     worker loop parses leniently, and the live ledger's head row was claimed
     and started as a real LLM session before the command was reaped by its
     timeout. The claimer pid was already gone when the row was inspected
-    (`claimed_by peerbox:1443681`, no such process; the row's own session dir
+    (`claimed_by peer1:1443681`, no such process; the row's own session dir
     `ed7dea14` still carried a live `gopi` child — all of them were stopped
     only as a side effect of killing the timed-out bash's own PID, never by a
     broad `pkill`). The orphaned row was then released honestly:

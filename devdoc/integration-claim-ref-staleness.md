@@ -9,17 +9,17 @@ Task `01a12d30-799b-775b-8c97-f691e282d92c`（其上游 bug 行 `01a12d1b`）。
 host `hostb-Laptop`，`/home/user/work/GoPi`（主工作区，未 fetch）2026-10-12 07:0x：
 
 ```
-$ git rev-parse refs/heads/master refs/remotes/gitPushcheck/master refs/remotes/peerbox/master
+$ git rev-parse refs/heads/master refs/remotes/gitPushcheck/master refs/remotes/peer1/master
 1508e3821d6d43ae873a1772582d0e23873c4e53     ← 本机 master
 b8287d5c6e89fc3f8d2ab333876145ee9c5e77eb     ← 交付面的镜像 ref（git_pushback 的 per-pass mirror）
-1508e3821d6d43ae873a1772582d0e23873c4e53     ← refs/remotes/peerbox/master（与本地 master 同点）
+1508e3821d6d43ae873a1772582d0e23873c4e53     ← refs/remotes/peer1/master（与本地 master 同点）
 $ git rev-list --count refs/heads/master..refs/remotes/gitPushcheck/master
 62
 $ git merge-base --is-ancestor f82777a9f refs/heads/master ; echo $?        → 1
 $ git merge-base --is-ancestor f82777a9f refs/remotes/gitPushcheck/master ; echo $?  → 0
-$ git ls-remote peerbox refs/heads/master
+$ git ls-remote peer1 refs/heads/master
 b8287d5c6e89fc3f8d2ab333876145ee9c5e77eb     ← 服务端真值 = 镜像
-$ ssh peerbox 'cd ~/work/GoPi && git rev-parse refs/heads/master && git merge-base --is-ancestor f82777a9f refs/heads/master; echo $?'
+$ ssh peer1 'cd ~/work/GoPi && git rev-parse refs/heads/master && git merge-base --is-ancestor f82777a9f refs/heads/master; echo $?'
 b8287d5c6e89fc3f8d2ab333876145ee9c5e77eb
 0
 ```
@@ -41,7 +41,7 @@ commit（`gitPushcheck/master` 06:43:25，见 `git reflog show`），所以行 `
 | `refs/remotes/<peer>/master` 同样陈旧，且**已被明文决定不修** | `devdoc/premerge-merged-state-test-run.md:121-158`「The stale-tracking-ref arm — MEASURED」+ `:156`「Decision (a written decline, with its reason)」：不刷新 tracking ref、不加第二次 fetch（镜像已是新鲜答案；一个问题的第二个通道是 Rule 14 的缺陷） |
 | 交付点同步在 local/server 臂上**故意不 fetch** | `devdoc/delivery-point-sync.md:54`（"this repo's own integration branch … no fetch, no network"） |
 | 同样现象在本 epic 之前已被实测记录过 | `devdoc/worktree-base-align.md:164-195`（peer master == 镜像，tracking ref 陈旧） |
-| 本机确实是 client 且 peer 已声明 | `~/.gopi/settings.json`：`role=client`、`sync_peers=["peerbox"]`、`task_sync=false`、`task_pull=true`（`CONFIG.md:576-578` 描述两键） |
+| 本机确实是 client 且 peer 已声明 | `~/.gopi/settings.json`：`role=client`、`sync_peers=["peer1"]`、`task_sync=false`、`task_pull=true`（`CONFIG.md:576-578` 描述两键） |
 | **缺陷**：`master_claim.go` 把「X 已在 master 上」判在裸 `master` 上 | `internal/tools/master_claim.go` 原 `AncestorCmd()`/`masterClaimAncestorStatus()` 传 `IntegrationBranchName`（= `refs/heads/master`）；`internal/tools/task_briefing_premise.go` 的 dispatch 期复测走同一条 |
 
 所以：**陈旧本身是「已知的、写入 devdoc 的、刻意的」设计**（那些 ref 只服务人读）；
@@ -111,7 +111,7 @@ exit=0                     ← 绿
 - 修复只覆盖**经由 `MasterClaimEvidence` 的读者**（seal 期报告裁决、dispatch 期简报复测、
   `gopi task archive --verify-commit`）。**直接手敲 `git merge-base --is-ancestor <c> master`
   或 `git branch --contains` 的人仍会拿到陈旧答案** —— 没有任何机制让那个 ref 变新鲜，这一点没变。
-- 本机 `refs/remotes/peerbox/master` 也陈旧（`1508e3821`，与本地 master 同点），**本次不动它**
+- 本机 `refs/remotes/peer1/master` 也陈旧（`1508e3821`，与本地 master 同点），**本次不动它**
   （`devdoc/premerge-merged-state-test-run.md:156` 的 decline 仍然有效）。
 - 修复不改变任何门禁的通过/拒绝（没有新 gate，只有判据 ref 的解析）。
 

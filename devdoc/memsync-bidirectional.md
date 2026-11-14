@@ -84,23 +84,23 @@ payload）会被静默吸收成 tags-union —— 违反"冲突不静默"；④d
 
 ---
 
-## 增补（peerbox 收尾轮，2026-08-31）：真机双向 E2E + ssh 通道修复 + 台账收敛
+## 增补（peer1 收尾轮，2026-08-31）：真机双向 E2E + ssh 通道修复 + 台账收敛
 
-> 接续轮在 peerbox（主仓 /home/user/work/GoPi, master 0e2d727）执行。分支 tip `0bc02c0`，
-> worktree /home/user/workspace/gopi-memsync-bidir（peerbox 侧）。
+> 接续轮在 peer1（主仓 /home/user/work/GoPi, master 0e2d727）执行。分支 tip `0bc02c0`，
+> worktree /home/user/workspace/gopi-memsync-bidir（peer1 侧）。
 
 ### Completed
 
-- **真机 ssh 通道修复（peerbox→hp 反向）**：peerbox 首次 `task sync --peer hp` 发现
-  peerbox 的 ssh config 没有 hp 条目（只有 brew patch 时代的完整 argv 转发假设）。
-  补 `Host hp` 段（10.0.0.5 + 专属 key）。HP→peerbox 方向 HP 侧 config 用
-  `/home/user/.ssh/id_ed25519`（user 热邮箱 key）即可认证 peerbox。
+- **真机 ssh 通道修复（peer1→hp 反向）**：peer1 首次 `task sync --peer hp` 发现
+  peer1 的 ssh config 没有 hp 条目（只有 brew patch 时代的完整 argv 转发假设）。
+  补 `Host hp` 段（10.0.0.5 + 专属 key）。HP→peer1 方向 HP 侧 config 用
+  `/home/user/.ssh/id_ed25519`（user 热邮箱 key）即可认证 peer1。
 - **双向 session 实测（真账 267 行）**：`task sync --peer hp` pushed=31 → 二轮
   pushed=2/pull already=N → 三轮 pushed=2 → 幂等 echo 稳定。`--status` 两 peer
   锚点齐平推进。
 - **模块分区真机验证**：HP 自投 `module:x` / `module:y` 探针行 →
   `task sync --peer hp --tags module:x` 只拉回 module:x 行（module:y 不进入
-  peerbox）；换 `--tags module:y` 对称验证。分区过滤对 push/pull 双向生效
+  peer1）；换 `--tags module:y` 对称验证。分区过滤对 push/pull 双向生效
   （TagsFilter 随 patch 对称约束 serve-remote 的 push）。
 - **台账真账收敛**：两节点 272 行 task_id 集合与 status 全部一致
   （`diff` 空）。修复过程全部走显式 CLI `task update`（前向状态机），无一处
@@ -114,8 +114,8 @@ payload）会被静默吸收成 tags-union —— 违反"冲突不静默"；④d
 
 ### Verification（真机）
 
-- peerbox→hp `task sync --peer hp`：双向 session 连续 5 轮，锚点只进不退。
-- `--tags module:x` 分区拉取 imported=1（module:y 行未入 peerbox）。
+- peer1→hp `task sync --peer hp`：双向 session 连续 5 轮，锚点只进不退。
+- `--tags module:x` 分区拉取 imported=1（module:y 行未入 peer1）。
 - 台账守恒：两侧 272 行、status 集合 diff=0、无重复行。
 - 幂等：重复 sync pushed=0/pull already=N、行数不漂移。
 - 测试：tools 包 sync-family 全绿（TestTaskSync|TestHarvest|TestSync|TestBidir
@@ -128,5 +128,5 @@ payload）会被静默吸收成 tags-union —— 违反"冲突不静默"；④d
 git -C /home/user/work/GoPi show feat/memsync-bidirectional:devdoc/memsync-bidirectional.md
 git -C /home/user/work/GoPi log --oneline -3 feat/memsync-bidirectional
 ```
-（HP 主仓分支 ref 已由 peerbox fetch+update-ref 同步到 0bc02c0；HP/peerbox 双侧
+（HP 主仓分支 ref 已由 peer1 fetch+update-ref 同步到 0bc02c0；HP/peer1 双侧
 对象库均有该分支。未 merge——按 Rule 6e 留裁决。）

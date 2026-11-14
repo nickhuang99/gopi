@@ -83,7 +83,7 @@ $ compare -metric RMSE /tmp/pure99.png /tmp/ref99.png null: → 0 (0)
 # real desktop (ssh-forwarded, 1920x1080) — vision-analyzed content matches reality
 $ DISPLAY=localhost:10.0 import -window root /tmp/cap10.png → PNG 1920x1080
   vision_analyze: "real, active desktop … Firefox (platform.deepseek.com/usage),
-  terminal 'nick@zbbook:~/work/hermes-agent', dock, system tray" — matches the host.
+  terminal 'nick@peer2:~/work/hermes-agent', dock, system tray" — matches the host.
 
 # ACTUATION prototype (raw before/after) — see §5 for the full transcript
 $ ./bin/gopi act move 400 260    → {"pointer":"400,260",...}   (read back from the server)
@@ -276,7 +276,7 @@ ssh-forwarded display `localhost:10.0` is a listening X socket
 (`ss -ltn` → `127.0.0.1:6010`) and `import` captured a real 1920×1080 desktop
 (344,941 B) whose `vision_analyze` read-out matches the host exactly
 (Firefox on `platform.deepseek.com/usage`, a terminal titled
-`nick@zbbook:~/work/hermes-agent` showing a nightly handoff report, the dock,
+`nick@peer2:~/work/hermes-agent` showing a nightly handoff report, the dock,
 the system tray with `Sep 11 00:32`). Full text of that analysis: §5.4.
 
 Note the honest limitation: an **ssh-forwarded** display is a real X server
@@ -588,7 +588,7 @@ in §6 is built on.
 > … Firefox Browser (Top Left): Multiple tabs … '火山方舟 - 在线推理',
 > 'DeepSeek 开放平台', '模型 & 价格 | DeepSeek'. The active page is
 > `platform.deepseek.com/usage` … Terminal Window (Center/Right, in focus):
-> dark-themed … `nick@zbbook:~/work/hermes-agent` … system tray … date/time
+> dark-themed … `nick@peer2:~/work/hermes-agent` … system tray … date/time
 > 'Sep 11 00:32'."
 
 That description matches this host's live state — i.e. the tool saw *this

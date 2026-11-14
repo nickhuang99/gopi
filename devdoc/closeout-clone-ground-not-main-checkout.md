@@ -24,7 +24,7 @@ ok  	github.com/nick/gopi/internal/agent	0.473s
 AFTER: master
 9ef4e74 HEAD@{0}: checkout: moving from task/01a17e6759f77c52bfa2150b154a2a2b to master
 9ef4e74 HEAD@{1}: checkout: moving from master to task/01a17e6759f77c52bfa2150b154a2a2b
-9ef4e74 HEAD@{2}: clone: from peerbox:/home/user/work/gopi
+9ef4e74 HEAD@{2}: clone: from peer1:/home/user/work/gopi
 ```
 
 即：一条**活的 run** 在自己的工作目录里被切到了 `master`。修前本 ground 的 reflog 里
