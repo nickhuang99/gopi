@@ -23,10 +23,10 @@ task `01a12d2c-a3a6-7c5d-b2a1-fa03081027d5`（2026-10-12，host hostb-Laptop）�
 **file 号 `01a12d2c` 的文件时间 06:54:22；fix#1 于 06:43:25 合入 master（`dbfddcd04`）、fix#2 于 06:48:56 提交。** 但：
 
 ```
-git merge-base --is-ancestor b42e1b3fc peerbox/master   # exit 0 → fix#1 在 master
-git merge-base --is-ancestor cc6329a65 peerbox/master   # exit 1 → fix#2 不在 master
+git merge-base --is-ancestor b42e1b3fc peer1/master   # exit 0 → fix#1 在 master
+git merge-base --is-ancestor cc6329a65 peer1/master   # exit 1 → fix#2 不在 master
 git branch -a --contains cc6329a65
-#   remotes/peerbox/task/01a12d14513a7b21baeed08e75acd312   ← 只此一个
+#   remotes/peer1/task/01a12d14513a7b21baeed08e75acd312   ← 只此一个
 ```
 
 **「修复存在」≠「修复在 master 上」。** 一个 row 被提为「老 bug 还活着」时，正确的第一步不是相信或怀疑这条断言，而是**量一下每个候选修复各在哪个 ref 上**（`--is-ancestor` + `--contains`）。本 row 的实测：fix#1 在 master，fix#2 只在一个从未合并的 task 分支上——所以现象是**半修好**，而它读起来像「完全没修」。

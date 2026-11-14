@@ -8,7 +8,7 @@
 
 **baseline 澄清（必须先说）**：brief 自己的证据文件
 `~/.gopi/sessions/275b5100-eee1-42fe-905f-35eeedf83342/memory-prefetch.jsonl`
-**在本机不存在** —— 它是 peerbox 上的会话。本机只有 3 个记录文件、共 164 条记录。
+**在本机不存在** —— 它是 peer1 上的会话。本机只有 3 个记录文件、共 164 条记录。
 所以 brief 的每一个数字都是**另一台机器、另一份语料**上的测量；本报告的数字全部在本机重跑，
 并且结论只建立在本机语料上。这正是 reframe 里写死的那条约束。
 
@@ -71,7 +71,7 @@ max 1162ms（预算 1500ms，**没有一条 gave-up**）；35 次采纳真的把
 
 ### 缺陷 1（brief 称"最严重"）：`hits=0` 时仍标 `adopted="yes"` —— **误读（真缺陷是另一个）**
 
-brief 的测量：peerbox 会话 13 个 hits=0 的轮次里 9 个 adopted=yes。
+brief 的测量：peer1 会话 13 个 hits=0 的轮次里 9 个 adopted=yes。
 **本机同一命令**（brief 自己给的那段 python）跑出来是 47/35。
 
 **判定：这个计数是 `outcome=adopted` 事件行**，不是"没有命中却报已采纳"。
@@ -167,7 +167,7 @@ brief 指向的**位置对**（`adopted`/`hits` 的语义确实坏了，坏在�
 ```
 queries containing CJK: 108
     task sync 目前我们的 目前 前我 们的 是被禁止的 是被
-    task sync peerbox bug claim race condition 目前我们的
+    task sync peer1 bug claim race condition 目前我们的
 ```
 
 `query` 是**检索键**（`state.go:165`），由 `internal/memoryprefetch/extract.go` 的
@@ -214,7 +214,7 @@ queries containing CJK: 108
 
 本机精确定位：`ms==0` 的 lookup 行 **12 条，全部是 `query` 缺失的 superseded 行**
 （"empty-query: 12 / non-empty-query: 0"）。也就是说本机**不存在** brief 说的那种
-"有 query 却 ms=0 的神秘跳过行" —— 在 peerbox 语料上那 9 条很可能同样是 superseded
+"有 query 却 ms=0 的神秘跳过行" —— 在 peer1 语料上那 9 条很可能同样是 superseded
 （brief 自己数的是"query 为空串的 2 条 + 其余 9 条有 query"，而空串与缺失在旧形态下
 **无法区分**，这正是缺陷本身使它数不清的原因）。
 
@@ -470,7 +470,7 @@ FAIL	github.com/nick/gopi/cmd/agent	5.713s
   影响面 = `internal/memoryprefetch` 的候选/门控/差量/渲染测试 + 可能
   `internal/config` 的开关文案 + CONFIG.md 同步。
 - **为什么不在本会话做**：这改的是**检索键的形状**（`state.go:165` 的 query 构造），
-  牵动 `memoryprefetch` 全包测试与门控阈值；加上 Rule 28（`internal/config` + 检索侧归 peerbox），
+  牵动 `memoryprefetch` 全包测试与门控阈值；加上 Rule 28（`internal/config` + 检索侧归 peer1），
   一次 60 分钟会话做不稳。按 Rule 26 提子任务，不硬做、不虚报。
 - **下一步**：见 `task_submit` 子任务（下节）。
 
@@ -494,8 +494,8 @@ FAIL	github.com/nick/gopi/cmd/agent	5.713s
 
 ### 已提的子任务（Rule 26：不等待、不硬做、写清理由与还差什么）
 
-两个缺陷都属**系统层**（Rule 28：`internal/config` + 检索侧归 peerbox），
-所以按 Rule 40 路由到 **peerbox 的账本**（本机是 client；且本 epic 在 peerbox 侧的行已
+两个缺陷都属**系统层**（Rule 28：`internal/config` + 检索侧归 peer1），
+所以按 Rule 40 路由到 **peer1 的账本**（本机是 client；且本 epic 在 peer1 侧的行已
 `cancelled`，说明工作已迁到 HP，两边不会重复认领）：
 
 | 子任务 | 缺陷 | 内容 |
@@ -505,7 +505,7 @@ FAIL	github.com/nick/gopi/cmd/agent	5.713s
 
 两条 briefing 全文落盘在
 `/home/user/.gopi/sessions/01a115ce-4209-73bf-a159f631a3a2cfaa/artifacts/briefings/`
-（`defect3-cjkseg-wiring.md`、`defect2-two-state-machines.md`），并已随提交上传到 peerbox 的 `/tmp/`。
+（`defect3-cjkseg-wiring.md`、`defect2-two-state-machines.md`），并已随提交上传到 peer1 的 `/tmp/`。
 两条都写明：**不要重复做已在 HP 分支修掉的记录形态问题**（`c41a94056`），
 以及"65% 重复"这个数字不成立、不要沿用。
 

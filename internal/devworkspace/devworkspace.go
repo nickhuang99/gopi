@@ -884,7 +884,7 @@ func AttemptDelivery(ctx context.Context, cfg Config, dir string) (Result, *Bloc
 	// the delivery proof measures a gone ground against the integration branch it
 	// knows the channel pushes (internal/tools' deliveryProofIntegrationDestination,
 	// whose own comment cites "publishGround's ONE refspec"). Publishing `task/<id>`
-	// was tried and reverted (9ab17237e): measured 2026-10-28, peerbox carried 15
+	// was tried and reverted (9ab17237e): measured 2026-10-28, peer1 carried 15
 	// `task/*` branches, every one already merged into master and never deleted —
 	// a ref no merge path consumes piles up one dead branch per task, forever.
 	build := strings.TrimSpace(cfg.Build)
@@ -1593,7 +1593,7 @@ func contains(hay []string, needle string) bool {
 // classifies exactly that as the race the brake retries.
 //
 // THE ROW'S ADDRESS `task/<id>` IS NOT A DESTINATION, and that is deliberate
-// (measured 2026-10-28: peerbox carried 15 `task/*` branches that were ALL already
+// (measured 2026-10-28: peer1 carried 15 `task/*` branches that were ALL already
 // merged into master and were NEVER deleted — a ref nobody merges is not a
 // delivery record, it is litter that piles up one ref per task forever; commit
 // 9ab17237e removed the second refspec for that reason). The ledger's

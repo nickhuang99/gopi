@@ -47,7 +47,7 @@ git commit --trailer "task: <本 run 的账本行 id>" …
 ```
 $ GOPI_TASK_RUN_ID=01a17857-537c-7636-a6be-fb94413d7f54 go run ./cmd/zzproof <scratch-repo> \
     'git commit -m "proof: the row reaches the commit body"'
-[commit trailer added: task: 01a17857-537c-7636-a6be-fb94413d7f54 + host: hosta]
+[commit trailer added: task: 01a17857-537c-7636-a6be-fb94413d7f54 + host: host-b]
 exit=0
 [master (root-commit) 91c33f0] proof: the row reaches the commit body
 ```

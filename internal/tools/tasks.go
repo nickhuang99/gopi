@@ -82,7 +82,7 @@ const (
 	// work" and "the work is someone else's now" — and Rule 33's dependency
 	// gate releases a parked child only on a release-set status, so a child
 	// whose parent was MIGRATED (not abandoned) was parked forever while the
-	// queue looked clean (Rule 15 silent failure). Measured on peerbox's live
+	// queue looked clean (Rule 15 silent failure). Measured on peer1's live
 	// ledger 2026-10-07: 426 cancelled rows, exactly 1 parking a pending
 	// child, and its reason is the three-step migration recipe verbatim.
 	//
@@ -2791,7 +2791,7 @@ func TaskList(statusFilter string) (string, error) {
 		// # column (cross-node reconciliation): renders the task_id's numeric
 		// part, NOT the local SQLite rowid. rowid is allocated per-node at
 		// INSERT, so sync'd replicas of the same task show different #s
-		// (peerbox #180 vs HP #220); the t-<unix> task_id is the shared primary
+		// (peer1 #180 vs HP #220); the t-<unix> task_id is the shared primary
 		// key, so its digits are identical on every node.
 		// via suffix (run provenance): a compact "how was this run launched"
 		// marker — [via auto] (a self-registering bare run), [via manual],

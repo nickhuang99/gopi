@@ -104,11 +104,11 @@ runEngine 路径（plain one-shot runs，`echo prompt | gopi`）保持写 **task
   settings.json 注释，全写明（实测标准 ⑤ 的 help 要求）。
 
 ## Not Done（诚实清单）
-- **HP 真机端到端**（实测标准 b 的 ssh 真机部分）：peerbox↔HP 双机拓扑需第二台机器
+- **HP 真机端到端**（实测标准 b 的 ssh 真机部分）：peer1↔HP 双机拓扑需第二台机器
   在线配合。本单以 fake-ssh 单机 E2E（.e2e/dispatch-e2e.sh：提交 3 任务 → serve
   --once --nodes → 断言 dispatch.log 收到 nohup gopi task run <id> --report-to
   --repo → 中心行翻 in_progress）覆盖 dispatch 决策/审计/状态机衔接；**真机 ssh
-  复核留给 peerbox 上的部署步骤**（脚本即清单）。
+  复核留给 peer1 上的部署步骤**（脚本即清单）。
 - **title LLM 生成器**：列已建（schema 不 churn），生成推迟（brew 管道窗口）。
 - **chat 检索的 FTS 面**：chats_fts/chats_tri 表+触发器已建，ChatSearch 查询面
   未接（list 的 LIKE 面已够当前量级）。
@@ -159,16 +159,16 @@ runEngine 路径（plain one-shot runs，`echo prompt | gopi`）保持写 **task
   政策，agent 包已断言）。
 
 ### HP 真机 E2E（fake-ssh 之外的真实双机链路）
-- hp→peerbox 反向 ssh 可达；HP worktree e2e-wt 构建 56adcfb 二进制
+- hp→peer1 反向 ssh 可达；HP worktree e2e-wt 构建 56adcfb 二进制
 - HP 跑 t-1788059681（自建行）：**任务本体成功**（hello-e2e.txt 写入，
-  DONE 回复，35s）+ **git push back 成功**（e2e/hp-verify-run → peerbox，peerbox 可查）
+  DONE 回复，35s）+ **git push back 成功**（e2e/hp-verify-run → peer1，peer1 可查）
 - **发现缺口（已开 bug 单 t-1788060307）**：dispatch 只发 nohup task run <id>，
   remote 本地无行 → TaskStart 失败秒退。fake-ssh E2E 因共库掩盖。修复方向
   （remote --briefing 模式）留给补丁单
-- report-to 回报路径验证：ssh peerbox 'gopi task update <id>' 可达，但 update 的
+- report-to 回报路径验证：ssh peer1 'gopi task update <id>' 可达，但 update 的
   目标 id 在中心台账须存在——HP 自建行 id 中心不认（反伪造 by design），
   完整闭环需补丁单的 briefing 模式
-- GOPI_TASK_NOTIFY_WEBHOOK 镜像：HP →POST peerbox:8923/task-ingest → 中心行
+- GOPI_TASK_NOTIFY_WEBHOOK 镜像：HP →POST peer1:8923/task-ingest → 中心行
   迁移 + tags 加 node:hp,remote:<node>——**验证通过**（t-1788054323）
 - task-ingest 反伪造：404 未知行 / 400 非终态 / 409 forward-only——逐条验证
 

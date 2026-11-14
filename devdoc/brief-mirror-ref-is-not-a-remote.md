@@ -2,7 +2,7 @@
 # The mirror name is a REF, not a remote — and the briefing now says so
 
 **Measured 2026-10-17**, row `01a14877-322b-7d56-9702-bf1528d4be69`, host
-hosta, ground cut at `7ecfa12`.
+host-b, ground cut at `7ecfa12`.
 
 ## What was wrong
 
@@ -51,10 +51,10 @@ tree has it as a configured remote, otherwise the first remote the tree has.
 The prose is the submitter's (Rule 37's boundary) and has no generator to mend.
 What gopi OWNS is the clause it appends, and that clause is where the name was
 first handed to a reader. Rule 31 caught two rendering defects during execution
-that no amount of reading would have: `git fetch fetch peerbox:/home/user/work/GoPi …`
+that no amount of reading would have: `git fetch fetch peer1:/home/user/work/GoPi …`
 (the verb was in both the verb constant and the target helper) and doubled quotes
 around the name. Both were fixed and the fix was re-run on the real tree; the
-rendered command was then executed (`git fetch peerbox
+rendered command was then executed (`git fetch peer1
 +refs/heads/master:refs/remotes/gitPushcheck/master` ⇒ exit 0).
 
 ## Check

@@ -823,18 +823,18 @@ Heavy tests are **off by default** (`heavytest.Require`; `GOPI_HEAVY_TESTS` trut
 **On the merge/verify path the rule is: SMOKE, BRANCH-SCOPED — never the whole
 tree** (`internal/smokegate`; `TestSmokePathPrescribesNoWholeTreeSuite`).
 
-## Rule 28: Two Hosts, Two Jobs — peerbox Owns the System Layer, HP Owns Features
+## Rule 28: Two Hosts, Two Jobs — peer1 Owns the System Layer, HP Owns Features
 
 **The division** (operator's decision, 2026-09-16):
 
 | host | role | work |
 |---|---|---|
-| **peerbox** | server | **system-level**: worktree lifecycle, branch/merge machinery, the merger, task ledger, sync, scheduling — the parts that define how work flows |
+| **peer1** | server | **system-level**: worktree lifecycle, branch/merge machinery, the merger, task ledger, sync, scheduling — the parts that define how work flows |
 | **HP** | client | **feature development** that does **not** touch the system layer |
 
 **Why it is a rule and not a preference**: everything that went wrong in
 2026-09-16's incidents went wrong *because both hosts worked the same layer at
-once* — fourteen HP branches sat on a stale baseline while peerbox reworked the
+once* — fourteen HP branches sat on a stale baseline while peer1 reworked the
 same areas, so each one needed a rebase to land and then a compile fix anyway
 (`fix/dump-name-collision` merged with "zero conflicts" and did not build). The
 division exists so a feature branch comes back **mergeable**, not so the hosts
@@ -848,7 +848,7 @@ HP-shaped if it:
   (`cli_tasks*.go` runner paths, `merger*`, `task_reclaim*`, `worktree*` sweep,
   `internal/testutil` gates, `internal/standards` gates).
 
-A task that needs both is two tasks; the system half goes to peerbox, the feature
+A task that needs both is two tasks; the system half goes to peer1, the feature
 half to HP.
 
 **Migrating a task to the other host is a three-step move, and the cancel is not
@@ -856,7 +856,7 @@ optional**: export the payload, submit it on the target host, and **cancel the
 original row** with a reason naming the new row id. Without the cancel both hosts
 claim it and the work runs twice (Rule 26's duplicate-dispatch allowance is for
 *repair*, not for an unowned second run). Tag the new row so its origin is
-visible (e.g. `migrated-from-peerbox`).
+visible (e.g. `migrated-from-peer1`).
 
 **Before dispatching to HP, check the briefing's own assumptions.** The GUI tasks
 migrated on 2026-09-16 each opened with "read
@@ -1893,7 +1893,7 @@ make the complete hop: **you need not fix it, nor prove it — you need to let i
 **Scope.** It holds for all three surfaces — **PA / worker / chat**. It belongs to the **rules region**: it is a constraint
 every node shares, not the local policy of any single node. A PA dispatches a row like this as usual; the chat surface can
 file a row too (Rule 37: chat does not commit code, but filing tasks is its work). **The discoverer does not fix it** (Rule
-28: system-layer defects are filed on peerbox) — filing the row is itself the delivery.
+28: system-layer defects are filed on peer1) — filing the row is itself the delivery.
 
 ## The second half of Rule 41: after the discovery, you do it yourself — never push a decided job back
 

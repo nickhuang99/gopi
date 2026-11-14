@@ -70,7 +70,7 @@ TERM_ROWS=40
 # So the terminal is CHOSEN, never written into the pipeline:
 #   * `--term` / $GOPI_HUMAN_UI_TERM  → explicit, wins over everything;
 #   * otherwise PROBED from the login session's own desktop (see probe_terminal),
-#     which on peerbox is XFCE ⇒ xfce4-terminal, and on HP is GNOME ⇒ gnome-terminal;
+#     which on peer1 is XFCE ⇒ xfce4-terminal, and on HP is GNOME ⇒ gnome-terminal;
 #   * `xterm` remains selectable — it is still the INTERNAL mechanism
 #     (scripts/ui/chat-ui-observe.sh and the self-observation legs), just not the
 #     one this showcase publishes.

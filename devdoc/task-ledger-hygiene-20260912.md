@@ -106,7 +106,7 @@ per group below.
 
 | # | task_id | shape | disposing artefact | disp |
 |---|---|---|---|---|
-| 7 | `6fa09727-3c2b-4c97-97c9-c7e6bed29b7a` | `Run the failing deploy task` (1s) | synthetic failing-deploy probe; parent `from-peerbox` row, probe only | A |
+| 7 | `6fa09727-3c2b-4c97-97c9-c7e6bed29b7a` | `Run the failing deploy task` (1s) | synthetic failing-deploy probe; parent `from-peer1` row, probe only | A |
 | 8 | `d268ed28-3493-491a-ad61-2a227f256706` | `failing chat turn` (0s) | synthetic probe (all 7 siblings share this shape) | A |
 | 9 | `813e4557-cc36-4b4b-8dec-77a40025caac` | `Run the failing deploy task` (0s) | synthetic probe | A |
 | 10 | `0a34e9a9-3771-4130-8e99-113c2ddfbc56` | `failing chat turn` (1s) | synthetic probe; recoverable-note says `gopi resume …` — nothing to resume | A |
@@ -180,7 +180,7 @@ window/subject with the rows beside them — see §4 for the reason).
 | 60 | `t-1788305179` | `[code-review] memory subcommand family` | deliverable on master: `devdoc/review-cli-memory.md` (325 lines, added `33208a5c` 09-02 16:49) and the **completed duplicate** row `t-1788306744`; covered insight folded into `devdoc/review-cli-task-sync.md` | A |
 | 61 | `t-1788041900` | M4.6 chat-table schema 增补 (hermes 40-column borrow) | `devdoc/task-ledger-m46-47.md` §"hermes sessions 表 40 列对比（**t-1788041900** ⑦ 逐列裁决）" — the ⑦ acceptance item is *named and answered*, columns `title`/`end_reason`/`parent_session_id`/`git_branch`/`git_repo_root`/`brewed_at` all live in `chats`; the deferred `billing_*`/`cost_*` columns carry written reasoning | A |
 | 62 | `t-1788047065` | M4.6 + M4.7 combined order (`exit 1`, 28m27s) | `devdoc/task-ledger-m46-47.md` line 3: *"重派单（原 **t-1788047065** 因 GLM 端点故障 28m 无产出）"* — explicitly a re-dispatch of this row; implementation `a4ba5cc2 feat(m46-m47): chats table … + remote compute dispatch`, `internal/config/singlenode_gate_test.go` + `compute_nodes` config in tree | A |
-| 63 | `e6e82b59-0106-4a4c-a5d8-3b39fb369893` | *"harvest 时是否也 push HP 分支回 peerbox?"* | **answered in shipped behaviour**: `gopi task harvest` docs (`cmd/agent/cli_tasks.go:337`) — *"AFTER the committed db pull the git push-back runs: every local branch except master is pushed to `<peer>:~/work/GoPi` … `--no-push` skips the git phase"* (M4.12/M4.13) — **but** the rule's condition 3 is applied uniformly: this is a design row, not a wrapper artefact, so it is NOT auto-archived | **OPEN** (§4) |
+| 63 | `e6e82b59-0106-4a4c-a5d8-3b39fb369893` | *"harvest 时是否也 push HP 分支回 peer1?"* | **answered in shipped behaviour**: `gopi task harvest` docs (`cmd/agent/cli_tasks.go:337`) — *"AFTER the committed db pull the git push-back runs: every local branch except master is pushed to `<peer>:~/work/GoPi` … `--no-push` skips the git phase"* (M4.12/M4.13) — **but** the rule's condition 3 is applied uniformly: this is a design row, not a wrapper artefact, so it is NOT auto-archived | **OPEN** (§4) |
 | 64 | `bcbf1eed-5bfd-4adf-be07-c2633d7dcda9` | *"中心化架构最后一码"*: CLI>env>settings.json + `compute_nodes` whitelist (six-part brief) | `a4ba5cc2` (M4.7 remote compute dispatch, 08-30 10:16) + `internal/config/singlenode_gate_test.go` exercising `{"sync_peers":[],"compute_nodes":[]}` and `singlenode_gate` gating; its own window ships as `task-ledger-m46-47.md` — **but** its acceptance is multi-part and this row is a design brief, a `[auto]`-tagged work item by §2 condition 2/3 | **OPEN** (§4) |
 | 65 | `42cfe7ab-098b-454c-af6c-3d6aa05ff282` | *"simple script=sync timestamp-after-records"* (SyncML simplification) | `59348751` *"feat(sync): serve-tick git channel pass — client push-back+ff-pull, server fetch+clean-merge/adoption"* and `internal/tools/memory_sync_task.go:133` — *"M4.13 delta-sync (**timestamp-after-records**) tunables"* | A |
 | 66 | `64761419-2956-4bab-9e90-4d0fe8630387` | hermes columns worth absorbing (title / end_reason / git trio / parent_session_id) | `devdoc/task-ledger-m46-47.md` hermes 40-column table: `title`, `end_reason`, `parent_session_id`, `git_branch`, `git_repo_root` = **采纳** (in the live `chats` schema), `billing_*`/`cost_*` = 暂缓 **with stated reasons** — a per-column adjudication, not a drop | A |
@@ -188,7 +188,7 @@ window/subject with the rows beside them — see §4 for the reason).
 | 68 | `825606b3-4753-41a2-8600-abd9e5a61647` | read the pricing screenshot (glm-5.3-flash) | same pricing-extraction answer delivered by `6d57ea58-aea6-47c0-8f3d-9dc30465ac7b` (**completed**, "两张图是同一网页截图的连续裁剪段…只输出图中可见的表格文字") plus `87ba2756`/`35555545` | A |
 | 69 | `3644f54d-9c9d-48ed-be0d-8bf1954291f1` | *"总单：M4.6 chat 表 + M4.7 remote dispatch 连做"* — the parent brief of the same window as #62 | same artefact as #62: `devdoc/task-ledger-m46-47.md` implements both halves (chats 表 18+ columns; M4.7 配置三源合一 + `compute_nodes` + dispatch, `internal/config/singlenode_gate_test.go`) and cites the source rows; commit `a4ba5cc2` (08-30 10:16) lands inside this row's own 07:44–08:13 window | A |
 
-| 70 | `t-1788548312` | *current gopi repo cannot pull from peerbox* (HP `git pull` → `fatal: 需要指定如何调和偏离的分支`) | **no repo artefact can dispose it**: the failure is HP-side git config (divergent branches, no `pull.rebase`/`pull.ff` decision). M4.12/M4.13 harvest+push-back landed (`59348751`) and a separate HP refresh exists (`0244f3d1`, 09-12 **20:13 — after this row**) but neither *is* the pull fix | **OPEN** (§4) |
+| 70 | `t-1788548312` | *current gopi repo cannot pull from peer1* (HP `git pull` → `fatal: 需要指定如何调和偏离的分支`) | **no repo artefact can dispose it**: the failure is HP-side git config (divergent branches, no `pull.rebase`/`pull.ff` decision). M4.12/M4.13 harvest+push-back landed (`59348751`) and a separate HP refresh exists (`0244f3d1`, 09-12 **20:13 — after this row**) but neither *is* the pull fix | **OPEN** (§4) |
 
 *(Numbered entries total 70 but name **68 distinct rows**: #18 and #27 are the
 same row — #27 is deliberately a cross-reference, not a second disposition.
@@ -200,8 +200,8 @@ Table tally: 59 A + 6 A⁰ + 3 OPEN = 68.)*
 
 | task_id | source | created | subject | why it stays open |
 |---|---|---|---|---|
-| `t-1788548312` | human | 09-05 02:58 | *current gopi repo cannot pull from peerbox* | **Not disprovable from this repo.** The payload is HP's `git pull` transcript: `fatal: 需要指定如何调和偏离的分支` (divergent branches, no `pull.rebase`/`pull.ff` decision). That is a **machine/operator git-config state on HP**, not a repo artefact: no commit can make it true or false. The M4.12/M4.13 harvest+push-back machinery landed (`59348751`) and there is a separate HP-refresh effort (`0244f3d1 feat/hp-refresh-master-20260912`, 09-12 20:13 — *after* this row), but this row asks to *solve the pull*, and no artefact names it. Left open deliberately: archiving it would mean asserting a config state nobody measured. |
-| `e6e82b59-0106-4a4c-a5d8-3b39fb369893` | auto | 08-31 06:40 | *harvest 时是否也 push HP 分支回 peerbox?* — the `auto`-sourced design row excluded by the `[auto]` rule's condition 2 | Kept open by the rule (§2). It *is* answered in `gopi task harvest`'s shipped semantics (#63), but the rule is applied uniformly and this row is a work brief, not a wrapper artefact. Re-disposition under individual evidence is a follow-up decision for the operator, not for the rule. |
+| `t-1788548312` | human | 09-05 02:58 | *current gopi repo cannot pull from peer1* | **Not disprovable from this repo.** The payload is HP's `git pull` transcript: `fatal: 需要指定如何调和偏离的分支` (divergent branches, no `pull.rebase`/`pull.ff` decision). That is a **machine/operator git-config state on HP**, not a repo artefact: no commit can make it true or false. The M4.12/M4.13 harvest+push-back machinery landed (`59348751`) and there is a separate HP-refresh effort (`0244f3d1 feat/hp-refresh-master-20260912`, 09-12 20:13 — *after* this row), but this row asks to *solve the pull*, and no artefact names it. Left open deliberately: archiving it would mean asserting a config state nobody measured. |
+| `e6e82b59-0106-4a4c-a5d8-3b39fb369893` | auto | 08-31 06:40 | *harvest 时是否也 push HP 分支回 peer1?* — the `auto`-sourced design row excluded by the `[auto]` rule's condition 2 | Kept open by the rule (§2). It *is* answered in `gopi task harvest`'s shipped semantics (#63), but the rule is applied uniformly and this row is a work brief, not a wrapper artefact. Re-disposition under individual evidence is a follow-up decision for the operator, not for the rule. |
 | `bcbf1eed-5bfd-4adf-be07-c2633d7dcda9` | auto | 08-30 09:34 | *"中心化架构最后一码"*: three-source config + `compute_nodes` whitelist (the `auto`-sourced design row) | Same: excluded by the rule's condition 2 even though `a4ba5cc2` (08-30 10:16) landed inside its own 09:34–11:04 window. Its acceptance includes a documented validation list; the rule does not get to auto-close a six-part implementation brief on a commit's existence alone. |
 
 **Assessment.** Two of the three open rows are `auto`-sourced **work items** the
@@ -226,9 +226,9 @@ was found in the adjacent CLI face (filed, not fixed here).**
    §3.1 (they already carried `resolved` when this task started), so
    59 + 6 = **65** distinct rows carry `resolved` at the end — matching the SQL
    count `(','||tags||',') LIKE '%,resolved,%'` → 65.
-2. **Tags accrue, nothing is lost.** `tags=bug,worker:peerbox` → `tags=bug,
-   worker:peerbox,resolved`; `tags=bug,style` → `tags=bug,style,resolved`;
-   `tags=code-review,cli,worker:peerbox` → `tags=code-review,cli,worker:peerbox,resolved`.
+2. **Tags accrue, nothing is lost.** `tags=bug,worker:peer1` → `tags=bug,
+   worker:peer1,resolved`; `tags=bug,style` → `tags=bug,style,resolved`;
+   `tags=code-review,cli,worker:peer1` → `tags=code-review,cli,worker:peer1,resolved`.
    The existing tags survive verbatim, so the failed-view filter's string match
    on `resolved` is the only thing that changes.
 3. **Tombstone stays visible.** Verified post-archive on

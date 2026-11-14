@@ -35,16 +35,16 @@ drwxr-xr-x 176 root root 12288 Sep 14 09:13 ..
 -rw-r--r--   1 root root   201 Jan  9  2022 e2scrub_all
 
 === journal: logind/user-manager messages about the runtime dir or bus this boot ===
-Sep 06 06:15:34 peerbox org.gtk.vfs.Daemon[1868040]: fusermount3: failed to access mountpoint /run/user/1000/gvfs: Permission denied
-Sep 06 06:20:16 peerbox org.gtk.vfs.Daemon[1868891]: fusermount3: failed to access mountpoint /run/user/1000/gvfs: Permission denied
-Sep 06 06:43:38 peerbox org.gtk.vfs.Daemon[1871854]: fusermount3: failed to access mountpoint /run/user/1000/gvfs: Permission denied
-Sep 13 00:59:57 peerbox systemd[1]: Stopping User Runtime Directory /run/user/117...
-Sep 13 00:59:57 peerbox systemd[1]: Stopped User Runtime Directory /run/user/117.
-Sep 13 01:01:19 peerbox systemd[1]: Starting User Runtime Directory /run/user/117...
-Sep 13 01:01:19 peerbox systemd[1]: Finished User Runtime Directory /run/user/117.
-Sep 13 01:01:42 peerbox systemd[309629]: Starting D-Bus User Message Bus Socket...
-Sep 13 01:01:42 peerbox systemd[309629]: Listening on D-Bus User Message Bus Socket.
-Sep 13 01:01:51 peerbox systemd[309629]: Started D-Bus User Message Bus.
+Sep 06 06:15:34 peer1 org.gtk.vfs.Daemon[1868040]: fusermount3: failed to access mountpoint /run/user/1000/gvfs: Permission denied
+Sep 06 06:20:16 peer1 org.gtk.vfs.Daemon[1868891]: fusermount3: failed to access mountpoint /run/user/1000/gvfs: Permission denied
+Sep 06 06:43:38 peer1 org.gtk.vfs.Daemon[1871854]: fusermount3: failed to access mountpoint /run/user/1000/gvfs: Permission denied
+Sep 13 00:59:57 peer1 systemd[1]: Stopping User Runtime Directory /run/user/117...
+Sep 13 00:59:57 peer1 systemd[1]: Stopped User Runtime Directory /run/user/117.
+Sep 13 01:01:19 peer1 systemd[1]: Starting User Runtime Directory /run/user/117...
+Sep 13 01:01:19 peer1 systemd[1]: Finished User Runtime Directory /run/user/117.
+Sep 13 01:01:42 peer1 systemd[309629]: Starting D-Bus User Message Bus Socket...
+Sep 13 01:01:42 peer1 systemd[309629]: Listening on D-Bus User Message Bus Socket.
+Sep 13 01:01:51 peer1 systemd[309629]: Started D-Bus User Message Bus.
 
 === journal: any message at all in the 2026-09-13 12:12:40 +-2s window ===
 -- No entries --

@@ -103,7 +103,7 @@ one answer this store acts on**:
   The peer imports whatever stdin carries (it has no "do not import stdin"
   mode), so an empty patch is how "do not push" is expressed on the wire — the
   leg is the same single ssh session, but the outbound side carries nothing.
-  Measured on the real pair BEFORE this correction: a nominal `peerbox --pull →
+  Measured on the real pair BEFORE this correction: a nominal `peer1 --pull →
   hp` grew hp's ledger 5734 → 5735 with OUR rows, i.e. the flag wrote to the
   peer — not what it promises. After: hp 5735 → 5735, our freshly planted
   marker present on the peer 0 → 0. A side benefit: an empty patch gives the
@@ -129,7 +129,7 @@ repo has been bitten by before.
   unique row and does NOT pull the peer's back; a repeat does not duplicate;
   `--pull` brings the peer's unique row here.
 * Real pair (this task's own run): `./bin/gopi memory sync --peer hp --push`
-  from peerbox — see the task report for the measured tallies and the row counts
+  from peer1 — see the task report for the measured tallies and the row counts
   on both hosts.
 
 ## 5. What the live round added (two mechanisms, one symptom)
@@ -162,7 +162,7 @@ asset import could commit in BATCHES (or take a shorter lock per N rows) instead
 of holding one transaction for the whole corpus.
 
 **A bound kill does not abort the remote handler.** Measured: HP's own (old)
-binary was killed at 15 s, yet its rows still landed on peerbox 45 s later — the
+binary was killed at 15 s, yet its rows still landed on peer1 45 s later — the
 remote `--serve-assets` keeps importing after the local ssh dies. So "the
 command failed" and "nothing happened" are different claims, and a retry after a
 bound kill is safe (unique-only is idempotent) but NOT necessarily a no-op.

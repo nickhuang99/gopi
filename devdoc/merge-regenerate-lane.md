@@ -1,7 +1,7 @@
 <!-- doc-class: normative -->
 # The regenerate lane — resolving a generated table whose conflict is a SCALAR collision
 
-**Task:** 01a133a5-8ba5-71f6-9645-d15f940c7bae (2026-10-14, peerbox).
+**Task:** 01a133a5-8ba5-71f6-9645-d15f940c7bae (2026-10-14, peer1).
 **Decision:** the merge machinery resolves conflicts on
 `internal/docclass/testdata/anchor-number-baseline.tsv` by **running the
 artefact's own generator over the merged tree**, never by unioning rows.

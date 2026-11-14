@@ -200,7 +200,7 @@ trans.event:    in_progress
 verdict:        verdict=DOABLE items=0 origin=01a1ae0c-962a-7cd8-bd83-7e583bebf4b0/3591068
 verdict.event:  reframe
 task_report:    no report recorded
-claimed_by:     hosta:937150 (at 2026-11-06 08:02:19)
+claimed_by:     host-b:937150 (at 2026-11-06 08:02:19)
 liveness:       last_toolcall_at=08:04:10 (age 13.31s — fresh) tasklist_issued_at=(none — unknown)  (clock 08:04:23)
 process:        pid=3591068 start=2026-11-06T08:02:19+08:00 cmd="/home/user/work/gopi/bin/gopi"  (live: alive)
 created_at:     2026-11-06 07:30:22

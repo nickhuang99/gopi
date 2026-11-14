@@ -269,7 +269,7 @@ Proposed dispositions (all read-only — **no row is edited**; the ledger is app
   the missing proof — Rule 26: an incomplete fix is repaired by dispatching again, never by
   waiting. Measured: **2 rows** (`t-1788218223`, and any future member); for
   `t-1788218223` the first step is to ask the **HP host** (`hp` remote), whose local refs are
-  not visible from peerbox — the guard's `Unknown` posture is exactly this case, recorded rather
+  not visible from peer1 — the guard's `Unknown` posture is exactly this case, recorded rather
   than guessed.
 * **D4 — do NOT bulk-sweep the archive namespace.** 68–70 of 101 tags still carry patches
   absent from master; each is either genuinely abandoned or recoverable work. Classify per tag
@@ -292,7 +292,7 @@ task**, not smuggled into this branch.
 * The **68 abandoned archive tags** are classified, not triaged one by one (D4 above).
 * The scan-payload tip enrichment is **dispatched, not landed here** (a different, smaller
   change; the briefing's scope was the guard) — see the follow-up task id in §8.
-* `t-1788218223`'s branch could not be checked on the **HP host** (`hp` remote) from peerbox,
+* `t-1788218223`'s branch could not be checked on the **HP host** (`hp` remote) from peer1,
   so its verdict stays `no-proof ⇒ D3` rather than a claim either way.
 * The archive-tag count is live: `rev-list --count` and `git cherry` disagree by 1-2 on
   squash-shaped landings, so the tables carry the reasons next to the numbers.

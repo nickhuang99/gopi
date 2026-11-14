@@ -141,7 +141,7 @@ run_case() { # <case> <runner-alive:yes|no>
     rstart=$(awk '{print $22}' "/proc/$rpid/stat" 2>/dev/null || echo 1)
     rcmd="true"
   fi
-  seed_row "$home" "t-rig-$name" "peerbox:$dpid" "$repo" "$wt" "$rpid" "$rstart" "$rcmd"
+  seed_row "$home" "t-rig-$name" "peer1:$dpid" "$repo" "$wt" "$rpid" "$rstart" "$rcmd"
   out=$(run_sweep "$home" "$repo")
 
   if [ "$alive" = yes ]; then

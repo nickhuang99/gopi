@@ -5,7 +5,7 @@ Class: report. Scope: `cmd/agent/cli_tools_maintenance_help_surface_*_test.go`,
 `cmd/agent/cli_contracts_test.go`, `cmd/agent/cli_scratch_gc_stubs.go`, and
 `devdoc/gopi-tools-maintenance-help-surface-inventory.md`.
 
-Measured 2026-10-01 on `peerbox`, branch `task/01a0f4b1daaa7acab5a88b0edb1685bf`,
+Measured 2026-10-01 on `peer1`, branch `task/01a0f4b1daaa7acab5a88b0edb1685bf`,
 worktree `/home/user/workspace/gopi-01a0f4b1daaa7acab5a88b0edb1685bf`.
 
 ## What was red, and what the red actually was

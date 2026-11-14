@@ -18,7 +18,7 @@ Task `01a121fc-eebc-7391-8785-db2d149f931e`（epic voice-audio 的交付项 B）
   经 ffmpeg concat 合成（本机无 zh 语音合成可用：无 espeak/espeak-ng，`ffmpeg flite` 只有英文
   voice，浏览器与网络按 brief 不可用）。ffprobe 校验几何见 `## Verification`。
 - **fixture 路径正确性预检**：`tool voice_input <wav> --engine local` → `开放时间早上九点至下午五点。`
-  `([voice] probe.wav in 1.2s (chunk=15s)`），先证明素材与本地引擎在 hosta 上可用，再进 pty。
+  `([voice] probe.wav in 1.2s (chunk=15s)`），先证明素材与本地引擎在 host-b 上可用，再进 pty。
 - **CI 回归（新增，红/绿可验）**：`cmd/agent/chat_voice_audio_smoke_test.go`
   - `TestChatVoiceAudioFileRunIsRepeatableWithoutADevice` — 同一文件跑两次生产 chat recorder，
     断言**窗口序列逐字段相同**、**交给引擎的字节逐窗口相同**、消耗字节数相同、ledger 完整铺满文件。
@@ -31,7 +31,7 @@ Task `01a121fc-eebc-7391-8785-db2d149f931e`（epic voice-audio 的交付项 B）
 
 ## Not Done
 
-- **「文件运行绝不枚举设备」没有做成受控实验。** 本机（hosta）有真声卡
+- **「文件运行绝不枚举设备」没有做成受控实验。** 本机（host-b）有真声卡
   （`arecord -l`：card 1 ALC256），所以「无设备主机也能进模式」这条路**无法在本机制造受控反证**。
   代码事实是 `chat_voice_recorder_staged.go` 的 `Select` 在 `voiceListDevices` 之前就分流到
   `selectFileSource`，但**这是读码结论，不是本次取证的实验结果** —— 已按此措辞写进 CI 用例注释与

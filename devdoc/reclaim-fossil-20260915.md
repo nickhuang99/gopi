@@ -42,7 +42,7 @@ the operator's live ledger**.
    incident: *"the 2026-09-12 suite hit exactly that [UNIQUE-constraint
    failure] because it wrote a row into the operator's real ledger"*.
 
-   The leaked row's stamp proves which code wrote it: `claimed_by = peerbox:7`,
+   The leaked row's stamp proves which code wrote it: `claimed_by = peer1:7`,
    and pid `7` is the **pre-fix fixture's hardcoded constant**
    (`workerRecycleStaleSiblingPid = 7`); post-fix code searches `/proc` for an
    absent pid in `[3000000, 3999999)`. The worktree path in the row is under

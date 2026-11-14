@@ -287,7 +287,7 @@ skip  sub task "task sync --peer"           "carries rows over ssh to a DECLARED
 # THESE ROWS SAID "no peer is declared on this host" AND THAT WAS FALSE (measured
 # 2026-10-31): the profile this script copies the operator's settings INTO
 # inherits their `sync_peers`, so `gopi task diff` is not peerless here — it ran
-# over ssh against peerbox and hp and printed a real DIVERGED verdict for each
+# over ssh against peer1 and hp and printed a real DIVERGED verdict for each
 # (`local=7 peer=7028`, `local=7 peer=5210`). A skipped row whose REASON is wrong
 # is worse than a skipped row: it tells the next reader this host has no peers.
 # The reasons below are the ones that actually hold — each of these verbs moves

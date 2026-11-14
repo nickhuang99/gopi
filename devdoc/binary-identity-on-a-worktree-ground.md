@@ -1,7 +1,7 @@
 <!-- doc-class: normative -->
 # Binary identity on a linked-worktree ground
 
-**Measured 2026-10-13** on hosta (Go 1.24.0, git 2.43.0), task
+**Measured 2026-10-13** on host-b (Go 1.24.0, git 2.43.0), task
 `01a1339f-cf36-7ebe-bc52-917adf3cf2b9`. Every statement below carries the command
 that produced it; the raw logs are
 `~/.gopi/sessions/01a1339f-cf36-7ebe-bc52-917adf3cf2b9/artifacts/`.

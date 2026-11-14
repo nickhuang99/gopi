@@ -149,7 +149,7 @@ and `briefings/brief-why-hp-branches-vanish.md`.
   one, and the script it installs refuses to be scheduled. There is no install seam
   to change (the scripts were hand-installed), which is exactly why the refusal
   lives in the file.
-- **The host this ran on is peerbox, not HP.** The observed transcripts come from a
+- **The host this ran on is peer1, not HP.** The observed transcripts come from a
   scheduler-shaped context reproduced on this host (a real `cron`-named ancestor
   plus no terminal), not from HP's crontab — HP's crontab is verifiable read-only
   from here only if a peer is reachable, and no live touch is licensed by this

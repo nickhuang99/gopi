@@ -26,7 +26,7 @@ const (
 	// syncTagCasePeer is a peer whose node name carries uppercase — the
 	// from-<peer> gate's mirror direction (a wrong-case channel tag under
 	// the old case-folding LIKE escaped silently).
-	syncTagCasePeer      = "peerbox-X"
+	syncTagCasePeer      = "peer1-X"
 	syncTagCasePeerWrong = "PEERBOX-X"
 	// syncTagCaseBystanderPeer is a peer name NO fixture row is tagged
 	// with: passing it makes the anti-reflow gate a provable no-op, which

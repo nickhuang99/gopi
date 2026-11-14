@@ -28,7 +28,7 @@ import (
 
 // syncEventPeer is the peer name the fixtures import from — the detail must
 // name it, so one constant serves the seeding and the assertion (Rule 1b).
-const syncEventPeer = "peerbox"
+const syncEventPeer = "peer1"
 
 // syncEventFixture pins a fresh ledger (Rule 32 scaffold) and returns its path
 // with the schema built.

@@ -3,7 +3,7 @@
 //
 // ROOT CAUSE THIS FILE EXISTS FOR: on this host `/tmp` is a directory on the
 // 147G `/` partition (which the 2026-09-11 exhaustion took from 19G to 1.5G
-// free, devdoc/peerbox-resource-exhaustion-20260911.md) and TMPDIR is UNSET, so
+// free, devdoc/peer1-resource-exhaustion-20260911.md) and TMPDIR is UNSET, so
 // every child gopi spawns — `gopi task run` children, the bash tool, git —
 // resolves its temp workspace to /tmp by IMPLICIT fallback (os.TempDir()'s
 // implementation default). 23.5G of residue accumulated there because not one

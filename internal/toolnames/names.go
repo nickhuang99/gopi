@@ -53,7 +53,7 @@ const (
 // another is a defect waiting for a typo).
 //
 // WHY THIS BLOCK EXISTS AT ALL — measured 2026-10-04, task
-// 01a103c2-36e2-7808-bc42-d652762c4691, host peerbox. In one session's raw log
+// 01a103c2-36e2-7808-bc42-d652762c4691, host peer1. In one session's raw log
 // 17 `edit` tool_use blocks were recorded, and 6 of them carried their
 // replacement text under the key `newText` instead of `newStr`. The
 // dispatcher read the absent `newStr` as "" and called

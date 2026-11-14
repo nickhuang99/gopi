@@ -48,7 +48,7 @@ Description=GoPi profile hygiene — weekly sweep
 /home/user/work/GoPi/internal/scratch/scratch.go:66:// HomeDir is the scratch home: $GOPI_TEST_SCRATCH_HOME when set (the value a
 /home/user/work/GoPi/internal/scratch/scratch.go:68:// gopi-test-scratch. os.TempDir() is deliberately never consulted.
 /home/user/work/GoPi/internal/scratch/scratch.go:188:// previously used <os.TempDir()>/<name> land in the same tree as everything
-/home/user/work/GoPi/internal/scratch/tmproot.go:6:// free, devdoc/peerbox-resource-exhaustion-20260911.md) and TMPDIR is UNSET, so
+/home/user/work/GoPi/internal/scratch/tmproot.go:6:// free, devdoc/peer1-resource-exhaustion-20260911.md) and TMPDIR is UNSET, so
 /home/user/work/GoPi/internal/scratch/tmproot.go:8:// resolves its temp workspace to /tmp by IMPLICIT fallback (os.TempDir()'s
 /home/user/work/GoPi/internal/scratch/tmproot.go:23:// consumer can import; the device-id measurement and the TMPDIR spelling were
 /home/user/work/GoPi/internal/scratch/tmproot.go:45:	TmpDirEnvName = "TMPDIR"

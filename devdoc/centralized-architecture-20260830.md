@@ -2,7 +2,7 @@
 # gopi 中心化调度架构定稿（2026-08-30 深夜，nick 四砍后终稿）
 
 ## 架构（一句话）
-peerbox = 唯一大脑（队列/台账/serve/源码仓）；HP/RPi5/未来节点 = 无状态计算位（gopi 二进制 + settings + ssh 免密，零队列零存储零 serve）。
+peer1 = 唯一大脑（队列/台账/serve/源码仓）；HP/RPi5/未来节点 = 无状态计算位（gopi 二进制 + settings + ssh 免密，零队列零存储零 serve）。
 
 ## 演进史（四砍实录——每刀砍在 PA 加的层上）
 1. estimate 校准系数 → 砍，存原始时间戳（tasklist_issued_at）
@@ -15,7 +15,7 @@ peerbox = 唯一大脑（队列/台账/serve/源码仓）；HP/RPi5/未来节点
 ① settings.json compute_nodes 白名单 {name, max_concurrent, report_to, repo}（三源配置：CLI > env > settings.json）
 ② 负载均衡 dispatch（serve tick：ssh 查各节点 'task list --status in_progress' 计数 → count<max_concurrent 最空者）
 ③ ssh 远端执行（gopi task run <id>，remote 零配置）
-④ remote ssh 回 peerbox CLI task update（终态回账）
+④ remote ssh 回 peer1 CLI task update（终态回账）
 ⑤ git push back feat 分支（代码交付）
 + binary scp 分发（未来：节点无需源码仓，交叉编译+版本协商）
 + stale sweep 挂 serve tick 无条件位 + resume 路径（触发点孤岛修复）

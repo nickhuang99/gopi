@@ -7,8 +7,8 @@ server merge 链。任务域: taskregister.go / serve tick pass。
 
 ## Completed
 
-### 1. 四步链本体 — 已由 peerbox 侧实现，本次 merge 收编本地
-`peerbox/feat/finish-session-cleanup`（8f7e824）已含完整实现，merge 进本地分支：
+### 1. 四步链本体 — 已由 peer1 侧实现，本次 merge 收编本地
+`peer1/feat/finish-session-cleanup`（8f7e824）已含完整实现，merge 进本地分支：
 - `internal/tools/task_finish_cleanup.go`（477 行）:
   `TaskFinishCleanupSessionID(taskID)` — ①守卫（terminal + deliverable.repo +
   worktree clean + `IsServerNode()` client gate）②push `<peer0>:~/work/GoPi`
@@ -21,11 +21,11 @@ server merge 链。任务域: taskregister.go / serve tick pass。
   10min throttle，LIMIT 10，兜底被杀进程没跑钩子的行）。
 
 ### 2. merge 链收编（本地分支 feat/task-id-collision）
-- `1cbcdd0` merge peerbox/feat/finish-session-cleanup（四步链本体；冲突:
+- `1cbcdd0` merge peer1/feat/finish-session-cleanup（四步链本体；冲突:
   memory_sync_task_test.go 双侧独立测试并保留）
 - `186886c` merge feat/branch-backlog-merge-tasks（serve tick 分支清点
   auto-submit merge-backlog；冲突: cli_tasks.go serve pass 双方 sweep 并存）
-- `4e5466f` merge peerbox/feat/node-role-banner（node identity role/sync_to
+- `4e5466f` merge peer1/feat/node-role-banner（node identity role/sync_to
   banner + briefing；冲突: memory_sync_task.go import 块 + 常量块双方并集）
 - server merge 链按 devdoc/finish-session-cleanup.md 复用
   `scripts/safe-merge.sh`（✅ 守卫实测通过）+ `scripts/post-merge-cleanup.sh`
@@ -51,7 +51,7 @@ server merge 链。任务域: taskregister.go / serve tick pass。
   （TestFinishCleanupChainPushFailKeepsBranch）
 - ④ master/hp-unique-maxtokens-work/archive/* 豁免
   （TestFinishCleanupBranchExempt）+ 本机实测: HP（role=client,
-  sync_to=peerbox）`IsServerNode()==false` → client gate 正确放行（探针测试过）
+  sync_to=peer1）`IsServerNode()==false` → client gate 正确放行（探针测试过）
 - 全量: internal/tools + cmd/agent + internal/agent + internal/config OK
 
 ## Not Done / 归属澄清

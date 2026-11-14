@@ -16,7 +16,7 @@
 // not carry. That is exactly the class this package removes: ONE predicate,
 // ONE sentence, askable from anywhere a push happens.
 //
-// THE MEASURED RESIDUE THIS ANSWERS (2026-10-26, peerbox's own repository):
+// THE MEASURED RESIDUE THIS ANSWERS (2026-10-26, peer1's own repository):
 //
 //	$ git log --format='%H|%an <%ae>|%s' feat/exists
 //	3043963598210ca6d6edb4075feb389a77de7c5e|t <t@t>|work
@@ -123,7 +123,7 @@ func Reason(target string) string {
 //     never an alias spelling: a target's local side is "inside test space"
 //     when it resolves under the scratch temp root the suite pins (TMPDIR,
 //     published around the run) or under the operator's configured tmpdir.
-//     Anything else — a peer alias such as this host's own `peerbox`, or a bare
+//     Anything else — a peer alias such as this host's own `peer1`, or a bare
 //     path outside those roots — is a real node's checkout.
 //
 // The opt-out exists for the case the predicate cannot see: a run whose env

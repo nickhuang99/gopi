@@ -24,8 +24,8 @@ HP 上的 gopi 任务全部失败于：
 **结论：免费窗口不能恢复余额不足**（账户级阻塞 vs 时段优惠是两回事）
 
 ### 处置
-- HP 的 5 个任务**全部迁回 peerbox**（DeepSeek）
-- 移除 HP 夜间 cron + 终止 peerbox 等待器（都会撞 429）
+- HP 的 5 个任务**全部迁回 peer1**（DeepSeek）
+- 移除 HP 夜间 cron + 终止 peer1 等待器（都会撞 429）
 - HP 清理干净：无 worker / 无任务 / 无 cron
 
 ### 需要你
@@ -35,7 +35,7 @@ HP 上的 gopi 任务全部失败于：
 
 ## 📊 当前运行状态
 
-### peerbox（唯一执行平台，DeepSeek 可用）
+### peer1（唯一执行平台，DeepSeek 可用）
 | 项 | 值 |
 |---|---|
 | workers | **3 个** |
@@ -59,7 +59,7 @@ HP 上的 gopi 任务全部失败于：
 | 流式 | ❌ 无真流式 |
 | **VAD** | ✅ 真的（Silero，比实时快） |
 | server | ✅ 仅 5 路由，无 SSE/WebSocket |
-| **hosta .13** | ⚠️ 拒绝免密 SSH（measured blocker） |
+| **host-b .13** | ⚠️ 拒绝免密 SSH（measured blocker） |
 
 10 条开放问题，其中：**Volcengine 价格未验证**（标注"不要当事实引用"）、**量化模型中文质量未测**（标为"最高价值后续实验"）。
 
@@ -76,7 +76,7 @@ HP 上的 gopi 任务全部失败于：
 
 ---
 
-## 📋 已派任务（peerbox 13 pending）
+## 📋 已派任务（peer1 13 pending）
 
 | 类型 | 任务 |
 |---|---|
@@ -152,7 +152,7 @@ less devdoc/voice-input-design-space.md
 
 ### 执行
 1. **备份 GLM 配置**：`~/.gopi/settings.json.bak-20260910-glm` + `.glm_settings.json.bak-20260910-nogLM`
-2. **创建 DeepSeek 配置**：从 peerbox 复制 `.ds_flash_settings.json` → HP `~/.gopi/.ds_hp_settings.json`
+2. **创建 DeepSeek 配置**：从 peer1 复制 `.ds_flash_settings.json` → HP `~/.gopi/.ds_hp_settings.json`
 3. **API 直测验证**：HP → DeepSeek `HTTP 200`（真实调用成功）
 4. **切换 symlink**：`settings.json → .ds_hp_settings.json`
 5. **冒烟测试**：真实 agent turn 通过（`HP-DS-SMOKE-OK`，18.5s，cache 97%）
@@ -169,7 +169,7 @@ HP worker: 2 个在跑
 LLM 错误: 无 ✓
 ```
 
-**HP 现在是 DeepSeek 驱动**（peerbox 同款配置），不再依赖 GLM。
+**HP 现在是 DeepSeek 驱动**（peer1 同款配置），不再依赖 GLM。
 
 **代价认知**：DeepSeek 没有免费窗口，所以 HP 现在**跑任务是要花钱的**——但按你的判断，GLM 不能用时，花点钱换可用算力是值得的（DeepSeek 空闲价 0.02/1/4 元每百万 token，实际有 97% cache 命中，成本可控）。
 
@@ -242,7 +242,7 @@ DISPLAY=:99 ./bin/gopi screen_capture --out /tmp/a.png   # 验证
 |---|---|
 | 总计 | **85.5%**（414/484） |
 | 100% 的包 | **6 个**（config/deepseek/gopilog/hippocampus/shot→（新 X11 代码待补）/taskverdict） |
-| 剩余 | testutil 37（待决策）/ tools 19（已派 HP）/ agent 15（已派 peerbox）/ shot 4（新 X11 层，已派）/ archive 5（建议排除）/ pricing 2 / proxy 1 |
+| 剩余 | testutil 37（待决策）/ tools 19（已派 HP）/ agent 15（已派 peer1）/ shot 4（新 X11 层，已派）/ archive 5（建议排除）/ pricing 2 / proxy 1 |
 
 **新派两个针对性任务**：
 - `internal/shot` 的 4 个缺口 = **XTEST 层**（`Display`/`Focus`/`Click`/`TypeText`）——要求**钉住 X11 请求的字节布局**（协议级测试，不依赖显示器），这是"手"的核心

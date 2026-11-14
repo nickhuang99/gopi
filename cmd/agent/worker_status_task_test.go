@@ -117,7 +117,7 @@ func TestWorkerTaskArgvFallbackShapeDerivesFromItsOwnArgv(t *testing.T) {
 // reported the repo path as the running task.
 func TestWorkerTaskIgnoresFlagOperands(t *testing.T) {
 	argv := []string{"gopi", procname.VerbWorker,
-		flagReportTo, "peerbox", flagRepo, "/home/user/work/gopi", workerFlagDB, "/tmp/x.db"}
+		flagReportTo, "peer1", flagRepo, "/home/user/work/gopi", workerFlagDB, "/tmp/x.db"}
 	if got := workerTaskFromArgv(argv); got.Recorded() {
 		t.Fatalf("an argv with no positional reported a task %q — a flag operand was harvested as a row", got.ID)
 	}

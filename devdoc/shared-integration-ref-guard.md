@@ -40,7 +40,7 @@ cite, `mergeDetailTrackedDirty` in `cmd/agent/merge_run.go`, went with that file
 to land queued behind a ref nobody meant to write.
 
 The state was repaired before this row ran (measured at t+0 of this task: main checkout
-`HEAD` == `refs/heads/master` == peerbox master == `2c83d07a7e`, porcelain 0). This file
+`HEAD` == `refs/heads/master` == peer1 master == `2c83d07a7e`, porcelain 0). This file
 is the FIX, not the rescue.
 
 ### The two fingerprints (for whoever finds the next one)

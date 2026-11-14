@@ -234,7 +234,7 @@ func (a *Agent) collectErrorRecord(runErr error, iterations, tokens int, elapsed
 			// verdicts about the same run. Measured 2026-10-16: the
 			// round-boundary fallback spelled its timeouts "agent timed out
 			// after N iterations", which matched NONE of the arms above
-			// ("timeout" is not a substring of "timed out"), so two real peerbox
+			// ("timeout" is not a substring of "timed out"), so two real peer1
 			// rows read `category=unknown recoverable=false`.
 			//
 			// NO VERDICT IS ISSUED HERE. The field keeps its type (it is

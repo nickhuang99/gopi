@@ -120,7 +120,7 @@ TestResolveCredentialsPrefersFlags…/ReadsOnlyTheSourceItsModeNeeds  旗标优�
 
 两者的原始命令 + 输出落在本 run 的 session 目录
 （`artifacts/commands-md-stale-block-evidence.txt`、`artifacts/doccheck-anchor-drift-evidence.txt`），
-已作为附件随行提交。**发现者不修**（Rule 28：系统层归 peerbox）。
+已作为附件随行提交。**发现者不修**（Rule 28：系统层归 peer1）。
 
 ## Not Done
 

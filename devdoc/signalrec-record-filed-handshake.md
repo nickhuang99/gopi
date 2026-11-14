@@ -12,7 +12,7 @@
 > is the other manual cross-host door and its guarantees differ: it REPLACES the
 > peer ledger instead of merging it.
 
-*Measured 2026-10-12 on host hosta, pre-fix tree `45b54d81f`. Task
+*Measured 2026-10-12 on host host-b, pre-fix tree `45b54d81f`. Task
 `01a12f64-45e0-7108-9839-43a729f1b3e0`.*
 
 ## The defect

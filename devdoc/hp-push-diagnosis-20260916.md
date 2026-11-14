@@ -1,5 +1,5 @@
 <!-- doc-class: normative -->
-# HP → peerbox push failure: diagnosis (2026-09-16)
+# HP → peer1 push failure: diagnosis (2026-09-16)
 
 > **CORRECTED 2026-11-05.** The cadence this page reasons about —
 > `GOPI_SYNC_GIT_INTERVAL` "default 15 min" and the `serveGitSyncSweep` pass that
@@ -15,7 +15,7 @@
 <!-- WORKER-OWNERSHIP: OPERATOR-ONLY — devdoc/worker-ownership.md -->
 
 **Task:** `01a0aab1-587a-7ca3-ba98-4b66b11b8b90` — *diagnose: why did HP never push its
-finished branches to peerbox? (client leg silently skipped)*
+finished branches to peer1? (client leg silently skipped)*
 **Host the run executed on:** `hostb-Laptop` (the CLIENT — verified: `hostname`,
 `~/.gopi/settings.json` `"role":"client"`).
 **Diagnosis only.** No HP branch/log/worktree was deleted, no settings.json touched,
@@ -26,7 +26,7 @@ investigation).
 
 ## 1. Verdict
 
-**The three branches did reach peerbox (hand-pushed), but HP's automatic client
+**The three branches did reach peer1 (hand-pushed), but HP's automatic client
 close-out leg never delivered them — and the reason is a *chain skip*, not a broken
 push.**
 
@@ -68,7 +68,7 @@ line**; its end state (worktree gone, branch survives, never delivered) matches 
 
 ## 2. Evidence chain
 
-### 2.1 The three branches exist on peerbox with matching SHAs (deliverable 3)
+### 2.1 The three branches exist on peer1 with matching SHAs (deliverable 3)
 
 ```
 $ for b in feat/chat-m2-streaming fix/merger-status-branch-account fix/finish-cleanup-single-node-wording; do git rev-parse --short $b; done
@@ -76,16 +76,16 @@ $ for b in feat/chat-m2-streaming fix/merger-status-branch-account fix/finish-cl
 24eded5c fix/merger-status-branch-account
 7264cc5a fix/finish-cleanup-single-node-wording
 
-$ git ls-remote peerbox 'refs/heads/*' | grep -E 'chat-m2-streaming|merger-status-branch-account|finish-cleanup-single-node-wording'
+$ git ls-remote peer1 'refs/heads/*' | grep -E 'chat-m2-streaming|merger-status-branch-account|finish-cleanup-single-node-wording'
 900c0a052a4ac5b9cd4f907b7838ff9e520d61d3  refs/heads/feat/chat-m2-streaming
 7264cc5a2ab5861c007d45c5b8b7a8cdf0b01f92  refs/heads/fix/finish-cleanup-single-node-wording
 24eded5c66cba7c7537c46cef884f296b8ec9e9b  refs/heads/fix/merger-status-branch-account
 ```
 
-All three SHAs match byte-for-byte. peerbox-side reflog stamps the arrival:
+All three SHAs match byte-for-byte. peer1-side reflog stamps the arrival:
 
 ```
-$ ssh peerbox 'cd ~/work/GoPi && git reflog show --date=iso refs/heads/<branch>'
+$ ssh peer1 'cd ~/work/GoPi && git reflog show --date=iso refs/heads/<branch>'
 24eded5c …@{2026-09-16 22:30:02 +0800}: push          (fix/merger-status-branch-account)
 7264cc5a …@{2026-09-16 22:48:23 +0800}: push          (fix/finish-cleanup-single-node-wording)
 6cc98c61 …@{2026-09-16 22:48:23 +0800}: push          (feat/chat-m2-streaming, superseded by the 22:49:26 commit+push)
@@ -96,7 +96,7 @@ $ ssh peerbox 'cd ~/work/GoPi && git reflog show --date=iso refs/heads/<branch>'
 not material.
 
 > ⚠️ **The 22:48:23 `push` on two branches is a HAND-PUSH** (three branches appear at
-> the same second — a scripted batch, not three independent close-outs). This means peerbox
+> the same second — a scripted batch, not three independent close-outs). This means peer1
 > holding the branch is **not** evidence that the automatic leg worked. That distinction
 > is the whole point of the diagnosis.
 
@@ -189,7 +189,7 @@ gone**:
 
 ```
 $ for w in gopi-chat-m2 gopi-cleanup-singlenode gopi-mscount; do test -d ~/workspace/$w && echo EXISTS || echo GONE; done
-GONE / GONE / GONE        # while all three branches still exist locally and on peerbox
+GONE / GONE / GONE        # while all three branches still exist locally and on peer1
 ```
 
 That is precisely the `finishCleanupServerRecycle` outcome (`:821`) — worktree removed,
@@ -210,7 +210,7 @@ finish-cleanup (dry-run): candidates=10 would-run=0 settled=9 refused=1
 
 The reported reason for a row whose branch was **never delivered** is an opaque
 `chdir … no such file or directory` — it names a *directory*, never the *condition*
-("branch not delivered to peerbox"). An operator reading this cannot tell a delivered
+("branch not delivered to peer1"). An operator reading this cannot tell a delivered
 branch from a stranded one. This is memory #1776's predicted "misleading hygiene
 refusal" reproduced live.
 
@@ -263,7 +263,7 @@ $ grep -c '\[finish-cleanup\]' ~/workspace/hp-worker-2.log
 
 4. **`01a0aa74` (`fix/merger-status-branch-account`) — no attributable line, but a
    mechanism is on record.** The chain never names that row (grep: 0 hits), and the
-   22:30:02 peerbox reflog `push` (§2.1) means a push *did* happen for its branch — so the
+   22:30:02 peer1 reflog `push` (§2.1) means a push *did* happen for its branch — so the
    close-out leg may have run for it after all, and the delivery is explained by the
    hand-push only insofar as the *later* hand-push re-sent the same tip. Separately, the
    log does record a **foreign-worktree release** performed by *another* row's run:
@@ -327,7 +327,7 @@ $ pgrep -a -f 'bin/gopi|gopi-merger'
   it *runs* ("claim → run → must-succeed push").
 - Cadence/throttle for the pass: `GOPI_SYNC_GIT_INTERVAL`, default 15 min — but with no
   merger process on HP, the clock never advances.
-- Settings: `role=client`, `sync_to=peerbox`, `sync_peers=["peerbox"]` — the topology
+- Settings: `role=client`, `sync_to=peer1`, `sync_peers=["peer1"]` — the topology
   *permits* a push; nothing *schedules* one.
 
 **Branch coverage — checked, and a claim I had to withdraw.** The pass's doc comment
@@ -442,17 +442,17 @@ worktree dirty guard"* — which is §4.1, and this epic's §4.2.0, the one-line
 operator asked for.)
 
 **DISPATCHED 2026-09-16** as task **`01a0aaef-5a90-7e02-9276-471d61b8f565`**
-(`bug,system-layer,run-on-peerbox`, repo `/home/user/work/GoPi`); the row carries the whole
+(`bug,system-layer,run-on-peer1`, repo `/home/user/work/GoPi`); the row carries the whole
 file:line chain, the one-liner, the regression-test requirements and the acceptance
 criteria, so it needs no further briefing.
 
 **Why the one-liner (§4.2.0) was not landed from this host:** it is genuinely two lines,
 and it would have been permitted as a one-liner — but this diagnosis ran on the **client**
-(HP), and Rule 28 assigns the close-out/cleanup path to the **system layer (peerbox)**.
+(HP), and Rule 28 assigns the close-out/cleanup path to the **system layer (peer1)**.
 Landed from here it would have been the exact two-hosts-one-layer edit the split exists to
 prevent. It is therefore handed over as the **first, cheapest unit** of `01a0aaef`.
 
-*Layer note (Rule 28):* §4.1/§4.2 are close-out semantics — **system layer (peerbox)**.
+*Layer note (Rule 28):* §4.1/§4.2 are close-out semantics — **system layer (peer1)**.
 §4.3's worker wiring is also a scheduling change (system layer). HP's part is the
 diagnosis and the evidence; the fix belongs to the system host per the two-host split.
 
@@ -462,11 +462,11 @@ diagnosis and the evidence; the fix belongs to the system host per the two-host 
 
 - **Branch:** `docs/hp-push-diagnosis` (worktree `~/workspace/gopi-push-diagnosis`)
 - **Recovery:** `git -C ~/work/GoPi show docs/hp-push-diagnosis:devdoc/hp-push-diagnosis-20260916.md`
-- Follow-up dispatched: `01a0aaef-5a90-7e02-9276-471d61b8f565` (system layer, peerbox).
+- Follow-up dispatched: `01a0aaef-5a90-7e02-9276-471d61b8f565` (system layer, peer1).
 - **Persistent in the main repo:** the worktree shares `~/work/GoPi`'s refs, so the
   commit is in the main repo — no push required for this branch to survive.
 - Hand-push confirmation for the three investigated branches is §2.1 (all three
-  present on peerbox, SHAs matching).
+  present on peer1, SHAs matching).
 
 ## 6. Constraint compliance
 

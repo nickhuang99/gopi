@@ -28,7 +28,7 @@ TestBidir2ImportSymmetry: imported=2 already=0, want 2/2（第二轮 pushTo 全�
 | A. IsServerNode 语义变化（236fb03：config role 优先 + fail-safe client） | 探针 TestRoleCheckAmbient：包内默认 role="server"（来自宿主 ~/.gopi/settings.json），IsServerNode=true；手动 GOPI_NODE_ROLE=client + ResetNodeIdentityForTest 后 false，role pin 机制工作正常 | **非主根因**：role pin 显式生效时合并仍全零 |
 | B. 导出锚窗口漂移（AfterSource/时间） | 探针 TestExportWindowCheck：AfterSource=0 与 =now 均能导出刚提交的行 | **证伪** |
 | C. 83ed846 pushTo 方向 pin 失效 | 探针 TestIsClientAfterHostnamePin / TestIsServerForeignPeerPin：pin 均按设计翻转/生效；但 236fb03 之后 config role 压过 pin（测试没 pin role），server/client 侧判定确实错位 | **次级因素**（影响计数器归类，不产生全零） |
-| **D. anti-reflow 导出门（56fd84a）× 同主机模拟** | 探针 TestExportDivergeTrace：b 节点 DB 里确有 t-div 行（tags=from-peerbox），但 `SyncTaskExportDelta` 返回 rows=0，Scanned=0 —— 行在 SQL 阶段被过滤；探针 TestGateHypothesis：把 GOPI_SYNC_NODE 改成不匹配的 alias 后同样的 2 行立刻导出成功 | **实锤主根因**：模拟节点名叫 peerbox、宿主机名也是 peerbox → syncSelfTag()=from-peerbox 与行上 from-peerbox 标签互撞，导出门把“本节点自己导入过的行”全部静默滤掉 → 下游合并零输入 → 全零统计 |
+| **D. anti-reflow 导出门（56fd84a）× 同主机模拟** | 探针 TestExportDivergeTrace：b 节点 DB 里确有 t-div 行（tags=from-peer1），但 `SyncTaskExportDelta` 返回 rows=0，Scanned=0 —— 行在 SQL 阶段被过滤；探针 TestGateHypothesis：把 GOPI_SYNC_NODE 改成不匹配的 alias 后同样的 2 行立刻导出成功 | **实锤主根因**：模拟节点名叫 peer1、宿主机名也是 peer1 → syncSelfTag()=from-peer1 与行上 from-peer1 标签互撞，导出门把“本节点自己导入过的行”全部静默滤掉 → 下游合并零输入 → 全零统计 |
 
 **根因链（5-why）**：测试失败 → 合并收到 0 行 → 导出返回 0 行 → 导出门
 `NOT LIKE '%from-<self>%'` → 模拟节点名与宿主机名相同 → bidir e2e 的同机双节点模拟

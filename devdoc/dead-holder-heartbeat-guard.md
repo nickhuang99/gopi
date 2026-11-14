@@ -183,7 +183,7 @@ holder-live pid = 173120  (this survivor process)
 
 seeded 2 in_progress rows, liveness backdated 2h (stale by the 30min grace)
 
-① survivor touches the DEAD holder's row → err = touch last_toolcall_at: heartbeat refused: the row's claimed holder is dead (row probe-dead-holder, holder hosta:173127 — process 173127 does not exist on this host; a heartbeat is a liveness claim and only its holder may make it)
+① survivor touches the DEAD holder's row → err = touch last_toolcall_at: heartbeat refused: the row's claimed holder is dead (row probe-dead-holder, holder host-b:173127 — process 173127 does not exist on this host; a heartbeat is a liveness claim and only its holder may make it)
 ② owner   touches the LIVE holder's row → err = <nil>
 
 ③ probe-dead-holder  last_toolcall_at = 1792692544 (2h0m0s)   ← did NOT move

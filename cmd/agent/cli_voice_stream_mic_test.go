@@ -125,7 +125,7 @@ func TestBareCaptureStreamingTakesTheLiveStream(t *testing.T) {
 // dropped the term would pass the first half and fail the second.
 func TestMicStreamSplitCarriesNoCaptureWindowTerm(t *testing.T) {
 	opts := micStreamOptions(config.AudioEngineStreaming)
-	// The figures a live run observed on hosta's microphone: the first partial
+	// The figures a live run observed on host-b's microphone: the first partial
 	// 2.2s after the tool started, of which the channel's own latency was 600ms and
 	// the rest was this process's startup and the channel handshake — and NOTHING
 	// is a recording, so WindowMS is left at its zero value exactly as

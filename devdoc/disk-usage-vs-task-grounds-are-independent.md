@@ -1,7 +1,7 @@
 <!-- doc-class: normative -->
 # Disk usage and task-ground residue are TWO INDEPENDENT FACTS — and this host proves it
 
-> Measured on `hosta`, 2026-10-26T08:17 – 08:37 +08:00, at repo HEAD
+> Measured on `host-b`, 2026-10-26T08:17 – 08:37 +08:00, at repo HEAD
 > `afa0517d6d2b8cf91b2995ceb13ad51e16520d7a`. Every number below was produced by a
 > command run in this session; the raw dumps are under
 > `~/.gopi/sessions/01a1749f-388d-7854-97d0-562a654e857f/evidence/`.

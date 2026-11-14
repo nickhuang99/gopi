@@ -6,7 +6,7 @@
 # fleet on which a browser could even attempt the google search page?
 #
 # This script measures the RESIDENTIAL host's own egress (the HP laptop, the only
-# genuinely residential path available — the same home link that peerbox and rpi5
+# genuinely residential path available — the same home link that peer1 and rpi5
 # sit behind), distinguishing THREE different failure modes that a naive curl
 # cannot tell apart:
 #   1. DNS poisoning        -> typed name resolves to a non-Google address

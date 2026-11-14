@@ -126,7 +126,7 @@ intention.
 - **Real surface (Rule 31):** `artifacts/e2e-diverged-alarm.sh` drives the BUILT
   binary's two real faces (`gopi worker` foregound round tick, and the manual
   `gopi task push`) against a real topology (a bare peer, a holder clone, a
-  linked worktree), with the peer alias `peerbox:~/work/GoPi` redirected into the
+  linked worktree), with the peer alias `peer1:~/work/GoPi` redirected into the
   fixture by `url.<path>.insteadOf` behind a safety gate that measures the
   redirection BEFORE any face runs. **20 checks, 0 failures** (log:
   `artifacts/e2e-diverged.log`), including: the purely-behind pass advanced the

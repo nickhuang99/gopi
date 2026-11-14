@@ -150,36 +150,36 @@ exit=1          ← 真的"不"：rev 解得开，祖先关系查过，答案是
 
 （对照下面记的 `b2366a62a`：同样是 `no`，但隔离出来是 **exit=128** —— 那是"没查成"。）
 
-**本节原先引的 fix rev 已更正（2026-10-14 实测，hosta）**。本节曾把该 fix 记成 commit
+**本节原先引的 fix rev 已更正（2026-10-14 实测，host-b）**。本节曾把该 fix 记成 commit
 `b2366a62a`（`fix(worker): the file watcher gets an exit channel, and its installer joins it`），
 并记录了一条 `git merge-base --is-ancestor b2366a62a e7f3bf2` → `no`。**那条记录在本机
 不可复核，而且它把两件不同的事混进了同一个 `no`**：
 
-- **实测**：`b2366a62a` 在**本仓库（hosta 的克隆/工作树）根本不解** ——
+- **实测**：`b2366a62a` 在**本仓库（host-b 的克隆/工作树）根本不解** ——
   `git cat-file -t b2366a62a` → `fatal: Not a valid object name`（**exit 128**）；
   `git cat-file --batch-all-objects --batch-check=… | grep -c '^b2366'` → **0**；
   `git rev-list --all | grep -c '^b2366a62a'` → **0**。
 - 所以那个 `no` **不是"不是祖先"，是"rev 解不开"**：`git` 自己 exit **128**，
   而 `&& … || …` 把它吞成 `no` + 复合命令 exit **0**。它和"真查过祖先关系"长得一模一样，
   实际是"没查成"—— 判据是 `git merge-base … ; echo $?` → **128**。
-- **该 rev 的真实身份**：它是 **peerbox 对端对象库**里的一枚悬挂对象 ——
-  `ssh peerbox 'git cat-file -t b2366a62a'` → `commit`，`git show -s` 元数据与父提交
+- **该 rev 的真实身份**：它是 **peer1 对端对象库**里的一枚悬挂对象 ——
+  `ssh peer1 'git cat-file -t b2366a62a'` → `commit`，`git show -s` 元数据与父提交
   `3544b690c` 都在，而 `git for-each-ref --contains b2366a62a` → **0 个 ref**、
   `git rev-list --all` 命中 **0**（**实测**：对象在库里 1 命中、可达 ref 0 个）。
-  **"不被任何 ref 指向 ⇒ 不随 fetch/push 过桥 ⇒ hosta 永远看不到"是推断**，
+  **"不被任何 ref 指向 ⇒ 不随 fetch/push 过桥 ⇒ host-b 永远看不到"是推断**，
   实测到的只有两侧的命中数。
 - **同形但不同一枚**：`b2366a62a` 与 `ba7592966` 是同一目标的两版实现，
   同一文件 diff 的 `git patch-id --stable` 不同（`a2362019…` vs `72c49a7d…`）。
   所以本节原来的**事实主张也不完整**：修复确实落了地，落地点是 master 上的
   `ba7592966`，不是一枚悬挂对象。
 - 原始输出：`~/.gopi/sessions/01a1355d-d0d3-7a1c-8c1b-ebb4325e74b7/artifacts/` 下的
-  `evidence-b2366a62a-unresolvable.md`（本仓库侧）+ `evidence-peer-peerbox-b2366a62a.md`（peerbox 侧）。
+  `evidence-b2366a62a-unresolvable.md`（本仓库侧）+ `evidence-peer-peer1-b2366a62a.md`（peer1 侧）。
 
 **同段引用的"已提行/附件"在本机同样不可复核（同日实测）**：task 行
-`01a1343d-d9c2-793c-a5e2-29538e340c09` 在 hosta 账本里没有
+`01a1343d-d9c2-793c-a5e2-29538e340c09` 在 host-b 账本里没有
 （`gopi task show 01a1343d-…` → `no task with task_id=…`），附件路径
 `~/.gopi/sessions/01a13431-968c-7602-b48f-d2daf1aa6cc2/artifacts/bug-installfilewatcher-no-join.md`
-在 hosta **不存在**（peerbox 上**也不存在**）。**推断**（未确认）：该行与附件产生于另一个
+在 host-b **不存在**（peer1 上**也不存在**）。**推断**（未确认）：该行与附件产生于另一个
 ground/session，从未落进本机账本，也未随附件同步过桥 —— 只记事实，不改下面两句的语义。
 
 已提行：**task 01a1343d-d9c2-793c-a5e2-29538e340c09**（tags: bug），附件 =

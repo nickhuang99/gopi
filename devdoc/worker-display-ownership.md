@@ -5,7 +5,7 @@
 
 **Status: canonical decision record.** Epic `worker-spawn-doors` (task
 `01a099e3-fa5c-7276-b08f-82a5c31926d3`), 2026-09-14. Every measurement below was
-taken on THIS host (peerbox), on the real binary, in CONTAINED sandboxes (a private
+taken on THIS host (peer1), on the real binary, in CONTAINED sandboxes (a private
 `HOME` + `GOPI_HOME` + output root) — no live worker, daemon or merger was
 started, stopped or restarted to obtain them (WORKER-OWNERSHIP: OPERATOR-ONLY).
 

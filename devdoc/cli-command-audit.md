@@ -34,8 +34,8 @@ Top-level verbs (from `./bin/gopi -h`, `internal/config/help.go`, `cmd/agent/mai
 
 | Command | 证据 | 建议 |
 |---|---|---|
-| `task ingest` | 退役决策 devdoc (47d319e, EPIC #185: HP 拔线 / peerbox 停进程 / bug031 cancelled / memsync 单通道确认)。当前无生产调用方：session 实命令 0 次；`TaskIngestHTTPHandler` 无非测试引用；webhook 无消费者。**仍显示在 help.go:228 与 dispatch** | **归档** `internal/tools/taskingest.go` + CLI 分支 |
-| `task harvest` | M4.12 (717675a)。当前生产使用：**仅** `ssh hp … task harvest --peer peerbox`（最近 2026-08-31，e6e82b59）。M4.13+ memsync timestamp-delta (b3b71b6) + M4.24 reconciliation (3cde659) 已将其取代；devdoc/memsync-bidir-m49.md 明确 git 通道=纪律项。harvest 的 git push-back 逻辑已被 task_sync_git.go 复用（GitSyncPushLocalBranches, 自包含）| **归档** harvest 块（memory_sync_task.go ~1125-1905）+ harvest 测试；保留 reconcile 依赖的 harvestRemoteDBPath/harvestShellQuote |
+| `task ingest` | 退役决策 devdoc (47d319e, EPIC #185: HP 拔线 / peer1 停进程 / bug031 cancelled / memsync 单通道确认)。当前无生产调用方：session 实命令 0 次；`TaskIngestHTTPHandler` 无非测试引用；webhook 无消费者。**仍显示在 help.go:228 与 dispatch** | **归档** `internal/tools/taskingest.go` + CLI 分支 |
+| `task harvest` | M4.12 (717675a)。当前生产使用：**仅** `ssh hp … task harvest --peer peer1`（最近 2026-08-31，e6e82b59）。M4.13+ memsync timestamp-delta (b3b71b6) + M4.24 reconciliation (3cde659) 已将其取代；devdoc/memsync-bidir-m49.md 明确 git 通道=纪律项。harvest 的 git push-back 逻辑已被 task_sync_git.go 复用（GitSyncPushLocalBranches, 自包含）| **归档** harvest 块（memory_sync_task.go ~1125-1905）+ harvest 测试；保留 reconcile 依赖的 harvestRemoteDBPath/harvestShellQuote |
 | `task push` (CLI) | M4.18 (648d80a)。CLI 仅 1 处调用方 cli_tasks.go:1898 (`DefaultGitPushback`)。真实使用: 2026-09-01 两次 (3128f17f, a8a00b9e)。push-back 原子已并入 `task sync --peer` (git channel) 与 `GitSyncPushLocalBranches` | **归档** CLI 分支（保留 GitSyncPushLocalBranches 引擎）|
 | `task diff` | M4.24 reconciliation (3cde659): `task diff --peer set-compare` 与 `sync --full` 并存，但 diff 无独立调用方（仅 CLI，测试 5 个在 reconcile 测试中）| **UNCLEAR→归档建议**（diff 已被 sync --full 涵盖；保留引擎）|
 | `task harvest` CLI flag `--no-push` | 67 个 session 用过（全为 e2e/调试）| 随 harvest 归档 |

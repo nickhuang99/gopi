@@ -169,7 +169,7 @@ func TestOriginPointerRoundTrip(t *testing.T) {
 	const (
 		session = "a11d0e73-test-session"
 		round   = 4
-		host    = "test-host-peerbox"
+		host    = "test-host-peer1"
 	)
 	origin := MemoryOrigin{SessionID: session, Round: round, Host: host}
 	if _, err := MemoryStoreWithOrigin("origin probe topic", "does the pointer round-trip",

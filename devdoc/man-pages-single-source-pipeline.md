@@ -86,7 +86,7 @@ the RENDER half needs `pandoc`, an **optional dependency** of the `man` target �
 the render leg is guarded by `command -v` and **SKIPS LOUDLY** — **exit 0**,
 naming what it skipped and pointing at `make man-check` — when the renderer is
 missing (Rule 15: a missing renderer must not read as "the whole man pipeline is
-broken"). Measured 2026-10-14 (peerbox, task `01a139cb-0650-75a3-9186-da7c0ad2d8bb`
+broken"). Measured 2026-10-14 (peer1, task `01a139cb-0650-75a3-9186-da7c0ad2d8bb`
 / commit `66588b39f`): `make man` died with **exit 127** at the render leg
 — `/bin/sh: 1: pandoc: not found` — after the source-generation step above it had
 already succeeded, so only the untracked, regenerable `.1` artifacts under `bin/`

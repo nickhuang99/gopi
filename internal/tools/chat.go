@@ -1488,7 +1488,7 @@ func ChatShow(sessionID string) (ChatSessionDetail, error) {
 		// not exist" are different facts, and only the FIRST is established
 		// here. Ask the one presence criterion whether this machine holds a log
 		// for the id: if it does, the honest answer names that gap and its
-		// remedy (measured 2026-10-05: 3435 session logs sit in peerbox's own
+		// remedy (measured 2026-10-05: 3435 session logs sit in peer1's own
 		// profile with no chats row, and `session show` called every one of
 		// them a session that does not exist, while `gopi chat backfill` is the
 		// command that indexes them). If it does not, the id is genuinely

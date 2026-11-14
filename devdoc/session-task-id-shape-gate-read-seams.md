@@ -127,7 +127,7 @@ real binary, a real env, a real signal, and the filesystem as the measurement
 ```
 $ ./bin/gopi task for-branch task/01a12f4b34bb7c28bd9a61d569db30f7
 1 owner(s) of branch task/01a12f4b34bb7c28bd9a61d569db30f7
-  task 01a12f4b-34bb-7c28-bd9a-61d569db30f7  status=in_progress  (in flight, claimed by hosta:3904777)
+  task 01a12f4b-34bb-7c28-bd9a-61d569db30f7  status=in_progress  (in flight, claimed by host-b:3904777)
     session  18500e4e-cb3c-401a-bcad-5b0e8a3731fa
     worktree /home/user/workspace/gopi-01a12f4b34bb7c28bd9a61d569db30f7
 ```

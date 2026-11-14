@@ -25,7 +25,7 @@ func bannerTestSpec(cols int, pal lineedit.Palette) chatBannerSpec {
 		cols:      cols,
 		version:   gopiversion.Version,
 		model:     "deepseek-v4-flash",
-		node:      "peerbox",
+		node:      "peer1",
 		dir:       "/home/user/workspace/gopi-example",
 		sessionID: bannerTestSessionID,
 		toolsOn:   true,

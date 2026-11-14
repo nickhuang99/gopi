@@ -62,12 +62,12 @@ three tools.
    window". Now falls back to a full export for that one row (the same
    AfterSource=0 pattern).
 
-## Live 实测 (peerbox ↔ hp, real nodes)
+## Live 实测 (peer1 ↔ hp, real nodes)
 
 | 验证 | 结果 |
 |---|---|
-| ① diff 列出差异 | `diff hp: 2031 difference(s)` — 1029 missing-on-peer (peerbox-origin rows stranded under HP's receive-anchor), 0 status-mismatch after convergence; exit 1, repair hint printed |
-| ② sync --full 收敛 | pushed=984 whole-ledger replay; `updated_at>1788244000` window 21/21 identical both sides; pending 19→4 (peerbox) / 12→2 (hp); replay rerun `already=3` = idempotent (no duplicates, no re-import) |
+| ① diff 列出差异 | `diff hp: 2031 difference(s)` — 1029 missing-on-peer (peer1-origin rows stranded under HP's receive-anchor), 0 status-mismatch after convergence; exit 1, repair hint printed |
+| ② sync --full 收敛 | pushed=984 whole-ledger replay; `updated_at>1788244000` window 21/21 identical both sides; pending 19→4 (peer1) / 12→2 (hp); replay rerun `already=3` = idempotent (no duplicates, no re-import) |
 | ③ 守卫拒绝推进 | planted a local-only pending row → `task sync --peer hp` → `anchor guard: refusing advance to 1788245956 — pending counts differ (local=4 peer=3) … run diff --peer / sync --full`; anchor stayed at the old value |
 | ④ 正常路径不退化 | delta session after `--full`: pushed=0, already=3, anchor advances cleanly (guard passes on equal counts); full-suite `go test ./...` green |
 
@@ -78,11 +78,11 @@ also applies inside a `--full` pass — by design. Consequence: rows a node
 *imported* from a third node cannot be repaired toward the peer by THIS
 node's full pass; the diff reports them `missing-on-peer` and the peer's
 own full session (which owns those rows as origin) carries them. In the
-live run this left 27 peerbox-origin terminal rows absent on HP — all
+live run this left 27 peer1-origin terminal rows absent on HP — all
 terminal (completed/failed), zero pending → no work is lost, only
 history. The guard's pending-count check still converges because the
 residual contains no pending rows. If terminal-history completeness ever
-matters, the repair is peer-side: `ssh hp gopi task sync --full peerbox`.
+matters, the repair is peer-side: `ssh hp gopi task sync --full peer1`.
 
 ## Files
 

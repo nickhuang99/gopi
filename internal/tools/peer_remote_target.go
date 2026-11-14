@@ -4,7 +4,7 @@ package tools
 // into a git push/fetch TARGET (Rule 14: a shared value lives in exactly one
 // place, referenced — never mirrored, never bare-written).
 //
-// WHY this file exists (the defect it repairs, measured 2026-10-12 on hosta):
+// WHY this file exists (the defect it repairs, measured 2026-10-12 on host-b):
 // every client-side git leg composed its target as
 //
 //	fmt.Sprintf("%s:%s", peer, repoTail)   // peer = settings.json sync_peers[0]
@@ -13,11 +13,11 @@ package tools
 // are two different NAME SPACES with no contract between them: the alias is
 // resolved by ssh (its own config, on this host), while a remote name is a
 // per-repository local setting (`git remote add`). They coincide only by
-// coincidence — and the coincidence breaks loudly. On hosta `sync_peers` was
-// ["peerbox"] while `git remote -v` listed only `origin`, so every delivery leg
+// coincidence — and the coincidence breaks loudly. On host-b `sync_peers` was
+// ["peer1"] while `git remote -v` listed only `origin`, so every delivery leg
 // died on git's own sentence
 //
-//	fatal: 'peerbox' does not appear to be a git repository
+//	fatal: 'peer1' does not appear to be a git repository
 //
 // which names neither the declared peer nor the remotes that DO exist here.
 // The sibling lane already carried a partial diagnosis for that sentence
@@ -184,10 +184,10 @@ type peerRemoteTarget struct {
 	// repository that configures it, and a delivery target is handed to git in
 	// a DIFFERENT repository — the row's worktree (finishCleanupMainRepoDir /
 	// the ground's own repo), whose `git remote` list is its own. Measured on
-	// this host, in a repo that configures no remote named `peerbox`:
+	// this host, in a repo that configures no remote named `peer1`:
 	//
-	//	git fetch peerbox        → fatal: 'peerbox' … unknown transport
-	//	git push  peerbox        → fatal: 'peerbox' does not appear to be a git repository
+	//	git fetch peer1        → fatal: 'peer1' … unknown transport
+	//	git push  peer1        → fatal: 'peer1' does not appear to be a git repository
 	//
 	// — which is the very sentence this resolver exists to abolish, re-created
 	// one repository further along. The ssh form carries its own transport

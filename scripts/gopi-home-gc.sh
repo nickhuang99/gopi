@@ -4,9 +4,9 @@
 #
 # WHY THIS EXISTS (epic 2026-09-12 "worker create logs not within designate
 # path"): the profile root holds ad-hoc, never-pruned artifacts. Measured on
-# peerbox before this script existed: 647 MB of *.db* under ~/.gopi, 19
+# peer1 before this script existed: 647 MB of *.db* under ~/.gopi, 19
 # memory.db* files (each up to 83 MB) — `memory.db.bak-latprov-*`,
-# `memory.db.peerbox-backup-*`, `memory.db.after-quality-fix`, a `memory-glm-audit-*.db`
+# `memory.db.peer1-backup-*`, `memory.db.after-quality-fix`, a `memory-glm-audit-*.db`
 # — plus orphan `-shm`/`-wal` sidecars whose base DB had already been deleted
 # and zero-byte stubs left behind by abandoned runs. Nothing in the repo ever
 # created or pruned them: every one is a hand-typed `cp` snapshot (grep for

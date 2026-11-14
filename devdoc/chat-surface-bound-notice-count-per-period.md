@@ -217,7 +217,7 @@ in place, the same command is **5/5 GREEN** (`bound-count5-r4.log`: five
 --- failures (assertion/build; the budget did NOT trip) ---
   --- FAIL: TestChatSurfaceBound_TerminatesAndIsRenewedOnlyByTheOperator (0.33s)
   --- FAIL: TestTaskShowRendersTheSameDigestForAllThreeAddresses (0.08s)
-stamp: 2026-10-02T02:05:03+08:00 host=peerbox pkg=./cmd/agent budget=25m elapsed=585s exit=1 outcome=fail
+stamp: 2026-10-02T02:05:03+08:00 host=peer1 pkg=./cmd/agent budget=25m elapsed=585s exit=1 outcome=fail
 ```
 
 The count assertion this change rewrites (`the console announced the closing turn's bound N time(s) …`)

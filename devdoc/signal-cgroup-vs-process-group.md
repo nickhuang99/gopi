@@ -7,7 +7,7 @@
 `01a17c75-f193-7c65-9eda-8a18b95c4c6c`（"测试套件清理 worker 时可能把 SIGINT
 打到同 session 的 gopi chat"）的执行者，目的是**防止你走错方向**。
 
-**测量时间 / 主机**：2026-10-27，`hosta`，Linux（`/proc/sys/kernel/pid_max`
+**测量时间 / 主机**：2026-10-27，`host-b`，Linux（`/proc/sys/kernel/pid_max`
 = 4194304，cgroup v2，`0::` 单层）。
 
 **证据落点**：本 run 的 session 目录

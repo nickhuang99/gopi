@@ -131,7 +131,7 @@ edits to the same file and the generator runs over the whole document.
 
 The **gate criterion gap itself is not touched here.** `commandsDocAnchorFindings`
 asserting "resolvable" rather than "points at the claimed declaration" is a
-system-layer change (`internal/standards`), which Rule 28 puts on peerbox; this task
+system-layer change (`internal/standards`), which Rule 28 puts on peer1; this task
 was scoped to re-pointing the anchors and to producing the `sed -n` evidence. No
 gate was relaxed, and no gate was edited.
 

@@ -2,12 +2,12 @@
 # Voice input — end-to-end proof on HP (epic 3/6)
 
 **Task:** prove the two-node voice path with no human in the loop: capture on HP →
-engine on peerbox → text, scored against a known reference.
+engine on peer1 → text, scored against a known reference.
 
 | | |
 |---|---|
 | Capture node | `hp` — `hostb-Laptop` (ALC236 Analog, card 1 device 0) |
-| Engine node | `peerbox` — `llama-funasr-cli` + Fun-ASR-Nano at `~/work/funasr-models` |
+| Engine node | `peer1` — `llama-funasr-cli` + Fun-ASR-Nano at `~/work/funasr-models` |
 | Repo / branch | GoPi `feat/voice-e2e-hp` (worktree `~/workspace/gopi-voice-e2e`) |
 | Deliverables | `scripts/voice-e2e-hp.sh`, `scripts/voice-e2e-fixture.sh`, `devdoc/assets/voice-e2e-hp/` |
 | Rerun | `SRCDIR=<hp dir with bin/gopi> bash scripts/voice-e2e-hp.sh` |
@@ -16,7 +16,7 @@ engine on peerbox → text, scored against a known reference.
 
 ## 1. What was proven
 
-The claim is **"audio captured on HP crosses to peerbox and comes back as text"**,
+The claim is **"audio captured on HP crosses to peer1 and comes back as text"**,
 and it is proven twice over two independent capture paths, with no human
 speaking and no human transcribing:
 
@@ -25,7 +25,7 @@ speaking and no human transcribing:
 | **A** | Pulse `module-null-sink` monitor — the deterministic, human-free "microphone" | `voice_e2e_null.monitor` |
 | **B** | the physical ALC236 capture device, reached through the logical ALSA name | `default` (→ `alsa_input.pci-0000_05_00.6.analog-stereo`) |
 
-Transport in both legs: `ssh peerbox "gopi voice_input --server --stdio"` with the
+Transport in both legs: `ssh peer1 "gopi voice_input --server --stdio"` with the
 capture piped in on stdin — no listening port, no new credential, and (unlike a
 fixed `--listen` port on a shared node) nothing another job can collide with.
 
@@ -43,7 +43,7 @@ spoken recording with a written reference transcript is played into a sink
 ## 2. Raw commands (verbatim)
 
 ```bash
-# 0. fixture (see §3) — rebuilt from the pinned source on peerbox. OUTDIR is
+# 0. fixture (see §3) — rebuilt from the pinned source on peer1. OUTDIR is
 #    scratch: the shared scratch home (off the `/` partition — Rule 22; the
 #    default of voice-e2e-fixture.sh is a fresh dir there). Point the rig at the
 #    SAME dir with FIXTURE_OUTDIR so both scripts agree; the rig creates the
@@ -71,14 +71,14 @@ parecord --device=voice_e2e_null.monitor --raw --rate=16000 --channels=1 --forma
 paplay --device=voice_e2e_null $FIXTURE_WAV      # blocks until drained
 kill -INT <parecord pid>
 sox legA.pcm -t raw -r 16000 -e floating-point -b 32 -c 1 legA.f32   # PCM16 → f32 (see §6.1)
-ssh peerbox "gopi voice_input --server --stdio" < legA.f32 > legA.txt
+ssh peer1 "gopi voice_input --server --stdio" < legA.f32 > legA.txt
 
 # LEG B — the same trick on a genuinely different device (physical capture)
 pactl set-source-volume alsa_input.pci-0000_05_00.6.analog-stereo 12%
 pactl set-sink-volume   alsa_output.pci-0000_05_00.6.analog-stereo 40%
 arecord -q -D default -f S16_LE -r 16000 -c 1 -d 228 legB.wav &
 paplay --device=alsa_output.pci-0000_05_00.6.analog-stereo $FIXTURE_WAV
-ssh peerbox "gopi voice_input --server --stdio" < legB.f32 > legB.txt
+ssh peer1 "gopi voice_input --server --stdio" < legB.f32 > legB.txt
 
 # SCORING (repo tool, no new dependency)
 python3 scripts/asr_score.py legA.txt reference.txt
@@ -90,8 +90,8 @@ python3 scripts/asr_score.py legA.txt reference.txt
 
 | | |
 |---|---|
-| Source recording | `peerbox:~/work/whisper.cpp/2084无颜见人0.mp3` sha256 `a001a102…e6e70` |
-| Source reference | `peerbox:~/work/whisper.cpp/2084无颜见人0.txt` sha256 `aea95730…49fb8` |
+| Source recording | `peer1:~/work/whisper.cpp/2084无颜见人0.mp3` sha256 `a001a102…e6e70` |
+| Source reference | `peer1:~/work/whisper.cpp/2084无颜见人0.txt` sha256 `aea95730…49fb8` |
 | Fixture clip | 219.94 s, 16 kHz mono PCM16 — **the whole recording** (1:1 with its reference) |
 | Fixture ref | the whole sidecar text, 1011 normalised characters |
 | clip.wav sha256 | `4031d08bf05e587f587c5dccde07b88d…` |
@@ -231,7 +231,7 @@ the playback as the end of the capture and says so in a comment.
    in progress and exists only as uncommitted files in another worktree, so the
    proof uses the committed server contract. Rerunning with `--client` is a
    one-line change once 2/6 lands.
-4. **The HTTP `--listen` transport is untested here** — the shared peerbox is
+4. **The HTTP `--listen` transport is untested here** — the shared peer1 is
    contended by peer jobs, one of which runs `pkill -f "voice_input --server"`;
    a fixed port is both collision-prone and was observed killing unrelated
    sessions. `--stdio` needs no port and was chosen deliberately.

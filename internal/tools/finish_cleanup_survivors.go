@@ -2404,9 +2404,9 @@ func repoDirForStatus(repo, wt string) string {
 // Before 2026-10-12 this function composed `<alias>:<path>` WITHOUT asking the
 // repo's remotes, which read the ssh TOPOLOGY ALIAS as if it were a git REMOTE
 // NAME; the two name spaces have no contract, so a repo whose remote is named
-// otherwise (hosta: sync_peers ["peerbox"] vs `git remote -v` = origin) refused
+// otherwise (host-b: sync_peers ["peer1"] vs `git remote -v` = origin) refused
 // every delivery on git's own
-// `fatal: 'peerbox' does not appear to be a git repository`.
+// `fatal: 'peer1' does not appear to be a git repository`.
 //
 // One subject, one answer: "which repo?" is the ONLY question that can make two
 // resolutions of one declared alias disagree, so a face that answered about an

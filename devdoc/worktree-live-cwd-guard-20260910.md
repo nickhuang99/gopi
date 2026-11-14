@@ -136,7 +136,7 @@ Sources: ledger (`~/.gopi/memory.db` tasks table), raw session JSONL/dump files,
   structurally prevent it: `TaskNextFiltered` CAS-claims `WHERE status = 'pending'`, and
   `TaskClaimExplicit` (`task run <id>` / worker round) Shape ② re-stamps **only** a `claimed` row —
   an `in_progress` row is refused with its holder named (`internal/tools/tasks.go`). Row `01a088ef`
-  was `in_progress` under `peerbox:2868010` from 01:30, so no second session could claim it. Its
+  was `in_progress` under `peer1:2868010` from 01:30, so no second session could claim it. Its
   deliverable is `{"repo":"/home/user/work/GoPi"}` — **no branch, no worktree** — which is the known
   *backfill gap* class (memory #1500: a child that runs `git worktree add` in bash leaves the row
   branchless), not evidence of a concurrent second run.

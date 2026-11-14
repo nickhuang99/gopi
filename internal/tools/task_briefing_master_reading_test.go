@@ -252,7 +252,7 @@ func firstClauseLine(clause string) string {
 //
 // THREE ARMS, and the positive control is what makes the red arm mean anything:
 //
-//	① NO REMOTE UNDER THAT NAME (the measured host shape: one remote, `peerbox`):
+//	① NO REMOTE UNDER THAT NAME (the measured host shape: one remote, `peer1`):
 //	   the clause must say the name is NOT a remote, quote git's own sentence and
 //	   its exit status, name the remotes the tree DOES have, and render a refresh
 //	   command built from the lane's own refspec — reaching the ref without

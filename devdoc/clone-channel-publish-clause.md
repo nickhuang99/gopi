@@ -68,10 +68,10 @@ three by calling both "a clone"; the amendment separates them.
 
 ## Why one face, not both (Rule 28)
 
-Rule 28 puts the **system layer** on peerbox: worktree lifecycle, branch/merge machinery,
+Rule 28 puts the **system layer** on peer1: worktree lifecycle, branch/merge machinery,
 the merger, the ledger, sync, scheduling. This change touches all of that — the spawn
 seam's briefing composition, the ground model, the publish guard's family. It is
-therefore **peerbox's** work, and it was done in this run's own ground on this host. The
+therefore **peer1's** work, and it was done in this run's own ground on this host. The
 feature-side alternative (a `internal/<feature>/` package with product-visible
 behaviour) does not exist here: there is no user-visible surface to add.
 

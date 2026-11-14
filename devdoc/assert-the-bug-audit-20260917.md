@@ -10,7 +10,7 @@ system-layer production code was touched, no gate/guard/baseline weakened, no te
 ## 1. The incident this audit is about
 
 A gopi **client** host finished tasks whose branches never reached the server, and nothing
-reported a problem. Root cause (diagnosed 2026-09-16, HP→peerbox, devdoc/hp-push-diagnosis-20260916.md,
+reported a problem. Root cause (diagnosed 2026-09-16, HP→peer1, devdoc/hp-push-diagnosis-20260916.md,
 memory records #1815/#1816/#1817): in the client close-out chain the **dirty-worktree guard ran
 BEFORE the push**, so one untracked `.evid/` scratch file skipped the whole chain
 (`internal/tools/task_finish_cleanup.go`: the dirty gate at `:1007-1010` returns `Skipped` for the
@@ -166,7 +166,7 @@ never the tolerance:**
 4. **The red evidence for the fix already exists** and is reproduced in §7.3: with the current
    chain, the correct cell's assertion fails with `the finished branch must be DELIVERED even from
    a dirty worktree … exit status 128`, the report showing `skipped=true, steps=[worktree OK:false]`.
-5. The chain's *fix* is the system layer (**Rule 28 → peerbox**); the test split above is the
+5. The chain's *fix* is the system layer (**Rule 28 → peer1**); the test split above is the
    feature-host half 01a0aab8 already carries.
 
 ---
@@ -277,7 +277,7 @@ the reading task in the gate would mean guessing — the failure mode that produ
 over-broad assertions in the first place.
 
 **Placement note (Rule 28):** the gate lives in `internal/tools` as a **test-only** file, not in
-`internal/standards` (the system layer, peerbox's). Promotion to a standards gate
+`internal/standards` (the system layer, peer1's). Promotion to a standards gate
 (`RuleAssertionTotality`) is a follow-up for that host; the allow-map is already shaped for the
 baseline/escape convention the standards gates use.
 
@@ -417,7 +417,7 @@ with an empty branch-only set. Green in isolation: see §7.2.
 - **The three known assertions are NOT fixed** — deliberately: task 01a0aab8 owns them. §3 is the
   written instruction instead.
 - **`TestFinishCleanupClientDirtyStillDelivers` is SKIPPED, not green.** It is the missing cell
-  made visible; turning it green requires the chain fix (system layer, Rule 28 → peerbox /
+  made visible; turning it green requires the chain fix (system layer, Rule 28 → peer1 /
   01a0aab8). Its red run is recorded (§7.3).
 - **The gate is not promoted to `internal/standards`** (system layer). Follow-up, with the
   allow-map already in the baseline/escape shape.

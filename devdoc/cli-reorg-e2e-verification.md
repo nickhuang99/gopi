@@ -119,7 +119,7 @@ gopi: `keyword_search` is RETIRED — use `gopi tool keyword_search` (`gopi tool
 
 ## 5 Not Done（诚实）
 
-- **未修任何一条红**：全部修复都越过本核验任务的边界（改动退役表/命令面属系统层，Rule 28 归 peerbox 的系统层改动，且 Rule 26 要求以"新任务"而非本会话修补）。本报告只做取证与判定。
+- **未修任何一条红**：全部修复都越过本核验任务的边界（改动退役表/命令面属系统层，Rule 28 归 peer1 的系统层改动，且 Rule 26 要求以"新任务"而非本会话修补）。本报告只做取证与判定。
 - **未跑全树**（Rule 27）；只在 §0 列出的包上取证。
 - **`TestCommandsDocGeneratedBlockMatchesSource` / `...RedProofStaleGeneratedBlock` 的"第一处差异行"未逐字摘出**——只采到门的红/绿判定，未采到它打印的 `first difference:` 文本。
 - **§3 #1 的机制只下钻到一半**：观测到 `real 4m40.127s / user 0m0.002s / rc=137`，可断定**不是计算型扫描**而是**阻塞在 I/O**；但**未定位到具体是哪一个文件/哪一个 syscall**（`~/.gopi/sessions` 一级 83949 个条目、含 82M 级 run 目录；`find`/`du` 在其上同样 20–25s 超时而**无输出**，与 `user≈0` 一致）。
@@ -127,7 +127,7 @@ gopi: `keyword_search` is RETIRED — use `gopi tool keyword_search` (`gopi tool
 
 ## 6 范围外、应各自开新任务的问题
 
-1. `gopi session checkpoint list` 默认路径无界扫描 → 系统层缺陷（peerbox）。
+1. `gopi session checkpoint list` 默认路径无界扫描 → 系统层缺陷（peer1）。
 2. `cmd/agent` 13 条红：其中 `TestChatBoundaryTenMegabyteInputStaysBounded`、`TestChatStatus_LiveBlockKeepsTheStateWord` 与 CLI 重组**无关**（chat 边界/状态行），应各自成任务。
 3. `TestAnnotateVerbRunsARealArgvEndToEnd/-h` 的**测试期望与实现相反**：实现打印 usage，测试要求不打印——需判定哪一侧是对的（涉 `internal/text2img`/annotate 语义）。
 

@@ -30,5 +30,5 @@ echo "=== is the launcher in the checkout (working tree / git)? ==="
 ls -l /home/user/work/GoPi/scripts/gopi-worker-up.sh 2>&1
 (cd /home/user/work/GoPi && git cat-file -e master:scripts/gopi-worker-up.sh 2>&1 && echo "  in the git object store" || echo "  NOT in the git object store")
 echo
-echo "=== last fetch from peerbox ==="
+echo "=== last fetch from peer1 ==="
 ls -l /home/user/work/GoPi/.git/FETCH_HEAD 2>&1

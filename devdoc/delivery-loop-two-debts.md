@@ -1,7 +1,7 @@
 <!-- doc-class: normative -->
 # The delivery loop's two debts — "failed" is two facts, and one of them was invisible
 
-**Measured:** 2026-10-22 on this host (hosta), against the live ledger
+**Measured:** 2026-10-22 on this host (host-b), against the live ledger
 `/home/user/.gopi/memory.db` and the clone grounds standing under
 `/home/user/workspace`.
 
@@ -160,7 +160,7 @@ $ GOPI_HOME=<sandbox> gopi task sweep-zombies --kill
   status: failed                                       # ← still honestly failed
 
 $ GOPI_HOME=<sandbox> gopi task retry-delivery
-  01a16ae7-… already-merged branch=master peer=peerbox:~/work/GoPi — the peer's
+  01a16ae7-… already-merged branch=master peer=peer1:~/work/GoPi — the peer's
       master already contains 0592c9ae… — left alone
 ```
 

@@ -11,14 +11,14 @@
 `internal/shot/terminalterm.go` carried `FilmTerminalBinary = "xterm"` and one hard-coded
 flag protocol (`-geometry WxC`, `-e ARGV`, `-T TITLE`, `-l -lf FILE`). The terminal a film
 is photographed in was therefore **not selectable at all**, and the operator's desktop is
-not xterm's: on peerbox it is `xfce4-terminal`, so a film showed a terminal he never sees.
+not xterm's: on peer1 it is `xfce4-terminal`, so a film showed a terminal he never sees.
 
 The instruction that produced this task was explicit about the shape of the fix: *"keep
 xterm as the default without evidence-driven change"*, and the tempting smaller fix —
 `strings.Replace("xterm", "xfce4-terminal")` — is wrong, because the two terminals do not
 share a launch protocol.
 
-## What was measured (2026-10-03, private Xvfb, `peerbox`)
+## What was measured (2026-10-03, private Xvfb, `peer1`)
 
 Every fact below is an observation from this run, not a reading of a manual.
 

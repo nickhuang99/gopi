@@ -3,7 +3,7 @@
 
 **Author:** PA (session 2026-09-20)
 **Status:** applied and verified on both nodes
-**Trigger:** the operator asked *"HP 使用go的.cn对吗？为什么peerbox不也这样子？"*
+**Trigger:** the operator asked *"HP 使用go的.cn对吗？为什么peer1不也这样子？"*
 
 ---
 
@@ -16,8 +16,8 @@ both nodes now carry the same value.
 
 | node | GOPROXY (now) | verified |
 |---|---|---|
-| peerbox | `https://goproxy.cn,https://goproxy.io,direct` | fetched `github.com/google/go-cmp v0.7.0` (a module not in cache) — `go mod tidy` + `go build` rc=0 |
-| HP | `https://goproxy.cn,https://goproxy.io,direct` | `go list -m -versions github.com/muesli/termenv` returns the full version list, byte-identical to peerbox's |
+| peer1 | `https://goproxy.cn,https://goproxy.io,direct` | fetched `github.com/google/go-cmp v0.7.0` (a module not in cache) — `go mod tidy` + `go build` rc=0 |
+| HP | `https://goproxy.cn,https://goproxy.io,direct` | `go list -m -versions github.com/muesli/termenv` returns the full version list, byte-identical to peer1's |
 
 Files: `~/.config/go/env` on each node. Backups: `~/.config/go/env.bak-20260920`
 on both. `GOPROXY` is **per-machine**; the two nodes were independent and
@@ -27,7 +27,7 @@ neither had ever been configured.
 
 ## 1. Measurements (why the default fails here)
 
-Reachability from peerbox, measured, not assumed:
+Reachability from peer1, measured, not assumed:
 
 | endpoint | result |
 |---|---|
@@ -41,7 +41,7 @@ choice; `goproxy.io` is the second hop; `direct` is the last resort (plain
 HTTPS to the module host).
 
 **Note the earlier misreading this corrects:** the believed story was "HP has
-`.cn` and peerbox does not". HP did **not** have it either — HP was succeeding via
+`.cn` and peer1 does not". HP did **not** have it either — HP was succeeding via
 the `direct` fallback (slow, GitHub-dependent, worked by luck). Nothing was
 "chosen" here; the setting had simply never been made on either side.
 
@@ -57,7 +57,7 @@ kind to remove:
 > come from.
 
 Concrete instance from the same session: Bubble Tea appeared to be unbuildable
-on peerbox ("peerbox cannot fetch charmbracelet"), which motivated a cross-machine
+on peer1 ("peer1 cannot fetch charmbracelet"), which motivated a cross-machine
 copy of 10 Go modules from HP's `$GOMODCACHE`. The copy was not wasted — it
 established a genuinely useful `GOPROXY=off` offline-build capability — **but the
 root cause was one missing environment line.** Checking reachability before
@@ -77,12 +77,12 @@ HP's `~/.config/go/env` additionally carries:
 GOFLAGS=-mod=mod
 ```
 
-peerbox has **no** `GOFLAGS` (i.e. Go's default `-mod=readonly`).
+peer1 has **no** `GOFLAGS` (i.e. Go's default `-mod=readonly`).
 
 **What it does:** with `-mod=mod`, `go build` / `go test` will silently **rewrite
 `go.mod` / `go.sum`** instead of failing with "go.mod needs updating".
 **The failure mode it can create:** editing on HP rewrites `go.mod`; editing the
-same tree on peerbox then errors; `git status` shows a modified `go.mod` — a
+same tree on peer1 then errors; `git status` shows a modified `go.mod` — a
 conflict that appears **only** because the two machines differ.
 
 **Why it exists (inferred, not confirmed):** the HP branch

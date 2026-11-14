@@ -1,7 +1,7 @@
 <!-- doc-class: normative -->
 # Cross-host branch visibility — a local ref is not a delivery
 
-**Status**: measured 2026-10-12 on hosta (HP, client) against peerbox (peer),
+**Status**: measured 2026-10-12 on host-b (HP, client) against peer1 (peer),
 while recovering the stranded fix of task `01a12d6b` (row
 `01a12d6b-b00a-7d1d-9477-1be79b5a8fe7`, commit `04fda64e2`).
 
@@ -24,8 +24,8 @@ The instrument that proves it is local: `git -C <main-checkout> log <branch>`.
 There is a SECOND host, and it is a different question. The peer holds no refs of
 ours and no objects of ours beyond what a transport (`git fetch`/`git push`,
 the push-back lane, the merge/adoption chain) put there. On HP — whose ledger
-carries `task_sync: false` and whose `remote.peerbox.pushurl` is absent — a branch
-created and committed locally is therefore **invisible to peerbox no matter how it
+carries `task_sync: false` and whose `remote.peer1.pushurl` is absent — a branch
+created and committed locally is therefore **invisible to peer1 no matter how it
 was committed**, and no local command can tell you otherwise.
 
 So the honest check for "is my deliverable visible to the peer" is a read at the
@@ -46,9 +46,9 @@ message (`.../sessions/01a12d6b-.../output.log`):
 and a probe from the peer two hours later:
 
 ```
-ssh peerbox 'cd /home/user/work/GoPi && git cat-file -e 04fda64e2'
-→ PEER-LACKS-OBJECT                     # the object is absent from peerbox entirely
-ssh peerbox '... git for-each-ref | grep 01a12d6b'
+ssh peer1 'cd /home/user/work/GoPi && git cat-file -e 04fda64e2'
+→ PEER-LACKS-OBJECT                     # the object is absent from peer1 entirely
+ssh peer1 '... git for-each-ref | grep 01a12d6b'
 → (nothing)                             # and no ref carries it either
 ```
 

@@ -368,10 +368,10 @@ finding 030-env-node-role-client <<'FINDING_EOF'
 **实测。** 本条目两臂的唯一差别是 `GOPI_NODE_ROLE`。arm B 打出：
 
 ```
-[gopi] node: peerbox (client)
+[gopi] node: peer1 (client)
 ```
 
-arm A（不设）里 `grep -c -- 'node: peerbox'` = 0 —— 也就是说**不声明角色的节点在启动横幅里一个字都不说**。
+arm A（不设）里 `grep -c -- 'node: peer1'` = 0 —— 也就是说**不声明角色的节点在启动横幅里一个字都不说**。
 一个既不是 server 也不是 client 的节点（未声明）与一个「声明了但推导结果相同」的节点，在这个面上
 输出完全一致；`config/node_role.go:46` 的注释说 resolve 结果被缓存，但**没有任何一行**说明
 「这个角色是哪条通道决定的（flag / env / settings / 默认）」——而同一个仓库里
@@ -384,7 +384,7 @@ arm A（不设）里 `grep -c -- 'node: peerbox'` = 0 —— 也就是说**不�
 是一条已经把成熟做法写在隔壁的横幅，自己没用上。
 
 **可提请的改法（不是本条目要做的）**：`[gopi] node:` 行按 `task-sync` 横幅的形状补上 decided-by
-（`peerbox (client, from GOPI_NODE_ROLE)` / `peerbox (server, default)`）。本条目只记录测量结果。
+（`peer1 (client, from GOPI_NODE_ROLE)` / `peer1 (server, default)`）。本条目只记录测量结果。
 FINDING_EOF
 
 finding 031-env-sync-peers <<'FINDING_EOF'
@@ -510,7 +510,7 @@ finding 035-env-compute-nodes <<'FINDING_EOF'
 ## 真缝（最重的一条）：`GOPI_COMPUTE_NODES` 的消费面没有活着的调用者
 
 **实测。** 本条目的两臂只差 `GOPI_COMPUTE_NODES`（JSON 白名单）。arm B 多出一行
-`[gopi] node: peerbox`（白名单把 role 推成了 client）；arm A 里同一串 0 次。也就是说：
+`[gopi] node: peer1`（白名单把 role 推成了 client）；arm A 里同一串 0 次。也就是说：
 **这个变量在本条目里唯一可观测的效果，是一个与「远程派发」无关的副作用**（角色推导）。
 
 白名单本身一个字节都不打印。于是「这次运行到底有没有把活派到 hp 上」在本条目的输出里
@@ -736,8 +736,8 @@ FINDING_EOF
 
 # ── Oracle 行（每条 3 行，全部是刚跑出来的计数） ──────────────────────────────
 ochead 030 env-node-role-client
-oc 030 env-node-role-client A "node: peerbox" "（A 不设该变量：无角色横幅）"
-oc 030 env-node-role-client B "node: peerbox" "（B 设 client：横幅出现）"
+oc 030 env-node-role-client A "node: peer1" "（A 不设该变量：无角色横幅）"
+oc 030 env-node-role-client B "node: peer1" "（B 设 client：横幅出现）"
 ocdiff 030 env-node-role-client
 
 ochead 031 env-sync-peers
@@ -845,7 +845,7 @@ cat > "$W/bug-compute-nodes.md" <<'BUG_EOF'
   worker 只调 runTaskRunOnce（cmd/agent/cli_tasks_worker.go:965）——那条腿唯一的入口就是它自己。
 
 实测（本批 035-env-compute-nodes 条目）：两臂只差这一个变量，唯一可观测的差异是一个**副作用**
-（启动横幅 `[gopi] node: peerbox` —— 白名单把 role 推成了 client），白名单本身一个字节都不打印；
+（启动横幅 `[gopi] node: peer1` —— 白名单把 role 推成了 client），白名单本身一个字节都不打印；
 "这次到底派没派活" 在输出里无法回答。
 
 DONE 的定义（三选一，由执行者判断）：

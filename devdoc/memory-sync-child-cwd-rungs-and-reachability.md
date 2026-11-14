@@ -25,7 +25,7 @@ worktree) was already an ancestor of the running binary on this host. Measured o
 
 ```
 pid=2204429 ppid=2038486 cwd=/home/user/workspace/01a17887-34f1-74aa-abf1-006952daec85
-   argv=/home/user/work/gopi/bin/gopi memory sync --peer peerbox --push --db /home/user/.gopi/memory.db
+   argv=/home/user/work/gopi/bin/gopi memory sync --peer peer1 --push --db /home/user/.gopi/memory.db
    started 2026-10-26 22:11:04
 ```
 
@@ -140,7 +140,7 @@ Red proofs (each: disable → FAIL → restore → `sha256sum` identical):
 ## 6. Parallel `--push`: the status and what it costs (behaviour NOT changed)
 
 Measured 2026-10-26, three simultaneous pushes, each a separate
-`gopi memory sync --peer peerbox --push --db /home/user/.gopi/memory.db` with its own
+`gopi memory sync --peer peer1 --push --db /home/user/.gopi/memory.db` with its own
 `ssh … --serve-assets` leg:
 
 | pid | launcher's ground | started | cwd |

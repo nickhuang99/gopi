@@ -11,7 +11,7 @@ package tools
 // measured residue: a boundary that could push while every OTHER boundary was
 // fenced.
 //
-// The measured residue (2026-10-26, peerbox's own repository):
+// The measured residue (2026-10-26, peer1's own repository):
 //
 //	$ git log --format='%H|%an <%ae>|%s' feat/exists
 //	3043963598210ca6d6edb4075feb389a77de7c5e|t <t@t>|work

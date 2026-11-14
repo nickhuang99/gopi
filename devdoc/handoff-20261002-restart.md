@@ -10,7 +10,7 @@
 
 ## 1. What is running RIGHT NOW (restart will kill these)
 
-### peerbox — 4 workers, 4 tasks in_progress
+### peer1 — 4 workers, 4 tasks in_progress
 
 | task | worker pid | worktree | ahead | summary |
 |---|---|---|---|---|
@@ -23,7 +23,7 @@
 
 **What IS at risk:** the in-flight `make test-budget` / `go build` runs die mid-flight, and each run's LLM conversation loses its live context. Their ledger rows will be left `in_progress` with a dead `claimed_by` pid → **they become zombies**. See §4 for the recovery command.
 
-### peerbox — one long-lived merger loop
+### peer1 — one long-lived merger loop
 
 `3119319  129660  gopi merge --every 5m` (started ~10:44 ago, PPID 129660 = a shell).
 
@@ -32,11 +32,11 @@
 > host can print this row today. Kept as the record of what was running then.)*
 This is a foreground loop. **If its parent shell dies with the restart, it dies too** — that is fine and expected (nick: "launcher 死了就死了"). No state to lose.
 
-### peerbox — one live chat surface (nick's own)
+### peer1 — one live chat surface (nick's own)
 
 `133940  131479  gopi chat --tools --dump-screen` (13h42m). This is **nick's own interactive session** — do not kill it. It has `--dump-screen` armed, so its dump is being written and `gopi ui_state --target chat` can read it.
 
-### peerbox — the round-1/2/3 four-vendor probe leftovers
+### peer1 — the round-1/2/3 four-vendor probe leftovers
 
 Many `/usr/bin/dbus-daemon ... at-spi/bus` + `gvfsd-fuse` children under
 `~/.gopi/sessions/01a0f88a-a830-.../probe/{rt,rt3,runtime,armE/scratch}/`.
@@ -52,16 +52,16 @@ These are all children of the `01a0f88a` task above (the X/xterm probe task). Th
 
 ## 2. State of the fleet (correct as of this handoff)
 
-| | peerbox | HP |
+| | peer1 | HP |
 |---|---|---|
 | master | `682e417d` | `682e417d` (aligned, divergence 0 0) |
 | ledger | see below | completed 1885 / cancelled 1065 / failed 204 / verified 68 |
 | workers | 4 | 1 |
 | merger loop | yes (pid 3119319) | yes (pid 2171337) |
 
-peerbox ledger (from the same query as the running tasks above): 4 in_progress, 17 pending.
+peer1 ledger (from the same query as the running tasks above): 4 in_progress, 17 pending.
 
-**peerbox pending queue (17 rows, priority-first)** — these are the "next work" if a worker frees up:
+**peer1 pending queue (17 rows, priority-first)** — these are the "next work" if a worker frees up:
 
 ```
 01a0f8c2-148b  answer band 渲染 CJK 行时行尾多一个重复字符（"边界。界。"）
@@ -86,7 +86,7 @@ peerbox ledger (from the same query as the running tasks above): 4 in_progress, 
 
 ### 3a. Four-vendor competition — round 3 DONE and backflowed
 
-peerbox `682e417d` — `docs(report): round-3 four-vendor competition`. Brought in **file-level from HP (hp/master `afe3fb5a`)**, never by branch merge.
+peer1 `682e417d` — `docs(report): round-3 four-vendor competition`. Brought in **file-level from HP (hp/master `afe3fb5a`)**, never by branch merge.
 
 Results (all measured, not judged):
 
@@ -100,7 +100,7 @@ Results (all measured, not judged):
 
 ### 3b. HP ledger fully cleaned
 
-- Cancelled ghost row `01a0ece0-ede2` (source=server, from-peerbox, zero claim stamp, no session dir ⇒ "orphaned by construction"; its subject was already cancelled on peerbox).
+- Cancelled ghost row `01a0ece0-ede2` (source=server, from-peer1, zero claim stamp, no session dir ⇒ "orphaned by construction"; its subject was already cancelled on peer1).
 - Cancelled zombie row `01a0f8a8` — **this was the round-3 T3 experiment's own gopi leg**, deliberately SIGKILLed at 60s to test resume (kill landed at 53/60, resumed session `675c49eb`).
 - Cancelled 3 × round-3 T5 experiment residue rows (`01a0f8a5-2956/-2d40/-2d87`).
 - Killed zombie worker `635823` (4d23h, cwd=/, PPID 1) + 2 orphan `tee` processes — this was the actual cause of round-2 T6's "submitted then waited 220s, nobody claimed".
@@ -111,7 +111,7 @@ HP now: **pending 0 / claimed 0 / in_progress 0.**
 
 **`/home/user/.hermes/system.md`** (47,469 B, mtime 2026-09-23 17:14; **line 2 declares it was generated from `system.db` at 2026-07-17** — so its content is ~2 months staler than its own mtime).
 
-It is the source of the `Infrastructure Overview` block injected into **my** system prompt. It contains a lot of stale facts: RPi5 IP written as .14 (actual .15), Ollama/hosta written as .13 (actual .12), NAS and HP **both .5**, WiFi AP .12 colliding with hosta, DeepSeek written as `deepseek-v4-pro ¥1/M` ( **v4-pro retired 2026-09-14**, now routed to flash), glow-moon written as "2254 tasks, 7 cronjobs" (cronjobs now 0), and the project table is missing gopi/GoPi/Maps entirely.
+It is the source of the `Infrastructure Overview` block injected into **my** system prompt. It contains a lot of stale facts: RPi5 IP written as .14 (actual .15), Ollama/host-b written as .13 (actual .12), NAS and HP **both .5**, WiFi AP .12 colliding with host-b, DeepSeek written as `deepseek-v4-pro ¥1/M` ( **v4-pro retired 2026-09-14**, now routed to flash), glow-moon written as "2254 tasks, 7 cronjobs" (cronjobs now 0), and the project table is missing gopi/GoPi/Maps entirely.
 
 **BUT — and this is the key correction:** `gopi chat` **cannot read this file.** gopi is an independent binary that does not recognise Hermes profile directories; it reads **`~/work/GoPi/GOPI.md`**. So if gopi chat is reporting stale environment info, **the source to fix is `GOPI.md`, not `system.md`** — these are two different injection channels hit by the same disease (hand-maintained environment facts rot).
 
@@ -164,7 +164,7 @@ HP currently has 1 worker that nick started; if it died with the restart, restar
 - **Killed runs are resume candidates, not merge candidates.**
 - **`gopi task update` can only change status** — no `--priority`, no content edit. Already-submitted rows cannot be reordered; to raise priority you must `gopi task run <full-id>`.
 - **Always give the full task id** — prefixes are not accepted by the CLI, and prefixes collide in the ledger.
-- **Never start VPN on peerbox** (hijacks routes → DeepSeek API breaks).
+- **Never start VPN on peer1** (hijacks routes → DeepSeek API breaks).
 - **Test DB / scratch work goes in `~/workspace/`, never `/tmp`** (`/tmp` is on the cramped `/` partition).
 - **Every shell command must have a `timeout`.** Exit 124 = that path is blocked right now; switch to a lighter method, don't raise the timeout.
 
@@ -172,7 +172,7 @@ HP currently has 1 worker that nick started; if it died with the restart, restar
 
 ## 6. Housekeeping debt (known, not blocking)
 
-- peerbox `.git/gc.log` exists → automatic git gc is disabled, so unreachable loose objects accumulate. `git prune` is destructive (unreachable objects may be another run's only surviving work) — **not run; needs a decision**.
+- peer1 `.git/gc.log` exists → automatic git gc is disabled, so unreachable loose objects accumulate. `git prune` is destructive (unreachable objects may be another run's only surviving work) — **not run; needs a decision**.
 - HP banner reports `failed-needs-reissue: 138 failed row(s), no successor row and no "resolved" tag`. Task `01a0f3cf` (the predicate that surfaces this) is already live. Reissue-or-tag is outstanding.
 - `~/.hermes/system.md` staleness (see §3c) — source identified, fix not dispatched.
 - `~/work/GoPi/GOPI.md` possibly stale (what gopi chat actually reads) — not yet audited.
@@ -181,7 +181,7 @@ HP currently has 1 worker that nick started; if it died with the restart, restar
 
 ## 7. Deliverables from this session
 
-- peerbox `682e417d` — round-3 competition report + T5 recipe fix (backflowed from HP).
+- peer1 `682e417d` — round-3 competition report + T5 recipe fix (backflowed from HP).
 - `tasks/01a0f8960d5c789fa36dd946cecf4062-report.md` — the round-3 report (T3/T5/T6, full evidence index, honest Not Done).
 - `briefings/brief-four-vendor-comparison-task-set.md` — T5 recipe corrected: `pending→completed` marked illegal, the legal three-step written in, plus the measured gate matrix.
 - HP evidence root: `~/.gopi/sessions/01a0f896-0d5c-789f-a36d-d946cecf4062/{evidence,env,probes,lab}/`.

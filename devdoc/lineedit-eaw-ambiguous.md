@@ -171,7 +171,7 @@ $ go test ./internal/standards/ -run 'ConfigDoc' -count=1
 ok  	github.com/nick/gopi/internal/standards	7.271s
 
 $ make test-budget PKGS='./internal/config'
-stamp: 2026-10-06T10:31:20+08:00 host=peerbox pkg=./internal/config budget=25m elapsed=28s exit=0 outcome=pass
+stamp: 2026-10-06T10:31:20+08:00 host=peer1 pkg=./internal/config budget=25m elapsed=28s exit=0 outcome=pass
 ```
 
 **Red before green (Rule 10.4).** The fix in the production path was reverted to

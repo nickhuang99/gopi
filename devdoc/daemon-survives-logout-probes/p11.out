@@ -36,7 +36,7 @@ active
 0000000000000000: 00000003 00000000 00000000 0001 03 50163739 /run/user/117/bus
 0000000000000000: 00000003 00000000 00000000 0001 03 50162481 /run/user/117/at-spi/bus
 === B. exact journal window 07:26:10 .. 07:26:30 today (all units) ===
-Sep 15 07:26:20 peerbox org.xfce.ScreenSaver[2586]: Xlib:  extension "DPMS" missing on display ":1".
+Sep 15 07:26:20 peer1 org.xfce.ScreenSaver[2586]: Xlib:  extension "DPMS" missing on display ":1".
 === C. exact journal window 2026-09-14 22:39:05 .. 22:39:15 (the dir unlink) ===
 === D. any process whose cwd/fd lives directly under /run/user/1000 (potential unlinker) ===
 === E. the destructive primitives that COULD unlink a socket path ===

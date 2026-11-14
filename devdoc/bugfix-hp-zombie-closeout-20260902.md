@@ -11,19 +11,19 @@
 > date, not as a list of what runs today; `internal/config/sync_knob_removal_gate_test.go`
 > is the gate that keeps the knob from coming back.
 
-**Date**: 2026-09-02 · **Node**: HP (client→peerbox) · **Branch**: `feat/hp-zombie-closeout`
+**Date**: 2026-09-02 · **Node**: HP (client→peer1) · **Branch**: `feat/hp-zombie-closeout`
 **Commit**: `019c464` · **Trigger incident**: 3 in_progress rows, no live process, updated_at frozen 1h+, PA cancelled all three by hand at 08:2x.
 
 ## Root cause per row (file:line evidence)
 
 ### Row 1 — `78d40ad1…` (auto, summary "tash run t-1788304050", no session file)
-- **Row form**: auto mirror of the child runner spawned by peerbox's `task run t-1788304050`. TaskNew created it with `task_id = session uuid` (pre-consolidation code, `internal/agent/taskregister.go` at 941b40c: `TaskNew(summary, sessionID, sessionID, model)`), tags `from-peerbox` — it was **imported by memsync, not created locally**; the child session JSONL never existed on HP (the child ran on peerbox; only the row was mirrored).
-- **Why no close-out**: row 2's peerbox source went terminal (failed/cancelled); TaskIngest (the HTTP mirror that would carry terminal status forward) was **retired on master** (`3b3c7ec`, dead-code sweep 2026-09-02) — the ingest path could no longer receive peerbox's terminal push. The memsync delta engine only mirrors **forward** statuses (`internal/tools/memory_sync_task.go:890` `r.Status == ""` live-mirror guard; terminal rows are not downgraded and there is no "expire mirror whose source is terminal" mechanism). With no serve tick and no sync pass, the mirror stayed in_progress forever.
+- **Row form**: auto mirror of the child runner spawned by peer1's `task run t-1788304050`. TaskNew created it with `task_id = session uuid` (pre-consolidation code, `internal/agent/taskregister.go` at 941b40c: `TaskNew(summary, sessionID, sessionID, model)`), tags `from-peer1` — it was **imported by memsync, not created locally**; the child session JSONL never existed on HP (the child ran on peer1; only the row was mirrored).
+- **Why no close-out**: row 2's peer1 source went terminal (failed/cancelled); TaskIngest (the HTTP mirror that would carry terminal status forward) was **retired on master** (`3b3c7ec`, dead-code sweep 2026-09-02) — the ingest path could no longer receive peer1's terminal push. The memsync delta engine only mirrors **forward** statuses (`internal/tools/memory_sync_task.go:890` `r.Status == ""` live-mirror guard; terminal rows are not downgraded and there is no "expire mirror whose source is terminal" mechanism). With no serve tick and no sync pass, the mirror stayed in_progress forever.
 - **Liveness optics**: `claimed_by` was empty (TaskStart CAS never writes claimed_by; only TaskNext/TaskResumeClaimed do), so the zombie evidence chain's pid layer degraded to "suspected" (`internal/tools/taskzombie.go:150`), and the row's session-mtime layer had no file to check.
 
-### Row 2 — `t-1788304050` (mirror of peerbox task, stuck in_progress)
-- Created 07:07:30 (source=human, `from-peerbox`); peerbox side reached terminal ~07:23.
-- **Close-out mechanisms that all require a process**: FinishSessionTask fires at session exit of the runner (`internal/agent/taskregister.go:270`); stale sweep fires on serve pass first step / `task run` entry / `resume` entry (`cmd/agent/cli_tasks.go:3083`, `cmd/agent/cli_resume.go:172`); sync (`runTaskSyncTick`) rides the serve tick too (`cmd/agent/cli_tasks.go:1280`). HP had **none**: no serve daemon, no worker loop (ps showed zero gopi processes). The peerbox→HP git/db sync cadence (serveGitSyncSweep 15min, GOPI_SYNC_GIT_INTERVAL) also only runs inside a serve pass.
+### Row 2 — `t-1788304050` (mirror of peer1 task, stuck in_progress)
+- Created 07:07:30 (source=human, `from-peer1`); peer1 side reached terminal ~07:23.
+- **Close-out mechanisms that all require a process**: FinishSessionTask fires at session exit of the runner (`internal/agent/taskregister.go:270`); stale sweep fires on serve pass first step / `task run` entry / `resume` entry (`cmd/agent/cli_tasks.go:3083`, `cmd/agent/cli_resume.go:172`); sync (`runTaskSyncTick`) rides the serve tick too (`cmd/agent/cli_tasks.go:1280`). HP had **none**: no serve daemon, no worker loop (ps showed zero gopi processes). The peer1→HP git/db sync cadence (serveGitSyncSweep 15min, GOPI_SYNC_GIT_INTERVAL) also only runs inside a serve pass.
 - So the mirror row had no in-process writer left AND no sweep trigger to discover it — the exact "trigger island" shape fixed for serve in `feat/stale-sweep-trigger 941b40c`, now reappearing on the read side.
 
 ### Row 3 — `t-1788275530` (LLM-submitted, created 23:12 prev day)

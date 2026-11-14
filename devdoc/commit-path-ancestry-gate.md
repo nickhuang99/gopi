@@ -56,7 +56,7 @@ has already fetched the peer's master into `refs/remotes/gitPushcheck/master`
 extra round-trip. A refusal here keeps the junk out of the peer entirely.
 
 The server/receive side was rejected deliberately (the card's own guidance): no
-git hook in this repo runs on a push into the peerbox checkout, and putting the
+git hook in this repo runs on a push into the peer1 checkout, and putting the
 rule there would place logic where no test can see it.
 
 ## The predicate (the exact form, and why)

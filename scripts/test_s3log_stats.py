@@ -36,7 +36,7 @@ def load():
 
 # A real line (from the actual corpus), plus a key-with-spaces variant.
 LINE_403 = (
-    "OWNER staroceans.org [09/Sep/2026:06:35:56 +0000] 10.12.89.137 - REQID123 "
+    "OWNER staroceans.org [09/Sep/2026:06:35:56 +0000] 192.0.2.137 - REQID123 "
     "WEBSITE.GET.OBJECT myprojects/linux/arch/x/irq.h "
     '"GET /myprojects/linux/arch/x/irq.h HTTP/1.1" 403 AccessDenied 15003 15003 '
     '32 31 "-" "Mozilla/5.0 (compatible; Googlebot/2.1; +http://www.google.com/bot.html)" '

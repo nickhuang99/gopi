@@ -3,7 +3,7 @@
 
 - **日期**: 2026-10-08
 - **任务**: `01a11829c82f7dc28c16469ea98b4a08`（branch `task/01a11829c82f7dc28c16469ea98b4a08`）
-- **主机**: peerbox（i7 CPU-only，PulseAudio，无 GPU）
+- **主机**: peer1（i7 CPU-only，PulseAudio，无 GPU）
 - **性质**: 只调研取证。**没有改一行代码、没有装任何 cron/daemon/服务。** 需要改代码的部分已按 Rule 26 另提任务（见 §6）。
 - **证据目录**: `/home/user/.gopi/sessions/01a11829-c82f-7dc2-8c16-469ea98b4a08/artifacts/{q2,q3}`（Rule 30/37：非分支证据不落工作树）
 - **凭证**: 全程只从 `~/.doubao/apikey.txt` 由程序自己读取，本报告不出现明文 key。

@@ -25,7 +25,7 @@ that sentence:
 
 ## The measurement (this host, 2026-10-12)
 
-Host **hosta**, 8 cores, load average **7.7–12.8** during the acceptance
+Host **host-b**, 8 cores, load average **7.7–12.8** during the acceptance
 runs (`uptime` at 14:20 through 14:34). Rule 27: no load was generated — only
 this fixture's own children were measured.
 

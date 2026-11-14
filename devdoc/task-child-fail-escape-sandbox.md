@@ -32,7 +32,7 @@ claimed five real operator rows and terminally burned them:
 | `01a0a92d-575d-…` | 15:57:56 | failed |
 | `01a0a92d-77a0-…` | 15:58:06 | failed |
 
-All five carry `claimed_by = peerbox:558874` and the escape's fingerprint detail.
+All five carry `claimed_by = peer1:558874` and the escape's fingerprint detail.
 The ledger they were burned in was the operator's **real** `~/.gopi/memory.db`.
 
 **Measured correction to the count**: the incident actually burned **six** rows

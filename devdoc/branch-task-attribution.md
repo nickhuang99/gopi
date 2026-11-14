@@ -47,7 +47,7 @@ Row `01a0a996-dde5-77a4-bbb2-de6087f155e6` was live while this work was done:
 
 ```
 status      = in_progress
-claimed_by  = peerbox:3680671            (that pid is GONE — the wrapper was killed)
+claimed_by  = peer1:3680671            (that pid is GONE — the wrapper was killed)
 deliverable = {"branch":"fix/live-runner-not-dead-holder",
                "worktree":"/home/user/workspace/gopi-live-veto"}
 refs/heads/fix/live-runner-not-dead-holder   → no longer exists (already merged)

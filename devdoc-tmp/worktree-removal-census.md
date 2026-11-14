@@ -49,7 +49,7 @@ $ grep "^  --- FAIL" test-budget.log | grep -v REFUSED
 
 失败的**原因**就是我自己写进拒绝里的字符串 —— 每个 e2e walk 都建一个**没有 `dev_repo`** 的 repo，然后期待仍然拿到 ground。它们是 `cmd/agent/task_ground_e2e_test.go:60`、`task_ground_announcement_e2e_test.go:64`、`cli_tasks_recycle_e2e_test.go:135` 这些真实走查。
 
-**根因（5-why）**：为什么我以为通道死了 → 因为本机 207/230 是 clone → 为什么本机是这样 → 因为本机 `settings.json` 声明了 `dev_repo`（peerbox）→ 所以 linked 形态在本机**很少被走到** → **但"本机很少走到" ≠ "不可达"**：它是**没声明 `dev_repo` 的宿主（新装的默认状态）的唯一 ground 通道**。我把"我这个视图里没有"当成了"世界上没有"（`GOPI.md` §4.9 记的同一条错误，这是它的第三次复发）。
+**根因（5-why）**：为什么我以为通道死了 → 因为本机 207/230 是 clone → 为什么本机是这样 → 因为本机 `settings.json` 声明了 `dev_repo`（peer1）→ 所以 linked 形态在本机**很少被走到** → **但"本机很少走到" ≠ "不可达"**：它是**没声明 `dev_repo` 的宿主（新装的默认状态）的唯一 ground 通道**。我把"我这个视图里没有"当成了"世界上没有"（`GOPI.md` §4.9 记的同一条错误，这是它的第三次复发）。
 
 **处理**：`git checkout --` 回退所有 `internal/tools/*` 与 `internal/agent/*` 的改动，创建臂原样保留。**没有一行错误改动进 master。**
 
@@ -176,10 +176,10 @@ r3 - r2 =  0   r2 - r3 = 4   r2 & r3 = 9
 本机 ~/workspace：23 个 linked worktree 目录（15 条注册 / 8 条悬空），207 个 clone ground
 #   这一行是**写入本节那一刻**的数。10:53 重测是 22（14 / 8），11:20 复测仍是 22 —— 少的那条
 #   是 base-4fb9f7d-gate，它在 10:41 之后、10:46 之前连同 owner 一起消失了（见 §7.1 的自我更正）
-peerbox  /home/user/work/gopi：git worktree list → 1 条（只有主检出）
+peer1  /home/user/work/gopi：git worktree list → 1 条（只有主检出）
 ```
 
-也就是说 **peerbox 上 ground 通道的残留为零，本机不为零**。删清理通道的正确前置条件是"两个宿主都归零"，现在只满足一个。
+也就是说 **peer1 上 ground 通道的残留为零，本机不为零**。删清理通道的正确前置条件是"两个宿主都归零"，现在只满足一个。
 
 **C2 — `worktree` 名字下的生产代码是混合体，不是可删单元。** 两个不同的问题，两个不同的数（别混）：
 
@@ -224,7 +224,7 @@ internal/tools/task_run_ground.go:791        ← briefing 形态句子的第三�
 ```
                     ┌───────────────────────────────┐
                     │ settings dev_repo              │
-                    │ peerbox:/home/user/work/gopi     │
+                    │ peer1:/home/user/work/gopi     │
                     └───────────────┬───────────────┘
                                     │ 声明式
                     ┌───────────────▼───────────────┐
@@ -353,7 +353,7 @@ grep -n 'func taskResumeGroundSharedCheckoutReason' internal/tools/task_resume_g
 #   期望：被拒绝，且理由是 settings 的 "repos" 表声明了它
 
 # ⑥ 宿主残留现状（两条命令问的不是同一件事，必须都跑）
-ssh peerbox git -C /home/user/work/gopi worktree list                          # peerbox 的 production
+ssh peer1 git -C /home/user/work/gopi worktree list                          # peer1 的 production
 git -C /home/user/work/gopi worktree list                                   # 本机 production（小写目录名）
 ls -d /home/user/work/gopi/.git/worktrees/*/ 2>/dev/null | wc -l            # 期望：0（生产仓库自己是干净的）
 git -C /home/user/work/GoPi worktree prune --dry-run -v                     # 老检出（大写 P）：期望无输出
@@ -460,12 +460,12 @@ gopi-01a12bfd-verify2 testsuite/chat_paste_spill_pty_test.go + 146 行（staged�
 $ git -C /home/user/work/GoPi log -1 --format='%h %ci'      # 0592c9ae4 2026-10-18
 $ git -C /home/user/work/gopi  log -1 --format='%h %ci'     # 6e3191153 2026-10-27
 $ git -C /home/user/work/GoPi config --get remote.origin.url # (空)
-$ git -C /home/user/work/gopi  config --get remote.origin.url # peerbox:/home/user/work/gopi
+$ git -C /home/user/work/gopi  config --get remote.origin.url # peer1:/home/user/work/gopi
 $ ls -d /home/user/work/gopi/.git/worktrees/*/ | wc -l        # 0 —— 生产仓库自己是干净的
 ```
 
 `/home/user/work/GoPi` 是**大写 P 的那个老检出**：origin 为空、HEAD 停在 10-18，
-已经被 `/home/user/work/gopi`（小写，origin 指向 peerbox）取代。§7.2 里四条
+已经被 `/home/user/work/gopi`（小写，origin 指向 peer1）取代。§7.2 里四条
 `owner=GoPi` 的 worktree 全都挂在它上面。所以「本机有 4 条 worktree 注册」这句话，
 说准确些是「**一个废弃的检出上挂着 4 条**」——生产仓库一条都没有。
 
@@ -599,15 +599,15 @@ $ bash ~/.gopi/sessions/01a17aba-da29-72f5-b7e9-b3c5fb449d77/strict-collectable.
   # a hand-written quick list forgets, and §7.8.6 is what that costs.
 STRICT collectable clone grounds: 9  (1591 MB)
 
-  139M 01a16991-2e81-7889-a7bf-b598dbadecf7  NO-anchor   peerbox:/home/user/work/gopi
-  139M 01a16a6a-a297-7115-bf3c-df5eeb38d941  NO-anchor   peerbox:/home/user/work/gopi
-  139M 01a16a6a-ca22-7759-a53b-f8ea02eb91db  NO-anchor   peerbox:/home/user/work/gopi
-  139M 01a16a6a-f3e8-70e2-9c20-b715c93143fb  NO-anchor   peerbox:/home/user/work/gopi
-  139M 01a16d0f-2874-7b36-b65f-84af4a0f50fc  NO-anchor   peerbox:/home/user/work/gopi
-  236M 01a16deb-73df-7a96-851d-97297f619246  anchored    peerbox:/home/user/work/gopi
-  224M 01a16f9d-88f3-7b53-99a3-130dbb12aa9a  anchored    peerbox:/home/user/work/gopi
-  231M 01a16fb3-7639-767e-8c84-1cd1eda1aed5  anchored    peerbox:/home/user/work/gopi
-  205M 01a173cb-d40d-76cf-8148-59adb464a3aa  anchored    peerbox:/home/user/work/gopi
+  139M 01a16991-2e81-7889-a7bf-b598dbadecf7  NO-anchor   peer1:/home/user/work/gopi
+  139M 01a16a6a-a297-7115-bf3c-df5eeb38d941  NO-anchor   peer1:/home/user/work/gopi
+  139M 01a16a6a-ca22-7759-a53b-f8ea02eb91db  NO-anchor   peer1:/home/user/work/gopi
+  139M 01a16a6a-f3e8-70e2-9c20-b715c93143fb  NO-anchor   peer1:/home/user/work/gopi
+  139M 01a16d0f-2874-7b36-b65f-84af4a0f50fc  NO-anchor   peer1:/home/user/work/gopi
+  236M 01a16deb-73df-7a96-851d-97297f619246  anchored    peer1:/home/user/work/gopi
+  224M 01a16f9d-88f3-7b53-99a3-130dbb12aa9a  anchored    peer1:/home/user/work/gopi
+  231M 01a16fb3-7639-767e-8c84-1cd1eda1aed5  anchored    peer1:/home/user/work/gopi
+  205M 01a173cb-d40d-76cf-8148-59adb464a3aa  anchored    peer1:/home/user/work/gopi
 ```
 
 9 条里只有 **4 条**与 `sweep-worktrees` 的 collectable 名单重合；其余 5 条**完全没有
@@ -759,7 +759,7 @@ $ du -sm bin .gopi-tags cmd/agent/.gopi-tags
 
 233 MB 里有 **92 MB 是今晨 08:12–08:21 在它里面编译出的产物**（`bin/gopi` 66 MB、
 cscope 风格的 tags 文件 26 MB），`.git/index` 的时间正是 08:08:03、`git reflog` 只有
-一条 `clone: from peerbox:/home/user/work/gopi`。**它不是一团陈旧残留，是今天早上某个
+一条 `clone: from peer1:/home/user/work/gopi`。**它不是一团陈旧残留，是今天早上某个
 进程刚做完一整轮 build 的地方** —— 判据 ③ 的年龄闸正是为这种目录设的，而它工作得
 完全正确：**旧尺把它放进待删清单，是因为旧尺没有那道闸，不是因为 v3 数错了。**
 

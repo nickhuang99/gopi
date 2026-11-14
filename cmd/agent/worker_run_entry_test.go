@@ -69,7 +69,7 @@ func TestTaskRunIsRetiredAndPointsAtTheWorker(t *testing.T) {
 		{"with row", []string{CliVerbTask, taskverbs.Run, "t-anything"}},
 		{"next (the old claim spelling)", []string{CliVerbTask, taskverbs.Run, taskverbs.Next}},
 		{ // The exact shape the dispatch path records as run_cmd.
-			"remote report-back argv", []string{CliVerbTask, taskverbs.Run, "t-dispatch", flagReportTo, "peerbox", flagRepo, "peerbox:~/work/GoPi"}},
+			"remote report-back argv", []string{CliVerbTask, taskverbs.Run, "t-dispatch", flagReportTo, "peer1", flagRepo, "peer1:~/work/GoPi"}},
 		{"takeover", []string{CliVerbTask, taskverbs.Run, "t-held", workerFlagTakeover, workerFlagAs, "taker:1"}},
 	} {
 		t.Run(tc.name, func(t *testing.T) {
@@ -195,7 +195,7 @@ func TestWorkerRejectsContradictorySelection(t *testing.T) {
 		},
 		{
 			name:        "report-to without a row",
-			argv:        []string{CliVerbWorker, flagReportTo, "peerbox"},
+			argv:        []string{CliVerbWorker, flagReportTo, "peer1"},
 			mustMention: []string{flagReportTo, "<task-id>"},
 		},
 	} {

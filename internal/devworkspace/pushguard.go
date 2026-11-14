@@ -1,7 +1,7 @@
 // The clone channel's TEST FENCE — the boundary `AttemptDelivery`'s
 // `git push origin HEAD:<branch>` sits on.
 //
-// WHY THIS FILE EXISTS (measured 2026-10-26, peerbox's own repository): a
+// WHY THIS FILE EXISTS (measured 2026-10-26, peer1's own repository): a
 // fixture's throwaway root arrived in the operator's real checkout as
 // refs/heads/feat/exists —
 //

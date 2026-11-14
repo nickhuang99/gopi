@@ -7,7 +7,7 @@ Branch: `feat/worker-loop-m420` @ A→B→C→D→E commits（见 Verification�
 - **Build**：`CGO_ENABLED=0 go build ./...` 全绿（A–D 全部改动面）。
 - **E2E worker loop**（真二进制 sandbox）：submit → `gopi worker` claim → run →
   must-succeed push → `[worker-sync] peer=hp pushed=2 pulled=1 migrated=0` →
-  `queue drained — exiting` exit 0；`worker:peerbox` tag 落行。
+  `queue drained — exiting` exit 0；`worker:peer1` tag 落行。
 - **双侧 rank 收敛 sim**（`scripts/e2e-m420-rank.sh`，双真节点同机 file-channel）：
   seed → A 完成（rank3）→ B 镜像 in_progress（旧 anchor）→ A 导出 delta →
   **B 收敛到 completed**（rank 前进）→ 回程 A echo 幂等 no-op。6/6 断言全过。

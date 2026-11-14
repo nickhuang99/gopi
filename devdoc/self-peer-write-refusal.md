@@ -18,11 +18,11 @@ A review task running inside a private sandbox (Rule 34) ran
 > `gopi task submit`. The text below is the record of the mechanism as it was,
 > kept verbatim because it is the evidence the removal is judged against.
 
-GOPI_HOME=$SB GOPI_SYNC_PEERS=peerbox gopi task sync --peer peerbox --next-eligible <id>
+GOPI_HOME=$SB GOPI_SYNC_PEERS=peer1 gopi task sync --peer peer1 --next-eligible <id>
 ```
 
 and **four fixture rows landed in the operator's real `~/.gopi/memory.db`**; two
-of them were then picked up as real work. The copies carry the `from-peerbox`
+of them were then picked up as real work. The copies carry the `from-peer1`
 provenance tag, which is written only at *import* — so they provably arrived
 through the peer leg rather than through a local submit.
 
@@ -31,16 +31,16 @@ declared, the verb was the documented one. The defect is entirely in the leg.
 
 **Two halves, both measured:**
 
-1. **The alias names this machine.** `~/.ssh/config` carries `Host peerbox` →
-   `10.0.0.6`, and `10.0.0.6` *is* this host's own address. So
-   `--peer peerbox` on peerbox is not a remote machine at all: it is an `ssh` to
+1. **The alias names this machine.** `~/.ssh/config` carries `Host peer1` →
+   `192.0.2.6`, and `192.0.2.6` *is* this host's own address. So
+   `--peer peer1` on peer1 is not a remote machine at all: it is an `ssh` to
    self, and the peer-side argv runs *here*.
 
    ```
-   $ ssh -G peerbox | grep -i hostname
-   hostname 10.0.0.6
+   $ ssh -G peer1 | grep -i hostname
+   hostname 192.0.2.6
    $ hostname -I
-   10.0.0.9 10.0.0.6 …
+   192.0.2.9 192.0.2.6 …
    ```
 
 2. **Nothing binds the profile.** `syncRowSSHExchange` / `syncTransferSignOver`
@@ -67,7 +67,7 @@ by the legs rather than re-stated (Rule 14):
 |---|---|
 | `selfPeerLocalAddrs` | every address this host answers to (interfaces **and** what its own name resolves to) |
 | `selfPeerResolvedHost` | the `HostName` the ssh client's own config gives the alias — read as **text** from `$HOME/.ssh/config`, `GOPI_HOME/.ssh/config` and the operator's `~/.ssh/config`, first `HostName` wins |
-| `selfPeerAliasIsLocal` | the verdict, + the sentence naming the evidence (`resolves to 10.0.0.6, and it is one of THIS host's addresses`) |
+| `selfPeerAliasIsLocal` | the verdict, + the sentence naming the evidence (`resolves to 192.0.2.6, and it is one of THIS host's addresses`) |
 | `selfPeerWriteRefusal` | **the gate**: called by every about-to-write leg before any contact |
 
 **Gated (write) surfaces:**
@@ -167,7 +167,7 @@ receipt.
 $ go build ./...                              # OK
 $ make test-budget PKGS='./internal/tools'    # 1 finished, 0 with a failure
                                               # 345s wall, exit=0, outcome=pass
-                                              # stamp 2026-10-08T03:44:19+08:00 host=peerbox
+                                              # stamp 2026-10-08T03:44:19+08:00 host=peer1
 $ go test ./internal/standards/ -count=1      # ok 72.505s
 $ go test ./cmd/agent/ -run 'TestTaskSyncSurface|TestSync.*Surface|TestCliTasksSync'   # ok
 ```
@@ -191,21 +191,21 @@ and are therefore a baseline fact of this tree, not a regression from this fix.
 $ CGO_ENABLED=0 go build -o $ART/gopi ./cmd/agent/
 $ gopi tool sandbox create --label selfpeer --task-id 01a117cad9f5701ba5373dd04f227638
 sandbox /home/user/workspace/gopi-sandbox/sandbox-selfpeer-c03c16fa created=true …
-$ GOPI_HOME=$SB GOPI_SYNC_PEERS=peerbox $gopi task submit "selfpeer live probe row (sandbox-local)" …
+$ GOPI_HOME=$SB GOPI_SYNC_PEERS=peer1 $gopi task submit "selfpeer live probe row (sandbox-local)" …
 Task queued: 01a117e6-8028-7275-b731-8b6226a7aa6c (status=pending, source=agent)
 
 # THE LEG — self-peer alias, NO --remote-home
-$ GOPI_HOME=$SB GOPI_SYNC_PEERS=peerbox $gopi task send --task-id 01a117e6-… --peer peerbox
+$ GOPI_HOME=$SB GOPI_SYNC_PEERS=peer1 $gopi task send --task-id 01a117e6-… --peer peer1
 gopi task sync: row send: peer names this host: refusing a WRITE leg against a peer
-that names THIS host: row send for peer peerbox: it names THIS host (the alias "peerbox"
-resolves to 10.0.0.6, and it is one of THIS host's addresses (10.0.0.6)), and no
+that names THIS host: row send for peer peer1: it names THIS host (the alias "peer1"
+resolves to 192.0.2.6, and it is one of THIS host's addresses (192.0.2.6)), and no
 --remote-home was given — … Pass --remote-home DIR to BIND it: …
 EXIT=1                                    ← the named refusal, non-zero
 
 # CONTROL — the same leg WITH --remote-home (a second private sandbox)
-$ GOPI_HOME=$SB GOPI_SYNC_PEERS=peerbox $gopi task send --task-id 01a117e6-… --peer peerbox \
+$ GOPI_HOME=$SB GOPI_SYNC_PEERS=peer1 $gopi task send --task-id 01a117e6-… --peer peer1 \
       --remote-home /home/user/workspace/gopi-sandbox/sandbox-selfpeer-peer-be939738
-send peerbox: stored (row 01a117e6-8028-7275-b731-8b6226a7aa6c, status=pending)
+send peer1: stored (row 01a117e6-8028-7275-b731-8b6226a7aa6c, status=pending)
 EXIT=0
 
 # the row really landed in the BOUND profile (read back through that profile's own reader)
@@ -235,7 +235,7 @@ Unchanged across both legs. Raw capture:
 ## What this does NOT change
 
 - **A real remote peer is untouched**: the gate fires only when the alias is
-  local, and it is a no-op before that (`--peer hp` from peerbox never reaches it).
+  local, and it is a no-op before that (`--peer hp` from peer1 never reaches it).
 - **`--remote-home` semantics are unchanged** — the prefix, the `:$PATH` tail and
   the "a sandbox with no `bin/` runs the peer's own gopi" behaviour are byte-for-byte
   as they were; the flag simply became mandatory for the self-peer case.

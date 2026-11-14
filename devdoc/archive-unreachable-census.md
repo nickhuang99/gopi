@@ -3,7 +3,7 @@
 
 Task `01a12f65-c286-793d-8de9-27fbf5243148` (epic 01a12f65, the BACKLOG half of
 the orphan family whose PRODUCER half is `internal/tools/branch_delete_guard.go`).
-Measured 2026-10-12 on the peer `peerbox:/home/user/work/GoPi`.
+Measured 2026-10-12 on the peer `peer1:/home/user/work/GoPi`.
 
 ## The defect this surface names
 
@@ -153,7 +153,7 @@ reason: unowned
 
 branch: rescued-216459d87ffd
 repo:   /home/user/work/GoPi
-actor:  nick@peerbox
+actor:  nick@peer1
 task:   (none)
 at:     2026-10-12T17:44:59+08:00
 detail: unreachable tip rescued by epic 01a12f65 …

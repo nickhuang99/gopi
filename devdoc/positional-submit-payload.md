@@ -60,7 +60,7 @@ Worktree: `~/workspace/gopi-positional-payload`
   ledger rows, and `TaskNextFiltered`'s bug028 filter must keep skipping them.
   Only the CLI (the only positional-submit producer) mirrors.
 - Pre-existing payload-less pending rows already sitting in a live ledger
-  (e.g. the peerbox `01a089fe` row in the incident) are NOT backfilled by this
+  (e.g. the peer1 `01a089fe` row in the incident) are NOT backfilled by this
   change. They are legacy registration rows; they need an explicit
   `gopi task run <id>` or a cancel+resubmit. No bulk UPDATE was attempted —
   rewriting another ledger's history is an operator decision, and the old

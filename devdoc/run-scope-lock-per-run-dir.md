@@ -103,12 +103,12 @@ A lock file content (written by A):
 pid=900826
 startticks=173657408
 acquired_at=2026-11-04T22:39:47Z
-host=hosta
+host=host-b
 gopi worker B (same run dir) output:
 worker: gopi worker: refusing to run 01a1a8b1-...: run directory is already
   locked by another process: ".../sessions/01a1a8b1-.../run.lock" (held by
   pid 900826, startticks 173657408, acquired_at 2026-11-04T22:39:47Z,
-  host hosta)
+  host host-b)
 B exit code: 1
 
 ########## ARM 3: kill -9 A -> acquire IMMEDIATELY ##########

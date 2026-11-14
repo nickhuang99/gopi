@@ -65,7 +65,7 @@ push; merger after merge via merged-branch cleanup).
 
 ## Not Done
 - Server-side delivery E2E (a worker finishing in a server worktree) not
-  exercised as a full integration test — the server is single-node (peerbox)
+  exercised as a full integration test — the server is single-node (peer1)
   today with no peers; the finish-cleanup chain + merged-branch cleanup
   paths are covered at the tools level (internal/tools task_finish_cleanup
   and task_merged_cleanup suites, pre-existing and passing).
@@ -90,7 +90,7 @@ push; merger after merge via merged-branch cleanup).
     + devdoc (7 commits ahead of master)
 
 ## Transition (how to run today)
-- peerbox = `gopi task merger --every 5m` (merge) + `gopi worker` (tasks)
+- peer1 = `gopi task merger --every 5m` (merge) + `gopi worker` (tasks)
 - HP = `gopi worker` on demand (tasks)
 - `gopi task serve` still works (deprecated alias) for running deployments.
 

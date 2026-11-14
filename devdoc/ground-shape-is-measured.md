@@ -25,8 +25,8 @@ $ git rev-parse --git-common-dir
 $ git rev-parse --git-dir
 .git
 $ git remote -v
-origin  peerbox:/home/user/work/gopi (fetch)
-origin  peerbox:/home/user/work/gopi (push)
+origin  peer1:/home/user/work/gopi (fetch)
+origin  peer1:/home/user/work/gopi (push)
 $ git rev-parse --abbrev-ref HEAD
 master
 $ git -C /home/user/work/gopi worktree list

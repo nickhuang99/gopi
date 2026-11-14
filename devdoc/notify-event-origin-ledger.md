@@ -14,8 +14,8 @@ The chat console received lifecycle events for two task ids:
 | `01a16515-dae5-76a2-88c9-c8f5a15a0c37` | `in_progress`, `completed` | no |
 | `probe-dead-holder` | `stale` ×4 | no |
 
-`gopi task show <id>` answered `no task with task_id=…` on hosta, and the
-operator reported the same on peerbox and hp. So the console held events it could
+`gopi task show <id>` answered `no task with task_id=…` on host-b, and the
+operator reported the same on peer1 and hp. So the console held events it could
 not act on: no row to confirm, to reopen, or to reissue.
 
 ## 2. What actually happened — two INDEPENDENT channels

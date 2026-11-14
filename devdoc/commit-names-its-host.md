@@ -3,7 +3,7 @@
 
 **问题。** `git log` 能说出提交属于哪一行账本（`task: <id>`，见
 `commit-carries-its-ledger-row.md`），但**说不出它是哪台机器产出的**。三台机器的
-fleet（`hosta` / `hp` / `peerbox`）里，review 和 triage 在这条轴上全是盲的：
+fleet（`host-b` / `hp` / `peer1`）里，review 和 triage 在这条轴上全是盲的：
 一条提交看得见，它的产出机器看不见。于是"这条提交是不是在那台反复失败的机器上
 跑的"没有机器答案，只能靠人回忆。
 
@@ -26,8 +26,8 @@ Rule 2）；主机名来自 `os.Hostname()`，经 `localHostTrailerLine` 唯一�
 
 ```
 git log --grep="task: 01a183ba-035b-7769-a94e-4469edc5a74b"   # 哪一行产出的
-git log --grep="host: hosta"                             # 这台机器产出的
-git log --grep="host: peerbox"                                  # 那台机器产出的
+git log --grep="host: host-b"                             # 这台机器产出的
+git log --grep="host: peer1"                                  # 那台机器产出的
 ```
 
 没有新表、没有索引文件、没有 hook、没有 config key、没有常驻进程、没有脚本 ——
@@ -103,7 +103,7 @@ scratch 仓上跑了三次真提交。
 $ GOPI_TASK_RUN_ID=01a183ba-035b-7769-a94e-4469edc5a74b go run ./cmd/zzhostproof_tmp \
     'echo work2 > w2.txt && git add w2.txt && git commit -m "proof: both trailers as separate lines"' \
     /dev/shm/zzhostproof-wcrwGQ/repo
-[commit trailer added: task: 01a183ba-035b-7769-a94e-4469edc5a74b + host: hosta]
+[commit trailer added: task: 01a183ba-035b-7769-a94e-4469edc5a74b + host: host-b]
 [master ff7ef46] proof: both trailers as separate lines
 exit=0
 
@@ -111,15 +111,15 @@ $ git log -1 --format=%B | cat -A
 proof: both trailers as separate lines$
 $
 task: 01a183ba-035b-7769-a94e-4469edc5a74b$
-host: hosta$
+host: host-b$
 
 $ git log -1 --format=%B | git interpret-trailers --parse
 task: 01a183ba-035b-7769-a94e-4469edc5a74b
-host: hosta
+host: host-b
 
 $ git log --format=%H --grep='task: 01a183ba-035b-7769-a94e-4469edc5a74b' | head -1
 ff7ef46c3abf6faa5cfb2789d7bde79f481fb2aa
-$ git log --format=%H --grep='host: hosta' | head -1
+$ git log --format=%H --grep='host: host-b' | head -1
 ff7ef46c3abf6faa5cfb2789d7bde79f481fb2aa
 $ git rev-parse HEAD
 ff7ef46c3abf6faa5cfb2789d7bde79f481fb2aa
@@ -132,9 +132,9 @@ $ # 用改法前的注入（把两行空格合并进一个 --trailer）
 $ git log -1 --format=%B
 proof: both trailers reach the body
 
-task: 01a183ba-035b-7769-a94e-4469edc5a74b host: hosta      ← 一行，两个轴都废了
+task: 01a183ba-035b-7769-a94e-4469edc5a74b host: host-b      ← 一行，两个轴都废了
 
-$ git log --format=%H --grep='host: hosta'
+$ git log --format=%H --grep='host: host-b'
 (空)                                                              ← host 轴 grep 不到
 ```
 
@@ -147,14 +147,14 @@ $ git log --format=%H --grep='host: hosta'
 $ env -u GOPI_TASK_RUN_ID go run ./cmd/zzhostproof_tmp \
     'echo work3 > w3.txt && git add w3.txt && git commit -m "proof: host line with no ledger row"' \
     /dev/shm/zzhostproof-wcrwGQ/repo
-[commit trailer added: host: hosta]
+[commit trailer added: host: host-b]
 [master 5d0d7cb] proof: host line with no ledger row
 exit=0
 
 $ git log -1 --format=%B | cat -A
 proof: host line with no ledger row$
 $
-host: hosta$
+host: host-b$
 
 $ git log -1 --format=%B | grep -c '^task:'
 0                                                                 ← 没有凭空造

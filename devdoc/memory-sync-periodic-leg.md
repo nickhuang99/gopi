@@ -130,7 +130,7 @@ The real verb, against a real ssh leg, with the fake-ssh shim standing in for
 the second host (the epic's documented two-DB local analogue):
 
 ```
-$ GOPI_MEMORY_DB=$SB/a.db GOPI_SYNC_NODE=peerbox GOPI_MEMORY_PEERS=hp
+$ GOPI_MEMORY_DB=$SB/a.db GOPI_SYNC_NODE=peer1 GOPI_MEMORY_PEERS=hp
   GOPI_SYNC_E2E_PEER_DB_hp=$SB/b.db ./bin/gopi memory sync --peer hp --push --every 2s
 gopi memory sync: --every 2s — running one --push round toward hp now, then every 2s; Ctrl+C (SIGINT) or SIGTERM stops it
 gopi memory sync round 1: peer hp imported 1 row(s) from our push (1 offered, 0.0s)

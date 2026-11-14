@@ -1,7 +1,7 @@
 <!-- doc-class: normative -->
 # The five-red `cmd/agent` family: the verdict is the READ PATH, not the record
 
-**Task**: `01a12c7a-43b2-7684-84d2-4ad6a2d5c914` · **Verdict**: DOABLE · **Host**: hosta
+**Task**: `01a12c7a-43b2-7684-84d2-4ad6a2d5c914` · **Verdict**: DOABLE · **Host**: host-b
 **Base of the investigation**: `96a4320f2` · **This worktree**: `21284bdf3`
 (`task/01a12c7a43b2768484d24ad6a2d5c914`, clean)
 

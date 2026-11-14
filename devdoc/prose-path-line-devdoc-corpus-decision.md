@@ -11,7 +11,7 @@
 # The devdoc BODY's inline `path:line` citations: the `prose-path-line` rung owns them (policy decision, task 01a13534)
 
 
-**Task**: `01a13534-c0e1-7077-bd8b-070214150c1e` (peerbox, system layer — Rule 28)
+**Task**: `01a13534-c0e1-7077-bd8b-070214150c1e` (peer1, system layer — Rule 28)
 **Decision**: the devdoc BODY is a **second corpus of the EXISTING reader**, not a fourth rung — the
 same detector, the same one-red-arm verdict vocabulary, the same ONE freeze table, the same Rule 39
 ratchet. The `in-range` arm stays **recorded, never red**, over both corpora.

@@ -7,7 +7,7 @@
 
 # M4 memsync 扩展：task 行同步（devdoc/memsync-task-extension.md）
 
-分支 `feat/memsync-tasks`（基 master 2ed1ed1）。Epic：brew 行通道之外，让 task 行走同一 export→JSON patch→import 机制在 peerbox/HP 间流动。
+分支 `feat/memsync-tasks`（基 master 2ed1ed1）。Epic：brew 行通道之外，让 task 行走同一 export→JSON patch→import 机制在 peer1/HP 间流动。
 
 ## 更新 2026-10-03 — epic 01a0fea1 ③：身份 = task_id（payload 退出"同一份工作"判定）
 
@@ -43,23 +43,23 @@
 - **cmd/agent/cli_memsync.go**：`--export-tasks --out [--status][--tags][--since][--limit][--db]`、`--import-tasks <patch> [--db]`；usage 文档化五机制；原 brew `--export/--import` 逻辑拆成 `runMemsyncBrewExport/Import`（行为零改动）；退出码沿用 0/1/2（partial）。
 - **internal/tools/memory_sync_task_test.go**（11 个测试，tools 包 `TestTaskSync*` 全 PASS）：
   - export：pending live 行无 status、--limit/--tags、终态行携带 status、oldest-first、非法 --status 拒绝；
-  - import：fresh 入队（from-peerbox 强制 + 原 tags 保留 + id 保留）、**幂等**（re-import all duped=3：2 live hash + 1 patch 内 dup）、live hash 防双投（不同 task_id 同 work → duped）、**不覆写**（HACKED summary/payload 不落地，tags 三方 union）、**前向迁移**（pending→completed + 重复 import 幂等 already）、迁移门（cancelled already 不迁移；in_progress→completed refused）、id 冲突不同 work（tags union only；ghost 终态 refused）、校验（空 summary/坏 source/缺文件）、from-unknown-node。
+  - import：fresh 入队（from-peer1 强制 + 原 tags 保留 + id 保留）、**幂等**（re-import all duped=3：2 live hash + 1 patch 内 dup）、live hash 防双投（不同 task_id 同 work → duped）、**不覆写**（HACKED summary/payload 不落地，tags 三方 union）、**前向迁移**（pending→completed + 重复 import 幂等 already）、迁移门（cancelled already 不迁移；in_progress→completed refused）、id 冲突不同 work（tags union only；ghost 终态 refused）、校验（空 summary/坏 source/缺文件）、from-unknown-node。
   - **零回归**：brew 通道 export→import 同库往返照旧（1 行 deduped，tasks 表不动）。
 
 ## Not Done
 
 - `--tags` 过滤与 priority 列：tasks 表无 priority 列（P3 路线图），导出序用 created_at ASC（调度器自身顺序）顶替；`syncTaskPriorityDefault` 常量注释记录了这一点。
 - 多 patch 合并 / 压缩传输：patch 即单文件 JSON，未做分片。
-- 真实跨机（ssh peerbox↔HP 实机）：E2E 用同机双 GOPI_HOME 模拟两节点（数据面与真机一致——同一二进制同一 CLI 路径）；ssh 派发属 M4.7 已有通道。
+- 真实跨机（ssh peer1↔HP 实机）：E2E 用同机双 GOPI_HOME 模拟两节点（数据面与真机一致——同一二进制同一 CLI 路径）；ssh 派发属 M4.7 已有通道。
 
 ## Verification
 
 - Build：`go build ./...` OK（CGO_ENABLED=0 二进制亦过）。
 - 单测：`go test ./internal/tools/ -run TestTaskSync -count=1` → ok（11/11）；`go test ./cmd/agent/ -run 'Memsync|TaskList'` → ok。
 - 全量：`go test ./...`（后台 job，tools 包 ~220s 慢为 master 既有）。
-- **E2E 实测**（/tmp/memsync-e2e/run-e2e.sh，双 GOPI_HOME 模拟 peerbox/HP）：
-  1. peerbox submit 3 pending → `--export-tasks --status pending --limit 2` → HP `--import-tasks`：`queued=2`，HP task list 两行 pending、原号 t-* 保留、tags 带 from-peerbox；**再 import 同 patch：`duped=2`（幂等，hash 优先）**。
-  2. HP `task update` → in_progress → completed → `--export-tasks --status completed` → peerbox `--import-tasks`：`migrated=1`，peerbox 该行 `[completed]`（前向迁移），其余行不动。
+- **E2E 实测**（/tmp/memsync-e2e/run-e2e.sh，双 GOPI_HOME 模拟 peer1/HP）：
+  1. peer1 submit 3 pending → `--export-tasks --status pending --limit 2` → HP `--import-tasks`：`queued=2`，HP task list 两行 pending、原号 t-* 保留、tags 带 from-peer1；**再 import 同 patch：`duped=2`（幂等，hash 优先）**。
+  2. HP `task update` → in_progress → completed → `--export-tasks --status completed` → peer1 `--import-tasks`：`migrated=1`，peer1 该行 `[completed]`（前向迁移），其余行不动。
   3. brew `--export/--import` 往返照常（零回归）。
 - Commit：见下方 git log（feat/memsync-tasks @ worktree ~/workspace/gopi-memsync-tasks）。
 

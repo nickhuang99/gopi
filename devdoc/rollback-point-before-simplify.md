@@ -16,7 +16,7 @@ cdfa9c0c12c8cb5d88f41b341bbc3f0f996e3b33
 cdfa9c0c1  remove rule 6a to disallow branch creation
 ```
 
-Measured 2026-10-29 on hosta in `/home/user/work/gopi`:
+Measured 2026-10-29 on host-b in `/home/user/work/gopi`:
 
 ```
 $ git rev-parse HEAD

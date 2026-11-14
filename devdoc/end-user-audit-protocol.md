@@ -794,7 +794,7 @@ is low relative to the probe count for that reason.
 | operator ledger rows matching `%frobnicate%` / `[auto] version` | **0** / **0** |
 | the mis-routed probes' rows | landed in the SANDBOX ledger: `[auto] version` ×8, `[auto] chat` ×2 |
 | sandbox sessions minted by this sweep | 23 |
-| worktree at sweep end | branch `task/01a0dcfa-…`, HEAD `5710f683` (= peerbox/master tip); the worktree was rebuilt from the stored ref after CW-2, and this sweep's doc edit is the commit it adds on top |
+| worktree at sweep end | branch `task/01a0dcfa-…`, HEAD `5710f683` (= peer1/master tip); the worktree was rebuilt from the stored ref after CW-2, and this sweep's doc edit is the commit it adds on top |
 
 The mis-routed probes are the one place isolation was *load-bearing* rather than
 merely present: they ran a real agent loop, and every row they wrote landed in
@@ -820,7 +820,7 @@ sweep's own sandbox export line.
 verification task, not an implementation.** Commit `04a1262b` ("fix(cli): a
 top-level verb after a run flag is refused, not run as a prompt",
 `internal/config/cli_verb_guard.go`) is an ancestor of this branch (it arrived
-with the merge at `5710f683`, = `peerbox/master` at the time of writing) and was
+with the merge at `5710f683`, = `peer1/master` at the time of writing) and was
 NOT on the tree the sweep's binary was built from (local `master` `79807932`,
 15:21, predates it). A/B, same sandbox, same six shapes:
 

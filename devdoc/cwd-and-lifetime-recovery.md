@@ -16,7 +16,7 @@ superseded on master by equivalent-or-better mechanisms. Deliverable is the proo
 `gopi task show 01a0a211-f9f5-764a-b4ba-e73969253c7c`:
 
 ```
-status=failed, run_method=merger, claimed by peerbox 2026-09-15 06:38→06:49 (11 min)
+status=failed, run_method=merger, claimed by peer1 2026-09-15 06:38→06:49 (11 min)
 reason="resolve child failed to resolve the conflict: resolve landed but re-merge did not (error)"
 tags: merge-conflict, auto-spawn
 ```

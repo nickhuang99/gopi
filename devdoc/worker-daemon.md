@@ -2,7 +2,7 @@
 # Daemon operating model — decision record (worker + merger)
 
 **Branch:** `feat/worker-daemon-operating-model` (worktree `~/workspace/gopi-worker-daemon-model`)
-**Measured at:** master `7c24ea06`, host `peerbox` (Ubuntu 22.04, kernel 5.15, cgroup v2, uid 1000), 2026-09-13
+**Measured at:** master `7c24ea06`, host `peer1` (Ubuntu 22.04, kernel 5.15, cgroup v2, uid 1000), 2026-09-13
 **Status:** canonical for the six questions below. Every claim marked **[measured]** was produced by a
 command run during this task; the command and its observed output are quoted. Claims marked
 **[code]** are read from the shipped source with the file:line named. Nothing here is inferred from

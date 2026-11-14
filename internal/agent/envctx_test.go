@@ -53,8 +53,8 @@ func envBlockFacts() envctx.Facts {
 	return envctx.Facts{
 		Hostname:    "fixturehost",
 		OS:          "Fixture Linux 1.0",
-		Addresses:   []string{"eth0  10.0.0.9"},
-		Gateway:     "10.0.0.1  (via eth0)",
+		Addresses:   []string{"eth0  192.0.2.9"},
+		Gateway:     "192.0.2.1  (via eth0)",
 		Sources:     []string{"live measurement (this run)"},
 		Conflicts:   nil,
 		Nodes:       nil,

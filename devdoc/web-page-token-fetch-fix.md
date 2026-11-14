@@ -80,7 +80,7 @@ Two further gaps made that state undiagnosable and sticky:
    `webRefusalLogFormat`, `webRedactedTokenMarker`):
 
    ```
-   [gopi web] token gate: refused 2026-09-17T…Z peer=10.0.0.6:54321 POST /api/chat query=absent cookie=present reason=wrong cookie token (the request carried no ?t= — the page did not append the access token)
+   [gopi web] token gate: refused 2026-09-17T…Z peer=192.0.2.6:54321 POST /api/chat query=absent cookie=present reason=wrong cookie token (the request carried no ?t= — the page did not append the access token)
    ```
 
    Presence only — never token material — and the `reason` distinguishes the four

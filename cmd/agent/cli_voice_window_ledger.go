@@ -6,7 +6,7 @@ package main
 // THE DEFECT THIS CLOSES. `/voice` runs a round as: record a window, transcribe
 // it, insert the text, arm the next window. Two windows are two RECORDINGS, and
 // nothing guarantees the second begins where the first stopped — measured on
-// peerbox 2026-10-08 (task 01a11853), the second round's recorder is opened after
+// peer1 2026-10-08 (task 01a11853), the second round's recorder is opened after
 // the engine answers, so the audio spoken during that ~1.6 s gap is in NO window
 // at all. A 12.455 s continuous utterance lost 「测试，我声音完全流逝，」 exactly
 // there: the window's cut fell mid-speech and the speech after it was never read.

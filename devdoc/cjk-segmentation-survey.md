@@ -393,7 +393,7 @@ $ ./gj                                       # 从任意 cwd 跑
 3. **依赖前置条件**：需要 C++ 工具链（`g++` + C++11）、21 MB 的 `deps/` C++ 源码、
    以及 CGO 打开。`CGO_ENABLED=0` 还能构建通过这件事本身，说明它的构建契约是**模糊的**。
 
-**旁证，不是理由**：本机（peerbox）恰好有 g++，所以 B 路「编译通过」是**环境偶然**，
+**旁证，不是理由**：本机（peer1）恰好有 g++，所以 B 路「编译通过」是**环境偶然**，
 不是可移植性证据。
 
 ### 路径 C：用 Go 现成库 —— 推荐 gse
@@ -516,7 +516,7 @@ CGO_ENABLED=0 go build -tags ne -o bin/gopi ./cmd/agent/
 
 ## Provenance
 
-- 测量环境：peerbox（Ubuntu 22.04.4 LTS），Go 1.24.5，`CGO_ENABLED=0`，2026-10-07。
+- 测量环境：peer1（Ubuntu 22.04.4 LTS），Go 1.24.5，`CGO_ENABLED=0`，2026-10-07。
 - 临时模块根：`/home/user/workspace/_tmp/cjksurvey`（即 `$TMPDIR`，dev `2052`；
   `/` 为 dev `2051` → **不在 `/` 分区上**，Rule 22 满足）。
 - 证据文件（本次 run 的 session dir）：

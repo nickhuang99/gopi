@@ -57,13 +57,13 @@ the recorded real-world stderr (`assert_classifier_contract`).
 | Repro | on the capture-less node: `gopi voice_input --client --device default --seconds 3` ; and `--device gopi_no_such_device_xyz` on any node |
 | Red (before) | no capture client existed; the only entry points were file/server modes |
 | Green (now) | `mode=no_soundcards` / `mode=no_device`, each with a next command |
-| Live evidence (peerbox) | `[voice-capture] device="default" mode=no_soundcards bytes=0`; (HP) `device="gopi_no_such_device" mode=no_device bytes=0 want=64000 elapsed_ms=37` |
+| Live evidence (peer1) | `[voice-capture] device="default" mode=no_soundcards bytes=0`; (HP) `device="gopi_no_such_device" mode=no_device bytes=0 want=64000 elapsed_ms=37` |
 | Test | `TestVoiceCaptureNoSoundcards`, `TestVoiceCaptureNoDevice`; harness `case_a` |
 
 Two distinct situations share one arecord message, and the client separates them
 by asking the inventory (`voiceInventoryProbe`, `arecord -l`):
 
-- **peerbox measured**: `arecord -l` → `no soundcards found`; a capture attempt
+- **peer1 measured**: `arecord -l` → `no soundcards found`; a capture attempt
   ends `ALSA lib confmisc.c:855:(parse_card) cannot find card '0'` +
   `audio open error: No such file or directory`. The *cause* is no hardware, so
   the answer is `no_soundcards` — "this host has no microphone, capture
@@ -73,7 +73,7 @@ by asking the inventory (`voiceInventoryProbe`, `arecord -l`):
   capture hardware → `no_device`, with `arecord -l` / `pactl list short sources`
   as the next step.
 
-The peerbox's ALSA inventory is itself misleading (two cards, an advertised
+The peer1's ALSA inventory is itself misleading (two cards, an advertised
 ALC3228 capture PCM, every `/dev/snd` node mode 660 root:audio and the user not
 in `audio`) — which is why the classification is a *probe*, not a guess from
 stderr alone.
@@ -224,7 +224,7 @@ instead. Observed coverage:
   source and the null-sink unbinds its monitor slot instead of refusing, both
   confirmed by measurement, so the case is SKIPped rather than mis-asserted
   (its classifier contract is asserted from the repo instead).
-- **peerbox (no capture hardware)** — live: `no_soundcards` for both a default
+- **peer1 (no capture hardware)** — live: `no_soundcards` for both a default
   capture and a nonsense device name. Not staggable: anything needing a device.
 
 Every SKIP is recorded as SKIP in the TSV; the run exits 0 only when no *PASS*
@@ -250,6 +250,6 @@ below from the HP.
   a short capture) but it cannot warn before a capture starts.
 - **`permission` and `pulse_refused`** are classified from stderr but have no
   live repro in the harness: they need a node whose user lacks the `audio` group
-  (peerbox's situation, already measured by the probe script) and a dead Pulse
+  (peer1's situation, already measured by the probe script) and a dead Pulse
   socket respectively. Their patterns are covered by the classifier tests'
   vocabulary pin; a live repro is deferred.

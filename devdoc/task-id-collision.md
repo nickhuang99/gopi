@@ -6,7 +6,7 @@
 - id 生成位点：`TaskNew` / `TaskSubmit` (internal/tools/tasks.go)，auto id = `t-<unix 秒>`，
   仅在**本地**库内查重（taskIDExists 循环 + `-1` 后缀）。
 - sync 通道保留原 id（mechanic ② importTaskFresh / harvestInsert）。
-- HP 本地 LLM 自投单与 peerbox 投单同步过来：两节点**同秒**生成 → `t-<同秒>`。
+- HP 本地 LLM 自投单与 peer1 投单同步过来：两节点**同秒**生成 → `t-<同秒>`。
 - import 落到已存在的 task_id：
   - live patch row → `importTaskExisting` 走 tags-union（RowsTagged / RowsAlready），**不比对 payload**；
   - payload hash 门（mechanic ①）只挡"全库 live 行同 work"——本地行是 **pending** 且同 summary+payload 时

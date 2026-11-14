@@ -3,7 +3,7 @@
 
 **Scope**: `cmd/agent/chat_voice_recorder_staged.go`, `cmd/agent/voice_recorder_reentry_reap_test.go`.
 **Measured at**: `67f23d74d` (this tree), against a live `gopi chat --resume` on host
-`hosta`.
+`host-b`.
 **Task**: `01a170a6-6f50-7955-8331-f31057657f4e`.
 
 ## The symptom, as the operator saw it

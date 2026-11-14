@@ -3,7 +3,7 @@ package main
 // cli_tasks_worker.go — the WORKER LOOP (`gopi worker`): the general
 // task-management service (epic serve/worker-split 2026-09-03, nick's final
 // design). The worker is the ONLY task-execution process — it runs
-// identically on BOTH the client (HP) and the server (peerbox), while
+// identically on BOTH the client (HP) and the server (peer1), while
 // `task serve`/`task merger` were the SERVER-ONLY merge pass — the retired
 // merger tick (deleted 2026-09-19; its live half is mergerPassOnce). It ran
 // ONE tick, scheduled by the host (a cronjob since daemon-machinery-removal,

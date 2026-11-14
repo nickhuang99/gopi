@@ -87,7 +87,7 @@ instead of shipping as a second dead hint.
 The briefing's second half assumed a sibling commit `456c459b4` (`gopi session replay` +
 `internal/replayplay/`). **Measured: that commit is NOT an ancestor of this HEAD** — it
 exists here only under the tag `archive/hp-pre-realign-20261006`, and neither HEAD nor
-peerbox/master carries `internal/replayplay/`. What HEAD has is `gopi chat --replay`
+peer1/master carries `internal/replayplay/`. What HEAD has is `gopi chat --replay`
 (`internal/replaydrive`), the re-run.
 
 So the two halves shipped together, on this branch, in this order:

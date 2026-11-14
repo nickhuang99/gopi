@@ -3,7 +3,7 @@
 
 <!-- WORKER-OWNERSHIP: OPERATOR-ONLY — devdoc/worker-ownership.md -->
 
-Task: `01a11548-7cba-7170-91f5-430964f8e087` · host: **peerbox** · branch
+Task: `01a11548-7cba-7170-91f5-430964f8e087` · host: **peer1** · branch
 `task/01a115487cba717091f5430964f8e087` · worktree
 `/home/user/workspace/gopi-01a115487cba717091f5430964f8e087`
 
@@ -195,12 +195,12 @@ is named here so the next reader does not have to rediscover it.
 
 ```
 dba11bb24 docs(voice): attribute the listener figure by pid and re-measure the session-copy artifacts at close-out
-e2331156f docs(voice): record the rig's re-verification on peerbox and the determinism boundary
+e2331156f docs(voice): record the rig's re-verification on peer1 and the determinism boundary
 9fedce85e docs(voice): fix the voiceResolveSelection citation range
 7374cd07a docs(voice): carry the capture artifact's sha256 in the measurement table
 8cc4e7e86 docs(voice): correct the race/probe mechanism in the rig doc after re-reading the code
 5848c46e4 docs(voice): classify devdoc/voice-input-default-local.md in DOC-INDEX.tsv (historical)
-09ad05915 docs(voice): the deterministic local-capture rig for voice_input (peerbox, null-sink + remap-source)
+09ad05915 docs(voice): the deterministic local-capture rig for voice_input (peer1, null-sink + remap-source)
 3255973cc delivery-point sync: merge master into the delivered branch before close-out
 ```
 
@@ -208,7 +208,7 @@ e2331156f docs(voice): record the rig's re-verification on peerbox and the deter
 `01a113e4-6776-7eb9-a4c3-3cb1df1cdfbb`**, item **[2/5]** of the voice epic:
 
 ```
-#01a113e4-6776-7eb9-a4c3-3cb1df1cdfbb  [cancelled]  [2/5] 在 peerbox 上搭起确定性麦克风装置…
+#01a113e4-6776-7eb9-a4c3-3cb1df1cdfbb  [cancelled]  [2/5] 在 peer1 上搭起确定性麦克风装置…
 #01a113e4-6730-7b5b-bc35-0278c2c20b8b  [cancelled]  [1/5] 读取现有 voice_input 实现…产出改造设计
 ```
 

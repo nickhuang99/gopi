@@ -1,7 +1,7 @@
 <!-- doc-class: normative -->
 # 客户端 git sync 步骤③：从 refspec-less `git pull` 到「在持有者里 fast-forward」
 
-**Task**: `01a12e64-23c3-7c10-a07c-b85aef54924d` · **Date**: 2026-10-12 · **Host**: hosta（client）
+**Task**: `01a12e64-23c3-7c10-a07c-b85aef54924d` · **Date**: 2026-10-12 · **Host**: host-b（client）
 **File**: `internal/tools/task_sync_git.go` — `GitSyncClientPass` 步骤③
 
 > 本文是 Tier B：设计理由与被否决的替代方案。规则区在 `GOPI.md`，本文件不新增规则。
@@ -9,7 +9,7 @@
 
 ## 1. 症状与根因
 
-**症状**（实测，非推断）：本机 `refs/heads/master` 冻结在 `d7fb65344`，落后对端 `peerbox` 的
+**症状**（实测，非推断）：本机 `refs/heads/master` 冻结在 `d7fb65344`，落后对端 `peer1` 的
 `refs/heads/master` **97 个提交**；而 `refs/remotes/gitPushcheck/master` 一直在动 —— 也就是
 "同步看起来活着，集成分支死了"。同一条 fix 在 `origin/master` 上是 ancestor（rc=0），在本地
 `refs/heads/master` 上不是（rc=1），于是产生过"master 上某测试恒红"这类**对错了 ref 的论断**。
@@ -89,6 +89,6 @@
 ## 6. 边界（不在本行内）
 
 - 分叉时的**强制**路径不做：与旧契约一致，分叉留给运营/人类。
-- 本机 peer alias 未配成 git remote（`git ls-remote --heads peerbox` ⇒ `fatal:`）；实测走的是
-  hosta 自己的 `sync_peers=["peerbox"]` + `ssh peerbox` 这条路，与 `gopi task push` 的目标同形。
+- 本机 peer alias 未配成 git remote（`git ls-remote --heads peer1` ⇒ `fatal:`）；实测走的是
+  host-b 自己的 `sync_peers=["peer1"]` + `ssh peer1` 这条路，与 `gopi task push` 的目标同形。
   这是本机环境的既有缺口，不是本行的面。

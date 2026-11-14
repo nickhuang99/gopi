@@ -4,7 +4,7 @@
 **Failure being reworked**: `84d05693-0d8a-4d22-85cf-4ced6e632765` (epic ledger
 `01a095de-0b80-78dd-8c6d-a86dd00a64e4`, *"gopi new voice input client should be
 tested in more nodes"*) — failed by a superficial survey: its capability probe
-ran **privilege-free** and concluded peerbox had no capture path.
+ran **privilege-free** and concluded peer1 had no capture path.
 **Branch**: `fix/voice-mic-probe-privileged` (worktree `~/workspace/gopi-probe-priv`,
 from `master` `d45d90e2`).
 **Verdict of the rework**: the epic's central hardware premise was **false**.
@@ -47,7 +47,7 @@ from `master` `d45d90e2`).
    - the misleading ALSA phrasing became a named constant
      (`ARECORD_NO_SOUNDCARDS_MARKER`) instead of an inline grep.
 
-3. **Real peerbox run, verified** (v2, `--trials 2`): `exit 0`;
+3. **Real peer1 run, verified** (v2, `--trials 2`): `exit 0`;
    `sudo_required_cells=16 ok_cells_root=16`; verdict
    **`CAPTURE_SUDO_REQUIRED`**. Working privileged paths, with byte counts and
    `file(1)`-validated WAVs: `hw:1,0` @48k/2ch 192000 B; `plughw:1,0` 32000 B
@@ -60,7 +60,7 @@ from `master` `d45d90e2`).
    `devdoc/voice-hw-matrix.md` (headline table, new §3.1-a refutation, §3.2 "out
    of scope" claim retracted, cross-node table, selection algorithm, outcome
    vocabulary) and `devdoc/voice-node-coverage.md` (node table, "HP is the only
-   capture-capable node" retracted, "peerbox permission mode" moved out of the
+   capture-capable node" retracted, "peer1 permission mode" moved out of the
    untested cells).
 
 5. **Regression guard** (`internal/testutil/voice_probe_privilege_test.go`):
@@ -72,7 +72,7 @@ from `master` `d45d90e2`).
    harness yields 0 `SUDO_REQUIRED` rows, no `mode` column and no
    `CAPTURE_TRUTH` line — i.e. the guard fails on the pre-fix artifact.
 
-6. **Memory corrected**: record #2276 updated from *"peerbox cannot capture / the
+6. **Memory corrected**: record #2276 updated from *"peer1 cannot capture / the
    refusal is PERMISSION so no device string helps"* to the measured truth plus
    the `use_pty` pitfall; record #2187 voted useless (same false premise).
 
@@ -117,7 +117,7 @@ from `master` `d45d90e2`).
 - `go test -run 'TestVoiceProbe|TestScriptsAreBoundedAndOffTmp' ./internal/testutil/`:
   **ok** (includes the repo's /tmp-ban + `bash -n` gate over every script,
   `devdoc/` included)
-- Probe, real peerbox run **twice**: `EXIT=0` both times; verdict tuples
+- Probe, real peer1 run **twice**: `EXIT=0` both times; verdict tuples
   (`device, rate, channels, outcome, mode`) **identical across the two runs**
   (`diff` empty) — determinism preserved
 - Red-proof: the guard + fake harness against the **base** script → no
@@ -127,7 +127,7 @@ from `master` `d45d90e2`).
   reports 32000 B / 192000 B PCM (**same** payload after the 44-byte RIFF header)
 - Artifacts staged from the verified runs: 110 files (`table.tsv`, per-cell
   `.err`, `dev-node-access.tsv`, both listings unprivileged+privileged,
-  16 non-empty capture WAVs) under `devdoc/assets/voice-hw-probe-priv/peerbox/`
+  16 non-empty capture WAVs) under `devdoc/assets/voice-hw-probe-priv/peer1/`
 
 ## Rule 22 / scratch note
 

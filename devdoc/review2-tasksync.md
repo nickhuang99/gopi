@@ -23,7 +23,7 @@
 
 Independent re-review of the `gopi task` node-sync surface — the multi-node
 task-ledger sync verbs (harvest/diff/sync/push/worker). **This is the SECOND
-independent pass** (first review on peerbox/deepseek consulted as *git history
+independent pass** (first review on peer1/deepseek consulted as *git history
 only*, findings re-derived from source on the current master head a91dace).
 
 Method (per epic): run `-h` heads → read CLI + engines → docs + git history

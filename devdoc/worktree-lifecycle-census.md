@@ -23,11 +23,11 @@
 | 通道 | 触发 | 工作区从哪来 | 代码 |
 |---|---|---|---|
 | worktree 通道 | `settings.dev_repo` 为空 | `git worktree add -b <branch> <root>/<task-id>`（linked worktree） | `internal/tools/task_run_ground.go` |
-| clone 通道 | `settings.dev_repo` 非空（**本机即是**：`peerbox:/home/user/work/gopi`） | `devworkspace.Open` → 独立 clone 到 `workspace_root/<task-id>` | `internal/devworkspace` + `cmd/agent/devworkspace_channel.go` |
+| clone 通道 | `settings.dev_repo` 非空（**本机即是**：`peer1:/home/user/work/gopi`） | `devworkspace.Open` → 独立 clone 到 `workspace_root/<task-id>` | `internal/devworkspace` + `cmd/agent/devworkspace_channel.go` |
 
 关键事实（**MEASURED**，`git worktree list` / `git remote -v` 于本 run 工作区）：
 本 run 自己的工作区 `/home/user/workspace/01a150f4-…` **是一个 clone**
-（`origin peerbox:/home/user/work/gopi`，`git worktree list` 只有它自己），
+（`origin peer1:/home/user/work/gopi`，`git worktree list` 只有它自己），
 不是 linked worktree。也就是说：**本阶段的验证就发生在 clone 通道上**。
 
 ## 2. 为什么这些包在 clone 通道下仍然必须活着

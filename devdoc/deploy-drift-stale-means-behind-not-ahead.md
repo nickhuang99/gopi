@@ -7,7 +7,7 @@
 
 ## 1. 缺陷：总结句否定自己上面每一行
 
-host hosta，2026-10-29，部署 artifact `d50f746d7`，原样输出：
+host host-b，2026-10-29，部署 artifact `d50f746d7`，原样输出：
 
 ```
 refs/heads/master:  follows the ref — the artifact was built from it — d50f746d7…

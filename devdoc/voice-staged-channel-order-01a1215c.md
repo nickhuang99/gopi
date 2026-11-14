@@ -2,7 +2,7 @@
 # /voice reported "no audio within 10s" on a live device — the builder took the source's channel before the source had one
 
 Task: `01a1215cdbf179678b17366d2fa90199` · branch `task/01a1215cdbf179678b17366d2fa90199`
-Host: hosta (`hosta`, real sound card, `pulse:@DEFAULT_SOURCE@` live) · 2026-10-10
+Host: host-b (`host-b`, real sound card, `pulse:@DEFAULT_SOURCE@` live) · 2026-10-10
 
 ## Symptom
 

@@ -198,7 +198,7 @@ gate_test.go:210: stylegate errorf-verb: 1 production hit(s), ceiling 0
 * **The standards Rule-16 predicate is still blind to constant format strings.**
   This task REPAIRED the sites it could not see; it did not fix the blind spot,
   because widening a detector is a change to the check infrastructure itself
-  (Rule 28: peerbox's layer) and because a wider predicate would immediately report
+  (Rule 28: peer1's layer) and because a wider predicate would immediately report
   every constant-format site in the tree, which is a sweep of its own. It is
   filed as its own row rather than smuggled in here.
 * `cmd/agent/worker_control_selector.go`'s format const has a trailing `\n` and

@@ -169,7 +169,7 @@ Chinese glosses appear in `[ENGINEERING RULES]` and `[TOOL ROUTING]` memory item
 
 `devdoc/claude_network_investigate.txt` is tracked by git (`git ls-files` confirms) and contains, verbatim on line 1:
 
-> the gateway of local network is at 10.0.0.1 with user/pass as **[REDACTED]** … two router HRC-RC3000 at 10.0.0.7 and 10.0.0.9 both with browser login pass as : **[REDACTED]**
+> the gateway of local network is at 192.0.2.1 with user/pass as **[REDACTED]** … two router HRC-RC3000 at 192.0.2.7 and 192.0.2.9 both with browser login pass as : **[REDACTED]**
 
 Line 45 additionally records that *"login password = WiFi password on both devices."* This is a home-network credential set committed to a repo, in a file whose purpose (a pasted CLI transcript) is unrelated to GoPi. Regardless of how the rest of devdoc is organized, this file should be removed from history and the credentials rotated. Note the irony: it is itself a transcript of a `claude -p --dangerously-skip-permissions` run. **[2026-09-07: file purged from git history via filter-repo; credentials rotated — nick to confirm.]**
 

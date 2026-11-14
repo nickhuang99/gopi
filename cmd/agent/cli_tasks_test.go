@@ -912,8 +912,8 @@ func TestRunMethodFor(t *testing.T) {
 		t.Fatalf("single-row = %q / %q, want manual / gopi worker t-abc", m, c)
 	}
 	// Manual with the remote return path (the dispatched node's own row).
-	m, c = runMethodFor("t-abc", &tasksOptions{taskID: "t-abc", reportTo: "peerbox", repo: "peerbox:/home/user/work/GoPi"})
-	if m != runcmd.MethodManual || c != "gopi worker t-abc --report-to peerbox --repo peerbox:/home/user/work/GoPi" {
+	m, c = runMethodFor("t-abc", &tasksOptions{taskID: "t-abc", reportTo: "peer1", repo: "peer1:/home/user/work/GoPi"})
+	if m != runcmd.MethodManual || c != "gopi worker t-abc --report-to peer1 --repo peer1:/home/user/work/GoPi" {
 		t.Fatalf("single-row+return = %q / %q, want the full re-runnable command", m, c)
 	}
 	// Worker round: the latch holds the target. The recorded command is the

@@ -6,7 +6,7 @@
 的来源词表，以及 `cmd/agent` 的边界标注。
 
 **状态**：本文件是这一改动落到 master 的说明（standing claim），代码锚点见文中
-引用；实测数字见 §4（本机 peerbox，2026-10-06）。
+引用；实测数字见 §4（本机 peer1，2026-10-06）。
 
 ---
 
@@ -110,7 +110,7 @@ note:   the inbox record is the reference (source=notify), NOT the payload bytes
 
 ---
 
-## 4. 实测（本机 peerbox，2026-10-06，真实二进制）
+## 4. 实测（本机 peer1，2026-10-06，真实二进制）
 
 `gopi tool sandbox create --label notify-e2e` 得到一份私有 profile，手工造一个
 只含 `session.jsonl` 的会话目录 `e2e-notify-fixture`，然后：

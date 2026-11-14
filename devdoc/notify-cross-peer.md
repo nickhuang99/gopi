@@ -154,12 +154,12 @@ composed from shared constants (`cliverbs.SyncRemoteBinaryName`, `CliVerbNotify`
   interference inside the package, not a regression of this change — stated here
   rather than left as an unexplained delta.
 - **Ran:** the real cross-machine acceptance, both hosts running **this
-  branch's binary** (md5 `88b286664dfdca5600b7d17fc8a447f3` on peerbox, scp'd to hp's
+  branch's binary** (md5 `88b286664dfdca5600b7d17fc8a447f3` on peer1, scp'd to hp's
   `/home/user/work/GoPi/bin/gopi`; hp's original saved to
   `…/artifacts/gopi-hp-before`, md5 `53894d9ac396b0583da75189e19a88a2`).
 - **Result:** see `## Evidence (self-filed)`.
 
-### The Rule 31 acceptance, verbatim (peerbox → hp)
+### The Rule 31 acceptance, verbatim (peer1 → hp)
 
 A **live `gopi chat` on hp** (pid 89908, started with NO input on its stdin:
 `tail -f /dev/null | gopi chat --tools`), session
@@ -221,7 +221,7 @@ $ … --session 967eed30-… --message "ACCEPT-135242: …"   (the TAKEN text)
   would inject it twice; change the text, or deliver to a different session
 ```
 
-Local regression (no `--peer`), on peerbox:
+Local regression (no `--peer`), on peer1:
 
 ```
 $ ./bin/gopi notify --session 01a10f78-3977-767d-aaff-640a4f5d9ac2 --message "local regression probe …"
@@ -232,7 +232,7 @@ the session takes it at its next round boundary (an IDLE console wakes for it �
                                                                         EXIT 0
 ```
 
-That line was the last thing typed into peerbox's own console before this turn
+That line was the last thing typed into peer1's own console before this turn
 began: **this turn's opening message is that delivery.** The local path woke a
 live session with no `--peer` involved — the regression check and the
 demonstration in one.
@@ -261,7 +261,7 @@ demonstration in one.
 - `go test ./internal/tools/ -run 'TestNotifyPeer|TestNotifyDeliveryID' -count=1` → `ok github.com/nick/gopi/internal/tools`.
 - `go test ./cmd/agent/ -run 'TestNotifyPeerCLI' -count=1` → `ok github.com/nick/gopi/cmd/agent 65.749s` (both cases; the live-console one 33.5s alone).
 - `go test ./internal/cliverbs/ -count=1` → `ok`.
-- `ssh hp 'md5sum ~/work/GoPi/bin/gopi'` → `88b286664dfdca5600b7d17fc8a447f3`, equal to peerbox's acceptance binary.
+- `ssh hp 'md5sum ~/work/GoPi/bin/gopi'` → `88b286664dfdca5600b7d17fc8a447f3`, equal to peer1's acceptance binary.
 - The five invocations quoted above, with their stdout and exit codes, run by hand against hp.
 
 ## Not Done (honest)
@@ -278,7 +278,7 @@ demonstration in one.
   (`…/artifacts/gopi-hp-before`). The console started for the acceptance was
   killed in the same step (`pkill -f "gopi chat --tools"`, 0 remaining). hp's
   profile and binaries are therefore as this run found them, and the acceptance
-  binary stays on peerbox at `…/artifacts/gopi-accept`
+  binary stays on peer1 at `…/artifacts/gopi-accept`
   (`88b286664dfdca5600b7d17fc8a447f3`) for a re-run.
 - **No `progress`/`--json` output for the peer arm.** The human lines only; the
   receipt is already the whole machine-readable answer for a caller that wants

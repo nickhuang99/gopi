@@ -92,7 +92,7 @@
     400/404/405/409；成功（含幂等重投）200。
 - CLI：`gopi task ingest --listen ADDR`（默认 :8923，ReadHeaderTimeout
   10s 常量）。HP 侧只需配置
-  `GOPI_TASK_NOTIFY_WEBHOOK=http://<peerbox>:8923/task-ingest` +
+  `GOPI_TASK_NOTIFY_WEBHOOK=http://<peer1>:8923/task-ingest` +
   `GOPI_TASK_NOTIFY_EVENTS=completed,failed`——配置即用，零代码。
 - E2E 实测（本机 18923）：known row 镜像成功（tags remote:hp-test、
   stats 追加一次）；unknown → 404；重投 → 200 already；
@@ -174,5 +174,5 @@
   （本轮验证 bash 任务未发）；列与 touch 机制有单测，真值落库待正常
   使用观测。
 - stale 阈值 30min 默认值按 payload 要求"实测后数据驱动调整"——现未调。
-- HP 端（10.0.0.6）跨机实测未做（本机回环已全过）；HP 侧只是环境
+- HP 端（192.0.2.6）跨机实测未做（本机回环已全过）；HP 侧只是环境
   变量配置，风险低。

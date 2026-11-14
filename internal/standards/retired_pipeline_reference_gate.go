@@ -361,7 +361,7 @@ var retiredRefInvocationPattern = regexp.MustCompile(
 // deleted the cross-node sync CLI family, and the pages went on teaching the
 // invocation:
 //
-//	DELETED, and this is what it does:  $ ./bin/gopi memory sync --peer peerbox --push  → exit 1
+//	DELETED, and this is what it does:  $ ./bin/gopi memory sync --peer peer1 --push  → exit 1
 //	gopi memory: unknown subcommand "sync" — want search|store|…|backup|…
 //
 // — while `gopi memory backup` (a ONE-WAY copy: snapshot + one ssh ship leg, no

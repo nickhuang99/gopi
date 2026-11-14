@@ -147,7 +147,7 @@ Fun-ASR CER 1.58% → 每 100 字错 1.6 个
   "voice": {
     "role": "client",                    // client | server
     "engine": "funasr",                  // funasr | whisper（保留切换能力）
-    "server_addr": "peerbox:7788",
+    "server_addr": "peer1:7788",
     "funasr": {
       "encoder": "~/work/funasr-models/funasr-encoder-f16.gguf",
       "llm": "~/work/funasr-models/qwen3-0.6b-q8_0.gguf",
@@ -160,7 +160,7 @@ Fun-ASR CER 1.58% → 每 100 字错 1.6 个
 }
 ```
 
-**同一份二进制靠 role 决定行为** —— 与 gopi 在 HP/peerbox 上跑同一份二进制同构。
+**同一份二进制靠 role 决定行为** —— 与 gopi 在 HP/peer1 上跑同一份二进制同构。
 
 ---
 
@@ -179,7 +179,7 @@ Fun-ASR CER 1.58% → 每 100 字错 1.6 个
 **每阶段独立可验证**：
 ```
 Phase 2: cat audio.mp3 | gopi voice_input --role server  → 正确文本
-Phase 3: hosta 说话 → peerbox 出文本
+Phase 3: host-b 说话 → peer1 出文本
 Phase 4: 文本出现在输入框且可编辑
 ```
 

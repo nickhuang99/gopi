@@ -13,7 +13,7 @@ The finish-cleanup chain (`TaskFinishCleanupSessionID` in
 worktrees behind:
 
 1. **Client-only gate**: `if IsServerNode() { skip "no client hand-off" }`.
-   On the server (peerbox, single-node: no sync_peers) the chain returned
+   On the server (peer1, single-node: no sync_peers) the chain returned
    early BEFORE any worktree removal could happen — a terminal run's
    worktree was never released.
 2. **Deliverable-required resolution**: the chain only recycles when the

@@ -907,7 +907,7 @@ that is dangerous. (New.)**
 `plugins/websearch/scripts/` is git-tracked today, but its history shows the tree was
 originally **outside** version control and was mirrored back in only after a live
 degradation: commit `453c1fd9` — "fix(websearch): recover merge_results.py + deepseek_ask.py
-from peerbox — mirror last 2 unversioned plugin scripts (audit B5)", whose body records that
+from peer1 — mirror last 2 unversioned plugin scripts (audit B5)", whose body records that
 the merged default "silently degraded to bing-only" when `merge_results.py` was missing from
 the deployed directory, and that the recovered copies were "the only live copy on earth —
 never committed on any branch". There is **no installer in the repo**: nothing under

@@ -134,7 +134,7 @@ func TestImportDedupHardenedEndToEnd(t *testing.T) {
 	withTasksDB(t, dedupTestDB(t))
 	patch := &SyncTaskPatch{
 		Version: syncTaskPatchVersion,
-		Node:    "peerbox",
+		Node:    "peer1",
 		Rows: []SyncTaskRow{
 			{TaskID: "t-a", Summary: "审查 M4.8 导入去重泄漏",
 				Payload: "审查 M4.8 导入去重泄漏。审计范围 /home/user/work/GoPi，派发时间 1735689600，完成后写报告。",
@@ -171,7 +171,7 @@ func TestImportReRunIsIdempotent(t *testing.T) {
 	withTasksDB(t, dedupTestDB(t))
 	patch := &SyncTaskPatch{
 		Version: syncTaskPatchVersion,
-		Node:    "peerbox",
+		Node:    "peer1",
 		Rows: []SyncTaskRow{
 			{TaskID: "t-a", Summary: "审查 M4.8 导入去重泄漏",
 				Payload: "审查 M4.8 导入去重泄漏。审计范围 /home/user/work/GoPi，派发时间 1735689600，完成后写报告。",

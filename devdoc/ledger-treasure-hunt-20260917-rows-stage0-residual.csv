@@ -26,9 +26,9 @@ f14ae1bd-aa6c-456b-afb4-c2780ef57469,ALREADY-DONE,,"master:devdoc/memroadmap-m3.
 3644f54d-9c9d-48ed-be0d-8bf1954291f1,ALREADY-DONE,,"master:devdoc/chat-table-design.md + merge 0e2d727f ""Merge branch 'feat/chat-table'""; the chat table and remote dispatch both landed"
 764751dd-42c8-46ed-b085-c91bd9b44614,SUPERSEDED,,the research question (cr-sqlite/litestream/rqlite for 2-node sync) was answered by the implemented mechanism: master:devdoc/memsync-bidirectional.md + devdoc/bidir2-fix.md
 82a5d2ff-e245-4577-a16b-66f292871af1,NO-VALUE,,shape rule R4 (no work identity) — <=25-char CLI probe
-e6e82b59-0106-4a4c-a5d8-3b39fb369893,ALREADY-DONE,,master:internal/tools/memory_sync_assets.go — HP branch/asset harvest back to peerbox is implemented; feat/chat-table merged 0e2d727f
+e6e82b59-0106-4a4c-a5d8-3b39fb369893,ALREADY-DONE,,master:internal/tools/memory_sync_assets.go — HP branch/asset harvest back to peer1 is implemented; feat/chat-table merged 0e2d727f
 6c723b40-e2f3-4ad5-a0dc-6b38c953e162,ALREADY-DONE,,"master:cmd/agent/cli_shot.go + internal/shot/ (cdp.go, chrome.go, x11.go) — the gopi shot subcommand exists as specified"
-aab1b66a-4017-49d6-bc86-cc7d185a0305,ALREADY-DONE,,master:internal/tools/memory_sync_assets.go + memory_sync_bidir2_e2e_test.go — bidirectional HP/peerbox asset sync with no-drop semantics
+aab1b66a-4017-49d6-bc86-cc7d185a0305,ALREADY-DONE,,master:internal/tools/memory_sync_assets.go + memory_sync_bidir2_e2e_test.go — bidirectional HP/peer1 asset sync with no-drop semantics
 af1bb7d5-abe4-432b-96f6-ff07f2701311,ALREADY-DONE,,master:internal/agent/loop.go carries the 1214 stream-shape guard this row asked for
 fcaff097-b868-4990-a227-5972a8dcac76,ALREADY-DONE,,master:internal/tools/task_adoption.go + task_merged_cleanup.go — the three-stage branch adoption chain (discover→merge→adopt) is implemented
 fc652652-647a-4c59-a98c-80fdf84d7652,ALREADY-DONE,,"master:cmd/agent/cli_tasks.go:1997 documents the standard chain 'client pushes → worktree remove → branch -d', i.e. the cleanup code the row said did not exist"

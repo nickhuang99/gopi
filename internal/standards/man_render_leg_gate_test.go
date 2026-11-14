@@ -7,7 +7,7 @@ package standardgate
 // dependency (Rule 35: the recipe adds no script, service or state file of its
 // own).
 //
-// Measured 2026-10-14 (peerbox, task 01a139cb065075a39186da7c0ad2d8bb): the
+// Measured 2026-10-14 (peer1, task 01a139cb065075a39186da7c0ad2d8bb): the
 // shipped recipe ran the render call under `set -e` with no guard, so on a host
 // without pandoc `make man` died with exit 127 — `/bin/sh: 1: pandoc: not
 // found` — AFTER the source leg had already succeeded, printing no hint that
@@ -358,7 +358,7 @@ func asExitError(err error, target **exec.ExitError) bool {
 
 // TestManRenderLegGuardSelectsTheRightBranch runs the shipped guard block twice:
 // once with a PATH that cannot resolve the renderer (the skip arm — the measured
-// peerbox case), once with a PATH carrying a shim that records its argv (the
+// peer1 case), once with a PATH carrying a shim that records its argv (the
 // render arm). Reading the recipe cannot tell these apart; executing it can.
 func TestManRenderLegGuardSelectsTheRightBranch(t *testing.T) {
 	recipe, _, err := scanManRenderLeg(filepath.Join(repoRoot(t), makefileName))

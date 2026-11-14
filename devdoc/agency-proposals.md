@@ -88,8 +88,8 @@ The last row is the decisive measurement. With the harness self-report filter
 disabled (experimental build), the miner proposes:
 
 - `recurring-failure  |failing chat turn  n=5` — all rows `failed`, tag
-  `from-peerbox`, headline `[auto] failing chat turn — elapsed=2.0s iter=1 tokens=20 …`
-- `recurring-failure  |run the failing  n=6` — same shape, `from-peerbox`
+  `from-peer1`, headline `[auto] failing chat turn — elapsed=2.0s iter=1 tokens=20 …`
+- `recurring-failure  |run the failing  n=6` — same shape, `from-peer1`
 
 Both are **unit-test/backfill fixtures mirrored in from a peer** (`token
 counters=20`), not real work. The self-report filter removes 239 rows total, of

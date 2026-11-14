@@ -23,7 +23,7 @@ package main
 // instead: `grep -n "MemorySyncTickRetiredSettingsKey"
 // internal/config/retired_settings_keys.go`.
 //
-// Measured on that build, `gopi memory sync --peer peerbox --push` printed
+// Measured on that build, `gopi memory sync --peer peer1 --push` printed
 // `gopi memory: unknown subcommand "sync"` and exited 1, so an operator who
 // followed the retirement report's own advice hit a second dead end and paid a
 // second round trip to learn it. `internal/cliverbs`' MemorySyncVerb + its three

@@ -47,7 +47,7 @@ func elfSummaryFixture() string {
 func TestTaskSummarySanitizerIsIdentityForText(t *testing.T) {
 	for _, s := range []string{
 		"resolve merge conflict: fix/cwd-and-lifetime",
-		"[auto] 背景（nick：harvest 时是否也 push HP 分支回 peerbox？）",
+		"[auto] 背景（nick：harvest 时是否也 push HP 分支回 peer1？）",
 		"fix(build): master tip bd42e827 does not compile — undefined: atomic",
 		"emoji 🙂 and symbols → ✓ § ¶",
 		"tabs\tand\nnewlines fold to spaces",

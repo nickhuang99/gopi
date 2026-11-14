@@ -15,7 +15,7 @@ status:         in_progress
 summary:        [auto] chats
 run_method:     auto
 run_cmd:        gopi chats
-claimed_by:     hosta:3430882 (at 2026-11-01 10:12:40)
+claimed_by:     host-b:3430882 (at 2026-11-01 10:12:40)
 process:        pid=3430882 … (live: gone)
 ended_at:       (not ended)
 ```

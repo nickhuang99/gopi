@@ -2,7 +2,7 @@
 # 文档里的 rev 引用必须在本仓库可解析 —— 一枚悬挂对象与一个被吞掉的 exit 128
 
 Task: 01a1355d-d0d3-7a1c-8c1b-ebb4325e74b7 · ground `task/01a1355dd0d37a1c8c1bebb4325e74b7`
-· 基线 `e63a80a`（不是 master）· 主机 hosta（client）
+· 基线 `e63a80a`（不是 master）· 主机 host-b（client）
 
 ## 结论（一句话）
 
@@ -42,14 +42,14 @@ merge-base-exit=128                  ← 真实的判据在这里
 
 `b2366a62a` 的真实身份（实测，2026-10-14）：
 
-| 探测 | hosta（读者所在机） | peerbox（对端） |
+| 探测 | host-b（读者所在机） | peer1（对端） |
 |---|---|---|
 | `git cat-file -t b2366a62a` | `fatal` + **exit 128** | `commit` |
 | `git rev-list --all \| grep -c '^b2366a62a'` | **0** | **0** |
 | `git for-each-ref --contains b2366a62a \| wc -l` | — | **0** |
 | `git cat-file --batch-all-objects … \| grep -c '^b2366a62a'` | **0** | **1** |
 
-即：**对象只存在于 peerbox 的对端对象库，而且没有任何 ref 指向它**（悬挂对象）。
+即：**对象只存在于 peer1 的对端对象库，而且没有任何 ref 指向它**（悬挂对象）。
 "无 ref 可达 ⇒ 不随 fetch/push 过桥 ⇒ 别的克隆永远看不到"这一句是**推断**；
 实测到的只有上表四个计数。
 
@@ -70,7 +70,7 @@ rev 引用，读输出时按"被当作 rev 引用写出来的那一串"筛。
 - **原先引的 rev**：`b2366a62a9351ce28241b637ab4fd34a3e8dc49f`
   `fix(worker): the file watcher gets an exit channel, and its installer joins it`
   （Tue Oct 13 15:32:20 2026 +0800，作者 qingzhe huang，父提交 `3544b690c6e86b5bc2647ca4c2a86b4ce94434b9`）。
-  peerbox 上对象完好（`cat-file -t` → `commit`），但 `rev-list --all` 命中 0、`for-each-ref --contains` 0 个 ref。
+  peer1 上对象完好（`cat-file -t` → `commit`），但 `rev-list --all` 命中 0、`for-each-ref --contains` 0 个 ref。
 - **真正落地的**：`ba759296639d12f4544ee197721dfeb34eab5f6c`
   `fix(cmd/agent): both stops JOIN — the watcher's uninstall and the resident sweep's flight`
   （Tue Oct 13 16:41:20 2026 +0800）。本仓库 `cat-file -t` → `commit`；
@@ -79,10 +79,10 @@ rev 引用，读输出时按"被当作 rev 引用写出来的那一串"筛。
 - **它与 `b2366a62a` 不是同一个改动**：同一文件 diff 的稳定
   `git patch-id --stable` 不同（`a2362019…` vs `72c49a7d…`）。同形，不同一枚。
 - **同段的"已提行/附件"在本机也不可复核**：task 行
-  `01a1343d-d9c2-793c-a5e2-29538e340c09` 在 hosta 账本里没有
+  `01a1343d-d9c2-793c-a5e2-29538e340c09` 在 host-b 账本里没有
   （`gopi task show …` → `no task with task_id=…`）；附件
   `~/.gopi/sessions/01a13431-968c-7602-b48f-d2daf1aa6cc2/artifacts/bug-installfilewatcher-no-join.md`
-  在 hosta 不存在，在 peerbox 也**不存在**。该行与附件产生于哪个 ground 未确认 —— 只记实测。
+  在 host-b 不存在，在 peer1 也**不存在**。该行与附件产生于哪个 ground 未确认 —— 只记实测。
 
 ## 哪些门禁抓不到它（诚实边界）
 
@@ -95,5 +95,5 @@ rev 引用，读输出时按"被当作 rev 引用写出来的那一串"筛。
 ## 取证
 
 - 本仓库侧：`~/.gopi/sessions/01a1355d-d0d3-7a1c-8c1b-ebb4325e74b7/artifacts/evidence-b2366a62a-unresolvable.md`
-- peerbox 侧（ssh 只读探测）：同目录 `evidence-peer-peerbox-b2366a62a.md`
+- peer1 侧（ssh 只读探测）：同目录 `evidence-peer-peer1-b2366a62a.md`
 - 改动：`devdoc/scratch-gc-flight-join.md`（Rule 4，surgical，未改"观察到的第二处"的结论段）

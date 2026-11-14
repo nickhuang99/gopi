@@ -9,7 +9,7 @@ package tools
 //	   TestMain (toolsPinChildLocale) and inherited by every git child this
 //	   binary spawns, INCLUDING the children the process under test spawns
 //	   (gitPushbackGitRun → gitPeerRun inherits this process's environment —
-//	   its own doc says so). MEASURED 2026-10-12 on hosta: without the pin,
+//	   its own doc says so). MEASURED 2026-10-12 on host-b: without the pin,
 //	   `LC_ALL=zh_CN.utf8 LANG=zh_CN.utf8` made
 //	   TestPushbackUnresolvedRemoteNameIsDiagnosedByTheRealLane red with
 //	   `fatal: 无法读取远程仓库。` in the refusal — the PRODUCT was right (it
@@ -39,7 +39,7 @@ import (
 )
 
 // pbcLocalizedLocale is a locale whose git diagnostics are NOT English — the
-// one measured to break assertion ① on hosta (2026-10-12). It is a NAMED
+// one measured to break assertion ① on host-b (2026-10-12). It is a NAMED
 // value, not a probe: the test asserts the failure mode, it does not search
 // for a locale that happens to be installed.
 const pbcLocalizedLocale = "zh_CN.utf8"

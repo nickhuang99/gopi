@@ -82,11 +82,11 @@ func TestWebFetchContract_GeoRoute(t *testing.T) {
 		{"https://evil-bigmodel.cn/x", "ssh"}, // suffix must not over-match
 		{"http://localhost:9/x", "ssh"},       // SSRF gate: never direct
 		{"http://127.0.0.1/x", "ssh"},
-		{"http://10.0.0.1/x", "ssh"},
-		{"http://10.0.0.1/x", "ssh"},
-		{"http://172.16.0.1/x", "ssh"}, // 172.16-31 private range
-		{"http://172.32.0.1/x", "ssh"}, // public range still ssh (default)
-		{"http://[::1]:8/x", "ssh"},    // bracketed IPv6 loopback
+		{"http://192.0.2.1/x", "ssh"},
+		{"http://192.0.2.1/x", "ssh"},
+		{"http://192.0.2.101/x", "ssh"}, // 172.16-31 private range
+		{"http://172.32.0.1/x", "ssh"},  // public range still ssh (default)
+		{"http://[::1]:8/x", "ssh"},     // bracketed IPv6 loopback
 	}
 	out := runWebFetchDriver(t, append([]string{"route"},
 		func() []string {

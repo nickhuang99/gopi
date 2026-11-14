@@ -31,7 +31,7 @@
 **Re-measured again:** 2026-10-13 (task `01a13219-058f-7bcdb14d-af1d6616835b`) — three further drifted citations were re-keyed by SYMBOL, on the same method as the 2026-10-03 pass: both occurrences of the startup-banner anchor in §R5 (`config.NodeIdentityLine`'s call site in `cmd/agent/main.go`) and §R6's finish-chain constant anchor (`finishCleanupPeerRepo` in `internal/tools/task_finish_cleanup.go`). Each new line was read by CONTENT (`sed -n`), never by arithmetic shift.
 
 **Module:** B4 of 12 · **Host of record:** `hostb-Laptop` (the client) · **Measured:** 2026-09-17
-**Re-measured:** 2026-10-03 on `peerbox` at master `fd126c45` — every `.go:NNN` citation this document carries was read by CONTENT, not existence: **§O2** (the peer-whitelist channels) and **every other drifted anchor** across §R1/R3/R6/R8/R10/R11, §6.1, §6.3/§6.4, §7.1–§7.3 and the C1–C3 constraint rows. Each drift is re-keyed to its true SYMBOL plus current line — never re-baselined, never re-keyed by arithmetic, and where the symbol lives in a different FILE than the one cited the row now names the file that carries it. The dated 2026-09-17 record above is kept; every re-keyed anchor is marked `re-measured 2026-10-03` where the drift changed the sentence's MEANING (and §6.1 carries its own note for its table), while `devdoc/o2-peer-channel-remeasurement-20261003.md` §1 carries the full table — each cited line's actual content, and the symbol that replaced it.
+**Re-measured:** 2026-10-03 on `peer1` at master `fd126c45` — every `.go:NNN` citation this document carries was read by CONTENT, not existence: **§O2** (the peer-whitelist channels) and **every other drifted anchor** across §R1/R3/R6/R8/R10/R11, §6.1, §6.3/§6.4, §7.1–§7.3 and the C1–C3 constraint rows. Each drift is re-keyed to its true SYMBOL plus current line — never re-baselined, never re-keyed by arithmetic, and where the symbol lives in a different FILE than the one cited the row now names the file that carries it. The dated 2026-09-17 record above is kept; every re-keyed anchor is marked `re-measured 2026-10-03` where the drift changed the sentence's MEANING (and §6.1 carries its own note for its table), while `devdoc/o2-peer-channel-remeasurement-20261003.md` §1 carries the full table — each cited line's actual content, and the symbol that replaced it.
 **Method, standards, 8-section shape, C1–C5:** carried inline in this task's payload (umbrella `8e2fa780`/`a2d1af6d`, `01a0ab12` series).
 **Sibling module in the other series:** `01a0ab12-35e7-71c2-a03a-ec98256a3c39` (status `pending`, no session, no branch, no document — checked `git log --all -- devdoc/requirements/` on 2026-09-17: only `00-method-and-standards`, `00-module-map`, `01-per-module-briefings`, `01-task-ledger`, `02-merge-and-branches`, `README`, `merge-branch-lifecycle` exist; nothing to judge or redo).
 
@@ -154,8 +154,8 @@ my assumption that it is.
 ### 2.1 The operator (nick) — "I should not be the transfer mechanism"
 
 The need is that work crosses machines while I am asleep. Concretely: I file a task
-on peerbox in the evening; the laptop picks it up, does it, and the result and the
-record of it are back on peerbox without me running anything. **What I will never
+on peer1 in the evening; the laptop picks it up, does it, and the result and the
+record of it are back on peer1 without me running anything. **What I will never
 accept in place of that:** being told "you need to run this on the other one too",
 or discovering days later that a finished piece of work only ever existed on the
 machine that produced it. The verbatim statement of this need is a paste of my own
@@ -178,7 +178,7 @@ the same work is authoritative.
 ### 2.3 The two machines, in their two opposed roles
 
 This is the only actor pair in the whole system that is *asymmetric*. The centre
-("server", peerbox) owns the system layer and may rule on a contradiction; the
+("server", peer1) owns the system layer and may rule on a contradiction; the
 reporting machine ("client", HP) does the feature work and must never rule
 (`GOPI.md:1002` Rule 28; the role table at `:1002-1004`). The operator's rationale
 is recorded in the rule itself: every 2026-09-16 incident came from both machines
@@ -244,7 +244,7 @@ have**: nothing in the protocol states what happens when a row is *deleted* on o
 side (§6.2 G3).
 
 **What the operator does by hand, today.** He can ask one machine what it thinks
-of the other (`task sync --status` → HP answers `peer peerbox: anchor=… last_synced=…`
+of the other (`task sync --status` → HP answers `peer peer1: anchor=… last_synced=…`
 — measured), compare the two row-sets (`task diff --peer`), force a full replay
 (`task sync --full`), or move knowledge rows (`memory sync --peer`).
 
@@ -260,7 +260,7 @@ link named (§8 repeats them as a list).
 **Need:** I file work on one machine and see it on the other; a row must not be
 able to mean two different things on the two machines.
 **Evidence:** `t-1788036628` (operator: HP-side runs only ever wrote back to HP's
-own database, "peerbox 台账永远 pending" — remote SQLite is the wrong answer by
+own database, "peer1 台账永远 pending" — remote SQLite is the wrong answer by
 design); `t-1788093118` `[M4.13]` (the timestamp-delta design, "SyncML 协议核心
 简化"), with the operator's own confirming wording in the same row — **nick 确认
 willing to implement**; `SyncTaskExportDelta` `internal/tools/memory_sync_delta.go:187`
@@ -328,7 +328,7 @@ person's work. The escape hatch is an alarm for a human to adjudicate.
 **Need:** the note is worthless without the article. Operator verbatim:
 **"only DB-sync means nothing"** (`t-1788125937`, bug038); and when the machine
 went quiet on this, he filed the diagnosis himself — *"why did HP never push its
-finished branches to peerbox? client leg silently skipped"* (`01a0aab1`,
+finished branches to peer1? client leg silently skipped"* (`01a0aab1`,
 briefed in full at `briefings/brief-hp-push-diagnosis.md`), then the repair
 `t-1788252501` ("gopi client should push git branch to server and clean up").
 **Evidence for the mechanism:** the client chain's own ordering
@@ -391,9 +391,9 @@ three citations here: `memory_sync_assets.go:188` is a `PushedRows` struct field
 `SyncPeers`/`MemoryPeers` field comments, not the per-channel enforcement).
 **Measured today, live — and the measurement corrected my own reading of the
 declaration.** The two whitelists are separately enforced: on the client,
-`task sync --peer peerbox` is accepted and `task sync --peer hp` is refused
+`task sync --peer peer1` is accepted and `task sync --peer hp` is refused
 (`hp` is not in `sync_peers`), while `memory sync --peer hp` is accepted and
-`memory sync --peer peerbox` is refused. On the centre the mirror image holds:
+`memory sync --peer peer1` is refused. On the centre the mirror image holds:
 `task sync --peer hp` refused (its `sync_peers` is **empty**), `memory sync --peer hp`
 accepted. So R6's separation is real and holds in both directions. What the same
 measurement exposed is a **different** defect, filed as G10: the client's asset
@@ -456,7 +456,7 @@ by construction — the role resolution's second arm), and **not** in the asset 
 **Evidence:** the live incident is recorded in the commit itself —
 `dd118f5d` *"fix(sync): IsServerNode — config role wins (bug044) + fail-safe client
 default (N1): unknown host no longer claims server rights (live incident: HP
-merged peerbox branches as self-declared server)"*; the comment at
+merged peer1 branches as self-declared server)"*; the comment at
 the N1 comment inside `IsServerNode` (`internal/tools/memory_sync_delta.go:815`;
 the trade is stated at `:824`) states the trade in the operator's
 terms — **"Client overreach is cheap."**
@@ -500,7 +500,7 @@ so that a test author can tell a bug from allowed behaviour.
 **A1 — the two ledgers converge.** After a finished piece of work on the client,
 one sync session (or one daemon tick, if enabled) leaves the centre holding that
 row in the same terminal condition, and the client holding every row the centre
-sent. *Observable:* `gopi task diff --peer peerbox` exits 0 with no differences.
+sent. *Observable:* `gopi task diff --peer peer1` exits 0 with no differences.
 *Not a bug:* a row whose condition differs while one side's session has not yet run
 — the protocol is one-directional per session and never claimed simultaneity.
 **Measured status of this acceptance clause today: FAILING** — 753 differences,
@@ -569,7 +569,7 @@ single-machine shape) does not silently disable knowledge sync.
 
 ### 6.1 Where the code SERVES the requirement
 
-*(re-measured 2026-10-03 on `peerbox` at master `fd126c45`: the S1/S3/S5/S7 rows'
+*(re-measured 2026-10-03 on `peer1` at master `fd126c45`: the S1/S3/S5/S7 rows'
 anchors were read by CONTENT and corrected — `memory_sync_delta.go:186`/`:429`,
 `memory_sync_reconcile.go:505`, `:796-809` and `tasknotify.go:81-86` were comment
 or field lines, not the symbols the rows assert; the S6 row's the two
@@ -580,7 +580,7 @@ re-keyed above.)*
 
 | # | Requirement | Evidence it is served | Verdict |
 |---|---|---|---|
-| S1 | R1 one ledger | `SyncTaskExportDelta` `internal/tools/memory_sync_delta.go:187`/`SyncTaskImportDelta` `:431`; live: 2026 rows on the client carry `from-peerbox`, and `task sync --status` answers with a real anchor and timestamp | **Served** |
+| S1 | R1 one ledger | `SyncTaskExportDelta` `internal/tools/memory_sync_delta.go:187`/`SyncTaskImportDelta` `:431`; live: 2026 rows on the client carry `from-peer1`, and `task sync --status` answers with a real anchor and timestamp | **Served** |
 | S2 | R4 the article travels | the client chain's ordered push→remove→delete plus the pre-merge gate (`internal/tools/task_finish_cleanup.go:3-30`) | **Served on the client (measured: `push: 18 pushed (idempotent)`); the centre's receiving half is unreachable — G1** |
 | S3 | R7 the premise is executable | `task diff --peer` + the anchor guard (`syncAnchorGuard` `internal/tools/memory_sync_reconcile.go:361`, commit wrapper `guardSyncStateCommit` `:542`), and it fired in the field (`t-1788330598`) | **Mechanism served; the requirement is NOT met** — the instrument reports "the anchor premise is BROKEN" (753 differences, exit 1) and nothing runs it (§G3/G6) |
 | S4 | R8 declared topology | refusal message on every session path; measured on both machines, both directions | **Served** |
@@ -606,7 +606,7 @@ centre's `role` configuration on 08-31 (§8).
 **G1 — the machine that is *supposed* to be authoritative does not know it is.**
 This is the finding I would put in front of the operator first.
 `GOPI.md:1002` Rule 28 states the division as a rule, and the client obeys it end
-to end: the client's settings declare `role: client` and `sync_to: peerbox`, and
+to end: the client's settings declare `role: client` and `sync_to: peer1`, and
 every role-gated behaviour follows. **Measured on the centre (2026-09-17): its
 settings file has no `role` key at all** (`python3 -c` over the live file: `"role"
 in d → False`, `GOPI_NODE_ROLE` unset in the shell, absent from the login profile,
@@ -655,7 +655,7 @@ default event set is `claimed,in_progress,completed,failed`
 sentence used to attribute to a constant in the same file has **no constant behind
 it anywhere in the tree**: `internal/tools/tasknotify.go:86` is a comment
 ("Operators subscribe via events (like `stale`).") — the six-event list is the
-*subscribed* value in the operator's own configuration, read on `peerbox` on
+*subscribed* value in the operator's own configuration, read on `peer1` on
 2026-10-03 as `claimed,in_progress,completed,failed,stale,build-failed`
 (`~/.gopi/settings.json`, key `notify.events`). Neither includes it.
 *(re-measured 2026-10-03: this paragraph's older form attributed the six-event list to
@@ -685,10 +685,10 @@ file (searched the whole sync family). Rows that the centre removes for any reas
 therefore cannot reach the client. **Measured (2026-09-17), two independent
 instruments agreeing:** I pulled the centre's full id set (1682 rows at first
 measurement) and compared it against the client's 2427 — **717 client rows carry
-`from-peerbox` (i.e. they were once accepted as the centre's) and are absent from the
+`from-peer1` (i.e. they were once accepted as the centre's) and are absent from the
 centre today**, 676 of them with no trace anywhere in the centre's own event
 history, which is what distinguishes a delete from a row the centre never had; and
-the shipped instrument (`gopi task diff --peer peerbox`) reports **748 rows
+the shipped instrument (`gopi task diff --peer peer1`) reports **748 rows
 missing-on-peer** against a client total of 2428. The two numbers differ because
 they count different things — mine asks "is this id in the centre's table", the
 shipped one asks "does the centre's catalog contain this row" — and their agreement
@@ -713,10 +713,10 @@ daemon pass invokes it).
 against the real centre while writing this document:
 
 ```
-diff peerbox: 753 difference(s) — the anchor premise is BROKEN (local=2428 peer=1683 rows)
+diff peer1: 753 difference(s) — the anchor premise is BROKEN (local=2428 peer=1683 rows)
   missing-on-peer  t-1788053263-1
   … 748 such lines
-repair: gopi task sync --full peerbox
+repair: gopi task sync --full peer1
 exit=1
 ```
 
@@ -725,7 +725,7 @@ right now on the operator's two machines, it has been failing for two weeks
 (the missing rows' dates), the tool that detects it **exits 1**, and the only reason
 he has not seen it is that the check is manual and the daily path never runs it.
 Under C2 this is the strongest form of the finding: the failure is *detectable,
-detected, and unread*. `gopi task sync --full peerbox` is the repair the tool itself
+detected, and unread*. `gopi task sync --full peer1` is the repair the tool itself
 prescribes, and it is one command.
 
 **G4 — "declared, never discovered" is enforced for the wire but not for the target.**
@@ -761,7 +761,7 @@ laptop send me" now has two answers. **Requirement weakened:** R5/R1's "one stor
 a requirement that is only true by my not asking the question. The same split
 exists in the *other* channel's provenance: the knowledge store on the centre holds
 both `node:hp` and `node:hostb-Laptop` sources, while the client holds only
-`node:peerbox` (404 rows).
+`node:peer1` (404 rows).
 
 **G6 — the answer to "are my machines one?" is per-machine, manual, and unread — and today the answer is NO.**
 `task sync --status` is a local read of the anchor table. Measured: the client
@@ -823,7 +823,7 @@ mechanism: R4 says "what the task finished must travel", the implementation says
 "everything I happen to have must travel, unless the centre can prove it already
 has it". That inversion is exactly the 2026-09-02 incident recorded as
 `t-1788332252` in the operator's framing — *"HP stale branches flood back to
-peerbox, resurrecting deleted branches"* (30+ branches re-appeared on the centre at
+peer1, resurrecting deleted branches"* (30+ branches re-appeared on the centre at
 14:39 that day; filed and fixed through `t-1788357248`/`t-1788358709`). The fix
 made the flood survivable; nothing made it a selection. **Consequence for the
 centre:** its branch list is a function of the client's local checkout rather than
@@ -835,11 +835,11 @@ this may be exactly what he wanted.]`
 **G10 — one peer declaration, two different addresses, and no validation.**
 This is a finding produced by trying to test G4 and getting a surprise.
 `memory_peers = ["hp"]` on the client, and the alias `hp` in
-`~/.ssh/config` on the client points at **10.0.0.12** — a third address that is
-neither the centre nor the client (the client is 10.0.0.5, the centre
-10.0.0.6), and which from the centre is **unreachable** (`ping -c1 -W2
-10.0.0.12` → 100% packet loss, whereas 10.0.0.5 answers in 1.1 ms). On the
-**centre**, the same alias `hp` points at 10.0.0.5 — i.e. the client. So the
+`~/.ssh/config` on the client points at **192.0.2.12** — a third address that is
+neither the centre nor the client (the client is 192.0.2.5, the centre
+192.0.2.6), and which from the centre is **unreachable** (`ping -c1 -W2
+192.0.2.12` → 100% packet loss, whereas 192.0.2.5 answers in 1.1 ms). On the
+**centre**, the same alias `hp` points at 192.0.2.5 — i.e. the client. So the
 string `hp` means "the client" on one machine and "some other host" on the other,
 and the asset channel's only check is membership of a list of strings
 (`syncAssetsPeerWhitelisted` `internal/tools/memory_sync_assets.go:524` over
@@ -890,7 +890,7 @@ bug041 is the row that REQUIRED the client chain ("client 侧标准清理链：p
 worktree→delete branch", `t-1788141480`, filed and later cancelled), and the
 operator had to file the diagnosis *himself* when the machine went quiet on it
 (`01a0aab1-587a-7ca3-ba98-4b66b11b8b90`, "diagnose: why did HP never push its finished
-branches to peerbox?"). The epic that was then raised to verify and complete the chain
+branches to peer1?"). The epic that was then raised to verify and complete the chain
 is `37fe9c7e-fa30-45ff-ab20-6aa996e85628` ("EPIC: 验证并完善 gopi client 的
 push-back+cleanup 链（bug038+bug041 域）"). **Measured at the time of writing: this
 machine carries 25 local branches and 12 live worktrees** — including the close-out
@@ -927,7 +927,7 @@ the server. `[opinion]` the honest label is therefore not "over-built code" but
 "built code with no live caller" — a distinction that matters, because deleting it
 would be wrong and configuring it is a one-line fix.
 
-**O2 — three ways to configure one fact.** *(re-measured 2026-10-03 on `peerbox` at
+**O2 — three ways to configure one fact.** *(re-measured 2026-10-03 on `peer1` at
 master `fd126c45`; the 2026-09-17 citations `internal/config/config.go:311`/`internal/config/config.go:612` were both wrong —
 `:311` is an `ignore_peak_hours` comment and `:612` a `GOPI_TASK_NOTIFY_EVENTS`
 comment — neither names a peer source. The finding stands; its anchors are replaced
@@ -1065,7 +1065,7 @@ struct, not a protocol library. The single direct dependency (`modernizr`-style 
 
 **Finding 1 — the centre declares none of the topology, and every consequence of
 that declaration is silently off — including the lock that prevents the two machines
-from doing the same work twice.** Stated as one line: `GOPI.md:1002` Rule 28 declares peerbox the server, the
+from doing the same work twice.** Stated as one line: `GOPI.md:1002` Rule 28 declares peer1 the server, the
 client's settings declare the matching client role and obey it end to end, and the
 centre's settings declare **neither `role` nor any peer** — the role's absence is
 caught by a fail-safe that returns "not the server" on every path
@@ -1097,10 +1097,10 @@ BROKEN.
 **Finding 2 (the bigger one) — the two machines are, right now, not one ledger, and
 the check that says so has no reader.** The module's own reconciliation instrument,
 run on the client against the real centre while writing this document, answers
-`diff peerbox: 753 difference(s) — the anchor premise is BROKEN (local=2428 peer=1683
+`diff peer1: 753 difference(s) — the anchor premise is BROKEN (local=2428 peer=1683
 rows)` and exits **1**, listing 748 rows the client holds that the centre does not
 (§G3). The check is correct, it names its own repair (`gopi task sync --full
-peerbox`), and nothing runs it: its only call site is the CLI dispatch. So the
+peer1`), and nothing runs it: its only call site is the CLI dispatch. So the
 acceptance clause A6 in this very document — the premise is checkable and its
 violation is loud — is **false in the live system**, not because the instrument is
 missing but because detection without delivery is not loud. The operator's own
@@ -1111,8 +1111,8 @@ framing of this premise was that it is *common sense*
 One machine already appears under two names in the data (`from-hp` 73 rows vs
 `from-hostb-Laptop` 217 rows on the centre, zero overlap; both names persist in
 the centre's anchor table — G5), **and one name denotes two machines**: the alias
-`hp` points at 10.0.0.12 from the client (a third address, unreachable from the
-centre) and at 10.0.0.5 — the client — from the centre (G10). The asset channel's
+`hp` points at 192.0.2.12 from the client (a third address, unreachable from the
+centre) and at 192.0.2.5 — the client — from the centre (G10). The asset channel's
 entire validation of that declaration is membership of a list of strings
 (`syncAssetsPeerWhitelisted` `internal/tools/memory_sync_assets.go:524`), and it accepts
 the machine's own whitelisted name
@@ -1201,12 +1201,12 @@ on R4's acceptance (A3).
 | S1–S6 ("served") | **high** | live measurement on both machines, not reading |
 | **G1 (the centre declares no role; server pass unreachable there)** | **high** | settings file read on the centre, `GOPI_NODE_ROLE` absent from shell + profile + the running merger's `/proc/<pid>/environ`, `IsServerNode` fall-through read, and `task push` executed on the centre printing the client-skip line |
 | **G2 (the alarm has no subscriber)** | **high** for "no subscriber in the live configuration" | live `notify.events` read on both machines + 0 occurrences in a 49 MB log that is still growing. **medium** for "it never fired anywhere else" — a different machine or an earlier configuration could have delivered it, and I did not search every log on every host |
-| **G3 (676 rows absent from the centre)** | **high** for the count and the direction; **very high** that the premise is broken, because the module's own tool says so (`task diff --peer`, exit 1, 753 differences); **medium** for the *cause* | the set comparison is mechanical (1682 centre ids at first measurement vs 2427 client ids; 748 rows reported missing-on-peer by the shipped instrument; 717 tagged `from-peerbox` and absent) — but "deleted" vs "archived out of the main table by a migration" is my inference; I did not read the centre's archive path. **This is the weakest link in the document**, and it is now the weakest link in the *system* too, because the difference is growing between my two measurements (1682 → 1683 centre rows in the minutes I spent writing) |
+| **G3 (676 rows absent from the centre)** | **high** for the count and the direction; **very high** that the premise is broken, because the module's own tool says so (`task diff --peer`, exit 1, 753 differences); **medium** for the *cause* | the set comparison is mechanical (1682 centre ids at first measurement vs 2427 client ids; 748 rows reported missing-on-peer by the shipped instrument; 717 tagged `from-peer1` and absent) — but "deleted" vs "archived out of the main table by a migration" is my inference; I did not read the centre's archive path. **This is the weakest link in the document**, and it is now the weakest link in the *system* too, because the difference is growing between my two measurements (1682 → 1683 centre rows in the minutes I spent writing) |
 | **G11 (claim lock off on the centre)** | **high** | settings read on both machines + the gate read at `cmd/agent/cli_tasks.go:1551-1552` (the
 `task diff --peer` flag's refusal) + `HasSyncPeers` read + the shared-funnel doc comment
 naming all three callers. **`[inferred]` for the frequency**: the two hosts work different layers by Rule 28, so I have not observed a duplicated run — the claim is that the protection is off, not that it has already failed |
 | G4 (asset channel accepts a self/ambiguous peer) | **high** | executed live, accepted, with the row count printed |
-| **G10 (alias `hp` = 10.0.0.12 here, 10.0.0.5 there)** | **high** | `ssh -G hp` on both machines + `ping` from the centre (100% loss to .12, 1.1 ms to .5) + `hostname -I` on both. **`[inferred]` for the consequence only**: I did not run a full asset session to see it fail, and the anchor table shows a recent `hp` entry, so something did answer at some point |
+| **G10 (alias `hp` = 192.0.2.12 here, 192.0.2.5 there)** | **high** | `ssh -G hp` on both machines + `ping` from the centre (100% loss to .12, 1.1 ms to .5) + `hostname -I` on both. **`[inferred]` for the consequence only**: I did not run a full asset session to see it fail, and the anchor table shows a recent `hp` entry, so something did answer at some point |
 | G5 (two provenance names for one machine) | **high** | counted on both machines, zero overlap, plus the override's install date |
 | G7 (one hard-coded peer repo path) | **high** for the fact; **low** that it is a requirement gap | three constants read; `[opinion]` filed as such |
 | G8 (`sync_to` is decorative) | **high** | single consumer found by exhaustive search |

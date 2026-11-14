@@ -1,7 +1,7 @@
 // index_bounded_test.go — the scan root's entry count is a BOUND, not an
 // invitation to walk.
 //
-// THE DEFECT (measured on this host, peerbox, 2026-10-07). `gopi session
+// THE DEFECT (measured on this host, peer1, 2026-10-07). `gopi session
 // checkpoint list` with no --dir scans <gopi dir>/sessions, whose first level
 // held 83960 entries (83548 of them run directories). IndexTree listed the root
 // and then called ReadDir on EVERY child directory — one listing per child, by

@@ -8,7 +8,7 @@ package tools
 // WHY THIS EXISTS (measured 2026-10-08, master 087f506df, task 01a117c9-1111).
 // A probe running inside a private sandbox (Rule 34) ran
 //
-//	GOPI_HOME=$SB GOPI_SYNC_PEERS=peerbox gopi task sync --peer peerbox --next-eligible <id>
+//	GOPI_HOME=$SB GOPI_SYNC_PEERS=peer1 gopi task sync --peer peer1 --next-eligible <id>
 //
 // and FOUR fixture rows landed in the OPERATOR's real `~/.gopi/memory.db` — two
 // of them were then dispatched as real work. The rows carried the
@@ -17,9 +17,9 @@ package tools
 //
 // The two halves of the mechanism, both measured:
 //
-//	①  the alias names THIS machine. `~/.ssh/config` carries `Host peerbox` →
-//	   10.0.0.6, and 10.0.0.6 IS this host's own address. So `--peer
-//	   peerbox` is not a remote machine at all: it is an `ssh` to self, and the
+//	①  the alias names THIS machine. `~/.ssh/config` carries `Host peer1` →
+//	   192.0.2.6, and 192.0.2.6 IS this host's own address. So `--peer
+//	   peer1` is not a remote machine at all: it is an `ssh` to self, and the
 //	   peer-side argv runs HERE.
 //	②  nothing binds the profile. The peer-side argv is prefixed with
 //	   `GOPI_HOME=… PATH=…` ONLY when `--remote-home` is non-empty
@@ -249,8 +249,8 @@ func selfPeerOperatorHome() string {
 // MATCHING IS LITERAL ON PURPOSE. ssh itself matches patterns and honours
 // `Host *` defaults; reproducing that grammar would be a second ssh
 // implementation whose disagreements with the real client stay invisible until
-// they matter. The configs this leg must read — a `Host peerbox / HostName
-// 10.0.0.6` self-reference, and ordinary named stanzas — are literal ones,
+// they matter. The configs this leg must read — a `Host peer1 / HostName
+// 192.0.2.6` self-reference, and ordinary named stanzas — are literal ones,
 // and anything fancier yields "" = unknown, which the caller treats as "not
 // provably local" rather than as a fact.
 func sshConfigHostNameFor(path, alias string) string {
@@ -303,9 +303,9 @@ func splitSSHConfigLine(line string) (key, value string) {
 //
 //   - the alias IS one of this host's own addresses (written literally in the
 //     config) → local;
-//   - the alias RESOLVES to one of them (`Host peerbox` → 10.0.0.6, this
+//   - the alias RESOLVES to one of them (`Host peer1` → 192.0.2.6, this
 //     host's own address) → local, and this is the measured case;
-//   - the alias is this host's own NAME (`peerbox` on peerbox) → local — the same
+//   - the alias is this host's own NAME (`peer1` on peer1) → local — the same
 //     identity check the claim leg already performs before filtering a peer
 //     equal to the node's own name (claimBroadcastNodeName);
 //   - everything else, including an unmeasurable address set or a name that

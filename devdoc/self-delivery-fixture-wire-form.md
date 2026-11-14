@@ -43,7 +43,7 @@
   task-ledger 行。让 `ResolveSyncPeers` 也接受 git remote 名，等于把"本机 ssh 拓扑"和
   "每个仓库自己的本地设置"合成一个字段 —— 而每个交付腿跑在**不同的仓库**里
   （行自己的 worktree / ground 的 repo），remote 名在那里根本不解析（`peer_remote_target.go`
-  的 `SSHTarget` 文档记了实测：`fatal: 'peerbox' does not appear to be a git repository`）。
+  的 `SSHTarget` 文档记了实测：`fatal: 'peer1' does not appear to be a git repository`）。
 - 也就是说：产品若改成"优先 remote 名"，只是把今天这句 ssh 句子换成另一句 git 句子，
   一个仓库之后重新犯同一个错。
 

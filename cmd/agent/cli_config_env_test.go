@@ -76,7 +76,7 @@ func configEnvRun(t *testing.T, args ...string) string {
 // TestConfigEnvWriteIsFoundByTheReader is the round-trip: what --write puts on
 // disk is what the prompt loader reads back, summary for summary.
 func TestConfigEnvWriteIsFoundByTheReader(t *testing.T) {
-	configEnvFixtureHome(t, "Host peer 10.0.0.2\n        HostName 10.0.0.2\n")
+	configEnvFixtureHome(t, "Host peer 192.0.2.2\n        HostName 192.0.2.2\n")
 	path := filepath.Join(t.TempDir(), envctx.FileName)
 	configEnvRun(t, "--write", "--path", path)
 
@@ -87,7 +87,7 @@ func TestConfigEnvWriteIsFoundByTheReader(t *testing.T) {
 	if !strings.Contains(string(onDisk), envctx.FileName) {
 		t.Errorf("the artifact does not name itself:\n%s", onDisk)
 	}
-	if !strings.Contains(string(onDisk), "10.0.0.2") {
+	if !strings.Contains(string(onDisk), "192.0.2.2") {
 		t.Errorf("the artifact does not carry the fixture node:\n%s", onDisk)
 	}
 	block, ok := envctx.Load(path)
@@ -103,7 +103,7 @@ func TestConfigEnvWriteIsFoundByTheReader(t *testing.T) {
 // fixture with the real shape: two aliases on one address must both be printed,
 // with the ambiguity named — never reduced to one answer.
 func TestConfigEnvRecordsTheConflictItMeasured(t *testing.T) {
-	configEnvFixtureHome(t, "Host one 10.1.1.5\n        HostName 10.1.1.5\n\nHost two 10.1.1.5\n        HostName 10.1.1.5\n")
+	configEnvFixtureHome(t, "Host one 192.0.2.105\n        HostName 192.0.2.105\n\nHost two 192.0.2.105\n        HostName 192.0.2.105\n")
 	path := filepath.Join(t.TempDir(), envctx.FileName)
 	configEnvRun(t, "--write", "--path", path)
 
@@ -112,7 +112,7 @@ func TestConfigEnvRecordsTheConflictItMeasured(t *testing.T) {
 		t.Fatalf("read artifact: %v", err)
 	}
 	text := string(got)
-	for _, want := range []string{"one", "two", "10.1.1.5", "claimed by 2 ssh aliases", "RECORDED, NOT RESOLVED"} {
+	for _, want := range []string{"one", "two", "192.0.2.105", "claimed by 2 ssh aliases", "RECORDED, NOT RESOLVED"} {
 		if !strings.Contains(text, want) {
 			t.Errorf("the artifact does not carry %q — the shared address was resolved instead of recorded:\n%s", want, text)
 		}
@@ -121,10 +121,10 @@ func TestConfigEnvRecordsTheConflictItMeasured(t *testing.T) {
 
 // TestConfigEnvBareRunWritesNothing pins the write-nothing default.
 func TestConfigEnvBareRunWritesNothing(t *testing.T) {
-	home := configEnvFixtureHome(t, "Host peer 10.0.0.2\n        HostName 10.0.0.2\n")
+	home := configEnvFixtureHome(t, "Host peer 192.0.2.2\n        HostName 192.0.2.2\n")
 	out := configEnvRun(t) // no --write
 
-	if !strings.Contains(out, "10.0.0.2") {
+	if !strings.Contains(out, "192.0.2.2") {
 		t.Errorf("the read arm did not print the description:\n%s", out)
 	}
 	// The fixture home holds only the .ssh directory the test created: a bare

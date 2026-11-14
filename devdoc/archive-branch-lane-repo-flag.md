@@ -2,7 +2,7 @@
 # `gopi task archive <branch> --repo PATH` — the branch lane resolved the repo from the process cwd
 
 **Task**: 01a1301b-f69c-7369-b408-b275a525d8ed (branch `task/01a1301bf69c7369b408b275a525d8ed`)
-**Measured**: 2026-10-12, hosta (client host)
+**Measured**: 2026-10-12, host-b (client host)
 
 ## The defect
 

@@ -2,7 +2,7 @@
 
 # The deployed notify sink is the repo's bytes, or it says why
 
-> Measured 2026-10-24 on `hosta` (task `01a16942`). Three hosts, one
+> Measured 2026-10-24 on `host-b` (task `01a16942`). Three hosts, one
 > `notify.cmd` line, three different realities — and nothing in the system
 > noticed any of them.
 
@@ -19,8 +19,8 @@ the three profiles disagreed:
 
 | host | deployed `~/.gopi/notify/notify.sh` | repo `scripts/notify/notify.sh` | verdict |
 |---|---|---|---|
-| hosta | 23449 B, 2026-10-13 05:04 | 55815 B (HEAD `adb7dc0f`) | **stale** — 9 functions missing |
-| peerbox | 5931 B, 2026-10-09 23:52 | 55815 B (its own master) | **stale** — 13 commits behind |
+| host-b | 23449 B, 2026-10-13 05:04 | 55815 B (HEAD `adb7dc0f`) | **stale** — 9 functions missing |
+| peer1 | 5931 B, 2026-10-09 23:52 | 55815 B (its own master) | **stale** — 13 commits behind |
 | hp | *does not exist* | 55143 B (its own master) | **absent** — exit 127 |
 
 The nine functions the local copy lacked were not decoration:

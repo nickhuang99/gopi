@@ -425,7 +425,7 @@ func TestParentGateListingAgreesWithFunnel(t *testing.T) {
 // Before this, `cancelled` was the only terminal status such a row could
 // carry, and `cancelled` parks by design — so the child waited on a
 // dependency that was in fact satisfied, forever, with the queue looking
-// clean. Measured on peerbox's live ledger: 1 such pending child.
+// clean. Measured on peer1's live ledger: 1 such pending child.
 func TestParentGateSupersededParentReleasesChild(t *testing.T) {
 	parentGateDB(t)
 

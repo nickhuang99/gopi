@@ -2,7 +2,7 @@
 # The SUBMIT-time premise window (instance #4): decision — no mechanism, and the measured reason is that #4 cost nothing
 
 Row `01a135ff-5f04-7ad8-9196-925d8857afb8` · branch
-`task/01a135ff5f047ad89196925d8857afb8` · base `e63a80a5c` · host **peerbox** · worktree
+`task/01a135ff5f047ad89196925d8857afb8` · base `e63a80a5c` · host **peer1** · worktree
 `/home/user/workspace/gopi-01a135ff5f047ad89196925d8857afb8` · evidence
 `~/.gopi/sessions/01a135ff-5f04-7ad8-9196-925d8857afb8/artifacts/`
 

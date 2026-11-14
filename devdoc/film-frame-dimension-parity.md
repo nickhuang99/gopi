@@ -117,7 +117,7 @@ chatFilmFrameParity  = playableGIFParity            // 帧写盘器用的名字�
 
 **回归**：`go test ./cmd/agent/ -run 'Film|RequirePlayable|Wechat|ParityIsOne'` → `ok`。
 
-**Rule 31 真跑**（真参数、真回放、真终端，`peerbox`，`DISPLAY=localhost:15.0`；两次，
+**Rule 31 真跑**（真参数、真回放、真终端，`peer1`，`DISPLAY=localhost:15.0`；两次，
 一次**偶数几何**、一次**奇数几何** —— 后者才是会让对齐腿有资格触发的那条路）：
 
 ```

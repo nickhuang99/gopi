@@ -5,12 +5,12 @@ package main
 //
 // THE BUG (measured 2026-11-13, on this host). The settings table printed
 //
-//	dev_repo        "peerbox:/home/user/work/gopi"  (unrecognized key — … so it is IGNORED)
+//	dev_repo        "peer1:/home/user/work/gopi"  (unrecognized key — … so it is IGNORED)
 //	workspace_root  "/home/user/workspace"        (unrecognized key — … so it is IGNORED)
 //
 // while the SAME binary's worker banner, in that run's own log, said
 //
-//	task <id>: clone channel ON (dev_repo=peerbox:/home/user/work/gopi via settings
+//	task <id>: clone channel ON (dev_repo=peer1:/home/user/work/gopi via settings
 //	              dev_repo; workspace_root=/home/user/workspace via settings workspace_root)
 //
 // and the run's ground was really built under it. Two surfaces of one binary
@@ -37,7 +37,7 @@ func configShowModelFixture(t *testing.T, workspaceRoot string) (env []string, s
 	t.Helper()
 	home := t.TempDir()
 	dir := t.TempDir()
-	body := `{"model":"m","` + config.DevRepoSettingsKey + `":"peerbox:/home/user/work/gopi","` +
+	body := `{"model":"m","` + config.DevRepoSettingsKey + `":"peer1:/home/user/work/gopi","` +
 		config.WorkspaceRootSettingsKey + `":"` + workspaceRoot + `"}`
 	settingsPath = filepath.Join(dir, "settings.json")
 	if err := os.WriteFile(settingsPath, []byte(body), 0o600); err != nil {

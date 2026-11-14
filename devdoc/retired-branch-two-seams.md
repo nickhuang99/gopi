@@ -7,13 +7,13 @@ handed over.
 
 ## The measured defect (what this closes)
 
-Run `01a141c4` on host `hosta`, 2026-10-16. Branch `task/probe-zombie` was retired
-on `peerbox` at `06:57:41` as an unrelated-history decided exclusion — archive tag
+Run `01a141c4` on host `host-b`, 2026-10-16. Branch `task/probe-zombie` was retired
+on `peer1` at `06:57:41` as an unrelated-history decided exclusion — archive tag
 `refs/tags/archive/task/probe-zombie` plus the companion reason record
 `refs/gopi/archive-reason/task/probe-zombie` whose `reason:` line reads
 `unrelated-history`. The merge-backlog row `01a141c4-615b-7b0d-9f47-a8c5e946ce07`
 ("merge task/probe-zombie into master") was filed at `06:52:31`, stayed live, was
-handed over to `hosta` by `gopi task sync --handover` (`19:14:21`; the cancel
+handed over to `host-b` by `gopi task sync --handover` (`19:14:21`; the cancel
 reason on the source ledger says nothing about the retirement) and was claimed
 `9 s` later (`19:14:30`), so a worker session ran a void merge twelve hours after
 the branch had left every merge lane.
@@ -56,7 +56,7 @@ parser (`ArchiveTagReason`), and treats a tag **without** a vocabulary reason as
 present a row's branch spellings to it.
 
 **Why the spelling spec exists** (measured against the live namespaces, not
-assumed — the archive-reason namespace on `peerbox` carries all three shapes):
+assumed — the archive-reason namespace on `peer1` carries all three shapes):
 
 ```
 refs/gopi/archive-reason/task/probe-zombie

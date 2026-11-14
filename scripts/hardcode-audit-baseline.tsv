@@ -7,9 +7,9 @@
 # the review act — write the reason, not just the path. Kept sorted.
 #
 scripts/demo-memory-loop.sh	PERSONAL_PATH	/home/user	demo seeds itself from a RECORDED session file; the absolute path is the sample being replayed, and the script comments say so
-scripts/e2e-task-merge.sh	OPERATOR_IDENT	peerbox	fleet e2e: the peer box name is the second node under test
+scripts/e2e-task-merge.sh	OPERATOR_IDENT	peer1	fleet e2e: the peer box name is the second node under test
 scripts/peer-worker/apply-peer-worker-sweep-dispositions.sh	PERSONAL_PATH	/home/user	operator fleet tooling: peer-a and peer-b are the two BOXES this tooling drives; the host names ARE the subject under measurement, not a binding of the software
-scripts/peer-worker/peer-worker-checkout-staleness.sh	OPERATOR_IDENT	peerbox	operator fleet tooling: peer-a and peer-b are the two BOXES this tooling drives; the host names ARE the subject under measurement, not a binding of the software
+scripts/peer-worker/peer-worker-checkout-staleness.sh	OPERATOR_IDENT	peer1	operator fleet tooling: peer-a and peer-b are the two BOXES this tooling drives; the host names ARE the subject under measurement, not a binding of the software
 scripts/peer-worker/peer-worker-checkout-staleness.sh	PERSONAL_PATH	/home/user	operator fleet tooling: peer-a and peer-b are the two BOXES this tooling drives; the host names ARE the subject under measurement, not a binding of the software
 scripts/peer-worker/peer-worker-checkout-staleness.sh	PERSONAL_PATH	/home/user	operator fleet tooling: peer-a and peer-b are the two BOXES this tooling drives; the host names ARE the subject under measurement, not a binding of the software
 scripts/peer-worker/peer-worker-checkout-staleness.sh	PERSONAL_PATH	/home/user	operator fleet tooling: peer-a and peer-b are the two BOXES this tooling drives; the host names ARE the subject under measurement, not a binding of the software
@@ -17,8 +17,8 @@ scripts/peer-worker/peer-worker-checkout-staleness.sh	PERSONAL_PATH	/home/user	o
 scripts/peer-worker/peer-worker-checkout-staleness.sh	PERSONAL_PATH	/home/user	operator fleet tooling: peer-a and peer-b are the two BOXES this tooling drives; the host names ARE the subject under measurement, not a binding of the software
 scripts/peer-worker/peer-worker-checkout-staleness.sh	PERSONAL_PATH	/home/user	operator fleet tooling: peer-a and peer-b are the two BOXES this tooling drives; the host names ARE the subject under measurement, not a binding of the software
 scripts/peer-worker/peer-worker-checkout-staleness.sh	PERSONAL_PATH	/home/user	operator fleet tooling: peer-a and peer-b are the two BOXES this tooling drives; the host names ARE the subject under measurement, not a binding of the software
-scripts/human-ui/compare-terminals.sh	OPERATOR_IDENT	peerbox	fleet comparison: two terminals on two named boxes IS the artifact
-scripts/lib/tmp_ban.py	OPERATOR_IDENT	peerbox	linter vocabulary: the host names are DATA the rule matches, never a binding of shipped behaviour
+scripts/human-ui/compare-terminals.sh	OPERATOR_IDENT	peer1	fleet comparison: two terminals on two named boxes IS the artifact
+scripts/lib/tmp_ban.py	OPERATOR_IDENT	peer1	linter vocabulary: the host names are DATA the rule matches, never a binding of shipped behaviour
 scripts/materials/entries-topB.sh	PERSONAL_PATH	/home/user	generated experiment material for one measured campaign; not shipped, replayed only as evidence
 scripts/materials/fourway-drive.sh	PERSONAL_PATH	/home/user	generated experiment material for one measured campaign; not shipped, replayed only as evidence
 scripts/materials/fourway-drive.sh	PERSONAL_PATH	/home/user	generated experiment material for one measured campaign; not shipped, replayed only as evidence
@@ -27,10 +27,10 @@ scripts/materials/fourway-drive.sh	PERSONAL_PATH	/home/user	generated experiment
 scripts/materials/fourway-drive.sh	PERSONAL_PATH	/home/user	generated experiment material for one measured campaign; not shipped, replayed only as evidence
 scripts/materials/fourway-drive.sh	PERSONAL_PATH	/home/user	generated experiment material for one measured campaign; not shipped, replayed only as evidence
 scripts/materials/fourway-drive.sh	PERSONAL_PATH	/home/user	generated experiment material for one measured campaign; not shipped, replayed only as evidence
-scripts/materials/gen-env-E1.sh	OPERATOR_IDENT	peerbox	generated experiment material for one measured campaign; not shipped, replayed only as evidence
-scripts/materials/gen-env-E1.sh	OPERATOR_IDENT	peerbox	generated experiment material for one measured campaign; not shipped, replayed only as evidence
-scripts/materials/gen-env-E1.sh	OPERATOR_IDENT	peerbox	generated experiment material for one measured campaign; not shipped, replayed only as evidence
-scripts/materials/gen-env-E1.sh	OPERATOR_IDENT	peerbox	generated experiment material for one measured campaign; not shipped, replayed only as evidence
+scripts/materials/gen-env-E1.sh	OPERATOR_IDENT	peer1	generated experiment material for one measured campaign; not shipped, replayed only as evidence
+scripts/materials/gen-env-E1.sh	OPERATOR_IDENT	peer1	generated experiment material for one measured campaign; not shipped, replayed only as evidence
+scripts/materials/gen-env-E1.sh	OPERATOR_IDENT	peer1	generated experiment material for one measured campaign; not shipped, replayed only as evidence
+scripts/materials/gen-env-E1.sh	OPERATOR_IDENT	peer1	generated experiment material for one measured campaign; not shipped, replayed only as evidence
 scripts/materials/gen-env-E1.sh	PERSONAL_PATH	/home/user	generated experiment material for one measured campaign; not shipped, replayed only as evidence
 scripts/materials/gen-envB.sh	PERSONAL_PATH	/home/user	generated experiment material for one measured campaign; not shipped, replayed only as evidence
 scripts/materials/gen-envB.sh	PERSONAL_PATH	/home/user	generated experiment material for one measured campaign; not shipped, replayed only as evidence
@@ -47,7 +47,7 @@ scripts/materials/gen-flagF.sh	PERSONAL_PATH	/home/user	generated experiment mat
 scripts/materials/gen-flagF.sh	PERSONAL_PATH	/home/user	generated experiment material for one measured campaign; not shipped, replayed only as evidence
 scripts/materials/gen-flagF.sh	PERSONAL_PATH	/home/user	generated experiment material for one measured campaign; not shipped, replayed only as evidence
 scripts/materials/gen-interactive-real.sh	PERSONAL_PATH	/home/user	generated experiment material for one measured campaign; not shipped, replayed only as evidence
-scripts/materials/gen-memoryC.sh	OPERATOR_IDENT	peerbox	generated experiment material for one measured campaign; not shipped, replayed only as evidence
+scripts/materials/gen-memoryC.sh	OPERATOR_IDENT	peer1	generated experiment material for one measured campaign; not shipped, replayed only as evidence
 scripts/materials/gen-memoryC.sh	PERSONAL_PATH	/home/user	generated experiment material for one measured campaign; not shipped, replayed only as evidence
 scripts/materials/gen-memoryC.sh	PERSONAL_PATH	/home/user	generated experiment material for one measured campaign; not shipped, replayed only as evidence
 scripts/materials/gen-taskA.sh	PERSONAL_PATH	/home/user	generated experiment material for one measured campaign; not shipped, replayed only as evidence
@@ -77,9 +77,9 @@ scripts/materials/strongest-followups.sh	PERSONAL_PATH	/home/user	generated expe
 scripts/materials/strongest-followups.sh	PERSONAL_PATH	/home/user	generated experiment material for one measured campaign; not shipped, replayed only as evidence
 scripts/materials/strongest-followups.sh	PERSONAL_PATH	/home/user	generated experiment material for one measured campaign; not shipped, replayed only as evidence
 scripts/materials/strongest-followups.sh	PERSONAL_PATH	/home/user	generated experiment material for one measured campaign; not shipped, replayed only as evidence
-scripts/notify/deploy.sh	OPERATOR_IDENT	peerbox	fleet notification: the peer host and its LAN address are the ROUTING TABLE this script delivers over, not a machine binding
-scripts/notify/deploy.sh	OPERATOR_IDENT	peerbox	fleet notification: the peer host and its LAN address are the ROUTING TABLE this script delivers over, not a machine binding
-scripts/notify/deploy.sh	OPERATOR_IDENT	peerbox	fleet notification: the peer host and its LAN address are the ROUTING TABLE this script delivers over, not a machine binding
-scripts/notify/notify_peer_health_test.sh	PRIVATE_IP	10.0.0.1	fleet notification: the peer host and its LAN address are the ROUTING TABLE this script delivers over, not a machine binding
-scripts/repro-live-holder-worktree-veto.sh	OPERATOR_IDENT	peerbox	operator-run harness script: the absolute paths name the WORKTREES and BINARIES of the operator machine this harness drives. Not part of the shipped binary, and no portable default is meaningful — driving those worktrees IS its job
-scripts/voice-e2e-fixture.sh	OPERATOR_IDENT	peerbox	operator-run harness script: the absolute paths name the WORKTREES and BINARIES of the operator machine this harness drives. Not part of the shipped binary, and no portable default is meaningful — driving those worktrees IS its job
+scripts/notify/deploy.sh	OPERATOR_IDENT	peer1	fleet notification: the peer host and its LAN address are the ROUTING TABLE this script delivers over, not a machine binding
+scripts/notify/deploy.sh	OPERATOR_IDENT	peer1	fleet notification: the peer host and its LAN address are the ROUTING TABLE this script delivers over, not a machine binding
+scripts/notify/deploy.sh	OPERATOR_IDENT	peer1	fleet notification: the peer host and its LAN address are the ROUTING TABLE this script delivers over, not a machine binding
+scripts/notify/notify_peer_health_test.sh	PRIVATE_IP	192.0.2.1	fleet notification: the peer host and its LAN address are the ROUTING TABLE this script delivers over, not a machine binding
+scripts/repro-live-holder-worktree-veto.sh	OPERATOR_IDENT	peer1	operator-run harness script: the absolute paths name the WORKTREES and BINARIES of the operator machine this harness drives. Not part of the shipped binary, and no portable default is meaningful — driving those worktrees IS its job
+scripts/voice-e2e-fixture.sh	OPERATOR_IDENT	peer1	operator-run harness script: the absolute paths name the WORKTREES and BINARIES of the operator machine this harness drives. Not part of the shipped binary, and no portable default is meaningful — driving those worktrees IS its job

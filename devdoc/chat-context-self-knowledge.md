@@ -98,7 +98,7 @@ acceptance, is `devdoc/chat-write-boundary.md`; the prompt half is
 The prompt-content claim is evidenced from **emitted bytes** (a local
 Anthropic-SSE stub captured each request body, so the pasted prompt is what went
 on the wire, not what a function returned), and a real model turn reaches the
-values (`host peerbox`, the repo path, and both commands named correctly).
+values (`host peer1`, the repo path, and both commands named correctly).
 
 What did **not** reach: an interactive pty turn's **answer band**. Six attempts
 painted the typed line (`you> Where are you running, …`) and wrote the dump

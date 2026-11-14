@@ -91,7 +91,7 @@ t-report-legacy,NO-VALUE,row.reason,stray probe row (no work ever ran)
 01a0a203-352c-7be1-be7c-eae7fb2213d9,ALREADY-DONE,git show master:internal/daemoncwd/testmain_scratchroot_test.go,master carries the suite pin + its provenance; the archived tag's 1-file version is superseded (01a0ab11-70e6 recovery verdict)
 01a0a234-1127-759f-8f34-011bff8b59cd,SUPERSEDED,row.reason + git log --grep=merger,"cancelled (reason=""task cancelled""); the resident merger was retired — f9ff1a89 feat(merger): retire the resident merger daemon by entry-point closure"
 01a0a4d3-94a0-7df7-b7c5-af92ca3c9e9e,SUPERSEDED,row.reason,"superseded: this is a CORRECTION to 01a0a4cf, and 01a0a4cf is already filed"
-01a0a4dd-5a88-7d6e-9ef9-2b83c9f2adc1,SUPERSEDED,row.reason,MIGRATED to HP to borrow its compute (Rule 28: peerbox owns the system layer)
+01a0a4dd-5a88-7d6e-9ef9-2b83c9f2adc1,SUPERSEDED,row.reason,MIGRATED to HP to borrow its compute (Rule 28: peer1 owns the system layer)
 01a0a4e2-8ea4-73e1-969d-753c7ca9bf46,SUPERSEDED,row.reason,MIGRATED to HP to borrow its compute (Rule 28 migration)
 01a0a4f2-6166-7401-979d-bed9792454d9,SUPERSEDED,row.reason,MIGRATED to HP to borrow its compute (Rule 28 migration)
 01a0a504-d067-74dc-8e79-d84c52bda811,SUPERSEDED,git merge-base --is-ancestor c3d77d60 master,YES — the named landing commit c3d77d60 is a master ancestor (reason: captured work already landed)

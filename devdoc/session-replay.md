@@ -2,7 +2,7 @@
 # `gopi session replay` — the session group's playback arm
 
 **What this document is.** The record of porting HP's `gopi session replay` into
-peerbox's tree, and the standing claims that shape ships with (each backed by a
+peer1's tree, and the standing claims that shape ships with (each backed by a
 guard named at the end). It is the document that stops the NEXT agent from
 mistaking this arm for a duplicate of the film route and deleting it.
 
@@ -32,7 +32,7 @@ already-censused group, so the verb census and `PositionalVerbs` are untouched.
 ## What was ported, what was rewritten, and why
 
 The source is HP's commit `456c459b4` (`hostb-Laptop`, branch `master`) — reachable
-from peerbox as the remote ref **`hp/master`**, so the port took the objects from the
+from peer1 as the remote ref **`hp/master`**, so the port took the objects from the
 local store rather than over ssh:
 
 ```bash
@@ -47,7 +47,7 @@ verbatim, scrollback replayed a screenful at a time, transport keys, the termina
 restored on every exit path, and material that is REFUSED loudly rather than
 invented when a session has neither artifact.
 
-**Rewritten, because HP's version does not hold on peerbox's tree:**
+**Rewritten, because HP's version does not hold on peer1's tree:**
 
 1. **The dispatch re-home.** HP already moved the word off the top-level verb, so
    the mechanics transferred: `sessionSubcommandNames` gained
@@ -58,7 +58,7 @@ invented when a session has neither artifact.
    re-added (Rule 14: one dispatch consumer needs no leaf constant package).
 2. **Session resolution — the one real functional gap.** HP's `sessionReplayDir`
    looked for the artifacts in exactly one place: `<GOPI_HOME>/.gopi/sessions/<id>/`,
-   with the timeline at `session.jsonl`. peerbox's session tree has a **second
+   with the timeline at `session.jsonl`. peer1's session tree has a **second
    layout, and it is the majority of it**: a task run's log is
    `<sessions>/<task-id>/<session-id>.jsonl` — the directory named by the TASK, the
    file by the SESSION (measured: 3,931 bare `session.jsonl` files, and every task
@@ -97,7 +97,7 @@ invented when a session has neither artifact.
 ## The `internal/gopilog` API question (the briefing's flagged risk)
 
 The risk was that the port would need HP's `internal/gopilog` (HP's tree is 284
-commits behind peerbox's on that package: `git diff --stat master hp/master --
+commits behind peer1's on that package: `git diff --stat master hp/master --
 internal/gopilog` = 23 files, +1,102/−73) — a port with an API mismatch nobody
 could see until the build ran.
 
@@ -110,7 +110,7 @@ feature (the light log renderer) and are **not** part of this port. The single
 place this tree needed gopilog is the CLI arm, and there it calls only two
 long-standing exported functions (`ResolveSessionDir`, `FindSession`) that exist in
 both trees. So no API diff had to be reconciled: the port compiles against
-peerbox's gopilog as it stands.
+peer1's gopilog as it stands.
 
 ## Family page and the gate it must satisfy
 

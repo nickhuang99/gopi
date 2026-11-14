@@ -3,7 +3,7 @@
 
 **Epic**: Ban /tmp as a test/dev workspace in GoPi, mechanically.
 **Branch**: `feat/ban-tmp-scratch` (worktree `~/workspace/gopi-tmp-ban`)
-**Incident**: `devdoc/peerbox-resource-exhaustion-20260911.md` (2026-09-11: `/` 19G → 1.5G free)
+**Incident**: `devdoc/peer1-resource-exhaustion-20260911.md` (2026-09-11: `/` 19G → 1.5G free)
 
 ---
 
@@ -618,7 +618,7 @@ $ crontab -l | grep gopi-scratch-gc-watchdog
 $ pgrep -ax cron
 1524 /usr/sbin/cron -f -P
 $ journalctl --since 10:51 --no-pager | grep CMD
-10:52:01 peerbox CRON[3613078]: (nick) CMD (GOPI_TEST_SCRATCH_HOME=/dev/shm/gopi-scratch-watchdog-proof \
+10:52:01 peer1 CRON[3613078]: (nick) CMD (GOPI_TEST_SCRATCH_HOME=/dev/shm/gopi-scratch-watchdog-proof \
           /home/user/.local/bin/gopi-scratch-gc-watchdog.sh >/dev/null 2>&1 # gopi-scratch-gc-watchdog-TEMP-PROOF)
 $ grep gopi-scratch-watchdog-proof /home/user/.gopi/logs/scratch-gc-watchdog.log
 2026-09-11T10:52:01+08:00 scratch-gc-watchdog scratch-gc role=cli \

@@ -219,7 +219,7 @@ $ CGO_ENABLED=0 go build -o bin/gopi ./cmd/agent/
 build OK
 $ make test-budget PKGS='./internal/agent ./internal/standards'      # branch-scoped smoke
 packages: 2 finished, 0 with a failure
-stamp: 2026-09-19T23:31:23+08:00 host=peerbox pkg=./internal/agent ./internal/standards budget=25m elapsed=73s load_start=1.30 1.26 1.75 load_end=2.88 1.78 1.90 cores=4 exit=0 outcome=pass stream=run-1789831883.json
+stamp: 2026-09-19T23:31:23+08:00 host=peer1 pkg=./internal/agent ./internal/standards budget=25m elapsed=73s load_start=1.30 1.26 1.75 load_end=2.88 1.78 1.90 cores=4 exit=0 outcome=pass stream=run-1789831883.json
 ```
 
 The two gate commands above were run **after** this report was written and classified

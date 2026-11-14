@@ -1032,7 +1032,7 @@ func openVoiceStagedStream(opts *voiceOptions, dev *voiceDevice) (*voiceStagedSt
 // the field's zero value, `nil`, and the builder spent the whole mode selecting
 // on a nil channel: `Next` blocked past every deadline and the mode reported
 // "produced no audio within 10s" about a device that was delivering the entire
-// time (measured on hosta, 2026-10-10: builder.chunks = 0x0 while the reader was
+// time (measured on host-b, 2026-10-10: builder.chunks = 0x0 while the reader was
 // writing to 0xc000218380, and the source's own firstSample was stamped 10 s
 // earlier — see the task report).
 //

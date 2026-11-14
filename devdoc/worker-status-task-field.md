@@ -18,7 +18,7 @@ named a task:
 | argv-fallback (detached, no record) | `pid N: idle — <raw cmdline> (no state file …)` | only incidentally, inside the command string |
 | **foreground** (the common shape here) | `pid N: FOREGROUND (holds no daemon lock) — <raw cmdline>; …` | only incidentally, inside the command string |
 
-Measured on hosta with three live foreground workers (pids 1697081,
+Measured on host-b with three live foreground workers (pids 1697081,
 1700250, 1701687, all bare `gopi worker …`): an operator could read the row only
 by re-parsing `ps` output, and **could not query it at all**.
 

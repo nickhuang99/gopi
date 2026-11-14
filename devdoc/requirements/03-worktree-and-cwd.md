@@ -373,7 +373,7 @@ returns before the body is reached. Evidence that this is the real shape and not
 a worry: the unmerged repair branch does exactly this correctly — its version of
 the entry function resolves the delivery target first and carries **no** dirty
 gate at all
-[E4: `remotes/peerbox/fix/client-closeout-push-delivery:internal/tools/task_finish_cleanup.go:1183-1225`
+[E4: `remotes/peer1/fix/client-closeout-push-delivery:internal/tools/task_finish_cleanup.go:1183-1225`
 vs master `:963-1021`]. **Direction: the entry-arm gate must be deleted or merged
 with the body's, or the fix is defeated at the door.**
 
@@ -381,7 +381,7 @@ with the body's, or the fix is defeated at the door.**
 line.** Before the repair branch, a delivery that never happened produced no
 durable record; the repair branch's own header names this (*"a branch that never
 left the host looked exactly like a branch that had"*,
-`[E4: remotes/peerbox/fix/client-closeout-push-delivery:internal/tools/task_finish_cleanup.go:548-550]`).
+`[E4: remotes/peer1/fix/client-closeout-push-delivery:internal/tools/task_finish_cleanup.go:548-550]`).
 *Status: found in an **unmerged** branch — `6e22d80b` plus five docs commits, 6
 commits ahead of master, `NOT` an ancestor of master, parked at
 `archive/fix/client-closeout-push-delivery` with a pending merge-resolution row
@@ -496,7 +496,7 @@ wrong requirement. On this evidence they do not:
   Independent corroboration that this reading is the right one: the unmerged
   repair branch reorders the **client** path and deliberately leaves the server
   arm's assertion in place, unchanged
-  [E4: `remotes/peerbox/fix/client-closeout-push-delivery:internal/tools/task_finish_cleanup_test.go:1011-1022`,
+  [E4: `remotes/peer1/fix/client-closeout-push-delivery:internal/tools/task_finish_cleanup_test.go:1011-1022`,
   and its server removal still unforced at `:1171`].
 
 **N3 — the blast-radius answer stopped at coarse guards; the syscall half of the
@@ -597,7 +597,7 @@ written here).**
    (A3). The repair branch's own rewrite is the precedent shape: `assertStep(rep,
    "push", true)` plus a peer-holds-branch check, with the "no destructive step
    ran" half retained
-   [E4: `remotes/peerbox/fix/client-closeout-push-delivery:internal/tools/task_finish_cleanup_test.go:206-243`].
+   [E4: `remotes/peer1/fix/client-closeout-push-delivery:internal/tools/task_finish_cleanup_test.go:206-243`].
    **Note the trap this document opened in §6 (N2): under this requirement the
    current test *cannot* go red from the client arm alone** — the client arm is
    gated twice (`:1007`, `:1993`), so a reorder at either site alone leaves the
@@ -764,4 +764,4 @@ own comments:
    target is resolved, `:1993` inside the chain body), so a maintainer who
    reorders the gate where the ordering header lives still ships the defect —
    which is the exact shape the unmerged repair branch had to solve
-   [E4: `remotes/peerbox/fix/client-closeout-push-delivery:…:1183-1225`].
+   [E4: `remotes/peer1/fix/client-closeout-push-delivery:…:1183-1225`].

@@ -348,7 +348,7 @@ reproducible in prior art (§7):
   **nothing**. The useful call cost 271 in / 273 out on a 39 KB PNG. Add the render step
   (`text2img` pagination) and the fact that a screenshot of a *live* terminal needs X11 or a
   pty capture first (X11 capture is separately recorded as broken on this host pair:
-  `memory #4043`, "peerbox :1 draws black; HP is rootless Xwayland").
+  `memory #4043`, "peer1 :1 draws black; HP is rootless Xwayland").
 - **ESTIMATE:** text ≈ 600 tokens/look, deterministic; screenshot+vision ≈ 1 render + 1 API
   round-trip + a PNG per page, and **fidelity that cannot be trusted for assertions** (§4.3).
   Weakest link: no per-token price is applied here because `vision_analyze` reports usage,
@@ -485,7 +485,7 @@ Why this and not a tool:
    verb first, tool only with adoption evidence).
 
 **Then, in order:** (i) ship the observation *recipe* (script + devdoc, tmux or pty — the
-operator's choice of attach model, `memory #4043` records that tmux was absent on peerbox at
+operator's choice of attach model, `memory #4043` records that tmux was absent on peer1 at
 one point and is present now, MEASURED `tmux 3.2a`); (ii) measure adoption on real UI tasks
 (Rule 11 protocol, §5); (iii) only if the recipe is not adopted *and* the tasks are
 observably harder without a tool, promote `gopi ui …` to a tool — with the per-session
@@ -524,7 +524,7 @@ carrier's model already gives an assertable screen; (c) enumerating a second cha
    `t+451s`), so §2's "missing" item may be closed by the time this is read — that would
    *strengthen* the recommendation (it is the stated precondition), not weaken it.
 7. **tmux presence on HP** — I measured `tmux 3.2a`, `script` present, `expect`/`socat`
-   absent on **peerbox** only.
+   absent on **peer1** only.
 
 ---
 

@@ -1,7 +1,7 @@
 <!-- doc-class: normative -->
 # The declared trees had no automatic caller — `/home` filled to 100% while 45 GB sat collectable
 
-Task `01a14592-527f-7ee3-984a-5ef84fb5b3b8`, host `hostb-Laptop` (hosta), 2026-10-17.
+Task `01a14592-527f-7ee3-984a-5ef84fb5b3b8`, host `hostb-Laptop` (host-b), 2026-10-17.
 Worktree `/home/user/workspace/gopi-01a14592527f7ee3984a5ef84fb5b3b8`,
 branch `task/01a14592527f7ee3984a5ef84fb5b3b8`.
 

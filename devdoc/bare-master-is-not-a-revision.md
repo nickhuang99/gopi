@@ -2,7 +2,7 @@
 # Bare `master` Is Not a Revision — a Host Carries Several, and Only One Is the Integration Truth
 
 **Status**: normative (this file states a standing measurement rule).
-**Measured**: 2026-10-13 on `hosta` (client host), by task
+**Measured**: 2026-10-13 on `host-b` (client host), by task
 `01a13394-a0d9-7626-80c9-7b897cac2c70`.
 
 ## The defect this file closes
@@ -132,7 +132,7 @@ does not advance". Accordingly this file gives the *contributing* measurement
 above and **explicitly does not** go on to select, build or decommission a
 cadence owner: which face on a client host owns advancing `refs/heads/master`
 (a dedicated fetch leg, or an explicit declaration) is a **system-layer**
-decision under **Rule 28** — `sync`/`git`/ref machinery is `peerbox`'s. It is
+decision under **Rule 28** — `sync`/`git`/ref machinery is `peer1`'s. It is
 filed as a local bug row rather than fixed here.
 
 ## What a consumer must do instead

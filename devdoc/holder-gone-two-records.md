@@ -15,7 +15,7 @@ each other — captured on the real ledger before any change
 
 ```
 status:         in_progress + holder dead (pid 4122750 gone)
-claimed_by:     hosta:3177317 (at 2026-11-08 20:47:42)
+claimed_by:     host-b:3177317 (at 2026-11-08 20:47:42)
 process:        pid=4122750 start=2026-11-08T20:47:42+08:00 cmd="/home/user/work/gopi/bin/gopi"  (live: gone)
 ```
 
@@ -108,7 +108,7 @@ spelled two ways.
   ```
   $ ./bin/gopi task show 01a1bb2d-e7bc-7d28-a79f-da6b445a94ab
   status:         in_progress
-  claimed_by:     hosta:3177317 (at 2026-11-08 20:47:42)
+  claimed_by:     host-b:3177317 (at 2026-11-08 20:47:42)
   process:        pid=4122750 start=2026-11-08T20:47:42+08:00 cmd="/home/user/work/gopi/bin/gopi"  (live: gone)
 
   $ ./bin/gopi task list --status in_progress | grep 01a1bb2d

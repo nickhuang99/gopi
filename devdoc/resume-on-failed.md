@@ -19,7 +19,7 @@ Evidence chain (all commands are reproducible; raw transcripts in
 | time (+08:00) | actor | fact |
 |---|---|---|
 | 07:33:58 | human | row submitted (`bug`, priority 1) |
-| 07:34:21 | worker `peerbox:1842018` | `in_progress` event (session `4616b463…`) |
+| 07:34:21 | worker `peer1:1842018` | `in_progress` event (session `4616b463…`) |
 | 07:55:30 | that session | `d7474fb4 feat(task): persist a task's process identity …` |
 | 07:58:47 | wrapper | `completed` event (24m25s, task-report 5372 B) |
 | 10:13:56 | merger | merge `5f8f7d21 Merge branch 'feat/task-process-identity'` |

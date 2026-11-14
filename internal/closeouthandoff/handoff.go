@@ -4,7 +4,7 @@
 // report writers — the end hook, the resume tail, and (for
 // `gopi worker --resume`) the resuming parent — so one refusal was printed
 // three times and the operator's count of it became unusable as evidence
-// (epic worker-resume-report-once, measured 2026-09-26 on peerbox:
+// (epic worker-resume-report-once, measured 2026-09-26 on peer1:
 // /tmp/strange_python.txt, 66 lines, the same `skipped:` line three times).
 //
 // THE RULE THIS PACKAGE ENCODES: a suppressed writer must have a NAMED

@@ -2,7 +2,7 @@
 # Task Report: TestAssertionTotalityAuditGate RED on untouched master
 
 Task row: `01a0c3db-f42c-7284-adae-c270b20d16b8` (self-filed by a worker as
-`01a0c337-d621`; re-issued on peerbox). Repo `/home/user/work/GoPi`, branch
+`01a0c337-d621`; re-issued on peer1). Repo `/home/user/work/GoPi`, branch
 `fix/assert-totality-gate-master-red`, worktree
 `/home/user/workspace/gopi-assert-totality` (the task row's recorded ground).
 

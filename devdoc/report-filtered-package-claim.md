@@ -188,6 +188,6 @@ code never uses the literal.
 - It adds **no script, hook, cron or new mechanism** (Rule 35), and does not
   touch `scripts/test-budget.sh`. Closing the script-side gap (telling a
   "matched something else" run from a package reading) is a system-layer change
-  (Rule 28 — peerbox's half), not this one.
+  (Rule 28 — peer1's half), not this one.
 - It reads **sentences, not streams**: what a run actually executed is the
   stream's business, and the stream is not a report.

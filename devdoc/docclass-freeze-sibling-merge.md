@@ -10,7 +10,7 @@
 
 # A docclass freeze table is green on ONE tree — the sibling-merge race, re-measured after 974a3f456
 
-**Task** `01a12fb8-9fea-7b40-889a-d1bc554156eb` · **host** `hosta` ·
+**Task** `01a12fb8-9fea-7b40-889a-d1bc554156eb` · **host** `host-b` ·
 **base** `8922d775a` · **branch** `task/01a12fb89fea7b40889ad1bc554156eb`
 
 Rule 41 row, filed from HP's ledger (discovery run `01a12f8d`). This document is the
@@ -160,4 +160,4 @@ git diff --stat   # expected: the stale row's line removed
   generators, not measured here.
 - Nothing in the merge/worktree/task-ledger machinery was touched (Rule 28: this
   diagnosis+decision belongs to the corpus layer; a repair in that machinery belongs on
-  peerbox's ledger).
+  peer1's ledger).

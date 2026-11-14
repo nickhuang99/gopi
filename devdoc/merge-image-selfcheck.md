@@ -5,7 +5,7 @@
 
 Task: `01a133e70a5e77098fc2ce73b4782198` (branch `task/01a133e70a5e77098fc2ce73b4782198`).
 
-## The symptom (measured, 2026-10-13, host peerbox)
+## The symptom (measured, 2026-10-13, host peer1)
 
 ```
 $ ps -o pid,lstart,etime,cmd -p 3869823
@@ -46,7 +46,7 @@ I was started at?* Two arms, both positive evidence:
 
 | arm | evidence | catches |
 |---|---|---|
-| ① REPLACED | `/proc/self/exe` resolves to a target carrying `procDeletedSuffix` (`" (deleted)"`) — the kernel's own marker, reusing the evidence `merger_status.go`'s orphan-lock probe already relies on | unlink + rename over (what actually happened on peerbox) |
+| ① REPLACED | `/proc/self/exe` resolves to a target carrying `procDeletedSuffix` (`" (deleted)"`) — the kernel's own marker, reusing the evidence `merger_status.go`'s orphan-lock probe already relies on | unlink + rename over (what actually happened on peer1) |
 | ② STALE STAMP | the running image's `vcs.revision` (this process's own `debug.ReadBuildInfo`) differs from the `vcs.revision` `debug/buildinfo` reads off the artifact at that path | a rebuild written IN PLACE |
 
 Adopted by the resident faces (`cmd/agent/image_selfcheck.go`):
@@ -140,7 +140,7 @@ alarm line explains itself and names the remedy; a clean run says the check ran.
 
 ## Not done (honest)
 
-- The `(deleted)` state of the **already-running** processes on peerbox (pids
+- The `(deleted)` state of the **already-running** processes on peer1 (pids
   3869823, 556550, 2441159, 1423501) is not cleared by this change: this run
   delivers the mechanism that makes the state loud and refuses to keep deciding
   on it, and a resident started BEFORE the fix has no check to run. Those

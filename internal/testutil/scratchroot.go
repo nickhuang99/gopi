@@ -20,8 +20,8 @@
 //     "write_task_area: schema: context deadline exceeded" (or the open-step
 //     variant without the "schema:" prefix). Full analysis:
 //     devdoc/write-task-area-schema-timeout.md (5-why + A/B measurements).
-//  3. The peerbox resource exhaustion (2026-09-11, devdoc/
-//     peerbox-resource-exhaustion-20260911.md): an unbounded `while :; do dd
+//  3. The peer1 resource exhaustion (2026-09-11, devdoc/
+//     peer1-resource-exhaustion-20260911.md): an unbounded `while :; do dd
 //     ... conv=fsync; done` stress loop wrote into /tmp while suites wrote
 //     13,044 abandoned scratch directories there, taking `/` from 19G free
 //     to 1.5G free with irreversible D-state processes. The lesson recorded

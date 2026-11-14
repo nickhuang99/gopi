@@ -15,7 +15,7 @@
 <!-- WORKER-OWNERSHIP: OPERATOR-ONLY — devdoc/worker-ownership.md -->
 
 **Branch**: `fix/merger-takeover-lock` · **Base**: `16633bd1` (merger `--every` loop merged)
-**Date**: 2026-09-17 · **Host**: peerbox
+**Date**: 2026-09-17 · **Host**: peer1
 
 ---
 

@@ -117,7 +117,7 @@ process incarnation**, and that is what the ledger shows for the incident row:
 ```
 $ SELECT claimed_by, proc_pid, proc_start_ticks, in_progress_at, session_id
   FROM tasks WHERE task_id LIKE '01a163df%'
-  hosta:1190977 | None | None | None | ''
+  host-b:1190977 | None | None | None | ''
 
 $ SELECT count(*) FROM tasks WHERE proc_start_ticks IS NOT NULL
   7          -- of 1805 rows
@@ -131,7 +131,7 @@ What the writer *could* be identified by at that instant is therefore only:
 
 | source | readable at the choke point? | measured |
 |---|---|---|
-| `claimed_by` stamp | yes (a column) | `hosta:1190977` — the **dead** wrapper |
+| `claimed_by` stamp | yes (a column) | `host-b:1190977` — the **dead** wrapper |
 | `GOPI_TASK_RUN_WRAPPER_PID` | yes (env of the writing process) | set in the incident's child — it is what `RunCloseoutOwnedBy` reads |
 | `proc_pid` / `proc_start_ticks` | **no** — cleared by the same transition | NULL |
 | holder liveness | yes, but it answers about the *claim*, not the writer | `pidAlive(1190977)` = false |
@@ -233,7 +233,7 @@ guess**:
 ```
 $ claimHolder("merge-executor")               -> host=""   pid=0     ok=false
 $ claimHolder("merge-verify-staleness-guard") -> host=""   pid=0     ok=false
-$ claimHolder("hosta:1190977")           -> host="hosta" pid=1190977 ok=true
+$ claimHolder("host-b:1190977")           -> host="host-b" pid=1190977 ok=true
 ```
 
 The merge executor and the merge-verify staleness guard close rows they re-claim

@@ -112,7 +112,7 @@ func TestWorkerRunFlagsRefuseOptionShapedAlias(t *testing.T) {
 	}
 	// Well-formed values still scan (the guard is not a blanket refusal).
 	for _, argv := range [][]string{
-		{"t-1", "--report-to", "peerbox", "--repo", "peerbox:/home/user/work/GoPi"},
+		{"t-1", "--report-to", "peer1", "--repo", "peer1:/home/user/work/GoPi"},
 		{"t-1"},
 	} {
 		wa, unknown := scanWorkerArgs(argv)

@@ -35,14 +35,14 @@ excluded by measurement, not by assumption: `TestEveryTempUsingSuiteIsPinned`
 and `grep -rn '"/tmp'` over GoPi's test tree show no Go-test code that creates a
 `pN_dump_*` directory, and the pin has moved every suite's scratch off `/`.
 
-**The 13,044-directory incident itself** (`devdoc/peerbox-resource-exhaustion-20260911.md`)
+**The 13,044-directory incident itself** (`devdoc/peer1-resource-exhaustion-20260911.md`)
 had ONE mechanism, and it was GoPi's: a suite's scratch root followed
 `os.TempDir()` = `/tmp` = the boot device (device 2051), with **no cleanup hook**
 — the pre-pin `pinSuiteTempRoot` created one root per run and only `TestMain`'s
-success path removed it. The peerbox table's attribution of the `pN_dump_*`
+success path removed it. The peer1 table's attribution of the `pN_dump_*`
 *name* to "Go 测试的 scratch root 产物" is therefore imprecise: the *count and the
 mechanism* are GoPi's, the *names on disk today* are the map tooling's. Both
-statements are now in the record — see §6, where the peerbox table carries a
+statements are now in the record — see §6, where the peer1 table carries a
 one-line correction so a future agent does not re-chase the wrong producer.
 
 **Recurrence after the merge: bounded, with two measured exceptions.**
@@ -403,7 +403,7 @@ Branch `feat/scratch-residue-audit`, base `955bb91` (5 commits):
 |---|---|
 | `404cbd5` | bounded legacy-residue sweep + implicit boot-device fallback refusal (B) |
 | `d7b6d3b` | /tmp gate extended to Go test sources + probe binaries off `/tmp` (C) |
-| `783d707` | audit report + the peerbox producer correction (§1) |
+| `783d707` | audit report + the peer1 producer correction (§1) |
 | `bc3a9a5` | exact coverage numbers (531 funcs, 446→448 covered, 84.0→84.4%) |
 | `5480687` | leak-closed proof + the full-tree run result |
 | `4c18b9c` | exact branch/commit table in both reports (recovery path, Rule 6d) |

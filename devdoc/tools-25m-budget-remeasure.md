@@ -76,7 +76,7 @@ separate assertion failures in the same run (NOT the timeout):
   --- FAIL: TestCovToolsNotifyAlarmRegistryIsTheSourceOfTruth (0.34s)
 ======================================================================
 
-stamp: 2026-09-19T20:29:18+08:00 host=peerbox pkg=./internal/tools/ budget=25m \
+stamp: 2026-09-19T20:29:18+08:00 host=peer1 pkg=./internal/tools/ budget=25m \
        elapsed=1503s load_start=7.91 7.53 9.30 load_end=5.62 6.56 7.50 cores=4 \
        exit=3 outcome=timeout stream=run-1789820958.json
 EXIT=3
@@ -215,7 +215,7 @@ slowest 15 tests (wall-clock seconds):
   --- FAIL: TestAssertionTotalityAuditGate (0.46s)
   --- FAIL: TestCovToolsNotifyAlarmRegistryIsTheSourceOfTruth (0.21s)
 
-stamp: 2026-09-19T21:29:46+08:00 host=peerbox pkg=./internal/tools/ budget=25m \
+stamp: 2026-09-19T21:29:46+08:00 host=peer1 pkg=./internal/tools/ budget=25m \
        elapsed=1009s load_start=5.84 5.73 6.75 load_end=5.41 4.85 5.41 cores=4 \
        exit=1 outcome=fail stream=run-1789824586.json
 EXIT=1

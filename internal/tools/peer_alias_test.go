@@ -52,7 +52,7 @@ var optionShapedAliases = []string{
 func TestValidateSSHPeerAliasRefusalTable(t *testing.T) {
 	valid := map[string]string{
 		"hp":              "hp",
-		"peerbox":         "peerbox",
+		"peer1":           "peer1",
 		"user@host":       "user@host",
 		"hp-1":            "hp-1",
 		"hp.example.com":  "hp.example.com",
@@ -112,7 +112,7 @@ func TestValidateSSHPeerAliasRefusalTable(t *testing.T) {
 // "<alias>:<path>" themselves; the alias HALF is what git hands to ssh, so
 // the validator splints exactly that half (the path is git's business).
 func TestValidateSSHGitTargetSplitsAliasHalf(t *testing.T) {
-	for _, ok := range []string{"hp:~/work/GoPi", "peerbox:/srv/repo", "  hp:/x  "} {
+	for _, ok := range []string{"hp:~/work/GoPi", "peer1:/srv/repo", "  hp:/x  "} {
 		got, err := ValidateSSHGitTarget(ok)
 		if err != nil {
 			t.Errorf("ValidateSSHGitTarget(%q) refused a valid target: %v", ok, err)
@@ -218,9 +218,9 @@ func TestSSHPeerAliasGuardRefusesOptionShapedAliasAtEveryLeg(t *testing.T) {
 	// ...and a well-formed declared peer still renders (the guard is not a
 	// blanket refusal).
 	t.Setenv("GOPI_SYNC_NODE", "hp")
-	t.Setenv(config.SyncPeersEnv, "peerbox")
-	if got := GitSyncServerTarget(); got != "peerbox:"+peerRepoPath() {
-		t.Errorf("GitSyncServerTarget = %q, want peerbox:%s", got, peerRepoPath())
+	t.Setenv(config.SyncPeersEnv, "peer1")
+	if got := GitSyncServerTarget(); got != "peer1:"+peerRepoPath() {
+		t.Errorf("GitSyncServerTarget = %q, want peer1:%s", got, peerRepoPath())
 	}
 }
 

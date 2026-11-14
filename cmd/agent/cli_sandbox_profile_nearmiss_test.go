@@ -18,7 +18,7 @@
 //     resolves to `$SB/.gopi/.gopi` — a SECOND profile, with no .sandbox-owner.json,
 //     invisible to SweepSandboxes (it sweeps a sandbox ROOT's children), while the
 //     sandbox's own ledger and sessions stay empty.
-//   - ORDINARY HOME (measured 2026-10-13 on hosta): `GOPI_HOME=/home/user/.gopi`
+//   - ORDINARY HOME (measured 2026-10-13 on host-b): `GOPI_HOME=/home/user/.gopi`
 //     — no sandbox anywhere in the path — resolved to `/home/user/.gopi/.gopi`,
 //     whose memory.db held 2 rows while the real ledger held 1376, and
 //     `gopi task submit` printed a normal `Task queued: <id>` with exit 0. The
@@ -193,7 +193,7 @@ func TestSandboxNearMissOptOutIsAnnounced(t *testing.T) {
 // TestSandboxNearMissOrdinaryHomeRootIsRefusedAndCreatesNothing is the SECOND
 // family of the near miss, driven through the real binary: a value that names an
 // ORDINARY home's profile root — no sandbox, no marker, nothing sandbox-shaped
-// anywhere in it. Measured 2026-10-13 on hosta with the pre-fix binary:
+// anywhere in it. Measured 2026-10-13 on host-b with the pre-fix binary:
 // `GOPI_HOME=/home/user/.gopi` resolved to /home/user/.gopi/.gopi, whose
 // memory.db held 2 rows while the real ledger held 1376, and `gopi task submit`
 // printed a normal `Task queued: <id>` with exit 0.

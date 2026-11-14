@@ -6,7 +6,7 @@ Branch: `feat/bug052-dispatch-dbsync`
 ## 根因（证据链复核）
 
 `cmd/agent/dispatch.go` 的 `dispatchToNode` 只有一步：`ssh <node> "nohup gopi task run <id> ... >/dev/null 2>&1 &"`。
-行只存在于 peerbox（中心）库 —— 从未 push 到对端 HP 库。HP 端 `gopi task run <id>` 找不到行，
+行只存在于 peer1（中心）库 —— 从未 push 到对端 HP 库。HP 端 `gopi task run <id>` 找不到行，
 报 `no task with task_id` 后退出；`nohup >/dev/null` 吞掉全部错误 → serve 端看起来"已派发"，
 实际任务从未执行（t-1788260077 事故，原单 t-1788260677 被 sync-resolved 虚假关账，bug053）。
 
@@ -52,7 +52,7 @@ Branch: `feat/bug052-dispatch-dbsync`
 - Build: `go build ./...` OK；`go vet ./cmd/agent/` OK。
 - Tests: `go test ./cmd/agent/ -run 'TestDispatchToNode|TestDispatchSSHArgs|TestDispatchNodeLoad|TestDispatchPickNode|TestDispatchRemoteCommand|TestParseNodesFlag|TestResolveComputeNodes'` — 8/8 PASS。
   全量 `go test ./cmd/agent/ ./internal/tools/` 后台运行中（历史全量 ~264s，见 memory #1133）。
-- 未做：真实 ssh 对 hp 的 live-fire 派发（沙箱 seam 已覆盖全导入路径；live 冒烟需在 peerbox 上配
+- 未做：真实 ssh 对 hp 的 live-fire 派发（沙箱 seam 已覆盖全导入路径；live 冒烟需在 peer1 上配
   GOPI_COMPUTE_NODES + GOPI_SYNC_PEERS 实跑 serve —— 本次不触碰生产拓扑）。
 
 ## Not Done / 说明

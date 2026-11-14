@@ -3,7 +3,7 @@
 
 **Task**: `01a12b7924cb7eee995d3125dd372de4` (branch
 `task/01a12b7924cb7eee995d3125dd372de4`)
-**Date**: 2026-10-11  **Host**: hosta  **Base**: master `a3a31da42`
+**Date**: 2026-10-11  **Host**: host-b  **Base**: master `a3a31da42`
 **Epic**: `task-ledger-auto-row-disposal`
 **Predecessor doc**: `devdoc/lifecycle-litter-fixture-drift.md` (same incident,
 diagnosis only — the repair it describes does not reach master; see "What this
@@ -78,13 +78,13 @@ predicate is right as it stands, and no production predicate is touched here.
 ## The peer's master is already fixed — the "must it land?" question
 
 ```
-$ git fetch peerbox master && git log --oneline -1 peerbox/master
+$ git fetch peer1 master && git log --oneline -1 peer1/master
 ec7342d72 Merge branch 'task/01a12b865e8b768ba37482de4422a489'
-$ git merge-base --is-ancestor 71577959e peerbox/master && echo YES
+$ git merge-base --is-ancestor 71577959e peer1/master && echo YES
 YES
-$ git merge-base --is-ancestor 29af4042a peerbox/master && echo YES
+$ git merge-base --is-ancestor 29af4042a peer1/master && echo YES
 YES
-$ git show peerbox/master:cmd/agent/task_lifecycle_litter_test.go | grep -n 'Summary:'
+$ git show peer1/master:cmd/agent/task_lifecycle_litter_test.go | grep -n 'Summary:'
 71:  Summary: lifecycleLitterSummary(LifecycleLitterBriefing + " " + LifecycleLitterFixtureID),
 79:  Summary: lifecycleLitterSummary(LifecycleLitterBriefing + " " + LifecycleLitterRunDirFixtureID),
 ```
@@ -239,7 +239,7 @@ $ go test -count=1 -run '^TestTaskLifecycleTick_DisposesTheNeverStartedAutoRow$'
 $ git checkout -- .    # tree restored
 
 # 3. the peer's master state
-$ git fetch peerbox master && git merge-base --is-ancestor 29af4042a peerbox/master
+$ git fetch peer1 master && git merge-base --is-ancestor 29af4042a peer1/master
 
 # 4. the pin's red proof (fixture reverted to master's spelling, rest fixed)
 $ go test -count=1 -run 'TaskLifecycleLitter|TaskLifecycleTick_DisposesTheNeverStartedAutoRow' ./cmd/agent
@@ -273,7 +273,7 @@ this run's own session evidence
 * one-variable flip → `ok github.com/nick/gopi/cmd/agent 3.549s`, exit 0; tree
   restored, `git status --porcelain` empty in that worktree afterwards.
 * ancestry: `git merge-base --is-ancestor 29af4042a master` → exit 1 (absent);
-  same against HEAD → exit 0 (present). `peerbox/master` at `ec7342d72`, both
+  same against HEAD → exit 0 (present). `peer1/master` at `ec7342d72`, both
   commits present (exit 0 each).
 * prefix const: `internal/agent/taskregister.go:101` `AutoTaskSummaryPrefix = "[auto] "`;
   `internal/tools/taskzombie_extinct.go` `autoRunLitterSummaryPrefix = "[auto] "`.

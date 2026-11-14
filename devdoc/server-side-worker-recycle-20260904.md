@@ -5,7 +5,7 @@ Date: 2026-09-04 · Epic t-1788389175 (BUG FIX + QUALITY) · Branch feat/server-
 
 ## Problem (nick's finding, 2026-09-03)
 
-The HOMM3 maps project ran 4 feasibility bonds on peerbox (the SERVER). All 4
+The HOMM3 maps project ran 4 feasibility bonds on peer1 (the SERVER). All 4
 delivered — branches + reports committed — but all 4 worktrees
 (maps-fix/maps-title/maps-vcmi/maps-visual under ~/work/workspace/) were left
 behind. PA removed them by hand so the maps merger could see unprotected
@@ -29,7 +29,7 @@ The finish-cleanup chain mode-splits by node role
 (TaskFinishCleanupSessionID, internal/tools/task_finish_cleanup.go).
 The server arm fires when `IsServerNode() || finishCleanupServerTarget()==""`
 — i.e. an EXPLICIT role=server node OR any node with no declared sync peer
-(the peerbox shape: no "role" field AND no sync_peers → IsServerNode() is false
+(the peer1 shape: no "role" field AND no sync_peers → IsServerNode() is false
 via the N1 hostname fallback, but the empty peer target selects the server
 arm all the same). The client arm runs only on a node with a declared sync
 peer to push to.
@@ -37,7 +37,7 @@ peer to push to.
 | Side | Selection condition | Delivery close-out | Branch fate |
 |---|---|---|---|
 | CLIENT | declared sync peer (finishCleanupServerTarget != "") | ① clean-worktree guard → ② push <peer>:~/work/GoPi → ③ worktree remove --force → ④ branch -d | Deleted locally — the branch reached the server |
-| SERVER / single-node | IsServerNode OR no sync peers (peerbox shape) | ① clean-worktree guard → ② worktree remove (linked worktree on the deliverable branch) | **PRESERVED** — the branch is the merger's input (deleted only after the merger merges it) |
+| SERVER / single-node | IsServerNode OR no sync peers (peer1 shape) | ① clean-worktree guard → ② worktree remove (linked worktree on the deliverable branch) | **PRESERVED** — the branch is the merger's input (deleted only after the merger merges it) |
 
 No branch delete on the server — deleting here would remove work the merger
 has not yet consumed. The merger's config-sweep (t-1788468369) then sees the
@@ -73,7 +73,7 @@ The exact scenario HOMM3 exposed, end to end, ZERO manual intervention:
 1. Fixture: repo on master; feature branch `feat/worker-chain-e2e` committed
    and checked out in linked worktree W (the dispatcher pre-created shape).
 2. settings.json: `{"role":"server","repos":{<repo>:{}}}` (the chain test
-   runs the explicit-role shape; the dirty test below runs the REAL peerbox
+   runs the explicit-role shape; the dirty test below runs the REAL peer1
    shape — no "role" field, no sync_peers — proving the empty-peer-target
    arm fires the same server recycle).
 3. Submit a pending task with `--repo <repo>`.

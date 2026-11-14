@@ -71,7 +71,7 @@ Measured on hostb-Laptop, task `01a12d18` (raw output:
 - `0b3c1de29` is **not** held by any local branch or tag — it is the value the
   mirror ref held at that moment:
   `refs/remotes/gitPushcheck/master@{2026-10-12 06:16:45} = 0b3c1de29`, a
-  `fetch --force --no-tags peerbox:~/work/GoPi +refs/heads/master:…`;
+  `fetch --force --no-tags peer1:~/work/GoPi +refs/heads/master:…`;
 - the same reflog moved `1508e3821` (05:52:52) → `0b3c1de29` (06:16:45) →
   `b8287d5c6` (06:45:32) — **twice in 53 minutes**, while the ground was created
   at 06:16:5x;

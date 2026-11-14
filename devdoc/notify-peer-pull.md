@@ -8,11 +8,11 @@
 
 ## 1. 需求
 
-hosta 的 `notify.cmd`（= `bash /home/user/.gopi/notify/notify.sh`）被 gopi 在每次任务生命周期事件时 exec 一次，
+host-b 的 `notify.cmd`（= `bash /home/user/.gopi/notify/notify.sh`）被 gopi 在每次任务生命周期事件时 exec 一次，
 payload 从 stdin 进来。它原本只做两件事：投给本机所有 chat slot，然后把 raw payload 追加到
 `<profile>/notify/task-events.jsonl`（anchor）。
 
-要多做一件：**顺手把对端（默认 peerbox）的新事件也拉到本机 chat 里**，用 ssh 读对端同一文件，
+要多做一件：**顺手把对端（默认 peer1）的新事件也拉到本机 chat 里**，用 ssh 读对端同一文件，
 按「上次取到的时间」增量筛，投递后更新游标。
 
 ## 2. 为什么放在脚本里，而不是 gopi
@@ -99,25 +99,25 @@ anchor（第 3 段）**只追加本机 payload**：对端事件在它自己的 a
 | 门 | 结论 |
 |---|---|
 | G1 本机消息文本 | 改前/改后同一 payload、同一沙箱，投进 chat inbox 的记录除 `id`/`created_at`（每次投递各自生成）外 **IDENTICAL** |
-| G2 真拉对端 | `notify.sh: peer peerbox: 2 new event(s), 2 delivered`，chat 侧收到 `[peer peerbox] task event: event=completed …`，游标推进到 `2026-10-12T08:21:29+08:00`，整轮 0.92s |
-| G3 连跑第二次 | `peer peerbox: 0 new event(s), 0 delivered`，chat 只收到本机那条（对端 0 条） |
+| G2 真拉对端 | `notify.sh: peer peer1: 2 new event(s), 2 delivered`，chat 侧收到 `[peer peer1] task event: event=completed …`，游标推进到 `2026-10-12T08:21:29+08:00`，整轮 0.92s |
+| G3 连跑第二次 | `peer peer1: 0 new event(s), 0 delivered`，chat 只收到本机那条（对端 0 条） |
 | G4 坏 peer | stderr：`peer zz-no-such-peer-zz: cannot read its event stream (ssh exit 255): ssh: Could not resolve hostname …`；本机投递仍 delivered=1；整轮 **0.07s** |
 | G5 配置/游标边界 | `sync_peers` 非数组 / settings 非 JSON / 空数组 / 无该键 / 无 settings 文件 —— 各自点名出声并跳过；坏游标被拒且 `/tmp/pwned-notify` 未创建 |
 | G7 首跑无游标 | 只建立游标、**0 delivered**；下一轮只投此后的新事件 |
-| G8 gopi 真实 exec 形态 | 以 `sh -c "bash <script>"`（`internal/tools/tasknotify.go` 的启动方式）+ 继承 `GOPI_HOME`/`GOPI_SETTINGS` 跑：`peer peerbox: 2 new event(s), 2 delivered`，chat 侧本机一条 + 两条 `[peer peerbox]` |
+| G8 gopi 真实 exec 形态 | 以 `sh -c "bash <script>"`（`internal/tools/tasknotify.go` 的启动方式）+ 继承 `GOPI_HOME`/`GOPI_SETTINGS` 跑：`peer peer1: 2 new event(s), 2 delivered`，chat 侧本机一条 + 两条 `[peer peer1]` |
 
 沙箱必须**同时**钉 `GOPI_HOME` 和 `GOPI_SETTINGS`：`GOPI_SETTINGS` 在本会话环境里是导出的，
 不钉就会读 operator 的真 settings —— 实测发生过，见下。
 
 **本 run 的事故（诚实记录）**：G6 段（在真实 profile 上直跑、`GOPI_SETTINGS` 被 `env -u` 拿掉）
 暴露了上面的首跑缺陷，当时游标不存在，脚本把对端 anchor 全量投给了 operator 的活跃 chat
-（会话 `5af45c3e-…`，447 条 `[peer peerbox]` 消息进入其 `messages/inbox.jsonl`）。
+（会话 `5af45c3e-…`，447 条 `[peer peer1]` 消息进入其 `messages/inbox.jsonl`）。
 修法是 §4 的「首跑只建立游标」。**这 447 条已投出的消息没有撤回** —— 撤回要改 operator 活跃 chat 的 inbox，
 那不是我该动的文件；这里如实记下，由 operator 决定是否清理。
 
 ## 7. Rule 35 四问
 
-1. **没有它什么会坏**：operator 的 chat 只看得到本机事件；对端（peerbox）的任务完成/失败没有任何推送，
+1. **没有它什么会坏**：operator 的 chat 只看得到本机事件；对端（peer1）的任务完成/失败没有任何推送，
    要靠人工 `ssh` 或切窗口看。这是**能力缺失**，不是「会变脆」。它不修任何既有故障 —— 所以下面三问更要紧。
 2. **为什么不能在进程内解决**：gopi 进程内**已经有**这条通道吗？没有；它有的是 task-ledger 同步，
    与「通知进 chat」是两回事。能放进 gopi 的 Go 代码吗？能，但那就把一台机器的通知偏好变成所有部署的普遍机制

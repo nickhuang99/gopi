@@ -99,7 +99,7 @@ func rhMigrateRow(t *testing.T, senderDB, peerDB, taskID string) *SyncRowSendRes
 //
 // PRE-FIX (master's live-only probe): step (3) counts TWO rows for one branch —
 // the merger re-issued the branch-rework task 12 minutes after the move, which is
-// exactly the incident this task was filed on (peerbox 01a11564 → hp, then
+// exactly the incident this task was filed on (peer1 01a11564 → hp, then
 // 01a1156f filed again; measured again by this test against master's tree).
 func TestReworkDedupHandedOffReworkIsNotRefiled(t *testing.T) {
 	senderDB, peerDB := rowLegTwoLedgers(t)

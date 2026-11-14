@@ -70,7 +70,7 @@ fail)
 	# The shape ssh prints when the host does not answer: an address that names
 	# the failure and a decimally-varying detail the sink must NOT copy verbatim
 	# (a varying reason defeats the dedupe).
-	printf 'ssh: connect to host 10.0.0.1 port 22: Connection refused\r\n' >&2
+	printf 'ssh: connect to host 192.0.2.1 port 22: Connection refused\r\n' >&2
 	exit 255
 	;;
 anchor-missing)

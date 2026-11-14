@@ -10,7 +10,7 @@ Task: `01a12f48-7ca7-74bf-8f63-2a8fd3f8dd22` · host `hostb-Laptop` · branch
 measurement ①: the observed 2026-10-11 deletion left the commit in the reflog grace
 window, not in the archive namespace.**
 
-On the peer `peerbox`, for the tip the epic names (`bc8e2ea8c279c86a6682c50853cb6bbfde05f79b`):
+On the peer `peer1`, for the tip the epic names (`bc8e2ea8c279c86a6682c50853cb6bbfde05f79b`):
 
 ```
 $ git rev-parse bc8e2ea8^{commit}      → bc8e2ea8c279c86a6682c50853cb6bbfde05f79b
@@ -32,7 +32,7 @@ for this commit: it is the measured state** (Rule 41: measurement vs inference l
 durable one, so the orphan guard allowed a delete while the tip's only company was a ref
 its own writer deletes.**
 
-The audit trail of the disposal chain on peerbox carries the decision, verbatim:
+The audit trail of the disposal chain on peer1 carries the decision, verbatim:
 
 ```
 / home/ nick/ .gopi/ logs/ removal-audit.log
@@ -294,11 +294,11 @@ GONE: the unarchived commit is unrecoverable
 
 ## Evidence (self-filed)
 
-- `git rev-parse bc8e2ea8^{commit}` on peerbox → `bc8e2ea8c279c86a6682c50853cb6bbfde05f79b`;
+- `git rev-parse bc8e2ea8^{commit}` on peer1 → `bc8e2ea8c279c86a6682c50853cb6bbfde05f79b`;
   `git for-each-ref --contains <tip>` → empty; `git fsck --unreachable --no-reflogs | grep
   <tip>` → `unreachable commit bc8e2ea8…`; `git merge-base --is-ancestor <tip> master` → rc=1.
 - `grep -h 01a12cb5eee0737fb63caaad45194e85 /home/user/.gopi/logs/removal-audit.log`
-  (on peerbox, `…/logs/` is the gopi data root's) → the one `arm":"merge-run-spent-branch"`
+  (on peer1, `…/logs/` is the gopi data root's) → the one `arm":"merge-run-spent-branch"`
   record quoted in §2.
 - The pre-fix guard's behaviour, measured in this run's fixture: quoted in §2 (the FAIL text
   is the observation; the fixture is `branchGuardFixtureRepo` + one `git update-ref`).

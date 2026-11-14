@@ -5,8 +5,8 @@ package testutil
 //
 // The bug: the probe measured ONE privilege level (the calling uid) and the
 // documents built on it read that level's refusals as the NODE's capability.
-// On peerbox uid 1000 is outside group `audio`, so ALSA renders its access
-// refusal as "no soundcards found" — and the epic concluded "peerbox has no
+// On peer1 uid 1000 is outside group `audio`, so ALSA renders its access
+// refusal as "no soundcards found" — and the epic concluded "peer1 has no
 // capture path", which is false: the same hardware records as root (`sudo -n`,
 // NOPASSWD) and as uid 1000 with group `audio` added.
 //
@@ -220,7 +220,7 @@ func TestVoiceProbeReportsSudoUnavailableHonestly(t *testing.T) {
 
 // runFakeProbe runs the real probe against a fake audio stack and returns its
 // stdout. sudoWorks=false installs a `sudo` that always fails (the npm-less
-// host); sudoWorks=true installs a `sudo` that runs its command (the peerbox
+// host); sudoWorks=true installs a `sudo` that runs its command (the peer1
 // case: passwordless sudo, so the privileged branch is reachable).
 func runFakeProbe(t *testing.T, sudoWorks bool) string {
 	t.Helper()
@@ -286,7 +286,7 @@ exit 0
 // passFailLine returns a description of the fake sudo's behaviour.
 func passFailLine(works bool) string {
 	if works {
-		return "accepts -n without a password (the peerbox case: NOPASSWD: ALL)"
+		return "accepts -n without a password (the peer1 case: NOPASSWD: ALL)"
 	}
 	return "refuses -n (no passwordless sudo on this host)"
 }

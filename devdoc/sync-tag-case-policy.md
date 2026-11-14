@@ -87,7 +87,7 @@ snapshot):
 | Probe | old `LIKE` | new `GLOB` | divergence |
 | --- | --- | --- | --- |
 | partition gate, token `bug` (real spelling) | 197 | 197 | **0** |
-| peer gate, token `from-peerbox` (real node) | 37 | 37 | **0** |
+| peer gate, token `from-peer1` (real node) | 37 | 37 | **0** |
 | peer gate, token `from-hp` | 54 | 54 | **0** |
 | peer gate, token `from-hostb-Laptop` (mixed case) | 134 | 134 | **0** |
 | peer gate, token `from-workerpar-test` | 18 | 18 | **0** |
@@ -113,7 +113,7 @@ Reverting ONLY the shared fragment to the old text, then running the new tests:
 - `TestSyncTagTokenMatch_OldLIKEDiverges` — **FAIL** as designed, with the divergence printed:
   `RED-PROOF ① token "BUG": old LIKE=4 rows [t-bug-bounded t-bug-exact t-bug-upper
   t-from-host-mixed-bug] | Go rule=1 rows [t-bug-upper]` (over-inclusion of 3) and
-  `RED-PROOF ② peer "peerbox-X": old LIKE ships 11 | Go rule ships 12 (swallowed-by-old:
+  `RED-PROOF ② peer "peer1-X": old LIKE ships 11 | Go rule ships 12 (swallowed-by-old:
   [t-from-peer-upper])`.
 - `TestSyncTagTokenFragmentShape` — **FAIL** (`must be a GLOB`).
 - Fragment restored → all four tests PASS.

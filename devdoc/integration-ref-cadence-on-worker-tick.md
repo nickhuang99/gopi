@@ -11,12 +11,12 @@
 <!-- WORKER-OWNERSHIP: OPERATOR-ONLY — devdoc/worker-ownership.md -->
 
 **任务** `01a13440-1e63-7be2-a1bd-7e199f2b66df`（epic：`devdoc/bare-master-is-not-a-revision.md` 的**节奏/面**半边）
-**归属**：系统层缺陷，**应归 peerbox**（Rule 28）。本条在 hosta 上执行，改动落在 `internal/tools/task_sync_git.go` 与
+**归属**：系统层缺陷，**应归 peer1**（Rule 28）。本条在 host-b 上执行，改动落在 `internal/tools/task_sync_git.go` 与
 `cmd/agent/` 的 tick 接线处 —— **属跨层，如实标注**。
 
 ## 问题（实测，非推断）
 
-hosta（`role: "client"`）上 `refs/heads/master` 与对端的差：
+host-b（`role: "client"`）上 `refs/heads/master` 与对端的差：
 
 ```
 $ git -C /home/user/work/GoPi rev-parse refs/heads/master refs/remotes/gitPushcheck/master origin/master
@@ -36,12 +36,12 @@ ances
 - serve tick（`cmd/agent/cli_tasks_sync_pass.go:141`，`gopi task sync-pass --once` 的 pass）
 - merger pass（`cmd/agent/cli_tasks.go:5874`，`mergerSerialFaceLegs` ④⑤）
 
-而 hosta 常驻的是 **worker**（`ps`：`gopi worker`，pid 209851 / 449811），**无 serve、无 merger**。
+而 host-b 常驻的是 **worker**（`ps`：`gopi worker`，pid 209851 / 449811），**无 serve、无 merger**。
 更进一步：这两个进程的 cwd 在 `/home/user/.gopi/sessions/<id>`，而 `GitSyncRepoRoot()`
 （`internal/tools/task_sync_git.go:383`）按 cwd 解析 `git rev-parse --show-toplevel` ——
-**即使在 hosta 上跑 merger，它也拿不到 repo**，整条 git 腿在 `repo == ""` 处 skip。
+**即使在 host-b 上跑 merger，它也拿不到 repo**，整条 git 腿在 `repo == ""` 处 skip。
 
-结论：**这条 ref 在 hosta 上没有任何常驻载体**，只有「偶然站在主 work tree 里的人手工跑一次」才会动。
+结论：**这条 ref 在 host-b 上没有任何常驻载体**，只有「偶然站在主 work tree 里的人手工跑一次」才会动。
 
 ## 修法（Rule 35 形状：既有 tick 上再搭一条腿）
 
@@ -134,7 +134,7 @@ server 臂（`gitSyncServerLag`）**如实报 unmeasurable 并说明理由**，�
 
 ## Not Done / 诚实边界
 
-- **服务端（peerbox）的同一问题未验证**：本条只证明 client 面。peerbox 的 `refs/heads/master`
-  由它自己的 merge 推进，本轮没有在 peerbox 上取证。
+- **服务端（peer1）的同一问题未验证**：本条只证明 client 面。peer1 的 `refs/heads/master`
+  由它自己的 merge 推进，本轮没有在 peer1 上取证。
 - **`gopi worker --once` 不触发该腿**（有意）：`--once` 测试/E2E 接缝。
 - **只测了一个「落后且纯祖先」与一个「diverged」形状**；merge commit 之后的多路形状未单独构造。

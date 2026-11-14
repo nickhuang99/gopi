@@ -45,7 +45,7 @@ var toolsBuildCacheSandboxSignal chan os.Signal
 // asserts what the refusal carries must not depend on the host's ambient
 // locale.
 //
-// MEASURED 2026-10-12 on hosta, `LC_ALL=zh_CN.utf8 LANG=zh_CN.utf8`:
+// MEASURED 2026-10-12 on host-b, `LC_ALL=zh_CN.utf8 LANG=zh_CN.utf8`:
 // TestPushbackUnresolvedRemoteNameIsDiagnosedByTheRealLane failed with
 //
 //	the refusal must keep git's own words: "... ssh: Could not resolve hostname

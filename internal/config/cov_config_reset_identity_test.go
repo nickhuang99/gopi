@@ -65,14 +65,14 @@ func TestCovCfgResetNodeIdentityForTest_ClearsRoleCache(t *testing.T) {
 func TestCovCfgResetNodeIdentityForTest_ClearsSyncToCache(t *testing.T) {
 	covCfgNodeSandbox(t, `{}`)
 
-	t.Setenv(SyncToEnv, "peerbox")
-	if role, syncTo := ResolveNodeRole(); role != "" || syncTo != "peerbox" {
-		t.Fatalf("first resolve = (%q, %q), want (\"\", \"peerbox\")", role, syncTo)
+	t.Setenv(SyncToEnv, "peer1")
+	if role, syncTo := ResolveNodeRole(); role != "" || syncTo != "peer1" {
+		t.Fatalf("first resolve = (%q, %q), want (\"\", \"peer1\")", role, syncTo)
 	}
 
 	t.Setenv(SyncToEnv, "other-node")
-	if _, syncTo := ResolveNodeRole(); syncTo != "peerbox" {
-		t.Fatalf("second resolve sync_to = %q, want the CACHED peerbox", syncTo)
+	if _, syncTo := ResolveNodeRole(); syncTo != "peer1" {
+		t.Fatalf("second resolve sync_to = %q, want the CACHED peer1", syncTo)
 	}
 
 	ResetNodeIdentityForTest()
@@ -85,10 +85,10 @@ func TestCovCfgResetNodeIdentityForTest_ClearsSyncToCache(t *testing.T) {
 // freezes the settings.json contribution; after the reset a REWRITTEN
 // settings file is read again.
 func TestCovCfgResetNodeIdentityForTest_ReReadsSettingsFile(t *testing.T) {
-	path := covCfgNodeSandbox(t, `{"role":"client","sync_to":"peerbox"}`)
+	path := covCfgNodeSandbox(t, `{"role":"client","sync_to":"peer1"}`)
 
-	if role, syncTo := ResolveNodeRole(); role != NodeRoleClient || syncTo != "peerbox" {
-		t.Fatalf("first resolve = (%q, %q), want (client, peerbox)", role, syncTo)
+	if role, syncTo := ResolveNodeRole(); role != NodeRoleClient || syncTo != "peer1" {
+		t.Fatalf("first resolve = (%q, %q), want (client, peer1)", role, syncTo)
 	}
 
 	if err := os.WriteFile(path, []byte(`{"role":"server"}`), 0o600); err != nil {
@@ -114,7 +114,7 @@ func TestCovCfgResetNodeIdentityForTest_EnvBeatsRewrittenSettings(t *testing.T) 
 	if role, _ := ResolveNodeRole(); role != NodeRoleServer {
 		t.Fatalf("resolve = %q, want the env %q", role, NodeRoleServer)
 	}
-	if err := os.WriteFile(path, []byte(`{"role":"client","sync_to":"peerbox"}`), 0o600); err != nil {
+	if err := os.WriteFile(path, []byte(`{"role":"client","sync_to":"peer1"}`), 0o600); err != nil {
 		t.Fatalf("rewrite settings: %v", err)
 	}
 
@@ -123,8 +123,8 @@ func TestCovCfgResetNodeIdentityForTest_EnvBeatsRewrittenSettings(t *testing.T) 
 	if role != NodeRoleServer {
 		t.Errorf("role after reset = %q, want the env %q to still win", role, NodeRoleServer)
 	}
-	if syncTo != "peerbox" {
-		t.Errorf("sync_to after reset = %q, want peerbox (env sets no sync_to → settings fill it)", syncTo)
+	if syncTo != "peer1" {
+		t.Errorf("sync_to after reset = %q, want peer1 (env sets no sync_to → settings fill it)", syncTo)
 	}
 }
 

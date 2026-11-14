@@ -30,7 +30,7 @@ const (
 	// hintDaemonScope is where `gopi worker --daemon` really runs: a transient
 	// scope named from cgroupscope.EscapeTargetPrefix, created by the daemon seam.
 	hintDaemonScope = "/user.slice/user-1000.slice/user@1000.service/app.slice/" +
-		"gopi-daemon-worker-hosta.scope"
+		"gopi-daemon-worker-host-b.scope"
 )
 
 // TestWorkerTerminalScopeHint_ATerminalScopeIsNamed pins case (a): the line is

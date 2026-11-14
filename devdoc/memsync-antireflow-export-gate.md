@@ -15,18 +15,18 @@ Epic 问题："task 行扩展（M4.8）的 export 过滤是否同样防回流—
 
 ## 死循环路径（Epic 预见成立，但机制与 epic 叙述的略有出入）
 
-epic 担心的"payload 变了 → peerbox INSERT 重复行"实际被两层已有机制兜住：
+epic 担心的"payload 变了 → peer1 INSERT 重复行"实际被两层已有机制兜住：
 ①payload 内容永不 rewrite（syncDeltaMergeRow 的 never-overwrite + content-conflict
 tag），同 id 回流只会 newer-wins/echo/conflict，不会 INSERT 第二行；
 ②同 id 回流撞 task_id 分支，不产生新行。
 
-**真实的回流面**是状态/标签镜像回灌：HP 收到 from-peerbox 行后，本地任何一次合法写
+**真实的回流面**是状态/标签镜像回灌：HP 收到 from-peer1 行后，本地任何一次合法写
 （tag edit 走 taskAddTag，bump updated_at）都会推进 HP 的本地锚点 → HP 的 re-export
-窗口重新打开 → 该行再次出门 → peerbox 的 merge 看到 updated_at 更大（HP 的写入晚于
-peerbox 自己的原始写）→ newer-wins 用 **HP 侧的 stale 镜像** 覆盖 peerbox 更新的本地
+窗口重新打开 → 该行再次出门 → peer1 的 merge 看到 updated_at 更大（HP 的写入晚于
+peer1 自己的原始写）→ newer-wins 用 **HP 侧的 stale 镜像** 覆盖 peer1 更新的本地
 tags/status。锚点回退余量（syncAnchorMarginBackdate）会周期性重发，故这不是一次性
 污染而是每次 sync 都可能重演。实测修复前：echo push 返回 RowsTagged=1（HP 的
-hp-touched 标签打回了 peerbox 的行）。
+hp-touched 标签打回了 peer1 的行）。
 
 ## 修复：export 端 NOT LIKE 门（对齐 brew 双闸门）
 
@@ -46,11 +46,11 @@ AND NOT (',' || COALESCE(tags,'') || ',') LIKE '%,from-<self>,%'
 ## 测试（memory_sync_reflow_test.go，3 个）
 
 1. `TestReflowExportExcludesFromSelfRows` — v2 export：from-<self> 行被排除，
-   本地自投行 + 外来 from-peerbox 行照常出门。
+   本地自投行 + 外来 from-peer1 行照常出门。
 2. `TestReflowExportGateV1Export` — v1 --export-tasks 同门。
-3. `TestReflowEchoStaleMirrorNoReturn` — epic 端到端：peerbox 自投 → hp import →
+3. `TestReflowEchoStaleMirrorNoReturn` — epic 端到端：peer1 自投 → hp import →
    hp taskAddTag（锚点推进）→ hp 回推 → 修前 RowsTagged=1（stale 镜像打回），
-   修后 echo no-op（already=1），peerbox 行内容/标签零污染。
+   修后 echo no-op（already=1），peer1 行内容/标签零污染。
 
 ## 全量对照归因（Rule: environmental 失败必须 base 对照）
 

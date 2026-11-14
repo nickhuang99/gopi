@@ -178,7 +178,7 @@ Not "newer than" the fix (they do NOT contain `796b3333`): **2 local heads** wit
 their own `cmd/agent/*_test.go` commits — `fix/ledger-firstopen-budget` (`6b846c64`)
 and `fix/signalrec-verify-attribution` (`e9994f4e`) — recorded, not re-checked
 (their copies of the scanned files are pre-fix). Remote-tracking refs (`hp/*`,
-`peerbox/*`, `gitPushcheck/*`, `local/*`, `tmp/*`; 34 refs total head+remote without
+`peer1/*`, `gitPushcheck/*`, `local/*`, `tmp/*`; 34 refs total head+remote without
 `796b3333`) and `archive/*` tags are outside this ledger.
 
 **Net finding of the sweep:** exactly ONE unmerged branch carries a spawn shape the

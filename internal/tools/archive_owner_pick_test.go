@@ -141,7 +141,7 @@ func newArchiveOwnerLedger(t *testing.T) context.Context {
 }
 
 // TestArchiveBranchOwnersPrefersTheLiveRowOverAnArchivableOne is the regression
-// guard for the four-row incident (measured 2026-10-07, peerbox, run 01a115c3,
+// guard for the four-row incident (measured 2026-10-07, peer1, run 01a115c3,
 // branch task/01a113e467767eb9a4c33cb1df1cdfbb).
 //
 // That branch was named by FOUR rows — a `cancelled` one, a `completed` one and

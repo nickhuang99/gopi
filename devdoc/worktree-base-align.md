@@ -121,7 +121,7 @@ unit tests AND measured on the real run (below).
      peer's declared alias rewritten to a path that is not a repository.
   2. `gopi task list --all` inside that sandbox (Evidence ③).
   3. `gopi task list` on the live ledger + `git merge-base/rev-list` against
-     `peerbox/master` for the measured numbers (Evidence ⑤⑥).
+     `peer1/master` for the measured numbers (Evidence ⑤⑥).
 - **Result:** the aligned run's ground **HEAD == the peer's tip**
   (`1538aac2ad…`, asserted two independent ways: the announcement's short sha
   and the fixture's own `rev-parse`), the unreachable-peer run's ground was
@@ -194,8 +194,8 @@ unit tests AND measured on the real run (below).
    control (`git fetch --prune <configured-remote>` *does* reap) and the tip
    equality (`peer master` == `refs/remotes/gitPushcheck/master`).
 
-⑤ **Branch-point lag behind `peerbox/master`** (`git merge-base` + `git rev-list --count`),
-   read at `peerbox/master = 5276068c1`:
+⑤ **Branch-point lag behind `peer1/master`** (`git merge-base` + `git rev-list --count`),
+   read at `peer1/master = 5276068c1`:
    `task/01a113e467767eb9a4c33cb1df1cdfbb` lag **53**;
    `task/01a115ac…` (this row) **64**; `task/01a115e03…` **64**;
    `task/01a11639…` **64**; `task/01a1163c…` **64**; `task/01a113a1fe…` **210**.

@@ -7,10 +7,10 @@ epic used (which silently mis-decode PCM16 as f32, devdoc/voice-e2e-hp.md §6.1)
 
 | | |
 |---|---|
-| Capture node | `hp` = `hostb-Laptop` (10.0.0.5 / nickname `hp`), mic `alsa_input.pci-0000_05_00.6.analog-stereo` |
-| Engine node | `peerbox` = 10.0.0.6, Fun-ASR-Nano at `~/work/funasr-models` |
+| Capture node | `hp` = `hostb-Laptop` (192.0.2.5 / nickname `hp`), mic `alsa_input.pci-0000_05_00.6.analog-stereo` |
+| Engine node | `peer1` = 192.0.2.6, Fun-ASR-Nano at `~/work/funasr-models` |
 | Repo / branch | GoPi `feat/voice-client-e2e` (worktree `~/workspace/gopi-voice-client-e2e`) |
-| Client binary | built on peerbox from this branch, `scp`ed to HP (`~/workspace/gopi-vce2e/bin/gopi`, `CGO_ENABLED=0`) |
+| Client binary | built on peer1 from this branch, `scp`ed to HP (`~/workspace/gopi-vce2e/bin/gopi`, `CGO_ENABLED=0`) |
 | Evidence | `devdoc/assets/voice-client-e2e-hp/*.log` (raw, unedited) + this file |
 
 **Where the epic's deliverables land:** A = §3 (A1/A2/A3/A1http) **+ §5's two
@@ -29,7 +29,7 @@ with tests).
 The previous epic proved the *transport* with hand-built pipes:
 
 ```bash
-parecord … | sox … -e floating-point -b 32 … | ssh peerbox "gopi voice_input --server --stdio"
+parecord … | sox … -e floating-point -b 32 … | ssh peer1 "gopi voice_input --server --stdio"
 ```
 
 That harness converts PCM16→f32 **by hand** (§6.1 documents that forgetting the
@@ -65,7 +65,7 @@ only for the *short* runs, where its transcript is quoted as a fragment.
 
 ## 3. Deliverable A — real `--client` runs
 
-All runs: client on HP, engine on peerbox, HP does no LLM work except where noted.
+All runs: client on HP, engine on peer1, HP does no LLM work except where noted.
 Times are the shell's `real` for the whole command (`time` output verbatim in the
 asset logs).
 
@@ -83,7 +83,7 @@ real 0m9.361s
 TRANSCRIPT: 大语言模型早已不是工具。the
 ```
 
-### A2 — HP client → **peerbox** server over SSH stdio (the true user path)
+### A2 — HP client → **peer1** server over SSH stdio (the true user path)
 
 ```
 $ gopi voice_input --client --device pulse:gopi_mic --seconds 16 --stdio > a2.f32
@@ -91,7 +91,7 @@ $ gopi voice_input --client --device pulse:gopi_mic --seconds 16 --stdio > a2.f3
 [voice] captured 512000 bytes (16.0s of 16000Hz mono PCM16)
 real 0m36.6s
 
-$ ssh peerbox 'gopi voice_input --server --stdio' < a2.f32 > a2.txt
+$ ssh peer1 'gopi voice_input --server --stdio' < a2.f32 > a2.txt
 [voice] 1024000 bytes in, 5.3s (chunk=15s)
 real 0m5.484s
 TRANSCRIPT: 大语言模型早已不是工具。the
@@ -103,15 +103,15 @@ capture is the tail of the previous play and the rest is silence, so the engine
 returned a fragment (`工具。`, engine 3.7 s). The aligned runs above are the
 evidence; the misalignment is recorded because it is a rig property (§5.2).
 
-### A3 — HP client → **peerbox** HTTP server on a non-default port
+### A3 — HP client → **peer1** HTTP server on a non-default port
 
 ```bash
-ssh peerbox 'setsid nohup gopi voice_input --server --listen :7799 …'
+ssh peer1 'setsid nohup gopi voice_input --server --listen :7799 …'
 # gopi voice_input: HTTP server on :7799 (engine=funasr-nano chunk=15s)
-curl -s http://10.0.0.6:7799/health   # from HP: {"chunk":15,"engine":"funasr-nano","ok":true}
+curl -s http://192.0.2.6:7799/health   # from HP: {"chunk":15,"engine":"funasr-nano","ok":true}
 
 $ gopi voice_input --client --device pulse:gopi_mic --seconds 16 \
-      --server-url http://10.0.0.6:7799
+      --server-url http://192.0.2.6:7799
 [voice] recording 16s from pulse:gopi_mic (gopi_mic) [explicit --device]
 [voice] captured 512000 bytes (16.0s of 16000Hz mono PCM16)
 [voice] transcribed in 5.1s
@@ -128,7 +128,7 @@ evidence rather than a hopeful assertion:
    after freeing the port the LAN bind was confirmed (`ss -ltn` → `*:7799`,
    `/health` 200 from HP) and A3 succeeded. **Honest note:** the client's error
    message for this case is correct and actionable
-   (`dial tcp 10.0.0.6:7799: connect: connection refused (start it with
+   (`dial tcp 192.0.2.6:7799: connect: connection refused (start it with
    gopi voice_input --server --listen :7788)`), but it names the *default* port
    while the user passed `--server-url …:7799`; a reader could be sent to the
    wrong port. Cosmetic, reported not fixed.
@@ -143,8 +143,8 @@ in 9.0s`, transcript `大语言模型早已不是工具。the`. (HP as *server* 
 HP had no engine assets (`ls ~/work/funasr-models` → No such file). Synced:
 
 ```bash
-rsync -a peerbox:/home/user/work/funasr-models/                 hp:~/work/funasr-models/
-rsync -a peerbox:…/llama.cpp/build/bin/llama-funasr-cli          hp:~/work/runtime/llama.cpp/build/bin/
+rsync -a peer1:/home/user/work/funasr-models/                 hp:~/work/funasr-models/
+rsync -a peer1:…/llama.cpp/build/bin/llama-funasr-cli          hp:~/work/runtime/llama.cpp/build/bin/
 # 1.7 G + 6.0 M, 25.3 s + 0.34 s over gigabit; the CLI is a static-ish binary
 # (libgomp/libstdc++/libm/libc only) so no build step is needed on HP.
 ```
@@ -176,7 +176,7 @@ TRANSCRIPT: 2084无言见人序章裸模型时代，2084年人类终于驯服了
 ```
 
 i.e. HP is a working standalone engine node at ~0.7× realtime (8.0 s for 12 s of
-audio, `user 34.4s` across 8 threads) — no ssh, no peerbox.
+audio, `user 34.4s` across 8 threads) — no ssh, no peer1.
 
 ## 5. Deliverable B — CER on the `--client` path
 
@@ -203,7 +203,7 @@ $ $BIN voice_input --client --device pulse:gopi_mic --seconds 228 --stdio > out/
 $ sleep 2; paplay --device=gopi_src ~/workspace/vce2e-clip.wav   # paplay_rc=0 at 18:24:41
 [voice] recording 228s from pulse:gopi_mic (gopi_mic) [explicit --device]
 [voice] captured 7296000 bytes (228.0s of 16000Hz mono PCM16)     # client_rc=0 at 18:25:06
-$ time ssh peerbox 'gopi voice_input --server --stdio' < out/cer.f32 > out/cer.txt
+$ time ssh peer1 'gopi voice_input --server --stdio' < out/cer.f32 > out/cer.txt
 real 5m16.399s
 [voice] 14592000 bytes in, 315.3s (chunk=15s)                     # server_rc=0
 $ python3 scripts/asr_score.py out/cer.txt ref.txt
@@ -243,8 +243,8 @@ $ # wait for the printed pre-record line, then play the PADDED fixture
 [voice] recording 250s from pulse:gopi_mic (gopi_mic) [explicit --device]
 $ paplay --device=gopi_src ~/workspace/vce2e-clip-pad.wav      # paplay_rc=0 (19:02:33)
 [voice] captured 8000000 bytes (250.0s of 16000Hz mono PCM16)  # client_rc=0 (19:02:52)
-$ time ssh peerbox 'gopi voice_input --server --stdio' < out/cer4.f32 > out/cer4.txt
-real 17m49.511s        # 250 s of audio = 1067.7 s engine on peerbox (4.3x realtime, loaded host)
+$ time ssh peer1 'gopi voice_input --server --stdio' < out/cer4.f32 > out/cer4.txt
+real 17m49.511s        # 250 s of audio = 1067.7 s engine on peer1 (4.3x realtime, loaded host)
 [voice] 16000000 bytes in, 1067.7s (chunk=15s)                 # server_rc=0
 $ python3 scripts/asr_score.py out/cer4.txt ref.txt
   chars (norm)      hyp=1,027  ref=1,011
@@ -276,12 +276,12 @@ bound is now an explained measurement rather than an open residual.
 $BIN voice_input --client --device pulse:gopi_mic --seconds 250 --stdio > cer4.f32 &
 # start playback only after the printed pre-record line, and play a PADDED wav
 paplay --device=gopi_src ~/workspace/vce2e-clip-pad.wav
-ssh peerbox 'gopi voice_input --server --stdio' < cer4.f32 > cer4.txt
+ssh peer1 'gopi voice_input --server --stdio' < cer4.f32 > cer4.txt
 python3 scripts/asr_score.py cer4.txt ref.txt
 # the misaligned variant (launch-time sleep) is kept as the contrast case:
 $BIN voice_input --client --device pulse:gopi_mic --seconds 228 --stdio > cer.f32 &
 sleep 2; paplay --device=gopi_src ~/workspace/vce2e-clip.wav
-ssh peerbox 'gopi voice_input --server --stdio' < cer.f32 > cer.txt
+ssh peer1 'gopi voice_input --server --stdio' < cer.f32 > cer.txt
 python3 scripts/asr_score.py cer.txt ref.txt          # 6.82 %, opening lost
 ```
 
@@ -296,7 +296,7 @@ python3 scripts/asr_score.py cer.txt ref.txt          # 6.82 %, opening lost
   (see §5: the client probes 1 s and waits 10 s before the recorder exists, so
   anything played inside that window is discarded by the null sink, and the
   fixture's opening is lost even though the capture length is nominal).
-* The same run also measures the engine's THROUGHPUT, and peerbox is not idle:
+* The same run also measures the engine's THROUGHPUT, and peer1 is not idle:
   250 s of audio took `1067.7s` (4.3× realtime) in the aligned run vs `315.3s`
   (0.79× realtime) in the 228 s run earlier the same evening — the identical
   binary and model, a ~5.5× spread driven by host load. Any latency budget taken
@@ -316,11 +316,11 @@ python3 scripts/asr_score.py cer.txt ref.txt          # 6.82 %, opening lost
 server passes the audio file to the engine with `--chunk N` and **no
 `--hotword`/VAD flag** (`cmd/agent/cli_voice.go:445-459`), so segmenting is the
 engine's own. Two runs, same padded input (15 s digital silence + the first 30 s
-of the `--client` capture), engine on peerbox (`assets/vce2e-run-padprobe.log`):
+of the `--client` capture), engine on peer1 (`assets/vce2e-run-padprobe.log`):
 
 | run | output head | wall |
 |---|---|---|
-| `ssh peerbox 'gopi voice_input --server --stdio'` (default `chunk=15`) | `/sil工具，而是嵌入生活机里的硅基器官。…` | 36.6 s for 45 s |
+| `ssh peer1 'gopi voice_input --server --stdio'` (default `chunk=15`) | `/sil工具，而是嵌入生活机里的硅基器官。…` | 36.6 s for 45 s |
 | same, `--chunk 1` | `thethethet…the工具，而是其。陷入生活积累的。…` (repetition + garbled) | 66.1 s for 45 s |
 
 Two facts worth keeping: (1) the engine **does** account for a leading silence
@@ -330,7 +330,7 @@ small `chunk` on a long file is *much* worse (garbling + 2× slower) — `--chun
 audio" is an under-statement, a small value is actively harmful.
 
 **(b) The pristine fixture through the same server = the baseline row.**
-`ssh peerbox 'gopi voice_input --server --stdio' < ~/workspace/vce2e-fixture/clip.wav`
+`ssh peer1 'gopi voice_input --server --stdio' < ~/workspace/vce2e-fixture/clip.wav`
 (the fixture WAV, 7 038 140 bytes, straight into the same binary) →
 `2084无言见人序章裸模型时代，2084年人类终于驯服了语言，却也沦为语言的囚徒。大语言模型早已不是工具…`,
 rc=0, `7038140 bytes in, 247.4s (chunk=15s)`, wall 248.4 s
@@ -442,12 +442,12 @@ reported as a dead mic — the requirement is met.
 
 ## 7. Deliverable E — the two operator questions
 
-**E.1 Capture on hosta / RPi5, transcribe on peerbox — feasibility, latency,
+**E.1 Capture on host-b / RPi5, transcribe on peer1 — feasibility, latency,
 dependencies.**
 
-*Reachability measured now:* `ssh hosta` → *could not resolve hostname*;
-`ssh rpi5` → `10.0.0.14 … No route to host`. **Neither is reachable from
-peerbox at this moment**, so nothing here was run on them — the answer is a
+*Reachability measured now:* `ssh host-b` → *could not resolve hostname*;
+`ssh rpi5` → `192.0.2.14 … No route to host`. **Neither is reachable from
+peer1 at this moment**, so nothing here was run on them — the answer is a
 requirements analysis from the measured HP leg, not a claim of having executed on
 those hosts.
 
@@ -461,25 +461,25 @@ busy and the working ids are `pulse:…`; on a pure-ALSA host the ids are
 `alsa:plughw:CARD=…,DEV=0` and tier 3 (`alsa:default`) is the intended route.
 
 *Two transports, both measured from HP:*
-| Transport | HP→peerbox measured | Ports | Needs |
+| Transport | HP→peer1 measured | Ports | Needs |
 |---|---|---|---|
-| `--client --stdio \| ssh peerbox 'gopi voice_input --server --stdio'` | engine 5.3 s for 16 s audio; client 36.6 s | **none** (ssh only) | ssh reachability + host key trusted |
-| `--client --server-url http://10.0.0.6:7799` | client 42.2 s, server `transcribed in 5.1s` | one TCP port, must be `--listen :PORT` (not loopback) | LAN reachability; the endpoint is unauthenticated and accepts up to 512 MiB/request |
+| `--client --stdio \| ssh peer1 'gopi voice_input --server --stdio'` | engine 5.3 s for 16 s audio; client 36.6 s | **none** (ssh only) | ssh reachability + host key trusted |
+| `--client --server-url http://192.0.2.6:7799` | client 42.2 s, server `transcribed in 5.1s` | one TCP port, must be `--listen :PORT` (not loopback) | LAN reachability; the endpoint is unauthenticated and accepts up to 512 MiB/request |
 
 *Latency budget* (HP measured): `--seconds N` costs ≈ N + 13 s wall (1 s liveness
 probe + 10 s `voiceCaptureGraceSec` + startup), the engine ≈ 0.33–0.7× realtime
-on the 8-thread HP / faster on peerbox, and the transport is a pipe (no measurable
+on the 8-thread HP / faster on peer1, and the transport is a pipe (no measurable
 overhead: 1 MB of f32 crossed in the same second the engine start was logged).
-A hosta/RPi5 client would add only its own mic-open time plus the network.
+A host-b/RPi5 client would add only its own mic-open time plus the network.
 
 *ssh precondition (this bit me, so it is called out):* on a **fresh** client node
-the first `ssh peerbox …` fails with `Host key verification failed`
+the first `ssh peer1 …` fails with `Host key verification failed`
 (measured with `StrictHostKeyChecking=yes`: *No ED25519 host key is known for
-10.0.0.6*), and — measured — **`ssh-keyscan` cannot be used before that**,
-because `peerbox` is not in DNS/`/etc/hosts` on HP (`getaddrinfo peerbox: Name or
-service not known`); scan the **address** (`ssh-keyscan -t ed25519 10.0.0.6 >
+192.0.2.6*), and — measured — **`ssh-keyscan` cannot be used before that**,
+because `peer1` is not in DNS/`/etc/hosts` on HP (`getaddrinfo peer1: Name or
+service not known`); scan the **address** (`ssh-keyscan -t ed25519 192.0.2.6 >
 ~/.ssh/known_hosts`), which then also satisfies the alias defined by
-`~/.ssh/config`'s `Host peerbox → HostName 10.0.0.6` (verified: strict-mode ssh
+`~/.ssh/config`'s `Host peer1 → HostName 192.0.2.6` (verified: strict-mode ssh
 by IP **and** by alias both succeed afterwards).
 
 **E.2 Can RPi5's USB mic be attached (a pure-ALSA host)?**
@@ -491,9 +491,9 @@ prerequisites and one honest caveat:
    `pactl info` answer the policy offers ALSA's `default` (the plug chain that
    accepts 16 kHz mono; a raw `hw:` spelling cannot, measured in the 1/6 matrix)
    and falls back to the first enumerated `alsa:plughw:CARD=…,DEV=0`.
-2. **`ssh-keyscan` is the prerequisite** in the sense above: the *hosta/RPi5 →
-   peerbox* hop is a client-side ssh, so the RPi5 needs peerbox's host key trusted
-   (`ssh-keyscan -t ed25519 10.0.0.6 >> ~/.ssh/known_hosts`) and a key-based
+2. **`ssh-keyscan` is the prerequisite** in the sense above: the *host-b/RPi5 →
+   peer1* hop is a client-side ssh, so the RPi5 needs peer1's host key trusted
+   (`ssh-keyscan -t ed25519 192.0.2.6 >> ~/.ssh/known_hosts`) and a key-based
    login (BatchMode must succeed — no password prompt: the client has nowhere to
    prompt).
 3. **Caveat found here:** a *named monitor* is not resolvable by `--device` on a
@@ -601,7 +601,7 @@ the comparison):
 
 ## 10. Not done (honest)
 
-1. **hosta and RPi5 were not testable**: neither resolves/routes from peerbox
+1. **host-b and RPi5 were not testable**: neither resolves/routes from peer1
    (measured above), so D/E's answers there are requirements analysis, not runs.
 2. **No physical-mic run**: every run uses the deterministic remap rig, by
    design (reproducibility); the earlier report already proved the physical
@@ -612,11 +612,11 @@ the comparison):
 4. **HP's settings.json still points at the dead GLM config** — irrelevant to
    `voice_input` (no LLM call in any run above); not touched, so HP's operator
    state is unchanged.
-5. **The HTTP server on peerbox `:7799` and HP's loopback `:7799` were left STOPPED**
+5. **The HTTP server on peer1 `:7799` and HP's loopback `:7799` were left STOPPED**
    after evidence collection (verified `ss -ltn`), and the rig modules
    (`gopi_src`, `gopi_mic`, `gopi_pipe`) were unloaded except where §6 re-created
    them for a run; `pactl list short sources` returns to its original count.
-   `~/workspace/vce2e-*` (HP and peerbox) hold the fixture, binary and raw captures
+   `~/workspace/vce2e-*` (HP and peer1) hold the fixture, binary and raw captures
    for rerun — all under `$HOME/workspace`, never `/tmp` (Rule 22: verified with
    `gopi_assert_off_root_fs` / device-id on both hosts; the rig script itself
    uses the repo's `scripts/lib/tmp-ban.sh` guard).
@@ -636,7 +636,7 @@ ssh hp 'pactl load-module module-remap-source master=gopi_src.monitor source_nam
 bash scripts/voice-e2e-fixture.sh ~/workspace/vce2e-fixture   # clip.wav + ref.txt, hashes asserted
 ssh hp '~/workspace/gopi-vce2e/bin/gopi voice_input --client --device pulse:gopi_mic \
         --seconds 16 --stdio > ~/workspace/gopi-vce2e/out/x.f32'   # then:
-ssh hp 'ssh peerbox "gopi voice_input --server --stdio" < ~/workspace/gopi-vce2e/out/x.f32' > x.txt
+ssh hp 'ssh peer1 "gopi voice_input --server --stdio" < ~/workspace/gopi-vce2e/out/x.f32' > x.txt
 python3 scripts/asr_score.py x.txt ~/workspace/vce2e-fixture/ref.txt
 
 # a 1:1 (whole-fixture) run — the padded rig of §5. NOTE: the fixture ref.txt

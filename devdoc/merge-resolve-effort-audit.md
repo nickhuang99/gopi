@@ -321,7 +321,7 @@ face — they were never in the ruling's scope.
 ## §7. Gaps filed (no "noted for later")
 
 Two gaps are OUT of this branch's scope by construction — both are live
-dispatch/route POLICY on the adoption face (system layer, peerbox), and neither
+dispatch/route POLICY on the adoption face (system layer, peer1), and neither
 can be fixed by editing a document:
 
 - **F4 + F5 + F6 + F7** are filed as **task `01a0b1b3-0499-7ee4-911e-55b2d32fe620`**

@@ -208,7 +208,7 @@ no sessions root at all is the same refusal said with the path, never an opaque
 - **Tests**: `scripts/test-budget.sh -run 'TestNotify|TestSessionInbox|TestJobNotice|TestTakeJobNotices'
   ./internal/tools ./internal/agent ./cmd/agent ./internal/sessionlayout` →
   **4 packages, 0 failures, exit=0**, 82s wall (`stamp: 2026-10-06T06:49:05+08:00
-  host=peerbox … exit=0 outcome=pass`); slowest case
+  host=peer1 … exit=0 outcome=pass`); slowest case
   `TestNotifyDeliverReachesARunningChatSession` 30.12s. Re-run at close-out
   (`go test -run 'TestNotifyDeliverReachesARunningChatSession|TestNotifyDeliverRefuses'
   ./cmd/agent/`) → `ok github.com/nick/gopi/cmd/agent 39.773s`; the single-take-point

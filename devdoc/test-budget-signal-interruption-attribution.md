@@ -1,7 +1,7 @@
 <!-- doc-class: normative -->
 # A killed test binary is an INTERRUPTION, not "a panic or a TestMain exit"
 
-**Bug row:** `01a164f6`. **Measured:** 2026-10-23, host `hosta`.
+**Bug row:** `01a164f6`. **Measured:** 2026-10-23, host `host-b`.
 
 ## The defect, verbatim
 

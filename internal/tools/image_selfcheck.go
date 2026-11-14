@@ -4,7 +4,7 @@ package tools
 // would start?" — the self-check a RESIDENT decider owes the rest of the
 // system (epic merge-image-selfcheck, 2026-10-13).
 //
-// THE DEFECT IT CLOSES, measured (2026-10-13, host peerbox):
+// THE DEFECT IT CLOSES, measured (2026-10-13, host peer1):
 //
 //	$ readlink -f /proc/3869823/exe
 //	/home/user/work/GoPi/bin/gopi (deleted)      # a replacement happened under it

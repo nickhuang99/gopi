@@ -4,7 +4,7 @@
 2026-09-15T07:24:10+08:00
 
 === uname -a ===
-Linux peerbox 5.15.0-163-generic #173-Ubuntu SMP Tue Oct 14 17:51:00 UTC 2025 x86_64 x86_64 x86_64 GNU/Linux
+Linux peer1 5.15.0-163-generic #173-Ubuntu SMP Tue Oct 14 17:51:00 UTC 2025 x86_64 x86_64 x86_64 GNU/Linux
 
 === os-release ===
 PRETTY_NAME="Ubuntu 22.04.4 LTS"
@@ -342,11 +342,11 @@ drwx------ 53 nick nick 1140 Sep 14 22:39 /run/user/1000
      CGroup: /user.slice/user-1000.slice/user@1000.service
 
 === utmp/who ===
-nick     pts/0        Sep 15 05:30 (192.168.7.13)
-nick     pts/1        Sep  6 02:45 (192.168.7.13)
-nick     pts/2        Sep  6 04:01 (192.168.7.13)
-nick     pts/3        Sep  7 02:37 (192.168.7.13)
-nick     pts/4        Sep  7 04:13 (192.168.7.13)
-nick     pts/5        Sep 12 19:35 (192.168.7.13)
-nick     pts/6        Sep 13 05:12 (192.168.7.13)
-nick     pts/7        Sep 14 19:26 (192.168.7.13)
+nick     pts/0        Sep 15 05:30 (192.0.2.113)
+nick     pts/1        Sep  6 02:45 (192.0.2.113)
+nick     pts/2        Sep  6 04:01 (192.0.2.113)
+nick     pts/3        Sep  7 02:37 (192.0.2.113)
+nick     pts/4        Sep  7 04:13 (192.0.2.113)
+nick     pts/5        Sep 12 19:35 (192.0.2.113)
+nick     pts/6        Sep 13 05:12 (192.0.2.113)
+nick     pts/7        Sep 14 19:26 (192.0.2.113)

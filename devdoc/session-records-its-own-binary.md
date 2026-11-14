@@ -3,7 +3,7 @@
 
 > **Provenance.** `TestDocAnchorsResolveInNormativeDocs` was retired on 2026-10-22 in `5a35f61` (deleted with `internal/docclass`), so a `file.go:NNN` reference in this page is a landing-time record, not an anchor a live gate enforces — nothing resolves one today. The line numbers stay useful to a reader; they are not checked by the suite. Citations below are quoted as they were written — where one of them reads as present tense ("is RED", "resolves", "fails"), read it as the state of THAT run, never as a gate this tree still has.
 
-**Measured 2026-10-14 → 2026-10-16** on hosta (Go 1.24.0), task
+**Measured 2026-10-14 → 2026-10-16** on host-b (Go 1.24.0), task
 `01a1362e-290b-78e0-a707-a9c0aa477647`. Every claim below carries the command and
 its output; the raw evidence is in
 `~/.gopi/sessions/01a1362e-290b-78e0-a707-a9c0aa477647/artifacts/`.

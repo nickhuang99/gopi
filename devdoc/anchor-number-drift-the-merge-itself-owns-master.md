@@ -10,7 +10,7 @@
 
 `gopi tool doccheck` and `internal/docclass`'s own gate are red on the wire tip
 (`bbf8d97604ed5993886f43e28313ec6d0ae1e03d`, read with `git ls-remote` on
-hosta at 2026-10-14 04:15). This document records the **mechanism** — the
+host-b at 2026-10-14 04:15). This document records the **mechanism** — the
 red was minted by the landing itself, from two revisions that are each green —
 and what is (and is not) fixed here. It is a companion to
 `devdoc/merge-target-doc-gate.md` and `devdoc/doccheck-anchor-number-master-drift-escape.md`,

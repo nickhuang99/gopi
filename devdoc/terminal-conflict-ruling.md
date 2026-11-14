@@ -8,7 +8,7 @@ Epic 2026-08-31 · commit 5c68437 (master)
 db-sync 模式下同一任务可能在两节点各自到达终态：
 
 - **HP 本地跑完** → `completed`（有工作成果）
-- **PA 在 peerbox `task cancel` 掉它** → `cancelled`（意图放弃）
+- **PA 在 peer1 `task cancel` 掉它** → `cancelled`（意图放弃）
 
 memsync 前向迁移规则（M4 五机制）未定义终态间冲突：
 
@@ -64,7 +64,7 @@ memsync 前向迁移规则（M4 五机制）未定义终态间冲突：
   3. 分叉：A walk 到 completed；B `task update --status cancelled`
   4. A export completed sync-back → B import：
      **`queued=0 duped=0 already=0 migrated=1 tagged=0 refused=0`**
-  5. B 行终态：`status: completed`，`tags: from-peerbox,e2e-ruling,cancel-was-intent`
+  5. B 行终态：`status: completed`，`tags: from-peer1,e2e-ruling,cancel-was-intent`
   6. 重跑同 patch：`already=1`（幂等收敛）
 
 ## 意图审计入口

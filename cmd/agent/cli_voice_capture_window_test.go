@@ -16,7 +16,7 @@ import (
 // `time.Duration(voiceCaptureCloseGraceSec) * time.Second` expressed 5e8 seconds
 // instead of 500 ms. The wait could therefore never elapse, so every round ran to
 // the caller's context deadline: seconds+voiceCaptureGraceSec of wall time for
-// `seconds` of audio (measured on peerbox, 2026-10-08: `--seconds 6` → 16.03 s,
+// `seconds` of audio (measured on peer1, 2026-10-08: `--seconds 6` → 16.03 s,
 // `--seconds 2` → 12.03 s, `--seconds 3` → 13.03 s — task 01a11829).
 //
 // THE REPRO IS THE CLOCK, not the constant's value: a recorder that streams the

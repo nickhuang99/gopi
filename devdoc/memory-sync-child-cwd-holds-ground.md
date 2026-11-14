@@ -24,12 +24,12 @@ A gopi run's own `gopi memory sync` child inherited the run's working directory
 ```
 $ gopi task status 01a161f3-67e5-7889-adec-8f8b01509299-r1
 status:      in_progress
-ground_now:  IN USE by live process pid 3333196 (gopi) argv="…/bin/gopi memory sync --peer peerbox --push …" ppid=3294965 — cwd /home/user/workspace/01a161f3-…-r1
+ground_now:  IN USE by live process pid 3333196 (gopi) argv="…/bin/gopi memory sync --peer peer1 --push …" ppid=3294965 — cwd /home/user/workspace/01a161f3-…-r1
 ground_why:  worktree in use by live process pid 3333196 … cwd /home/user/workspace/01a161f3-…-r1
 ```
 
-Measured 2026-10-22T15:09:48+08:00 on hosta: the launcher was worker pid
-3294965 (`gopi`), the child pid 3333196 (`gopi memory sync --peer peerbox --push`),
+Measured 2026-10-22T15:09:48+08:00 on host-b: the launcher was worker pid
+3294965 (`gopi`), the child pid 3333196 (`gopi memory sync --peer peer1 --push`),
 and **three** processes stood in that ground (worker, sync child, and the sync
 child's own `ssh` leg). The clone channel had already deleted the workspace
 (`devworkspace.Reclaim` checks no holders at all), so the two arms gave opposite

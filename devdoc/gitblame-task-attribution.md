@@ -30,7 +30,7 @@ summary / status。join key 是现成的：bash 工具的提交缝
 
 ```
 0cfa412cd  → task 01a19602-b631-…  → status in_progress + 真实 summary
-11d5513d   → task 01a195bb-4287-…  → host hosta
+11d5513d   → task 01a195bb-4287-…  → host host-b
 964b2404b  → （空，天然没有 trailer —— 仓库的 initial commit）
 ```
 
@@ -123,7 +123,7 @@ git_blame(internal/tools/clone_ground_branch_create_guard_test.go, 1, 6)
 → commit 11d5513d
   task_id:      01a195bb-4287-7ad5-a764-b6df563895dc
   task_status:  completed
-  task_host:    hosta
+  task_host:    host-b
   task_summary: run 01a1957a 在自己的 clone 之外还进入了共享主目录 /home/user/work/gopi
                 并建 task/<id> 分支写入半成品，导致所有人 pull 被挡、make build 报
                 undefined: scratchGCConsentGiven（/usr/local/bin/gopi 停在旧版）

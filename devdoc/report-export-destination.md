@@ -4,7 +4,7 @@
 <!-- WORKER-OWNERSHIP: OPERATOR-ONLY — devdoc/worker-ownership.md -->
 
 > Bug row: task `01a18310-f082-702e-8d06-7d40bf6444da` (epic `report-export-destination`).
-> Measured 2026-10-28/29 on `hosta`.
+> Measured 2026-10-28/29 on `host-b`.
 
 ## The contract, and the hole in it
 

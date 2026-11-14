@@ -3,7 +3,7 @@
 # experiment-audio-group.sh — the CONTROLLED single-variable proof behind
 # devdoc/voice-mic-probe-privileged.md §3.
 #
-# Claim under test: on peerbox, `arecord -l` / capture fails for uid 1000 because
+# Claim under test: on peer1, `arecord -l` / capture fails for uid 1000 because
 # uid 1000 is NOT in group `audio` (and /dev/snd is mode 660 root:audio with an
 # ACL for lightdm only) — NOT because the hardware is missing. ALSA renders that
 # refusal as "no soundcards found", which is what the epic misread.

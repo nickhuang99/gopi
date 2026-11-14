@@ -145,7 +145,7 @@ func ledgerReadOnlyDSN(path string, timeoutMS int) string {
 //     (internal/tools/memory_ladder.go) abandons its walk, because a lock is a
 //     fact about the LEDGER and not evidence about the subset it was counting.
 //
-// MEASURED reason the second one matters (peerbox 2026-10-07): with the walk
+// MEASURED reason the second one matters (peer1 2026-10-07): with the walk
 // treating every probe error as "zero matches", a lock made the ladder ask up
 // to memsearchMaxCombos (1023) more times at a 250ms busy timeout each, so the
 // prefetch reported `prefetch gave up after 1500ms (query): context deadline
@@ -266,7 +266,7 @@ func LedgerRollbackJournalMode() string {
 // asked for after the fact — `PRAGMA journal_mode = DELETE` on a holder handle —
 // but that flip needs EXCLUSIVE access to the file, and it is refused with
 // SQLITE_BUSY while ANY other connection to that file is open, even an idle,
-// pooled one that is doing nothing. Measured (peerbox, 2026-10-15, task
+// pooled one that is doing nothing. Measured (peer1, 2026-10-15, task
 // 01a13db4-b931-7230-9da3-83566f5b06dc), on the exact rig sequence another
 // process's connection pool leaves behind:
 //

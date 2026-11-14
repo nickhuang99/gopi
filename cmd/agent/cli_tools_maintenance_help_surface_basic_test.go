@@ -886,22 +886,22 @@ func g6Head(out string) string {
 // coverage claim a fiction.
 var g6BlockedForms = map[string]string{
 	// the tools-from-the-shell family: the device/network half
-	"gopi tool shot --self && gopi tool vision_analyze <out.png>":                     "a chained shell example, not a form of one verb; needs a Chromium render (see the --self row)",
-	"gopi tool shot --url https://example.com":                                        "needs outbound network + a real Chromium render",
-	"gopi tool shot --url http://x --wait-selector \"#chat-log\"":                     "needs a live page carrying the selector",
-	"gopi tool shot --self --viewport 1440x900 --out web.png":                         "needs the web UI served AND a Chromium render",
-	"gopi tool voice_input --server --listen :7788":                                   "opens a listener and downloads the speech model",
-	"gopi tool voice_input --server --stdio":                                          "needs the speech engine model on disk",
-	"gopi tool voice_input --server --stdio < clip.pcm":                               "needs the speech engine model on disk",
-	"gopi tool voice_input <audio-file> [--chunk N]":                                  "transcribes only with the speech model available",
-	"gopi tool voice_input talk.wav":                                                  "transcribes only with the speech model available",
-	"gopi tool voice_input long-interview.wav --chunk 15":                             "transcribes only with the speech model available",
-	"gopi tool voice_input --client [--device ID] [--seconds N]":                      "needs a real capture device (pulse/alsa)",
-	"gopi tool voice_input --client --seconds 8":                                      "needs a real capture device (pulse/alsa)",
-	"gopi tool voice_input --client --seconds 8 --out nick.wav":                       "needs a real capture device (pulse/alsa)",
-	"gopi tool voice_input --client --seconds N --stdio":                              "needs a real capture device (pulse/alsa)",
-	"gopi tool voice_input --client --seconds 5 --stdio":                              "needs a real capture device (pulse/alsa)",
-	"gopi tool voice_input --client --server-url http://10.0.0.6:7788 --seconds 8": "needs a peer voice server on the LAN",
+	"gopi tool shot --self && gopi tool vision_analyze <out.png>":                   "a chained shell example, not a form of one verb; needs a Chromium render (see the --self row)",
+	"gopi tool shot --url https://example.com":                                      "needs outbound network + a real Chromium render",
+	"gopi tool shot --url http://x --wait-selector \"#chat-log\"":                   "needs a live page carrying the selector",
+	"gopi tool shot --self --viewport 1440x900 --out web.png":                       "needs the web UI served AND a Chromium render",
+	"gopi tool voice_input --server --listen :7788":                                 "opens a listener and downloads the speech model",
+	"gopi tool voice_input --server --stdio":                                        "needs the speech engine model on disk",
+	"gopi tool voice_input --server --stdio < clip.pcm":                             "needs the speech engine model on disk",
+	"gopi tool voice_input <audio-file> [--chunk N]":                                "transcribes only with the speech model available",
+	"gopi tool voice_input talk.wav":                                                "transcribes only with the speech model available",
+	"gopi tool voice_input long-interview.wav --chunk 15":                           "transcribes only with the speech model available",
+	"gopi tool voice_input --client [--device ID] [--seconds N]":                    "needs a real capture device (pulse/alsa)",
+	"gopi tool voice_input --client --seconds 8":                                    "needs a real capture device (pulse/alsa)",
+	"gopi tool voice_input --client --seconds 8 --out nick.wav":                     "needs a real capture device (pulse/alsa)",
+	"gopi tool voice_input --client --seconds N --stdio":                            "needs a real capture device (pulse/alsa)",
+	"gopi tool voice_input --client --seconds 5 --stdio":                            "needs a real capture device (pulse/alsa)",
+	"gopi tool voice_input --client --server-url http://192.0.2.6:7788 --seconds 8": "needs a peer voice server on the LAN",
 	// the maintenance verbs: destructive host actions. `merge` HAD seven rows here
 	// and left with its command surface (epic merge-removal, item 2): a blocked
 	// form is "a form the help advertises that this suite will not drive", and

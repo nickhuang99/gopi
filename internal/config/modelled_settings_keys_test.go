@@ -9,7 +9,7 @@ package config
 // verb called two LIVE knobs IGNORED — while the same run's worker banner, three
 // lines earlier in its own log, read both of them:
 //
-//	task <id>: clone channel ON (dev_repo=peerbox:/home/user/work/gopi via settings
+//	task <id>: clone channel ON (dev_repo=peer1:/home/user/work/gopi via settings
 //	              dev_repo; workspace_root=/home/user/workspace via settings workspace_root)
 //
 // TWO ARMS, and they fail differently:

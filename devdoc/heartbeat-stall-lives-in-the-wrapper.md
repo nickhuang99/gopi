@@ -30,7 +30,7 @@ Read-only SQLite (`mode=ro`, `query_only(true)`), row
 
 ```
  status=completed
- claimed_by=hosta:4030207
+ claimed_by=host-b:4030207
  session_id=4a0957a3-bb4e-4337-a761-20606c87d1fd
  created_at=2026-10-27 05:26:11
  last_toolcall_at=2026-10-27 06:15:26

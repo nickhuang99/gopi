@@ -317,8 +317,8 @@ func TestVoiceStartServerHintQuotesTheFailedTarget(t *testing.T) {
 		},
 		{
 			name:   "a LAN peer is told to run the server THERE, not here",
-			url:    "http://10.0.0.6:7788" + voiceTranscribePath,
-			want:   []string{"10.0.0.6", "ON that host"},
+			url:    "http://192.0.2.6:7788" + voiceTranscribePath,
+			want:   []string{"192.0.2.6", "ON that host"},
 			absent: []string{voiceDefaultListen},
 		},
 		{

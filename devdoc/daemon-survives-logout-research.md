@@ -3,7 +3,7 @@
 
 **Status**: research only — **no implementation, no fix landed** (a separate task consumes this finding).
 **Branch**: `research/daemon-survives-logout` · **Worktree**: `~/workspace/gopi-daemon-research`
-**Host**: `peerbox`, Ubuntu 22.04.4, `systemd 249 (249.11-0ubuntu3.16)`, kernel `5.15.0-163-generic`, cgroup v2 unified, uid 1000 (`nick`).
+**Host**: `peer1`, Ubuntu 22.04.4, `systemd 249 (249.11-0ubuntu3.16)`, kernel `5.15.0-163-generic`, cgroup v2 unified, uid 1000 (`nick`).
 **Evidence**: every host claim below is backed by a recorded command + verbatim output. The 14 read-only probe scripts and their full outputs are committed beside this file in `devdoc/daemon-survives-logout-probes/` (`p1…p14`). Citations are upstream man pages / specifications; secondary sources are marked.
 
 ---

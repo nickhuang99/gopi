@@ -218,7 +218,7 @@ stack trace:
 | Device held by the sound server | the recorder's own error **plus** `(the device is held by another process … pick a pulse: device from --list-devices)` |
 | Device reachable but silent (muted) | `produced no audio from <id> (1.9s) — the device is reachable but silent: check the capture level is not muted` |
 | Transcriber not running | `cannot reach transcriber at <url> … (start it with \`gopi voice_input --server --listen :7788\`)` |
-| URL with no scheme | `server URL must start with http:// or https://, got "10.0.0.6:7788"` |
+| URL with no scheme | `server URL must start with http:// or https://, got "192.0.2.6:7788"` |
 | Body is not JSON (an HTML proxy error) | `transcriber at <url> returned no JSON (HTTP 502): <first 200 chars>` |
 
 The "reachable but silent" and "held by another process" cases are separated on
@@ -253,7 +253,7 @@ rejected with an explanation: one process is one side of the hop.
 ## 5. Test rig, and how this was verified
 
 **The fleet constraint (measured 2026-09-13, recorded in memory #2187):** the
-peerbox (this development host) has **no capture device at all** —
+peer1 (this development host) has **no capture device at all** —
 `arecord -l` reports only HDMI playback PCMs, PulseAudio refuses connections.
 The HP laptop is the only capture-capable node (`card 1: Generic_1 … ALC236
 Analog`, PulseAudio up). So:

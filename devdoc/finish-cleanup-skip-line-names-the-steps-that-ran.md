@@ -10,7 +10,7 @@ and the console's close-out signal.
 The one line an operator reads at the close-out printed a SKIP reason as if it were
 the state of the WHOLE chain. A skip reason is ONE step's state — the removal's — so
 a run that had just handed the branch over reported itself as a skip. Verbatim, three
-times on hosta (2026-10-12), from the binary rebuilt out of this task's worktree:
+times on host-b (2026-10-12), from the binary rebuilt out of this task's worktree:
 
 ```
 01a12e98-c1cd-7042-a64a-a6726187ce16 skipped: removal skipped (delivery already attempted):
@@ -21,12 +21,12 @@ the recorded worktree directory is not there — nothing to remove
 and, in the same second, the two facts that contradict it:
 
 ```
-$ git ls-remote peerbox:~/work/GoPi refs/heads/task/01a12e98c1cd7042a64aa6726187ce16
+$ git ls-remote peer1:~/work/GoPi refs/heads/task/01a12e98c1cd7042a64aa6726187ce16
 b2f6a4b64826cf4f71ad7d33c5279dd3148bd36f	refs/heads/task/01a12e98c1cd7042a64aa6726187ce16
 $ git rev-parse --verify --quiet refs/heads/task/01a12e98c1cd7042a64aa6726187ce16
 (nothing — exit 1)
 $ cat artifacts/audit-5.log
-… "arm":"finish-cleanup-branch" … "delivery_point":"peerbox:~/work/GoPi" …
+… "arm":"finish-cleanup-branch" … "delivery_point":"peer1:~/work/GoPi" …
 … "arm":"finish-cleanup-branch-force" … "evidence":"git refused -d and this chain's own push landed the ref (force-delete standing)"
 ```
 

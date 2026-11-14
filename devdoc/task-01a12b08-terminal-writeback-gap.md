@@ -1,16 +1,16 @@
 <!-- doc-class: normative -->
 # Task Report: 终结写回缺口 — 2026-09-11 两条 in_progress 停滞 auto 行的根因定位
 
-**任务**: `01a12b08-ba43-7d57-8f22-3b97bb9b392e`（分支 `task/01a12b08ba437d578f223b97bb9b392e`，hosta/client 侧取证）
+**任务**: `01a12b08-ba43-7d57-8f22-3b97bb9b392e`（分支 `task/01a12b08ba437d578f223b97bb9b392e`，host-b/client 侧取证）
 **对象**: `01a08e9b-4573-7026-a6fc-d08e59f0553e`、`01a08e7f-ccaa-7e1c-a2e0-d35ada3c18fd`
-**取证主机**: peerbox（两行 `claimed_by=peerbox:*`，账本与 session 落盘均在 peerbox）
+**取证主机**: peer1（两行 `claimed_by=peer1:*`，账本与 session 落盘均在 peer1）
 **标注约定**: 每条结论标注 **[实测]**（有可复算命令与原始输出）或 **[推断]**（由实测外推，未直接观测）。
 
 ---
 
 ## 0. 结论摘要（先行）
 
-1. **[实测] 判别差异存在，且可从数据侧复算**：在 2026-09-11（本机时区）`source=auto` 且 `claimed_by=peerbox:*` 的 38 行中，有 session 记录目录的 32 行里，
+1. **[实测] 判别差异存在，且可从数据侧复算**：在 2026-09-11（本机时区）`source=auto` 且 `claimed_by=peer1:*` 的 38 行中，有 session 记录目录的 32 行里，
    **带 `session_end` 记录的 29 行全部写入终结态（29/29）；不带 `session_end` 的 3 行全部未写终结（0/3）。**
    两条反例正落在这 3 行的「未终结」一侧。判据只依赖两份数据：`tasks` 表 + `sessions/<session_id>/session.jsonl`。
 
@@ -43,32 +43,32 @@
 断言： has_end ⟺ ended   （在 status != 'cancelled' 的样本上逐行成立）
 ```
 
-实测输出（`artifacts/discriminator-20260911.tsv`，peerbox 上 `python3 artifacts/verify-remote.py`）：
+实测输出（`artifacts/discriminator-20260911.tsv`，peer1 上 `python3 artifacts/verify-remote.py`）：
 
 ```
 local-day auto                 rows=42 with_session=32 with_end=29
    without_end=['01a08c34-52b7', '01a08e7f-ccaa', '01a08e9b-4573']
    of the 29/with_end: terminal=29 ; without_end terminal=0
-local-day auto claimed peerbox   rows=38 with_session=32 with_end=29   ← 与 epic 的「31 条」口径差在 claimed_by 过滤
+local-day auto claimed peer1   rows=38 with_session=32 with_end=29   ← 与 epic 的「31 条」口径差在 claimed_by 过滤
    without_end=['01a08c34-52b7', '01a08e7f-ccaa', '01a08e9b-4573']
    of the 29/with_end: terminal=29 ; without_end terminal=0
 ```
 
 **口径说明 [实测]**：epic 说「31 条 source=auto」。本机日界（UTC+8，2026-09-11 00:00–24:00）实测 **42 行**；
-若再要求 `claimed_by LIKE 'peerbox:%'` 则 **38 行**；若按 UTC 日界则 **38 行**（`created_at ∈ [1789056000, 1789142400)`）。
+若再要求 `claimed_by LIKE 'peer1:%'` 则 **38 行**；若按 UTC 日界则 **38 行**（`created_at ∈ [1789056000, 1789142400)`）。
 三个口径的**未终结集合完全一致**（3 行），其中 2 行是本任务对象，第 3 行 `01a08c34-52b7` 早已被处置。
 口径差**不改变判别式**——判别式是按行计算的，不依赖分母。
 
 ### 1.2 全字段对照表
 
-字段来源：`tasks` 表全列 + `sessions/<sid>/` 目录事实。原始 TSV：`artifacts/field-compare-20260911.tsv`（peerbox 上 `python3 artifacts/field-compare.py`）。
+字段来源：`tasks` 表全列 + `sessions/<sid>/` 目录事实。原始 TSV：`artifacts/field-compare-20260911.tsv`（peer1 上 `python3 artifacts/field-compare.py`）。
 
 | 字段 / 事实 | 反例 `01a08e7f-ccaa` | 反例 `01a08e9b-4573` | 正例（29 行，取值域） | 判别力 |
 |---|---|---|---|---|
 | `status` | `cancelled`（原 `in_progress`） | `cancelled`（原 `in_progress`） | `completed` ×29 | 结果，非原因 |
 | `source` | `auto` | `auto` | `auto` | 无 |
 | `model` | `deepseek-flash` | `deepseek-flash` | `deepseek-flash` | 无 |
-| `claimed_by` | `peerbox:3714484` | `peerbox:3824874` | `peerbox:<pid>` ×29 | 无（同为 peerbox） |
+| `claimed_by` | `peer1:3714484` | `peer1:3824874` | `peer1:<pid>` ×29 | 无（同为 peer1） |
 | `claimed_at → last_toolcall_at` | 3.0 s | 2.0 s | 2.0–108.0 s | 无 |
 | `tasklist_issued_at` | **有**（1789097139） | **NULL** | 有（27/29；2 行 NULL 且仍终结） | **弱**（正例亦有 NULL） |
 | `run_method` | `''`（空） | `''`（空） | `''`×29 | 无（无法用 `run_method` 命中） |
@@ -136,7 +136,7 @@ runEngine 正常返回
 该结论由另一条排查路径独立得出，与本报告的因果箭头一致：**进程被强杀 ⇒ deferred 收尾整体不执行 ⇒ `session_end` 与账本终结写回同时缺失**。
 它同时说明本类**不是** 2026-09-12 那批已修 bug 的残留（那批是 wrapper 行在 `cmd.Wait` 后无 defer/无信号处理；本 2 条没有 wrapper 行，是 child 自身跑完未收尾）。
 
-**[推断] 根因陈述**：peerbox 上一个 **30 分钟周期**的成本探针任务，在末轮 LLM 响应返回前后被外部终止（周期条目的终止/清理），
+**[推断] 根因陈述**：peer1 上一个 **30 分钟周期**的成本探针任务，在末轮 LLM 响应返回前后被外部终止（周期条目的终止/清理），
 进程未执行完 `runEngine` 的结束 `defer`，于是 **`session_end` 与账本终结写回双双未发生**，
 行停在 `in_progress`，直到 30 天后被按 stale 人工处置。**不是 stale-sweep re-arm，也不是「认领后 2 秒即死」**——是「跑完了但没活到收尾」。
 
@@ -185,17 +185,17 @@ runEngine 正常返回
    **会话在末轮之后是被什么信号终止的**——本机已无可取得证物（`task_events` 零事件、`logs/` 无当日记录）。
    这是本任务的**取证边界**：结论 3/§2.3 的「进程消失」有直接证据（双缺），**「谁杀的」只有间接推断**。
 3. **`task_events` 对这两行零事件，但 `task_events` 在 2026-09-11 也仅被 5/38 行写到 [实测]** ——「零事件」在当日**不是**异常。
-   两行的 `reframe` 事件实际保存在 **peerbox 的账本**上；peerbox 上不存在 hosta 侧看到的 `01a08e9b-d8e9` / `01a08e7f-1ce6` 两组已完成行。
-   → **[推断]** 2026-09-11 起节点间行集合已分叉，**hosta 的 `memory.db` 不能作为该日 auto 行的唯一判据来源**；本报告全部账本数字取自 **peerbox**。
+   两行的 `reframe` 事件实际保存在 **peer1 的账本**上；peer1 上不存在 host-b 侧看到的 `01a08e9b-d8e9` / `01a08e7f-1ce6` 两组已完成行。
+   → **[推断]** 2026-09-11 起节点间行集合已分叉，**host-b 的 `memory.db` 不能作为该日 auto 行的唯一判据来源**；本报告全部账本数字取自 **peer1**。
 4. **epic 的「session 已 prune」前提需修正 [实测]**：两条反例的 session 目录**存在且含完整 `session.jsonl`**（25,737 B / 28,102 B）。
    被 "prune" 的是**独立 raw log**（metadata 指名的 `e009567c…` / `90c0d9e9…` 目录为空）。这一区分是定位能否成立的关键。
 
 ---
 
-## 5. 后续（按本机策略 1，系统层修复去 peerbox 提）
+## 5. 后续（按本机策略 1，系统层修复去 peer1 提）
 
-去 peerbox 提交（本任务只做定位）：
-1. **`run_method` 空列**：自动注册钩子写下 `auto` 却在 peerbox 账本读到 `''`——定位写入/同步丢列点（本报告 §4.1 的边界）。
+去 peer1 提交（本任务只做定位）：
+1. **`run_method` 空列**：自动注册钩子写下 `auto` 却在 peer1 账本读到 `''`——定位写入/同步丢列点（本报告 §4.1 的边界）。
 2. **`autoRunLitterIsLitter` 的 `runDirExists` 早退**：把「run 目录存在但无结局」的 auto 行交回 finish-cleanup / 僵尸链，
    而不是直接 `return false` 无限留存；随附本分支的回归测试 `taskzombie_extinct_20260911_test.go`。
 
@@ -205,12 +205,12 @@ runEngine 正常返回
 
 - **Build**: `CGO_ENABLED=0 go build -o /tmp/gopi-01a12b08 ./cmd/agent/` → `BUILD OK`
 - **Tests**: `go test ./internal/tools/ -run 'TestAutoRunLitter' -count=1` → `ok  github.com/nick/gopi/internal/tools  0.384s`
-- **Ran**（判别式，在 peerbox 上，真实账本只读）:
+- **Ran**（判别式，在 peer1 上，真实账本只读）:
   `python3 /tmp/verify-01a12b08.py` → 见 `artifacts/discriminator-20260911.tsv`
   `python3 /tmp/fc-01a12b08.py` → 见 `artifacts/field-compare-20260911.tsv`
-  `ssh peerbox 'cd /home/user/.gopi/sessions && cat 786aa314-…/session.jsonl | tail'`（末轮 DONE 与 `session_end` 缺失的直接观测）
+  `ssh peer1 'cd /home/user/.gopi/sessions && cat 786aa314-…/session.jsonl | tail'`（末轮 DONE 与 `session_end` 缺失的直接观测）
 - **Result**:
-  - 38 行（2026-09-11 本机日界、`source=auto`、`claimed_by=peerbox:*`）中 32 行有 session 目录；
+  - 38 行（2026-09-11 本机日界、`source=auto`、`claimed_by=peer1:*`）中 32 行有 session 目录；
     **有 `session_end` 的 29 行 29/29 写了终结态；无 `session_end` 的 3 行 0/3 写了终结态**。
   - 两反例的 session JSONL 有**完整末轮终结文本**且**无 `session_end`**；`task_row_closed` 见证亦缺失。
   - run 目录 `sessions/<task_id>`、交付 worktree 三者**均不存在**（29 正例亦然）。
@@ -223,7 +223,7 @@ runEngine 正常返回
 - 判别式命令与输出：`python3 /tmp/verify-01a12b08.py` →
   `rows=38 with_session=32 with_end=29 without_end=['01a08c34-52b7','01a08e7f-ccaa','01a08e9b-4573']  of the 29/with_end: terminal=29 ; without_end terminal=0`
 - 字段对照命令与输出：`python3 /tmp/fc-01a12b08.py` → 39 行 TSV，两反例行 `session_end?=False`、`dir?=True`、`dump?=True`。
-- `session_end` 存在性：`ssh peerbox 'grep -c session_end 80ddf0e8-…/session.jsonl'` → `1`；同命令对 `4758c7b7-…` → `0`。
+- `session_end` 存在性：`ssh peer1 'grep -c session_end 80ddf0e8-…/session.jsonl'` → `1`；同命令对 `4758c7b7-…` → `0`。
 - 末轮终结文本：`786aa314` 末条 assistant 记录时间为 `11:26:03.426`，内容含 `[TASK_LIST_BEGIN]` + `DONE — cost-probe.txt created`。
 - dump 来源：`grep -rn 'process died without session_end' internal/` → 唯一生产命中 `internal/agent/crashdump.go:305`（`BackfillOrphanCrashDumps`）。
 - 处置器谓词：`internal/tools/taskzombie_extinct.go:122`（`runDirExists → return false`）、`:167`（`AutoRunLitterSweep`）、`:182-183`（候选查询）。
@@ -231,6 +231,6 @@ runEngine 正常返回
 
 ## Not Done（如实）
 
-- **未定位 `run_method` 空列的写入点**：需要改 `internal/agent` / 同步层代码，超出本任务「只读取证」的边界；已列 §5 去 peerbox 提。
+- **未定位 `run_method` 空列的写入点**：需要改 `internal/agent` / 同步层代码，超出本任务「只读取证」的边界；已列 §5 去 peer1 提。
 - **未确定终止信号**：本机已无可取得的当日进程/信号证物（§4.2），只给出「进程消失」的直接证据与周期条目的间接推断。
 - **未修改 `autoRunLitterIsLitter` 本身**：只落回归测试，避免在 client 上改系统层行为（Rule 28 / 本机策略 1）。

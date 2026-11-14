@@ -177,7 +177,7 @@ Observed delivery-failure-is-not-fatal and allow-list logging samples:
 ```
 [task-notify] event "stale" for 01a0925d-… not in the events allow-list — not delivered (row is still in_progress; …)
 [task-notify] event "in_progress" for 01a09256-… filtered by pattern "feat*" — not delivered
-[task-notify] zombie sweep 01a0925d-…: KILLED (stalled, heartbeat stop + claimed pid 999999 dead (peerbox) — confirmed zombie)
+[task-notify] zombie sweep 01a0925d-…: KILLED (stalled, heartbeat stop + claimed pid 999999 dead (peer1) — confirmed zombie)
 ```
 
 ## Not Done / honest limits

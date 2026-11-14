@@ -186,11 +186,11 @@ GOPI_ALLOW_AGENT_SPAWN=1 GOPI_HOME=$SB /tmp/gopi-cap worker 01a11e7f-e8dc-7802-a
 ```
 #1 self-record tier=warm conf=0.85 lesson=failure when=2026-10-09 02:31:07
    sources=self-record(auto) tokens=2
-   origin=sess=ec7ab84d-a97c-498e-8e59-74dfb8052327 round=1 host=peerbox
+   origin=sess=ec7ab84d-a97c-498e-8e59-74dfb8052327 round=1 host=peer1
 ```
 
 ⇒ **行 id = 1**；`session_id=ec7ab84d-a97c-498e-8e59-74dfb8052327`、`round_index=1`、
-`source_host=peerbox`，与 epic 要求的 session/round 指针一致。
+`source_host=peer1`，与 epic 要求的 session/round 指针一致。
 
 **第一轮探针的反例同样跑出来了**（同一 sandbox，行前的 note 只有 130 runes）：
 

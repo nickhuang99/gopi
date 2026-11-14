@@ -367,7 +367,7 @@ packages: 1 finished, 1 with a failure
   FAILED: github.com/nick/gopi/cmd/agent
 --- failures (assertion/build; the budget did NOT trip) ---
   --- FAIL: TestEveryHelpConstantFitsTheWrapBudget (0.05s)
-stamp: 2026-09-19T11:16:05+08:00 host=peerbox pkg=./cmd/agent/ budget=25m elapsed=713s exit=1 outcome=fail
+stamp: 2026-09-19T11:16:05+08:00 host=peer1 pkg=./cmd/agent/ budget=25m elapsed=713s exit=1 outcome=fail
 ```
 
 (This run started before `bin/gopi` was built, so it printed the harness NOTE
@@ -408,7 +408,7 @@ naming **`internal/tools`** tests (`TestBidir2ImportSymmetry`,
 while its own stamp read `pkg=./cmd/agent/`:
 
 ```
-stamp: 2026-09-19T11:30:22+08:00 host=peerbox pkg=./cmd/agent/ budget=25m elapsed=900s exit=1 outcome=fail
+stamp: 2026-09-19T11:30:22+08:00 host=peer1 pkg=./cmd/agent/ budget=25m elapsed=900s exit=1 outcome=fail
 ```
 
 **Cause, measured:** `scripts/test-budget.sh` writes every run's stream to ONE

@@ -111,7 +111,7 @@ finished. Nothing is holding a stable 2G.
 | `/home/user/workspace/_tmp` | 18G | the ambient `TMPDIR`; 337 children |
 | `/home/user/workspace/gopi-build-cache` | 12G | the merger build gate's disk-backed cache (memory #3457's relocation) |
 | `/home/user/.hermes` | 6.7G | |
-| `/home/user/.gopi` (whole) | 46G | incl. `peerbox-mirror` 2.1G, `memory.db` 235M |
+| `/home/user/.gopi` (whole) | 46G | incl. `peer1-mirror` 2.1G, `memory.db` 235M |
 | `/home/user/.cache` (whole) | 121G | i.e. **go-build is 98% of the cache tree** |
 | `/home/user/.cache` minus go-build | ~2.6G | `ms-playwright` 677M, `wine` 421M, `tracker` 165M, `bazelisk` 90M, … |
 | `~/.cache/gopi-tools-suite-build-cache-*` | **174 dirs / 93M** | one throwaway cache per test PID — the residue class memory #3457 predicted; each dir 7.8M |
@@ -296,7 +296,7 @@ Three rules of thumb follow, each cheap:
 
 ## 9. Out of scope for this row — filed separately
 
-The system-layer halves belong to **peerbox** (Rule 28), not to this client host.
+The system-layer halves belong to **peer1** (Rule 28), not to this client host.
 Filed as follow-up rows rather than fixed here (Rule 41: the finder does not fix):
 
 | row id | subject |

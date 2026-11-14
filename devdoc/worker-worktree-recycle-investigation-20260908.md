@@ -6,7 +6,7 @@ lane — diagnostic + regression confirmation)
 
 ## Symptom (nick's finding)
 
-Two worker-run tasks delivered on peerbox and left their worktrees behind:
+Two worker-run tasks delivered on peer1 and left their worktrees behind:
 
 ```
 + feat/cli-param-review      /home/user/workspace/gopi-cli-param-review
@@ -61,7 +61,7 @@ Confirmed **already shared** — one funnel, no fork:
 
 Mode split inside the shared chain: client (declared sync peer) pushes →
 worktree remove → branch -d; server/single-node removes the clean linked
-worktree on the branch and PRESERVES the branch (the merger's input). peerbox
+worktree on the branch and PRESERVES the branch (the merger's input). peer1
 shape = no role field + no sync_peers → server arm fires.
 
 ## Regression coverage: worker recycle E2E already exists and is green

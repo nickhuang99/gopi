@@ -94,7 +94,7 @@ import (
 // It is NOT the task-sync leg's 15s bound (syncSSHTimeout), and copying that
 // value here was the 2026-09-26 defect: the task leg ships a small delta
 // window, while THIS leg ships the WHOLE local knowledge corpus (measured:
-// 5209 rows / 15 MB out of peerbox) and the peer must apply every row through
+// 5209 rows / 15 MB out of peer1) and the peer must apply every row through
 // the MemoryStore path (exact-question probe + trigram similarity + FTS
 // triggers) before it can answer. Measured on the real pair 2026-09-26:
 // `ssh hp gopi memory sync --serve-assets < 15MB` took 47.5s (the measurement is
@@ -128,7 +128,7 @@ const (
 // concurrent writer can actually get in". It is a MEASURED value, not a guess:
 //
 // Per-batch commits alone were measured INSUFFICIENT on the real pair
-// (2026-09-26, peerbox→hp, 51 batches): the gap between one batch's COMMIT and the
+// (2026-09-26, peer1→hp, 51 batches): the gap between one batch's COMMIT and the
 // next batch's BEGIN IMMEDIATE is microseconds, so the peer's ledger is locked
 // with ~100% duty and a concurrent writer still waited the full
 // dbBusyTimeoutMSec and died with SQLITE_BUSY — the probe on hp reported 2 BUSY
@@ -364,7 +364,7 @@ func MemoryAssetsPeerSession(peer string, cliPeers []string, dbPath string) (*Me
 //	    a nominal --pull wrote our rows to the peer (hp grew by our marker),
 //	    which is not what the flag promises.
 //
-// The modes are SYMMETRIC: HP runs the same verb toward peerbox. Every mode
+// The modes are SYMMETRIC: HP runs the same verb toward peer1. Every mode
 // keeps the unique-only contract — identity is the exact question, an
 // existing row is never touched, and re-running imports ~0.
 func MemoryAssetsPeerSessionMode(peer string, cliPeers []string, dbPath, mode string) (*MemoryAssetSyncStats, error) {
@@ -395,7 +395,7 @@ func MemoryAssetsPeerSessionMode(peer string, cliPeers []string, dbPath, mode st
 		// --pull: send an EMPTY patch, not merely an ignored one. The peer
 		// imports whatever stdin carries — it has no "do not import stdin"
 		// mode to set — so the only way to make a pull genuinely one-way is
-		// to give it nothing to import. Measured without this (peerbox --pull
+		// to give it nothing to import. Measured without this (peer1 --pull
 		// → hp): hp grew 5734 → 5735 with OUR rows, i.e. a "--pull" had
 		// written to the peer. Sending zero rows keeps the peer's ledger
 		// untouched by us; its reply (its own export) is still what we apply.

@@ -329,7 +329,7 @@ assertion.  ... panic: test timed out after 25m0s
 separate assertion failures in the same run (NOT the timeout):
   --- FAIL: TestTaskDeliverableWorktreeBashReadOnlyProbeDoesNotBind (1.83s)
   --- FAIL: TestTaskBashWorkdirCandidates_MalformedTildeIsDroppedNotStatted (0.00s)
-stamp: 2026-09-19T11:34:12+08:00 host=peerbox pkg=./internal/tools budget=25m
+stamp: 2026-09-19T11:34:12+08:00 host=peer1 pkg=./internal/tools budget=25m
 elapsed=1526s load_start=7.91 7.49 6.67 load_end=5.67 6.06 6.44 cores=4 exit=3 outcome=timeout
 make: *** [Makefile:41: test-budget] Error 3
 ```

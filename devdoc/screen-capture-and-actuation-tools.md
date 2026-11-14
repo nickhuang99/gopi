@@ -111,13 +111,13 @@ FAIL github.com/nick/gopi/cmd/agent        591.982s       <- environmental, NOT 
 **About that one FAIL (honest, with the diagnosis).** It is
 `TestServeGitSyncSweepWithPeerAdvancesClock` in
 `cmd/agent/singlenode_serve_test.go`, which points a sync peer at the
-deliberately fake hostname `peerbox-single-node-test-peer`
+deliberately fake hostname `peer1-single-node-test-peer`
 (`t.Setenv(config.SyncPeersEnv, ...)`) and then expects a git fetch not to
 fail:
 
 ```
 [serve] [git-client] push: 1 branch(es) failed: server-master fetch:
-  ssh: Could not resolve hostname peerbox-single-node-test-peer: Temporary failure in name resolution
+  ssh: Could not resolve hostname peer1-single-node-test-peer: Temporary failure in name resolution
 -> worker: run t-singlenode-claim failed ... task t-singlenode-claim FAILED
 ```
 

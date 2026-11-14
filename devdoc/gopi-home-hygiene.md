@@ -4,7 +4,7 @@
 **Task**: `01a091de-9c61-7bd6-8606-454ee0797069` — *"gopi worker create logs not
 within designate path"* (2026-09-12)
 **Branch**: `fix/gopi-home-hygiene` (worktree `~/workspace/gopi-ghome-hygiene`)
-**Status**: fixed, verified on the real host (peerbox) + the HP peer, test green.
+**Status**: fixed, verified on the real host (peer1) + the HP peer, test green.
 
 ---
 
@@ -47,7 +47,7 @@ The same defect existed on the **HP peer**, three more producers:
 
 | script | old path |
 |---|---|
-| `~/.gopi/glm-night-watch.sh` (peerbox, ssh-launches HP workers) | `> ~/.gopi/worker-night-$i.log` |
+| `~/.gopi/glm-night-watch.sh` (peer1, ssh-launches HP workers) | `> ~/.gopi/worker-night-$i.log` |
 | `~/bin/hp-worker-nightsafe.sh` (HP cron) | `LOG=/home/user/.gopi/worker-night-cron.log` |
 | `~/bin/hp-worker-autostart.sh` (HP cron, `*/10`) | `LOG=/home/user/.gopi/worker-autostart.log` |
   **[RETIRED 2026-09-26 — the schedule is gone and the script now REFUSES an automatic caller:** operator ruling 「这个 cronjob 必须终止，我们不能依赖这种系统来做，它掩盖了问题。」— the cron net MASKED a worker-death loop (1,214 delegations); `scripts/hp/hp-worker-autostart.sh` + `hp-worker-nightsafe.sh` refuse any scheduler context. **Do not re-install it: no replacement auto-launcher, no escape hatch.** See devdoc/hp-worker-autostart-retired-20260926.md.]**
@@ -77,7 +77,7 @@ That is the whole mechanism: a convention with no consumer and no clock.
   `install-scratch-gc-watchdog.sh` precedent: what runs must outlive a
   worktree). Installed on this host; `~/bin/gopi-worker-up.sh` is now a symlink
   to the stable copy, so the *next* worker launch is already fixed.
-* The four HP/peerbox producers above were sed-fixed **with a `.bak-ghome-hygiene`
+* The four HP/peer1 producers above were sed-fixed **with a `.bak-ghome-hygiene`
   copy each**, all `bash -n`-clean, and their intent is unaffected — only the
   path changes (`mkdir -p ~/.gopi/logs` added to the ssh line so the directory
   exists on a fresh HP home).
@@ -116,7 +116,7 @@ Four classes, each provably safe, **never** the live DB:
   byte-identical while relocating, pruning and deleting exactly the planned
   classes.
 
-## 4. Verified on the real host (peerbox)
+## 4. Verified on the real host (peer1)
 
 ```
 before: 19 .db* files / 647 MB of *.db* under ~/.gopi
@@ -142,7 +142,7 @@ after:  0 at the root; all 11 under ~/.gopi/logs/ (10 + worker.log)
 
 ## 5. "Backups should be cleaned up regularly" → a clock, not a habit
 
-`scripts/gopi-home-gc.sh --install` (run on peerbox):
+`scripts/gopi-home-gc.sh --install` (run on peer1):
 
 * installs the stable copy `~/.local/bin/gopi-home-gc.sh`;
 * schedules `--apply` **weekly**: `systemd --user` service+timer where the user
@@ -156,7 +156,7 @@ Cron is the observed mechanism on this host (the existing scratch watchdog is
 also a cron line), so the installer mirrors `install-scratch-gc-watchdog.sh`'s
 systemd-preference / cron-fallback shape and its idempotent marker line.
 
-Both hosts now carry the clock (round 2): peerbox = that cron line, the HP peer =
+Both hosts now carry the clock (round 2): peer1 = that cron line, the HP peer =
 `systemd --user` `gopi-home-gc.timer` (its bus exists), enabled and observed to
 have fired. Re-running `--install` is safe and idempotent on both paths.
 
@@ -222,7 +222,7 @@ no `-p` flag (`cp` does) — passing it aborts the script mid-plan under `set -e
 Second-round measured state (both hosts, after `--apply`):
 
 ```
-peerbox: root *.log 0, root *.db* 1 (the live DB), backup stub pruned;
+peer1: root *.log 0, root *.db* 1 (the live DB), backup stub pruned;
        live memory.db sha256 e31543e7… / 83382272 bytes, size+mtime UNCHANGED
 HP:    root *.log 0, root *.db* 1 (the live DB), 10 relocations, 3 pruned;
        reclaimed 142056 KiB (138.7 MiB), live memory.db sha256 dacf1080… unchanged
@@ -251,7 +251,7 @@ the repo blob was still the pre-round-2 `91d6185b…`; that was stale prose, and
 the hash-comparison above replaced it — the same "don't trust the note, re-measure"
 rule this whole document is about.)
 
-| probe | peerbox | HP peer |
+| probe | peer1 | HP peer |
 |---|---|---|
 | `~/.gopi/*.log` at root | 0 | 0 |
 | `~/.gopi/*.db*` at root | 1 (the live `memory.db`) | 1 (the live `memory.db`) |
@@ -268,7 +268,7 @@ week-1 work is done and only the clock is left running. Verified without
 
 * **The retention rule is an AND** — a backup is pruned only when it is both
   beyond `--keep N` *and* older than `--age`. So a burst of *distinct* ≥48 MB
-  snapshots inside the 14-day window is still held (peerbox currently holds 501 MB
+  snapshots inside the 14-day window is still held (peer1 currently holds 501 MB
   of exactly that shape). The weekly sweep will shed it as it ages; the content
   dedupe (§8.3) handles the identical-generation case immediately. Widening this
   to a pure size budget would need a `--max-bytes` rule and a real profile to
@@ -318,9 +318,9 @@ script's own report and a full `sha256sum` sweep) agree.
 **Live DB is safe under a REAL --apply, not just a dry run.** Both hosts were
 run with the installed copy's `--apply`:
 `applied — relocated=0 pruned=0 reclaimed=0 KiB`, then a second `--apply` also
-0 KiB (idempotent), with `live db intact: 83382272` (peerbox) / `43290624` (HP).
+0 KiB (idempotent), with `live db intact: 83382272` (peer1) / `43290624` (HP).
 HP's idle DB was **byte-identical** before and after
-(`sha256 dacf1080…`, size and mtime unchanged). Peerbox's DB hash *does* drift
+(`sha256 dacf1080…`, size and mtime unchanged). Peer1's DB hash *does* drift
 between probes — 3 samples 3 seconds apart gave 3 different digests at a fixed
 size and mtime — because the agent's OWN session writes that DB continuously;
 that is the live writer, not the sweep (the sweep only ever `rm -f`/`mv` files
@@ -330,31 +330,31 @@ it classified as snapshots, and refuses any path whose realpath is the live DB).
 observed to have fired** (status `inactive (dead) since … 03:30:47`,
 `ExecStart … --apply (code=exited, status=0/SUCCESS)`, `TriggeredBy:
 gopi-home-gc.timer`, next elapse 2026-09-19) — a real firing, not an
-`is-enabled` claim. Peerbox: cron is the mechanism (no user bus there), the
+`is-enabled` claim. Peer1: cron is the mechanism (no user bus there), the
 daemon is **running** (`/usr/sbin/cron -f -P`, `systemctl is-active cron` →
 `active`), the entry is present exactly once
 (`17 4 * * 0 /home/user/.local/bin/gopi-home-gc.sh --apply`), and the crontab
 file was verified to have been rewritten by the install. **Honest limit:**
-peerbox's slot is Sunday 04:17 and has not been reached since install, so unlike
+peer1's slot is Sunday 04:17 and has not been reached since install, so unlike
 HP it has not been *observed* to fire — its liveness rests on an active daemon
 plus a well-formed entry, which is the strongest evidence available before the
 slot arrives. Not claimed as "fired".
 
 **Installed == repo, byte for byte, on both hosts.**
 `sha256 94e82381f592d8489e1d210d3eeea9f66846b3f0f8d3c2f3478a07295997c7ab`
-for `/home/user/.local/bin/gopi-home-gc.sh` (peerbox + HP) and for the worktree
+for `/home/user/.local/bin/gopi-home-gc.sh` (peer1 + HP) and for the worktree
 `scripts/gopi-home-gc.sh`; the committed blob (`1b621b72:scripts/gopi-home-gc.sh`
 = `6ed6ad96…`) equals `git hash-object` of the worktree file. The launcher is likewise identical on both sides
 (`b2cd1ef0…`). So the thing on the clock is the thing on the branch.
 
-**Producers re-pointed, on the host that matters for each.** peerbox:
+**Producers re-pointed, on the host that matters for each.** peer1:
 `/home/user/.gopi/glm-night-watch.sh`, `/home/user/.gopi/night-progress.sh` (+ their
 `.bak-ghome-hygiene` copies). HP: `/home/user/bin/hp-worker-autostart.sh`
 → `LOG=/home/user/.gopi/logs/worker-autostart.log`, `/home/user/bin/hp-worker-nightsafe.sh`
 → `…/logs/worker-night-cron.log`, `/home/user/.gopi/hp-night-legacy-audit.sh` — and the
 write path is *observed*, not inferred: HP's `/home/user/.gopi/logs/worker-autostart.log`
 has mtime 03:41 (after the 03:17 re-point) while HP's root `*.log` count is 0;
-peerbox's `/home/user/.gopi/logs/` likewise holds today's
+peer1's `/home/user/.gopi/logs/` likewise holds today's
 `worker-20260912-03301{6,7,8}-{1,2,3}.log` with a root count of 0.
 
 **Test gate at branch head.** `go test ./internal/testutil -run

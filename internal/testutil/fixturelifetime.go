@@ -3,7 +3,7 @@ package testutil
 // fixturelifetime.go — THE ONE definition of "a fixture child is bound to the
 // test binary's lifetime".
 //
-// THE DEFECT (measured on peerbox 2026-09-26). The daemon lifetime binding
+// THE DEFECT (measured on peer1 2026-09-26). The daemon lifetime binding
 // (internal/daemonlifetime) was built for `gopi <verb> --daemon` processes: the
 // test suite arms ONE pipe, every daemon a launcher fork/execs inherits the read
 // end, and the kernel closes the pipe when the test binary dies — so the daemon

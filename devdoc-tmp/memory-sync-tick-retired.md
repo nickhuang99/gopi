@@ -134,8 +134,8 @@ bases. A host whose `memory_store`s are quiet **diverges** from its peers until 
 human syncs it:
 
 ```bash
-gopi memory sync --peer peerbox --push     # one shot, seconds on a converged pair
-gopi memory sync --peer peerbox --push --every 5m   # the same, on a loop an operator watches
+gopi memory sync --peer peer1 --push     # one shot, seconds on a converged pair
+gopi memory sync --peer peer1 --push --every 5m   # the same, on a loop an operator watches
 ```
 
 The remaining automatic leg is per-store: a `memory_store` carries *that one

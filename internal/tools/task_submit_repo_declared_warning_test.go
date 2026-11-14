@@ -87,7 +87,7 @@ func TestRepoUndeclaredWarningFiresForARepoOutsideTheTable(t *testing.T) {
 	const repo = "/home/user/work/GoPi"
 	const declaredRepo = "/home/user/work/gopi"
 	repoDeclaredSettings(t, declaredRepo)
-	t.Setenv(config.DevRepoEnvName, "peerbox:"+declaredRepo) // the clone channel is ON
+	t.Setenv(config.DevRepoEnvName, "peer1:"+declaredRepo) // the clone channel is ON
 
 	got := TaskSubmitRepoUndeclaredWarning(repo)
 	if got == "" {
@@ -105,7 +105,7 @@ func TestRepoUndeclaredWarningFiresForARepoOutsideTheTable(t *testing.T) {
 func TestRepoUndeclaredWarningSilentWhenDeclared(t *testing.T) {
 	const repo = "/home/user/work/gopi"
 	repoDeclaredSettings(t, repo)
-	for _, devRepo := range []string{"", "peerbox:" + repo} {
+	for _, devRepo := range []string{"", "peer1:" + repo} {
 		t.Setenv(config.DevRepoEnvName, devRepo)
 		if got := TaskSubmitRepoUndeclaredWarning(repo); got != "" {
 			t.Errorf("dev_repo=%q: declared repo %q still warned:\n%s", devRepo, repo, got)

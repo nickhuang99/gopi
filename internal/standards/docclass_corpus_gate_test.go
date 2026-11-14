@@ -48,14 +48,25 @@ import (
 const (
 	// docCorpusScanFloor is the non-vacuity floor of the REAL-TREE run: the
 	// minimum number of prose files the walk must JUDGE before its green counts
-	// as evidence (measured 2026-10-22 on this rev: 2368 markdown files under
-	// devdoc/, 0 exceptions). It is an absolute count and not a ratio because
-	// there is no second quantity to compare against — the scan's own report is
-	// the only number there is. The floor is slack deliberately (≈15% below the
-	// measured corpus) so that archiving documents does not need a change here,
-	// while a walk that reads a wrong root, an empty directory or a filtered
-	// listing is caught by name.
-	docCorpusScanFloor = 2000
+	// as evidence (measured on THIS rev: 895 markdown files under devdoc/, 0
+	// exceptions). It is an absolute count and not a ratio because there is no
+	// second quantity to compare against — the scan's own report is the only
+	// number there is. The floor is slack deliberately (≈20% below the measured
+	// corpus) so that archiving documents does not need a change here, while a
+	// walk that reads a wrong root, an empty directory or a filtered listing is
+	// caught by name.
+	//
+	// THE FLOOR MOVED DOWN WITH THE CORPUS, and that is the point of it being a
+	// floor rather than a target: the public export carries only the documents
+	// that still make a standing claim (doc-class normative + roadmap) plus the
+	// handful of historical records a code literal or a root document links to,
+	// so the judged corpus fell from 2368 to 895 in ONE deliberate cut. A floor
+	// left at the old value would not have measured anything — it would have
+	// refused the corpus that exists, which is the opposite failure from the one
+	// it was written to catch (a green that covered nothing). The floor still
+	// sits far above zero and far above any single directory, so a broken walk
+	// root, an empty devdoc/ or a filtered listing is still caught by name.
+	docCorpusScanFloor = 700
 
 	// docCorpusProvenance names who is speaking, so a failure attributed to this
 	// gate is distinguishable from the other standards gates (Rule 1: the

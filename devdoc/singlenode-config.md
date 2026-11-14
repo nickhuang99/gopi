@@ -44,7 +44,7 @@ peers to exchange task rows or git branches with. The runtime is pure local:
 | serve-tick git pass | **no-op** — `serveGitSyncSweep` short-circuits before any role/git/ssh work when `HasSyncPeers()` is false. |
 | serve-tick dispatch | **no-op** — `ResolveComputeNodes` empty → `runDispatchOnce` returns `(false, nil)`, serve runs locally. |
 | task sync / harvest / push | **manual only** — commands stay (one-off `task sync --peer X` for a rare operator); nothing auto-syncs. Peer verbs refuse undeclared names. |
-| adoption / merge-backlog / merged-cleanup | **local branch integration** — peerbox merges its OWN Bond branches; adoption scans only local refs + `refs/remotes/origin`. |
+| adoption / merge-backlog / merged-cleanup | **local branch integration** — peer1 merges its OWN Bond branches; adoption scans only local refs + `refs/remotes/origin`. |
 | memory-assets sync (`gopi memsync`) | **untouched** — file-based, peer-free; a distinct feature that stays. |
 
 ## Two shapes on this machine
@@ -86,7 +86,7 @@ sync available. See `devdoc/bugfix-memory-peer-whitelist-2026-09-02.md`.
 
 `role` is optional (`server` | `client`). When **absent**, gopi's integration
 machinery (adoption, merge-backlog, merged-cleanup) is role-INDEPENDENT and
-runs on any node — which single-node peerbox relies on to merge its own Bond
+runs on any node — which single-node peer1 relies on to merge its own Bond
 branches. When a role IS declared, it wins:
 `config.ResolveNodeRole()` (env `GOPI_NODE_ROLE` > settings `role`) is consulted
 by `memory_sync_delta.IsServerNode()` BEFORE the legacy hostname-against-peers

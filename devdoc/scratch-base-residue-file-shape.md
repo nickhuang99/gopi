@@ -4,7 +4,7 @@
 **Class**: normative — the rule `internal/scratch/base_residue.go` enforces, and
 the seam between its two halves (name ↔ candidate).
 
-## The defect (measured 2026-10-01, branch `task/<this run>`, host peerbox)
+## The defect (measured 2026-10-01, branch `task/<this run>`, host peer1)
 
 `IsBaseResidueName` said **yes** about `/dev/shm/gopi-red2`; the candidate
 predicate said **no**. Both halves were individually defensible and nobody
@@ -93,7 +93,7 @@ One line. Not one `would-remove`, not one verdict — while `/dev/shm` held
 `IsBaseResidueName`'s namespace is unchanged, so the following are still KEPT —
 they are visible in `--explain` output as neighbours that are simply not ours:
 
-| entry | why refused | size (measured on peerbox, 2026-10-01) |
+| entry | why refused | size (measured on peer1, 2026-10-01) |
 |---|---|---|
 | `/dev/shm/livecopy.db` | not the family-prefix shape | **153 MB** |
 | `/dev/shm/rule35-redproof.d5hJ` | a dotted suffix is not in the name alphabet | **219 MB** |

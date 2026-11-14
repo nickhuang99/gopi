@@ -48,8 +48,8 @@ source, custom one-off tags); it does not open a ping-pong path.
 - **Import behavior is the safety net.** Since import is unique-only by
   question and refuses to overwrite human-owned questions, the wider export
   cannot clobber a peer's divergent rows. New rows only ever INSERT.
-- **Reverse direction**: rows HP imports from peerbox carry `node:peerbox`, so a
-  later peerbox→HP re-sync will see them as existing (question-identity probe)
+- **Reverse direction**: rows HP imports from peer1 carry `node:peer1`, so a
+  later peer1→HP re-sync will see them as existing (question-identity probe)
   and skip. No loop, no duplicate fan-out across N peers.
 
 ## 4. Merge state + conflicts (2026-09-10 check)

@@ -42,7 +42,7 @@ of wrong.
 already the landed state on master, and this branch is byte-identical to master.**
 The prior run is recorded in `devdoc/voice-input-default-shape.md` (class
 `historical`, `devdoc/DOC-INDEX.tsv:1909`) and its memory records are
-`#8364 / #8365 / #8368 / #8369` (source `node:peerbox`).
+`#8364 / #8365 / #8368 / #8369` (source `node:peer1`).
 
 So this document is **not** a design for a rework that has yet to happen. It is
 the (a)–(e) deliverable the epic asks for — the current-state map, the target
@@ -293,7 +293,7 @@ session, and stated so a later epic can run it without re-deriving anything.
   placeholder, plus a `cmd/agent`-scoped gate with a red proof (Rule 13's
   exhaustive-test shape).
 - **G4 — the profile rung has never been executed on this host.** The memory
-  record `#8365` states the profile rung was proved on **peerbox** (weights under
+  record `#8365` states the profile rung was proved on **peer1** (weights under
   `<fixture>/profile/.gopi/voice`, rung 1 hidden). On hostb-Laptop no voice
   weights or `llama-funasr-cli` exist, so `capture` here cannot be run to
   completion — see §Verification. *One session, on a host that has the weights.*
@@ -331,14 +331,14 @@ refusals are **landed on master** (§0). No epic re-implements them.
 - **No end-to-end run of the bare capture on this host.** hostb-Laptop has no
   Fun-ASR weights and no `llama-funasr-cli`, so §(b)'s runtime behaviour is
   documented from the code and from the prior run's record (`devdoc/voice-input-default-shape.md`,
-  memory `#8364-#8369`, source `node:peerbox`) — **not** from a run of mine. Gap **G4**.
+  memory `#8364-#8369`, source `node:peer1`) — **not** from a run of mine. Gap **G4**.
 - **`make test-budget PKGS='./internal/docindex ./internal/standards'` exits 1 in this
   worktree** — and it does so for a reason that is **not this change**: the only
   remaining failure is `devdoc/cli-help-user-audit.md` carrying a `historical`
   banner while `devdoc/DOC-INDEX.tsv:374` classes it `normative`. Both halves are
   master's committed bytes (verified by `git show master:…`); this change adds one
   DOC-INDEX row and no banner. Reported rather than papered over; it is a
-  system-layer doc-classification defect and belongs to peerbox (Rule 28).
+  system-layer doc-classification defect and belongs to peer1 (Rule 28).
 
 ## Verification (this run — what I actually executed)
 

@@ -4,7 +4,7 @@
 <!-- WORKER-OWNERSHIP: OPERATOR-ONLY — devdoc/worker-ownership.md -->
 
 **Task**: `01a1330e-dfe3-7130-8ddf-f0aa73f5a274` · **Branch**: `task/01a1330edfe371308ddff0aa73f5a274`
-**Date**: 2026-10-13 · **Host**: hosta
+**Date**: 2026-10-13 · **Host**: host-b
 
 ## Completed
 

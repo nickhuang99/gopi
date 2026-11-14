@@ -64,7 +64,7 @@ func TestFailedReasonCarriesTheWritebackDigest(t *testing.T) {
 	const id = "t-failed-reason-digest"
 	failedReasonSeedRow(t, id)
 
-	const cause = "zombie disposal (zombie: heartbeat stalled past grace); claimed pid 4242 dead (peerbox)"
+	const cause = "zombie disposal (zombie: heartbeat stalled past grace); claimed pid 4242 dead (peer1)"
 	if _, err := TaskUpdateWithResult(id, taskStatusFailed, cause); err != nil {
 		t.Fatalf("failed writeback: %v", err)
 	}

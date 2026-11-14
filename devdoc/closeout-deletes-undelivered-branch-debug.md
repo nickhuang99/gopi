@@ -1,11 +1,11 @@
 <!-- doc-class: normative -->
 # DEBUG: the close-out chain deletes a branch whose push never landed — 6 questions answered
 
-**Mode: DEBUG, proposal only. No fix implemented in this run; nothing on HP or peerbox was
+**Mode: DEBUG, proposal only. No fix implemented in this run; nothing on HP or peer1 was
 touched.** Victim row `01a0dd4f-b253-7361-8fd0-0e94cc80c5e2`, branch
-`task/01a0dd4fb25373618fd00e94cc80c5e2`. Host: `hostb-Laptop` (10.0.0.5) = **client**;
-peer `peerbox` = `10.0.0.6:/home/user/work/GoPi`. HP's own settings: `role="client"`,
-`sync_peers=["peerbox"]` (`/home/user/.gopi/settings.json`).
+`task/01a0dd4fb25373618fd00e94cc80c5e2`. Host: `hostb-Laptop` (192.0.2.5) = **client**;
+peer `peer1` = `192.0.2.6:/home/user/work/GoPi`. HP's own settings: `role="client"`,
+`sync_peers=["peer1"]` (`/home/user/.gopi/settings.json`).
 
 **Headline, and it corrects the briefing's premise twice:**
 
@@ -21,7 +21,7 @@ peer `peerbox` = `10.0.0.6:/home/user/work/GoPi`. HP's own settings: `role="clie
    13:08:01). 18 `branch-delete` rows = 9 × `finish-cleanup-branch` + 9 ×
    `finish-cleanup-branch-force`, pids {3006864: 8 rows, 3007821: 6, 2938071: 4}. The
    briefing's "16 deletions / 4 pids" is not what the log says.
-3. **The victim's work is NOT lost.** `6167624c` is an ancestor of `peerbox/master`; peerbox
+3. **The victim's work is NOT lost.** `6167624c` is an ancestor of `peer1/master`; peer1
    merged it at **21:01:37** (`56870d4c Merge branch 'task/01a0dd4fb25373618fd00e94cc80c5e2'`,
    `%ci = 2026-09-26 21:01:37 +0800`) — **1h48m after the last force-delete row
    (13:08:01)**. The chain's conclusion ("undelivered") was wrong, but the work arrived by
@@ -29,7 +29,7 @@ peer `peerbox` = `10.0.0.6:/home/user/work/GoPi`. HP's own settings: `role="clie
 4. **All 16 rows in the briefing ("delete, undo, repeat") are actually ONE mutation per
    pass** (the `-D` fails), so the operator's "16 deletions" is the *log's* reading, not
    the repository's. **The real, still-open injury is a coverage stranding**: 37
-   `completed` rows whose branch name no longer resolves locally **or** on peerbox (44 with
+   `completed` rows whose branch name no longer resolves locally **or** on peer1 (44 with
    no merge commit at all), permanently re-scanned by a `LIMIT 10` sweep that never
    remembers it settled them.
 
@@ -211,11 +211,11 @@ newest-`updated_at`-first, over all terminal rows. The victim (updated 19:32) sa
 newest-10 for a while; **37 terminal rows are now unresolvable and will never leave the
 window** (Q3), so the sweep spends its ten slots re-proving that they are settled.
 
-## Q3 — How many DISTINCT branches were force-deleted, and absent from peerbox?
+## Q3 — How many DISTINCT branches were force-deleted, and absent from peer1?
 
-**Measured: 65 distinct branches were force-deleted. 58 are not `refs/heads/*` on peerbox
+**Measured: 65 distinct branches were force-deleted. 58 are not `refs/heads/*` on peer1
 today. 44 have no `Merge branch '<name>'` commit at all. 37 remain rows whose branch name
-resolves in NEITHER the local object store NOR peerbox's heads — and every one of those 37
+resolves in NEITHER the local object store NOR peer1's heads — and every one of those 37
 is a `completed` ledger row.**
 
 **The count that would justify "work lost" is 0 for the victim, and the 37 are the
@@ -224,11 +224,11 @@ dispatchable risk set — not a proven loss.** Method, and why the number is a f
 1. `Merge branch '<name>'` present in history ⇒ the server's merge run took the branch ⇒
    the tip is reachable from `master` ⇒ **delivered** (21 of 65). The victim is one of
    these.
-2. Of the remaining 44, 7 are still `refs/heads/*` on peerbox (**not lost**;
+2. Of the remaining 44, 7 are still `refs/heads/*` on peer1 (**not lost**;
    `task/01a0dd8783157767a5b6ac0485ce30c5` etc.).
 3. The 37 resolve nowhere as a local commit and have no merge commit. **Re-measured
    after the first draft (the buckets are disjoint this time)**: of the 37, **5 are
-   still resolvable through a `refs/remotes/peerbox/<name>` tracking ref** (recoverable
+   still resolvable through a `refs/remotes/peer1/<name>` tracking ref** (recoverable
    now), and **32 are resolvable by NEITHER the odb nor any tracking ref** — the
    genuinely unrecoverable-by-name set, named in
    `$GOPI_SESSION/unresolvable-37.txt` and in the table below. The first draft's
@@ -259,12 +259,12 @@ task/01a0dd4f531e7e5bb04431c082a3e2b6      task/01a0dda167de7a3cb840d7a6457bf383
 
 **RAN / RESULT:**
 
-- `RAN: python3 - <<EOF` over `removal-audit.log` × `git ls-remote --heads peerbox` ×
+- `RAN: python3 - <<EOF` over `removal-audit.log` × `git ls-remote --heads peer1` ×
   `git log --oneline --all` (sets written to
-  `$GOPI_SESSION/force-deleted.txt`, `$GOPI_SESSION/peerbox-heads.txt`)
-  `RESULT:` `distinct force-deleted branches: 65 / peerbox heads: 22 / ABSENT from peerbox: 58`;
+  `$GOPI_SESSION/force-deleted.txt`, `$GOPI_SESSION/peer1-heads.txt`)
+  `RESULT:` `distinct force-deleted branches: 65 / peer1 heads: 22 / ABSENT from peer1: 58`;
   of those, `with a merge commit: 21 -> DELIVERED`, `with NO merge commit: 44`,
-  `no merge subject AND absent from peerbox: 37`.
+  `no merge subject AND absent from peer1: 37`.
 - `RAN:` per-branch `gopi task show <task_id>` for every `task/<id>`-shaped name in the set
   `RESULT:` **all 37 still read `status: completed`** (e.g. `01a0dcfa98187a30b3613e4584f6ee71`,
   `01a0db2518177af094e37c6138af1644`, `01a0dd02e3877737a72af46cf8e1502f`,
@@ -277,12 +277,12 @@ task/01a0dd4f531e7e5bb04431c082a3e2b6      task/01a0dda167de7a3cb840d7a6457bf383
   `RESULT:` ~200 dangling objects (commits/trees/blobs/tags) still in the object store —
   **deleted tips are not yet pruned and stay recoverable by SHA**; the missing link is the
   SHA, not the object.
-- `RAN:` python3 over `force-deleted.txt` × `peerbox-heads.txt` counting, for each of the 37
+- `RAN:` python3 over `force-deleted.txt` × `peer1-heads.txt` counting, for each of the 37
   no-merge names, whether `git rev-parse --verify --quiet <name>^{commit}` and
-  `git rev-parse --verify --quiet refs/remotes/peerbox/<name>` resolve
+  `git rev-parse --verify --quiet refs/remotes/peer1/<name>` resolve
   `RESULT:` `buckets: odb+tracking=0 odb_only=0 tracking_only=5 NEITHER=32`; and
-  `git for-each-ref --format=%(refname) refs/remotes/peerbox/` → `tracking refs now=22`,
-  `peerbox real heads=22`, `phantom=21`; of the 58 absent-from-peerbox names, **8** carry a
+  `git for-each-ref --format=%(refname) refs/remotes/peer1/` → `tracking refs now=22`,
+  `peer1 real heads=22`, `phantom=21`; of the 58 absent-from-peer1 names, **8** carry a
   tracking ref (so 50 do not).
 - `RAN: sed -n '3731,3740p;4042,4048p;4076,4088p' internal/tools/task_finish_cleanup.go`
   `RESULT:` the three verbatim excerpts quoted in Q1.
@@ -295,29 +295,29 @@ tomorrow; the census above had to be reconstructed from `git log` + `ls-remote` 
 ## Q4 — The `ls-remote` vs remote-tracking-ref contradiction
 
 **Both can be true, and here they are: a remote-tracking ref is written by `fetch`/`pull`
-(the *client's* record of what it last saw), never by a push; `ls-remote` is what peerbox
-says *now*. They disagree whenever peerbox's ref moves — and the client's mirror is never
+(the *client's* record of what it last saw), never by a push; `ls-remote` is what peer1
+says *now*. They disagree whenever peer1's ref moves — and the client's mirror is never
 pruned, so a deleted branch leaves a phantom that asserts a push forever.**
 
 **RAN / RESULT:**
 
-- `RAN: git reflog show --date=iso refs/remotes/peerbox/task/01a0dd4fb25373618fd00e94cc80c5e2`
-  `RESULT:` **one entry** — `76e0e6f8 refs/remotes/peerbox/task/01a0dd4f…@{2026-09-26 20:08:40 +0800}: pull: storing head`.
+- `RAN: git reflog show --date=iso refs/remotes/peer1/task/01a0dd4fb25373618fd00e94cc80c5e2`
+  `RESULT:` **one entry** — `76e0e6f8 refs/remotes/peer1/task/01a0dd4f…@{2026-09-26 20:08:40 +0800}: pull: storing head`.
   **Written by a `pull`.** In a non-bare repo a push updates local `refs/heads/*`, not
-  `refs/remotes/*`, so `refs/remotes/peerbox/<x>` can only exist because the client fetched —
+  `refs/remotes/*`, so `refs/remotes/peer1/<x>` can only exist because the client fetched —
   it is **not** evidence that a push landed.
-- `RAN:` `git reflog show --date=iso refs/remotes/peerbox/task/01a0dbe28a0b7d48b7035e5975dbf8f5`
-  `RESULT:` three entries, all `pull peerbox: fast-forward` / `fetch peerbox: storing head`.
-- `RAN: git for-each-ref refs/remotes/peerbox/ | wc -l` **and** `git ls-remote --heads peerbox | wc -l`
+- `RAN:` `git reflog show --date=iso refs/remotes/peer1/task/01a0dbe28a0b7d48b7035e5975dbf8f5`
+  `RESULT:` three entries, all `pull peer1: fast-forward` / `fetch peer1: storing head`.
+- `RAN: git for-each-ref refs/remotes/peer1/ | wc -l` **and** `git ls-remote --heads peer1 | wc -l`
   `RESULT:` **22 vs 22** — the two sets are the same size and almost disjoint:
-  **21 phantom tracking refs** (assert a head peerbox does not have, victim included) and
-  **20 real peerbox heads with no tracking ref**. (`feat/hermes-ui-reference-gaps`,
+  **21 phantom tracking refs** (assert a head peer1 does not have, victim included) and
+  **20 real peer1 heads with no tracking ref**. (`feat/hermes-ui-reference-gaps`,
   `wip/master-local-only-20260926`, … — names that exist as *local* branches too, i.e. the
   mirror holds the pre-merge state.)
-- `RAN: git ls-remote peerbox "refs/heads/task/01a0dd4fb25373618fd00e94cc80c5e2"`
-  `RESULT:` empty, `EXIT=0` — peerbox's **current** heads do not include it.
+- `RAN: git ls-remote peer1 "refs/heads/task/01a0dd4fb25373618fd00e94cc80c5e2"`
+  `RESULT:` empty, `EXIT=0` — peer1's **current** heads do not include it.
 - `RAN: git log --all --oneline --grep='01a0dd4f'` and `git merge-base --is-ancestor 6167624c 933c9a8c`
-  `RESULT:` `56870d4c Merge branch 'task/01a0dd4fb25373618fd00e94cc80c5e2'`; `YES — work IS in peerbox master`.
+  `RESULT:` `56870d4c Merge branch 'task/01a0dd4fb25373618fd00e94cc80c5e2'`; `YES — work IS in peer1 master`.
   `76e0e6f8` (the tracking ref's tip, `pre-merge: verify branch against peer master before pushing`,
   19:32:59) is **also an ancestor of master** — so the content arrived through the merge run.
 - `RAN: git log -1 --format='%h %ci' 56870d4c`
@@ -325,15 +325,15 @@ pruned, so a deleted branch leaves a phantom that asserts a push forever.**
   i.e. the chain's "undelivered" verdict at 13:08 was **premature by 1h53m**, not wrong in
   the end.
 
-**Answer to the briefing's either/or:** neither "a push landed and peerbox lost the ref" nor
+**Answer to the briefing's either/or:** neither "a push landed and peer1 lost the ref" nor
 "the tracking ref was written without a successful push" is quite it. **A push landed on
-the CLIENT repo's local `refs/heads/*`? No — the evidence is that peerbox's `master` merge
+the CLIENT repo's local `refs/heads/*`? No — the evidence is that peer1's `master` merge
 run (`56870d4c`) landed the work through the ordinary merger path, and the client's phantom
 tracking ref is simply a never-pruned mirror of an earlier fetch.** (Memory #5791 LEG C
 measured exactly this: 184 ghost refs vs 3 real peer branches, fixed by "prune after fetch,
 and fetch the alias form". Here: 21 phantoms.) The victim's own history is the cleanest
 instance — its tracking ref says `pull: storing head` at **20:08:40**, a window in which
-peerbox held it, while its own rows read 11:33–13:08.
+peer1 held it, while its own rows read 11:33–13:08.
 
 ## Q5 — Do client and server share ONE implementation? **Shared, with ONE role gate — VERIFIED.**
 
@@ -352,7 +352,7 @@ call path** in both arms (apply/plan) — every call site is in that file (`:370
 ```
 
 `IsServerNode()` (`internal/tools/memory_sync_delta.go:801`) resolves HP correctly: its own
-hostname is in its peer list ⇒ **client** ⇒ `taskFinishCleanupChain`. peerbox (server) takes
+hostname is in its peer list ⇒ **client** ⇒ `taskFinishCleanupChain`. peer1 (server) takes
 `finishCleanupServerRecycle` — and the chain's comment `:3295` says that arm "skips server
 nodes"; `finishCleanupServerRecycle` "removes worktree, KEEPS branch, NO push step"
 (memory #1815 ③). So the **push-then-delete ④ sequence exists on the client arm only**, and
@@ -365,7 +365,7 @@ another host's refs.
   `RESULT:` all call sites in `task_finish_cleanup.go`; `IsServerNode` used at `:1203` only;
   `finishCleanupServerRecycle` in the server arm.
 - `RAN: python3 -c "json.load(open('/home/user/.gopi/settings.json'))"` (read-only)
-  `RESULT:` `role = "client"`, `sync_peers = ["peerbox"]` — HP is the client; the shared path
+  `RESULT:` `role = "client"`, `sync_peers = ["peer1"]` — HP is the client; the shared path
   *is* the HP path.
 - `RAN: grep -rn 'IsServerNode|taskFinishCleanupChain' internal/tools/*_test.go`
   `RESULT:` both arms are covered (`cov_finish_cleanup_test.go` has a `t-cov-client` row at
@@ -375,7 +375,7 @@ another host's refs.
 
 The sentence is a **report-level convention**, not a gate. PROJECT.md Rule 6a/6c says the
 commit is already on the branch in the shared repo, which is TRUE for a worktree — but the
-peer is **`10.0.0.6`**, a *different machine*: local refs say nothing about delivery.
+peer is **`192.0.2.6`**, a *different machine*: local refs say nothing about delivery.
 
 The gate that *would* answer it is `finishCleanupBranchForceDeleteReason(delivered bool)`
 (`:4114`) — and its input is `finishCleanupStepSucceeded(rep, finishCleanupPushVerb)`
@@ -440,7 +440,7 @@ predicate already implemented in `internal/tools/branch_delete_guard.go` —
 `branchDeleteDeliveryPointHoldsTip(ctx, workDir, deliveryPoint, branch, tip)` (fail-closed:
 every failure mode answers false). That is the same `ls-remote` the orphan guard already
 performs, so **no new mechanism, no new artifact**. Under it, the pass-1 deletion of the
-victim's ref would have been REFUSED (the tip never reached peerbox before the merge run),
+victim's ref would have been REFUSED (the tip never reached peer1 before the merge run),
 and the row would have kept a ref the operator could see.
 
 Change 3: `:3827` must not record a delete it did not perform. When
@@ -507,19 +507,19 @@ audit log: the victim row's nine pairs must collapse to one.
 ## Not Done (honest, and this list matters more than the mechanism)
 
 1. **Irrecoverable-to-name, not proven lost: 37 force-deleted branches that reach no ref
-   locally or on peerbox today.** 21 of them are still named by a phantom
-   `refs/remotes/peerbox/*` tracking ref, so their tips are **reachable now**; the other 16
+   locally or on peer1 today.** 21 of them are still named by a phantom
+   `refs/remotes/peer1/*` tracking ref, so their tips are **reachable now**; the other 16
    have no local name at all. `git fsck` shows ~200 dangling objects (exit 0) — **the
    objects are still in the object store; what is gone is the SHA linkage**, because
    `removalaudit` records no tip. I did **not** attempt to match dangling objects to the 37
    task ids: that needs a per-commit association the log never wrote, and guessing it would
    manufacture a recovery claim. **The 37 are named in full below — that is the risk list
    the operator asked for.**
-2. **`6167624c` is NOT in that list.** The victim's work is on `peerbox/master` (`56870d4c`,
+2. **`6167624c` is NOT in that list.** The victim's work is on `peer1/master` (`56870d4c`,
    21:01:37). The chain called it undelivered for 1h53m and the merger delivered it anyway.
-3. **peerbox's side was NOT inspected** (`git fsck`, `reflog`, `post-receive`). The briefing
-   suggested it; the constraint says do not touch peerbox, and every question was answered
-   from HP's own view + `ls-remote` alone. The remaining unknown (whether peerbox has
+3. **peer1's side was NOT inspected** (`git fsck`, `reflog`, `post-receive`). The briefing
+   suggested it; the constraint says do not touch peer1, and every question was answered
+   from HP's own view + `ls-remote` alone. The remaining unknown (whether peer1 has
    *additional* lost refs) is therefore open.
 4. **Not reproduced through `--apply`.** Reproducing the pair through the real surface
    would mutate a branch, and the run's boundary forbids touching any ref. Reproduction is
@@ -546,7 +546,7 @@ task/01a0dda167de7a3cb840d7a6457bf383
 ```
 
 (The full 65-name set and the 22/22 ref lists are written to
-`/home/user/.gopi/sessions/01a0de07-a9e1-75e8-9865-7af81f80103f/{force-deleted,peerbox-heads,tracking,realheads}.txt`.)
+`/home/user/.gopi/sessions/01a0de07-a9e1-75e8-9865-7af81f80103f/{force-deleted,peer1-heads,tracking,realheads}.txt`.)
 
 ---
 
@@ -563,9 +563,9 @@ task/01a0dda167de7a3cb840d7a6457bf383
 - **Ran:**
   - `gopi task finish-cleanup --task 01a0dd4f-b253-7361-8fd0-0e94cc80c5e2 --json` (PLAN mode)
   - `gopi task show 01a0dd4f-b253-7361-8fd0-0e94cc80c5e2`
-  - `git ls-remote --heads peerbox`; `git ls-remote peerbox refs/heads/<victim>`
-  - `git reflog show --date=iso refs/remotes/peerbox/<victim>` and `…/task/01a0dbe28a…`
-  - `git for-each-ref refs/remotes/peerbox/`; `git log --all --oneline --grep=…`;
+  - `git ls-remote --heads peer1`; `git ls-remote peer1 refs/heads/<victim>`
+  - `git reflog show --date=iso refs/remotes/peer1/<victim>` and `…/task/01a0dbe28a…`
+  - `git for-each-ref refs/remotes/peer1/`; `git log --all --oneline --grep=…`;
     `git merge-base --is-ancestor 6167624c 933c9a8c`; `git log -1 --format=%ci 56870d4c`
   - `git fsck --no-progress --dangling` (background job, exit 0)
   - `python3` over `~/.gopi/logs/removal-audit.log` (counts, burst grouping, victim rows)
@@ -577,7 +577,7 @@ task/01a0dda167de7a3cb840d7a6457bf383
   proves the mechanism read-only (`Settled: true`, `WouldRun: false`); the throwaway repo
   proves the absent-ref `-d`/`-D` double failure.
 - **Rule 31 (requested execution) note:** I did **not** run `--apply`, by the run's own
-  boundary ("do NOT touch any branch/ref/worktree on HP or peerbox"); the surface I changed
+  boundary ("do NOT touch any branch/ref/worktree on HP or peer1"); the surface I changed
   (none) needed no execution, and the surface I *judged* was executed in plan mode, which
   runs no git mutation. Any proposed fix must be executed in `--apply` form against a
   sandbox peer before it is believed — that is stated in the fix's verification plan.

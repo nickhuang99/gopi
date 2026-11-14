@@ -4427,7 +4427,7 @@ func writebackOutcome(taskID, status, resultSummary, reportTo, repo string) erro
 		// boundary). This boundary had none: it renders its target from the
 		// caller's --repo/--report-to and hands it straight to git, so a test
 		// that drove this leg pointed real bytes at whatever the flag named.
-		// Measured residue (2026-10-26, peerbox): refs/heads/feat/exists, an
+		// Measured residue (2026-10-26, peer1): refs/heads/feat/exists, an
 		// orphan root of a `t <t@t>` fixture, reflog `push`.
 		if why := pushfence.Refusal(repo); why != "" {
 			fmt.Fprintf(os.Stderr, taskProgName+": report-back push refused before it ran: %s\n", why)
@@ -5876,7 +5876,7 @@ func taskRemovedAdvice(verb string) string {
 		// pointing back at a command that no longer exists. Measured, on the
 		// binary built at `c5548b88`:
 		//
-		//	$ gopi task branch-refs --peer peerbox ; echo $?
+		//	$ gopi task branch-refs --peer peer1 ; echo $?
 		//	… "gopi task finish-cleanup" (what a terminal row's delivery should do) …
 		//	1
 		//	$ gopi task finish-cleanup ; echo $?

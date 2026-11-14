@@ -7,7 +7,7 @@ package tools
 // THE DEFECT (measured 2026-10-25, evidence in the filing run's session dir):
 // three delivery legs each carried their own copy of the peer's checkout path,
 // all spelling `~/work/GoPi`, while the host DECLARES its delivery point as
-// `peerbox:/home/user/work/gopi`. On the peer those are two unrelated
+// `peer1:/home/user/work/gopi`. On the peer those are two unrelated
 // repositories. The measured consequences were (a) every push refused
 // non-fast-forward and (b) the staleness alarm prescribing
 // `git merge refs/remotes/gitPushcheck/master` — a merge that would graft 12025
@@ -30,7 +30,7 @@ import (
 
 const (
 	peerRepoPathTestDeclaredPath   = "/home/user/work/gopi"
-	peerRepoPathTestDeclaredTarget = "peerbox" + peerRepoPathDeliverySep + peerRepoPathTestDeclaredPath
+	peerRepoPathTestDeclaredTarget = "peer1" + peerRepoPathDeliverySep + peerRepoPathTestDeclaredPath
 	peerRepoPathTestLastResortPath = "~/work/GoPi"
 )
 
@@ -88,7 +88,7 @@ func TestPeerRepoPathPrefersTheDeclaredDeliveryPoint(t *testing.T) {
 	}
 	// The composed target the legs hand to git carries that path — this is the
 	// string that ends up in the mirror ref's reflog.
-	t.Setenv(config.SyncPeersEnv, "peerbox")
+	t.Setenv(config.SyncPeersEnv, "peer1")
 	t.Setenv("GOPI_SYNC_NODE", "hp")
 	if got, want := GitSyncServerTarget(), peerRepoPathTestDeclaredTarget; got != want {
 		t.Errorf("GitSyncServerTarget() = %q, want %q", got, want)

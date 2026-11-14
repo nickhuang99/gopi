@@ -1,7 +1,7 @@
 package testutil
 
 // THE SINGLE-LAUNCHER GATE for scripts/glm-night-watch.sh — the GLM-window
-// watcher that runs on the peerbox and asks the HP peer for workers.
+// watcher that runs on the peer1 and asks the HP peer for workers.
 //
 // WHY IT LIVES IN testutil: this package already owns the repo-level SCRIPT
 // gates (scripts_gate_test.go: the /tmp ban, `bash -n`, the unbounded-loop ban;

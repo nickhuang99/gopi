@@ -116,8 +116,8 @@ sweep-worktrees (dry-run): repos=1 reclaimed=0 would-reclaim=0 reaped=0 branches
   keep        [run-ground-anchor] /home/user/workspace/gopi-01a11494…  kept: the run that took this ground (pid 3577762) is still here
 ```
 
-账本实测（只读）：`01a113ac` = `failed`，claim `peerbox:3577762`，claim 于 08:45:44；
-`01a11494` = `completed`，claim **也是** `peerbox:3577762`，claim 于 12:23:40。
+账本实测（只读）：`01a113ac` = `failed`，claim `peer1:3577762`，claim 于 08:45:44；
+`01a11494` = `completed`，claim **也是** `peer1:3577762`，claim 于 12:23:40。
 而 `3577762` 是**一个长命 worker 循环**（`cmdline` = `gopi worker`，start 07:53:02，至今活着）。
 
 **判据**：`RunGroundAnchorLiveness`（`internal/tools/run_ground_anchor.go:233`）rung ①

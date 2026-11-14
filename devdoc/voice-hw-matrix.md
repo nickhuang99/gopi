@@ -9,20 +9,20 @@ committed next to this file and each claim cites its artifact.
 |---|---|
 | Probe | `scripts/voice-mic-probe.sh` (deterministic, non-interactive, exit 0) |
 | Probe revision | the commit that added `scripts/voice-mic-probe.sh` (see `git log --oneline -- scripts/voice-mic-probe.sh`) |
-| peerbox run | 2026-09-13T05:21:06+08:00, kernel `Linux 5.15.0-163-generic x86_64` |
+| peer1 run | 2026-09-13T05:21:06+08:00, kernel `Linux 5.15.0-163-generic x86_64` |
 | HP run | 2026-09-13T05:20:52+08:00, kernel `Linux 5.15.0-185-generic x86_64` |
-| peerbox artifacts | `devdoc/assets/voice-hw-probe/peerbox/` (+ full stdout `peerbox-stdout.txt`) |
+| peer1 artifacts | `devdoc/assets/voice-hw-probe/peer1/` (+ full stdout `peer1-stdout.txt`) |
 | HP artifacts | `devdoc/assets/voice-hw-probe/hp/` (+ full stdout `hp-stdout.txt`) |
 | Contract probed | `S16_LE`, `16000 Hz`, `1` channel (voice-client contract) **and** the card's native `48000 Hz / 2ch` |
 
 Host identity, verbatim from `identity.txt` on each node:
 
 ```
-peerbox: hostname=peerbox              uname=Linux 5.15.0-163-generic x86_64
+peer1: hostname=peer1              uname=Linux 5.15.0-163-generic x86_64
 hp:    hostname=hostb-Laptop     uname=Linux 5.15.0-185-generic x86_64
 ```
 
-`hostb-Laptop` is the node the epic calls **HP** (`ssh hp` → 10.0.0.5); the
+`hostb-Laptop` is the node the epic calls **HP** (`ssh hp` → 192.0.2.5); the
 probe's `node` column carries the real hostname, so the table is self-describing.
 
 ---
@@ -31,16 +31,16 @@ probe's `node` column carries the real hostname, so the table is self-describing
 
 **CORRECTED 2026-09-13 (probe revision 2, branch `fix/voice-mic-probe-privileged`).**
 Revision 1 measured ONE privilege level (the calling uid) and read its refusals as
-hardware facts. On peerbox that produced a false conclusion: uid 1000 is outside
+hardware facts. On peer1 that produced a false conclusion: uid 1000 is outside
 group `audio`, ALSA renders that refusal as `no soundcards found`, and this
-document — plus the epic built on it — concluded "peerbox has no usable capture
+document — plus the epic built on it — concluded "peer1 has no usable capture
 path". It has one; it is privilege-gated. §3.1-a is the refutation;
 `devdoc/voice-mic-probe-privileged.md` is the rework report.
 
 | Node | Capture as the calling user (uid 1000) | Capture as root (`sudo -n`) | Evidence |
 |---|---|---|---|
 | **HP** (`hostb-Laptop`) | **YES** — logical `default` and `pulse`, backed by card1 / ALC236 Analog / device0 | not needed (uid 1000 holds the `/dev/snd` ACL on HP) | `hp/table.tsv`, 4/4 `OK` cells each |
-| **peerbox** | **NO** for uid 1000 *as configured* — not in group `audio`, no ACL entry | **YES** — `hw:1,0` @48k/2ch, `plughw:1,0`, `plughw:CARD=PCH,DEV=0`, `sysdefault:CARD=PCH`, `front:CARD=PCH,DEV=0` all captured (32000 B / 192000 B) | `peerbox/table.tsv` revision 2 (`mode` column) + `devdoc/assets/voice-hw-probe-priv/peerbox/` |
+| **peer1** | **NO** for uid 1000 *as configured* — not in group `audio`, no ACL entry | **YES** — `hw:1,0` @48k/2ch, `plughw:1,0`, `plughw:CARD=PCH,DEV=0`, `sysdefault:CARD=PCH`, `front:CARD=PCH,DEV=0` all captured (32000 B / 192000 B) | `peer1/table.tsv` revision 2 (`mode` column) + `devdoc/assets/voice-hw-probe-priv/peer1/` |
 
 Both conclusions are exit-0 results of the same script — a refused or
 device-less node is a recorded fact (`outcome=NO_DEVICE` / `PULSE_REFUSED` /
@@ -154,17 +154,17 @@ hardware; the plug layer is mandatory.
 
 ---
 
-## 3. peerbox — the capture-less node (reported honestly, verbatim)
+## 3. peer1 — the capture-less node (reported honestly, verbatim)
 
 The epic's expected reporting is reproduced **exactly** by the probe:
 
-`peerbox/arecord-l.txt` — verbatim, entire file:
+`peer1/arecord-l.txt` — verbatim, entire file:
 
 ```
 arecord: device_list:274: no soundcards found...
 ```
 
-`peerbox/pactl-info.txt` — verbatim, entire file:
+`peer1/pactl-info.txt` — verbatim, entire file:
 
 ```
 Connection failure: Connection refused
@@ -174,15 +174,15 @@ pa_context_connect() failed: Connection refused
 Neither is an error path in the probe: both are parsed into the machine-readable
 table as `NO_SOUNDCARDS` / `PULSE_REFUSED`, and the script still exits 0.
 
-### 3.1 The subtle part: peerbox *advertises* a capture device it cannot open
+### 3.1 The subtle part: peer1 *advertises* a capture device it cannot open
 
-`peerbox/proc-asound-pcm.txt` ends with the same `capture 1` marker HP has:
+`peer1/proc-asound-pcm.txt` ends with the same `capture 1` marker HP has:
 
 ```
 01-00: ALC3228 Analog : ALC3228 Analog : playback 1 : capture 1
 ```
 
-and `/dev/snd/pcmC1D0c` exists. Yet **every** device string failed (`peerbox/table.tsv`,
+and `/dev/snd/pcmC1D0c` exists. Yet **every** device string failed (`peer1/table.tsv`,
 32/32 non-OK rows):
 
 | Device string | Outcome | Trials |
@@ -193,14 +193,14 @@ and `/dev/snd/pcmC1D0c` exists. Yet **every** device string failed (`peerbox/tab
 | `front:CARD=PCH,DEV=0` | `HW_PARAM_UNSUPPORTED` | 4/4 |
 | `pulse` | `PULSE_REFUSED` | 4/4 |
 
-Verbatim (`peerbox/capture-hw_1_0_r16000_c1_t1.err`):
+Verbatim (`peer1/capture-hw_1_0_r16000_c1_t1.err`):
 
 ```
 ALSA lib confmisc.c:165:(snd_config_get_card) Cannot get card index for 1
 arecord: main:831: audio open error: No such file or directory
 ```
 
-Verbatim (`peerbox/capture-pulse_r16000_c1_t1.err`):
+Verbatim (`peer1/capture-pulse_r16000_c1_t1.err`):
 
 ```
 ALSA lib pulse.c:242:(pulse_connect) PulseAudio: Unable to connect: Connection refused
@@ -210,7 +210,7 @@ arecord: main:831: audio open error: Connection refused
 A reader may wrongly conclude "the card is missing". It is not — the **card
 registry is empty for this user**. Measured causes:
 
-1. **The client uid may not open any `/dev/snd` node.** `peerbox-stdout.txt`
+1. **The client uid may not open any `/dev/snd` node.** `peer1-stdout.txt`
    `DEVICE_NODE_ACCESS` → `capture_nodes=1 denied_nodes=13`: all 13 nodes,
    including `pcmC1D0c`, report `DENIED` to uid 1000. The nodes are mode `660
    root:audio` and `id nick` shows uid 1000 is **not** in group `audio`
@@ -237,16 +237,16 @@ registry is empty for this user**. Measured causes:
    with no reachable node produces exactly the observed
    `pa_context_connect() failed: Connection refused`.
 
-Root-cause summary: **on peerbox the capture path is closed by client-side access
+Root-cause summary: **on peer1 the capture path is closed by client-side access
 control (uid 1000 ∉ `audio`, node mode 660) plus a dead Pulse socket — not by
 missing hardware.** The hardware (`ALC3228`, card1/device0) is present. Note the
-peerbox codec is `ALC3228`, HP's is `ALC236` — different codecs, same ALSA shape.
+peer1 codec is `ALC3228`, HP's is `ALC236` — different codecs, same ALSA shape.
 
-### 3.1-a CORRECTION (2026-09-13): peerbox CAN capture — the refusal is access control
+### 3.1-a CORRECTION (2026-09-13): peer1 CAN capture — the refusal is access control
 
 The measurement above is real, and the reasoning drawn from it was wrong in one
 step: the unprivileged outcome was treated as the node's capability. It is the
-*calling user's* capability. Measured at BOTH privilege levels on peerbox:
+*calling user's* capability. Measured at BOTH privilege levels on peer1:
 
 | Probe | unprivileged (uid 1000) | privileged (`sudo -n`) | uid 1000 **+ group `audio`** (via `setpriv`) |
 |---|---|---|---|
@@ -264,25 +264,25 @@ and `plughw:1,0` into a 32000-byte capture.** So the cause is precisely the one
 §3.1 point 1 names (`/dev/snd` is `660 root:audio`, `id nick` lacks `audio`, the
 POSIX ACL grants `rw` to `lightdm` only) — and the correct conclusion is *"the
 fix is one operator action (add uid 1000 to group `audio`, or run the probe with
-`sudo -n`)"*, NOT *"peerbox is not a capture node"*. The epic's node plan (peerbox =
+`sudo -n`)"*, NOT *"peer1 is not a capture node"*. The epic's node plan (peer1 =
 engine only, HP = the only client) rested on the wrong reading.
 
-What is still true and still a real limit: the uid-1000 path is refused on peerbox
+What is still true and still a real limit: the uid-1000 path is refused on peer1
 **as configured**, and the bare `default`/`sysdefault` aliases fail at both
 privilege levels. The privilege dimension was simply never measured — which is
 what revision 2 of the probe fixes: every cell now carries a `mode` column
 (`user`/`root`) and a device that only records privileged is reported
 `SUDO_REQUIRED`, never `NO_DEVICE`/`NO_SOUNDCARDS`.
 
-Artifacts: `devdoc/assets/voice-hw-probe-priv/peerbox/` (privileged run, full raw
-dumps + per-cell WAVs) and `devdoc/assets/voice-hw-probe/peerbox/` (revision-2 run
+Artifacts: `devdoc/assets/voice-hw-probe-priv/peer1/` (privileged run, full raw
+dumps + per-cell WAVs) and `devdoc/assets/voice-hw-probe/peer1/` (revision-2 run
 with both modes in one table).
 
 ### 3.2 What would (and would not) change the verdict
 
 Not tested in revision 1 because it needs root — and revision 2 tested it: a
 privileged open of `pcmC1D0c` **does** succeed (§3.1-a). Root was reachable all
-along through passwordless `sudo -n` (`NOPASSWD: ALL` on peerbox), so "out of scope
+along through passwordless `sudo -n` (`NOPASSWD: ALL` on peer1), so "out of scope
 for a non-interactive probe" was a wrong premise: `sudo -n` is exactly as
 non-interactive as the rest of the harness. Revision 2 records the unprivileged
 truth AND the privileged one side by side, and names the difference as
@@ -292,7 +292,7 @@ truth AND the privileged one side by side, and names the difference as
 
 ## 4. Cross-node comparison
 
-| Dimension | HP (`hostb-Laptop`) | peerbox |
+| Dimension | HP (`hostb-Laptop`) | peer1 |
 |---|---|---|
 | `/proc/asound/cards` | 2 (Generic, Generic_1) | 2 (HDMI, PCH) |
 | Capture stream in `/proc/asound/pcm` | `01-00 ... capture 1` | `01-00 ... capture 1` |
@@ -324,10 +324,10 @@ unhandled crash.
 
 | Identifier | Meaning | Measured outcome |
 |---|---|---|
-| `hw:<card>,0` | raw ALSA, **no conversion** — cannot express 16k/mono on this codec | HP `BUSY`; peerbox `NO_DEVICE` |
-| `plughw:<card>,0` | raw ALSA + plug conversion | HP `BUSY`; peerbox `NO_DEVICE` |
-| `plughw:CARD=<id>,DEV=0` | index-independent spelling of the above (**prefer this over `plughw:1,0`** when a raw device is wanted) | HP `BUSY`; peerbox `NO_DEVICE` |
-| `sysdefault` / `sysdefault:CARD=<id>` | ALSA "sane first device" | HP `NO_DEVICE`/`BUSY`; peerbox `NO_DEVICE` |
+| `hw:<card>,0` | raw ALSA, **no conversion** — cannot express 16k/mono on this codec | HP `BUSY`; peer1 `NO_DEVICE` |
+| `plughw:<card>,0` | raw ALSA + plug conversion | HP `BUSY`; peer1 `NO_DEVICE` |
+| `plughw:CARD=<id>,DEV=0` | index-independent spelling of the above (**prefer this over `plughw:1,0`** when a raw device is wanted) | HP `BUSY`; peer1 `NO_DEVICE` |
+| `sysdefault` / `sysdefault:CARD=<id>` | ALSA "sane first device" | HP `NO_DEVICE`/`BUSY`; peer1 `NO_DEVICE` |
 
 **Must NOT be generated (measured invalid):**
 
@@ -344,8 +344,8 @@ human-free test rig from the epic's earlier measurement).
 
 1. Open `/dev/snd/pcmC*c` for the client uid (`access(2)`). **Denied** → the
    client cannot record as this uid, and no ALSA device string helps *at this
-   privilege level* (peerbox's case, §3.1-a). But do **not** conclude the node has
-   no capture path: on peerbox the same hardware records with `sudo -n` and as
+   privilege level* (peer1's case, §3.1-a). But do **not** conclude the node has
+   no capture path: on peer1 the same hardware records with `sudo -n` and as
    uid 1000 + group `audio`. Report `PERMISSION` for the uid and name the fix
    (add the uid to group `audio`, or run privileged) — a client that reports
    only "no device" here strands a node that can record.
@@ -383,7 +383,7 @@ Revision 2 adds two values and one column:
 
 ```bash
 # capture-less / local node — always exit 0
-bash scripts/voice-mic-probe.sh --out devdoc/assets/voice-hw-probe/peerbox
+bash scripts/voice-mic-probe.sh --out devdoc/assets/voice-hw-probe/peer1
 
 # capture node, over ssh (no interactive input, no root)
 scp scripts/voice-mic-probe.sh hp:/tmp/ && ssh hp 'bash /tmp/voice-mic-probe.sh --out /tmp/probe-hp'
@@ -413,5 +413,5 @@ file, next to one `.err` per probed cell.
 - **No measurement of audio *content*** beyond byte counts and WAV headers; the
   probe proves a path records the contract number of bytes, not that a human is
   audible.
-- **peerbox's privileged path is untested** (§3.2) — the probe never escalates.
+- **peer1's privileged path is untested** (§3.2) — the probe never escalates.
 - **No level/gain measurement** — out of scope for this step.

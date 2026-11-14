@@ -2,8 +2,8 @@
 # The chat surface's operating duty — which work the console does itself
 
 **Class**: normative (implementation + rule)
-**Landed**: 2026-10-07 · task `01a11343-0c04-7ce0-be86-2e2e831005c6` (peerbox)
-**Widened**: 2026-10-11 · task `01a12afc-0030-7749-9402-4fec805fa8f0` (hosta) — the
+**Landed**: 2026-10-07 · task `01a11343-0c04-7ce0-be86-2e2e831005c6` (peer1)
+**Widened**: 2026-10-11 · task `01a12afc-0030-7749-9402-4fec805fa8f0` (host-b) — the
 scope clause, see "The scope, widened" below.
 **Files**: `internal/agent/chat_pa_duty.go`, `internal/agent/chat_context.go`,
 `internal/agent/chat_pa_duty_test.go`

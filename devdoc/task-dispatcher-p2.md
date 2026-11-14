@@ -157,7 +157,7 @@ func main() { fmt.Println("hello dispatcher") }
 
 $ gopi task show t-e2e-hello
 status:         completed
-claimed_by:     peerbox:4064111 (at 2026-08-29 14:26:41)
+claimed_by:     peer1:4064111 (at 2026-08-29 14:26:41)
 payload:        In /tmp/p2e2e/work create hello.go …
 ended_at:       2026-08-29 14:27:52
 

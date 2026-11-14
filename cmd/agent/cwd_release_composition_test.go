@@ -468,7 +468,7 @@ func crcDeviceOf(t *testing.T, path string) uint64 {
 // composition, and the shape a neutered release cannot survive.
 //
 // The repo/role table is the sibling E2E's (settings.json: role omitted = the
-// real peerbox shape, an empty repos table for the sweep, no peers), the LLM is
+// real peer1 shape, an empty repos table for the sweep, no peers), the LLM is
 // the shared scripted mock, and the ledger is a throwaway file. Returns the env
 // and the session container the fixture must be able to see (Rule 15: the
 // fixture states its premise instead of assuming it).

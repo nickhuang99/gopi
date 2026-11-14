@@ -3,7 +3,7 @@
 
 Status: implemented 2026-09-27. Finding: end-user audit **slice 8, RP-2 (F2,
 high)** — the audit doc `devdoc/end-user-audit-slice8-runpath.md` is commit
-`c3f14810` on branch `peerbox/task/01a0dcfadafb709d808c8bc93369aa63` (that commit
+`c3f14810` on branch `peer1/task/01a0dcfadafb709d808c8bc93369aa63` (that commit
 is the largest one containing the doc, not necessarily that branch's tip —
 verified with `git show c3f14810:devdoc/…`, never by a branch name alone).
 Task row: `01a0dec6-280c-71f8-adf4-90067106a49f`.

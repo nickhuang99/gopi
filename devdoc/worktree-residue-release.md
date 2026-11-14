@@ -3,7 +3,7 @@
 
 Epic row: `01a09c25-3212-7d9d-9ad3-ee952e1c862b` ("why are so many worktree?")
 Branch: `docs/worktree-residue-release` (worktree `/home/user/workspace/gopi-wt-release`)
-Measured: 2026-09-14 03:0x–03:4x on peerbox, repo `/home/user/work/GoPi`.
+Measured: 2026-09-14 03:0x–03:4x on peer1, repo `/home/user/work/GoPi`.
 
 ## Completed
 

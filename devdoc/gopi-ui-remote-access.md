@@ -40,8 +40,8 @@ carrier prints, through the same helpers:
 ```
 gopi ui: listening (Ctrl+C to stop)
   open: http://localhost:8097?t=<token>
-  open: http://10.0.0.9:8097?t=<token>
-  open: http://10.0.0.6:8097?t=<token>
+  open: http://192.0.2.9:8097?t=<token>
+  open: http://192.0.2.6:8097?t=<token>
 gopi ui: LAN-REACHABLE bind — every URL below carries the per-run access token; …
 ```
 
@@ -121,7 +121,7 @@ dead): found by running it, fixed by separating the questions.
    server-side facts are all visible before that (the banner and the identity
    block are printed first, and the socket keeps serving), which is what the
    live evidence below uses.
-4. **Port 8090 on peerbox is held by another agent's `gopi ui`** — an unrelated
+4. **Port 8090 on peer1 is held by another agent's `gopi ui`** — an unrelated
    instance is running from `~/work/GoPi/bin/gopi`. Use a free port (8097/8098)
    and a sandbox, never the shared default.
 

@@ -3,7 +3,7 @@
 
 **Task** `01a13cd2-8db9-7966-9056-899a515261e8` · **branch** `task/01a13cd28db979669056899a515261e8`
 · **worktree** `/home/user/workspace/gopi-01a13cd28db979669056899a515261e8` (the harness-created one).
-**Host** `peerbox`, 4 cores. **No load of any kind was generated** (Rule 27): every number here is
+**Host** `peer1`, 4 cores. **No load of any kind was generated** (Rule 27): every number here is
 `go test -json` wall clock on an ambient host.
 
 The standing condition this closes: the scope's four most recent runs were all non-green, the latest

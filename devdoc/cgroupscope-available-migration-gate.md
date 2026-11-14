@@ -4,7 +4,7 @@
 <!-- WORKER-OWNERSHIP: OPERATOR-ONLY — devdoc/worker-ownership.md -->
 
 Task: `01a12c31def6749ca8a3330469dc0fba` · branch `task/01a12c31def6749ca8a3330469dc0fba`
-Host: hosta, kernel 6.8.0-138-generic, cgroup v2 unified.
+Host: host-b, kernel 6.8.0-138-generic, cgroup v2 unified.
 
 ## The defect
 

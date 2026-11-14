@@ -48,7 +48,7 @@ wechatGIFMaxBytes = 5 * 1024 * 1024   // 5 MiB
 
 **来源等级必须说清楚（诚实记录）**：这是**面向用户的约定**（微信用户自行添加表情时
 "单个表情不超过 5M" 的普遍说法），**不是本仓从一手规范里量到的**。
-本次在 peerbox 上做了三次公开检索（`web_search`），**微信没有可检索到的公开尺寸上限规范**，
+本次在 peer1 上做了三次公开检索（`web_search`），**微信没有可检索到的公开尺寸上限规范**，
 检索只返回了 arxiv 上关于 GIF 的无关论文与微信首页。因此：
 
 - 常量注释里**写明**它是"operator-facing convention"而不是 primary-source measurement；

@@ -180,7 +180,7 @@ the two new files before the commit.
   26s wall, at load 5.21 6.63 6.07 (4 cores), **before** the delivery-point sync:
 
   ```
-  stamp: 2026-10-09T08:10:22+08:00 host=peerbox pkg=./internal/doubaostream budget=25m elapsed=26s \
+  stamp: 2026-10-09T08:10:22+08:00 host=peer1 pkg=./internal/doubaostream budget=25m elapsed=26s \
          load_start=5.21 6.63 6.07 load_end=5.18 6.55 6.05 cores=4 exit=0 outcome=pass \
          stream=run-1791504622-3698192.json
   ```
@@ -189,7 +189,7 @@ the two new files before the commit.
   the reading that counts:
 
   ```
-  stamp: 2026-10-09T08:14:43+08:00 host=peerbox pkg=./internal/doubaostream budget=25m elapsed=43s \
+  stamp: 2026-10-09T08:14:43+08:00 host=peer1 pkg=./internal/doubaostream budget=25m elapsed=43s \
          load_start=4.65 4.97 5.48 load_end=4.36 4.86 5.43 cores=4 exit=0 outcome=pass \
          stream=run-1791504883-3705588.json
   ```

@@ -4,7 +4,7 @@
 ## The defect, measured
 
 A test fixture child that outlives its owning test binary reparents to init and
-stands wherever it was started. On peerbox, 2026-09-26, that was inside a task
+stands wherever it was started. On peer1, 2026-09-26, that was inside a task
 worktree:
 
 ```

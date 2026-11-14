@@ -44,11 +44,11 @@ return fmt.Sprintf("%s:%s", peers[0], finishCleanupPeerRepo)
 - 别名由 **ssh** 解析（`~/.ssh/config`，是**本机**的配置）；
 - remote 名是 **每个仓库自己的本地设置**（`git remote add`）。
 
-只有巧合时它们才一致。hosta 上 `sync_peers` 是 `["peerbox"]`，而 `git remote -v` 只有 `origin`
+只有巧合时它们才一致。host-b 上 `sync_peers` 是 `["peer1"]`，而 `git remote -v` 只有 `origin`
 —— 于是每条交付腿都死在 git 自己的句子：
 
 ```
-fatal: 'peerbox' does not appear to be a git repository
+fatal: 'peer1' does not appear to be a git repository
 ```
 
 这句话既没说是哪个**声明的 peer**，也没说本仓库**实际有哪些 remote**（这是本 epic 的直接起因）。
@@ -102,16 +102,16 @@ go test ./internal/tools/ -run 'TestPeerRemoteTarget|TestDeliveryTarget' -count=
 
 ### 真实执行（`bin/gopi`，不是 `-h`）
 
-脚本 `~/workspace/gopi-test-scratch/prt-real-run.sh`（throwaway world：settings `sync_peers=["peerbox"]`，
+脚本 `~/workspace/gopi-test-scratch/prt-real-run.sh`（throwaway world：settings `sync_peers=["peer1"]`，
 客户端仓库 remote 只有 `origin`，git 的 ssh 被换成本仓库自带的哨兵 relay）。日志在
 `~/.gopi/sessions/01a14161-3b47-79a7-98ad-0f89cbb7f24f/artifacts/`。
 
 | 场景 | 命令 | 观察到的结果 |
 |---|---|---|
-| **① 别名≠remote 名仍交付**（epic 标题案例） | `gopi task finish-cleanup --apply --task <row>` | `done=[branch-checks,push-target,push,worktree,branch] removed=1`；哨兵 `task/prt-real = c23c4b61…`；ssh argv = `argv=peerbox git-receive-pack '~/work/GoPi'` |
+| **① 别名≠remote 名仍交付**（epic 标题案例） | `gopi task finish-cleanup --apply --task <row>` | `done=[branch-checks,push-target,push,worktree,branch] removed=1`；哨兵 `task/prt-real = c23c4b61…`；ssh argv = `argv=peer1 git-receive-pack '~/work/GoPi'` |
 | **② 别名 = remote 名 ⇒ 走 remote 臂** | `sync_peers=["origin"]`，同上 | `removed=1`；哨兵 ref 在；`upstream (origin) refs: [master]`；**ssh 日志为空**（git 走本地 remote 即已交付，未拨 ssh） |
-| **③ 失败具名诊断** | `GIT_SSH_COMMAND=/bin/false gopi task finish-cleanup --apply --task <row2>` | `done=[branch-checks,push-target] failed=[push: …]`，原因同时含：别名 `peerbox`、目标 `peerbox:~/work/GoPi`、键 `sync_peers`、**本仓库 remotes = origin**；`removed=0 refused=0 settled=1`（失败不消耗 ground） |
-| **④ 补投路径** | `gopi task retry-delivery --task <row2>` | `…delivered branch=task/prt-refused peer=peerbox:~/work/GoPi — the peer now advertises task/prt-refused at 449bca0a…`（同一行、同一 goal 的 retrofit 腿也真的把 ref 送到了对端） |
+| **③ 失败具名诊断** | `GIT_SSH_COMMAND=/bin/false gopi task finish-cleanup --apply --task <row2>` | `done=[branch-checks,push-target] failed=[push: …]`，原因同时含：别名 `peer1`、目标 `peer1:~/work/GoPi`、键 `sync_peers`、**本仓库 remotes = origin**；`removed=0 refused=0 settled=1`（失败不消耗 ground） |
+| **④ 补投路径** | `gopi task retry-delivery --task <row2>` | `…delivered branch=task/prt-refused peer=peer1:~/work/GoPi — the peer now advertises task/prt-refused at 449bca0a…`（同一行、同一 goal 的 retrofit 腿也真的把 ref 送到了对端） |
 
 ## 五、结构性守卫跟着委托走（第二个 commit）
 
@@ -164,7 +164,7 @@ go test ./internal/tools/ -run 'TestPeerRemoteTarget|TestDeliveryTarget' -count=
 
 
 - **`gitPushbackTargetFailureDetail` 的门仍是「实测 probe」而非 git 措辞**：本轮实测确认同一不可解析的 peer 在不同 verb 下句子不同（`git fetch <alias>:<path>` 走 ssh 说 “Could not read from remote repository”，push/本地路径说 “does not appear to be a git repository”）。这条保持原样（probe 为准），未做进一步收敛。
-- **hosta 的 `--alias peerbox` 路径下 `~/work/GoPi` 并不存在于对端**：本轮的真实执行把 ssh 换成了本仓库自带的哨兵 relay，证明的是**交付腿与目标解析这一层**通了；它不证明 peerbox 上真有一个可接收的 `~/work/GoPi`（那是拓扑事实，不是本改动的面）。
+- **host-b 的 `--alias peer1` 路径下 `~/work/GoPi` 并不存在于对端**：本轮的真实执行把 ssh 换成了本仓库自带的哨兵 relay，证明的是**交付腿与目标解析这一层**通了；它不证明 peer1 上真有一个可接收的 `~/work/GoPi`（那是拓扑事实，不是本改动的面）。
 - **未跑全树测试**（Rule 27：merge/verify 路径只跑分支作用域 smoke）。
 
 ## 七、修正（2026-10-16，regression 行 `01a14305-4031-78c0-8371-db6bdc34f178`）
@@ -176,17 +176,17 @@ go test ./internal/tools/ -run 'TestPeerRemoteTarget|TestDeliveryTarget' -count=
 **实测**——在一个**没有**配置该名字的仓库里（每一支真实推送腿所处的状态）：
 
 ```
-$ git fetch peerbox     # 该仓库无 peerbox remote
-fatal: 'peerbox' …
-$ git push  peerbox
-fatal: 'peerbox' does not appear to be a git repository
+$ git fetch peer1     # 该仓库无 peer1 remote
+fatal: 'peer1' …
+$ git push  peer1
+fatal: 'peer1' does not appear to be a git repository
 ```
 
 **机理**：remote 名不是传输方式，它是**每个仓库自己的本地区名**，只在声明它的仓库里可解析。
 而交付腿是把 target 交给 **row 自己的仓库**里的 git（`finishCleanupMainRepoDir` / ground 自己的
 仓库），不是交给解析发生的那个 checkout。于是「remote 臂返回裸名」把本 epic 要消灭的那句
-`fatal: 'peerbox' does not appear to be a git repository` **在下一个仓库里重新造了出来** ——
-这同时解释了为什么本仓（`git remote -v` → `peerbox`）上两个既有测试必然翻红。
+`fatal: 'peer1' does not appear to be a git repository` **在下一个仓库里重新造了出来** ——
+这同时解释了为什么本仓（`git remote -v` → `peer1`）上两个既有测试必然翻红。
 
 **修正后的契约**：`peerRemoteTarget.SSHTarget` —— **两条臂交给 git 的都是**
 `<alias>:<path>` 这个**唯一** wire form；remote 臂**不改变 wire form**，它的贡献是
@@ -197,7 +197,7 @@ fatal: 'peerbox' does not appear to be a git repository
 `push-target` 步骤的「是否被 caller 注入」判据（该判据用 `Rendered` 会把一条**正常的生产推送
 误报成注入**，所以同样改读 `SSHTarget`）。
 
-**随之作废的小节**：§2.1 里「fallback 臂是 hosta 形状的**失败/次优**路径」这一读法作废 ——
+**随之作废的小节**：§2.1 里「fallback 臂是 host-b 形状的**失败/次优**路径」这一读法作废 ——
 两臂现在**等价地**是解析结果，区别只在**能被诊断到什么程度**；§三 表格里「② 别名 = remote 名 ⇒
 走 remote 臂、ssh 日志为空」不再成立：该场景现在同样经 ssh 形态投递（wire form 恒定），
 它的断言改成「解析能找到该 remote（`Remote` 非空）+ 诊断点名它 + 分支真的落地」。
@@ -231,7 +231,7 @@ git —— 正是本 epic 要消灭的那句话。改后该行读 `SSHTarget`。
 **断言升级（这是本 run 的交付物 2）**：`TestDeliveryWireFormHoldsOnBothArms` 把契约钉在**腿**上，
 而不是钉在解析结构体上 —— 它跑**真实的收尾链**（`taskFinishCleanupChain`，即 `--apply` 用的同一个
 dispatcher），读 `push-target` 步骤自己的 `Target`（那是这条腿解析出来并交出去的字符串），两条臂
-（remote 臂 = 本仓配置了同名 remote；fallback 臂 = hosta 形状）**都**断言它是
+（remote 臂 = 本仓配置了同名 remote；fallback 臂 = host-b 形状）**都**断言它是
 `<alias>:<path>`，并且断言分支**真的经 ssh 形态落地**在哨兵仓库、ssh argv 里带着声明的别名。
 
 - **为什么要有这条腿级断言**：字段对 ≠ 腿带上了它。本 epic 的缺陷正活在这个缝里 —— 解析的 remote

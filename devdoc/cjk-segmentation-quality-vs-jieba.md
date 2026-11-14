@@ -545,7 +545,7 @@ Artifacts (Rule 37 — all in the session directory, **none in the git tree**):
 ## 14. Provenance
 
 Task `01a113a2`, branch `task/01a113a226027aaca49bdc2c138a213e`, worktree
-`/home/user/workspace/gopi-01a113a226027aaca49bdc2c138a213e`, measured on peerbox
+`/home/user/workspace/gopi-01a113a226027aaca49bdc2c138a213e`, measured on peer1
 2026-10-07 with go1.24.5 linux/amd64, Python 3.11.14 + jieba 0.42.1 (from
 `~/work/hermes-agent/.venv` — the system Python was not touched, Rule 35), and
 `modernc.org/sqlite v1.44.0`. Corpus read from `~/.gopi/memory.db`, which was opened

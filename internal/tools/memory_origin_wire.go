@@ -150,7 +150,7 @@ func originLocallyReachable(o *SyncRowOrigin, thisHost string) originReachabilit
 // sameOriginHost compares two node names for identity. Case-insensitive: a
 // hostname is not case-significant, and the wire value is produced by
 // `os.Hostname()` on one node and by GOPI_SYNC_NODE on a simulated one, so
-// "peerbox" and "Peerbox" must not read as two machines.
+// "peer1" and "Peer1" must not read as two machines.
 func sameOriginHost(a, b string) bool {
 	return strings.EqualFold(strings.TrimSpace(a), strings.TrimSpace(b))
 }

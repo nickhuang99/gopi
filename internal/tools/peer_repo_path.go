@@ -12,7 +12,7 @@ package tools
 // point somewhere else, under another spelling:
 //
 //	$ gopi config show | grep -E 'dev_repo|repos '
-//	  dev_repo  "peerbox:/home/user/work/gopi"
+//	  dev_repo  "peer1:/home/user/work/gopi"
 //	  repos     {"/home/user/work/gopi":{...}}
 //
 // and on the peer those two paths are DIFFERENT REPOSITORIES, not two names for

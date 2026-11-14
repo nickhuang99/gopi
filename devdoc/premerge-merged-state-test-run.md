@@ -121,15 +121,15 @@ inside the merged checkout).
 ## The stale-tracking-ref arm — MEASURED
 
 The predecessor filed: *a reviewer read "the peer's master is broken" off
-`refs/remotes/peerbox/master`, a tracking ref 174 commits stale — nothing on any
+`refs/remotes/peer1/master`, a tracking ref 174 commits stale — nothing on any
 agent-facing path had refreshed it.* This task decided that arm explicitly.
 
 **Measured on this host, at the moment of writing:**
 
 ```
-$ git for-each-ref --format='%(refname:short)=%(objectname:short)' refs/remotes/peerbox/master
-peerbox/master=2c2acd773
-$ git ls-remote peerbox refs/heads/master
+$ git for-each-ref --format='%(refname:short)=%(objectname:short)' refs/remotes/peer1/master
+peer1/master=2c2acd773
+$ git ls-remote peer1 refs/heads/master
 61f58a3f17e43908a0a8912cf614b7f5a60d9eef	refs/heads/master
 ```
 
@@ -142,13 +142,13 @@ The tracking ref is stale **right now** and by a wide margin. Who writes it?
    used by the pre-merge gate, the push-back ancestry gate and the worker's
    ground baseline. Its refspec is a **forced mirror into the reserved ref**:
    `+refs/heads/master:refs/remotes/gitPushcheck/master`. It never touches
-   `refs/remotes/peerbox/*`.
+   `refs/remotes/peer1/*`.
 2. **`GitSyncClientPass`** (`internal/tools/task_sync_git.go`) — fetches with
    `--prune` and **no refspec**, which writes `refs/remotes/<peer>/*`. It is the
    **only** agent-facing writer of the tracking ref, and it runs in the client
    sync *pass* (a scheduled/CLI path), **not** in the merge/verify read path.
    Measured here: `refs/remotes/gitPushcheck/master=2c2acd773` and
-   `refs/remotes/peerbox/master=2c2acd773` were both 174 commits behind the real
+   `refs/remotes/peer1/master=2c2acd773` were both 174 commits behind the real
    head, i.e. the tracking ref carries whatever the last client pass saw.
 3. **`AdoptionSweep`** (`internal/tools/task_adoption.go`) — deletes
    `refs/remotes/origin/*` entries it has adopted; it does not refresh anything.
@@ -201,7 +201,7 @@ this reason is void and the arm must be re-opened.
   declared suite's existing behaviour, not something this check introduces, and
   the flake path (`make flake-catch`) is a separate lever.
 - **The peer-side (merger) lane was not touched.** Rule 28 puts the post-merge
-  lane on peerbox; the pre-merge gate is the client's, and this change is scoped to
+  lane on peer1; the pre-merge gate is the client's, and this change is scoped to
   it. A composed red that is *already* on shared master is caught by the
   post-merge verify lane, unchanged here.
 - **Budget note.** The check adds a test run to each delivery that has a clean

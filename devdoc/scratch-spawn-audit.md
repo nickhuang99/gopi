@@ -5,8 +5,8 @@ Companion to `devdoc/tmp-ban-scratch-root.md` (part A: the pinned scratch root
 + age/holder GC). Part A bounded the DATA a test suite writes. This part bounds
 the PROCESSES a test suite spawns: a long-lived mock that outlives its test
 holds its scratch files open, keeps polling, and survives the whole run — the
-process half of the 2026-09-11 peerbox exhaustion
-(`devdoc/peerbox-resource-exhaustion-20260911.md`).
+process half of the 2026-09-11 peer1 exhaustion
+(`devdoc/peer1-resource-exhaustion-20260911.md`).
 
 Branch: `feat/test-spawn-pgid-reaper`
 Commits: `9a44974` (reaper) · `4e71bad` (dead-pid/holder/daemon migration) ·

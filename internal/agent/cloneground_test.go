@@ -3,7 +3,7 @@ package agent
 // cloneground_test.go — the BARE-PROMPT face's clone channel, pinned on both
 // arms.
 //
-// THE DEFECT THESE TESTS CLOSE (measured on peerbox 2026-10-23, row 01a16520):
+// THE DEFECT THESE TESTS CLOSE (measured on peer1 2026-10-23, row 01a16520):
 // with settings `dev_repo` set, `echo "…" | gopi` was the ONE face that ignored
 // the channel — it auto-registered a row whose deliverable was the process's
 // own git work tree (tools.TaskAutoDeliverableJSON) and worked in a Rule-6a

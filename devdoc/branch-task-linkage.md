@@ -109,7 +109,7 @@ whose deliverable had no repo to pair with (`:500`, `:165`).
 | ② | `deliverable.branch` at **completion** | `taskBackfillDeliverableBranch` | `task_deliverable_branch.go:465`, sole caller `tasks.go:5405` | row → branch for a **completed** row with a repo blob and no branch yet | not-completed rows (pending / in-flight / failed / cancelled) |
 | ③ | `resumed:<session-id>` tag | `TaskTagResumed` | const `tasks.go:7263` (`taskTagResumedPrefix = "resumed:"`), caller `cmd/agent/cli_resume.go:400-409` | row → the **fresh session id** that continued it, and the count (`TaskResumeCount`, `tasks.go:5468`) | needs `--task` at resume time (opt-in; "opt-in ledger linkage", `cli_resume.go:429-434`); names a session, **never a branch or a directory** |
 | ④ | merge-backlog row (`merge-backlog: <branch> unmerged …`) | `agentBranchScan` / `TaskSubmitMergeBacklog` | summary verb `tasks.go:3779`, scan submit `runTaskAuditMerges` `cmd/agent/cli_tasks.go:4710`, payload `task_merge_backlog.go:188-206`, tags `:214-226` | **branch → a task row** for an *unmerged* branch that is not already tracked (`TaskOpenMergeBacklogBranches` dedupe) | only exists for branches the scan noticed as unmerged & untracked; carries no worktree, no session, no owner row |
-| ⑤ | migration provenance tags (`migrated-from-peerbox`, `from-<host>`) | operator, at dispatch | seen live, e.g. `01a0a981-2858-…` | which host/session a row came from | not a branch link at all |
+| ⑤ | migration provenance tags (`migrated-from-peer1`, `from-<host>`) | operator, at dispatch | seen live, e.g. `01a0a981-2858-…` | which host/session a row came from | not a branch link at all |
 
 ### Evidence (each channel, by real command)
 
@@ -143,8 +143,8 @@ and the contrasting `in_progress` row quoted in §1.1 (branch **and** worktree p
 ```
 $ sqlite3 "file:$HOME/.gopi/memory.db?mode=ro" \
   "select task_id,status,substr(tags,1,60) from tasks where tags like '%resumed:%' limit 3;"
-01a0a416-df82-7e99-9288-5a3df37147e9|failed|bug,render,gopilog,binary-summary,worker:peerbox,resumed:1ff54
-01a09732-2cb2-7680-9c43-4543b57401d1|verified|bug,worker:peerbox,resumed:060c9825-cb59-4715-8955-acd6c0268b7
+01a0a416-df82-7e99-9288-5a3df37147e9|failed|bug,render,gopilog,binary-summary,worker:peer1,resumed:1ff54
+01a09732-2cb2-7680-9c43-4543b57401d1|verified|bug,worker:peer1,resumed:060c9825-cb59-4715-8955-acd6c0268b7
 01a097f8-79bf-73d6-ad4c-1dc14abe0086|failed|bug,resumed:0a4a1f96-4716-43fb-a6af-801b7c149bb4
 ```
 

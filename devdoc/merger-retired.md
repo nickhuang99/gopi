@@ -5,7 +5,7 @@
 ## The report
 
 ```
-nick@peerbox:~/work/GoPi$ gopi merger --stop
+nick@peer1:~/work/GoPi$ gopi merger --stop
 [merger] gopi merger: stop requested — pid 552530, terminated
 (answered at the tick boundary; the in-flight tick is not interrupted)
 ```

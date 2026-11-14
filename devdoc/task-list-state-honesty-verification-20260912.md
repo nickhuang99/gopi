@@ -45,7 +45,7 @@ reported here with reproductions, not patched.
 (`~/.gopi/memory.db`, 1093 rows, 6 `in_progress`).
 
 Live run, pid `1575642` — `/proc/1575642/comm` = `gopi`, state `S`, claim stamp
-`peerbox:1575642` = this host, `claimed_at` >= `in_progress_at`:
+`peer1:1575642` = this host, `claimed_at` >= `in_progress_at`:
 
 ```
 OLD  #01a09569  01a09569-1817-7be5-be31-299f055ffff6  [in_progress]  investigate task worker starting message  [running 8m33s since 19:44:28] [via worker]
@@ -66,11 +66,11 @@ The healthy row keeps its pre-change wording byte for byte (modulo the clock)
 The ledger row at that moment (and still now):
 
 ```
-status=in_progress  claimed_by=peerbox:2881717  claimed_at=1789213750  in_progress_at=1789213750
-hostname=peerbox   /proc/2881717 -> absent (the pid is DEAD)
+status=in_progress  claimed_by=peer1:2881717  claimed_at=1789213750  in_progress_at=1789213750
+hostname=peer1   /proc/2881717 -> absent (the pid is DEAD)
 ```
 
-The stamp names **this host** (`peerbox`); the label says **another host**. The
+The stamp names **this host** (`peer1`); the label says **another host**. The
 rendered reason contradicts the evidence it claims to report.
 
 Root cause (`internal/tools/taskstate.go`,
@@ -99,12 +99,12 @@ Minimal reproduction, **no stubs, via the production entry point**
 `taskInProgressStateNow` — a row carrying row `01a09573`'s own stamp:
 
 ```
-PRODUCTION PATH (claim="peerbox:2881717", pid dead, stamp fresh, this host) -> "unknown: claim stamp names another host"
-DEFECT REPRO: label claims a FOREIGN host while the stamp names THIS host (peerbox)
+PRODUCTION PATH (claim="peer1:2881717", pid dead, stamp fresh, this host) -> "unknown: claim stamp names another host"
+DEFECT REPRO: label claims a FOREIGN host while the stamp names THIS host (peer1)
 ```
 
-(`claimHolder("peerbox:2881717") -> host="peerbox" pid=2881717 ok=true` — the
-same-host branch is taken; `hostnameOrEmpty()="peerbox"`.)
+(`claimHolder("peer1:2881717") -> host="peer1" pid=2881717 ok=true` — the
+same-host branch is taken; `hostnameOrEmpty()="peer1"`.)
 
 ### Knock-on: the `died` verdict is effectively unreachable for real rows
 
@@ -112,9 +112,9 @@ Labelling the epics's own three situations:
 
 | Epic situation | Realistic worker row shape | Rendered |
 |---|---|---|
-| (a) live run | stamp `peerbox:<live gopi pid>` | `running` ✔ |
+| (a) live run | stamp `peer1:<live gopi pid>` | `running` ✔ |
 | (b) finished-but-unrecorded | session_end + worktree gone | `finished-but-unrecorded` ✔ |
-| (c) **died / killed / crashed** | stamp `peerbox:<dead pid>`, session silent | **NOT `died`** — `unknown: claim stamp names another host` ✘ |
+| (c) **died / killed / crashed** | stamp `peer1:<dead pid>`, session silent | **NOT `died`** — `unknown: claim stamp names another host` ✘ |
 
 Proof: `claimStampFreshness` returns `claimStampStale` only when
 `ClaimedAt < InProgressAt - 5s` — a *previous* claimant. A current claimant whose
@@ -173,7 +173,7 @@ to be readable here), so the same real situation gets two different labels:
 
 | Claim stamp | Session readable here, no `session_end` | Rendered |
 |---|---|---|
-| `peerbox:<dead pid>` (this host) | no | `unknown: claim stamp names another host` (FALSE reason — §3) |
+| `peer1:<dead pid>` (this host) | no | `unknown: claim stamp names another host` (FALSE reason — §3) |
 | `other-host:<pid>` | yes | `died` (asserted without being able to see that process — §4) |
 | `other-host:<pid>` | no | `unknown: claim stamp names another host` (correct) |
 
@@ -203,7 +203,7 @@ func TestZZVerifierProductionPath(t *testing.T) {
     now := time.Now()
     tk := &Task{
         Status: taskStatusInProgress,
-        ClaimedBy: "peerbox:2881717", HasClaim: true, ClaimedAt: 1789213750.0,
+        ClaimedBy: "peer1:2881717", HasClaim: true, ClaimedAt: 1789213750.0,
         HasInProgressAt: true, InProgressAt: 1789213750.0,
         HasToolcall: true, LastToolcallAt: float64(now.Add(-4 * time.Minute).Unix()),
         CreatedAt:   float64(now.Add(-4 * time.Minute).Unix()),

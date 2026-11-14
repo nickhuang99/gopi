@@ -4,15 +4,15 @@ internal/tools/task_finish_cleanup_test.go	2199	production (taskFinishCleanupCha
 internal/tools/task_finish_cleanup_test.go	2242	production (GitSyncServerTarget; no peer declared)	none	SAFE
 internal/tools/task_finish_cleanup_test.go	2259	production (GitSyncServerTarget; option-shaped peer)	none	SAFE
 internal/tools/task_finish_cleanup_test.go	2288	production (taskFinishCleanupChain; no peer declared)	none	SAFE
-internal/tools/task_finish_cleanup_test.go	2294 (master 1e3ddxxx)	production (taskFinishCleanupChain; SyncPeers="peerbox")	peerbox:~/work/GoPi == THE REAL REPO (this host is peerbox)	LEAK — this is the defect; target now injected
+internal/tools/task_finish_cleanup_test.go	2294 (master 1e3ddxxx)	production (taskFinishCleanupChain; SyncPeers="peer1")	peer1:~/work/GoPi == THE REAL REPO (this host is peer1)	LEAK — this is the defect; target now injected
 internal/tools/task_finish_cleanup_test.go	2337	injected localTestPeerTarget(g.serverDir) + GOPI_FINISH_CLEANUP_TEST_PUSH=1	fixture's own bare repo under the test temp root	SAFE (repaired arm)
 internal/tools/task_finish_cleanup_test.go	157,312,355,818,1789,1962	injected f.serverDir	fixture's own bare repo under the test temp root	SAFE
-internal/tools/task_finish_cleanup_test.go	2470	production (leak-shape driver of the regression test)	peerbox:~/work/GoPi — REFUSED by the fence before any git/ssh leg	SAFE-BY-FENCE
+internal/tools/task_finish_cleanup_test.go	2470	production (leak-shape driver of the regression test)	peer1:~/work/GoPi — REFUSED by the fence before any git/ssh leg	SAFE-BY-FENCE
 internal/tools/task_finish_cleanup_test.go	2490	injected localTestPeerTarget(g.serverDir) + marker	fixture's own bare repo	SAFE (positive control)
 internal/tools/task_finish_push_contract_test.go	207	injected f.serverDir	fixture's own bare repo	SAFE
 internal/tools/task_sync_git_test.go	49,65,122,138	injected server (gitSyncFixture: t.TempDir()/server.git)	fixture's own bare repo	SAFE
 internal/tools/peer_alias_test.go	200,204	target "<option-shaped>:~/work/GoPi"	REFUSED by ValidateSSHGitTarget before any transport	SAFE-BY-GUARD
 internal/tools/memory_sync_task_gitpushback_cov_test.go	124,125,203,204	injected peerRepo (covPushbackPeer: t.TempDir()/peer.git:~/work/GoPi)	a LOCAL path — git's rule: a leading "/" makes the colon part of the filename, so it never names a host	SAFE-BY-GIT-RULE (trap shape: the same literal without the leading slash would name a real host)
-internal/tools/memory_sync_{assets,bidir,bidir2,delta,reflow,harvest,session}_test.go, is_server_node_test.go, memory_sync_claim_revert_noop_test.go, taskid_whitespace_normalize_residual_test.go, tasknotifyband_test.go, task_reclaim_self_test.go, taskverify_ctx_test.go	see grep table (SyncPeersEnv sites)	peer NAMES declared ("peerbox","hp",…) for the memory/claim/serve channels	transport is the injected ssh hook (syncSSHExchangeHook) — no git push leg exists	SAFE (no git transport)
+internal/tools/memory_sync_{assets,bidir,bidir2,delta,reflow,harvest,session}_test.go, is_server_node_test.go, memory_sync_claim_revert_noop_test.go, taskid_whitespace_normalize_residual_test.go, tasknotifyband_test.go, task_reclaim_self_test.go, taskverify_ctx_test.go	see grep table (SyncPeersEnv sites)	peer NAMES declared ("peer1","hp",…) for the memory/claim/serve channels	transport is the injected ssh hook (syncSSHExchangeHook) — no git push leg exists	SAFE (no git transport)
 testsuite/ (e2e)	—	no finish-cleanup / GitSyncClientPass / GitSyncPushLocalBranches call sites	—	SAFE
 cmd/agent/	cli_tasks_worker_recycle_e2e_test.go:52 (comment), cli_tasks_report_seam_test.go (reads only)	production resolver mentioned, never driven with a peer declared	—	SAFE

@@ -4,7 +4,7 @@
 Epic: "git branch hook should trigger gopi to merge branches, or at least clean up
 after merge (remove worktree, delete branch). Investigate whether the hook works,
 single-branch vs all-branches handling, local worktree vs remote push difference."
-Node: peerbox · Date: 2026-09-01 22:30–23:00 · Method: log forensics + live-fire probes
+Node: peer1 · Date: 2026-09-01 22:30–23:00 · Method: log forensics + live-fire probes
 
 ## Completed
 
@@ -62,11 +62,11 @@ repo-wide. A single push drains the whole backlog posture.
   `scanned=16 submitted=1` pass; ledger gained `merge probe/ff-check into master`.
 - **Non-bare repo caveat:** this repo is the merge TARGET (`receive.denyCurrentBranch`
   unset; pushes to `master` from clients still update the ref — a quirk of the
-  multi-node setup where peerbox is both working repo and server for hp).
+  multi-node setup where peer1 is both working repo and server for hp).
 
 ### 5. Local worktree vs remote branch-push difference
 - **post-receive fires on ANY ref update arriving via git transport** — ssh remote
-  (`nick@10.0.0.6:/home/user/work/GoPi`, as hp pushes) or file-path push from a
+  (`nick@192.0.2.6:/home/user/work/GoPi`, as hp pushes) or file-path push from a
   client clone behave identically. Both are "receive-pack" events.
 - **A worktree checkout inside the same repo does NOT fire anything**: worktree
   branches are just local refs; creating/committing/deleting them never enters

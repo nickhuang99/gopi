@@ -3,7 +3,7 @@
 
 Task `01a0f3f72a0173e4a44548a3a8accee2` · branch `task/01a0f3f72a0173e4a44548a3a8accee2`
 Briefing: `briefings/brief-overlapping-test-runs-starve-io.md`. Observed event: 2026-10-01 ~04:10–04:17
-on `peerbox`, run `gopi resume 6abdb58b-… --task 01a0f3cf-7d3c-7b9f-b177-44228c1365c8`.
+on `peer1`, run `gopi resume 6abdb58b-… --task 01a0f3cf-7d3c-7b9f-b177-44228c1365c8`.
 
 **Diagnosis only — no code was changed.** Every claim below carries the command that produced it.
 
@@ -314,7 +314,7 @@ script/cron/lock/state file.
 ## Evidence (self-filed)
 
 - `go build ./...` → `BUILD_ALL_OK` (exit 0) — job-1 output quoted above.
-- `scripts/test-budget.sh ./internal/standards/` → line `stamp: 2026-10-01T04:58:03+08:00 host=peerbox
+- `scripts/test-budget.sh ./internal/standards/` → line `stamp: 2026-10-01T04:58:03+08:00 host=peer1
   pkg=./internal/standards/ budget=25m elapsed=105s … exit=0 outcome=pass stream=run-1790801883-2779506.json`
   and `packages: 1 finished, 0 with a failure`; `--latest` resolved to
   `…/scratch/queue/test-budget/run-1790801883-2779506.json` (this session's own artifact dir, so no

@@ -1,8 +1,8 @@
 <!-- doc-class: normative -->
-# peerbox 资源耗尽事故：根因诊断 + 恢复记录
+# peer1 资源耗尽事故：根因诊断 + 恢复记录
 
 **日期**：2026-09-11 05:47–06:10
-**触发**：peerbox 全部资源耗尽，hermes 无法响应，nick 被迫 kill hermes + kill HOMM3
+**触发**：peer1 全部资源耗尽，hermes 无法响应，nick 被迫 kill hermes + kill HOMM3
 **结果**：/ 分区 1.5G → 19G；load 9.09 → 1.65；根因定位到 4 类孤儿进程 + 3 类磁盘垃圾
 
 ---

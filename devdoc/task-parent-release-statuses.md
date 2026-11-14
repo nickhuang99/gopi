@@ -18,7 +18,7 @@ status is in `taskParentReleaseStatuses`. Until this change that set was
 `{completed, verified}` — and `cancelled` is TERMINAL (no status write leaves
 it), so a child of a cancelled parent is parked **forever**.
 
-`cancelled` was carrying TWO meanings. Measured on peerbox's live ledger,
+`cancelled` was carrying TWO meanings. Measured on peer1's live ledger,
 2026-10-07 (read-only `sqlite3 -readonly "file:$HOME/.gopi/memory.db?mode=ro"`):
 
 | figure | value | query |
@@ -32,8 +32,8 @@ it), so a child of a cancelled parent is parked **forever**.
 
 The one parked child's parent
 (`01a10efc-760d-79e2-aadd-cf5681406c37`) carries the three-step migration
-recipe verbatim in its `reason`: *"迁移到 HP：本行在 peerbox 侧取消，改由 HP 的
-ledger 执行（新行 01a10f9c-…）… 不要在 peerbox 侧再执行本行。"* Its work IS done —
+recipe verbatim in its `reason`: *"迁移到 HP：本行在 peer1 侧取消，改由 HP 的
+ledger 执行（新行 01a10f9c-…）… 不要在 peer1 侧再执行本行。"* Its work IS done —
 on HP's ledger, by a completed row — but the gate reads `cancelled` as
 "dependency unmet", so the child never runs and the queue looks clean. That is
 the Rule 15 silent failure: nothing errors, nothing warns, the row just waits.
@@ -241,7 +241,7 @@ same path it always has: a table created from `tasksSchemaTable()`.
   marker) because all three parents were still pending — the fixture's own red.
   The claim itself was observed, not inferred: `gopi worker --once` printed
   `worker: claimed c-release` and the sandbox ledger afterwards read
-  `c-release | failed | peerbox:3734842` (the child then failed as a *task*, in
+  `c-release | failed | peer1:3734842` (the child then failed as a *task*, in
   its own ground, which is its own business — the GATE released it, which is
   what this change is about), while `c-cancel` and `c-fail` stayed
   `pending / claimed_by=NULL`.

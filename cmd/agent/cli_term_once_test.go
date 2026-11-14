@@ -458,7 +458,7 @@ func TestTermOnceToolTurnIsObservableOutsideTheAnswer(t *testing.T) {
 			toolUseSSE(w, "call_once_1", "read", `{"path":"/etc/hostname"}`)
 			return
 		}
-		textSSE(w, "the hostname is peerbox")
+		textSSE(w, "the hostname is peer1")
 	})
 
 	code := runTermOnce([]string{"read /etc/hostname", termOnceFlag, termToolsFlag})
@@ -487,7 +487,7 @@ func TestTermOnceToolTurnIsObservableOutsideTheAnswer(t *testing.T) {
 		t.Errorf("stderr does not report the tool activity:\n%s", h.diag.String())
 	}
 	// stdout stays the answer alone: no frame, no tool line.
-	if got := h.answer.String(); got != "the hostname is peerbox" {
+	if got := h.answer.String(); got != "the hostname is peer1" {
 		t.Errorf("stdout = %q, want the answer text only (tool activity must not ride in the answer stream)", got)
 	}
 	// The tool-enabled turn really shipped tools to the model.

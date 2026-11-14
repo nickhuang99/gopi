@@ -63,7 +63,7 @@ gopi shot [--url URL | --self] [--out PATH] [--viewport WxH] [--wait N | --wait-
 
 1. `GOPI_SHOT_CHROME` env（显式指定）
 2. `~/.cache/ms-playwright/chromium-*/chrome-linux*/chrome`（glob 取最高版本号——HP 1228 实测布局）
-3. `which chromium-browser / chromium / google-chrome / google-chrome-stable`（PATH 查找；peerbox snap 坏时 snap 版会失败，靠后续 CDP 握手报错兜底，错误信息提示设 GOPI_SHOT_CHROME）
+3. `which chromium-browser / chromium / google-chrome / google-chrome-stable`（PATH 查找；peer1 snap 坏时 snap 版会失败，靠后续 CDP 握手报错兜底，错误信息提示设 GOPI_SHOT_CHROME）
 4. 找不到 → 报错并列出尝试过的路径 + 提示 `npx playwright install chromium` 或设 GOPI_SHOT_CHROME
 
 ## 与 vision 管线闭环
@@ -74,7 +74,7 @@ shot 输出 PNG → `gopi vision_analyze <png>` 或 chat 里 positional 图片�
 
 ## 远程节点（--node hp 等）
 
-本单**不做**（HP 即本机验证环境；peerbox 跑 gopi shot 时走本仓同代码）。CNY 任务
+本单**不做**（HP 即本机验证环境；peer1 跑 gopi shot 时走本仓同代码）。CNY 任务
 模式的 ssh+scp 封装留 TODO，接口已预留（Capture 返回字节，远程传输是 CLI 层事）。
 
 ## 测试策略

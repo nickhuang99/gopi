@@ -5,7 +5,7 @@
 
 **Status:** correction to `devdoc/worker-control-ctrl-c.md` and to task
 `01a14316-b7cb-71b6-9426-48f788a85a9c`'s mechanism section. **Measured:**
-2026-10-16, host hosta. No production behaviour is changed by this
+2026-10-16, host host-b. No production behaviour is changed by this
 document — the fix it corrects (`d1f88b5e5`) is on master and stays as it is.
 
 ## What is being corrected

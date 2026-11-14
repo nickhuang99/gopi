@@ -155,15 +155,15 @@ arm "DISTINCT-" distinct
 --- scratch/tmp-root code that could point at the runtime dir ---
 === E. the manager's own log around the two candidate moments ===
 --- Sep 14 22:38:50 .. 22:39:20 (runtime-dir mtime) ---
-Sep 14 22:38:50 peerbox org.xfce.ScreenSaver[2586]: Xlib:  extension "DPMS" missing on display ":1".
-Sep 14 22:39:05 peerbox org.xfce.ScreenSaver[2586]: Xlib:  extension "DPMS" missing on display ":1".
+Sep 14 22:38:50 peer1 org.xfce.ScreenSaver[2586]: Xlib:  extension "DPMS" missing on display ":1".
+Sep 14 22:39:05 peer1 org.xfce.ScreenSaver[2586]: Xlib:  extension "DPMS" missing on display ":1".
 --- today 07:25:30 .. 07:27:00 (systemd/ mtime) ---
-Sep 15 07:25:35 peerbox org.xfce.ScreenSaver[2586]: Xlib:  extension "DPMS" missing on display ":1".
-Sep 15 07:25:50 peerbox org.xfce.ScreenSaver[2586]: Xlib:  extension "DPMS" missing on display ":1".
-Sep 15 07:26:05 peerbox org.xfce.ScreenSaver[2586]: Xlib:  extension "DPMS" missing on display ":1".
-Sep 15 07:26:20 peerbox org.xfce.ScreenSaver[2586]: Xlib:  extension "DPMS" missing on display ":1".
-Sep 15 07:26:35 peerbox org.xfce.ScreenSaver[2586]: Xlib:  extension "DPMS" missing on display ":1".
-Sep 15 07:26:50 peerbox org.xfce.ScreenSaver[2586]: Xlib:  extension "DPMS" missing on display ":1".
+Sep 15 07:25:35 peer1 org.xfce.ScreenSaver[2586]: Xlib:  extension "DPMS" missing on display ":1".
+Sep 15 07:25:50 peer1 org.xfce.ScreenSaver[2586]: Xlib:  extension "DPMS" missing on display ":1".
+Sep 15 07:26:05 peer1 org.xfce.ScreenSaver[2586]: Xlib:  extension "DPMS" missing on display ":1".
+Sep 15 07:26:20 peer1 org.xfce.ScreenSaver[2586]: Xlib:  extension "DPMS" missing on display ":1".
+Sep 15 07:26:35 peer1 org.xfce.ScreenSaver[2586]: Xlib:  extension "DPMS" missing on display ":1".
+Sep 15 07:26:50 peer1 org.xfce.ScreenSaver[2586]: Xlib:  extension "DPMS" missing on display ":1".
 === F. systemd's own notion of the private socket / bus (system bus, read-only) ===
 * user@1000.service - User Manager for UID 1000
      Loaded: loaded (/lib/systemd/system/user@.service; static)

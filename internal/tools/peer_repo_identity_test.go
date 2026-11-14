@@ -6,7 +6,7 @@ package tools
 //
 // THE DEFECT (measured 2026-10-25, evidence and raw output in the filing run's
 // session directory): the delivery legs dialled `~/work/GoPi` while the host
-// declared `peerbox:/home/user/work/gopi`, and on the peer those are two
+// declared `peer1:/home/user/work/gopi`, and on the peer those are two
 // repositories with disjoint root commits (12025 vs 359 commits, `rev-list
 // --max-parents=0` answering different roots). The mirror ref therefore held a
 // stranger's tip, and the staleness alarm answered it with

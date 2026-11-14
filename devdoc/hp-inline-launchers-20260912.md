@@ -197,7 +197,7 @@ Evidence recipe: `scripts/hp/hp-checkout-staleness.sh`.
   against a stub, rc=3, 1 round. Lesson: verify the edit landed
   (`grep -n`) before treating a probe as sandboxed.
 - **Not touched, per constraints:** no `pkill`, no signal to any running worker
-  or merger (only PIDs this probe created, none of them surviving); the peerbox
+  or merger (only PIDs this probe created, none of them surviving); the peer1
   watcher fix `141a6aa8` untouched; failed task `01a092db-a698` not rerun. The
   stale `in_progress` row `01a08c4d` (claimed by HP PID 1818553, dead since
   2026-09-11) is a **pre-existing** claim-holder-freshness issue

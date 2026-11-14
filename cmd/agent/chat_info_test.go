@@ -60,7 +60,7 @@ func infoFixture() chatInfoFields {
 		Dir:         "/home/user/workspace/gopi-task",
 		Repo:        "/home/user/workspace/gopi-task",
 		InRepo:      true,
-		Node:        "peerbox (server→hp)",
+		Node:        "peer1 (server→hp)",
 		ToolsOn:     true,
 	}
 }

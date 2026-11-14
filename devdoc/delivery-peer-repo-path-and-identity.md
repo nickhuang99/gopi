@@ -18,7 +18,7 @@ Task `01a1734c-4ba1-7538-a6e8-980bd5eb2044`。两个缺陷，一条根因：**�
 
 ```
 $ gopi config show | grep -E 'dev_repo'
-  dev_repo                              "peerbox:/home/user/work/gopi"
+  dev_repo                              "peer1:/home/user/work/gopi"
 ```
 
 在 peer 上这两个路径**是两个互不相关的仓库**（`git rev-list --max-parents=0` 给出不相交的
@@ -90,7 +90,7 @@ $ gopi config show | grep -E 'dev_repo'
 - 红证（先红）：把同一组断言写成 `zz_redproof_peer_repo_test.go` 放进**旧树**
   （`git archive HEAD` 的副本），两条都 FAIL，原文见
   `~/.gopi/sessions/01a1734c-4ba1-7538-a6e8-980bd5eb2044/evidence/redproof-old-tree.txt`：
-  - `RED: the delivery target is "peerbox:~/work/GoPi", want the DECLARED delivery point "peerbox:/home/user/work/gopi"`
+  - `RED: the delivery target is "peer1:~/work/GoPi", want the DECLARED delivery point "peer1:/home/user/work/gopi"`
   - `RED: an unrelated peer's classification printed the merge prescription "git merge refs/remotes/gitPushcheck/master"`
 - 绿：同一断言在新树全过（`TestPeerRepoPath*`、`TestPeerIdentity*`、`TestDeliveryRepo*`）。
 - 真跑 `gopi task push` 的 reflog 取证见任务报告。

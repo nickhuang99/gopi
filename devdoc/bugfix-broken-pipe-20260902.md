@@ -6,7 +6,7 @@ Date: 2026-09-02 · Branch: `fix/task-run-broken-pipe` (worktree `~/workspace/go
 ## Symptom
 
 `gopi task run t-1788305178` (CLI code-review child of the review epic) was
-claimed 07:37:28 (claimed_by peerbox:913343), FAILED 07:37:47:
+claimed 07:37:28 (claimed_by peer1:913343), FAILED 07:37:47:
 
 ```
 result: gopi run failed: signal: broken pipe — run: elapsed=18s

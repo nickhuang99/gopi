@@ -280,7 +280,7 @@ Notice: journal has been rotated since unit was started, output may be incomplet
              | |-app-tigervncserver.slice
              | | `-tigervncserver@:1.service
              | |   |-  2401 /usr/bin/perl /usr/bin/tigervncserver :1 -geometry 1600x900 -depth 24 -localhost no -rfbport 5900
-             | |   |-  2402 /usr/bin/Xtigervnc :1 -NeverShared=0 -AlwaysShared=1 -localhost=0 -desktop "peerbox:1 (nick)" -rfbport 5900 -PasswordFile /home/user/.vnc/passwd -SecurityTypes VncAuth,TLSVnc -auth /home/user/.Xauthority -geometry 1600x900 -depth 24
+             | |   |-  2402 /usr/bin/Xtigervnc :1 -NeverShared=0 -AlwaysShared=1 -localhost=0 -desktop "peer1:1 (nick)" -rfbport 5900 -PasswordFile /home/user/.vnc/passwd -SecurityTypes VncAuth,TLSVnc -auth /home/user/.Xauthority -geometry 1600x900 -depth 24
              | |   |-  2407 xfce4-session
              | |   |-  2417 dbus-launch --exit-with-session startxfce4
              | |   |-  2418 /usr/bin/dbus-daemon --syslog --fork --print-pid 5 --print-address 7 --session
@@ -292,51 +292,51 @@ Slice=user-1000.slice
 State=active
 Linger=yes
 === journal (this boot): user-runtime-dir@1000 / user@1000 ===
-Sep 12 16:00:26 peerbox kernel: cgroup: fork rejected by pids controller in /user.slice/user-1000.slice/user@1000.service/init.scope
-Sep 12 16:05:03 peerbox kernel: cgroup: fork rejected by pids controller in /user.slice/user-1000.slice/user@1000.service/app.slice/global-scheduler.service
-Sep 12 16:05:18 peerbox kernel: cgroup: fork rejected by pids controller in /user.slice/user-1000.slice/user@1000.service/app.slice/app-tigervncserver.slice/tigervncserver@:1.service
-Sep 12 16:24:31 peerbox kernel: cgroup: fork rejected by pids controller in /user.slice/user-1000.slice/user@1000.service/app.slice/memory-global-scheduler.service
+Sep 12 16:00:26 peer1 kernel: cgroup: fork rejected by pids controller in /user.slice/user-1000.slice/user@1000.service/init.scope
+Sep 12 16:05:03 peer1 kernel: cgroup: fork rejected by pids controller in /user.slice/user-1000.slice/user@1000.service/app.slice/global-scheduler.service
+Sep 12 16:05:18 peer1 kernel: cgroup: fork rejected by pids controller in /user.slice/user-1000.slice/user@1000.service/app.slice/app-tigervncserver.slice/tigervncserver@:1.service
+Sep 12 16:24:31 peer1 kernel: cgroup: fork rejected by pids controller in /user.slice/user-1000.slice/user@1000.service/app.slice/memory-global-scheduler.service
 === journal: the Sep 14 22:39:10 window (the /run/user/1000 mtime) ===
-Sep 14 22:39:27 peerbox global-scheduler[1339266]:   ⚠ task_type_defaults.implementation.min_interval_min: DEFAULT_CONFIG=20 but scheduler.json=1 — fallback would use 20
-Sep 14 22:39:27 peerbox global-scheduler[1339266]:   ⚠ task_type_defaults.implementation.cooldown_after_run: DEFAULT_CONFIG=5 but scheduler.json=0 — fallback would use 5
-Sep 14 22:39:27 peerbox global-scheduler[1339266]:   ⚠ task_type_defaults.implementation.min_interval_min: scheduler.json=1 but opc_task_utils.py=20 — agents submit with 20, scheduler enforces 1
-Sep 14 22:39:27 peerbox global-scheduler[1339266]:   ⚠ task_type_defaults.implementation.cooldown_after_run: scheduler.json=0 but opc_task_utils.py=5 — agents submit with 5, scheduler enforces 0
-Sep 14 22:39:27 peerbox global-scheduler[1339266]:   ⚠ task_type_defaults.reflection.min_interval_min: DEFAULT_CONFIG=60 but scheduler.json=1 — fallback would use 60
-Sep 14 22:39:27 peerbox systemd[2321]: memory-global-scheduler.service: Unit process 1339302 (bash) remains running after unit stopped.
-Sep 14 22:39:27 peerbox global-scheduler[1339266]:   ⚠ task_type_defaults.reflection.cooldown_after_run: DEFAULT_CONFIG=60 but scheduler.json=0 — fallback would use 60
-Sep 14 22:39:27 peerbox global-scheduler[1339266]:   ⚠ task_type_defaults.reflection.max_runtime_min: DEFAULT_CONFIG=20 but scheduler.json=15 — fallback would use 20
-Sep 14 22:39:27 peerbox global-scheduler[1339266]:   ⚠ task_type_defaults.reflection.min_interval_min: scheduler.json=1 but opc_task_utils.py=60 — agents submit with 60, scheduler enforces 1
-Sep 14 22:39:27 peerbox global-scheduler[1339266]:   ⚠ task_type_defaults.reflection.cooldown_after_run: scheduler.json=0 but opc_task_utils.py=60 — agents submit with 60, scheduler enforces 0
-Sep 14 22:39:27 peerbox global-scheduler[1339266]:   ⚠ task_type_defaults.reflection.max_runtime_min: scheduler.json=15 but opc_task_utils.py=20 — agents submit with 20, scheduler enforces 15
-Sep 14 22:39:27 peerbox global-scheduler[1339266]:   ⚠ task_type_defaults.research.min_interval_min: DEFAULT_CONFIG=30 but scheduler.json=1 — fallback would use 30
-Sep 14 22:39:27 peerbox global-scheduler[1339266]:   ⚠ task_type_defaults.research.max_concurrent: DEFAULT_CONFIG=3 but scheduler.json=1 — fallback would use 3
-Sep 14 22:39:27 peerbox global-scheduler[1339266]:   ⚠ task_type_defaults.research.cooldown_after_run: DEFAULT_CONFIG=10 but scheduler.json=0 — fallback would use 10
-Sep 14 22:39:27 peerbox global-scheduler[1339266]:   ⚠ task_type_defaults.research.exclusive_mode: DEFAULT_CONFIG=False but scheduler.json=True — fallback would use False
-Sep 14 22:39:27 peerbox global-scheduler[1339266]:   ⚠ task_type_defaults.research.min_interval_min: scheduler.json=1 but opc_task_utils.py=30 — agents submit with 30, scheduler enforces 1
-Sep 14 22:39:27 peerbox global-scheduler[1339266]:   ⚠ task_type_defaults.research.max_concurrent: scheduler.json=1 but opc_task_utils.py=3 — agents submit with 3, scheduler enforces 1
-Sep 14 22:39:27 peerbox global-scheduler[1339266]:   ⚠ task_type_defaults.research.cooldown_after_run: scheduler.json=0 but opc_task_utils.py=10 — agents submit with 10, scheduler enforces 0
-Sep 14 22:39:27 peerbox global-scheduler[1339266]:   ⚠ task_type_defaults.research.exclusive_mode: scheduler.json=True but opc_task_utils.py=False — agents submit with False, scheduler enforces True
-Sep 14 22:39:27 peerbox global-scheduler[1339266]: [CONFIG-CHECK] scheduler.json takes priority; no runtime change. Consider syncing DEFAULT_CONFIG in global-scheduler to match.
-Sep 14 22:39:27 peerbox global-scheduler[1339266]: [OPC SCHEDULER] Tick 2026-09-14T14:39:25.196098+00:00 (dry_run=False)
-Sep 14 22:39:27 peerbox global-scheduler[1339266]: [LINT] ✅ Agent scripts clean — no quoting violations
-Sep 14 22:39:27 peerbox global-scheduler[1339266]: [ZOMBIE] Drain resolved — effective_pending=1
-Sep 14 22:39:27 peerbox systemd[2321]: memory-global-scheduler.service: Unit process 1339304 (python3) remains running after unit stopped.
-Sep 14 22:39:27 peerbox global-scheduler[1339266]: [DRAIN] Drain resolved — effective_pending=1, pending=1, in_progress=0
-Sep 14 22:39:27 peerbox global-scheduler[1339266]: [ELIGIBLE] 1 tasks
-Sep 14 22:39:27 peerbox global-scheduler[1339266]:   1. opc-e001 [epic] P3: System Health Maintenance Epic (Living Epic)
-Sep 14 22:39:27 peerbox global-scheduler[1339266]: [DISPATCH] opc-e001 [epic] P3: System Health Maintenance Epic (Living Epic)
-Sep 14 22:39:27 peerbox global-scheduler[1339266]: [DOMAIN] Warning: profile 'data/domain_profile.json' for prefix 'opc' not found, falling back to default
-Sep 14 22:39:27 peerbox global-scheduler[1339266]: [STARTED] opc-e001 PID=1339283 start=527436625 (async)
-Sep 14 22:39:27 peerbox global-scheduler[1339266]: [LIVING_EPIC] 🔄 opc-e001: dispatch complete, reset to pending (min_interval=120min enforced via last_run=2026-09-14T14:39:25)
-Sep 14 22:39:27 peerbox global-scheduler[1339266]: [WATCHDOG] ⛔ Blocked by RegenerationCoordinator: Cannot skip from Tier 0 to Tier 2; must escalate through Tier 1 first
-Sep 14 22:39:27 peerbox global-scheduler[1339266]: [HEAT_RISK] 🟡 Risk=0.3000 Level=YELLOW Trend=— (pending:0.300, deficit:0.000, idle:0.000, fuses:0.000)
-Sep 14 22:39:27 peerbox global-scheduler[1339266]: [INELIGIBILITY] Task opc-e001 recovered — was stuck for 81 ticks, now dispatched/eligible
-Sep 14 22:39:27 peerbox global-scheduler[1339266]: [COMPLETE] Dispatched 1, pool: {'pending': 1, 'in_progress': 0, 'completed': 261, 'blocked': 9}
-Sep 14 22:39:27 peerbox systemd[2321]: Finished Memory Self-Loop: 智能体自主记忆体系.
-Sep 14 22:39:27 peerbox systemd[2321]: Starting Ollama live runner replay shift (zero paid token)...
-Sep 14 22:39:27 peerbox systemd[2321]: Finished Ollama live runner replay shift (zero paid token).
-Sep 14 22:39:35 peerbox org.xfce.ScreenSaver[2586]: Xlib:  extension "DPMS" missing on display ":1".
-Sep 14 22:39:50 peerbox org.xfce.ScreenSaver[2586]: Xlib:  extension "DPMS" missing on display ":1".
+Sep 14 22:39:27 peer1 global-scheduler[1339266]:   ⚠ task_type_defaults.implementation.min_interval_min: DEFAULT_CONFIG=20 but scheduler.json=1 — fallback would use 20
+Sep 14 22:39:27 peer1 global-scheduler[1339266]:   ⚠ task_type_defaults.implementation.cooldown_after_run: DEFAULT_CONFIG=5 but scheduler.json=0 — fallback would use 5
+Sep 14 22:39:27 peer1 global-scheduler[1339266]:   ⚠ task_type_defaults.implementation.min_interval_min: scheduler.json=1 but opc_task_utils.py=20 — agents submit with 20, scheduler enforces 1
+Sep 14 22:39:27 peer1 global-scheduler[1339266]:   ⚠ task_type_defaults.implementation.cooldown_after_run: scheduler.json=0 but opc_task_utils.py=5 — agents submit with 5, scheduler enforces 0
+Sep 14 22:39:27 peer1 global-scheduler[1339266]:   ⚠ task_type_defaults.reflection.min_interval_min: DEFAULT_CONFIG=60 but scheduler.json=1 — fallback would use 60
+Sep 14 22:39:27 peer1 systemd[2321]: memory-global-scheduler.service: Unit process 1339302 (bash) remains running after unit stopped.
+Sep 14 22:39:27 peer1 global-scheduler[1339266]:   ⚠ task_type_defaults.reflection.cooldown_after_run: DEFAULT_CONFIG=60 but scheduler.json=0 — fallback would use 60
+Sep 14 22:39:27 peer1 global-scheduler[1339266]:   ⚠ task_type_defaults.reflection.max_runtime_min: DEFAULT_CONFIG=20 but scheduler.json=15 — fallback would use 20
+Sep 14 22:39:27 peer1 global-scheduler[1339266]:   ⚠ task_type_defaults.reflection.min_interval_min: scheduler.json=1 but opc_task_utils.py=60 — agents submit with 60, scheduler enforces 1
+Sep 14 22:39:27 peer1 global-scheduler[1339266]:   ⚠ task_type_defaults.reflection.cooldown_after_run: scheduler.json=0 but opc_task_utils.py=60 — agents submit with 60, scheduler enforces 0
+Sep 14 22:39:27 peer1 global-scheduler[1339266]:   ⚠ task_type_defaults.reflection.max_runtime_min: scheduler.json=15 but opc_task_utils.py=20 — agents submit with 20, scheduler enforces 15
+Sep 14 22:39:27 peer1 global-scheduler[1339266]:   ⚠ task_type_defaults.research.min_interval_min: DEFAULT_CONFIG=30 but scheduler.json=1 — fallback would use 30
+Sep 14 22:39:27 peer1 global-scheduler[1339266]:   ⚠ task_type_defaults.research.max_concurrent: DEFAULT_CONFIG=3 but scheduler.json=1 — fallback would use 3
+Sep 14 22:39:27 peer1 global-scheduler[1339266]:   ⚠ task_type_defaults.research.cooldown_after_run: DEFAULT_CONFIG=10 but scheduler.json=0 — fallback would use 10
+Sep 14 22:39:27 peer1 global-scheduler[1339266]:   ⚠ task_type_defaults.research.exclusive_mode: DEFAULT_CONFIG=False but scheduler.json=True — fallback would use False
+Sep 14 22:39:27 peer1 global-scheduler[1339266]:   ⚠ task_type_defaults.research.min_interval_min: scheduler.json=1 but opc_task_utils.py=30 — agents submit with 30, scheduler enforces 1
+Sep 14 22:39:27 peer1 global-scheduler[1339266]:   ⚠ task_type_defaults.research.max_concurrent: scheduler.json=1 but opc_task_utils.py=3 — agents submit with 3, scheduler enforces 1
+Sep 14 22:39:27 peer1 global-scheduler[1339266]:   ⚠ task_type_defaults.research.cooldown_after_run: scheduler.json=0 but opc_task_utils.py=10 — agents submit with 10, scheduler enforces 0
+Sep 14 22:39:27 peer1 global-scheduler[1339266]:   ⚠ task_type_defaults.research.exclusive_mode: scheduler.json=True but opc_task_utils.py=False — agents submit with False, scheduler enforces True
+Sep 14 22:39:27 peer1 global-scheduler[1339266]: [CONFIG-CHECK] scheduler.json takes priority; no runtime change. Consider syncing DEFAULT_CONFIG in global-scheduler to match.
+Sep 14 22:39:27 peer1 global-scheduler[1339266]: [OPC SCHEDULER] Tick 2026-09-14T14:39:25.196098+00:00 (dry_run=False)
+Sep 14 22:39:27 peer1 global-scheduler[1339266]: [LINT] ✅ Agent scripts clean — no quoting violations
+Sep 14 22:39:27 peer1 global-scheduler[1339266]: [ZOMBIE] Drain resolved — effective_pending=1
+Sep 14 22:39:27 peer1 systemd[2321]: memory-global-scheduler.service: Unit process 1339304 (python3) remains running after unit stopped.
+Sep 14 22:39:27 peer1 global-scheduler[1339266]: [DRAIN] Drain resolved — effective_pending=1, pending=1, in_progress=0
+Sep 14 22:39:27 peer1 global-scheduler[1339266]: [ELIGIBLE] 1 tasks
+Sep 14 22:39:27 peer1 global-scheduler[1339266]:   1. opc-e001 [epic] P3: System Health Maintenance Epic (Living Epic)
+Sep 14 22:39:27 peer1 global-scheduler[1339266]: [DISPATCH] opc-e001 [epic] P3: System Health Maintenance Epic (Living Epic)
+Sep 14 22:39:27 peer1 global-scheduler[1339266]: [DOMAIN] Warning: profile 'data/domain_profile.json' for prefix 'opc' not found, falling back to default
+Sep 14 22:39:27 peer1 global-scheduler[1339266]: [STARTED] opc-e001 PID=1339283 start=527436625 (async)
+Sep 14 22:39:27 peer1 global-scheduler[1339266]: [LIVING_EPIC] 🔄 opc-e001: dispatch complete, reset to pending (min_interval=120min enforced via last_run=2026-09-14T14:39:25)
+Sep 14 22:39:27 peer1 global-scheduler[1339266]: [WATCHDOG] ⛔ Blocked by RegenerationCoordinator: Cannot skip from Tier 0 to Tier 2; must escalate through Tier 1 first
+Sep 14 22:39:27 peer1 global-scheduler[1339266]: [HEAT_RISK] 🟡 Risk=0.3000 Level=YELLOW Trend=— (pending:0.300, deficit:0.000, idle:0.000, fuses:0.000)
+Sep 14 22:39:27 peer1 global-scheduler[1339266]: [INELIGIBILITY] Task opc-e001 recovered — was stuck for 81 ticks, now dispatched/eligible
+Sep 14 22:39:27 peer1 global-scheduler[1339266]: [COMPLETE] Dispatched 1, pool: {'pending': 1, 'in_progress': 0, 'completed': 261, 'blocked': 9}
+Sep 14 22:39:27 peer1 systemd[2321]: Finished Memory Self-Loop: 智能体自主记忆体系.
+Sep 14 22:39:27 peer1 systemd[2321]: Starting Ollama live runner replay shift (zero paid token)...
+Sep 14 22:39:27 peer1 systemd[2321]: Finished Ollama live runner replay shift (zero paid token).
+Sep 14 22:39:35 peer1 org.xfce.ScreenSaver[2586]: Xlib:  extension "DPMS" missing on display ":1".
+Sep 14 22:39:50 peer1 org.xfce.ScreenSaver[2586]: Xlib:  extension "DPMS" missing on display ":1".
 === boot time vs now ===
 2026-07-15 21:33:20
 === tmpfs mount entries for the runtime dir ===

@@ -147,7 +147,7 @@ One JSON object per event, `json.Marshal`ed, delivered on stdin.
 ```json
 {"event":"failed","previous_status":"in_progress","task_id":"01a0f439-...","status":"failed",
  "summary":"...","result":"...","reason":"task failed","session_id":"...","model":"...",
- "tags":"a,b","source":"agent","claimed_by":"peerbox:2411198","elapsed_seconds":6072,
+ "tags":"a,b","source":"agent","claimed_by":"peer1:2411198","elapsed_seconds":6072,
  "tokens":0,"created_at":1790797832,"updated_at":1790803904,"timestamp":"2026-10-01T05:31:44+08:00"}
 ```
 

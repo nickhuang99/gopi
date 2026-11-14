@@ -25,7 +25,7 @@ func writeNodeSettings(t *testing.T, content string) {
 }
 
 func TestConfigRoleSyncToParsing(t *testing.T) {
-	writeNodeSettings(t, `{"role":"client","sync_to":"peerbox"}`)
+	writeNodeSettings(t, `{"role":"client","sync_to":"peer1"}`)
 	cfg, err := FromSettingsFile(os.Getenv("GOPI_SETTINGS"))
 	if err != nil {
 		t.Fatal(err)
@@ -33,21 +33,21 @@ func TestConfigRoleSyncToParsing(t *testing.T) {
 	if cfg.Role != NodeRoleClient {
 		t.Errorf("role = %q, want %q", cfg.Role, NodeRoleClient)
 	}
-	if cfg.SyncTo != "peerbox" {
-		t.Errorf("sync_to = %q, want peerbox", cfg.SyncTo)
+	if cfg.SyncTo != "peer1" {
+		t.Errorf("sync_to = %q, want peer1", cfg.SyncTo)
 	}
 }
 
 func TestResolveNodeRoleSettings(t *testing.T) {
-	writeNodeSettings(t, `{"role":"client","sync_to":"peerbox"}`)
+	writeNodeSettings(t, `{"role":"client","sync_to":"peer1"}`)
 	role, syncTo := ResolveNodeRole()
-	if role != NodeRoleClient || syncTo != "peerbox" {
-		t.Errorf("got (%q, %q), want (client, peerbox)", role, syncTo)
+	if role != NodeRoleClient || syncTo != "peer1" {
+		t.Errorf("got (%q, %q), want (client, peer1)", role, syncTo)
 	}
 }
 
 func TestResolveNodeRoleEnvOverridesSettings(t *testing.T) {
-	writeNodeSettings(t, `{"role":"client","sync_to":"peerbox"}`)
+	writeNodeSettings(t, `{"role":"client","sync_to":"peer1"}`)
 	t.Setenv(RoleEnv, "server")
 	t.Setenv(SyncToEnv, "hp")
 	role, syncTo := ResolveNodeRole()
@@ -66,7 +66,7 @@ func TestResolveNodeRoleUnknownSpellingUndeclared(t *testing.T) {
 
 func TestNodeIdentityLineServer(t *testing.T) {
 	writeNodeSettings(t, `{"role":"server"}`)
-	want := "peerbox (server)" // hostname varies; check shape + role
+	want := "peer1 (server)" // hostname varies; check shape + role
 	line := NodeIdentityLine()
 	if !strings.Contains(line, "(server)") || !strings.HasPrefix(line, "node: ") {
 		t.Errorf("line = %q, want prefix 'node: ' + '(server)' e.g. %q", line, want)
@@ -77,10 +77,10 @@ func TestNodeIdentityLineServer(t *testing.T) {
 }
 
 func TestNodeIdentityLineClientArrow(t *testing.T) {
-	writeNodeSettings(t, `{"role":"client","sync_to":"peerbox"}`)
+	writeNodeSettings(t, `{"role":"client","sync_to":"peer1"}`)
 	line := NodeIdentityLine()
-	if !strings.Contains(line, "(client→peerbox)") {
-		t.Errorf("line = %q, want '(client→peerbox)'", line)
+	if !strings.Contains(line, "(client→peer1)") {
+		t.Errorf("line = %q, want '(client→peer1)'", line)
 	}
 }
 
@@ -95,9 +95,9 @@ func TestNodeIdentityUndeclaredEmpty(t *testing.T) {
 }
 
 func TestNodeIdentityBriefingFormat(t *testing.T) {
-	writeNodeSettings(t, `{"role":"client","sync_to":"peerbox"}`)
+	writeNodeSettings(t, `{"role":"client","sync_to":"peer1"}`)
 	b := NodeIdentityBriefing()
-	if !strings.HasPrefix(b, "[node] node: ") || !strings.Contains(b, "(client→peerbox)") {
-		t.Errorf("briefing = %q, want '[node] node: <host> (client→peerbox)'", b)
+	if !strings.HasPrefix(b, "[node] node: ") || !strings.Contains(b, "(client→peer1)") {
+		t.Errorf("briefing = %q, want '[node] node: <host> (client→peer1)'", b)
 	}
 }

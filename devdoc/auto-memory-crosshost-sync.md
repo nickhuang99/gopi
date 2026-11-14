@@ -28,7 +28,7 @@
 topic/question/answer/keywords/stored_unix 五个键，三列在 transport 上被静默丢弃——
 正是「行加了列、transport 没加」这一类缺陷（memory #8459 的实测教训）。本项补齐
 **投影 + 扫描 + 写入**三处，走**兼容通道**；并让对端对**不属于本机**的指针渲染出
-**显式**句子「detail only on its own host "peerbox" … unreachable from here」，而不是留一个
+**显式**句子「detail only on its own host "peer1" … unreachable from here」，而不是留一个
 静默悬空的指针（Rule 15）。
 
 ---
@@ -149,10 +149,10 @@ func originLocalOnlyRender(o *SyncRowOrigin, thisHost string) string
 也是 epic 唯一要求的，就是「细节属于哪台机器」；② 去 stat 一个路径就是引入
 一个**新依赖**（Rule 35 禁止）。
 
-渲染出的句子（本机 hp，行来自 peerbox）：
+渲染出的句子（本机 hp，行来自 peer1）：
 
 ```
-detail_local_only=detail only on its own host "peerbox" (recorded by another node) — session_id/round_index/source_host sess-aaa111, unreachable from here
+detail_local_only=detail only on its own host "peer1" (recorded by another node) — session_id/round_index/source_host sess-aaa111, unreachable from here
 ```
 
 **为什么另起一行而不是塞进 `origin=` 段**：`origin=` 段是紧凑的 key=value 地址表，
@@ -186,7 +186,7 @@ detail_local_only=detail only on its own host "peerbox" (recorded by another nod
 **一个字节都没被写**（Rule 32）。跨机那一段走**真实 ssh**，对端用**私有的 sandbox
 profile + 本分支新建的二进制**，因此 hp 的真实库同样未被触碰。
 
-### 4.1 发送端：peerbox 捕获一条带 provenance 的记忆
+### 4.1 发送端：peer1 捕获一条带 provenance 的记忆
 
 ```
 $ GOPI_HOME=$SB_A gopi memory store \
@@ -202,7 +202,7 @@ Memory stored (id=1).
 
 ```
 $ GOPI_HOME=$SB_A gopi memory memsync --export --out /tmp/origin-patch.json --db $SB_A/.gopi/memory.db
-exported 1 rows (1 scanned, 0 skipped by --since) → /tmp/origin-patch.json (node peerbox)
+exported 1 rows (1 scanned, 0 skipped by --since) → /tmp/origin-patch.json (node peer1)
 ```
 
 patch 的 row（逐字，注意 `origin` 对象）：
@@ -213,10 +213,10 @@ patch 的 row（逐字，注意 `origin` 对象）：
  "answer":"SELF-CONTAINED BODY: the [IMPORTANT] note travels verbatim under scheme C (4KiB cap), so the peer can search it directly.\n\nkeywords: sync, provenance, crosshost",
  "keywords":["sync","provenance","crosshost"],
  "stored_unix":1791517159,
- "origin":{"session_id":"sess-aaa111","round_index":9,"source_host":"peerbox"}}
+ "origin":{"session_id":"sess-aaa111","round_index":9,"source_host":"peer1"}}
 ```
 
-### 4.3 真实 ssh：peerbox 的 patch → hp 的 `--serve-assets`
+### 4.3 真实 ssh：peer1 的 patch → hp 的 `--serve-assets`
 
 ```
 $ ssh -o BatchMode=yes hp 'GOPI_HOME=/home/user/workspace/gopi-sandbox/sandbox-originpeer-0fc160e4 \
@@ -233,18 +233,18 @@ $ ssh hp 'GOPI_HOME=$SBHP GOPI_SYNC_NODE=hp /tmp/gopi-origin-hp memory search \
       "cross-host memory sync provenance" --limit 2 --db $SBHP/.gopi/memory.db'
 
 #1 跨机 provenance 取证 tier=warm conf=0.85 lesson=recipe when=2026-10-09 03:40:10
-   sources=node:peerbox tokens=4 origin=sess=sess-aaa111 round=9 host=peerbox
+   sources=node:peer1 tokens=4 origin=sess=sess-aaa111 round=9 host=peer1
 Q: how does provenance survive cross-host memory sync?
 A: SELF-CONTAINED BODY: the [IMPORTANT] note travels verbatim under scheme C (4KiB cap), so the peer can search it directly.
 
 keywords: sync, provenance, crosshost
-detail_local_only=detail only on its own host "peerbox" (recorded by another node) — session_id/round_index/source_host sess-aaa111, unreachable from here
+detail_local_only=detail only on its own host "peer1" (recorded by another node) — session_id/round_index/source_host sess-aaa111, unreachable from here
 ```
 
 **三件事在同一段输出里被同时证明**：① 正文完整可检索（方案 C）；② 指针三列在
 `origin=` 段里完好（本项）；③ 显式不可达句子出现（deliverable (b)）。
 
-### 4.5 反方向（pull）：hp 捕获 → peerbox 导入
+### 4.5 反方向（pull）：hp 捕获 → peer1 导入
 
 ```
 $ ssh hp '... memory store --topic "hp 本机教训" \
@@ -263,7 +263,7 @@ $ GOPI_HOME=$SB_A gopi memory search "sync pull" --limit 3 --db $SB_A/.gopi/memo
 keyword…
 detail_local_only=detail only on its own host "hp" (recorded by another node) — session_id/round_index/source_host sess-hp-777, unreachable from here
 ---
-#1 跨机 provenance 取证 … origin=sess=sess-aaa111 round=9 host=peerbox      ← 本机行：无不可达句
+#1 跨机 provenance 取证 … origin=sess=sess-aaa111 round=9 host=peer1      ← 本机行：无不可达句
 ```
 
 **同一段渲染里，来自 hp 的行报不可达、本机的行不报**——这正是「句子是指针的事实，

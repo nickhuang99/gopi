@@ -49,7 +49,7 @@ wording has a verdict *before* it has a home.
 > off-host, not that other processes are excluded.
 
 The `127.0.0.1` binding is what makes the last clause true of the machine as a
-whole: the socket is unreachable from another host, so nothing outside peerbox can
+whole: the socket is unreachable from another host, so nothing outside peer1 can
 find it. Off-host is the boundary the binding actually draws.
 
 ### Measurement (`## Verification` → `Ran:`)

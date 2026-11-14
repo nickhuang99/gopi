@@ -123,7 +123,7 @@ cli_lineedit_test.go:136: the census read 2 user row(s) (operator 2 + stamps 0) 
 
 早前报告里"同一个 fixture 在 `:50/:53/:60` 行号上红、断言文字却不同"的未解异常，
 实测就是 **A4 之前的旧形状 fixture**（`AssertCounts{"user":2}` + 未过滤的 `UserContents()`），
-本机 `master a3a31da42` 与 `refs/remotes/peerbox/master ef8b69fd9` 携带的是同一份文本。
+本机 `master a3a31da42` 与 `refs/remotes/peer1/master ef8b69fd9` 携带的是同一份文本。
 逐字原文（从 `44-peer-master-testsuite.out` / `45-peer-master-cmdagent.out` 的 raw stream
 提出，`artifacts/46-peer-master-raw-assertions.txt`）：
 
@@ -141,7 +141,7 @@ chat_test.go:61 / cli_lineedit_test.go:60: user messages = [hello there [system]
 
 ## 9. 未处置的观察（已按 Rule 41 提行，不在本分支修）[实测]
 
-`refs/remotes/peerbox/master`（peer upstream, `ef8b69fd9`）**两个 chat fixture 都红**：
+`refs/remotes/peer1/master`（peer upstream, `ef8b69fd9`）**两个 chat fixture 都红**：
 它带 writer（`internal/agent/clock.go` 有 `turnStampLine`）但**不带 reader 过滤**
 （`internal/testutil/session.go` 无 `IsHarnessUser`/`HarnessUserContents`/`AllUserContents`），
 所以 `AssertCounts{"user":2}` 与 `UserContents() len==2` 数到 4 行：
@@ -149,10 +149,10 @@ chat_test.go:61 / cli_lineedit_test.go:60: user messages = [hello there [system]
 - `artifacts/44-peer-master-testsuite.out` → `TestChat_HappyPath_TwoTurnsSameSession` exit=1
 - `artifacts/45-peer-master-cmdagent.out` → `TestChatCookedFallback_NonTTY` exit=1
 
-两份输出都由 `git archive refs/remotes/peerbox/master | tar -x -C <session-dir>/artifacts/master-tree-ef8b69fd9`
+两份输出都由 `git archive refs/remotes/peer1/master | tar -x -C <session-dir>/artifacts/master-tree-ef8b69fd9`
 materialise 出来的树里跑出（**不是 worktree**，Rule 29），故与本 worktree 无所有权冲突。
-两份旧形状 fixture 文本在 `refs/remotes/peerbox/master` 与本机 `master a3a31da42` 上**逐字节相同**
+两份旧形状 fixture 文本在 `refs/remotes/peer1/master` 与本机 `master a3a31da42` 上**逐字节相同**
 （`md5sum` 均为 `520c4dc480fee850dd78cf6669dffcf2`，实测）。
 **[推断]** 这是"修复只在本地 gitPushcheck lineage、尚未上行到 peer master"的
-未同步状态（`ea1357381` 与 `7ae446e47` 都不在 `peerbox/master` 里），不是新的产品缺陷；
+未同步状态（`ea1357381` 与 `7ae446e47` 都不在 `peer1/master` 里），不是新的产品缺陷；
 是否需要上行由 PA/operator 决定 —— 该行以实测证据提交，判定留给裁决方。

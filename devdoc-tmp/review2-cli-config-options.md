@@ -1,7 +1,7 @@
 <!-- doc-class: normative -->
 # Second-Opinion Review: gopi config/options layer (GLM, HP node)
 
-- Reviewer: GLM (independent second pass — peerbox's `review/cli-config-options`
+- Reviewer: GLM (independent second pass — peer1's `review/cli-config-options`
   report was NOT read; findings below are from a fresh read of current master).
 - Branch: `review2/cli-config-options`
 - Date: 2026-09-02
@@ -12,7 +12,7 @@
 ## Executive summary
 
 The config/options layer has matured a great deal since the first review:
-**all five headline findings of the peerbox review are FIXED on current master**
+**all five headline findings of the peer1 review are FIXED on current master**
 (verified below). The catalog-driven help and the ApplyEnv two-pass precedence
 are genuinely well-engineered (env.go's truthy-only EnvBool, the SetEnvVars
 gating, drift-guard tests).
@@ -28,7 +28,7 @@ environment at runtime can never reach consumers that read them at package
 
 ## Part 1 — Known claims from first review (verify independently)
 
-### 1.1 `--home` settings leak (peerbox P0-1) — **FIXED on master**
+### 1.1 `--home` settings leak (peer1 P0-1) — **FIXED on master**
 - Fix commit `335eb3f` ("fix(home): --home flag now redirects the settings.json
   read (P0-1)") + `feat/fix-home-settings-isolation` merge, both ancestors of
   master.
@@ -41,7 +41,7 @@ environment at runtime can never reach consumers that read them at package
 - Verdict: **AGREE the original bug existed; CONFIRM the fix is real and
   tested.** Sandbox isolation now covers settings/sessions/raw-logs/memory.db.
 
-### 1.2 Env-name-as-flag never implemented (peerbox P0-2) — **FIXED on master**
+### 1.2 Env-name-as-flag never implemented (peer1 P0-2) — **FIXED on master**
 - Fix commit `afac5da` ("fix(config): env-named flags work —
   --gopi-timeout-sec ≡ --timeout (P0-2)").
 - `internal/config/flags.go:57-75`: FlagOverrides builds an inverse
@@ -56,7 +56,7 @@ environment at runtime can never reach consumers that read them at package
   still errors as unknown — no fake support (`TestFlagOverridesEnvNameNoFlagInCatalog`).
 - Verdict: **AGREE it was missing; CONFIRM implemented + regression-tested.**
 
-### 1.3 Thinking-budget default drift 2048 vs 1024 (peerbox P1-1) — **FIXED on master**
+### 1.3 Thinking-budget default drift 2048 vs 1024 (peer1 P1-1) — **FIXED on master**
 - Catalog Help now says "(default 1024)" matching `deepseek.DefaultClaudeThinkingBudget
   = 1024` (`internal/deepseek/claude_client.go:111`).
 - Drift-guard test `TestThinkingBudgetHelpMatchesCode` lives in `cmd/agent/usage_test.go`
@@ -64,14 +64,14 @@ environment at runtime can never reach consumers that read them at package
   import cycle). `go test ./cmd/agent/ -run TestThinkingBudgetHelpMatchesCode` passes.
 - Verdict: **AGREE it was stale; CONFIRM fixed with a tripwire test.**
 
-### 1.4 GOPI_PROMPT dead channel (peerbox P1-3) — **FIXED on master**
+### 1.4 GOPI_PROMPT dead channel (peer1 P1-3) — **FIXED on master**
 - `cmd/agent/main.go:295-306`: readInput now reads `GOPI_PROMPT` when
   `overrides.Prompt` is empty, honoring `@payload` file-refs; precedence
   flag > env > settings preserved (ApplyEnv seeds env from the settings
   "prompt" key). Regression tests exist (`TestReadInput_GOPIPromptEnv` etc.).
 - Verdict: **AGREE it was dead; CONFIRM wired + tested.**
 
-### 1.5 hideThinking/keepThinking inverted bool (peerbox P1-4) — **FIXED on master**
+### 1.5 hideThinking/keepThinking inverted bool (peer1 P1-4) — **FIXED on master**
 - `internal/agent/loop.go:2978-2984`: both now parse via `config.EnvBool`
   (truthy-only); `GOPI_HIDE_THINKING=0/off/false` no longer hides.
 - Root cause of the original inversion (ApplyEnv force-writing "off" for
@@ -82,7 +82,7 @@ environment at runtime can never reach consumers that read them at package
 - Verdict: **AGREE it was inverted; CONFIRM fixed at both the writer and
   reader ends.**
 
-### 1.6 Catalog gaps (peerbox P1-5) — **FIXED on master**
+### 1.6 Catalog gaps (peer1 P1-5) — **FIXED on master**
 - Re-swept all `os.Getenv/os.LookupEnv` of `GOPI_*|ANTHROPIC_*|DEEPSEEK_*`
   in non-test code vs the EnvVars catalog: **every remaining uncatalogued var
   is a test-only seam** (GOPI_TEST_BIN, GOPI_SEC_ENV_PROBE, GOPI_E2E,
@@ -93,7 +93,7 @@ environment at runtime can never reach consumers that read them at package
 
 ---
 
-## Part 2 — NEW findings this second pass (not in the peerbox report)
+## Part 2 — NEW findings this second pass (not in the peer1 report)
 
 ### P0-A. `--tool-timeout` / `--bash-timeout` / `--bash-idle` flags & settings keys are DEAD
 - **Files:** `internal/tools/timeout.go:48-68` — `func init()` reads
@@ -229,12 +229,12 @@ environment at runtime can never reach consumers that read them at package
 | P2-A | P2 | GOPI_PROMPT/GOPI_NO_ENFORCE_MEMORY ungrouped ("Other") | help.go Sections | NEW |
 | P2-B | P2 | `--raw-log` scalar-vs-bool doc/parse asymmetry; "0" not honored | flags.go; rawlog.go:41 | NEW |
 | P2-C | P2 | three bool-parse implementations (EnvBool / boolEnvTrue / == "1") | env.go; loop.go:1656; bash.go:94 | NEW |
-| (peerbox P0-1) | — | --home settings leak | fixed 335eb3f + tests | FIXED |
-| (peerbox P0-2) | — | env-name-as-flag unknown | fixed afac5da + tests | FIXED |
-| (peerbox P1-1) | — | thinking-budget default drift | fixed + guard test | FIXED |
-| (peerbox P1-3) | — | GOPI_PROMPT dead channel | fixed + tests | FIXED |
-| (peerbox P1-4) | — | hideThinking inverted bool | fixed (EnvBool + SetEnvVars gate) | FIXED |
-| (peerbox P1-5) | — | catalog gaps | fixed (67 entries, verified complete) | FIXED |
+| (peer1 P0-1) | — | --home settings leak | fixed 335eb3f + tests | FIXED |
+| (peer1 P0-2) | — | env-name-as-flag unknown | fixed afac5da + tests | FIXED |
+| (peer1 P1-1) | — | thinking-budget default drift | fixed + guard test | FIXED |
+| (peer1 P1-3) | — | GOPI_PROMPT dead channel | fixed + tests | FIXED |
+| (peer1 P1-4) | — | hideThinking inverted bool | fixed (EnvBool + SetEnvVars gate) | FIXED |
+| (peer1 P1-5) | — | catalog gaps | fixed (67 entries, verified complete) | FIXED |
 
 ## Verification
 - Build: `go vet ./internal/config/` clean; `go build ./...` OK (main repo's bin/gopi present).

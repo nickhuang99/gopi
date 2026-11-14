@@ -6,11 +6,11 @@ drwxr-xr-x   2 root root  4096 Sep 13 09:57 .
 drwxr-xr-x 176 root root 12288 Sep 14 09:13 ..
 -rw-r--r--   1 root root   119 Feb 17  2024 screen-cleanup.conf
 --- journal lines that referenced it (privileged, 2026-09-13) ---
-Sep 14 04:38:26 peerbox sudo[2406443]:     nick : TTY=pts/4 ; PWD=/home/user/workspace/gopi-residue-reap/internal/tools ; USER=root ; COMMAND=/usr/bin/true
-Sep 14 04:40:20 peerbox sudo[2415575]:     nick : PWD=/home/user/workspace/gopi-residue-reap/internal/tools ; USER=root ; COMMAND=/usr/bin/true
-Sep 14 04:40:21 peerbox sudo[2415603]:     nick : PWD=/home/user/workspace/gopi-residue-reap/internal/tools ; USER=root ; COMMAND=/usr/bin/true
-Sep 14 04:42:46 peerbox sudo[2423919]:     nick : PWD=/home/user/workspace/gopi-residue-reap/internal/tools ; USER=root ; COMMAND=/usr/bin/true
-Sep 14 04:42:47 peerbox sudo[2423951]:     nick : PWD=/home/user/workspace/gopi-residue-reap/internal/tools ; USER=root ; COMMAND=/usr/bin/true
+Sep 14 04:38:26 peer1 sudo[2406443]:     nick : TTY=pts/4 ; PWD=/home/user/workspace/gopi-residue-reap/internal/tools ; USER=root ; COMMAND=/usr/bin/true
+Sep 14 04:40:20 peer1 sudo[2415575]:     nick : PWD=/home/user/workspace/gopi-residue-reap/internal/tools ; USER=root ; COMMAND=/usr/bin/true
+Sep 14 04:40:21 peer1 sudo[2415603]:     nick : PWD=/home/user/workspace/gopi-residue-reap/internal/tools ; USER=root ; COMMAND=/usr/bin/true
+Sep 14 04:42:46 peer1 sudo[2423919]:     nick : PWD=/home/user/workspace/gopi-residue-reap/internal/tools ; USER=root ; COMMAND=/usr/bin/true
+Sep 14 04:42:47 peer1 sudo[2423951]:     nick : PWD=/home/user/workspace/gopi-residue-reap/internal/tools ; USER=root ; COMMAND=/usr/bin/true
 --- does the system tmpfiles-clean sweep the runtime dir? (rules + last runs) ---
 /usr/lib/tmpfiles.d/systemd.conf:10:d /run/user 0755 root root -
 /usr/lib/tmpfiles.d/systemd.conf:11:F! /run/utmp 0664 root utmp -
@@ -22,9 +22,9 @@ Sep 14 04:42:47 peerbox sudo[2423951]:     nick : PWD=/home/user/workspace/gopi-
 /usr/lib/tmpfiles.d/systemd.conf:18:d /run/systemd/shutdown 0755 root root -
 /usr/lib/tmpfiles.d/systemd.conf:19:d /run/systemd/netif 0755 systemd-network systemd-network -
 /usr/lib/tmpfiles.d/systemd.conf:20:d /run/systemd/netif/links 0755 systemd-network systemd-network -
-Sep 12 21:51:46 peerbox systemd[1]: systemd-tmpfiles-clean.service: Deactivated successfully.
-Sep 13 21:51:38 peerbox systemd[1]: systemd-tmpfiles-clean.service: Deactivated successfully.
-Sep 14 21:51:45 peerbox systemd[1]: systemd-tmpfiles-clean.service: Deactivated successfully.
+Sep 12 21:51:46 peer1 systemd[1]: systemd-tmpfiles-clean.service: Deactivated successfully.
+Sep 13 21:51:38 peer1 systemd[1]: systemd-tmpfiles-clean.service: Deactivated successfully.
+Sep 14 21:51:45 peer1 systemd[1]: systemd-tmpfiles-clean.service: Deactivated successfully.
 === B. the doc's key host quotes, re-read verbatim (so the doc and host agree) ===
 --- linger file + logind effective config ---
 total 8

@@ -148,7 +148,7 @@ grep memory-sync-busy   ~/.gopi/logs/memory-sync.log
 在本机跑出了 **10/10 SPAWNED**——但那是**假阳性**，两个来源：
 
 1. `pgrep -f` **自匹配**：watch 循环所在的 `bash -c` 命令行本身就带着那个字符串；
-2. 更重要的：**旧二进制遗留的孤儿 `gopi memory sync --peer peerbox --push`**（pid
+2. 更重要的：**旧二进制遗留的孤儿 `gopi memory sync --peer peer1 --push`**（pid
    2666249、2744491 等）在修复**之前**就跑着，它们与本次 store 无关。
 
 正确做法（`evidence/watch-sync.sh`）：`pgrep -x gopi` 取候选 → 读 `/proc/<pid>/cmdline`

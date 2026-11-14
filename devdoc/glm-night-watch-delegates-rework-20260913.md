@@ -7,7 +7,7 @@
      operator-owned launcher is the only launch path, and an agent session is
      refused by the guard (exit 3) by design. -->
 
-**Date:** 2026-09-13 · **Rework agent:** gopi (peerbox) · **Repo:** `/home/user/work/GoPi`
+**Date:** 2026-09-13 · **Rework agent:** gopi (peer1) · **Repo:** `/home/user/work/GoPi`
 **Worktree:** `~/workspace/gopi-glm-night-watch-rework` · **Branch:** `fix/glm-night-watch-delegates`
 
 | artifact | identity |

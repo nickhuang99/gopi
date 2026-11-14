@@ -47,7 +47,7 @@ import (
 func TestSyncOriginTravelsWithTheRow(t *testing.T) {
 	_ = syncTestDB(t)
 
-	want := MemoryOrigin{SessionID: "sess-abc123", Round: 7, Host: "peerbox"}
+	want := MemoryOrigin{SessionID: "sess-abc123", Round: 7, Host: "peer1"}
 	if _, err := MemoryStoreWithOrigin("origin topic", "origin travels question", "origin travels answer", "", nil, want); err != nil {
 		t.Fatalf("store with origin: %v", err)
 	}
@@ -76,7 +76,7 @@ func TestSyncOriginTravelsWithTheRow(t *testing.T) {
 func TestSyncOriginSurvivesThePatchFile(t *testing.T) {
 	_ = syncTestDB(t)
 
-	want := MemoryOrigin{SessionID: "sess-9f0e", Round: 12, Host: "peerbox"}
+	want := MemoryOrigin{SessionID: "sess-9f0e", Round: 12, Host: "peer1"}
 	if _, err := MemoryStoreWithOrigin("wire topic", "wire question for the peer", "wire answer body", "", []string{"kw1", "kw2", "kw3"}, want); err != nil {
 		t.Fatalf("store with origin: %v", err)
 	}
@@ -143,7 +143,7 @@ func TestSyncOriginSurvivesThePatchFile(t *testing.T) {
 // the two that must NOT produce a note: the same host (the pointer resolves
 // here) and no pointer at all (nothing to say).
 func TestOriginLocalOnlyNote(t *testing.T) {
-	remote := &SyncRowOrigin{SessionID: "sess-remote", Round: 3, Host: "peerbox"}
+	remote := &SyncRowOrigin{SessionID: "sess-remote", Round: 3, Host: "peer1"}
 	local := &SyncRowOrigin{SessionID: "sess-local", Round: 3, Host: "hp"}
 	noHost := &SyncRowOrigin{SessionID: "sess-nohost", Round: 3}
 
@@ -157,7 +157,7 @@ func TestOriginLocalOnlyNote(t *testing.T) {
 		{
 			name: "remote host is unreachable and is NAMED", origin: remote, thisHost: "hp",
 			wantNote: true,
-			wantSubs: []string{originLocalOnlyPrefix, `"peerbox"`, remote.SessionID},
+			wantSubs: []string{originLocalOnlyPrefix, `"peer1"`, remote.SessionID},
 		},
 		{
 			name: "same host resolves here — no note", origin: local, thisHost: "hp",
@@ -196,15 +196,15 @@ func TestOriginLocalOnlyNote(t *testing.T) {
 // without parsing English prose — a reader (and this test) locates it by the
 // marker constant.
 func TestOriginLocalOnlyRenderCarriesAMarker(t *testing.T) {
-	o := &SyncRowOrigin{SessionID: "sess-render", Round: 1, Host: "peerbox"}
+	o := &SyncRowOrigin{SessionID: "sess-render", Round: 1, Host: "peer1"}
 	got := originLocalOnlyRender(o, "hp")
 	if !strings.Contains(got, originRenderLocalOnlyMarker) {
 		t.Fatalf("render missing the %q marker: %q", originRenderLocalOnlyMarker, got)
 	}
-	if !strings.Contains(got, "peerbox") || !strings.Contains(got, "sess-render") {
+	if !strings.Contains(got, "peer1") || !strings.Contains(got, "sess-render") {
 		t.Fatalf("render must name the host and the pointer: %q", got)
 	}
-	if seg := originLocalOnlyRender(o, "peerbox"); seg != "" {
+	if seg := originLocalOnlyRender(o, "peer1"); seg != "" {
 		t.Fatalf("the owning node must render no note, got %q", seg)
 	}
 }
@@ -375,7 +375,7 @@ func TestImportRefusesAHalfPointerFromAPeer(t *testing.T) {
 	halfPatch := `{"version":1,"node":"peer","exported_at":1,"rows":[
 		{"topic":"good1","question":"good neighbour one","answer":"body one"},
 		{"topic":"half","question":"half pointer question","answer":"half pointer answer",
-		 "origin":{"round_index":9,"source_host":"peerbox"}},
+		 "origin":{"round_index":9,"source_host":"peer1"}},
 		{"topic":"good2","question":"good neighbour two","answer":"body two"}]}`
 	dir := t.TempDir()
 	patchPath := filepath.Join(dir, "half.json")

@@ -47,8 +47,8 @@ type ClaimPushResponse struct {
 // gate, c4745d9) filtered out exactly the rows a cross-node claim must
 // reach, so the acquire patch came back empty ("not found in the ledger"),
 // every round failed, and the runner yielded into a stuck in_progress
-// zombie (the anchor-guard incident, 2026-09-02: HP claiming a from-peerbox
-// row could never advance it on peerbox). The peer's --claim-remote handler
+// zombie (the anchor-guard incident, 2026-09-02: HP claiming a from-peer1
+// row could never advance it on peer1). The peer's --claim-remote handler
 // owns the CAS/refusal logic; an echo row no-ops idempotently, so carrying
 // the row verbatim is safe.
 func exportClaimPatch(taskID, claimOwner, peer string) (*SyncTaskPatch, error) {

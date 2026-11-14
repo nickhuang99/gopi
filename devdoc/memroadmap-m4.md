@@ -1,22 +1,22 @@
 <!-- doc-class: normative -->
-# M4 — 跨节点知识库同步（HP brew 行回灌 peerbox）
+# M4 — 跨节点知识库同步（HP brew 行回灌 peer1）
 
 分支: `feat/memroadmap-m4`（HP 节点 `~/work/GoPi` 直接开发，基线 merge 了
-peerbox/feat/memroadmap-m3 的 621a60e..8b21c03..3568457）
+peer1/feat/memroadmap-m3 的 621a60e..8b21c03..3568457）
 
 ## 设计题与三方案对比
 
 问题：HP 上 brew 蒸馏出的 lesson 行（`distilled_qa`，sources=brew）如何
-回灌 peerbox 主库——两库同源（同一 hermes distilled.db 血统，各 ~27MB），
+回灌 peer1 主库——两库同源（同一 hermes distilled.db 血统，各 ~27MB），
 但 id 已各自漂移，双向都会继续增长。
 
 ### 方案① rsync 整库替换 —— 否决
 
-- 整库文件级覆盖：HP 库拷到 peerbox 后，peerbox 在同步窗口期间的本地写入
+- 整库文件级覆盖：HP 库拷到 peer1 后，peer1 在同步窗口期间的本地写入
   （memory_store / memory_feedback / tier 更新）被整体抹掉——**数据丢失**，
   不是"风险"是必然。
 - id 空间冲突：两库 AUTOINCREMENT 各自前进，同一 id 已是不同内容；
-  覆盖后 peerbox 本地引用（feedback 事件按 memory-id 审计）全部错位。
+  覆盖后 peer1 本地引用（feedback 事件按 memory-id 审计）全部错位。
 - 无合并语义：rsync 是"替换"不是"合并"，与 memory 库 append-mostly 但
   双写（store + feedback）的现实根本不匹配。
 - 唯一优点（简单）在 ATTACH/patch 方案面前不成立——两者实现量相当。
@@ -28,7 +28,7 @@ peerbox/feat/memroadmap-m3 的 621a60e..8b21c03..3568457）
 - 三个硬伤：
   1. **ssh + sqlite3 远程执行**——ATTACH 必须在同一 sqlite 进程里同时
      打开两库，跨节点就得先把远端库拉过来（又回到整库传输），或者
-     在 peerbox 上跑 import 脚本（通道逻辑跑到 SQL 里，无法做防自指/
+     在 peer1 上跑 import 脚本（通道逻辑跑到 SQL 里，无法做防自指/
      冲突裁决这类应用层判断）。
   2. **id 碰撞**:INSERT 时 id 冲突需要 OR IGNORE/重排，而 FTS5
      external-content 表 rowid 对齐 id，重排 id 必须同步重建 FTS 行
@@ -43,12 +43,12 @@ peerbox/feat/memroadmap-m3 的 621a60e..8b21c03..3568457）
 
 - HP `gopi memsync --export --out patch.json` → patch 只含**本节点的
   brew 行**（tag 闸门），不含 id。
-- patch 文件人工/自动传到 peerbox（scp/共享盘/git 都行——通道与传输
+- patch 文件人工/自动传到 peer1（scp/共享盘/git 都行——通道与传输
   解耦，正是 PR 的精神：patch 即 PR diff）。
-- peerbox `gopi memsync --import patch.json` → 每行走 **MemoryStore 原
+- peer1 `gopi memsync --import patch.json` → 每行走 **MemoryStore 原
   路径**：dedup（exact + 相似度）→ merge（sources 集合并）→ garbage
   gate → FTS 同步。重复 import = no-op（幂等）。
-- 为什么与 push-back 通道同构：HP 本来就 `git push peerbox
+- 为什么与 push-back 通道同构：HP 本来就 `git push peer1
   feat/memroadmap-m4` 交付代码；memsync 用同样的"本地产出 → 远端
   审阅合并"模型交付知识行。一个心智模型，两条管道。
 
@@ -90,9 +90,9 @@ peerbox/feat/memroadmap-m3 的 621a60e..8b21c03..3568457）
 
 - 自动传输（scp/cron 定时 push patch）未做：当前 patch 文件由人/PA
   携带（scp 一行命令）。自动调度属运维动作，接口已就绪。
-- peerbox 侧 import 无 CLI 审阅 UI（`--dry-run` for import 未做）：
+- peer1 侧 import 无 CLI 审阅 UI（`--dry-run` for import 未做）：
   refused/deduped/stored 全量回显已足够人工裁决；dry-run 留待需要时。
-- 反向通道（peerbox→HP 补行）未做：epic 范围就是 HP brew 行回灌 peerbox；
+- 反向通道（peer1→HP 补行）未做：epic 范围就是 HP brew 行回灌 peer1；
   反向复用同一 patch 格式即可（--source 过滤任意 tag）。
 - tier/confidence 沿袭策略未做：import 行走 MemoryStore 默认
   warm/0.85，与 brew 本地行为一致；跨节点信任加权留 M5。
@@ -118,11 +118,11 @@ peerbox/feat/memroadmap-m3 的 621a60e..8b21c03..3568457）
   1. HP 真库造 3 条 brew smoke 行（id 1130-1132）。
   2. `./bin/gopi memsync --export --out /tmp/m4-hp-brew-patch.json`
      → 6 行（3 smoke + 3 条 m3 蒸馏的真 lesson），node=hostb-Laptop。
-  3. scp 拉取 peerbox 真库副本（1078 行，0 行带 node 标签）。
+  3. scp 拉取 peer1 真库副本（1078 行，0 行带 node 标签）。
   4. import → `stored=6 deduped=1 refused=0`（deduped=1 是与 m3 时期
      同 question 行的合法合并）；修复后净库重放 3 次：
      `stored=6 → deduped=6 → deduped=6`，行数恰 6——**幂等成立**。
-  5. `memory_search "m4 sync smoke"` 在 peerbox 副本上命中 #1136/#1137
+  5. `memory_search "m4 sync smoke"` 在 peer1 副本上命中 #1136/#1137
      （tokens=3，sources=node:hostb-Laptop）；中文问题跨节点检索
      同样命中。检索确认 ✅
 - 修复前后的差异证据：第一次 import 曾 `stored=5 deduped=1`（长问题

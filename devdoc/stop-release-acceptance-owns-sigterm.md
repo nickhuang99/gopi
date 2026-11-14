@@ -58,7 +58,7 @@ forced the same shape and printed the counts:
 
 ```
 ZZDEBUG reclaimSelfRows: db="/dev/shm/suite-cmd-agent-run-1328525266/.../001/memory.db"
-  total=0 mine=0 filtered=0 stamp="hosta:1512748"
+  total=0 mine=0 filtered=0 stamp="host-b:1512748"
 ```
 
 `total=0` is the whole defect: the row the test seeded seconds earlier is not

@@ -1,7 +1,7 @@
 package deepseek
 
 // Regression tests for the 5c6f5ca Retry-After dead-branch bug (audit A/B #3,
-// devdoc/audit-ab3-peerbox-2026-09-04.md):
+// devdoc/audit-ab3-peer1-2026-09-04.md):
 //
 //   - 429/5xx arrived as sentinelAPIError → classTransient arm ran
 //     cfg.backoff(attempt) ONLY — the Retry-After header, parsed in the

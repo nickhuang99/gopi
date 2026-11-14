@@ -10,16 +10,16 @@
 - New named constant `cliFlagSettings` + helper `settingsFlagFromArgs` (Rule 1/2:
   one flag-name constant, one argv scan).
 - Regression test `TestRunMethodForSettingsFlag` pins: bare-argv no-echo,
-  standalone flag, equals-form, flag-after-verb (the peerbox screenshot shape),
+  standalone flag, equals-form, flag-after-verb (the peer1 screenshot shape),
   and `--report-to`/`--settings` coexistence.
 
 ## Why (root cause)
 run_cmd was reconstructed in runMethodFor from the options struct only —
 `gopi task run <id> [--report-to A] [--repo B]` — but `--settings` is a
 PROCESS-level flag (main.go FlagOverrides → GOPI_SETTINGS env; never reaches
-parseTasksArgs/tasksOptions). The real peerbox invocation
+parseTasksArgs/tasksOptions). The real peer1 invocation
 `gopi --settings ~/.gopi/.do_settings.json task run t-…` therefore stamped a
-bare run_cmd: an A/B run (HP baseline vs peerbox feature build) was
+bare run_cmd: an A/B run (HP baseline vs peer1 feature build) was
 indistinguishable from a default-settings run — the settings file selects the
 model provider + key config, which is exactly what run provenance must show.
 

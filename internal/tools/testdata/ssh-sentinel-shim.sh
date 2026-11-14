@@ -2,7 +2,7 @@
 # ssh-sentinel-shim — a stand-in for ssh, for the fixture-leak regression test.
 #
 # WHY THIS EXISTS (epic fix/fixture-leak-temp-root): the leaking fixture arm
-# declares the peer alias `peerbox`, which on the server resolves to 127.0.0.1 +
+# declares the peer alias `peer1`, which on the server resolves to 127.0.0.1 +
 # ~/work/GoPi — the REAL repository. A test that drives that arm therefore
 # attempts a real push whenever the fence is not in force (or is not in force
 # yet, on the RED checkout). This shim places a RECEIVER OF THE TEST'S OWN

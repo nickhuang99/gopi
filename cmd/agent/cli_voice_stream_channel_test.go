@@ -7,7 +7,7 @@ package main
 // the source's READER writes to, for a source whose channel only exists after
 // Open — which is the production one.
 //
-// THE DEFECT THIS CASE EXISTS FOR, measured on a real sound card (hosta,
+// THE DEFECT THIS CASE EXISTS FOR, measured on a real sound card (host-b,
 // 2026-10-10, task 01a1215c): newVoiceStagedStream read `source.Chunks()` BEFORE
 // calling `source.Open()`. voiceStagedRecorderSource assigns its `chunks` field
 // INSIDE Open (`s.chunks = make(chan []byte, voiceStagedQueueChunks)`, because the

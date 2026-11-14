@@ -2,7 +2,7 @@
 # tmp-ban.sh — the shared scratch-root contract for GoPi dev/test scripts.
 #
 # WHY THIS FILE EXISTS: on this host `/tmp` lives on the 147G `/` partition
-# (87% full). The 2026-09-11 exhaustion (devdoc/peerbox-resource-exhaustion-20260911.md)
+# (87% full). The 2026-09-11 exhaustion (devdoc/peer1-resource-exhaustion-20260911.md)
 # came from an unbounded `while :; do dd ... conv=fsync; done` stress loop
 # writing into /tmp while test suites abandoned 13,044 scratch directories
 # there — `/` went from 19G to 1.5G free with processes stuck in D state.

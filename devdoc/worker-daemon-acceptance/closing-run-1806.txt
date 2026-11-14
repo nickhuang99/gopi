@@ -2,7 +2,7 @@
 # (verbatim transcript of the operator's closing run: the `gopi worker` lines
 #  below are CAPTURED OUTPUT, not a recipe — an agent must never run them.)
 
-===== run started 2026-09-13T18:06:44+08:00 host=peerbox =====
+===== run started 2026-09-13T18:06:44+08:00 host=peer1 =====
 ### scratch device ids (Rule 22): dev(scratch)=2052 dev(/)=2051
 ### binary: /home/user/work/GoPi/bin/gopi
 v20260913-0934-13acf700 (13acf7000395)

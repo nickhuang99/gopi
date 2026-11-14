@@ -2,7 +2,7 @@ package tools
 
 // closeout-withheld-delivery — THE ROW'S TRAIL MUST SAY THE BRANCH NEVER LEFT.
 //
-// EPIC 01a12d5b-bb3a (measured 2026-10-12, host-b, client→peerbox).
+// EPIC 01a12d5b-bb3a (measured 2026-10-12, host-b, client→peer1).
 //
 // The measured defect. A worker row's delivery branch is pushed by ONE arm —
 // the client half of the close-out chain — and that arm is downstream of the

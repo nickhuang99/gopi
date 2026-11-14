@@ -4,10 +4,10 @@
 #
 #   HP   (`ssh hp`,    host-b) = capture node. Owns the microphone, the
 #                                       ALSA/Pulse stack and the client binary.
-#   peerbox(`ssh peerbox`)                 = engine node. Owns gopi + the
+#   peer1(`ssh peer1`)                 = engine node. Owns gopi + the
 #                                       Fun-ASR-Nano weights (~/work/funasr-models).
 #
-# Claim proven: audio captured on HP crosses to peerbox and comes back as text.
+# Claim proven: audio captured on HP crosses to peer1 and comes back as text.
 # Why it needs no human: nothing is spoken live. A fixed WAV (a spoken Chinese
 # paragraph with a written reference transcript) is played into a PulseAudio
 # null-sink and the sink's `.monitor` is captured as the "microphone" — the same
@@ -42,7 +42,7 @@ trap gopi_scratch_cleanup EXIT INT TERM
 # Every device string / rate / path / volume is named here; nothing is typed
 # inline at a use site (Rule 1). Any of them can be overridden from the env.
 readonly HP_HOST=${HP_HOST:-hp}
-readonly PEER_HOST=${PEER_HOST:-peerbox}
+readonly PEER_HOST=${PEER_HOST:-peer1}
 # WORKDIR: the scratch directory on BOTH nodes (default above; an explicit env
 # override is honoured for a reader who already has a prepared workspace).
 readonly WORKDIR=${WORKDIR:-$WORK_ROOT}
@@ -127,7 +127,7 @@ run_hp "test -x '$CLIENT_BIN'" || { echo "FAIL: client binary not executable: $C
 
 section "preflight"
 echo "# hp          : $HP_HOST  ($(run_hp hostname))"
-echo "# peerbox       : $PEER_HOST  ($(ssh "$PEER_HOST" hostname))"
+echo "# peer1       : $PEER_HOST  ($(ssh "$PEER_HOST" hostname))"
 echo "# client bin  : $CLIENT_BIN  built from $(cd "$HERE/.." && git rev-parse --short HEAD)"
 echo "# capture     : $CAP_RATE Hz, $CAP_CHANNELS ch, PCM${CAP_BITS}LE"
 echo "# fixture wav : $FIXTURE_WAV  sha256=$(run_hp "sha256sum '$FIXTURE_WAV' | cut -c1-32")"

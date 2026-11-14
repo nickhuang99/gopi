@@ -313,7 +313,7 @@ const (
 	deliveryFileURLScheme = "file://"
 
 	// pathSeparator / currentDirPrefix are what tell "a repository address some
-	// transport serves" (`peerbox:/home/user/work/gopi`, `git@host:repo`) from "a
+	// transport serves" (`peer1:/home/user/work/gopi`, `git@host:repo`) from "a
 	// directory on this machine" (`/srv/repo`, `./repo`). A file:// address is
 	// built ONLY from the second kind — prefixing an ssh address with file://
 	// would ask the wrong transport and the answer would be a failure that looks

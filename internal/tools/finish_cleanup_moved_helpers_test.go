@@ -1470,7 +1470,7 @@ const (
 
 	// leakShimPeerAlias is the peer the leaking arm declares: the server's own
 	// alias, which resolves to this host and therefore to this checkout.
-	leakShimPeerAlias = "peerbox"
+	leakShimPeerAlias = "peer1"
 
 	// leakShimScript is the checked-in shim body, run through the `sh` on the
 	// system so the test never depends on the file's own exec bit.
@@ -2018,17 +2018,17 @@ func runFinishCleanupChainTarget(ctx context.Context, rep *FinishCleanupReport, 
 	// IN-PROCESS TEST FENCE — a test must never be able to push a deliverable
 	// into a REAL node's repo (Rule 30; epic fix/fixture-leak-temp-root).
 	//
-	// MEASURED 2026-09-22 on the server itself (peerbox): a plain
+	// MEASURED 2026-09-22 on the server itself (peer1): a plain
 	// `go test ./internal/tools/ -count=1` drove this body with the target the
-	// PRODUCTION resolver renders — `peerbox:/home/user/work/GoPi` — from
+	// PRODUCTION resolver renders — `peer1:/home/user/work/GoPi` — from
 	// TestFinishCleanupGoneWorktreeNamesTheUndeclaredPeer's "a peer IS
-	// declared" arm (t.Setenv(config.SyncPeersEnv, "peerbox")). On the server
+	// declared" arm (t.Setenv(config.SyncPeersEnv, "peer1")). On the server
 	// that alias resolves to 127.0.0.1 and `~` IS this checkout, so the
 	// fixture's throwaway branch landed in the REAL repository as
 	// refs/heads/feat/sync-conflict-completed. GIT_TRACE caught the exact
 	// command:
 	//
-	//	git push 'peerbox:/home/user/work/GoPi' feat/sync-conflict-completed:feat/sync-conflict-completed
+	//	git push 'peer1:/home/user/work/GoPi' feat/sync-conflict-completed:feat/sync-conflict-completed
 	//
 	// WHY THE RESOLVED DIRECTORY IS THE REAL REPO: neither the peer catalog nor
 	// the fixture is at fault — a host may legitimately declare its own alias
@@ -2037,7 +2037,7 @@ func runFinishCleanupChainTarget(ctx context.Context, rep *FinishCleanupReport, 
 	// chain ran IN THE TEST PROCESS while its target pointed OUTSIDE the space
 	// the run was confined to: the fixture's every artefact — the client repo
 	// and the "server" — lives under t.TempDir(), and the resolution of
-	// `peerbox:/home/user/work/GoPi` does not. The two sides disagree, and the test pushes
+	// `peer1:/home/user/work/GoPi` does not. The two sides disagree, and the test pushes
 	// to the side it does not own.
 	//
 	// THE CRITERION IS THEREFORE THAT SAME BOUNDARY, and it needs no knowledge

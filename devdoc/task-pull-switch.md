@@ -49,7 +49,7 @@ automatically EXCHANGE ledger rows with declared peers (claim broadcast,
 terminal-state push, serve-tick delta pass, submit forward)?" — and its own doc
 comment lists exactly those four crossings. Taking WORK from a peer after the
 local queue drains is not one of them; it was riding a switch whose semantics
-never covered it. Measured (hosta, 2026-10-10, operator's report): `task_sync:
+never covered it. Measured (host-b, 2026-10-10, operator's report): `task_sync:
 false` there made every drained round return at that gate, so the transfer path
 was live code no configuration could reach.
 
@@ -105,15 +105,15 @@ single-node host pays one boolean and never dials.
 ```
 # harness: gopi tool sandbox create --label taskpull --task-id 01a1247c  (a real
 # private profile; ledger and sessions are its own)
-# settings fixture: {"role":"client","sync_to":"hosta-fixture.invalid",
-#                    "sync_peers":["hosta-fixture.invalid"],"task_sync":false}
+# settings fixture: {"role":"client","sync_to":"host-b-fixture.invalid",
+#                    "sync_peers":["host-b-fixture.invalid"],"task_sync":false}
 
 env GOPI_HOME=$SB GOPI_SETTINGS=$ART/settings-taskpull.json GOPI_TASK_PULL=0 \
     ./bin/gopi worker --once          → drained, NO takeover line
 env GOPI_HOME=$SB GOPI_SETTINGS=$ART/settings-taskpull.json GOPI_TASK_PULL=1 \
     ./bin/gopi worker --once          → drained, NO takeover line (--once is the deploy seam)
 env GOPI_HOME=$SB GOPI_SETTINGS=$ART/settings-taskpull.json GOPI_TASK_PULL=1 \
-    ./bin/gopi worker                 → "worker: takeover hosta-fixture.invalid: … (next peer)"
+    ./bin/gopi worker                 → "worker: takeover host-b-fixture.invalid: … (next peer)"
 env GOPI_HOME=$SB GOPI_SETTINGS=$ART/settings-taskpull.json GOPI_TASK_PULL=0 \
     ./bin/gopi worker                 → drained, NO takeover line
 ```
@@ -137,10 +137,10 @@ settings task_pull:true, env 0     → task-pull: off (GOPI_TASK_PULL: false —
 
 ## Not done / honest limits
 
-- **The run happened on peerbox, not on hosta.** hosta (10.0.0.13) answers
-  ping but refuses ssh on 22, has no `Host` entry in peerbox's `~/.ssh/config`,
+- **The run happened on peer1, not on host-b.** host-b (192.0.2.113) answers
+  ping but refuses ssh on 22, has no `Host` entry in peer1's `~/.ssh/config`,
   and its 11434 is closed too — so no configuration could be driven on it from
-  here. The verification uses a real sandbox profile on peerbox with hosta's exact
+  here. The verification uses a real sandbox profile on peer1 with host-b's exact
   blocked state (`role: client`, one declared peer, `task_sync: false`), and the
   peer alias is `.invalid` by design, so **no peer exists to take a row from**:
   the takeover leg is proven REACHED (its own line prints), not proven to move

@@ -1163,7 +1163,7 @@ type archiveOwner struct {
 // than no report).
 //
 // THE RANK IS THE SAFETY ORDER, NOT THE LIFECYCLE ORDER (measured 2026-10-07,
-// peerbox, run 01a115c3, branch task/01a113e467767eb9a4c33cb1df1cdfbb). Four rows
+// peer1, run 01a115c3, branch task/01a113e467767eb9a4c33cb1df1cdfbb). Four rows
 // named that ONE branch — among them a `cancelled` one, a `completed` one and
 // an `in_progress` one — and the old rule ("an OPEN row supersedes a DECIDED
 // one") was ALREADY satisfied by the `cancelled` row: archiveOwnerDecided is

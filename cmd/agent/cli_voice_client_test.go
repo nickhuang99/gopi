@@ -20,7 +20,7 @@ import (
 // separately (see devdoc/voice-input-client.md).
 
 // voiceRealArecordList is the verbatim `arecord -l` output of the HP laptop
-// (the only capture-capable machine here: the peerbox reports "no soundcards
+// (the only capture-capable machine here: the peer1 reports "no soundcards
 // found"). Kept as a fixture because the parser exists to handle exactly this
 // real formatting, not an idealized one.
 const voiceRealArecordList = `**** List of CAPTURE Hardware Devices ****
@@ -119,7 +119,7 @@ func TestVoiceParseClientListDevices(t *testing.T) {
 func TestVoiceParseClientSecondsAndDevice(t *testing.T) {
 	opts, err := parseVoiceArgs([]string{
 		"--client", "--seconds", "8", "--device", "pulse:@DEFAULT_SOURCE@",
-		"--server-url", "http://10.0.0.6:7788",
+		"--server-url", "http://192.0.2.6:7788",
 	})
 	if err != nil {
 		t.Fatalf("unexpected error: %v", err)
@@ -130,7 +130,7 @@ func TestVoiceParseClientSecondsAndDevice(t *testing.T) {
 	if opts.device != "pulse:@DEFAULT_SOURCE@" {
 		t.Errorf("device = %q", opts.device)
 	}
-	if opts.target != "http://10.0.0.6:7788" {
+	if opts.target != "http://192.0.2.6:7788" {
 		t.Errorf("target = %q", opts.target)
 	}
 }
@@ -224,7 +224,7 @@ func TestVoiceParseArecordListIgnoresNonDeviceLines(t *testing.T) {
 }
 
 func TestVoiceParseArecordListEmptyMeansNoCaptureHardware(t *testing.T) {
-	// The peerbox's real answer: arecord runs fine and lists nothing.
+	// The peer1's real answer: arecord runs fine and lists nothing.
 	if got := voiceParseArecordList("**** List of CAPTURE Hardware Devices ****\n"); len(got) != 0 {
 		t.Errorf("got %d devices, want 0", len(got))
 	}
@@ -318,7 +318,7 @@ func TestVoiceListDevicesSurvivesMissingPulse(t *testing.T) {
 }
 
 func TestVoiceListDevicesReportsNothingToRecordFrom(t *testing.T) {
-	// The peerbox's situation: both enumerators run, neither sees a capture
+	// The peer1's situation: both enumerators run, neither sees a capture
 	// device. The message must say what was tried and where to go instead.
 	run := func(name string, args ...string) (string, error) { return "", nil }
 	devices, _, err := voiceListDevices(run)
@@ -523,11 +523,11 @@ func TestVoicePCM16ToFloat32DropsPartialSample(t *testing.T) {
 }
 
 func TestVoiceTranscribeURL(t *testing.T) {
-	got, err := voiceTranscribeURL("http://10.0.0.6:7788")
+	got, err := voiceTranscribeURL("http://192.0.2.6:7788")
 	if err != nil {
 		t.Fatalf("unexpected error: %v", err)
 	}
-	if got != "http://10.0.0.6:7788"+voiceTranscribePath {
+	if got != "http://192.0.2.6:7788"+voiceTranscribePath {
 		t.Errorf("url = %q", got)
 	}
 	// A trailing slash must not produce a double slash — the server's mux
@@ -547,7 +547,7 @@ func TestVoiceTranscribeURL(t *testing.T) {
 	}
 	// A schemeless target must be named as such, not fail later as
 	// "unsupported protocol scheme".
-	for _, bad := range []string{"", "10.0.0.6:7788", "127.0.0.1"} {
+	for _, bad := range []string{"", "192.0.2.6:7788", "127.0.0.1"} {
 		if _, err := voiceTranscribeURL(bad); err == nil {
 			t.Errorf("target %q should be rejected", bad)
 		}

@@ -193,14 +193,14 @@ func SyncTaskPushOnlyPeers(taskID string, peers []string) ([]string, error) {
 
 // ── the manual push's RECEIPT, and why it had to change ─────────────────
 //
-// WHAT WENT WRONG (measured 2026-09-21 on peerbox, re-measured 2026-10-12 from
-// hosta): the manual push rode `--claim-remote`, a CLAIM-BROADCAST handler
+// WHAT WENT WRONG (measured 2026-09-21 on peer1, re-measured 2026-10-12 from
+// host-b): the manual push rode `--claim-remote`, a CLAIM-BROADCAST handler
 // that mirrors the row's LOCK and answers an accepted/refused VERDICT. It
-// never stores the row — so `push peerbox: accepted (1 row(s))` was TRUE about
+// never stores the row — so `push peer1: accepted (1 row(s))` was TRUE about
 // the LOCK and read as "the row arrived", and the operator's own follow-up
-// found peerbox's tasks table missing it entirely (`max(updated_at)` older than
+// found peer1's tasks table missing it entirely (`max(updated_at)` older than
 // the row's creation). The GLOBAL policy paragraph on the client host pointed
-// at exactly this command as "the way to get a row into peerbox's queue", which
+// at exactly this command as "the way to get a row into peer1's queue", which
 // turned a lock receipt into a persistence criterion (Rule 15b: prove the
 // EFFECT, never the receipt).
 //

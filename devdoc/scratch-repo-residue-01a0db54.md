@@ -31,7 +31,7 @@ directories and nothing else:
 91 porcelain entries, 161 files, **135 MB**, `10:01–10:19` on 2026-09-26 — written into
 the one tree every other run reads: the `repos` table's merge target
 (`/home/user/work/GoPi`, `internal/...` — CONFIG.md "repos"), whose branch
-`master` is what `git pull peerbox` updates.
+`master` is what `git pull peer1` updates.
 
 ## Attribution (measured, not inferred)
 
@@ -118,7 +118,7 @@ Order: **archive → delete → prove the pull's real blocker** (never delete fi
 **Superseded — the second blocker was then removed too** (same run, 12:17). The
 paragraph below is kept as the diagnosis that led there; the resolution follows it.
 
-The leftover abort was `git pull peerbox` → `fatal: Not possible to fast-forward,
+The leftover abort was `git pull peer1` → `fatal: Not possible to fast-forward,
 aborting.` — `pull.ff only` with `master` diverged **13 local-only / 11 remote-only,
 0 shared patch-ids**. Not residue (tree clean), not a conflict (`git merge-tree` → 0
 conflict markers), but four files both sides touched (`cmd/agent/chat_once.go`,
@@ -129,7 +129,7 @@ conflict markers), but four files both sides touched (`cmd/agent/chat_once.go`,
 ### The resolution: the divergence was duplicate landing, and it was already recoverable
 
 `git branch -r --contains` on each local-only commit was the decisive measurement:
-**14 of the 16 are already on peerbox as `peerbox/feat/chat-status-row-degradation-test`**
+**14 of the 16 are already on peer1 as `peer1/feat/chat-status-row-degradation-test`**
 (`995ea0e7` — the text2img fix — first among them). Realigning `master` onto the peer
 therefore loses nothing from those 14; the remaining two (`031edce0` "the
 non-interactive face reads REPL lines", `40a01655` its report — the whole
@@ -139,19 +139,19 @@ a local-only branch whose tip equals the old `master` tip (`40a01655`, reflog
 path walked is kept, nothing is force-recovered.
 
 ```bash
-git reset --hard peerbox/master   # after proving the above; HEAD<->master b4a5f5b1 preflight
-git pull peerbox                  # → fast-forward f0db74ba..779761f4, rc 0; second run: "Already up to date."
+git reset --hard peer1/master   # after proving the above; HEAD<->master b4a5f5b1 preflight
+git pull peer1                  # → fast-forward f0db74ba..779761f4, rc 0; second run: "Already up to date."
 ```
 
-End state, measured: `master` = `peerbox/master` = **`779761f4`**, `git rev-list
---left-right --count master...peerbox/master` = **0 0**, `git status --porcelain` **0
+End state, measured: `master` = `peer1/master` = **`779761f4`**, `git rev-list
+--left-right --count master...peer1/master` = **0 0**, `git status --porcelain` **0
 lines**, and `go build ./...` rc 0 (the merged tree compiles — no `DOC-INDEX.tsv`
 conflict markers leaked into a `.go` file). The `wip/` ref still resolves to
 `40a01655`.
 
 **What the realignment deliberately did not decide:** whether the two
-`wip/`-only commits *should* land on peerbox — that is a content decision for the
-operator/peerbox (Rule 28: the chat surface is feature work, HP's shape; landing it is a
+`wip/`-only commits *should* land on peer1 — that is a content decision for the
+operator/peer1 (Rule 28: the chat surface is feature work, HP's shape; landing it is a
 review step, not a merge step). What is settled is the machine's own complaint: the
 shared checkout is aligned, clean, and pullable.
 
@@ -177,7 +177,7 @@ inside it fails ⇒ outside ⇒ safe) — the same criterion Rule 22 applies to 
 
 ## Where the product fix goes (dispatched, not done here)
 
-The remaining gap is system-layer (Rule 28 → peerbox: merger/worktree/ledger paths), so
+The remaining gap is system-layer (Rule 28 → peer1: merger/worktree/ledger paths), so
 this run **filed** it rather than editing those paths on HP. The child task carries:
 which arm is silent and why, the two candidate signals (`deliverable.repo` == the main
 checkout; directory-name match against the repo's basename, since `scratch/` is nobody's
@@ -271,7 +271,7 @@ The announcement fix above remains the other half.
 - Cleanup: archive 88 files / 57 MB at the path above; `EXCLUDED-BINARIES.sha256`
   written; `git status --porcelain` → 0 lines after deletion.
 - The pull: `git pull` → `fatal: Not possible to fast-forward, aborting.` (rc 128);
-  `git cherry -v peerbox/master master` → 13; `git cherry -v master peerbox/master` → 11;
+  `git cherry -v peer1/master master` → 13; `git cherry -v master peer1/master` → 11;
   `comm -12` of the two patch-id sets → 0; `git merge-tree` → 0 conflict markers.
 
 ### Second follow-up, same day (12:3x): the manifest gate was RED on master, and this branch closes it

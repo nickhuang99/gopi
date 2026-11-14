@@ -13,7 +13,7 @@
 > peer ledger instead of merging it.
 
 **Task:** `01a1650f-e0a2-700c-b9db-44a6e0554a51`
-**Measured:** 2026-10-23, host `hosta`, `bin/gopi` built from `c9c0534`.
+**Measured:** 2026-10-23, host `host-b`, `bin/gopi` built from `c9c0534`.
 
 ## The report
 

@@ -171,7 +171,7 @@ leave *dirt* that withholds it (PROJECT.md Rule 30, `:1120`; row
 *by* this module, as a rework task
 (`cmd/agent/merger_takeover_prompt.md` §3.6, `:399-437`).
 
-### 2.3 The two nodes — HP (client) and peerbox (server)
+### 2.3 The two nodes — HP (client) and peer1 (server)
 
 The client is where work is finished; the server is where the trunk lives
 (Rule 28, `GOPI.md:1035-1077`). The delivery obligation is **on the client**:

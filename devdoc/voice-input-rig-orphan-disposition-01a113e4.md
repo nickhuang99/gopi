@@ -29,7 +29,7 @@ prefix:
 ```
 $ gopi task show 01a113e4-6776-7eb9-a4c3-3cb1df1cdfbb
 status:         cancelled
-summary:        [2/5] 在 peerbox 上搭起确定性麦克风装置并把现有采集路径跑通：
+summary:        [2/5] 在 peer1 上搭起确定性麦克风装置并把现有采集路径跑通：
                 null-sink + remap-source … 记录装置搭建的精确命令与复现要点到
                 devdoc/voice-input-default-local.md 的 Verification 装置段。
 parent_task_id: 01a113e4-6730-7b5b-bc35-0278c2c20b8b
@@ -953,7 +953,7 @@ each move with a delivery-point sync: `c287c58d2` at 21:19:12 and the merge
 `CGO_ENABLED=0 go build -o bin/gopi ./cmd/agent/` → **exit 0**, and
 `make test-budget PKGS='./internal/docindex ./internal/standards'` → **exit 0**,
 `2 finished, 0 with a failure`, 94 s wall, stamp
-`2026-10-07T21:18:06+08:00 host=peerbox … exit=0 outcome=pass
+`2026-10-07T21:18:06+08:00 host=peer1 … exit=0 outcome=pass
 stream=run-1791379086-236075.json`. Re-run in this round rather than quoted from
 §8's, because both branches moved between the two readings. `gopi tool doccheck`
 → **exit 0** (`the devdoc corpus is consistent`) after this section's edits, and
@@ -2039,7 +2039,7 @@ document once the tag lands. The rig record is recoverable at
 - Tests: `make test-budget PKGS='./internal/docindex ./internal/standards'` →
   **exit=0, `2 finished, 0 with a failure`**, 106 s wall
   (stream `run-1791377939-124318.json`; stamp
-  `host=peerbox pkg=./internal/docindex ./internal/standards exit=0 outcome=pass`).
+  `host=peer1 pkg=./internal/docindex ./internal/standards exit=0 outcome=pass`).
   These are the packages this change's mechanism lives in — the doc-corpus
   reader and the standards gates (including Rule 36's manifest coverage). The
   branch carries **no Go change** (§1.2), so no other package's behaviour is in
@@ -2145,7 +2145,7 @@ All of §9's figures were taken in ONE pass and written to
 - Ran (this round's build + smoke at this tip):
   `CGO_ENABLED=0 go build -o bin/gopi ./cmd/agent/` → exit 0;
   `make test-budget PKGS='./internal/docindex ./internal/standards'` → exit 0,
-  stamp `2026-10-07T21:18:06+08:00 host=peerbox … exit=0 outcome=pass
+  stamp `2026-10-07T21:18:06+08:00 host=peer1 … exit=0 outcome=pass
   stream=run-1791379086-236075.json`.
 - Ran: `gopi tool doccheck` → exit 0 (`the devdoc corpus is consistent`);
   `git status --porcelain` → empty (Rule 30).
@@ -2223,7 +2223,7 @@ is filed at
   `CGO_ENABLED=0 go build -o bin/gopi ./cmd/agent/` → **exit 0**, and
   `make test-budget PKGS='./internal/docindex ./internal/standards'` →
   **exit 0**, `2 finished, 0 with a failure`, 56 s wall, stamp
-  `2026-10-07T21:25:44+08:00 host=peerbox … exit=0 outcome=pass
+  `2026-10-07T21:25:44+08:00 host=peer1 … exit=0 outcome=pass
   stream=run-1791379544-266082.json`.
 - Ran (the gate this change must satisfy, after §10's edits): `gopi tool doccheck`
   → **exit 0**; `git status --porcelain` in this run's worktree → empty after the

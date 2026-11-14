@@ -190,7 +190,7 @@ than replacing it. Three changes, and one of them is a **correction**:
    corrected in the same commit so two documents cannot disagree.
 2. **§8.5 is new: the chain's own execution, as ledger evidence.** Nine rows with
    `created_at` four seconds apart ran strictly serially over 2h12m, claimed by
-   one resident worker (`peerbox:2211811`), with the two not-yet-released rows
+   one resident worker (`peer1:2211811`), with the two not-yet-released rows
    parked by name at every moment. It also records the **honest gaps** (the
    insertion order is not recoverable; `gopi worker <explicit-id>` was never used;
    one host, one dispatcher, one head).

@@ -138,7 +138,7 @@ must never cross, and what he needs to be true to trust it.
 
 **Boundary + reason.** The ssh client/server legs, the role split, node identity
 and the sync leg form one user-visible property ("is my other machine up to
-date?"). The role split is a **requirement, not deployment trivia**: peerbox owns
+date?"). The role split is a **requirement, not deployment trivia**: peer1 owns
 the system layer, HP owns features `[E2: GOPI.md:1002 Rule 28]`, and everything
 bad in that incident came from both hosts working one layer at once.
 
@@ -146,7 +146,7 @@ bad in that incident came from both hosts working one layer at once.
 submit + **cancel** the original row, briefing must carry the reason and the
 evidence); `GOPI.md:855` Rule 26 (incomplete fix → dispatch again; duplicates
 allowed; the briefing carries the reason so the executor judges). Operator asks:
-`01a0aab1` ("diagnose: why did HP never push its finished branches to peerbox?
+`01a0aab1` ("diagnose: why did HP never push its finished branches to peer1?
 client leg silently skipped"), `01a0aab8` (client push blocked by a worktree
 dirty guard). Packages/surfaces: `cmd/agent/cli_tasks_sync*.go`,
 `cli_tasks_bridge.go`, `cli_tasks_adopt.go`, `cli_memory_sync.go`/`memsync`,

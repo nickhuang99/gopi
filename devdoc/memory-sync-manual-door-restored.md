@@ -5,7 +5,7 @@
 session between this node and a declared `memory_peers` peer, and exits.
 
 ```
-gopi memory sync --peer peerbox                 bidirectional (the default)
+gopi memory sync --peer peer1                 bidirectional (the default)
 gopi memory sync --peer hp --push             one-way OUTWARD
 gopi memory sync --peer hp --pull             one-way INWARD
 gopi memory sync --peer hp --dry-run          size the outbound patch, no ssh
@@ -79,8 +79,8 @@ peer exits 1 naming this node's whole whitelist, `--push --pull` together exits
 1 as mutually exclusive, and a `--pus` typo exits 1 instead of silently running
 a bidirectional session.
 
-**Known limitation, stated rather than hidden.** A real `--peer peerbox` against
-the live fleet could not be run from this branch: `peerbox` and `hp` still run a
+**Known limitation, stated rather than hidden.** A real `--peer peer1` against
+the live fleet could not be run from this branch: `peer1` and `hp` still run a
 binary built before the restoration, so they answer
 `gopi memory: unknown subcommand "sync"` and the leg correctly reports that as a
 failed session. The peer-side capability exists only after this branch is built
@@ -115,12 +115,12 @@ wrong change.
 
 ```
 $ ./bin/gopi memory sync -h                    # the page, rc=0
-$ ./bin/gopi memory sync --peer peerbox --dry-run
-dry-run hosta→peerbox: push would carry 17465 row(s) (local non-node rows; anti-reflow excludes node:* imports)   rc=0
+$ ./bin/gopi memory sync --peer peer1 --dry-run
+dry-run host-b→peer1: push would carry 17465 row(s) (local non-node rows; anti-reflow excludes node:* imports)   rc=0
 $ ./bin/gopi memory sync --peer nosuchhost
-gopi memory sync: peer "nosuchhost" is not declared — "peerbox|hp" is this node's whole whitelist
+gopi memory sync: peer "nosuchhost" is not declared — "peer1|hp" is this node's whole whitelist
   ("memory_peers", or GOPI_MEMORY_PEERS for one run); topology is declared, never discovered   rc=1
-$ ./bin/gopi memory sync --peer peerbox --push --pull
+$ ./bin/gopi memory sync --peer peer1 --push --pull
 gopi memory sync: --push and --pull are mutually exclusive (omit both for one bidirectional session)   rc=1
 $ ./bin/gopi help | grep "memory sync"
   gopi memory sync            One MANUAL session against a declared `memory_peers` peer: …
@@ -140,9 +140,9 @@ The first version ran the direction and `--timeout` validators ONLY after the
 `--dry-run` early return, so a dry run never reached them. Measured, 2026-11-06:
 
 ```
-$ ./bin/gopi memory sync --peer peerbox --dry-run --timeout 0
-dry-run hosta→peerbox: push would carry 17465 row(s) …        rc=0     ← WRONG
-$ ./bin/gopi memory sync --peer peerbox --timeout 0
+$ ./bin/gopi memory sync --peer peer1 --dry-run --timeout 0
+dry-run host-b→peer1: push would carry 17465 row(s) …        rc=0     ← WRONG
+$ ./bin/gopi memory sync --peer peer1 --timeout 0
 gopi memory sync: --timeout "0" is not a positive number of seconds   rc=1
 ```
 
@@ -162,9 +162,9 @@ whatever else is in the argv.
 Corrected measurement, same binary shape:
 
 ```
-$ ./bin/gopi memory sync --peer peerbox --dry-run --timeout 0        rc=1
-$ ./bin/gopi memory sync --peer peerbox --dry-run --push --pull      rc=1
-$ ./bin/gopi memory sync --peer peerbox --dry-run --timeout 60       rc=0
+$ ./bin/gopi memory sync --peer peer1 --dry-run --timeout 0        rc=1
+$ ./bin/gopi memory sync --peer peer1 --dry-run --push --pull      rc=1
+$ ./bin/gopi memory sync --peer peer1 --dry-run --timeout 60       rc=0
 ```
 
 And the two-profile session was re-run AFTER the fix, because a validation-order

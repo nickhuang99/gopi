@@ -121,7 +121,7 @@ func selfNoteCases() []struct {
 			name: "status-shell/positive: the same status report WITH a node table is a candidate",
 			form: "空壳状态报告",
 			note: selfNoteProse(selfNoteMinRunes, "节点状态逐个记下来了") +
-				" | 节点 | 角色 | 状态 | | peerbox | server | 忙 | | hp | client | 闲 |",
+				" | 节点 | 角色 | 状态 | | peer1 | server | 忙 | | hp | client | 闲 |",
 			wantTier: selfNoteTierTable,
 		},
 		{

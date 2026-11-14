@@ -78,7 +78,7 @@ gopi scratch-gc deps 2>/dev/null  # the same, without the foreign neighbours
 gopi scratch-gc deps 2>&1 | grep -E 'origin=gopi|summary|note'
 ```
 
-Measured on peerbox, 2026-09-26 (the run that landed this):
+Measured on peer1, 2026-09-26 (the run that landed this):
 
 > **Retired mechanism (merge daemon loop removal, 2026-11-01).** The `gopi merge
 > --every` loop quoted below existed when this run was measured and is gone now —

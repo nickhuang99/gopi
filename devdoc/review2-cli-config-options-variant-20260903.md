@@ -3,7 +3,7 @@
 
 - **Reviewer:** GoPi/GLM, HP node, 2026-09-03 — independent re-review of the
   `gopi [options]` config layer. This report was written WITHOUT reading the
-  peerbox report during analysis; the peerbox report (`devdoc/review-cli-config-options.md`,
+  peer1 report during analysis; the peer1 report (`devdoc/review-cli-config-options.md`,
   branch `review/cli-config-options`) was opened only AFTER my own probing was
   complete, to map my findings against its claims. This merge-commit version
   also incorporates one factual correction found at cross-check time (§5).
@@ -19,7 +19,7 @@
 
 ## Part 1 — Known claims from first review, verified independently
 
-| peerbox claim | My independent verdict | Evidence |
+| peer1 claim | My independent verdict | Evidence |
 |---|---|---|
 | P0-1 `--home` settings leak | **CONFIRMED FIXED on master.** `cmd/agent/main.go:171-173` sets `GOPI_HOME` via `os.Setenv(config.GopiDirEnv, …)` BEFORE `deepseek.SettingsPath()` runs → the settings read resolves under the sandbox root. Live probe: `--home <sandbox>` with sandbox settings `{model: homesettings-model, max_tokens: 777, api_key: dummy}` picked up BOTH keys (session_start recorded `homesettings-model`; the raw-log REQUEST carries `"max_tokens":777`). | `cmd/agent/main.go:166-183`; probe T13/T15 |
 | P0-2 env-name-as-flag never implemented | **CONFIRMED FIXED.** `FlagOverrides` builds the inverse `envFlag` map from the catalog; `--gopi-timeout-sec` canonicalizes to `--timeout` before dispatch (`internal/config/flags.go:57-75`, `envNameAsFlag` at 100-103). Parser and help share one spelling function. | `flags.go:41,57-61` |
@@ -28,7 +28,7 @@
 | P1-4 hideThinking inverted bool | **CONFIRMED FIXED at BOTH ends.** Writer: `ApplyEnv(fromFlags=true)` writes only `SetEnvVars` keys the user actually passed (`env.go:26-34`); reader: `internal/agent/loop.go:2978/2984` use `config.EnvBool` truthy-only parsing, so even a written `"off"` parses as disabled. | `env.go`, `internal/agent/loop.go:2978-2060` |
 | (also: keep-thinking "unhandled flag") | **CONFIRMED FIXED.** `applyFlag` has `case "keep-thinking"` and `isBoolKey` contains `keep_thinking`; live `gopi --keep-thinking` / `--keep-thinking=false` both parse. Fix commit `4b08400`. | `flags.go:142-146`; probe T2/T3 |
 
-**Summary: I AGREE with the peerbox review's headline verdicts — all five were
+**Summary: I AGREE with the peer1 review's headline verdicts — all five were
 real bugs and all five are genuinely fixed and regression-tested on master.**
 
 ---
@@ -122,7 +122,7 @@ real bugs and all five are genuinely fixed and regression-tested on master.**
 - This is a real crash-on-bad-input bug — P1 (not P0) only because the
   trigger is a malformed user file.
 
-### P1-E. Catalog default-drift audit (same class as peerbox P1-1, beyond the thinking budget)
+### P1-E. Catalog default-drift audit (same class as peer1 P1-1, beyond the thinking budget)
 
 Free-text "(default …)" strings in the catalog vs code constants:
 
@@ -216,14 +216,14 @@ eliminate.
 
 ## Part 5 — Cross-check note (post-probe)
 
-After my probes were complete I opened the peerbox report to map claims. Its
+After my probes were complete I opened the peer1 report to map claims. Its
 five headline findings all match my independent verification (Part 1). One
-disagreement in emphasis: the peerbox report's P1-2 ("--settings not
+disagreement in emphasis: the peer1 report's P1-2 ("--settings not
 GOPI_HOME-aware for the flag form") overstates the residual issue — with
 `--home` fixed (main.go:171-173) the default settings path resolves through
 the sandbox root correctly, and an explicit `--settings PATH` is by
 definition absolute; the interplay bug it describes no longer exists at
-f88cefc. The peerbox report also missed the P0-A/P0-B init-time dead-knob
+f88cefc. The peer1 report also missed the P0-A/P0-B init-time dead-knob
 family (the only P0s still open on master as of this review).
 
 ## Verification

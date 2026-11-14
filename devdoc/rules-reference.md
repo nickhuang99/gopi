@@ -1254,18 +1254,18 @@ happened, so it is now mechanical:
   slowest tests, and `execSchemaBatchOnce`'s `tx.Commit()` duration). See
   `devdoc/ledger-dsn-cmd-agent-contract.md`, "the pressure clause, REPLACED".
 
-## Rule 28: Two Hosts, Two Jobs — peerbox Owns the System Layer, HP Owns Features
+## Rule 28: Two Hosts, Two Jobs — peer1 Owns the System Layer, HP Owns Features
 
 **The division** (operator's decision, 2026-09-16):
 
 | host | role | work |
 |---|---|---|
-| **peerbox** | server | **system-level**: worktree lifecycle, branch/merge machinery, the merger, task ledger, sync, scheduling — the parts that define how work flows |
+| **peer1** | server | **system-level**: worktree lifecycle, branch/merge machinery, the merger, task ledger, sync, scheduling — the parts that define how work flows |
 | **HP** | client | **feature development** that does **not** touch the system layer |
 
 **Why it is a rule and not a preference**: everything that went wrong in
 2026-09-16's incidents went wrong *because both hosts worked the same layer at
-once* — fourteen HP branches sat on a stale baseline while peerbox reworked the
+once* — fourteen HP branches sat on a stale baseline while peer1 reworked the
 same areas, so each one needed a rebase to land and then a compile fix anyway
 (`fix/dump-name-collision` merged with "zero conflicts" and did not build). The
 division exists so a feature branch comes back **mergeable**, not so the hosts
@@ -1279,7 +1279,7 @@ HP-shaped if it:
   (`cli_tasks*.go` runner paths, `merger*`, `task_reclaim*`, `worktree*` sweep,
   `internal/testutil` gates, `internal/standards` gates).
 
-A task that needs both is two tasks; the system half goes to peerbox, the feature
+A task that needs both is two tasks; the system half goes to peer1, the feature
 half to HP.
 
 **Migrating a task to the other host is a three-step move, and the cancel is not
@@ -1287,7 +1287,7 @@ optional**: export the payload, submit it on the target host, and **cancel the
 original row** with a reason naming the new row id. Without the cancel both hosts
 claim it and the work runs twice (Rule 26's duplicate-dispatch allowance is for
 *repair*, not for an unowned second run). Tag the new row so its origin is
-visible (e.g. `migrated-from-peerbox`).
+visible (e.g. `migrated-from-peer1`).
 
 **Before dispatching to HP, check the briefing's own assumptions.** The GUI tasks
 migrated on 2026-09-16 each opened with "read
@@ -1917,14 +1917,14 @@ impossible and the existing ones countable.
 
 | when (local) | what | evidence |
 |---|---|---|
-| 2026-10-02 20:51:39Z (2026-10-03 04:51 local) | row `01a0fe63` (`…-0c2c-74c0-86d2-e1b1997389f9`) submitted on **peerbox's** ledger with `deliverable={"repo":"/home/user/work/hermes-agent"}` | peerbox `tasks` row; the repo check had PASSED (the path is a real work tree on peerbox: non-bare, branch `hot-note`) |
-| until 04:56 | the row sits **unclaimed** — peerbox is the ledger holder (`role=server`) and `sync_peers` is empty, so nothing forwards or claims it | peerbox settings.json (`role=server`, `sync_peers: []`) |
-| 2026-10-03 04:56:16 | `01a0fe63` set to **cancelled**, reason `MIGRATED to HP: 01a0fe67-34cd-7c77-8293-d8992869f928` | peerbox row's reason column |
+| 2026-10-02 20:51:39Z (2026-10-03 04:51 local) | row `01a0fe63` (`…-0c2c-74c0-86d2-e1b1997389f9`) submitted on **peer1's** ledger with `deliverable={"repo":"/home/user/work/hermes-agent"}` | peer1 `tasks` row; the repo check had PASSED (the path is a real work tree on peer1: non-bare, branch `hot-note`) |
+| until 04:56 | the row sits **unclaimed** — peer1 is the ledger holder (`role=server`) and `sync_peers` is empty, so nothing forwards or claims it | peer1 settings.json (`role=server`, `sync_peers: []`) |
+| 2026-10-03 04:56:16 | `01a0fe63` set to **cancelled**, reason `MIGRATED to HP: 01a0fe67-34cd-7c77-8293-d8992869f928` | peer1 row's reason column |
 | 2026-10-03 04:56:11 | the row is re-filed on **HP** as `01a0fe67` (`…-34cd-7c77-8293-d8992869f928`) | HP ledger row, `created` stamp |
 | 2026-10-03 07:26:02 | HP's worker closes `01a0fe67` — `status=completed`, `deliverable.branch=task/01a0fe6734cd7c778293d8992869f928`, `deliverable.worktree=/home/user/workspace/gopi-01a0fe6734cd7c778293d8992869f928` | HP ledger row |
 
 The migration itself was the three steps Rule 40 now names: export the payload
-(the peerbox session container `/home/user/.gopi/sessions/01a0fe63-…/metadata.json` holds
+(the peer1 session container `/home/user/.gopi/sessions/01a0fe63-…/metadata.json` holds
 the 6214-character payload verbatim — `gopi task show` is the export, there is
 no export/import subcommand), re-submit on HP, cancel the original naming the new
 id. The cancelled row is kept (the ledger is append-only) and its reason is the
@@ -1933,15 +1933,15 @@ trail.
 ### The root cause, in five whys
 
 1. **Symptom**: a hermes-agent task never ran.
-2. **Why**: it was filed on peerbox's ledger, and no HP worker reads that ledger;
-   peerbox's `sync_peers` is empty, so nothing forwards it either. A row on the
+2. **Why**: it was filed on peer1's ledger, and no HP worker reads that ledger;
+   peer1's `sync_peers` is empty, so nothing forwards it either. A row on the
    wrong ledger is not late — **it is never dispatched**.
 3. **Why it looked correct**: `task_submit` verified the repo
    (`taskRepoVerifiable` → `git rev-parse --is-inside-work-tree`) and it
    **passed**.
 4. **Why that check cannot help here**: `/home/user/work/hermes-agent` is a
    real, non-bare work tree on **both** hosts — on HP it is the project, on
-   peerbox it is the git upstream. The verification answers "is this path a git
+   peer1 it is the git upstream. The verification answers "is this path a git
    work tree on *some* filesystem this process can see", which is TRUE.
 5. **Why that is a property of the check, not a bug in it**: ownership is a fact
    about a **machine**; the seam holds a fact about a **path**. No amount of

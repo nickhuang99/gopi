@@ -95,7 +95,7 @@ func TestCloneGroundStandsOnItsLedgerAddress(t *testing.T) {
 	// `task/<id>` while pushing only `base` used to leave every clone row naming
 	// a ref nobody could resolve, so the channel published a SECOND refspec for
 	// it. That fixed the symptom and created a permanent one (measured
-	// 2026-10-28: peerbox carried 15 `task/*` branches, EVERY one already merged
+	// 2026-10-28: peer1 carried 15 `task/*` branches, EVERY one already merged
 	// into master and NEVER deleted — a ref no merge path consumes is litter,
 	// one per task, forever, because nobody merges a branch the ledger invented).
 	// The destination is the delivery; the row's ADDRESS is `base`; the ground
@@ -294,7 +294,7 @@ func TestCloneGroundWithoutARowKeepsTheLegacyShape(t *testing.T) {
 // no `task/<id>` anywhere.
 //
 // THE DEFECT (measured, the ground's own reflog): one second after
-// `clone: from peerbox:/home/user/work/gopi` came
+// `clone: from peer1:/home/user/work/gopi` came
 // `checkout: moving from master to task/01a1a87b…`. The channel minted a
 // private ref per ground so the branch→row lookup had an address, and paid for
 // it twice: the run's commits landed on a ref no merge path consumes and no

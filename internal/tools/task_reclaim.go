@@ -368,7 +368,7 @@ type reclaimDeadHolderRow struct {
 // alive by construction (the worker's round-end defer runs inside the very
 // process the claim stamp names). Measured, verbatim:
 //
-//	[own-release] claimed by this worker: peerbox:771230        ← the asker's own stamp
+//	[own-release] claimed by this worker: peer1:771230        ← the asker's own stamp
 //	own worktree release refused: feat/own-release (rig-own-release-own)
 //	  — live task rig-own-release-own still has a run standing
 //	    (its recorded runner (pid 771230) is still running)

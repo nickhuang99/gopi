@@ -264,13 +264,13 @@ nothing to cover (stated, not skipped silently).
 - python dir-log join (newest 200 rows): `{'named':104,'other_uuid':9,'no_sid':0,'no_dir':87}`; per-`session_start` check: `checked=113, ledger_sid==run_sid=104, mismatch=9, dir holds another task's log=0`.
 - `sessions/` dirs `= 74,943`; `dirs_with_2plus_runlogs = 128` (whole tree), and only `1` among the newest 200 rows.
 - `~/workspace/…/5ee7ef8a-…jsonl` present with its `.raw.log`, while `sqlite3 … "SELECT count(*) FROM tasks WHERE session_id LIKE '5ee7ef8a%' OR tags LIKE '%5ee7ef8a%'"` → `0`.
-- `head -c 400 ~/.gopi/sessions/01a0ba37-…/5ee7ef8a-….jsonl` → `session_start{"sessionId":"5ee7ef8a…","taskId":"01a0ba37-ac7d-…"}`; ledger row `01a0ba37|completed|0db61d4e-…|deepseek-flash|worker|peerbox:786197`.
+- `head -c 400 ~/.gopi/sessions/01a0ba37-…/5ee7ef8a-….jsonl` → `session_start{"sessionId":"5ee7ef8a…","taskId":"01a0ba37-ac7d-…"}`; ledger row `01a0ba37|completed|0db61d4e-…|deepseek-flash|worker|peer1:786197`.
 - `ls ~/.gopi/sessions/01a0bb5b-af7c-…/` → `b3e8414b-….jsonl`, `b3e8414b-….raw.log`, `output.log`, `metadata.json`, `attachments/`, `task-report.md`; env `GOPI_TASK_RUN_ID=01a0bb5b-af7c-…`, `GOPI_EXECUTOR_SESSION_ID=b3e8414b-…`.
 - `bin/gopi task show 01a0bb5b-af7c-…` → prints `task_id`, `session_log: …/01a0bb5b-…/b3e8414b-….jsonl`, `raw_log: …`, `session_id: b3e8414b-…`.
 - occurrence counts: `grep -rn 'task_id\|TaskID' --include=*.go internal cmd | grep -v _test | wc -l` → `939` (78 files, top file `tasks.go` 176); `'session_id\|SessionID'` → `305`.
 - `sqlite3 … '.schema tasks'` → `task_id TEXT NOT NULL UNIQUE`, `session_id TEXT DEFAULT ''`; `SELECT count(*) … sql LIKE '%session_id%' AND sql LIKE '%UNIQUE%'` → the `tasks` table itself (its `task_id` line), i.e. no unique constraint on `session_id`.
 - `sqlite3 … "SELECT run_method, count(*) FROM tasks GROUP BY run_method"` → `'' 922, worker 833, auto 163, manual 103, child 39, merger 28, resume 8`.
-- `sqlite3 … "SELECT tags FROM tasks WHERE task_id LIKE '01a0ba14%'"` → `bug,worker:peerbox,run-retry:1,resumed:e314457b-…,resolved`; `ls ~/.gopi/sessions/01a0ba14-…/` → `eab92eca-….jsonl` (not `847d61f3`), and `847d61f3`'s log found under `sessions/01a0b1cd-…/`.
+- `sqlite3 … "SELECT tags FROM tasks WHERE task_id LIKE '01a0ba14%'"` → `bug,worker:peer1,run-retry:1,resumed:e314457b-…,resolved`; `ls ~/.gopi/sessions/01a0ba14-…/` → `eab92eca-….jsonl` (not `847d61f3`), and `847d61f3`'s log found under `sessions/01a0b1cd-…/`.
 
 ## Follow-ups (dispatchable, each self-contained)
 

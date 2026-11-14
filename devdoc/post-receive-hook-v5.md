@@ -3,7 +3,7 @@
 
 Epic: hook should first call gopi with token-free-hard-logic to execute simple git
 merge and cleanup — "most merge is no brainer. just git merge branch-name and done".
-Node: peerbox · Date: 2026-09-01 23:05–23:20
+Node: peer1 · Date: 2026-09-01 23:05–23:20
 
 ## Design (nick's verdict, zero ceremony)
 
@@ -50,7 +50,7 @@ deletion-push replay (newrev=zeros) → zero merge traces; `hp-unique-test` repl
 
 ## Operational hazards found during testing (all handled, none hook bugs)
 
-1. **Shared worktree concurrency**: peerbox runs multiple agents; the merge-all Bond
+1. **Shared worktree concurrency**: peer1 runs multiple agents; the merge-all Bond
    (t-1788275458) was mid-merge in the SAME working tree during my probes — my hook
    replays saw `UU cmd/agent/cli_tasks.go` left by ITS merge, not mine. Rule: before
    hook work, check `gopi task list --status in_progress` and wait for tree-clean

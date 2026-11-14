@@ -41,7 +41,7 @@ func helperLocalPeerAddrs(t *testing.T) []string {
 // webTestPeerNonLocal is a plausible off-host peer: a private address that is
 // not on this machine's interfaces. Used for the "remote peers are unchanged"
 // half of every assertion.
-const webTestPeerNonLocal = "10.77.77.77:54321"
+const webTestPeerNonLocal = "192.0.2.77:54321"
 
 // TestWebPeerIsLocal_OwnAddressesAreLocal is the trust predicate's red proof: a
 // peer at one of this host's OWN addresses is local (no token needed), while an
@@ -179,7 +179,7 @@ func TestWebTokenURL_SkipsTokenForLocalURLs(t *testing.T) {
 			t.Errorf("webTokenURL(%q, local trust OFF) = %q, want the token appended", u, got)
 		}
 	}
-	if got := webTokenURL("http://"+strings.TrimSuffix(webTestPeerNonLocal, ":54321")+":8090", token, true); got != "http://10.77.77.77:8090?"+webTokenQueryKey+"="+token {
+	if got := webTokenURL("http://"+strings.TrimSuffix(webTestPeerNonLocal, ":54321")+":8090", token, true); got != "http://192.0.2.77:8090?"+webTokenQueryKey+"="+token {
 		t.Errorf("remote URL = %q, want the token appended", got)
 	}
 }

@@ -21,7 +21,7 @@ only:
 
 ```
 repos     {"/home/user/work/gopi":{"build":"CGO_ENABLED=0 go build -o bin/gopi ./cmd/agent/","build_timeout_sec":600}}
-dev_repo  "peerbox:/home/user/work/gopi"
+dev_repo  "peer1:/home/user/work/gopi"
 ```
 
 `task submit` without `--repo` stamps the **process CWD**

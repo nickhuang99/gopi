@@ -3,7 +3,7 @@
 
 <!-- WORKER-OWNERSHIP: OPERATOR-ONLY — devdoc/worker-ownership.md -->
 
-**Date**: 2026-10-12 · **Task**: `01a12e0dd700705397bf98b9cc261824` (hosta)
+**Date**: 2026-10-12 · **Task**: `01a12e0dd700705397bf98b9cc261824` (host-b)
 **Motivating row**: `01a12de6-c052-7346-9efc-bbd885387489` (completed, delivery
 merged, branch `task/01a12de6c05273469efcbbd885387489` @ `b8c566ea2`)
 

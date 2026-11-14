@@ -9,7 +9,7 @@
 `TestVoiceClosingLineNamesTheEngine`'s last arm ("AND ON THE REAL BINARY") drove
 `gopi tool voice_input --engine local --runtime <stub>` with no recorder
 constraint, so it depended on **this machine having a capture device**. Measured
-on hosta (a laptop with no sound card, 2026-10-15):
+on host-b (a laptop with no sound card, 2026-10-15):
 
 ```
 --- FAIL: TestVoiceClosingLineNamesTheEngine (30.85s)

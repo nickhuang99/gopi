@@ -1,7 +1,7 @@
 <!-- doc-class: normative -->
 # The film's default terminal renders Chinese — xterm does not
 
-**Status**: implemented and measured, 2026-10-04, on `peerbox` (xfce4 desktop).
+**Status**: implemented and measured, 2026-10-04, on `peer1` (xfce4 desktop).
 **Change**: `FilmTerminalDefault` moves `xterm` → `xfce4-terminal`. `xterm` stays a
 selectable name with its historical measurements intact.
 **Code**: `internal/shot/terminalregistry.go` (the constant and its rationale),

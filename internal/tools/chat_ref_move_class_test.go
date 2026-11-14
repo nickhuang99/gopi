@@ -110,7 +110,7 @@ func TestTheOperatorRulingSurvivesTheNewClass(t *testing.T) {
 		"git status",
 		"ls -la",
 		"gopi task list",
-		"ssh peerbox true",
+		"ssh peer1 true",
 	} {
 		if adm := ChatOpAdmit(cmd, ""); !adm.Allowed() {
 			t.Errorf("%q was REFUSED (class=%s, reason=%q) — the 2026-10-24 ruling makes this the "+

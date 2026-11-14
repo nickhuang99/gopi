@@ -51,18 +51,18 @@ func TestReflowGateSelfOnlyBothTagsExported(t *testing.T) {
 	n := newBidirNode(t, "hp")
 	n.use(t)
 	t.Setenv("GOPI_SYNC_NODE", "hp")
-	// A row hp received from peerbox AND still holds LIVE (pending): the
-	// from-peerbox tag suppresses it toward peerbox (relaying back is the
+	// A row hp received from peer1 AND still holds LIVE (pending): the
+	// from-peer1 tag suppresses it toward peer1 (relaying back is the
 	// reflow), but it travels toward any OTHER destination (relay
 	// legitimacy — the third-node repair path). The terminal homecoming
 	// exemption deliberately does NOT apply: the row is not terminal.
 	deltaInsertRaw(t, "t-relay", "relayed row", taskStatusPending, 3, 4,
-		SyncTaskTagPrefix+"peerbox")
+		SyncTaskTagPrefix+"peer1")
 	_, closeDB, err := taskSyncDB()
 	if err != nil {
 		t.Fatal(err)
 	}
-	patch, _, err := SyncTaskExportDelta(SyncTaskDeltaOptions{Peer: "peerbox"})
+	patch, _, err := SyncTaskExportDelta(SyncTaskDeltaOptions{Peer: "peer1"})
 	closeDB()
 	if err != nil {
 		t.Fatal(err)
@@ -84,7 +84,7 @@ func TestReflowGateSelfOnlyBothTagsExported(t *testing.T) {
 		}
 	}
 	if !found {
-		t.Fatalf("from-peerbox row must travel toward hp2 (relay legitimacy)")
+		t.Fatalf("from-peer1 row must travel toward hp2 (relay legitimacy)")
 	}
 }
 
@@ -97,8 +97,8 @@ func TestReflowGateSelfOnlyBothTagsExported(t *testing.T) {
 // pattern (single place, both exporters) owns the "from-" prefix.
 func TestReflowGateTagNormalization(t *testing.T) {
 	t.Setenv("GOPI_SYNC_NODE", "hp")
-	if got := syncGateTag("peerbox"); got != "peerbox" {
-		t.Fatalf("named peer: syncGateTag=%q, want raw name %q (no from- prefix)", got, "peerbox")
+	if got := syncGateTag("peer1"); got != "peer1" {
+		t.Fatalf("named peer: syncGateTag=%q, want raw name %q (no from- prefix)", got, "peer1")
 	}
 	if got := syncGateTag("  hp2 "); got != "hp2" {
 		t.Fatalf("peer normalization: syncGateTag=%q, want %q (trimmed)", got, "hp2")

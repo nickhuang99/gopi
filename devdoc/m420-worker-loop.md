@@ -61,12 +61,12 @@ Branch: `feat/worker-loop-m420` (worktree `~/workspace/gopi-m420`, base master f
     `TestWorkerMaxRoundsEnv`, `TestWorkerExcludedTagsConstant`.
 - E2E smoke (real binary, sandbox GOPI_HOME): submit 1 task → `gopi worker`
   → claimed, resumed, child ran, writeback `completed`, tags
-  `worker:peerbox`, db-sync to 2 peers ok (pushed=2 pulled=1), then
+  `worker:peer1`, db-sync to 2 peers ok (pushed=2 pulled=1), then
   "queue drained — exiting", exit=0. Idempotent re-run: exits immediately.
 - 2-worker parallel E2E (same sandbox, 2 queued tasks, two concurrent
   `gopi worker` processes): w1 claimed `-1` task, w2 the other — each
   executed exactly once (CAS split the queue), both exit=0, both rows
-  terminal, tags carry `worker:peerbox`. No double-run observed.
+  terminal, tags carry `worker:peer1`. No double-run observed.
 
 ## M4.20-D: provenance + observability（追加）
 

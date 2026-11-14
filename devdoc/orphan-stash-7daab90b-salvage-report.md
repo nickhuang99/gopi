@@ -14,8 +14,8 @@ only `*.jsonl` / `*.raw.log` / `metadata.json` / `output.log`). The diff was
 recovered from the node that produced it:
 
 - `/home/user/workspace/merge-run-orphans/rescue-foreign-stash-7daab90b-rework.diff`
-  on **peerbox** — 66307 bytes, **1540 lines**, matching the briefing's count.
-- `7daab90b` itself still resolves in the **peerbox** repo:
+  on **peer1** — 66307 bytes, **1540 lines**, matching the briefing's count.
+- `7daab90b` itself still resolves in the **peer1** repo:
   `WIP on (no branch): c0cd21ab Merge branch 'feat/fix-master-red-standards-stylegate-signalrec'`.
 - Independent secondary copy confirmed locally: `git stash list` shows
   `stash@{0}: WIP on (no branch): ffdc1835 …` (a *different* stash — the
@@ -105,7 +105,7 @@ this row as 'no salvageable content' — the archive diff remains the record."**
   *submitter* deletes it after this rework is queued; that is not this run's
   action, and no ref was removed here.
 - **`7daab90b` was not reachable from HP** (`fatal: ambiguous argument`); all
-  orphan-side reads ran against peerbox's repo. The HP node cannot clean that ref up.
+  orphan-side reads ran against peer1's repo. The HP node cannot clean that ref up.
 
 ## Verification
 
@@ -138,7 +138,7 @@ this row as 'no salvageable content' — the archive diff remains the record."**
   symbols (excluding the two exemption files) → **zero production hits for
   each**; `ls -d internal/peakhours cmd/agent/peak_guard.go internal/config/workhours.go`
   → all three **do not exist**.
-- Ran:   `git stash list` (HP) + `ssh peerbox git log --oneline -1 7daab90b` (§1 recovery)
+- Ran:   `git stash list` (HP) + `ssh peer1 git log --oneline -1 7daab90b` (§1 recovery)
 - Commit: see the branch tip — the report commit only.
 
 ## Evidence (self-filed)
@@ -160,13 +160,13 @@ independent measurement, not by reading this document.
 ### Chain of custody (new evidence)
 
 `sha256 = 238d35f75e4ae462f5e229b519963249e3863d84c59633b6239c2018eec0b80a`
-(67023 bytes, 1540 lines) at **all three** locations: the peerbox original
+(67023 bytes, 1540 lines) at **all three** locations: the peer1 original
 `/home/user/workspace/merge-run-orphans/rescue-foreign-stash-7daab90b-rework.diff`,
 the ledger's recorded attachment hash, and the local secondary copy
 `/home/user/workspace/_tmp/orphan-7daab90b/d.diff`. The briefing's `[attachment1]`
 `…/sessions/01a0c28e-…/attachments/…` path still does **not** exist on
 hostb-Laptop (that session dir holds only `*.jsonl` / `*.raw.log` /
-`metadata.json` / `output.log`); this run read the peerbox original over ssh and
+`metadata.json` / `output.log`); this run read the peer1 original over ssh and
 copied nothing.
 
 ### Corrections to the sections above (measured; the prose is left as its author wrote it)
@@ -199,7 +199,7 @@ copied nothing.
   file) → **0 files** for each of `applyPeakGuard`, `peakGuardVerb`,
   `ResolvePeakHours`, `ParsePeakFlags`.
 - The orphan tip `7daab90b` is **absent from the HP repo** (`git cat-file -e`
-  fails) and resolves only on peerbox; `git for-each-ref | grep 7daab90b` lists no
+  fails) and resolves only on peer1; `git for-each-ref | grep 7daab90b` lists no
   ref on HP. Neither merged nor deleted by this run.
 
 No commit in this amendment re-authors orphan content. The decision stands at

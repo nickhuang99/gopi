@@ -190,7 +190,7 @@ Three readings worth keeping:
   a silence read as permission. Now the line matches `allow git worktree list *`
   (a rule the operator wrote) or the posture, and under the demo fence it takes the
   `prompt` the operator chose.
-- **`ssh -o ConnectTimeout=8 peerbox uptime` was ALLOW before, and now takes the
+- **`ssh -o ConnectTimeout=8 peer1 uptime` was ALLOW before, and now takes the
   posture.** The old reader allowed it only because no clause looked like a
   mutation; a `ssh -o StrictHostKeyChecking=no host git push` was refused with
   `its payload is a string this boundary does not expand` — a REFUSAL FOR BEING

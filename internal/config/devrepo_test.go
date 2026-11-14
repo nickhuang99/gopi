@@ -63,14 +63,14 @@ func TestCloneChannelDefaultIsOffWithoutChangingAnything(t *testing.T) {
 // TestDevRepoSettingsValueTurnsTheSwitchOn proves the switch is the VALUE, not
 // a second boolean.
 func TestDevRepoSettingsValueTurnsTheSwitchOn(t *testing.T) {
-	devRepoTestSettings(t, `{"dev_repo":"peerbox:/home/user/work/gopi"}`)
+	devRepoTestSettings(t, `{"dev_repo":"peer1:/home/user/work/gopi"}`)
 	t.Setenv(DevRepoEnvName, "")
 
 	got, source, err := DevRepoConfigured()
 	if err != nil {
 		t.Fatalf("DevRepoConfigured: %v", err)
 	}
-	if got != "peerbox:/home/user/work/gopi" {
+	if got != "peer1:/home/user/work/gopi" {
 		t.Fatalf("dev_repo = %q, want the declared host:path", got)
 	}
 	if !strings.Contains(source, DevRepoSettingsKey) {
@@ -85,7 +85,7 @@ func TestDevRepoSettingsValueTurnsTheSwitchOn(t *testing.T) {
 // TestDevRepoEnvOutranksSettings is the precedence rule every knob in this
 // package follows.
 func TestDevRepoEnvOutranksSettings(t *testing.T) {
-	devRepoTestSettings(t, `{"dev_repo":"peerbox:/settings/path"}`)
+	devRepoTestSettings(t, `{"dev_repo":"peer1:/settings/path"}`)
 	t.Setenv(DevRepoEnvName, "hp:/env/path")
 
 	got, source, err := DevRepoConfigured()

@@ -24,9 +24,9 @@ find: '/proc/2321/root/run/user/1000/systemd/inaccessible/dir': Permission denie
 f 107322 /proc/2321/root/run/user/1000/systemd/inaccessible/reg
 === 4. journal: did the user manager ever recreate its private socket this boot? ===
 --- boot-wide: any 'D-Bus User Message Bus' line for uid 1000 ---
-Sep 13 01:01:42 peerbox systemd[309629]: Starting D-Bus User Message Bus Socket...
-Sep 13 01:01:42 peerbox systemd[309629]: Listening on D-Bus User Message Bus Socket.
-Sep 13 01:01:51 peerbox systemd[309629]: Started D-Bus User Message Bus.
+Sep 13 01:01:42 peer1 systemd[309629]: Starting D-Bus User Message Bus Socket...
+Sep 13 01:01:42 peer1 systemd[309629]: Listening on D-Bus User Message Bus Socket.
+Sep 13 01:01:51 peer1 systemd[309629]: Started D-Bus User Message Bus.
 === 5. unit state of the two units that CREATE the runtime dir ===
 Result=success
 ExecMainStartTimestamp=Wed 2026-07-15 21:44:21 CST

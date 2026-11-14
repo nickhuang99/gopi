@@ -35,7 +35,7 @@ def load():
 
 # real-corpus shape: STATUS ERRCODE SENTBYTES OBJSIZE
 LINE = (
-    "OWNER staroceans.org [09/Sep/2026:06:35:56 +0000] 10.12.89.137 - R1 "
+    "OWNER staroceans.org [09/Sep/2026:06:35:56 +0000] 192.0.2.137 - R1 "
     "WEBSITE.GET.OBJECT dir/file.bin "
     '"GET /dir/file.bin HTTP/1.1" 200 - 1000 8388608 32 31 "-" "Mozilla/5.0" '
     "- sig - - - staroceans.org - - - us-east-1"

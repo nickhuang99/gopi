@@ -5,7 +5,7 @@
 `scratch-gc trees` arm), `scripts/scratch-gc-watchdog.sh` (the installed
 watchdog), plus the two producers that now reference the registry.
 **Branch**: `feat/scratch-gc-declared-trees`
-**Measured on**: this host (peerbox), 2026-09-20, `/home` = `/dev/sda4` 766G.
+**Measured on**: this host (peer1), 2026-09-20, `/home` = `/dev/sda4` 766G.
 
 ## Completed
 

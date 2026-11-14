@@ -179,11 +179,19 @@ const (
 	// without a decision is not a gate.
 	censusMaxEscapedDocs = 0
 
-	// censusMarkdownFloor is the corpus-size floor: the devdoc corpus measured
-	// 2538 markdown documents when this gate was restored. A walk that reads a
-	// wrong root, an empty directory or a filtered listing is caught here by
-	// name instead of passing on zero files.
-	censusMarkdownFloor = 2000
+	// censusMarkdownFloor is the corpus-size floor: the devdoc corpus measures
+	// 895 markdown documents on this rev. A walk that reads a wrong root, an
+	// empty directory or a filtered listing is caught here by name instead of
+	// passing on zero files.
+	//
+	// IT FELL FROM 2538 WITH THE CORPUS, deliberately. The public export carries
+	// only the documents that still make a standing claim (doc-class normative
+	// and roadmap) plus the historical records a code literal or a root document
+	// links to, so one cut removed ~1700 documents. A floor left at the old
+	// value measures nothing: it refuses the corpus that exists, which is not
+	// the failure it was written for (a green that covered nothing). It stays far
+	// above zero and above any single directory, so a broken root is still named.
+	censusMarkdownFloor = 700
 
 	// censusGitBinary / censusCommitPeel spell the reader's own pin check:
 	// `git cat-file -e <tok>^{commit}`. The `^{commit}` peel is what rejects a

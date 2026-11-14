@@ -2,7 +2,7 @@
 # memsync patch Version 兼容闸 + generator 头 (4c3575a)
 
 ## Epic
-三节点二进制版本不一致是常态 (peerbox 新 / HP 旧)。新字段的 patch 被旧二进制读:
+三节点二进制版本不一致是常态 (peer1 新 / HP 旧)。新字段的 patch 被旧二进制读:
 Go json.Unmarshal 默认丢弃未知字段 → 静默丢字段入库, 数据不完整且无报错。
 SyncPatch.Version 字段存在, 但 import 闸是严格等值 (`!=`), 无版本语义、无
 升级提示、行级 schema 漂移没有第二道闸。
@@ -49,7 +49,7 @@ question/answer / summary 空检查)。
 
 ## bidir E2E epic-② 修复 (顺带, 环境性)
 TestBidirEpic2StateConflictExplicitReport 在本机 (hostname=hostb-Laptop,
-settings.json sync_peers=[hp,peerbox]) 稳定 FAIL: syncIsServerNode() 读环境
+settings.json sync_peers=[hp,peer1]) 稳定 FAIL: syncIsServerNode() 读环境
 配置 → 合并侧 b 变成 SERVER → 走 syncDeltaServerResolve (RowsResolved) 而非
 legacy RowsConflict 分支。修法 (388be0a 同 pattern): t.Setenv pin
 GOPI_SYNC_PEERS=peer-under-test; 断言改为双语义 — 显式报告 (RowsConflict+

@@ -3,7 +3,7 @@
 
 **报告时间**：2026-09-10 23:05
 **委托**："make good use of night time and I will check with your report tomorrow morning"
-**结论先说**：⚠️ **HP 的 GLM 账户余额耗尽（错误码 1113），23:00 免费窗口并未恢复**。我做了实测确认并把 HP 的全部任务迁回 peerbox（DeepSeek）。当前 peerbox 2 个 worker 在跑，队列 13 个任务。
+**结论先说**：⚠️ **HP 的 GLM 账户余额耗尽（错误码 1113），23:00 免费窗口并未恢复**。我做了实测确认并把 HP 的全部任务迁回 peer1（DeepSeek）。当前 peer1 2 个 worker 在跑，队列 13 个任务。
 
 ---
 
@@ -21,18 +21,18 @@ http_status: 429
 |---|---|---|
 | 22:54（窗口外） | GLM API 直测 | ❌ 429 余额不足 |
 | **23:00:10（窗口内）** | **GLM API 直测** | ❌ **仍然 429 余额不足** |
-| 22:55 | DeepSeek API 直测（peerbox） | ✅ HTTP 200 正常 |
+| 22:55 | DeepSeek API 直测（peer1） | ✅ HTTP 200 正常 |
 
 **结论：免费窗口救不了——这是账户余额问题，不是窗口问题。**
 
 ### 我的处置
-1. **HP 的 5 个任务全部迁回 peerbox**（4 个 pending 重新提交 + 1 个被杀的重提）
+1. **HP 的 5 个任务全部迁回 peer1**（4 个 pending 重新提交 + 1 个被杀的重提）
 2. **移除 HP 的夜间 cron 兜底**（启动无意义，只会撞 429）
-3. **终止 peerbox 等待器**（它仍在往 HP 派 worker）
+3. **终止 peer1 等待器**（它仍在往 HP 派 worker）
 4. **清理 HP**：无 worker、无活跃任务、无 cron
 
 ### 需要你决定
-GLM 账户需要充值才能继续用。在充值之前，**HP 无法作为算力节点**——所有任务都在 peerbox 用 DeepSeek 跑。
+GLM 账户需要充值才能继续用。在充值之前，**HP 无法作为算力节点**——所有任务都在 peer1 用 DeepSeek 跑。
 
 （如果 GLM 的免费窗口是"资源包"形式而非"余额"，可能需要检查账户后台是否有未激活的包。）
 
@@ -53,7 +53,7 @@ GLM 账户需要充值才能继续用。在充值之前，**HP 无法作为算�
 | 流式 | ❌ **无真流式**（`examples/stream` 自述"very quick-n-dirty"，是滑动窗口重跑） |
 | **VAD** | ✅ 真的（Silero，实测 0.1-2.8s，比实时快） |
 | server 模式 | ✅ 有，**但仅 5 路由**，**无 SSE/WebSocket**，单 mutex 串行化 |
-| **hosta .13** | ⚠️ ping 通（0.84ms RTT）**但拒绝免密 SSH**（measured blocker） |
+| **host-b .13** | ⚠️ ping 通（0.84ms RTT）**但拒绝免密 SSH**（measured blocker） |
 
 **它诚实列了 10 条开放问题**，其中两条最有价值：
 - **Volcengine 价格未验证**（官方页 JS 渲染抓不到 0 字符）——明确标注"不要当事实引用"
@@ -63,7 +63,7 @@ GLM 账户需要充值才能继续用。在充值之前，**HP 无法作为算�
 
 **最小设备契约 = 一行命令**（设备零安装）：
 ```bash
-ffmpeg -f alsa -i default -ac 1 -ar 16000 -f s16le - | curl -sS -T - http://10.0.0.6:8088/v1/audio
+ffmpeg -f alsa -i default -ac 1 -ar 16000 -f s16le - | curl -sS -T - http://192.0.2.6:8088/v1/audio
 ```
 
 **推荐注入点 = `POST /api/chat`**（`cli_web.go:818`）——唯一能注入**运行中** agent 且有**返回通道**（SSE）的点，且无需改 gopi 源码。
@@ -89,7 +89,7 @@ ffmpeg -f alsa -i default -ac 1 -ar 16000 -f s16le - | curl -sS -T - http://10.0
 ### 语句级交叉印证
 **`cmd/agent` 仅 48.2%** ← 最大隐患（CLI 层；最近 bug 全在这：worker -h 跑循环×3 / task submit payload 空 / memory 裸命令进 agent 循环）
 
-### 已派任务（peerbox，13 pending）
+### 已派任务（peer1，13 pending）
 | 任务 | 覆盖 |
 |---|---|
 | 覆盖率试点 | internal/taskverdict（2 函数，最小闭环） |
@@ -135,10 +135,10 @@ ffmpeg -f alsa -i default -ac 1 -ar 16000 -f s16le - | curl -sS -T - http://10.0
 
 | 平台 | 状态 |
 |---|---|
-| **peerbox** | ✅ DeepSeek 可用；**2 个 worker** 在跑；13 pending |
+| **peer1** | ✅ DeepSeek 可用；**2 个 worker** 在跑；13 pending |
 | **HP** | ⚠️ **GLM 余额耗尽**；已清理（无 worker/无任务/无 cron）；等充值 |
 
-**peerbox 在跑的两个任务**：
+**peer1 在跑的两个任务**：
 1. CH9329 硬件 HID 评估
 2. Webcam Capture（闭环伺服版）
 
@@ -199,5 +199,5 @@ worker: queue drained (1/3 idle rounds) — waiting 30s (new tasks picked up nex
 
 3. **writeback 报了一个状态机错误**（无害）：
    `illegal status transition cancelled → failed (allowed from cancelled: )` ——
-   因为我在 23:00 前已把该行 cancel（迁移到 peerbox），worker 随后尝试写 failed。
+   因为我在 23:00 前已把该行 cancel（迁移到 peer1），worker 随后尝试写 failed。
    状态机正确拒绝了，但错误信息可读性一般（"allowed from cancelled: " 后面是空的）。

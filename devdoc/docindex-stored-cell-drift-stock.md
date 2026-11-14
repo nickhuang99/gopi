@@ -194,7 +194,7 @@ it owns `DocclassDrift`, the manifest parser and the abstention contract. A gate
   mechanism is: a row's render input includes files other than the document, so
   "re-render on write" is a partial trigger by construction. Closing it needs either
   (a) a re-render triggered by *the cited source* changing — a scheduling question
-  that belongs to the system layer (**peerbox**, Rule 28), or (b) making the expiring
+  that belongs to the system layer (**peer1**, Rule 28), or (b) making the expiring
   anchors render in a non-expiring form (a `path` citation with no line number, a
   count that is not rendered) — a **classifier shape change** in `tools/docclass`
   with its own blast radius across ~2600 rows. Both are larger than this row's

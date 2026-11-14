@@ -1,7 +1,7 @@
 <!-- doc-class: normative -->
-# Task Report: Audit — AB3 分支 (peerbox build, memory-aware features present)
+# Task Report: Audit — AB3 分支 (peer1 build, memory-aware features present)
 
-- Branch: `feat/audit-ab3-peerbox-2026-09-04`
+- Branch: `feat/audit-ab3-peer1-2026-09-04`
 - Base: master `7098ce5` (clean except untracked devdoc/maps-visual-verify-phantom-close.md, unrelated)
 - Scope: defect hunt across cmd/agent (cli_tasks, dispatch, worker, verify, sync), internal/tools (tasks, memory_sync_delta), internal/agent (loop), internal/deepseek (retry/error matrix), internal/config.
 
@@ -9,7 +9,7 @@
 
 **1 confirmed defect (P2)** + **1 low-severity display inconsistency (P3)**.
 Prior review #1237's P0s/P1s were **verified FIXED on this head** (no re-report);
-the peerbox build's task-family code is heavily hardened (CAS claims, 23-col
+the peer1 build's task-family code is heavily hardened (CAS claims, 23-col
 scan alignment, provenance stamping, worker-vs-daemon split).
 
 ---
@@ -149,7 +149,7 @@ These were the headline findings of the prior review passes and are verified
 ## Verification
 - Build: `git log` head clean; no code changed by this audit (report-only).
 - Tests: not run (docs-only change); no code touched.
-- Commit: `git add devdoc/audit-ab3-peerbox-2026-09-04.md && git commit`
+- Commit: `git add devdoc/audit-ab3-peer1-2026-09-04.md && git commit`
 
 ## Not Done
 - No P0/P1 beyond D1 (retry/Retry-After) surfaced in the scanned surfaces.

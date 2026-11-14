@@ -7,7 +7,7 @@ package main
 // has for "who killed the workers?". It used to be a single string with no
 // sender, no signal, no task and no wallclock, IDENTICAL for an operator's
 // graceful `--stop` and for an unsourced external cohort kill. Measured on
-// peerbox (2026-09-16, ~/.gopi/logs/worker.log, 31 termination lines): 31/31
+// peer1 (2026-09-16, ~/.gopi/logs/worker.log, 31 termination lines): 31/31
 // read `terminated received`, 31/31 named no sender, only 3/31 resolved to a
 // task id — and an operator reading them concluded "routine shutdowns" while at
 // least three were an external kill of an unrelated cohort.
