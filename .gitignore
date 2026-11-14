@@ -153,6 +153,7 @@ ledgerpin-device-*/
 !/CHANGELOG.md
 !/CONFIG.md
 !/COMMANDS.md
+!/INSTALL.md
 !/PROJECT.md
 !/README.md
 .heavy-skipped.tsv

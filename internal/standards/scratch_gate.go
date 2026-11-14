@@ -167,6 +167,16 @@ var rootDocAllowlist = map[string]bool{
 	"CHANGELOG.md": true,
 	"CONFIG.md":    true,
 	"COMMANDS.md":  true,
+	// INSTALL.md is the page a stranger reads FIRST, and it is the one root doc
+	// whose absence stops a new user dead: README.md says what the program IS,
+	// COMMANDS.md and CONFIG.md are for a reader who already runs it, and none
+	// of the three states the four things a fresh machine must have (Ubuntu
+	// 22.04, Go 1.24, git, an API key), where the key goes, or that the voice
+	// engine is a DIFFERENT vendor's account. Without this entry the tree
+	// explains itself to someone who is already inside it and says nothing to
+	// the person at the door — the measured failure being a reader who clones,
+	// fails once, and never tries again.
+	"INSTALL.md": true,
 	// README.md is the FACE of the project — the one root document written for
 	// someone who has not installed anything yet (what it is, what it can do,
 	// how to get a `gopi` on their PATH). Its siblings above are all written for
