@@ -146,7 +146,7 @@ install: build
 # the render leg is guarded by `command -v` and SKIPS LOUDLY, naming what it
 # skipped and pointing at `make man-check`, when the renderer is missing
 # (Rule 15: a missing renderer must not read as "the whole man pipeline is
-# broken"). Measured 2026-10-14 (zbook): `make man` used to die with exit 127 at
+# broken"). Measured 2026-10-14 (host-b): `make man` used to die with exit 127 at
 # the render leg — `/bin/sh: 1: pandoc: not found` — after the source step above
 # it had already succeeded, printed no hint at all, and this comment asserted the
 # opposite: that pandoc was "already on the host". Only the .1 artifacts under
