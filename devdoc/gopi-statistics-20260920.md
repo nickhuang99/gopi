@@ -1,4 +1,5 @@
 <!-- doc-class: normative -->
+<!-- census-evidence-ok: this public export was published with NO git history (a clean-tree export, not a clone of the development repository), so a commit pin can never resolve here by construction — the figures are a snapshot of the private tree, kept as a record and not as a re-derivable claim about this repository -->
 # Task Report: GoPi project statistics — milestone snapshot + portability/open-source assessment
 
 **Base commit measured:** `cc5ac1fd8a82c9cdd78ec1e3ef9e9bf4aa1b8906` (re-measured on this

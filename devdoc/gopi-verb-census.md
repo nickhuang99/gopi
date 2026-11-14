@@ -1,4 +1,5 @@
 <!-- doc-class: normative -->
+<!-- census-evidence-ok: this public export was published with NO git history (a clean-tree export, not a clone of the development repository), so a commit pin can never resolve here by construction — the figures are a snapshot of the private tree, kept as a record and not as a re-derivable claim about this repository -->
 # G7 census — every top-level `gopi` verb: dispatched, advertised, and what actually exercises it
 
 Truth class: **normative** — a standing claim about master, re-derivable at any

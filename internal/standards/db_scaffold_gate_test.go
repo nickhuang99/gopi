@@ -463,6 +463,18 @@ func TestTestDBScaffoldIsUsedOrTheLedgerEnvIsPinned(t *testing.T) {
 	total := 0
 	for _, scanRoot := range dbScaffoldScanRoots {
 		dir := filepath.Join(root, scanRoot.path)
+		// A ROOT THIS TREE DOES NOT CARRY is REPORTED and skipped, never fatal.
+		// `archive/` is one of the scanned trees in the private development repo
+		// (spent mechanism fixtures live there); the public export ships no
+		// archive/ at all, and a walk of a directory that does not exist used to
+		// abort the whole gate — which made the export unable to run a gate over
+		// the five roots it DOES carry. The absence is stated so it cannot pass
+		// as a clean scan (Rule 15), and the other roots' floors still apply.
+		if _, statErr := os.Stat(dir); statErr != nil {
+			t.Logf("db-scaffold gate: %s/ is absent in this tree — its root and its floor (%d test file(s)) do not apply here",
+				scanRoot.path, scanRoot.minTests)
+			continue
+		}
 		files := dbScaffoldGoFiles(t, dir)
 		scanned := 0
 		for _, file := range files {

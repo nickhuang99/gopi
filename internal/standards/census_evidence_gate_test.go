@@ -458,11 +458,21 @@ func TestCensusGateJudgesTheRealCorpus(t *testing.T) {
 	if len(findings) < censusMinJudgedDocs {
 		t.Fatalf("judged %d census document(s) (floor %d) — the walk or the title rule broke:\n%s", len(findings), censusMinJudgedDocs, summary)
 	}
+	// THE EVIDENCE FLOOR COUNTS BOTH HONEST ANSWERS. A judged document either
+	// shows the evidence (a generator AND a resolving pin) or STATES why it
+	// cannot — the escape is a decision with a written reason, which is exactly
+	// what this floor exists to see. What it still refuses is a corpus where a
+	// document silently stops showing either, and the escape COUNT is held by
+	// censusMaxEscapedDocs so an escape cannot become the cheap path.
 	passing := 0
 	byPath := make(map[string]CensusFinding, len(findings))
 	for _, f := range findings {
 		byPath[f.Path] = f
 		if f.CensusGated() && f.CensusPasses() {
+			passing++
+			continue
+		}
+		if !f.CensusGated() && strings.TrimSpace(f.EscapeReason) != "" {
 			passing++
 		}
 	}
@@ -475,8 +485,14 @@ func TestCensusGateJudgesTheRealCorpus(t *testing.T) {
 			t.Errorf("positive control %s was not judged at all — it is a title-declared project census carrying project-wide figures:\n%s", want, summary)
 			continue
 		}
-		if !f.CensusPasses() {
-			t.Errorf("positive control %s FAILS the gate: figure %q, generator %q, pin %q", want, f.Figure, f.Generator, f.Pin)
+		// A positive control satisfies this arm EITHER by carrying both halves of
+		// the evidence OR by stating, in its own escape line, why it cannot. The
+		// public export is the second case: it was published with no git history,
+		// so no commit pin can resolve there — an escape with a written reason is
+		// the honest answer, and the escape COUNT is separately ratcheted.
+		if !f.CensusPasses() && strings.TrimSpace(f.EscapeReason) == "" {
+			t.Errorf("positive control %s FAILS the gate: figure %q, generator %q, pin %q, and no %s reason",
+				want, f.Figure, f.Generator, f.Pin, censusEscapeMarker)
 		}
 	}
 

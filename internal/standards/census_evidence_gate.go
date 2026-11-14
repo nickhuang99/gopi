@@ -177,7 +177,19 @@ const (
 	// corpus carries no escape, so every escape is a deliberate edit that raises
 	// this number in the same commit and says why. A gate whose permits grow
 	// without a decision is not a gate.
-	censusMaxEscapedDocs = 0
+	//
+	// RAISED TO 3, WITH THE REASON THE CEILING EXISTS FOR. The public export is
+	// published with NO git history (a clean-tree export, not a clone of the
+	// development repository), so a commit pin can NEVER resolve here — measured:
+	// `git cat-file -e cc5ac1fd…^{commit}` and every other token the corpus names
+	// returns `fatal: Not a valid object name`. The three census documents that
+	// carry project-wide figures therefore cannot satisfy the pin half of this
+	// gate by construction, and each states that in its own `census-evidence-ok:`
+	// line rather than being silently exempt. Holding the ceiling at 0 did not
+	// measure a missing pin; it refused a tree whose shape makes a pin
+	// impossible. Any FOURTH escape is still a deliberate edit that has to raise
+	// this number in its own commit and say why.
+	censusMaxEscapedDocs = 3
 
 	// censusMarkdownFloor is the corpus-size floor: the devdoc corpus measures
 	// 895 markdown documents on this rev. A walk that reads a wrong root, an

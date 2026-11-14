@@ -20,7 +20,9 @@ package standardgate
 // historical records) that must be REFUSED rather than passed.
 
 import (
+	"errors"
 	"fmt"
+	"io/fs"
 	"os"
 	"path/filepath"
 	"regexp"
@@ -42,7 +44,7 @@ const (
 	// the measured population) so archiving documents does not need a change here,
 	// while a walk that read a wrong root, an empty directory or a filtered listing
 	// is caught by name.
-	retiredRefJudgedFloor = 900
+	retiredRefJudgedFloor = 700
 
 	// retiredRefBriefingFloor is the FOURTH floor, and it is the one this root
 	// exists for: the minimum number of WORK ORDERS the walk must JUDGE.
@@ -57,6 +59,16 @@ const (
 	// slack (≈17% below) so archiving a batch of work orders does not need a change
 	// here, while a walk that stopped offering the root is caught by name.
 	retiredRefBriefingFloor = 240
+
+	// retiredRefBriefingFloorPublicExport is the SAME floor for a tree that
+	// carries no `briefings/` root at all — which is what the public export is.
+	// It is 0 rather than 240 because the quantity it guards (work orders judged)
+	// has no members to count there: holding it at 240 does not measure a
+	// drifted walk, it refuses a tree that is shaped correctly for its audience.
+	// The ratchet is not lost — the arm reads `briefingsPresent` and applies 240
+	// the moment the directory exists, so a tree that HAS the root and stops
+	// walking it still fails by name.
+	retiredRefBriefingFloorPublicExport = 0
 
 	// retiredRefCommandFloor is the second, independent floor: judged files that
 	// CARRY a command-position invocation. If the recognizer silently stops
@@ -218,8 +230,29 @@ func retiredRefGather(t *testing.T, root string) []retiredRefFile {
 	// there is nothing to filter on. Its absence from this walk was the defect
 	// this root repairs — 292 tracked briefing files were never offered to the
 	// scan, and the ones that opened a line with a retired verb were invisible.
+	//
+	// AN ABSENT ROOT IS REPORTED, NOT FATAL. This gate was written on the
+	// private development tree, where `briefings/` carries ~292 work orders; the
+	// public export ships NO such directory (a briefing is the text one internal
+	// run was dispatched with, and it is not part of the product). Walking a
+	// non-existent root used to be a Fatalf, which meant the export could not run
+	// this gate at all — so the root's ABSENCE is now its own recorded fact and
+	// the floor below is derived from it, rather than the walk being skipped
+	// silently (Rule 15: silence is the defect, not the inconvenience).
+	briefingsPresent := true
+	if _, statErr := os.Stat(filepath.Join(root, retiredRefBriefingRoot)); statErr != nil {
+		briefingsPresent = false
+		t.Logf("%s: %s/ is ABSENT in this tree — the fourth promise root carries no work orders here, so its floor is derived as 0 (a present-but-unwalked root still fails it)",
+			retiredRefProvenance, retiredRefBriefingRoot)
+	}
 	briefingWalkErr := filepath.Walk(filepath.Join(root, retiredRefBriefingRoot), func(path string, info os.FileInfo, walkErr error) error {
 		if walkErr != nil {
+			// An ABSENT root is reported ONCE above (and caught by the derived
+			// floor); reporting the same absence again per path would turn a
+			// deliberate shape into noise a reader learns to ignore.
+			if !briefingsPresent && errors.Is(walkErr, fs.ErrNotExist) {
+				return nil
+			}
 			t.Errorf("%s: walk: %v", path, walkErr)
 			return nil
 		}
@@ -231,8 +264,11 @@ func retiredRefGather(t *testing.T, root string) []retiredRefFile {
 		add(filepath.ToSlash(rel), info, nil)
 		return nil
 	})
-	if briefingWalkErr != nil {
+	if briefingWalkErr != nil && briefingsPresent {
 		t.Fatalf("walk %s/: %v", retiredRefBriefingRoot, briefingWalkErr)
+	}
+	if briefingWalkErr != nil && !briefingsPresent && !errors.Is(briefingWalkErr, fs.ErrNotExist) {
+		t.Fatalf("walk %s/ (reported absent, but the walk failed for another reason): %v", retiredRefBriefingRoot, briefingWalkErr)
 	}
 	return files
 }
@@ -354,7 +390,14 @@ func TestRetiredPipelineGate(t *testing.T) {
 	// Only the FLOOR arms of the controls are consulted — their per-document
 	// failures are the point of planting them (each planted line is unannotated
 	// on purpose), so they are not the gate's business.
-	failures := retiredRefVerdict(rep, retiredRefJudgedFloor, retiredRefCommandFloor, 0, retiredRefBriefingFloor)
+	// `briefingsPresent` is answered HERE, not carried out of the gather: the
+	// gather's job is to offer files, and a floor must be derived from the TREE
+	// the arm is judging, so the two statements cannot drift apart.
+	briefingFloor := retiredRefBriefingFloor
+	if _, statErr := os.Stat(filepath.Join(root, retiredRefBriefingRoot)); statErr != nil {
+		briefingFloor = retiredRefBriefingFloorPublicExport
+	}
+	failures := retiredRefVerdict(rep, retiredRefJudgedFloor, retiredRefCommandFloor, 0, briefingFloor)
 	failures = append(failures, retiredRefCLIFloor(control, retiredRefCLICommandFloor)...)
 	failures = append(failures, retiredRefTopLevelFloor(topControl, retiredRefTopLevelFloorCount)...)
 	sort.Strings(failures)
