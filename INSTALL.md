@@ -165,7 +165,7 @@ This is how you test gopi without letting it write anywhere near your real profi
 **It needs no code changes — two environment variables do it:**
 
 ```bash
-SB=/tmp/gopi-sandbox          # any writable directory; keep it off a small / partition
+SB="$HOME/gopi-sandbox"       # NOT /tmp — see the note below
 mkdir -p "$SB/.gopi"
 
 # A private profile: sessions, the ledger, logs, scratch all land under $SB
@@ -173,6 +173,11 @@ export GOPI_HOME="$SB"
 # A private settings document. THIS ONE IS NOT OPTIONAL — see the note below.
 export GOPI_SETTINGS="$SB/.gopi/settings.json"
 ```
+
+**Do not put the sandbox on `/tmp`** — on most installs `/tmp` is a RAM-backed filesystem
+sized a fraction of the disk, and gopi's ledger plus its build cache grow into hundreds of
+megabytes. `$HOME` is the safe default. Any path works as long as it is a real directory on
+a partition with room; gopi checks the free space and says so rather than filling it.
 
 **`GOPI_HOME` alone is not enough, and that is measured, not a guess.** With only
 `GOPI_HOME` set, `gopi config show` still reports:
