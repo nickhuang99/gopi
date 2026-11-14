@@ -149,6 +149,13 @@ make build          # → ./bin/gopi
 ./bin/gopi --version
 ```
 
+Then either run `./bin/gopi` in place, or put it on your `PATH`:
+
+```bash
+make install                       # → $(go env GOPATH)/bin/gopi
+make install PREFIX=/usr/local/bin # or somewhere already on PATH
+```
+
 **Platform: Ubuntu 22.04 LTS, x86-64, Go 1.24.x — the only combination that has been run.**
 No macOS, no Windows, no ARM, no other distribution has been tested; see
 [`INSTALL.md` §6](INSTALL.md) for the full honest list.
@@ -196,7 +203,7 @@ needed, and neither Node nor Python is needed.
 | **The full usage of every CLI verb** | [`COMMANDS.md`](COMMANDS.md) — 421 lines, listed by verb, each line giving the source location |
 | **Every configuration key's default / precedence / who reads it** | [`CONFIG.md`](CONFIG.md) — 1649 lines, one line per knob, with the source line that reads it |
 | **The official description of some subsystem** | [`man/`](man/) — 14 pages, `gopi-chat.md`, `gopi-task.md`, `gopi-memory.md` and so on |
-| **The engineering constraints (why the code looks this way)** | [`PROJECT.md`](PROJECT.md) — 36 rules, each paired with the test that catches a violation |
+| **The engineering constraints (why the code looks this way)** | [`PROJECT.md`](PROJECT.md) — 37 rules, each paired with the test that catches a violation |
 | **The history and measurements behind design decisions** | [`devdoc/`](devdoc/) — every document declares its doc-class on its own first line |
 | **What changed** | [`CHANGELOG.md`](CHANGELOG.md) |
 
