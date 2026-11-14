@@ -42,7 +42,7 @@ fi
 
 GOPI_HOME="$WORK/home"
 
-echo "== fixture: non-bare integration repo (the real zpeer shape: git merge needs a work tree — a bare repo refuses with 'must be run in a work tree') + work clone =="
+echo "== fixture: non-bare integration repo (the real peer shape: git merge needs a work tree — a bare repo refuses with 'must be run in a work tree') + work clone =="
 BARE="$WORK/repo.git"          # name kept; it is the INTEGRATION repo now
 REPO="$WORK/repo.wt"           # its work tree — hook + merge run here
 GOPI_REPO="$REPO"              # the hook reads this — merge+audit target the fixture repo

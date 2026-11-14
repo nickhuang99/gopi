@@ -14,7 +14,7 @@
 #
 # INSTALLATION IS MANUAL, AND MEASURED ABSENT (2026-11-01, task 01a19051-f5ec).
 # Probed at <repo>/.git/hooks/post-receive on every host holding a gopi
-# checkout: host-a ABSENT, zpeer ABSENT, hp ABSENT; core.hooksPath unset on
+# checkout: host-a ABSENT, a peer ABSENT, hp ABSENT; core.hooksPath unset on
 # all three; mirror-a and mirror-b hold no gopi checkout at all. The only
 # installer is `bash scripts/install-hooks.sh` (cp + chmod) and nothing calls it
 # for you. So a tree copy of this file merges nothing by itself: install it
