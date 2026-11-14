@@ -124,7 +124,7 @@ FAIL  (exit 1)
 
 $ restore: internal/tools/memory.go  likeCJKRecallK = 200
 $ go test ./internal/tools/ -run TestMemorySearchRouteDepthRecallsTheAnswer -count=1
-ok  github.com/nick/gopi/internal/tools  4.076s   (exit 0)
+ok  github.com/the operator/gopi/internal/tools  4.076s   (exit 0)
 ```
 
 Both transcripts are archived verbatim: `evidence/red_pool_depth.txt`,

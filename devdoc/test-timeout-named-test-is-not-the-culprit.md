@@ -40,8 +40,8 @@ $ grep -n "func runningList" -A9 /usr/local/go/src/testing/testing.go
 
 | 运行 | 预算 | `running tests:` 点名的 | 它在飞多久 | 单独跑的结果 |
 |---|---|---|---|---|
-| run1 `run-1794113925-2882517` | 180s | `TestTaskRunChildReceivesSummaryAndPayloadE2E` | **1.8s**（占预算 1.0%） | `--- PASS: TestTaskRunChildReceivesSummaryAndPayloadE2E (1.33s)`，`ok  github.com/nick/gopi/cmd/agent  4.801s` |
-| run2 `run-1794114463-3070648` | 120s | `TestRunPathTaskChildKeepsTheFraming` | **0.2s**（占预算 0.2%） | `--- PASS: TestRunPathTaskChildKeepsTheFraming (0.77s)`，`ok  github.com/nick/gopi/cmd/agent  5.031s` |
+| run1 `run-1794113925-2882517` | 180s | `TestTaskRunChildReceivesSummaryAndPayloadE2E` | **1.8s**（占预算 1.0%） | `--- PASS: TestTaskRunChildReceivesSummaryAndPayloadE2E (1.33s)`，`ok  github.com/the operator/gopi/cmd/agent  4.801s` |
+| run2 `run-1794114463-3070648` | 120s | `TestRunPathTaskChildKeepsTheFraming` | **0.2s**（占预算 0.2%） | `--- PASS: TestRunPathTaskChildKeepsTheFraming (0.77s)`，`ok  github.com/the operator/gopi/cmd/agent  5.031s` |
 
 单独跑的命令（`GOPI_TEST_BIN` 必须给，否则这两条会 `SKIP`，见 §5）：
 
@@ -51,7 +51,7 @@ B=/home/user/workspace/gopi-test-scratch/queue/test-budget/run-1794114067-292017
 GOPI_TEST_BIN=$B go test -count=1 -vet=off -timeout 300s -v \
   -run '^TestTaskRunChildReceivesSummaryAndPayloadE2E$' ./cmd/agent
 # --- PASS: TestTaskRunChildReceivesSummaryAndPayloadE2E (1.33s)
-# ok  	github.com/nick/gopi/cmd/agent	4.801s
+# ok  	github.com/the operator/gopi/cmd/agent	4.801s
 ```
 
 **这两条都不是性能问题**：全量跑里没有任何一条测试能吃下预算。run1 的 1639 条
@@ -70,7 +70,7 @@ GOPI_TEST_TIMEOUT=120s scripts/test-budget.sh ./cmd/agent
 被截断时，块里这两行就是答案（run2 的原始输出）：
 
 ```
-  github.com/nick/gopi/cmd/agent: ΣElapsed (LOWER BOUND) = 119.7s over 1204 finished arm(s)
+  github.com/the operator/gopi/cmd/agent: ΣElapsed (LOWER BOUND) = 119.7s over 1204 finished arm(s)
   ^ 1 arm(s) started and never finished: TestRunPathTaskChildKeepsTheFraming
     TestRunPathTaskChildKeepsTheFraming: in flight 0.2s when the cap expired (its run event 13:09:49.103, the cap line 13:09:49.282)
 ```

@@ -162,7 +162,7 @@ carrying the live numbers, the PRE-FIX attribution proof and the accepted unifor
 - Tests:
   - `go test ./internal/lineedit/ -run TestScreenReconcile -count=1`
     → **RED** on the pre-fix `screen.go` (`lost=3 extra=57`; `lost=7 extra=1`),
-    **PASS** with the delivered fix (`ok github.com/nick/gopi/internal/lineedit`).
+    **PASS** with the delivered fix (`ok github.com/the operator/gopi/internal/lineedit`).
   - `go test ./cmd/agent/ -run TestChatTurnDumpReconcilesCells_OnRealPTY -count=1 -v`
     → **PASS** (4.37s), `lost=0 extra=0 matched=165/165`, self-check green.
   - `go test ./internal/lineedit/ -count=1` (branch-scoped package run) → see

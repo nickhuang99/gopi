@@ -249,16 +249,16 @@ exit=1
 === RUN   TestTmpDirDebugSurfaceShowsTheValue
     debug surface: [gopi] tmpdir: TMPDIR="…/001/debug-surface-tmp" (from GOPI_TMPDIR)
 --- PASS
-ok  github.com/nick/gopi/cmd/agent  7.411s
+ok  github.com/the operator/gopi/cmd/agent  7.411s
 ```
 
 **Touched packages' suites**
 
 ```
 $ go test ./internal/scratch/ ./internal/config/ ./internal/testutil/ -count=1
-ok  github.com/nick/gopi/internal/scratch   77.346s
-ok  github.com/nick/gopi/internal/config     3.295s
-FAIL github.com/nick/gopi/internal/testutil 170.541s   ← PRE-EXISTING, see below
+ok  github.com/the operator/gopi/internal/scratch   77.346s
+ok  github.com/the operator/gopi/internal/config     3.295s
+FAIL github.com/the operator/gopi/internal/testutil 170.541s   ← PRE-EXISTING, see below
 $ go test ./internal/config/                       → ok
 $ go test ./internal/standards/                    → only TestGateCwdReleaseFindsTheRealTree fails (PRE-EXISTING)
 ```

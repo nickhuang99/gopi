@@ -144,9 +144,9 @@ built from this branch.
 ```
 $ go build ./cmd/agent/                         # OK (CGO_ENABLED=0)
 $ go test ./internal/tools/ -run 'TestPureReadFaces' -count=1
-ok  	github.com/nick/gopi/internal/tools	2.943s   # 8 faces, 0.5–1.1ms each under the hold
+ok  	github.com/the operator/gopi/internal/tools	2.943s   # 8 faces, 0.5–1.1ms each under the hold
 $ go test ./internal/tools/ -run 'TestReadOnlyOpenPreservesTheSnapshotSidecars' -count=1
-ok  	github.com/nick/gopi/internal/tools	1.928s
+ok  	github.com/the operator/gopi/internal/tools	1.928s
 $ make test-budget PKGS='./internal/tools/'     # see the session record / task report
 ```
 Pre-existing guards re-run green: `TestTaskShowDoesNotWaitOnAWriterHold`,

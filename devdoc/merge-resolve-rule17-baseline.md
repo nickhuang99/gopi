@@ -47,7 +47,7 @@ No other hunk was resolved by deletion; nothing else of ours/theirs was dropped.
 - `gofmt -l internal/standards/baseline.go` → clean; `git diff --check` → clean
 - `CGO_ENABLED=0 go build ./...` → **exit 0**
 - `go test ./internal/standards/ -run 'TestGate2|TestStandardGate|TestGate' -count=1`
-  → **ok github.com/nick/gopi/internal/standards 14.162s** (Rule 17 gate green:
+  → **ok github.com/the operator/gopi/internal/standards 14.162s** (Rule 17 gate green:
   no NEW, no STALE — the accounting of the resolved list is internally consistent)
 
 ## Commit

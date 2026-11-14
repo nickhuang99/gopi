@@ -136,7 +136,7 @@ build, Rule 12) also exits 0. `go vet ./cmd/agent/ ./internal/tools/`: exit 0
 ### Scoped tests
 
 `GOPI_HUMAN_TERMINAL=1 go test -run TestMerge -v ./cmd/agent/`
-→ **47 PASS / 0 FAIL**, `ok github.com/nick/gopi/cmd/agent 138.057s`;
+→ **47 PASS / 0 FAIL**, `ok github.com/the operator/gopi/cmd/agent 138.057s`;
 the log and its `exit=0` are `/home/user/workspace/merge-verify-evid/tests-cmdagent.txt`,
 including the seven new cases:
 
@@ -174,7 +174,7 @@ Stated before the evidence below, so no reader over-reads a green line:
    ```
    base f69a2149:  --- FAIL: TestProposalRowsAreNeverClaimable (1.35s)
                    --- FAIL: TestAssertionTotalityAuditGate (0.87s)
-                   FAIL github.com/nick/gopi/internal/tools 3.677s      exit=1
+                   FAIL github.com/the operator/gopi/internal/tools 3.677s      exit=1
    this branch:    --- FAIL: TestProposalRowsAreNeverClaimable (4.30s)
                    --- FAIL: TestAssertionTotalityAuditGate (1.28s)
    ```
@@ -198,7 +198,7 @@ Stated before the evidence below, so no reader over-reads a green line:
 
    ```
    go test -run 'TestVerifyMergePass|TestWithdrawMergePass' -count=1 ./internal/tools/
-   ok  github.com/nick/gopi/internal/tools  2.307s                      exit=0
+   ok  github.com/the operator/gopi/internal/tools  2.307s                      exit=0
    ```
 
    No statement is made here about the `internal/tools` package as a whole.

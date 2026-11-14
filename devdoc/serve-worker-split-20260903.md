@@ -1,7 +1,7 @@
 <!-- doc-class: normative -->
 # Task Report: serve/worker responsibility split (serve→merger)
 
-Epic t-1788389175 — nick's final design, 2026-09-03. `task serve` becomes
+Epic t-1788389175 — the operator's final design, 2026-09-03. `task serve` becomes
 `task merger`, a server-only PURE merge daemon; `gopi worker` becomes the
 general task-management loop running on BOTH client and server.
 

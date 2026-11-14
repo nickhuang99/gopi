@@ -2,7 +2,7 @@
 # Task Report: git_blame — LLM 真实调用（测试驱动工具开发）
 
 ## 目标
-git_blame 是 336 行强契约工具，但全量会话审计显示 0 次调用/21435（根因：routing prompt 漏行 + 描述首句是纯功能）。本次任务：通过 prompt 引导让 LLM 在真实任务中稳定调用 git_blame，并以真实会话日志作为交付证据（nick 交付标准）。
+git_blame 是 336 行强契约工具，但全量会话审计显示 0 次调用/21435（根因：routing prompt 漏行 + 描述首句是纯功能）。本次任务：通过 prompt 引导让 LLM 在真实任务中稳定调用 git_blame，并以真实会话日志作为交付证据（the operator 交付标准）。
 
 ## 修正方案（本 agent 的方法）
 只做 **一处** 针对性改动：`internal/agent/loop.go` 中 git_blame 工具的 `Description` 首句。

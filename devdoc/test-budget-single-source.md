@@ -4,7 +4,7 @@
 ## Summary
 
 `go test ./...` on this host printed
-`FAIL github.com/nick/gopi/internal/tools 600.3xx s` — Go's **default
+`FAIL github.com/the operator/gopi/internal/tools 600.3xx s` — Go's **default
 per-package wall-clock budget** expiring, phrased exactly like a failing
 assertion (Rule 15: a failure must name itself). The fsync root cause was
 already fixed upstream (`devdoc/suite-hang-fix-t1788361069.md`). This task

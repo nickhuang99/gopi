@@ -9,187 +9,187 @@ mnt:[4026531841]
 59:1 /proc/2321/root/run/user/1000
 === the MANAGER's own view of /run/user/1000 ===
 total 16
-drwx------ 53 nick nick 1140 Sep 14 22:39 .
+drwx------ 53 the operator the operator 1140 Sep 14 22:39 .
 drwxr-xr-x  4 root root   80 Sep 13 01:01 ..
-drwx------  2 nick nick   60 Sep 11 06:03 at-spi
-drwx------  2 nick nick   60 Sep 10 23:03 at-spi2-KBUQV3
-drwxrwxr-x  2 nick nick   40 Sep 13 05:38 ccache-tmp
-drwxr-xr-x  2 nick nick   40 Sep 14 22:38 daemoncwd-holder-fixtures
-drwx------  3 nick nick   60 Aug 27 07:18 dbus-1
-drwx------  2 nick nick   40 Sep 14 06:48 dconf
-dr-x------  2 nick nick    0 Jan  1  1970 doc
-drwxrwxr-x  3 nick nick   80 Sep 12 22:45 gopi-scratch-verify
-dr-x------  2 nick nick    0 Jul 15 21:44 gvfs
-drwx------  2 nick nick   40 Aug 27 07:18 gvfsd
-drwxrwxr-x  2 nick nick   40 Sep 14 22:32 mv-c
-drwxrwxr-x  6 nick nick  120 Sep 14 22:38 mv-d1
-drwxrwxr-x  6 nick nick  120 Sep 14 22:38 mv-d2
-drwxrwxr-x  8 nick nick  160 Sep 14 22:39 mv-di1
-drwxrwxr-x  8 nick nick  160 Sep 14 22:39 mv-di2
-drwxrwxr-x  8 nick nick  160 Sep 14 22:39 mv-di3
-drwxrwxr-x  8 nick nick  160 Sep 14 22:39 mv-di4
-drwxrwxr-x  2 nick nick   60 Sep 14 22:37 mv-h11
-drwxrwxr-x  2 nick nick   60 Sep 14 22:37 mv-h12
-drwxrwxr-x  2 nick nick   60 Sep 14 22:37 mv-h13
-drwxrwxr-x  2 nick nick   60 Sep 14 22:37 mv-h14
-drwxrwxr-x  2 nick nick   60 Sep 14 22:37 mv-h21
-drwxrwxr-x  2 nick nick   60 Sep 14 22:37 mv-h22
-drwxrwxr-x  2 nick nick   60 Sep 14 22:37 mv-h23
-drwxrwxr-x  2 nick nick   60 Sep 14 22:37 mv-h24
-drwxrwxr-x  2 nick nick   60 Sep 14 22:37 mv-h31
-drwxrwxr-x  2 nick nick   60 Sep 14 22:37 mv-h32
-drwxrwxr-x  2 nick nick   60 Sep 14 22:37 mv-h33
-drwxrwxr-x  2 nick nick   60 Sep 14 22:37 mv-h34
-drwxrwxr-x  3 nick nick   60 Sep 14 22:13 mv-home
-drwxrwxr-x  8 nick nick  180 Sep 14 22:38 mv-i11
-drwxrwxr-x  8 nick nick  180 Sep 14 22:38 mv-i12
-drwxrwxr-x  8 nick nick  180 Sep 14 22:38 mv-i13
-drwxrwxr-x  8 nick nick  180 Sep 14 22:38 mv-i14
-drwxrwxr-x  8 nick nick  180 Sep 14 22:38 mv-i21
-drwxrwxr-x  8 nick nick  180 Sep 14 22:38 mv-i22
-drwxrwxr-x  8 nick nick  180 Sep 14 22:38 mv-i23
-drwxrwxr-x  8 nick nick  180 Sep 14 22:38 mv-i24
-drwxrwxr-x  8 nick nick  180 Sep 14 22:38 mv-i31
-drwxrwxr-x  8 nick nick  180 Sep 14 22:38 mv-i32
-drwxrwxr-x  8 nick nick  180 Sep 14 22:38 mv-i33
-drwxrwxr-x  8 nick nick  180 Sep 14 22:38 mv-i34
-drwxrwxr-x  2 nick nick  120 Sep 14 22:35 mv-p
--rw-r--r--  1 nick nick  853 Sep 14 22:37 mv-run.sh
--rw-r--r--  1 nick nick  881 Sep 14 22:38 mv-run2.sh
--rw-r--r--  1 nick nick 1046 Sep 14 22:38 mv-run3.sh
--rw-r--r--  1 nick nick  988 Sep 14 22:39 mv-run4.sh
-drwxrwxr-x  6 nick nick  120 Sep 14 22:38 mv-s
-drwxrwxr-x  3 nick nick   60 Sep 14 22:21 mv-scratch
-drwxrwxr-x  8 nick nick  160 Sep 14 22:39 mv-sh
-drwx------  2 nick nick   40 Aug 27 07:18 pulse
-drwx------  2 nick nick   40 Aug 29 13:53 snap.chromium
-drwx------  2 nick nick   40 Sep 10 23:11 snap.firefox
-drwx------  2 nick nick   40 Aug 23 13:00 snap.ollama
-drwxr-xr-x  3 nick nick   60 Sep 15 07:26 systemd
+drwx------  2 the operator the operator   60 Sep 11 06:03 at-spi
+drwx------  2 the operator the operator   60 Sep 10 23:03 at-spi2-KBUQV3
+drwxrwxr-x  2 the operator the operator   40 Sep 13 05:38 ccache-tmp
+drwxr-xr-x  2 the operator the operator   40 Sep 14 22:38 daemoncwd-holder-fixtures
+drwx------  3 the operator the operator   60 Aug 27 07:18 dbus-1
+drwx------  2 the operator the operator   40 Sep 14 06:48 dconf
+dr-x------  2 the operator the operator    0 Jan  1  1970 doc
+drwxrwxr-x  3 the operator the operator   80 Sep 12 22:45 gopi-scratch-verify
+dr-x------  2 the operator the operator    0 Jul 15 21:44 gvfs
+drwx------  2 the operator the operator   40 Aug 27 07:18 gvfsd
+drwxrwxr-x  2 the operator the operator   40 Sep 14 22:32 mv-c
+drwxrwxr-x  6 the operator the operator  120 Sep 14 22:38 mv-d1
+drwxrwxr-x  6 the operator the operator  120 Sep 14 22:38 mv-d2
+drwxrwxr-x  8 the operator the operator  160 Sep 14 22:39 mv-di1
+drwxrwxr-x  8 the operator the operator  160 Sep 14 22:39 mv-di2
+drwxrwxr-x  8 the operator the operator  160 Sep 14 22:39 mv-di3
+drwxrwxr-x  8 the operator the operator  160 Sep 14 22:39 mv-di4
+drwxrwxr-x  2 the operator the operator   60 Sep 14 22:37 mv-h11
+drwxrwxr-x  2 the operator the operator   60 Sep 14 22:37 mv-h12
+drwxrwxr-x  2 the operator the operator   60 Sep 14 22:37 mv-h13
+drwxrwxr-x  2 the operator the operator   60 Sep 14 22:37 mv-h14
+drwxrwxr-x  2 the operator the operator   60 Sep 14 22:37 mv-h21
+drwxrwxr-x  2 the operator the operator   60 Sep 14 22:37 mv-h22
+drwxrwxr-x  2 the operator the operator   60 Sep 14 22:37 mv-h23
+drwxrwxr-x  2 the operator the operator   60 Sep 14 22:37 mv-h24
+drwxrwxr-x  2 the operator the operator   60 Sep 14 22:37 mv-h31
+drwxrwxr-x  2 the operator the operator   60 Sep 14 22:37 mv-h32
+drwxrwxr-x  2 the operator the operator   60 Sep 14 22:37 mv-h33
+drwxrwxr-x  2 the operator the operator   60 Sep 14 22:37 mv-h34
+drwxrwxr-x  3 the operator the operator   60 Sep 14 22:13 mv-home
+drwxrwxr-x  8 the operator the operator  180 Sep 14 22:38 mv-i11
+drwxrwxr-x  8 the operator the operator  180 Sep 14 22:38 mv-i12
+drwxrwxr-x  8 the operator the operator  180 Sep 14 22:38 mv-i13
+drwxrwxr-x  8 the operator the operator  180 Sep 14 22:38 mv-i14
+drwxrwxr-x  8 the operator the operator  180 Sep 14 22:38 mv-i21
+drwxrwxr-x  8 the operator the operator  180 Sep 14 22:38 mv-i22
+drwxrwxr-x  8 the operator the operator  180 Sep 14 22:38 mv-i23
+drwxrwxr-x  8 the operator the operator  180 Sep 14 22:38 mv-i24
+drwxrwxr-x  8 the operator the operator  180 Sep 14 22:38 mv-i31
+drwxrwxr-x  8 the operator the operator  180 Sep 14 22:38 mv-i32
+drwxrwxr-x  8 the operator the operator  180 Sep 14 22:38 mv-i33
+drwxrwxr-x  8 the operator the operator  180 Sep 14 22:38 mv-i34
+drwxrwxr-x  2 the operator the operator  120 Sep 14 22:35 mv-p
+-rw-r--r--  1 the operator the operator  853 Sep 14 22:37 mv-run.sh
+-rw-r--r--  1 the operator the operator  881 Sep 14 22:38 mv-run2.sh
+-rw-r--r--  1 the operator the operator 1046 Sep 14 22:38 mv-run3.sh
+-rw-r--r--  1 the operator the operator  988 Sep 14 22:39 mv-run4.sh
+drwxrwxr-x  6 the operator the operator  120 Sep 14 22:38 mv-s
+drwxrwxr-x  3 the operator the operator   60 Sep 14 22:21 mv-scratch
+drwxrwxr-x  8 the operator the operator  160 Sep 14 22:39 mv-sh
+drwx------  2 the operator the operator   40 Aug 27 07:18 pulse
+drwx------  2 the operator the operator   40 Aug 29 13:53 snap.chromium
+drwx------  2 the operator the operator   40 Sep 10 23:11 snap.firefox
+drwx------  2 the operator the operator   40 Aug 23 13:00 snap.ollama
+drwxr-xr-x  3 the operator the operator   60 Sep 15 07:26 systemd
 === the MANAGER's own view of /run/user/1000/systemd ===
 total 0
-drwxr-xr-x  3 nick nick   60 Sep 15 07:26 .
-drwx------ 53 nick nick 1140 Sep 14 22:39 ..
-drwxr-xr-x  3 nick nick  140 Sep 13 12:12 inaccessible
+drwxr-xr-x  3 the operator the operator   60 Sep 15 07:26 .
+drwx------ 53 the operator the operator 1140 Sep 14 22:39 ..
+drwxr-xr-x  3 the operator the operator  140 Sep 13 12:12 inaccessible
 === dbus-daemon 2342's own view ===
 /
 total 16
-drwx------ 53 nick nick 1140 Sep 14 22:39 .
+drwx------ 53 the operator the operator 1140 Sep 14 22:39 .
 drwxr-xr-x  4 root root   80 Sep 13 01:01 ..
-drwx------  2 nick nick   60 Sep 11 06:03 at-spi
-drwx------  2 nick nick   60 Sep 10 23:03 at-spi2-KBUQV3
-drwxrwxr-x  2 nick nick   40 Sep 13 05:38 ccache-tmp
-drwxr-xr-x  2 nick nick   40 Sep 14 22:38 daemoncwd-holder-fixtures
-drwx------  3 nick nick   60 Aug 27 07:18 dbus-1
-drwx------  2 nick nick   40 Sep 14 06:48 dconf
-dr-x------  2 nick nick    0 Jan  1  1970 doc
-drwxrwxr-x  3 nick nick   80 Sep 12 22:45 gopi-scratch-verify
-dr-x------  2 nick nick    0 Jul 15 21:44 gvfs
-drwx------  2 nick nick   40 Aug 27 07:18 gvfsd
-drwxrwxr-x  2 nick nick   40 Sep 14 22:32 mv-c
-drwxrwxr-x  6 nick nick  120 Sep 14 22:38 mv-d1
-drwxrwxr-x  6 nick nick  120 Sep 14 22:38 mv-d2
-drwxrwxr-x  8 nick nick  160 Sep 14 22:39 mv-di1
-drwxrwxr-x  8 nick nick  160 Sep 14 22:39 mv-di2
-drwxrwxr-x  8 nick nick  160 Sep 14 22:39 mv-di3
-drwxrwxr-x  8 nick nick  160 Sep 14 22:39 mv-di4
-drwxrwxr-x  2 nick nick   60 Sep 14 22:37 mv-h11
-drwxrwxr-x  2 nick nick   60 Sep 14 22:37 mv-h12
-drwxrwxr-x  2 nick nick   60 Sep 14 22:37 mv-h13
-drwxrwxr-x  2 nick nick   60 Sep 14 22:37 mv-h14
-drwxrwxr-x  2 nick nick   60 Sep 14 22:37 mv-h21
-drwxrwxr-x  2 nick nick   60 Sep 14 22:37 mv-h22
-drwxrwxr-x  2 nick nick   60 Sep 14 22:37 mv-h23
-drwxrwxr-x  2 nick nick   60 Sep 14 22:37 mv-h24
-drwxrwxr-x  2 nick nick   60 Sep 14 22:37 mv-h31
-drwxrwxr-x  2 nick nick   60 Sep 14 22:37 mv-h32
-drwxrwxr-x  2 nick nick   60 Sep 14 22:37 mv-h33
-drwxrwxr-x  2 nick nick   60 Sep 14 22:37 mv-h34
-drwxrwxr-x  3 nick nick   60 Sep 14 22:13 mv-home
-drwxrwxr-x  8 nick nick  180 Sep 14 22:38 mv-i11
-drwxrwxr-x  8 nick nick  180 Sep 14 22:38 mv-i12
-drwxrwxr-x  8 nick nick  180 Sep 14 22:38 mv-i13
-drwxrwxr-x  8 nick nick  180 Sep 14 22:38 mv-i14
-drwxrwxr-x  8 nick nick  180 Sep 14 22:38 mv-i21
-drwxrwxr-x  8 nick nick  180 Sep 14 22:38 mv-i22
-drwxrwxr-x  8 nick nick  180 Sep 14 22:38 mv-i23
-drwxrwxr-x  8 nick nick  180 Sep 14 22:38 mv-i24
-drwxrwxr-x  8 nick nick  180 Sep 14 22:38 mv-i31
-drwxrwxr-x  8 nick nick  180 Sep 14 22:38 mv-i32
-drwxrwxr-x  8 nick nick  180 Sep 14 22:38 mv-i33
-drwxrwxr-x  8 nick nick  180 Sep 14 22:38 mv-i34
-drwxrwxr-x  2 nick nick  120 Sep 14 22:35 mv-p
--rw-r--r--  1 nick nick  853 Sep 14 22:37 mv-run.sh
--rw-r--r--  1 nick nick  881 Sep 14 22:38 mv-run2.sh
--rw-r--r--  1 nick nick 1046 Sep 14 22:38 mv-run3.sh
--rw-r--r--  1 nick nick  988 Sep 14 22:39 mv-run4.sh
-drwxrwxr-x  6 nick nick  120 Sep 14 22:38 mv-s
-drwxrwxr-x  3 nick nick   60 Sep 14 22:21 mv-scratch
-drwxrwxr-x  8 nick nick  160 Sep 14 22:39 mv-sh
-drwx------  2 nick nick   40 Aug 27 07:18 pulse
-drwx------  2 nick nick   40 Aug 29 13:53 snap.chromium
-drwx------  2 nick nick   40 Sep 10 23:11 snap.firefox
-drwx------  2 nick nick   40 Aug 23 13:00 snap.ollama
-drwxr-xr-x  3 nick nick   60 Sep 15 07:26 systemd
+drwx------  2 the operator the operator   60 Sep 11 06:03 at-spi
+drwx------  2 the operator the operator   60 Sep 10 23:03 at-spi2-KBUQV3
+drwxrwxr-x  2 the operator the operator   40 Sep 13 05:38 ccache-tmp
+drwxr-xr-x  2 the operator the operator   40 Sep 14 22:38 daemoncwd-holder-fixtures
+drwx------  3 the operator the operator   60 Aug 27 07:18 dbus-1
+drwx------  2 the operator the operator   40 Sep 14 06:48 dconf
+dr-x------  2 the operator the operator    0 Jan  1  1970 doc
+drwxrwxr-x  3 the operator the operator   80 Sep 12 22:45 gopi-scratch-verify
+dr-x------  2 the operator the operator    0 Jul 15 21:44 gvfs
+drwx------  2 the operator the operator   40 Aug 27 07:18 gvfsd
+drwxrwxr-x  2 the operator the operator   40 Sep 14 22:32 mv-c
+drwxrwxr-x  6 the operator the operator  120 Sep 14 22:38 mv-d1
+drwxrwxr-x  6 the operator the operator  120 Sep 14 22:38 mv-d2
+drwxrwxr-x  8 the operator the operator  160 Sep 14 22:39 mv-di1
+drwxrwxr-x  8 the operator the operator  160 Sep 14 22:39 mv-di2
+drwxrwxr-x  8 the operator the operator  160 Sep 14 22:39 mv-di3
+drwxrwxr-x  8 the operator the operator  160 Sep 14 22:39 mv-di4
+drwxrwxr-x  2 the operator the operator   60 Sep 14 22:37 mv-h11
+drwxrwxr-x  2 the operator the operator   60 Sep 14 22:37 mv-h12
+drwxrwxr-x  2 the operator the operator   60 Sep 14 22:37 mv-h13
+drwxrwxr-x  2 the operator the operator   60 Sep 14 22:37 mv-h14
+drwxrwxr-x  2 the operator the operator   60 Sep 14 22:37 mv-h21
+drwxrwxr-x  2 the operator the operator   60 Sep 14 22:37 mv-h22
+drwxrwxr-x  2 the operator the operator   60 Sep 14 22:37 mv-h23
+drwxrwxr-x  2 the operator the operator   60 Sep 14 22:37 mv-h24
+drwxrwxr-x  2 the operator the operator   60 Sep 14 22:37 mv-h31
+drwxrwxr-x  2 the operator the operator   60 Sep 14 22:37 mv-h32
+drwxrwxr-x  2 the operator the operator   60 Sep 14 22:37 mv-h33
+drwxrwxr-x  2 the operator the operator   60 Sep 14 22:37 mv-h34
+drwxrwxr-x  3 the operator the operator   60 Sep 14 22:13 mv-home
+drwxrwxr-x  8 the operator the operator  180 Sep 14 22:38 mv-i11
+drwxrwxr-x  8 the operator the operator  180 Sep 14 22:38 mv-i12
+drwxrwxr-x  8 the operator the operator  180 Sep 14 22:38 mv-i13
+drwxrwxr-x  8 the operator the operator  180 Sep 14 22:38 mv-i14
+drwxrwxr-x  8 the operator the operator  180 Sep 14 22:38 mv-i21
+drwxrwxr-x  8 the operator the operator  180 Sep 14 22:38 mv-i22
+drwxrwxr-x  8 the operator the operator  180 Sep 14 22:38 mv-i23
+drwxrwxr-x  8 the operator the operator  180 Sep 14 22:38 mv-i24
+drwxrwxr-x  8 the operator the operator  180 Sep 14 22:38 mv-i31
+drwxrwxr-x  8 the operator the operator  180 Sep 14 22:38 mv-i32
+drwxrwxr-x  8 the operator the operator  180 Sep 14 22:38 mv-i33
+drwxrwxr-x  8 the operator the operator  180 Sep 14 22:38 mv-i34
+drwxrwxr-x  2 the operator the operator  120 Sep 14 22:35 mv-p
+-rw-r--r--  1 the operator the operator  853 Sep 14 22:37 mv-run.sh
+-rw-r--r--  1 the operator the operator  881 Sep 14 22:38 mv-run2.sh
+-rw-r--r--  1 the operator the operator 1046 Sep 14 22:38 mv-run3.sh
+-rw-r--r--  1 the operator the operator  988 Sep 14 22:39 mv-run4.sh
+drwxrwxr-x  6 the operator the operator  120 Sep 14 22:38 mv-s
+drwxrwxr-x  3 the operator the operator   60 Sep 14 22:21 mv-scratch
+drwxrwxr-x  8 the operator the operator  160 Sep 14 22:39 mv-sh
+drwx------  2 the operator the operator   40 Aug 27 07:18 pulse
+drwx------  2 the operator the operator   40 Aug 29 13:53 snap.chromium
+drwx------  2 the operator the operator   40 Sep 10 23:11 snap.firefox
+drwx------  2 the operator the operator   40 Aug 23 13:00 snap.ollama
+drwxr-xr-x  3 the operator the operator   60 Sep 15 07:26 systemd
 === OUR view (comparison) ===
 total 16
-drwx------ 53 nick nick 1140 Sep 14 22:39 .
+drwx------ 53 the operator the operator 1140 Sep 14 22:39 .
 drwxr-xr-x  4 root root   80 Sep 13 01:01 ..
-drwx------  2 nick nick   60 Sep 11 06:03 at-spi
-drwx------  2 nick nick   60 Sep 10 23:03 at-spi2-KBUQV3
-drwxrwxr-x  2 nick nick   40 Sep 13 05:38 ccache-tmp
-drwxr-xr-x  2 nick nick   40 Sep 14 22:38 daemoncwd-holder-fixtures
-drwx------  3 nick nick   60 Aug 27 07:18 dbus-1
-drwx------  2 nick nick   40 Sep 14 06:48 dconf
-dr-x------  2 nick nick    0 Jan  1  1970 doc
-drwxrwxr-x  3 nick nick   80 Sep 12 22:45 gopi-scratch-verify
-dr-x------  2 nick nick    0 Jul 15 21:44 gvfs
-drwx------  2 nick nick   40 Aug 27 07:18 gvfsd
-drwxrwxr-x  2 nick nick   40 Sep 14 22:32 mv-c
-drwxrwxr-x  6 nick nick  120 Sep 14 22:38 mv-d1
-drwxrwxr-x  6 nick nick  120 Sep 14 22:38 mv-d2
-drwxrwxr-x  8 nick nick  160 Sep 14 22:39 mv-di1
-drwxrwxr-x  8 nick nick  160 Sep 14 22:39 mv-di2
-drwxrwxr-x  8 nick nick  160 Sep 14 22:39 mv-di3
-drwxrwxr-x  8 nick nick  160 Sep 14 22:39 mv-di4
-drwxrwxr-x  2 nick nick   60 Sep 14 22:37 mv-h11
-drwxrwxr-x  2 nick nick   60 Sep 14 22:37 mv-h12
-drwxrwxr-x  2 nick nick   60 Sep 14 22:37 mv-h13
-drwxrwxr-x  2 nick nick   60 Sep 14 22:37 mv-h14
-drwxrwxr-x  2 nick nick   60 Sep 14 22:37 mv-h21
-drwxrwxr-x  2 nick nick   60 Sep 14 22:37 mv-h22
-drwxrwxr-x  2 nick nick   60 Sep 14 22:37 mv-h23
-drwxrwxr-x  2 nick nick   60 Sep 14 22:37 mv-h24
-drwxrwxr-x  2 nick nick   60 Sep 14 22:37 mv-h31
-drwxrwxr-x  2 nick nick   60 Sep 14 22:37 mv-h32
-drwxrwxr-x  2 nick nick   60 Sep 14 22:37 mv-h33
-drwxrwxr-x  2 nick nick   60 Sep 14 22:37 mv-h34
-drwxrwxr-x  3 nick nick   60 Sep 14 22:13 mv-home
-drwxrwxr-x  8 nick nick  180 Sep 14 22:38 mv-i11
-drwxrwxr-x  8 nick nick  180 Sep 14 22:38 mv-i12
-drwxrwxr-x  8 nick nick  180 Sep 14 22:38 mv-i13
-drwxrwxr-x  8 nick nick  180 Sep 14 22:38 mv-i14
-drwxrwxr-x  8 nick nick  180 Sep 14 22:38 mv-i21
-drwxrwxr-x  8 nick nick  180 Sep 14 22:38 mv-i22
-drwxrwxr-x  8 nick nick  180 Sep 14 22:38 mv-i23
-drwxrwxr-x  8 nick nick  180 Sep 14 22:38 mv-i24
-drwxrwxr-x  8 nick nick  180 Sep 14 22:38 mv-i31
-drwxrwxr-x  8 nick nick  180 Sep 14 22:38 mv-i32
-drwxrwxr-x  8 nick nick  180 Sep 14 22:38 mv-i33
-drwxrwxr-x  8 nick nick  180 Sep 14 22:38 mv-i34
-drwxrwxr-x  2 nick nick  120 Sep 14 22:35 mv-p
--rw-r--r--  1 nick nick  853 Sep 14 22:37 mv-run.sh
--rw-r--r--  1 nick nick  881 Sep 14 22:38 mv-run2.sh
--rw-r--r--  1 nick nick 1046 Sep 14 22:38 mv-run3.sh
--rw-r--r--  1 nick nick  988 Sep 14 22:39 mv-run4.sh
-drwxrwxr-x  6 nick nick  120 Sep 14 22:38 mv-s
-drwxrwxr-x  3 nick nick   60 Sep 14 22:21 mv-scratch
-drwxrwxr-x  8 nick nick  160 Sep 14 22:39 mv-sh
-drwx------  2 nick nick   40 Aug 27 07:18 pulse
-drwx------  2 nick nick   40 Aug 29 13:53 snap.chromium
-drwx------  2 nick nick   40 Sep 10 23:11 snap.firefox
-drwx------  2 nick nick   40 Aug 23 13:00 snap.ollama
-drwxr-xr-x  3 nick nick   60 Sep 15 07:26 systemd
+drwx------  2 the operator the operator   60 Sep 11 06:03 at-spi
+drwx------  2 the operator the operator   60 Sep 10 23:03 at-spi2-KBUQV3
+drwxrwxr-x  2 the operator the operator   40 Sep 13 05:38 ccache-tmp
+drwxr-xr-x  2 the operator the operator   40 Sep 14 22:38 daemoncwd-holder-fixtures
+drwx------  3 the operator the operator   60 Aug 27 07:18 dbus-1
+drwx------  2 the operator the operator   40 Sep 14 06:48 dconf
+dr-x------  2 the operator the operator    0 Jan  1  1970 doc
+drwxrwxr-x  3 the operator the operator   80 Sep 12 22:45 gopi-scratch-verify
+dr-x------  2 the operator the operator    0 Jul 15 21:44 gvfs
+drwx------  2 the operator the operator   40 Aug 27 07:18 gvfsd
+drwxrwxr-x  2 the operator the operator   40 Sep 14 22:32 mv-c
+drwxrwxr-x  6 the operator the operator  120 Sep 14 22:38 mv-d1
+drwxrwxr-x  6 the operator the operator  120 Sep 14 22:38 mv-d2
+drwxrwxr-x  8 the operator the operator  160 Sep 14 22:39 mv-di1
+drwxrwxr-x  8 the operator the operator  160 Sep 14 22:39 mv-di2
+drwxrwxr-x  8 the operator the operator  160 Sep 14 22:39 mv-di3
+drwxrwxr-x  8 the operator the operator  160 Sep 14 22:39 mv-di4
+drwxrwxr-x  2 the operator the operator   60 Sep 14 22:37 mv-h11
+drwxrwxr-x  2 the operator the operator   60 Sep 14 22:37 mv-h12
+drwxrwxr-x  2 the operator the operator   60 Sep 14 22:37 mv-h13
+drwxrwxr-x  2 the operator the operator   60 Sep 14 22:37 mv-h14
+drwxrwxr-x  2 the operator the operator   60 Sep 14 22:37 mv-h21
+drwxrwxr-x  2 the operator the operator   60 Sep 14 22:37 mv-h22
+drwxrwxr-x  2 the operator the operator   60 Sep 14 22:37 mv-h23
+drwxrwxr-x  2 the operator the operator   60 Sep 14 22:37 mv-h24
+drwxrwxr-x  2 the operator the operator   60 Sep 14 22:37 mv-h31
+drwxrwxr-x  2 the operator the operator   60 Sep 14 22:37 mv-h32
+drwxrwxr-x  2 the operator the operator   60 Sep 14 22:37 mv-h33
+drwxrwxr-x  2 the operator the operator   60 Sep 14 22:37 mv-h34
+drwxrwxr-x  3 the operator the operator   60 Sep 14 22:13 mv-home
+drwxrwxr-x  8 the operator the operator  180 Sep 14 22:38 mv-i11
+drwxrwxr-x  8 the operator the operator  180 Sep 14 22:38 mv-i12
+drwxrwxr-x  8 the operator the operator  180 Sep 14 22:38 mv-i13
+drwxrwxr-x  8 the operator the operator  180 Sep 14 22:38 mv-i14
+drwxrwxr-x  8 the operator the operator  180 Sep 14 22:38 mv-i21
+drwxrwxr-x  8 the operator the operator  180 Sep 14 22:38 mv-i22
+drwxrwxr-x  8 the operator the operator  180 Sep 14 22:38 mv-i23
+drwxrwxr-x  8 the operator the operator  180 Sep 14 22:38 mv-i24
+drwxrwxr-x  8 the operator the operator  180 Sep 14 22:38 mv-i31
+drwxrwxr-x  8 the operator the operator  180 Sep 14 22:38 mv-i32
+drwxrwxr-x  8 the operator the operator  180 Sep 14 22:38 mv-i33
+drwxrwxr-x  8 the operator the operator  180 Sep 14 22:38 mv-i34
+drwxrwxr-x  2 the operator the operator  120 Sep 14 22:35 mv-p
+-rw-r--r--  1 the operator the operator  853 Sep 14 22:37 mv-run.sh
+-rw-r--r--  1 the operator the operator  881 Sep 14 22:38 mv-run2.sh
+-rw-r--r--  1 the operator the operator 1046 Sep 14 22:38 mv-run3.sh
+-rw-r--r--  1 the operator the operator  988 Sep 14 22:39 mv-run4.sh
+drwxrwxr-x  6 the operator the operator  120 Sep 14 22:38 mv-s
+drwxrwxr-x  3 the operator the operator   60 Sep 14 22:21 mv-scratch
+drwxrwxr-x  8 the operator the operator  160 Sep 14 22:39 mv-sh
+drwx------  2 the operator the operator   40 Aug 27 07:18 pulse
+drwx------  2 the operator the operator   40 Aug 29 13:53 snap.chromium
+drwx------  2 the operator the operator   40 Sep 10 23:11 snap.firefox
+drwx------  2 the operator the operator   40 Aug 23 13:00 snap.ollama
+drwxr-xr-x  3 the operator the operator   60 Sep 15 07:26 systemd
 === systemd's unit files for the runtime dir + user manager ===
 --- /usr/lib/systemd/system/user-runtime-dir@.service ---
 #  SPDX-License-Identifier: LGPL-2.1-or-later
@@ -280,7 +280,7 @@ Notice: journal has been rotated since unit was started, output may be incomplet
              | |-app-tigervncserver.slice
              | | `-tigervncserver@:1.service
              | |   |-  2401 /usr/bin/perl /usr/bin/tigervncserver :1 -geometry 1600x900 -depth 24 -localhost no -rfbport 5900
-             | |   |-  2402 /usr/bin/Xtigervnc :1 -NeverShared=0 -AlwaysShared=1 -localhost=0 -desktop "peer1:1 (nick)" -rfbport 5900 -PasswordFile /home/user/.vnc/passwd -SecurityTypes VncAuth,TLSVnc -auth /home/user/.Xauthority -geometry 1600x900 -depth 24
+             | |   |-  2402 /usr/bin/Xtigervnc :1 -NeverShared=0 -AlwaysShared=1 -localhost=0 -desktop "peer1:1 (the operator)" -rfbport 5900 -PasswordFile /home/user/.vnc/passwd -SecurityTypes VncAuth,TLSVnc -auth /home/user/.Xauthority -geometry 1600x900 -depth 24
              | |   |-  2407 xfce4-session
              | |   |-  2417 dbus-launch --exit-with-session startxfce4
              | |   |-  2418 /usr/bin/dbus-daemon --syslog --fork --print-pid 5 --print-address 7 --session
@@ -348,18 +348,18 @@ Sep 14 22:39:50 peer1 org.xfce.ScreenSaver[2586]: Xlib:  extension "DPMS" missin
 839 799 0:50 / /run/user/117/gvfs rw,nosuid,nodev,relatime shared:459 - fuse.gvfsd-fuse gvfsd-fuse rw,user_id=117,group_id=123
 === notify socket / systemd dir present? ===
 total 0
-drwxr-xr-x  3 nick nick   60 Sep 15 07:26 .
-drwx------ 53 nick nick 1140 Sep 14 22:39 ..
-drwxr-xr-x  3 nick nick  140 Sep 13 12:12 inaccessible
+drwxr-xr-x  3 the operator the operator   60 Sep 15 07:26 .
+drwx------ 53 the operator the operator 1140 Sep 14 22:39 ..
+drwxr-xr-x  3 the operator the operator  140 Sep 13 12:12 inaccessible
 === XDG_RUNTIME_DIR / DBUS_SESSION_BUS_ADDRESS as the MANAGER sees them ===
 XDG_RUNTIME_DIR=/run/user/1000
 === /proc/net/unix entries for the two unlinked sockets ===
 0000000000000000: 00000002 00000000 00010000 0001 01 39144 /run/user/1000/systemd/private
 0000000000000000: 00000002 00000000 00010000 0001 01 40136 /run/user/1000/bus
 === open fds of manager + dbus-daemon pointing at those inodes ===
-lrwx------ 1 nick nick 64 Sep 15 07:29 19 -> socket:[39144]
-lrwx------ 1 nick nick 64 Sep 15 07:29 27 -> socket:[40136]
-lrwx------ 1 nick nick 64 Sep 12 04:15 3 -> socket:[40136]
+lrwx------ 1 the operator the operator 64 Sep 15 07:29 19 -> socket:[39144]
+lrwx------ 1 the operator the operator 64 Sep 15 07:29 27 -> socket:[40136]
+lrwx------ 1 the operator the operator 64 Sep 12 04:15 3 -> socket:[40136]
 === sanity: does ANY process's filesystem view carry the path? (bounded sample) ===
 visible_in_any_process=0
 === end p5 ===

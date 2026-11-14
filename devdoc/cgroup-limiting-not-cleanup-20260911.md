@@ -2,7 +2,7 @@
 # 防患于未然：用 cgroup/scope 限制代替事后清理（peer1 实测验证）
 
 **日期**：2026-09-11
-**来源**：peer1 资源耗尽事故后 nick 的决策——"限制比清理安全，因为限制不会误判谁该被杀"
+**来源**：peer1 资源耗尽事故后 the operator 的决策——"限制比清理安全，因为限制不会误判谁该被杀"
 **地位**：本研究是**主路线**，取代原先"自研 watchdog 扫全局杀孤儿"的方案
 
 ---
@@ -78,7 +78,7 @@ sudo systemd-run --scope -p MemoryMax=64M -p MemorySwapMax=0 \
 | **附带收益** | 无 | 强制团队思考"这个测试需要多少资源" |
 
 **关键不对称**：限制机制失效的后果是"回到没有保护的状态"，而清理机制失效的后果是
-"删掉/杀掉不该动的"——**后者严格更糟**。这就是 nick 说的"不能引入更危险的东西去防危险"。
+"删掉/杀掉不该动的"——**后者严格更糟**。这就是 the operator 说的"不能引入更危险的东西去防危险"。
 
 ---
 
@@ -120,7 +120,7 @@ TestMain）默认跑在 scope 里，等于给"测试"这件事本身一个资源
 ## 六、必须诚实标注的边界与风险
 
 1. **`sudo` 依赖**：`systemd-run --scope` 走系统总线需要 sudo（无密码 sudo 本机可用）。
-   若不想依赖 sudo，可创建 user manager（`loginctl enable-linger nick`）后用
+   若不想依赖 sudo，可创建 user manager（`loginctl enable-linger the operator`）后用
    `systemd-run --user`。**此路径本单未实测**，需验证。
 2. **限制粒度是设备级**：`IOWriteBandwidthMax=/dev/sda3 8M` 限的是对 `/dev/sda3`
    的写。若压测写的是别的分区（`/dev/sda4` = `/home`），要另配。
@@ -170,8 +170,8 @@ sudo systemctl kill -s SIGKILL run-rfb5ad58bff214d60968ebda1a5eb9a9f.scope
 ### loginctl linger 路径：**不必要，`sudo systemd-run --scope` 更简**
 
 
-实测本机 `loginctl show-user nick` → **`Linger=no`**，且 `/run/user/1000/systemd`
-不存在（无 user manager）。启用 linger 需要 `loginctl enable-linger nick`，
+实测本机 `loginctl show-user the operator` → **`Linger=no`**，且 `/run/user/1000/systemd`
+不存在（无 user manager）。启用 linger 需要 `loginctl enable-linger the operator`，
 副作用是**在无登录时也常驻一个 user systemd 实例**——为了跑限制而引入一个新的
 常驻进程，违背"不引入更多东西"的原则。
 

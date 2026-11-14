@@ -105,9 +105,9 @@ RED IN BOTH (thus not mine): 15
 ```
 $ go build ./...                                   # exit=0
 $ go test ./cmd/agent/ -run 'TestGOPIMDRule6a' -count=1
-ok  	github.com/nick/gopi/cmd/agent	4.052s
+ok  	github.com/the operator/gopi/cmd/agent	4.052s
 $ go test ./internal/standards/ -run 'TestBranchForceGate' -count=1
-ok  	github.com/nick/gopi/internal/standards	0.962s
+ok  	github.com/the operator/gopi/internal/standards	0.962s
 ```
 
 以及回退后的那次全量（`PKGS='./internal/tools ./internal/devworkspace ./cmd/agent ./internal/agent'`，`elapsed=988s`，`exit=1 outcome=fail`）：**与回退前那次做差集**，`r1 - r2 = 41` 条红随回退消失、`r2 - r1 = 0` 条新红、`r1 ∩ r2 = 15` 条预存红（见 §1.0.1）。`internal/tools` 与 `internal/devworkspace` 两次都是那 2 条既有 gate 红，无新增。
@@ -257,7 +257,7 @@ internal/tools/task_run_ground.go:791        ← briefing 形态句子的第三�
 | 批 | 内容 | 前置条件 | 验收 |
 |---|---|---|---|
 | **批一（已交付，范围已按实测收窄）** | ① **只删模型侧创建配方**（PROJECT.md Rule 6a/23/29/Commit Path 步①）；② 调用点 gate（clone 通道开着时不再调 worktree resolver）；③ §1.0 的翻车记录 | 无 | `go build ./...` 绿；`go test ./cmd/agent/ -run TestGOPIMDRule6a` 绿；`go test ./internal/standards/ -run TestBranchForceGate` 绿；**回退后那 41 条 cmd/agent 红消失（两次 stream 差集，见 §1.0.1）** |
-| **批二（已交付）** | ① `git mv internal/tools/merge_build_gate_scratch_worktree.go → merge_build_gate_scratch_worktree_helpers_test.go`：生产二进制不再背这 169 行测试助手（**不是删除** —— 它被 5 个测试调用点使用，见 §2 A 级第一行）；② §1.3 的两次 `go test -count=1` 实测确认：`TestStylegateRatchetSuiteIsGreenOnThisTree` 在修复后 **7.135s 通过且 `.git/worktrees` 前后都是 0**（修掉的泄漏是真的修掉了，不是被跳过）；③ C3 注释措辞修正留待批三（与 deliverable 语义一起改，避免同一条注释改两遍） | 批一合入 | `go build ./...` exit=0；`go vet ./internal/tools/` clean；`go test ./internal/tools/ -run 'TestScratchWorktree\|TestRebuildVet\|TestMergesetGate\|TestStylegateRatchetSuiteIsGreenOnThisTree\|TestAssertionTotalityAuditGate' -count=1` → `ok  github.com/nick/gopi/internal/tools 30.079s`；`.git/worktrees` 计数前后皆为 0 |
+| **批二（已交付）** | ① `git mv internal/tools/merge_build_gate_scratch_worktree.go → merge_build_gate_scratch_worktree_helpers_test.go`：生产二进制不再背这 169 行测试助手（**不是删除** —— 它被 5 个测试调用点使用，见 §2 A 级第一行）；② §1.3 的两次 `go test -count=1` 实测确认：`TestStylegateRatchetSuiteIsGreenOnThisTree` 在修复后 **7.135s 通过且 `.git/worktrees` 前后都是 0**（修掉的泄漏是真的修掉了，不是被跳过）；③ C3 注释措辞修正留待批三（与 deliverable 语义一起改，避免同一条注释改两遍） | 批一合入 | `go build ./...` exit=0；`go vet ./internal/tools/` clean；`go test ./internal/tools/ -run 'TestScratchWorktree\|TestRebuildVet\|TestMergesetGate\|TestStylegateRatchetSuiteIsGreenOnThisTree\|TestAssertionTotalityAuditGate' -count=1` → `ok  github.com/the operator/gopi/internal/tools 30.079s`；`.git/worktrees` 计数前后皆为 0 |
 | **批三（已交付）** | `deliverable.worktree` 语义改写：`--worktree P` 拼写从"必须是一条注册的 linked worktree"改成"这个 row 的工作目录（两种形态都接受）"；briefing 里两处"必须是 linked worktree"的措辞改成形态中立。**改的是断言，不是措辞** —— 见下方"批三为什么不是文案活" | 批二合入 | `gopi worker --resume --worktree <CLONE ground>` 不再被误判成 MAIN checkout；`gopi worker --resume --worktree <被声明的共享仓库>` 仍被拒绝；`go test ./internal/tools/ -run TestResumeGround` 全绿（26 条） |
 | **批四（取证完成，写操作待批）** | 本机残留清零。**从前是"23 个目录 → 0"，取证之后这个说法要拆开**（§7）：8 条悬空（owner 仓库已不在，1.15 GB）可删；4 条注册挂在**已废弃的 `/home/user/work/GoPi`** 上（生产仓库 `/home/user/work/gopi` 自己的 `.git/worktrees` = 0）；4 条是可 prune 的测试残留（`git worktree prune` 就是正确的动词）；4 条 GoPi 上的 worktree 各带一份**别人 run 留下的红证变异**（"throwaway falsification"/"DIAG"）—— 删 = 丢弃一次性变异，留 = 占 3.1 GB，这条要操作员裁决。207 个 clone ground **不在本批范围**（§1：它们是 ground 的唯一形态），但**它们里面确实有可回收的**——§7.8 第二轮取证量出 **9 条**满足严格判据（1591 MB），其中 **5 条 `sweep-worktrees` 根本看不见**（零 anchor，`--dry-run` 里连一行都没有）。**这个数字是判据的第四代**（v0→v3，四代同一条命令）：前三代分别判出 10 / 10 / 11 条，三次都是朝"多删"方向错、每一次都被本机上一个真实目录抓出来（§7.8.5 有四个反例的表）—— 所以它不是"终于算对了"，而是"已被三个反例压过、暂时没有第四个"，所以批四执行时**不能只跑那个 verb**，必须按 §7.8.4 的逐条判据自己量一遍 | 操作员确认（**写操作，需请示**）；清单必须是**带测量时刻的快照**，不能沿用上一轮名单（§4 末尾：`base-4fb9f7d-gate` 在 10:41→10:46 之间自己消失了） | 逐条 stat 判据（**不是** `collectable=N` 汇总行 —— §7.7 实测 98.68% 是幽灵）：`git -C /home/user/work/gopi worktree list` 只剩主检出；`git -C /home/user/work/GoPi worktree prune --dry-run` 无输出 |
 | **批五** | 残留清扫通道瘦身：只删"清扫 worktree 注册"的部分，`task_finish_cleanup` 的 clean/build/push/写回一概不动 | 批四完成（两个宿主都归零） | 清扫相关测试红 → 预期（被删能力无对象）；其余全绿 |
@@ -266,7 +266,7 @@ internal/tools/task_run_ground.go:791        ← briefing 形态句子的第三�
 
 ```
 $ ls -ld /home/user/workspace/01a17aba-da29-72f5-b7e9-b3c5fb449d77/.git
-drwxrwxr-x 8 nick nick 4096 Oct 27 10:28 .git                    # → CLONE 形态
+drwxrwxr-x 8 the operator the operator 4096 Oct 27 10:28 .git                    # → CLONE 形态
 
 $ gopi worker --resume --worktree /home/user/workspace/01a17aba-da29-72f5-b7e9-b3c5fb449d77
 gopi worker: no ground to resume: --worktree /home/user/workspace/01a17aba-da29-72f5-b7e9-b3c5fb449d77 is the

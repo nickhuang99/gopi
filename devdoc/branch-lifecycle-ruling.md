@@ -18,7 +18,7 @@ Row `01a0ab04` proposed retiring the `archive/<branch>` tag carrier by renaming
 a conflicted branch into a `conflict/<branch>` namespace — a "permanent,
 distinguishable fossil". **It is withdrawn.**
 
-nick, 2026-09-17:
+the operator, 2026-09-17:
 
 > "if we decide to resolve it, then there is no need to rename it, so, just
 > combine the task."
@@ -225,7 +225,7 @@ exactly the state that made the loop invisible in the first place.
 
 - The sibling owns: prompt §3.6's deletion sentence + its §3.6.1 six-case
   lifecycle table (delete is the endpoint; ordering diff → queued → delete).
-- This task owns: the **canonical ruling document** (`conflict/` void, nick's
+- This task owns: the **canonical ruling document** (`conflict/` void, the operator's
   reason quoted), the **three cannot-delete dispositions** (①/②/③ as posed in
   the brief), the **loop analysis** (§3), the **retirement of the stale
   `conflict/` carriers**, and a **measured loop-proof test**.

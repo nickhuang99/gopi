@@ -316,7 +316,7 @@ func TestSyncDeltaContentDivergenceEqualAnchorClient(t *testing.T) {
 	}
 }
 
-// TestSyncDeltaServerResolvesConflict — 冲突语义定稿 (nick): the SERVER
+// TestSyncDeltaServerResolvesConflict — 冲突语义定稿 (the operator): the SERVER
 // side of an equal-updated_at both-sides-wrote conflict rules immediately —
 // status=completed, ended_at=now, tags += sync-resolved, updated_at=now —
 // token-free pure Go. Real E2E shape (both GOPI_MEMORY_DBs swapped): the
@@ -961,12 +961,12 @@ func syncSessionFromEnvelopeTest(data []byte) (*SyncTaskPatch, float64, error) {
 	return &env.SyncTaskPatch, env.Anchor, nil
 }
 
-// TestSyncDeltaContentDivergenceIsAWarning — 内容冲突降级 (nick): same id,
+// TestSyncDeltaContentDivergenceIsAWarning — 内容冲突降级 (the operator): same id,
 // same anchor, SAME status, DIFFERING summary/payload is NOT "both sides
 // edited a shared immutable field = a bug to arbitrate". The row's identity
 // is its task_id (UUID) and summary/payload are free-text restatements that
 // differ across nodes by nature — so the merge NEVER rewrites either side's
-// content (nick rule), unions the peer's OWN tags, and records the
+// content (the operator rule), unions the peer's OWN tags, and records the
 // divergence as a WARNING: RowsDiverged on the report line + a warn log.
 // It must NOT stamp the 'conflict' tag (the must-arbitrate-by-a-human
 // marker is reserved for a STATUS divergence) and must NOT raise the

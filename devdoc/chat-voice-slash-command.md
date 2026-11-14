@@ -74,7 +74,7 @@
   `go vet ./cmd/agent/ ./internal/lineedit/` → clean.
 - **Tests**: `make test-budget PKGS='./internal/lineedit ./cmd/agent'` — branch-scoped
   (smoke set), never a whole-tree run (Rule 27). `./internal/lineedit` → **ok 52.4s**
-  (`go test ./internal/lineedit/ -count=1` → `ok github.com/nick/gopi/internal/lineedit 52.442s`).
+  (`go test ./internal/lineedit/ -count=1` → `ok github.com/the operator/gopi/internal/lineedit 52.442s`).
   `./cmd/agent` → the budget run finished **958s wall, exit 1**, reporting **12
   top-level reds and 9 subtests**; `./internal/lineedit` was green in the same run.
   - **The one red this diff caused** was `TestChatUsageStaysWithinItsLineBudget`:
@@ -107,7 +107,7 @@
     `TestLineInsert_DrainAppliesInOrderAndLowersTheLevel`,
     `TestLineInsert_KeyGateReaderReturnsTheInstalledOwner`,
     `TestKeyGate_SeesTheEscapeTheTimeoutFlushes`; and `./cmd/agent` (targeted run,
-    `ok github.com/nick/gopi/cmd/agent 23.012s`) covering `chat_voice_pty_test.go` —
+    `ok github.com/the operator/gopi/cmd/agent 23.012s`) covering `chat_voice_pty_test.go` —
     a real pty + the real chat input layer: enter → append after a typed draft → the
     origin test on Escape → every refusal leg leaves the mode off with zero rounds
     recorded → a failed round reports and leaves → silence inserts nothing and keeps
@@ -150,7 +150,7 @@
 - `make test-budget PKGS='./internal/lineedit ./cmd/agent'` — output captured by
   the run (job stream): the per-package result lines are quoted in the run's
   final message; the two packages this diff touched are the only ones scoped.
-  - `./internal/lineedit` → `ok github.com/nick/gopi/internal/lineedit 58.058s`
+  - `./internal/lineedit` → `ok github.com/the operator/gopi/internal/lineedit 58.058s`
     (observed in this run's stream, `run-1791377740-2554349.json`) — GREEN, and the
     five insert/gate cases this diff added passed by name in it (quoted in the
     targeted re-run below).
@@ -162,10 +162,10 @@
   - the targeted re-run, captured whole to
     `/home/user/workspace/gopi-test-scratch/targeted-01a115e0.log`:
     `go test ./internal/lineedit/ -run 'TestLineInsert|TestForwarding|TestKeyGate' -count=1 -v`
-    → `ok github.com/nick/gopi/internal/lineedit 5.643s` with
+    → `ok github.com/the operator/gopi/internal/lineedit 5.643s` with
     `--- PASS: TestLineInsert_AppendGoesAfterWhatIsTyped` … `TestKeyGate_SeesTheEscapeTheTimeoutFlushes` (6 PASS lines, 0 FAIL);
     `go test ./cmd/agent/ -run 'TestChatVoice_|TestChatUsageStaysWithinItsLineBudget' -count=1 -v`
-    → `ok github.com/nick/gopi/cmd/agent 9.652s` with
+    → `ok github.com/the operator/gopi/cmd/agent 9.652s` with
     `--- PASS: TestChatVoice_EnterAppendsAndEscapeLeaves` (0.70s),
     `TestChatVoice_EscapeIsClaimedOnlyFromTheTerminal` (0.21s),
     `TestChatVoice_RefusalsLeaveTheModeOffWithoutRecording` (0.62s),

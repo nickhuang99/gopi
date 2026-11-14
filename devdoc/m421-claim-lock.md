@@ -1,7 +1,7 @@
 <!-- doc-class: normative -->
 # M4.21 跨节点任务领取 = 数据库级两阶段锁（feat/claim-lock-m421）
 
-> Epic 交付（nick 定稿）：`task run` 的跨节点领取从"广播+让渡"改为**两阶段分布式锁**，
+> Epic 交付（the operator 定稿）：`task run` 的跨节点领取从"广播+让渡"改为**两阶段分布式锁**，
 > 失败=事务回滚（永不 cancel），碰撞=ALOHA 退避重试。
 > Branch: `feat/claim-lock-m421` · Commit: `db22503` · Worktree: `~/workspace/gopi-m421`
 
@@ -10,7 +10,7 @@
 M4.18 的 claim broadcast（领取即所有权：cancel + sync-yielded 永久退出）有两个问题：
 
 1. **双弃死锁**：我的 cancel 镜像到对端 → 两边都不执行（最致命的失败态）。
-   nick 否决：失败必须回滚到 pending，把行还给对端**和**自己。
+   the operator 否决：失败必须回滚到 pending，把行还给对端**和**自己。
 2. **信息传递裂缝**：广播只是"通知"，不构成锁——对端看到 pending 仍可领取。
    两阶段锁把对端变成协议平等方：每边都在自己的 ledger 上跑同一把 CAS 阶梯。
 

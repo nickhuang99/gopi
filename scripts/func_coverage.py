@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""Function-level test coverage for GoPi (nick's metric: 已覆盖函数/总函数).
+"""Function-level test coverage for GoPi (the operator's metric: 已覆盖函数/总函数).
 
 Why not `go test -cover`? Statement coverage tells you which LINES ran, not
 which FUNCTIONS have a test that exercises them with boundary/error cases. The

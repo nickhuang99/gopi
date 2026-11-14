@@ -107,7 +107,7 @@ $ GOPI_UI_SCREENMODEL_DUMP=/home/user/workspace/_audit-p7/screenmodel-dump.md \
 === RUN   TestRealToolCallTurnScreenModelIsAgentReadable
     ASSERT tool call row            "callbashhead-3go.mod"         pass=true
     ASSERT tool result row          "resultbashexit=0"             pass=true
-    ASSERT tool output on screen    "github.com/nick/gopi"         pass=true
+    ASSERT tool output on screen    "github.com/the operator/gopi"         pass=true
     ASSERT status line at rest      "idle·turns1·toolevents2"      pass=true
     ASSERT not still streaming      "streaming…"                   pass=true
     ASSERT no fault recorded        "  ⚠ "                         pass=true
@@ -254,7 +254,7 @@ bubbletea 屏）？是 → 文本状态路径优先（应替换）；不是（�
 
 - **Build**: `go build ./...` → 见 commit 前的实际输出（本审计未改产品代码）。
 - **Tests**: `go test ./internal/standards/ -run 'TestDocManifestCoversEveryDevdocFile|TestDocManifestRowsAreWellFormed'`
-  → `ok github.com/nick/gopi/internal/standards`；日志 `2293 rows cover 2293 files`、
+  → `ok github.com/the operator/gopi/internal/standards`；日志 `2293 rows cover 2293 files`、
   `523 normative rows (each carrying a spot-check)`。
   `go test ./internal/agent/ -run TestDocAnchor` → 本文件贡献 **0** 条 anchor 失败
   （grep 文件名无输出）；该 gate 本身仍红，原因是与本文无关的既有 baseline drift。
@@ -282,7 +282,7 @@ bubbletea 屏）？是 → 文本状态路径优先（应替换）；不是（�
 
   587/192/271 input tokens、空内容、一屏 2 页；`:27` 的采纳率。
 - 属性路径：`GOPI_PALETTE_CAPTURE_DIR=… go test ./internal/lineedit/ -run TestPaletteCaptureGolden`
-  → `ok github.com/nick/gopi/internal/lineedit 0.304s`；`capture-colour.ansi` 505 B、
+  → `ok github.com/the operator/gopi/internal/lineedit 0.304s`；`capture-colour.ansi` 505 B、
   `capture-mono.txt` 407 B、`capture-chrome.ansi` 377 B。
 - 只读保证：本次会话未改任何产品代码；`git status --porcelain` 结束时为空
   （改动仅 `devdoc/ui-entropy-audit.md` + `devdoc/DOC-INDEX.tsv`，见 commit）。

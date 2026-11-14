@@ -116,7 +116,7 @@ go test ./internal/standards/ -count=1 -run 'TestStandardGates/TestGate3ElseAfte
 
 ```
 go test ./internal/standards/ -count=1 -run 'TestStandardGates|TestStandardGateDataReport'
-→ PASS  ok  github.com/nick/gopi/internal/standards  47.574s
+→ PASS  ok  github.com/the operator/gopi/internal/standards  47.574s
   gate_test.go:128: Rule 18 (no else after terminating if) (checklist 4.3): hits=2 baselined=0 escaped=2 NEW=0
   （escape 的两处是既有的 internal/lineedit/editor.go:1703 与 internal/tools/memory.go:3761；
     main.go 已不在命中里，NEW 由 1 → 0，baselined 恒为 0）

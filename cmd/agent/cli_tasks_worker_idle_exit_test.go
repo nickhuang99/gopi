@@ -4,7 +4,7 @@ package main
 // WITHOUT --once must not wait forever on a drained queue — after N
 // CONSECUTIVE empty rounds (queue drained, no task executed between them)
 // it exits 0 on its own. A worker is a task-DRAIN tool that runs and
-// self-dies (nick 9/1), not a daemon waiting for Ctrl+C. These tests pin:
+// self-dies (the operator 9/1), not a daemon waiting for Ctrl+C. These tests pin:
 //
 //	① the env resolver (GOPI_WORKER_IDLE_EXITS: default 3, passthrough, 0
 //	   = never, malformed → default);

@@ -301,7 +301,7 @@ func syncClaimPushReceipt(peer string, rows int, taskID string) string {
 }
 
 // PushTerminalTaskSync is the END-of-life must-succeed push (epic M4.19 ②,
-// nick: "at end we are a bit aggressive — there is no reason to fail, must
+// the operator: "at end we are a bit aggressive — there is no reason to fail, must
 // be done"): a task just reached a terminal status locally (completed /
 // failed); its row is pushed to EVERY whitelisted peer via the claim
 // channel's push-only path. Unlike the lock protocol (unreachable →

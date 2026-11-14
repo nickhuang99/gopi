@@ -86,9 +86,9 @@ Task `01a133b2-f6aa-78b4-a0a1-94d6fef89465` · branch `task/01a133b2f6aa78b4a0a1
 
 - Build: `go build ./...` — OK; `CGO_ENABLED=0 go build -o <ev>/gopi-after-doccheck ./cmd/agent/` — OK.
 - Tests:
-  - `go test ./cmd/agent/ -run 'DocCheck' -count=1` — `ok  github.com/nick/gopi/cmd/agent 7.235s` (all DocCheck arms, including the new one).
+  - `go test ./cmd/agent/ -run 'DocCheck' -count=1` — `ok  github.com/the operator/gopi/cmd/agent 7.235s` (all DocCheck arms, including the new one).
   - `go test ./internal/docclass/ ./internal/docindex/ -count=1` — `ok internal/docclass 6.979s`, `ok internal/docindex 1.093s`.
-  - `make test-budget PKGS='./cmd/agent ./internal/docclass ./internal/docindex'` (the packages this diff touches) — `exit=0 outcome=pass elapsed=738s stream=run-1791879786-152145.json`, all three packages green (`ok github.com/nick/gopi/cmd/agent 735.390s`).
+  - `make test-budget PKGS='./cmd/agent ./internal/docclass ./internal/docindex'` (the packages this diff touches) — `exit=0 outcome=pass elapsed=738s stream=run-1791879786-152145.json`, all three packages green (`ok github.com/the operator/gopi/cmd/agent 735.390s`).
   - `go test ./internal/standards/ -run TestCommandsDocGeneratedBlockMatchesSource -count=1` — failed on the stale generated line reference, `ok` after regenerating (below).
 - Ran: **(acceptance tree — `git archive HEAD | tar -x`, no `.git`)**
 

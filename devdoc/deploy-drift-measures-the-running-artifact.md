@@ -147,7 +147,7 @@ refs/heads/master:  3 behind (the ref is at <tip>)
 Artifacts and transcripts:
 `~/.gopi/sessions/01a1827b-…/evidence/state-N0.txt` and `state-Nbehind.txt`.
 The build recipe is the one `gopi version`'s own usage text documents
-(`-ldflags "-X github.com/nick/gopi/internal/version.Revision=<sha>"`), so a
+(`-ldflags "-X github.com/the operator/gopi/internal/version.Revision=<sha>"`), so a
 linked-worktree-shaped build can still attest a revision — that is a
 **declaration**, and the report labels it as such.
 

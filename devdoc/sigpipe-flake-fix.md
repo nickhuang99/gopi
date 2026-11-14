@@ -51,7 +51,7 @@ Rebuilding with `CGO_ENABLED=0 go build -buildvcs=false -o bin/gopi
 - Repro pre-fix: `go test ./cmd/agent/ -run 'TestTaskRunSurvivesClosedStdoutPipe' -count=5` → **5/5 FAIL** ("task run exited -1 … signal: broken pipe").
 - Post-fix + rebuilt bin/gopi: `-count=10` → **10/10 PASS** (ok … 65.712s).
 - Build: `go build ./...` OK; `go vet ./cmd/agent/` clean.
-- Full `go test ./cmd/agent/`: `ok github.com/nick/gopi/cmd/agent 165.086s` (PASS, exit 0).
+- Full `go test ./cmd/agent/`: `ok github.com/the operator/gopi/cmd/agent 165.086s` (PASS, exit 0).
 - Commit: d3ea4fb (feat/briefing-summary-payload worktree — shared with main repo, no push needed).
 
 ## Files changed

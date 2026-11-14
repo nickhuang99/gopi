@@ -70,7 +70,7 @@ paths themselves. "Refs" = files other than the junk that mention the class.
 
 | Class | Tracked | Refs in `*.go`/`*.sh`/`*.py`/`Makefile`/`*.yml` | Where refs live | Verdict |
 |---|---|---|---|---|
-| `.leakprobe-agent.test` (19 MB, `go1.24.5`, `path github.com/nick/gopi/internal/agent.test` — a `go test -c` output) | 1 | **0** | doc prose in `devdoc/crash-dump-startup-backfill.md` | junk; no legitimate `*.test` path is tracked anywhere else |
+| `.leakprobe-agent.test` (19 MB, `go1.24.5`, `path github.com/the operator/gopi/internal/agent.test` — a `go test -c` output) | 1 | **0** | doc prose in `devdoc/crash-dump-startup-backfill.md` | junk; no legitimate `*.test` path is tracked anywhere else |
 | `.leakprobe/`, `.leakprobe2/` (fake `$HOME`: copied `.gopi/memory.db`, 3 `sessions/*.jsonl`, `raw/*.log`; `.leakprobe2` = a whole `go-build` cache) | 411 | **0** | doc prose only | junk |
 | `.leakprobe-full.out` (2 636-line probe stdout dump) | 1 | **0** | — | junk |
 | `tmp-e2e/` (hand-written e2e evidence: `*.log`, `evidence-run*.jsonl`, `session-logs/*.err`) | 22 | **0** | doc/report prose: `tasks/01a08919-9399-report.md`, `tasks/memory-lesson-hippocampus-convergence-report.md`, `devdoc/hippocampus-repeat-memory-env-leak.md` (narrative only — these describe the experiment and never read the files) | junk |

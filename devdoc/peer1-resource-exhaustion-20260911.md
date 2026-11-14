@@ -2,7 +2,7 @@
 # peer1 资源耗尽事故：根因诊断 + 恢复记录
 
 **日期**：2026-09-11 05:47–06:10
-**触发**：peer1 全部资源耗尽，hermes 无法响应，nick 被迫 kill hermes + kill HOMM3
+**触发**：peer1 全部资源耗尽，hermes 无法响应，the operator 被迫 kill hermes + kill HOMM3
 **结果**：/ 分区 1.5G → 19G；load 9.09 → 1.65；根因定位到 4 类孤儿进程 + 3 类磁盘垃圾
 
 ---
@@ -32,7 +32,7 @@ done
 - `du -sh /tmp` 直接超时 300s —— IO 已经完全饥饿
 - 修复后 `load average: 9.09 → 0.74`
 
-**这正是 nick 报告"几个 dd zombie 杀不掉"的东西**：D 状态（uninterruptible sleep）
+**这正是 the operator 报告"几个 dd zombie 杀不掉"的东西**：D 状态（uninterruptible sleep）
 进程对 SIGTERM 无响应，必须 SIGKILL **父进程**才能让子进程停止重生。
 
 ### 2. 12.7 天的测试 mock 服务器（8/29 起就活着）

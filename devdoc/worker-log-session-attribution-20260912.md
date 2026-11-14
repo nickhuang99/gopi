@@ -108,7 +108,7 @@ status:         failed
 task_output:    /tmp/tmp.94YXWabEAV/.gopi/sessions/t-attribution-demo/output.log
 
 $ ls -la /tmp/tmp.94YXWabEAV/.gopi/sessions/t-attribution-demo/
--rw-r--r-- 1 nick nick 671 … output.log
+-rw-r--r-- 1 the operator the operator 671 … output.log
 
 $ head -3 …/output.log
 # gopi worker output — task t-attribution-demo session  pid 826592 (find it again: gopi task show t-attribution-demo)

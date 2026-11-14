@@ -39,7 +39,7 @@ Measured 2026-10-31 (task `01a19081`), verbatim:
 
 ```
 $ go test ./internal/standards/ -run 'TestAssertionTotalityAuditGate'  # selector-ok: THIS LINE IS THE MEASUREMENT — the quoted command is the defect, quoted verbatim; the real gate lives in internal/tools
-ok  	github.com/nick/gopi/internal/standards	0.318s [no tests to run]
+ok  	github.com/the operator/gopi/internal/standards	0.318s [no tests to run]
 $ echo $?
 0
 ```
@@ -203,11 +203,11 @@ FAIL
 $ test "$(git hash-object devdoc/standards-gate.md)" = "$(git rev-parse HEAD:devdoc/standards-gate.md)" && echo SAME_AS_HEAD
 SAME_AS_HEAD
 $ go test ./internal/standards/ -run 'TestCitationSelectorGateRealTreeIsBaselined' -count=1
-ok  	github.com/nick/gopi/internal/standards	5.747s
+ok  	github.com/the operator/gopi/internal/standards	5.747s
 
 # and the surface this gate models, executed for real:
 $ go test ./internal/standards -run 'TestZZCitationSelectorProbeGate' -count=1  # selector-ok: the executed arm proving the vacuum, quoted verbatim
-ok  	github.com/nick/gopi/internal/standards	0.512s [no tests to run]
+ok  	github.com/the operator/gopi/internal/standards	0.512s [no tests to run]
 $ echo $?
 0
 ```

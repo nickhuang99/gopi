@@ -158,9 +158,9 @@ $ go test ./internal/tools/  -run TestGroundInUse -count=1     # criterion disab
     "resumable" would admit a second run into a working directory
 
 $ go test ./internal/tools/  -run TestGroundInUse -count=1     # green
-ok  github.com/nick/gopi/internal/tools   …
+ok  github.com/the operator/gopi/internal/tools   …
 $ go test ./cmd/agent/ -run 'TestResumeGate|TestStatusExitCodes'
-ok  github.com/nick/gopi/cmd/agent        1.291s
+ok  github.com/the operator/gopi/cmd/agent        1.291s
 ```
 
 (The red run above ALSO failed a `TestRetryGateRefusesAnOccupiedGround` — that test

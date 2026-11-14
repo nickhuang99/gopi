@@ -26,7 +26,7 @@ Root-caused chain, four independent findings:
    e3ca35ca is `source=auto`, `session_id` = itself). The `pa-q-*` prefix decodes as
    **PA-QUEUE**: rows `pa-q-cny-screenshot-shot` etc. carry `[PA-QUEUE][P3]` summaries with
    rich one-line Chinese descriptions, all stamped 2026-08-29 13:51–13:57 — a bulk insert by
-   nick's PA (hermes) writing directly into gopi's ledger while batching its queue. The PA
+   the operator's PA (hermes) writing directly into gopi's ledger while batching its queue. The PA
    then dispatched one of them via `gopi task run` with **no payload**.
 4. **Why the codename reached the child gopi:** `cmd/agent/cli_tasks.go` runTaskRun had
    `if strings.TrimSpace(payload) == "" { payload = target }` — the empty-payload fallback
@@ -72,7 +72,7 @@ id when the payload was empty. Routine-ized gopi-side defense below; the PA-side
 ## Not Done
 
 - **PA-side payload propagation** (`~/work/tasks` dispatcher passing the queue item's
-  description as gopi payload) — separate codebase, owner: nick/PA. The gopi-side refusal
+  description as gopi payload) — separate codebase, owner: the operator/PA. The gopi-side refusal
   will make the next summary-only dispatch loud instead of silent, which is the point.
 - Existing rows keep `payload=''`; no backfill (append-only ledger; the session-JSONL
   fallback recovers history at show time — zero backfill needed).

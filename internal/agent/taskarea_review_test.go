@@ -1,7 +1,7 @@
 package agent
 
 // Behavioral tests for task(action=review): the post-commit checkpoint as a
-// STRUCTURED TOOL CALL (tool-family merge, nick 2026-09-10 design), replacing
+// STRUCTURED TOOL CALL (tool-family merge, the operator 2026-09-10 design), replacing
 // the old injectPostCommitReview TEXT injection (which asked the model to
 // free-text a REVIEW-VERDICT: line nothing parsed — a void slot). Now the
 // model calls task(action=review, verdict=A-E...) and the harness validates,

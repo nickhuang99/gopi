@@ -101,9 +101,9 @@ gate went red and notified, and master stayed broken until a human reverted by h
   pre-existing unrelated files in those packages).
 - Tests (branch-scoped, the diff's two packages):
   - `go test -count=1 -run 'TestVetGateRevert|TestPostMergeVetGate' ./internal/tools/`
-    → `ok github.com/nick/gopi/internal/tools 189.326s`
+    → `ok github.com/the operator/gopi/internal/tools 189.326s`
   - `go test -count=1 -run 'TestServeRebuild' ./cmd/agent/`
-    → `ok github.com/nick/gopi/cmd/agent 33.809s`
+    → `ok github.com/the operator/gopi/cmd/agent 33.809s`
 - `go test -count=1 ./internal/standards/` → `ok ... 22.597s` (after registering the
   census arm it correctly reported — see Evidence).
 - Commit: see the final message's deliverable declaration.
@@ -140,7 +140,7 @@ Observed by this run, quoted as it appeared:
   Correct report: the classification reaches a scratch-worktree reap
   transitively, so the arm is now recorded in `cwdReleaseArmsNotListed` with its
   reason (same private-scratch class as TaskMerge/TaskVerify).
-- `go test ./internal/standards/` → `ok github.com/nick/gopi/internal/standards 22.597s`.
+- `go test ./internal/standards/` → `ok github.com/the operator/gopi/internal/standards 22.597s`.
 - `go test ./internal/stylegate/` → **FAIL**, but on lines this diff does not touch
   (`cmd/agent/merger_restart_e2e_test.go`, `cmd/agent/merger_takeover_*`); none of
   the three modified files appear in its reported sites. Reported, not claimed as

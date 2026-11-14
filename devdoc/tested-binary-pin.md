@@ -131,11 +131,11 @@ $ GOPI_REDPROOF_LIVE_PID=1 GOPI_TEST_BIN= \
 --- FAIL: TestWorkerDeliveryRecyclesDespiteAStaleSiblingRow (1.24s)
     cli_tasks_worker_recycle_e2e_test.go:593: the production backfill seam must
   stamp the row's ground: worktree="" branch="" (want "…/001/wt"/"feat/worker-stale-sibling")
-FAIL	github.com/nick/gopi/cmd/agent	1.441s      WALL 16.97 s
+FAIL	github.com/the operator/gopi/cmd/agent	1.441s      WALL 16.97 s
 
 # GREEN — mutant reverted (git status --porcelain prints nothing):
 $ GOPI_TEST_BIN= go test ./cmd/agent/ -run TestWorkerDeliveryRecyclesDespiteAStaleSiblingRow -count=1
-ok  	github.com/nick/gopi/cmd/agent	3.528s          WALL 5.82 s
+ok  	github.com/the operator/gopi/cmd/agent	3.528s          WALL 5.82 s
 ```
 
 That is the filed symptom verbatim — `creation-time ground stamp REFUSED … already

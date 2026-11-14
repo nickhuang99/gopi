@@ -4,27 +4,27 @@
 <!-- WORKER-OWNERSHIP: OPERATOR-ONLY — devdoc/worker-ownership.md -->
 
 > 撰写时刻：2026-09-22（周二）
-> 重启原因：session 过长，浪费缓存（nick 指示）
+> 重启原因：session 过长，浪费缓存（the operator 指示）
 > 本文档 = 重启后第一份要读的东西
 
 ---
 
 ## 0. 一句话现状
 
-**正在做 DeepSeek 账单分析**（nick 的财务分析小品），已算出核心数字，
-**卡在一个待 nick 确认的对比口径上**。其余是 GoPi 后台在跑的常态。
+**正在做 DeepSeek 账单分析**（the operator 的财务分析小品），已算出核心数字，
+**卡在一个待 the operator 确认的对比口径上**。其余是 GoPi 后台在跑的常态。
 
 ---
 
 ## 1. ⭐ 当前任务：DeepSeek 账单分析
 
-### 1.1 素材（全在 `~/work/claude/nick/`）
+### 1.1 素材（全在 `~/work/claude/the operator/`）
 
 | 文件 | 内容 | 状态 |
 |---|---|---|
 | `amount-2026-09-21_2026-09-21.csv` | 84 行 × 21 小时，token 明细 + **自带 price 列** | ✅ 已读 |
 | `cost-2026-09-21_2026-09-21.csv` | 21 行，逐小时实收 | ✅ 已读 |
-| `Agent账单的研究_fixed.txt` | nick 写的周六小品文（73 行） | ✅ 已读 |
+| `Agent账单的研究_fixed.txt` | the operator 写的周六小品文（73 行） | ✅ 已读 |
 | `deepseek_analysis_bill.txt` | 命中率敏感性推演（51 行，四家价格表） | ✅ 已读 |
 | `deepseek_new_model_new_price.txt` | 价格表（含智谱/OpenAI/Anthropic） | ✅ 已读 |
 | `~/docs/deepseek-api/quick_start/pricing.md` | 官方定价页（归档） | ✅ 已读 |
@@ -43,7 +43,7 @@
 实收账单                ¥126.32
 ```
 
-### 1.3 与文章周六数据对比（nick 上轮问的「比例是否一致」）
+### 1.3 与文章周六数据对比（the operator 上轮问的「比例是否一致」）
 
 | 项 | 周六（文章 §8） | 周一（昨天） | 比例 |
 |---|---:|---:|---:|
@@ -90,10 +90,10 @@
 ### 1.7 ⚠️ 本轮犯过的错（不要重犯）
 
 1. **心算日期**：我算出"2026-09-21 是周日"并据此推出"周日也收峰时费"的发现 —— **全错**。
-   nick 原话：「你个白痴，这个是周一啊！你为什么不能简单的date函数查到呢？」
+   the operator 原话：「你个白痴，这个是周一啊！你为什么不能简单的date函数查到呢？」
    **铁律：任何日期/星期判断必须跑 `date`，绝不心算。**
-2. **纠缠分布问题**：nick 说"周末全天都是波谷价"，我却在讨论"负载分布口径"（均匀 vs 实测）。
-   nick 原话：「你再说什么？周末全天都是波谷价格，你理解吗？」
+2. **纠缠分布问题**：the operator 说"周末全天都是波谷价"，我却在讨论"负载分布口径"（均匀 vs 实测）。
+   the operator 原话：「你再说什么？周末全天都是波谷价格，你理解吗？」
    **教训：他给出定价规则时，不要再把它复杂化成分布问题；直接算。**
 
 ---
@@ -102,9 +102,9 @@
 
 | # | 事项 | 状态 |
 |---|---|---|
-| 1 | 账单分析是否要归档成 devdoc | **待 nick 确认** |
-| 2 | 「53.8% token 撞高峰」是否要优化（查昨天哪些任务跑在 14-18 点） | **待 nick 确认** |
-| 3 | 是否要把四家对比算进文章修订 | **待 nick 确认** |
+| 1 | 账单分析是否要归档成 devdoc | **待 the operator 确认** |
+| 2 | 「53.8% token 撞高峰」是否要优化（查昨天哪些任务跑在 14-18 点） | **待 the operator 确认** |
+| 3 | 是否要把四家对比算进文章修订 | **待 the operator 确认** |
 
 ---
 
@@ -114,7 +114,7 @@
 
 | 进程 | 说明 |
 |---|---|
-| `gopi resume 01a0c35f-c516-...` | nick 自己起的，在 `~/workspace/gopi-tasksync-switch` 里跑，**重启会杀** |
+| `gopi resume 01a0c35f-c516-...` | the operator 自己起的，在 `~/workspace/gopi-tasksync-switch` 里跑，**重启会杀** |
 | `gopi worker`（pid 935164 等） | Hermes 会话子孙，**重启会杀** |
 | 各种测试沙盒 daemon | 无主，可不管 |
 
@@ -128,7 +128,7 @@ cd ~/work/GoPi && setsid nohup ./bin/gopi worker > /tmp/gopi-worker.log 2>&1 < /
 
 | 分支 | 状态 | 说明 |
 |---|---|---|
-| `feat/task-sync-switch-off` | ahead 5 / behind 40+ | `01a0c35f-c516-78a1-b385-99a234f14626`，**nick 已 resume 且正在跑**，worktree = `~/workspace/gopi-tasksync-switch` |
+| `feat/task-sync-switch-off` | ahead 5 / behind 40+ | `01a0c35f-c516-78a1-b385-99a234f14626`，**the operator 已 resume 且正在跑**，worktree = `~/workspace/gopi-tasksync-switch` |
 | `fix/merge-llm-resolves-conflicts` | ahead 15 | `01a0c37d-ebdd-7b4e-9934-6174ad509e0f`，可 resume |
 
 ### 3.3 本会话已派的单（全部已 commit brief）
@@ -155,7 +155,7 @@ cd ~/work/GoPi && setsid nohup ./bin/gopi worker > /tmp/gopi-worker.log 2>&1 < /
 ### 3.4 查台账的正确命令
 
 ```bash
-# 全 id（绝不缩写！nick 铁律）
+# 全 id（绝不缩写！the operator 铁律）
 sqlite3 ~/.gopi/memory.db "SELECT task_id||' | '||summary||' | '||status FROM tasks WHERE status='pending' ORDER BY priority;"
 
 # 查单
@@ -168,7 +168,7 @@ sqlite3 ~/.gopi/memory.db "SELECT task_id,summary,status,claimed_by FROM tasks W
 
 1. **`failed → cancelled` 非法**（`tasks.go:3093` 只允许 `{verified, completed}`）。payload=0 的 auto 盖章行被 `TaskNextFiltered` 过滤，永不领取 → 留着无害。
 2. **合并那趟的 worktree 保护 = dead holder 陷阱**（当年 `merge_run.go:496`；该顶层动词已于 2026-11-01 删除，引擎在 `gopi task merge`）：分支被 worktree 占用就跳过，**不管里面有没有活进程**。判活唯一可靠 = 扫 `/proc/<pid>/cwd`。
-3. **被 kill 的任务 = 中断待 resume，不是完成待 merge**（nick 已追责两次）。
+3. **被 kill 的任务 = 中断待 resume，不是完成待 merge**（the operator 已追责两次）。
 4. **worktree 空目录会被静默复用**（实测：非空→`fatal: already exists`；空→成功）。
 5. **账单自带 price 列**，能直接读出峰谷两档价，不需要外部价格表。
 
@@ -178,7 +178,7 @@ sqlite3 ~/.gopi/memory.db "SELECT task_id,summary,status,claimed_by FROM tasks W
 
 1. 跑 `date` 确认今天日期
 2. 读本文件
-3. 问 nick：账单分析是否要归档 / 是否要优化避峰调度
+3. 问 the operator：账单分析是否要归档 / 是否要优化避峰调度
 4. 如需后台干活，起 worker（setsid 命令见 §3.1）
 
 ---

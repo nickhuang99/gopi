@@ -141,10 +141,10 @@ $ go build -o bin/gopi ./cmd/agent/   → BUILD_OK
 
 ```
 go test -count=1 ./internal/taskreport/ ./internal/tools/ ./internal/agent/ ./internal/standards/
-  ok  github.com/nick/gopi/internal/taskreport
-  ok  github.com/nick/gopi/internal/tools
-  ok  github.com/nick/gopi/internal/agent
-  ok  github.com/nick/gopi/internal/standards
+  ok  github.com/the operator/gopi/internal/taskreport
+  ok  github.com/the operator/gopi/internal/tools
+  ok  github.com/the operator/gopi/internal/agent
+  ok  github.com/the operator/gopi/internal/standards
 go test -count=1 ./cmd/agent/                          → ok   82.321s
 go test -count=1 -v -run TestTaskRunSeam ./cmd/agent/
   --- PASS: TestTaskRunSeamWritesReportAndShowRendersIt (1.13s)
@@ -179,7 +179,7 @@ $ cat …/task-report.md
 
 ## Verification
 - `printf 'hello\n' > /tmp/gopi-report-e2e-hello.txt` → exit 0
-- `ls -l` → `-rw-r--r-- 1 nick nick 6 …`
+- `ls -l` → `-rw-r--r-- 1 the operator the operator 6 …`
 - `cat -A` → `hello$`  (single line, no hidden characters)
 
 ## Not Done

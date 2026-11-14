@@ -60,7 +60,7 @@ Callers (usages verified): `SyncPeerSessionTags` →
 - `go vet ./internal/tools/` → clean.
 - Raw target run:
   `go test -count=1 -run 'TestSyncPeerSessionTags|TestSyncPeerStatus' ./internal/tools/`
-  → `ok github.com/nick/gopi/internal/tools 0.308s`
+  → `ok github.com/the operator/gopi/internal/tools 0.308s`
 - Coverage: both names gone from
   `python3 scripts/func_coverage.py --pkg internal/tools --uncovered`.
   Package 148/181 = 81.8%.

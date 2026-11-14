@@ -154,7 +154,7 @@ catches up by itself and that the machine never lies about it**.
 
 ## 2. Who is served
 
-### 2.1 The operator (nick) — the one who must be able to leave
+### 2.1 The operator (the operator) — the one who must be able to leave
 
 He needs: work he filed to land while he is asleep; a way to see whether the
 trunk is catching up; and — when a branch cannot land — to be told, in a form he
@@ -281,7 +281,7 @@ file is missing, so a binary can never carry an empty prompt"*.
 whole answer to a non-ff branch is *"REPORT it and change NOTHING"*, and the
 comment names the two designs it replaced. Operator ruling on the endpoint:
 `devdoc/branch-lifecycle-ruling.md:9-21` (row
-`01a0af2f-b94d-76e3-8565-b35df602aa05`), quoting nick 2026-09-17: *"if we decide
+`01a0af2f-b94d-76e3-8565-b35df602aa05`), quoting the operator 2026-09-17: *"if we decide
 to resolve it, then there is no need to rename it, so, just combine the task."*
 and *"**The endpoint of a branch's lifecycle is DELETION.**"* Hand-over form:
 `merger_takeover_prompt.md:399-437` (§3.6 — a **rework TASK**, *"never a tag"*).

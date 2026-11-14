@@ -213,7 +213,7 @@ registry is empty for this user**. Measured causes:
 1. **The client uid may not open any `/dev/snd` node.** `peer1-stdout.txt`
    `DEVICE_NODE_ACCESS` → `capture_nodes=1 denied_nodes=13`: all 13 nodes,
    including `pcmC1D0c`, report `DENIED` to uid 1000. The nodes are mode `660
-   root:audio` and `id nick` shows uid 1000 is **not** in group `audio`
+   root:audio` and `id the operator` shows uid 1000 is **not** in group `audio`
    (`groups=...44(video),46(plugdev),110(lxd),998(ollama)` — no `audio`), while
    the POSIX ACL grants `rw` to `lightdm` only. Direct syscall confirmation:
 
@@ -261,7 +261,7 @@ step: the unprivileged outcome was treated as the node's capability. It is the
 The controlled single-variable experiment is decisive: **uid 1000 + supplementary
 group `audio` (29) + no other change turns `no soundcards found` into a listing
 and `plughw:1,0` into a 32000-byte capture.** So the cause is precisely the one
-§3.1 point 1 names (`/dev/snd` is `660 root:audio`, `id nick` lacks `audio`, the
+§3.1 point 1 names (`/dev/snd` is `660 root:audio`, `id the operator` lacks `audio`, the
 POSIX ACL grants `rw` to `lightdm` only) — and the correct conclusion is *"the
 fix is one operator action (add uid 1000 to group `audio`, or run the probe with
 `sudo -n`)"*, NOT *"peer1 is not a capture node"*. The epic's node plan (peer1 =

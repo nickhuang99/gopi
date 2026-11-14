@@ -61,7 +61,7 @@ removed, one run of that single test:
 === DELTA without the fix ===
 7a8
 > worker-state-3542103
-ok  	github.com/nick/gopi/cmd/agent	3.229s     ← still green
+ok  	github.com/the operator/gopi/cmd/agent	3.229s     ← still green
 ```
 
 With the pin in place, the identical run leaves the real directory byte-identical

@@ -134,7 +134,7 @@ was therefore a dependency gate whose edge no operator could repair.
 8. **The whole-package sweep was run to completion and reported ONE failure —
    not mine, and not a regression.** `make test-budget PKGS='./internal/tools
    ./cmd/agent'` (job-1) ended `exit=1`, `1150s`, summary `2 finished, 1 with a
-   failure → FAILED: github.com/nick/gopi/cmd/agent`; the single failing
+   failure → FAILED: github.com/the operator/gopi/cmd/agent`; the single failing
    case is `TestChatCLIVocabularyIsClosedEveryAcceptedFlagParses/--tools`
    (`chat_argv_test.go:627: runChat([--tools -h]) = 1, want 0`, stderr
    `write |1: bad file descriptor`) — the long-standing argv-fixture
@@ -152,7 +152,7 @@ was therefore a dependency gate whose edge no operator could repair.
    came back with a DIFFERENT single red — also not mine, and now dispatched.**
    `make test-budget PKGS='./internal/tools ./cmd/agent'` (job-2) → `exit=1`,
    `910s`, load `15.18 14.81 10.74 → 8.50 11.04 11.40` (4 cores), `2 finished,
-   1 with a failure → FAILED: github.com/nick/gopi/cmd/agent`, whose single red
+   1 with a failure → FAILED: github.com/the operator/gopi/cmd/agent`, whose single red
    is `TestChatSurfaceBound_TerminatesAndIsRenewedOnlyByTheOperator (22.06s)`.
    The argv flake of item 8 did **not** appear this time, and item 8's red did
    not recur — the two measurements are separate observations, not one story.

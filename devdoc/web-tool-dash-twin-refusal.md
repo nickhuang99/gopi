@@ -187,7 +187,7 @@ Both are asserted, by different tests, for that reason.
   → `3 finished, 0 with a failure`, `elapsed=545s exit=0 outcome=pass`
   (stream `run-1791194813-2045254.json`). Targeted: `go test -count=1 -run
   'TestWebToolFlatTwinsAreRefusedByTheirOwnArm|TestWebUsagePagesDoNotPromiseARetiredFlatVerb|TestRefusedSpellingWordsCannotReachTheRunPath|TestSpellingPair|TestVerbGuard|TestUndispatchedToolWord|TestPositionalVerbGuard'
-  ./cmd/agent/` → `ok github.com/nick/gopi/cmd/agent 1.932s`.
+  ./cmd/agent/` → `ok github.com/the operator/gopi/cmd/agent 1.932s`.
 - Ran (verbatim, on the fixed binary, in an isolated `GOPI_HOME` with
   `GOPI_*`/`ANTHROPIC_*`/`DEEPSEEK_*`/`DISPLAY` masked):
 

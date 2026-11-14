@@ -59,7 +59,7 @@ t-1788330680,NO-VALUE,row.tags=wrapper:t-1788330598,wrapper row with an EMPTY pa
 t-1788897004,STILL-NEEDED,row.reason + ls /home/user/.gopi/backups,"zombie (empty claimer, no process). No ledger-backup pipeline exists: no backup mechanism in cmd/ + internal/, and /home/user/.gopi/backups holds only ad-hoc memory-glm-audit dumps"
 01a083c7-7b3f-705a-b9bc-473d571605a5,ALREADY-DONE,git log master --oneline --grep='stats display' -i,d2ba9f90 fix(stats): display real session uuid for bare-directory sessions
 01a087d1-413b-7dd3-936d-e266e508e8cb,ALREADY-DONE,git log master --oneline --grep='tool-family',0e172c07 resolve merge feat/memory-tool into master — tool-family merge complete (17 tools)
-01a088e0-5326-7823-8470-3622b02d4887,SUPERSEDED,row.reason,nick design simplification: drop NEEDS_RESEARCH — research belongs INSIDE reframe
+01a088e0-5326-7823-8470-3622b02d4887,SUPERSEDED,row.reason,the operator design simplification: drop NEEDS_RESEARCH — research belongs INSIDE reframe
 t-1789015454,SUPERSEDED,row.reason + git log --grep=hippocampus-host,superseded: branch archived (duplicate); feat/hippocampus-host merged as 35423b4e Merge branch 'feat/hippocampus-host-binding'
 01a089ce-4148-74fe-9efb-9ef5b861b24c,SUPERSEDED,row.reason,"REFUTED — invalid: the pid 3128439 was the RESOLVER child, not the merger"
 01a08a83-ef31-7922-97f7-58ec5a815a7d,NO-VALUE,row.summary,SELFTEST positional payload mirror — harness probe row

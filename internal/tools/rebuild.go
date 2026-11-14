@@ -1,6 +1,6 @@
 package tools
 
-// Rebuild-after-merge engine (epic 2026-09-02, nick's design): after a
+// Rebuild-after-merge engine (epic 2026-09-02, the operator's design): after a
 // successful merge round lands ≥1 branch into master, the server rebuilds
 // the repo's deployable binary so the machine runs the NEW code against
 // NEW master — the close loop's last step. The recurring stale-bin
@@ -15,7 +15,7 @@ package tools
 // Declared, never discovered (same philosophy as compute_nodes/sync_peers).
 // A repo with NO entry has no build contract — the server skips the
 // rebuild SILENTLY (a docs-only repo, or a repo whose build isn't
-// declared; no error, no guess). nick's "worth and necessary" convention:
+// declared; no error, no guess). the operator's "worth and necessary" convention:
 // a repo meant to be a gopi task field SHOULD declare its build here.
 //
 // Build failure is NOT a rollback trigger (the merge is done and good —

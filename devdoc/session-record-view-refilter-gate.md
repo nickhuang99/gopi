@@ -75,7 +75,7 @@ Measured this run in a detached worktree at `master` (`a3a31da42`, its own
 
 ```
 --- PASS: TestNotifyDeliverStatesTheMessageOnceInTheSession (32.08s)
-ok  github.com/nick/gopi/cmd/agent  35.908s      TEST_RC=0
+ok  github.com/the operator/gopi/cmd/agent  35.908s      TEST_RC=0
 ```
 
 so the briefing's "master: one green observation" is CONFIRMED — the red is NOT

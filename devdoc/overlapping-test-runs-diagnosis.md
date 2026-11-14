@@ -21,7 +21,7 @@ file's JSONL line numbers, timestamps its own `timestamp` field:
 | 188/197/212 | 04:11:04 / :23 / :34 | bash | poll `tests.out` (`grep -E "^(ok|FAIL|---)"`, `tail -3`) |
 | 222 | 04:11:42 | bash | `sleep 100; … cat tests.out` — still waiting on the job |
 | **239** | **04:13:59.996** | **bash** (`timeout_sec: 900`) | `go test ./internal/standards/ ./internal/docindex/ ./internal/testutil/ -count=1 2>&1 \| grep -E "^(ok|FAIL)\|--- FAIL" \| head` |
-| 241 | 04:16:00 | — | the first job's own response: `FAIL github.com/nick/gopi/internal/tools 157.641s` |
+| 241 | 04:16:00 | — | the first job's own response: `FAIL github.com/the operator/gopi/internal/tools 157.641s` |
 | 242 | 04:16:00 | — | line 239's result: `Bash error: command killed: no output for 2m0s` |
 | 243 | 04:16:01 | **`job`** action=start | `go test ./internal/standards/ -count=1 > …/std.out; go test ./cmd/agent/ -count=1 > …/agent.out` (the re-run, as ONE job) |
 
@@ -79,7 +79,7 @@ The model's own words immediately before the second command (line 237, timestamp
 
 * **Q1 (job, 04:10:27)** — a *red-baseline capture*: three packages' full output redirected to
   `redbase/tests.out`, for the report's failure evidence (that file holds
-  `FAIL github.com/nick/gopi/internal/tools 157.641s` and the `TestProcStatParseHasOneImplementation`
+  `FAIL github.com/the operator/gopi/internal/tools 157.641s` and the `TestProcStatParseHasOneImplementation`
   dump — it is quoted in the row's own `task-report.md`).
 * **Q2 (bash, 04:13:59)** — a *branch-scoped verdict grep* over the packages that diff touched,
   `docindex` + `testutil`, plus `standards`.

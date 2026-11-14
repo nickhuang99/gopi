@@ -258,8 +258,8 @@ demonstration in one.
 ## Evidence (self-filed)
 
 - `go build ./...` → exit 0.
-- `go test ./internal/tools/ -run 'TestNotifyPeer|TestNotifyDeliveryID' -count=1` → `ok github.com/nick/gopi/internal/tools`.
-- `go test ./cmd/agent/ -run 'TestNotifyPeerCLI' -count=1` → `ok github.com/nick/gopi/cmd/agent 65.749s` (both cases; the live-console one 33.5s alone).
+- `go test ./internal/tools/ -run 'TestNotifyPeer|TestNotifyDeliveryID' -count=1` → `ok github.com/the operator/gopi/internal/tools`.
+- `go test ./cmd/agent/ -run 'TestNotifyPeerCLI' -count=1` → `ok github.com/the operator/gopi/cmd/agent 65.749s` (both cases; the live-console one 33.5s alone).
 - `go test ./internal/cliverbs/ -count=1` → `ok`.
 - `ssh hp 'md5sum ~/work/GoPi/bin/gopi'` → `88b286664dfdca5600b7d17fc8a447f3`, equal to peer1's acceptance binary.
 - The five invocations quoted above, with their stdout and exit codes, run by hand against hp.

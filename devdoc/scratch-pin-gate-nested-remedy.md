@@ -45,8 +45,8 @@ Run of `artifacts/nested-remedy-probe.sh` in a throwaway module under the scratc
    "Not Done".
 
 **The in-tree pin really is impossible for that class** (probe B, verbatim):
-`import _ "github.com/nick/gopi/internal/testutil"` → `no required module provides package`;
-after a `require`+`replace` edge → `use of internal package github.com/nick/gopi/internal/testutil
+`import _ "github.com/the operator/gopi/internal/testutil"` → `no required module provides package`;
+after a `require`+`replace` edge → `use of internal package github.com/the operator/gopi/internal/testutil
 not allowed` **plus** `missing go.sum entry … modernc.org/sqlite` — the whole gopi dependency
 tree, in a module whose `go.mod` states it depends on nothing outside the stdlib.
 

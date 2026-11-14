@@ -205,7 +205,7 @@ review failure, not a style choice — the sections are the grading surface.
 | # | Section | Must contain | Fails if |
 |---|---|---|---|
 | 1 | **What this is for** | product-owner language; **zero code identifiers** (no package/file/flag/type names) | a reader needs the repo to understand it |
-| 2 | **Who is served** | every actor named, each with a need: operator (nick) / the agent (Bond, the harness user) / server & client nodes / future maintainers | actors listed but no need distinguished |
+| 2 | **Who is served** | every actor named, each with a need: operator (the operator) / the agent (Bond, the harness user) / server & client nodes / future maintainers | actors listed but no need distinguished |
 | 3 | **The workflow it sits in** | the end-to-end run it is part of, with **entry and exit conditions** | the module is described in isolation |
 | 4 | **Why it exists** | the need per §3, each with a **citation**: task id, `file:line`, commit SHA, GOPI.md rule | any claim uncited and unlabelled |
 | 5 | **Acceptance in user terms** | observable statements concrete enough that a test author can separate a bug from allowed behaviour | phrased as "returns nil" / internal invariants |
@@ -262,9 +262,9 @@ STEP 1 — MINE THE EVIDENCE (run these; the numbers must be produced in YOUR se
     from tasks where source='human' and summary not like 'gopi run %'
       and (length(payload)<=200 or payload='') order by created_at;"
   sqlite3 ~/.gopi/memory.db "select task_id, summary, payload from tasks
-    where source='human' and (payload like '%nick 原话%' or payload like '%nick 终审%'
-      or payload like '%nick 拍板%' or payload like '%nick 明确要求%' or payload like '%nick 同意%'
-      or payload like '%nick 裁决%' or payload like '%不采用%' or payload like '%我们不%' or payload like '%I want%');"
+    where source='human' and (payload like '%the operator 原话%' or payload like '%the operator 终审%'
+      or payload like '%the operator 拍板%' or payload like '%the operator 明确要求%' or payload like '%the operator 同意%'
+      or payload like '%the operator 裁决%' or payload like '%不采用%' or payload like '%我们不%' or payload like '%I want%');"
   sqlite3 ~/.gopi/memory.db "select t.task_id, substr(t.summary,1,90) from tasks_fts f
     join tasks t on t.id=f.rowid where tasks_fts MATCH '<your module vocabulary>' and t.source='human';"
   # secondary, in this order: briefings/*.md (the operator's dispatch text) →
@@ -275,7 +275,7 @@ STEP 1 — MINE THE EVIDENCE (run these; the numbers must be produced in YOUR se
   # a grep for one silently misses the other.
   # A row with a short payload is NOT a lesser row: 48 of the 608 `source=human`
   # rows are summary-only and carry the operator's FINAL decision (the nine
-  # `[M4.5 补充] … (nick 终审: …)` rows). Read set B before you conclude anything.
+  # `[M4.5 补充] … (the operator 终审: …)` rows). Read set B before you conclude anything.
 
 STEP 2 — what a `why` statement is. It is a need + the test the user would apply,
 in the user's language; it may name a user-visible actor (the operator / the agent /
@@ -474,8 +474,8 @@ stale table**:
 | substantive rows (human minus telemetry) | **539** | 560 |
 | rows with a real payload (`length(payload)>200`), all human rows | **556** | 551 ← *this is the briefing's "551"* |
 | substantive rows that are **summary-only** (`length(payload)<=200 or payload=''`) | **48** | — (not measured) |
-| of those, the `[M4.5 补充] … (nick 终审: …)` family | **9** | 9 |
-| rows carrying an operator quote marker (`nick 原话/终审/拍板/明确要求/同意/裁决`) | **12** | 9 |
+| of those, the `[M4.5 补充] … (the operator 终审: …)` family | **9** | 9 |
+| rows carrying an operator quote marker (`the operator 原话/终审/拍板/明确要求/同意/裁决`) | **12** | 9 |
 | FTS index rows (`select count(*) from tasks_fts`) | **1,907** | — |
 
 The counts *fall* as the ledger ages because rows are archived and reclaimed, not
@@ -486,11 +486,11 @@ your own session", not "quote the brief".
 evidence canon". 551 is exactly the count at `length(payload)>200` (556 today). It is
 a good working set, but it **excludes ~48 substantive rows that have no payload and
 carry the requirement in the summary** — every one of the 2026-08-29
-`[M4.5 补充] … (nick 终审: …)` rows, e.g.:
+`[M4.5 补充] … (the operator 终审: …)` rows, e.g.:
 
 ```
-t-1788039140 … task update 收窄为 status-only（nick 终审：payload/summary 全不可变——a job is just a job）
-t-1788037892 … task new 彻底移除（nick 终审：shell 层不接受此接口）
+t-1788039140 … task update 收窄为 status-only（the operator 终审：payload/summary 全不可变——a job is just a job）
+t-1788037892 … task new 彻底移除（the operator 终审：shell 层不接受此接口）
 ```
 
 Those summary-only rows **outrank** almost everything in the 551 and are trivially
@@ -521,9 +521,9 @@ SELECT task_id, datetime(created_at,'unixepoch') AS ts, summary
 SELECT task_id, summary, payload
   FROM tasks
  WHERE source = 'human'
-   AND (payload LIKE '%nick 原话%' OR payload LIKE '%nick 终审%'
-     OR payload LIKE '%nick 拍板%' OR payload LIKE '%nick 明确要求%'
-     OR payload LIKE '%nick 同意%'   OR payload LIKE '%nick 裁决%'
+   AND (payload LIKE '%the operator 原话%' OR payload LIKE '%the operator 终审%'
+     OR payload LIKE '%the operator 拍板%' OR payload LIKE '%the operator 明确要求%'
+     OR payload LIKE '%the operator 同意%'   OR payload LIKE '%the operator 裁决%'
      OR payload LIKE '%不采用%'      OR payload LIKE '%我们不%'
      OR payload LIKE '%I want%');
 
@@ -813,7 +813,7 @@ Findings this analysis produced, each checkable:
 1. **The briefing's 551-row canon is a payload-length artifact, and it hides the
    sharpest evidence.** The `source=human` set is 608 rows; the 551 figure is exactly
    `length(payload)>200`, which **excludes 48 substantive rows whose requirement lives
-   in the summary** — among them the nine `[M4.5 补充] … (nick 终审: …)` rows carrying
+   in the summary** — among them the nine `[M4.5 补充] … (the operator 终审: …)` rows carrying
    final decisions (`t-1788039140` "a job is just a job", `t-1788037892` "shell 层不接受
    此接口"). A payload-length filter loses them. **The mining query now reads the
    summary too.**

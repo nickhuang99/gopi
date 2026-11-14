@@ -341,7 +341,7 @@ merge feat7/voice-input    merged     clean merge, branch deleted
 task merge (no-submit): merged=1 … contract-refused=0 …       EXIT=0
 MASTER 7f0980e2 -> b8760f57
 $ go test ./cmd/agent/ -run TestCLIContract -count=1     # ON THE MERGED MASTER
-ok  	github.com/nick/gopi/cmd/agent	1.287s
+ok  	github.com/the operator/gopi/cmd/agent	1.287s
 ```
 
 That last line is the acceptance the epic actually asked for: the merge path

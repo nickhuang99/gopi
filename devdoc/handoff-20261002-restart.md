@@ -3,8 +3,8 @@
 
 # Handoff — 2026-10-02 restart
 
-**Written for:** the next PA instance after nick restarts Hermes.
-**Why restart:** PA was consuming context on a long-running four-node session; nick is restarting to get a clean window.
+**Written for:** the next PA instance after the operator restarts Hermes.
+**Why restart:** PA was consuming context on a long-running four-node session; the operator is restarting to get a clean window.
 
 ---
 
@@ -30,11 +30,11 @@
 > *(`ps` output quoted verbatim from the 2026-10-02 restart. That loop — and the
 > top-level `gopi merge` it ran — was removed on 2026-11-01, so no process on this
 > host can print this row today. Kept as the record of what was running then.)*
-This is a foreground loop. **If its parent shell dies with the restart, it dies too** — that is fine and expected (nick: "launcher 死了就死了"). No state to lose.
+This is a foreground loop. **If its parent shell dies with the restart, it dies too** — that is fine and expected (the operator: "launcher 死了就死了"). No state to lose.
 
-### peer1 — one live chat surface (nick's own)
+### peer1 — one live chat surface (the operator's own)
 
-`133940  131479  gopi chat --tools --dump-screen` (13h42m). This is **nick's own interactive session** — do not kill it. It has `--dump-screen` armed, so its dump is being written and `gopi ui_state --target chat` can read it.
+`133940  131479  gopi chat --tools --dump-screen` (13h42m). This is **the operator's own interactive session** — do not kill it. It has `--dump-screen` armed, so its dump is being written and `gopi ui_state --target chat` can read it.
 
 ### peer1 — the round-1/2/3 four-vendor probe leftovers
 
@@ -44,7 +44,7 @@ These are all children of the `01a0f88a` task above (the X/xterm probe task). Th
 
 ### HP — 1 worker + 1 merger loop
 
-- `2185839  1270688  gopi worker` (1m06s, PPID = nick's interactive shell `-bash`) — freshly started by nick, currently idle-cycling.
+- `2185839  1270688  gopi worker` (1m06s, PPID = the operator's interactive shell `-bash`) — freshly started by the operator, currently idle-cycling.
 - `2171337  1634225  gopi merge --every 5m` (39m53s).
 - HP ledger: **pending 0, claimed 0, in_progress 0** — fully clean. Nothing on HP needs rescue.
 
@@ -146,20 +146,20 @@ cat /proc/<pid>/cgroup
 ```
 Should be under `user@1000.service/app.slice/gopi-merger-loop-pa.scope`.
 
-### Step 3 — HP worker (operator-only, nick must run it)
+### Step 3 — HP worker (operator-only, the operator must run it)
 
 ```bash
 ssh hp '~/bin/gopi-worker-up.sh 1'
 ```
 
-HP currently has 1 worker that nick started; if it died with the restart, restart it.
+HP currently has 1 worker that the operator started; if it died with the restart, restart it.
 
 ---
 
 ## 5. Standing constraints (do not violate)
 
 - **Worker is operator-only.** PA must never run `gopi worker` / `~/bin/gopi-worker-up.sh`. The script's own header says OPERATOR-ONLY.
-- **gopi is a single program.** Never add a shell script/wrapper/timer/unit file for something gopi should do itself. (Rule 35; nick has explicitly banned unit files — "注定会被人遗忘，然后莫名其妙的自己就开炮了".)
+- **gopi is a single program.** Never add a shell script/wrapper/timer/unit file for something gopi should do itself. (Rule 35; the operator has explicitly banned unit files — "注定会被人遗忘，然后莫名其妙的自己就开炮了".)
 - **Backflow is file-level, never branch merge** when the peer's base is far behind. Verify each file with `git cat-file -e`.
 - **Killed runs are resume candidates, not merge candidates.**
 - **`gopi task update` can only change status** — no `--priority`, no content edit. Already-submitted rows cannot be reordered; to raise priority you must `gopi task run <full-id>`.

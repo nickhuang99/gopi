@@ -11,7 +11,7 @@
     - 但小对象还有【每对象请求成本】：写入时一次 PUT，之后每次读/LIST
   → 对日志桶这种"只写不读"的场景，成本 = 字节存储费 + 写入请求费
 
-实测输入（nick 提供的单日样本）：
+实测输入（the operator 提供的单日样本）：
   160,570 文件 / 647 MB / 覆盖 11.75 小时 → 平均 4,029 bytes/文件
 """
 import argparse
@@ -52,7 +52,7 @@ def estimate(files_per_day: float, avg_bytes: float, days: float,
 
 def main(argv=None) -> int:
     ap = argparse.ArgumentParser(description="Extrapolate S3 log-bucket cost")
-    # 实测默认值（来自 nick 的单日样本）
+    # 实测默认值（来自 the operator 的单日样本）
     ap.add_argument("--files-per-day", type=float, default=327_988,
                     help="default: measured 160,570 files / 11.75h")
     ap.add_argument("--avg-bytes", type=float, default=4_029)

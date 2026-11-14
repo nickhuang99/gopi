@@ -564,7 +564,7 @@ Examples:
   gopi tool voice_input --client --list-devices          which microphones exist
   gopi tool voice_input --client --seconds 8             record; transcribe on
                                                     the host named by --server-url
-  gopi tool voice_input --client --seconds 8 --out nick.wav  …and keep the WAV
+  gopi tool voice_input --client --seconds 8 --out voice.wav  …and keep the WAV
   gopi tool voice_input --client --self --seconds 8      speak, and it lands in the
                                                     window you ran this in
   gopi tool voice_input --client --self --seconds 8 --display :57   …on another X11
@@ -1398,7 +1398,7 @@ func parseVoiceArgs(args []string) (*voiceOptions, error) {
 // is opened: a mistake that is knowable up front must not cost a recording.
 func voiceValidateOutPath(path string) error {
 	if path == "" {
-		return fmt.Errorf("--%s requires a file path (e.g. --%s nick.wav)", voiceFlagOut, voiceFlagOut)
+		return fmt.Errorf("--%s requires a file path (e.g. --%s voice.wav)", voiceFlagOut, voiceFlagOut)
 	}
 	fi, err := os.Stat(path)
 	if err != nil {

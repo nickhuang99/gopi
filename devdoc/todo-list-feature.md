@@ -1,7 +1,7 @@
 <!-- doc-class: normative -->
 # GoPi Todo List — Feature Design & Implementation Task
 
-> 来源: ~/work/claude/nick/to_go_list_design_talk.txt
+> 来源: ~/work/claude/the operator/to_go_list_design_talk.txt
 > 类型: GoPi 内置工具扩展（第 5 个工具，本地操作）
 > 优先级: P0（解决 LLM "只分析不执行"的核心卡壳问题）
 

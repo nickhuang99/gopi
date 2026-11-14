@@ -227,7 +227,7 @@ func TaskAttachmentsDir(taskID string) (string, error) { return taskAttachmentDi
 // replica path relative to the task session dir: the absolute path minus its
 // leading '/' ("" on a non-absolute path — the submit face validates
 // absolute-ness before calling). /tmp/log.txt → tmp/log.txt;
-// /home/user/log.txt → home/nick/log.txt — same-name files in different
+// /home/user/log.txt → home/the operator/log.txt — same-name files in different
 // directories land in different replica subdirectories and never collide.
 func taskAttachmentRelPath(absPath string) string {
 	absPath = filepath.ToSlash(strings.TrimSpace(absPath))
@@ -244,7 +244,7 @@ func TaskAttachmentRelPath(absPath string) string { return taskAttachmentRelPath
 // taskAttachmentsAreaRel is the INVERSE of taskAttachmentRelPath: it turns a
 // manifest's replica_rel_path ("attachments/home/user/log.txt", relative to the
 // task session dir) back into the path relative to the session dir's
-// ATTACHMENTS AREA ("home/nick/log.txt"), which is what taskAttachmentCopyTo
+// ATTACHMENTS AREA ("home/the operator/log.txt"), which is what taskAttachmentCopyTo
 // takes. One helper, because copyTo re-applies the area prefix — passing the
 // session-relative form straight through lands the replica one "attachments/"
 // too deep, which is a path task show prints and the reader cannot open.

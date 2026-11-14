@@ -273,7 +273,7 @@ if err := json.NewDecoder(io.LimitReader(r.Body, webMaxChatBodyBytes)).Decode(&r
     cli_web_m2b6_budget_test.go:62: the handler's own reader could not decode a request its
     own validator accepts: body is 44739332 bytes, webMaxChatBodyBytes is 4194304,
     decode error: unexpected EOF
-FAIL	github.com/nick/gopi/cmd/agent	0.962s
+FAIL	github.com/the operator/gopi/cmd/agent	0.962s
 ```
 
 The test runs the handler's **own** read path (`io.LimitReader(r.Body, webMaxChatBodyBytes)` + `Decode`) over a body built from `webMaxChatImageBytes` — hermetic, no turn, no model, no network. It is committed with the fix, so it is the regression guard for exactly this failure mode.
@@ -284,7 +284,7 @@ The test runs the handler's **own** read path (`io.LimitReader(r.Body, webMaxCha
 === RUN   TestWebM2B6_BodyCapCoversTheLargestLegalImageRequest
 --- PASS: TestWebM2B6_BodyCapCoversTheLargestLegalImageRequest (1.10s)
 PASS
-ok  	github.com/nick/gopi/cmd/agent	1.687s
+ok  	github.com/the operator/gopi/cmd/agent	1.687s
 ```
 
 **The re-derived change** (fresh worktree off master, `fix/web-m2-b5b8b9b12-verdict`):
@@ -327,11 +327,11 @@ does **not** carry the fix.
   ```
   --- FAIL: TestWebM2B6_BodyCapCoversTheLargestLegalImageRequest (0.59s)
       cli_web_m2b6_budget_test.go:62: the handler's own reader could not decode a request its own validator accepts: body is 44739332 bytes, webMaxChatBodyBytes is 4194304, decode error: unexpected EOF
-  FAIL	github.com/nick/gopi/cmd/agent	1.546s
+  FAIL	github.com/the operator/gopi/cmd/agent	1.546s
   ```
 - **GREEN on the branch:** `go test -count=1 -run
   'TestWebM2B6_BodyCapCoversTheLargestLegalImageRequest|TestWebChat_R5_ImageValidation4xx'
-  ./cmd/agent/` → `ok github.com/nick/gopi/cmd/agent 1.867s` (exit 0), i.e. the
+  ./cmd/agent/` → `ok github.com/the operator/gopi/cmd/agent 1.867s` (exit 0), i.e. the
   new guard passes *and* the pre-existing oversize-body 4xx expectation still
   holds under the widened cap.
 - **Branch-scoped smoke (Rule 27 — one package, never the whole tree, no
@@ -364,7 +364,7 @@ does **not** carry the fix.
 ```
 --- summary (713s wall, load 6.36 5.48 5.63 -> 7.06 6.60 6.15) ---
 packages: 1 finished, 1 with a failure
-  FAILED: github.com/nick/gopi/cmd/agent
+  FAILED: github.com/the operator/gopi/cmd/agent
 --- failures (assertion/build; the budget did NOT trip) ---
   --- FAIL: TestEveryHelpConstantFitsTheWrapBudget (0.05s)
 stamp: 2026-09-19T11:16:05+08:00 host=peer1 pkg=./cmd/agent/ budget=25m elapsed=713s exit=1 outcome=fail
@@ -388,7 +388,7 @@ removed, no branch content at all):
 $ go test -count=1 -run 'TestEveryHelpConstantFitsTheWrapBudget' ./cmd/agent/
 --- FAIL: TestEveryHelpConstantFitsTheWrapBudget (0.05s)
     help_width_test.go:72: cli_chat.go: chatUsage line 8 is 143 display cols (> 88): "--no-editor        disable the raw-mode line editor and read plain cooked                   lines (the pre-editor behavior). Automatic whenever"
-FAIL	github.com/nick/gopi/cmd/agent	0.404s
+FAIL	github.com/the operator/gopi/cmd/agent	0.404s
 ```
 
 The offending line is the `--no-editor` row of `chatUsage` in
@@ -427,7 +427,7 @@ json stream, this run's own file, no shared intermediate:
 ```
 $ CGO_ENABLED=0 go test -count=1 -timeout 1200s -json ./cmd/agent/ > _tmp/wm2rem/cmdagent.json
 EXIT=1
-pkg outcomes: {'github.com/nick/gopi/cmd/agent': 'fail'}
+pkg outcomes: {'github.com/the operator/gopi/cmd/agent': 'fail'}
 FAILs: TestEveryHelpConstantFitsTheWrapBudget, TestTaskRunSeamWritesReportAndShowRendersIt
 ```
 
@@ -454,7 +454,7 @@ FAILs: TestEveryHelpConstantFitsTheWrapBudget, TestTaskRunSeamWritesReportAndSho
    $ go test -count=1 -run 'TestTaskRunSeamWritesReportAndShowRendersIt|TestEveryHelpConstantFitsTheWrapBudget' ./cmd/agent/
    --- FAIL: TestEveryHelpConstantFitsTheWrapBudget (0.05s)
        help_width_test.go:72: cli_chat.go: chatUsage line 8 is 143 display cols (> 88): … the pre-editor behavior). Automatic whenever
-   FAIL	github.com/nick/gopi/cmd/agent	17.416s
+   FAIL	github.com/the operator/gopi/cmd/agent	17.416s
    ```
 
    The seam test passes; only the master-side help-width red remains. A

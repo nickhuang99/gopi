@@ -12,13 +12,13 @@
 This doc defines the **single-node settings shape** and how gopi's runtime
 reads it. It is the operator-facing companion to
 `devdoc/singlenode-refactor-review-2026-09-02.md` (the code-review
-classification) and `devdoc/single-node-convergence-20260902.md` (nick's
+classification) and `devdoc/single-node-convergence-20260902.md` (the operator's
 architecture decision).
 
 ## The config file
 
 Settings live at `~/.gopi/settings.json` (symlinked to `.ds_settings.json` in
-nick's profile; the `GOPI_SETTINGS` env var overrides the path). The keys that
+the operator's profile; the `GOPI_SETTINGS` env var overrides the path). The keys that
 define the runtime's *topology* — as opposed to model/API config — are:
 
 ```jsonc

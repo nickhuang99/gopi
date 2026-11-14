@@ -169,17 +169,17 @@ func TestTaskSubmitRefusesUnreadablePayloadFileRef(t *testing.T) {
 // ordinary case untouched — this is a regression test on the CLI's own
 // documented contract (config/fileref.go), run through the ENGINE:
 //
-//   - prose that merely STARTS with '@' ("@nick mentioned…") is not a
+//   - prose that merely STARTS with '@' ("@the operator mentioned…") is not a
 //     reference: it is stored verbatim;
 //   - the '@@' escape stores the literal text;
 //   - a command line that merely CONTAINS '@' is untouched.
 func TestTaskSubmitPayloadProseAndEscapePassThrough(t *testing.T) {
 	payloadFileRefLedger(t)
 	cases := []struct{ name, payload, want string }{
-		{"prose with whitespace after the prefix", "@nick mentioned this in passing", "@nick mentioned this in passing"},
+		{"prose with whitespace after the prefix", "@the operator mentioned this in passing", "@the operator mentioned this in passing"},
 		{"bare prefix", "@", "@"},
 		{"escape hatch", "@@literal-text", "@literal-text"},
-		{"at sign inside the text", "ping me at nick@example.com", "ping me at nick@example.com"},
+		{"at sign inside the text", "ping me at the operator@example.com", "ping me at the operator@example.com"},
 		{"ordinary text", "no reference here", "no reference here"},
 	}
 	for _, c := range cases {

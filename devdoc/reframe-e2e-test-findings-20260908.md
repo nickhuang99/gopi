@@ -23,7 +23,7 @@ directive 绑定"建立 tasklist 的响应"——但 LLM 深探索（大任务�
 持续逐轮注入（prompt 20K→35K 增长）——context reduction 未达成直到 LLM
 最终建 tasklist。
 
-## 硬化方向（待 nick 决策）
+## 硬化方向（待 the operator 决策）
 1. **首响应强制**：reframe 不绑定 tasklist——大 briefing（>reframeMinRawLength）
    的**首个 assistant 响应**就必须含 [REF RAMED EPIC]（探索前 reframe——LLM
    先理解目标再动手），tasklist 可随后。
@@ -33,4 +33,4 @@ directive 绑定"建立 tasklist 的响应"——但 LLM 深探索（大任务�
 
 ## 状态
 - P1/P2 已 merge master（13ce217/84bf472——机制代码就位）
-- 本发现记录待 nick 决定硬化方向后派工
+- 本发现记录待 the operator 决定硬化方向后派工

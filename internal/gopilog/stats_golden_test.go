@@ -12,7 +12,7 @@ import (
 	"github.com/nickhuang99/gopi/internal/rawlogfmt"
 )
 
-// Golden tests (IMPLEMENT-SPEC §4 — nick's hard requirement): the fixtures in
+// Golden tests (IMPLEMENT-SPEC §4 — the operator's hard requirement): the fixtures in
 // tests/fixtures/log-stats-raw are REAL session logs, and the rendered output
 // of stats/raw is compared against committed snapshots. Any change that moves
 // a number, a column or a byte of these views fails here, so a future feature

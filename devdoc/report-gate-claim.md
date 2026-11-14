@@ -118,7 +118,7 @@ evidence is the next indented line
 
 ```
 - post-fix run (t+2019s, this branch): the same `-run` selection →
-  `ok github.com/nick/gopi/internal/tools 3.340s`.
+  `ok github.com/the operator/gopi/internal/tools 3.340s`.
 ```
 
 was judged one line at a time — the instrument and its `ok` sat on the *next*
@@ -137,7 +137,7 @@ Re-measured after the fix, against this epic's own live report (a throwaway
 
 ```
 SELFCHECK section="## Evidence (self-filed)" missing=0 []
-ok  github.com/nick/gopi/internal/selfcheck  0.049s
+ok  github.com/the operator/gopi/internal/selfcheck  0.049s
 ```
 
 The live report is the hardest input available (a 6 KB report written for this
@@ -187,7 +187,7 @@ FAIL
 
 # post-fix tree (this branch): PASSES — recorded verbatim, report untouched
 $ go test ./internal/tools/ -run TestZZRedProofUnobservedGateClaim -count=1
-ok  github.com/nick/gopi/internal/tools
+ok  github.com/the operator/gopi/internal/tools
 ```
 
 ## Verification

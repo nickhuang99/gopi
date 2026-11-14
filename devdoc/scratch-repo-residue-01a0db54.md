@@ -12,7 +12,7 @@ this file was only a record its row read `historical` and it opened with the
 citing it, the row was recomputed as `normative` — a standing claim about master —
 and the banner was removed, because `docclass.ClassBannered` is true for the
 historical class only. The history below is unchanged.
-**Reporter:** task `01a0dbe4-ac93-74f6-8afe-e740669c9532` (operator: nick, HP-Laptop).
+**Reporter:** task `01a0dbe4-ac93-74f6-8afe-e740669c9532` (operator: the operator, HP-Laptop).
 **Point-in-time record:** this doc is the *reference half* of the repair. The product
 fix is dispatched as a child task (see "Where the product fix goes"); this file is what
 a future agent reads so the diagnosis does not have to be re-derived.
@@ -246,7 +246,7 @@ $ go test ./internal/standards/ -run TestRepoRootHasNoTrackedJunk
       scratch/redproof-probe.md → a repo-relative `scratch/` tree. gopi's scratch root is `tmpdir` …
 $ git rm --cached scratch/redproof-probe.md && rm scratch/redproof-probe.md
 $ go test ./internal/standards/ -run TestRepoRootHasNoTrackedJunk
-ok  	github.com/nick/gopi/internal/standards
+ok  	github.com/the operator/gopi/internal/standards
 ```
 
 The same probe caught a **fixture bug of my own**: the first "legitimate
@@ -309,7 +309,7 @@ Green, measured on this branch:
 
 ```
 $ go test -count=1 ./internal/standards/ -run 'TestDocManifestCoversEveryDevdocFile|TestDocManifestRowsAreWellFormed|TestDocClassBannerMatchesManifest'
-ok  	github.com/nick/gopi/internal/standards	5.653s
+ok  	github.com/the operator/gopi/internal/standards	5.653s
 ```
 
 The red→green transition was observed in both directions: with the row removed the

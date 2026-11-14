@@ -10,7 +10,7 @@
   auto-registration (taskregister.go)
 
 Before this fix the two rows sat side by side with no visible relation —
-"chaos or duplicated?" (nick, 2026-09-02). M3 时代双行结构 (101=wrapper +
+"chaos or duplicated?" (the operator, 2026-09-02). M3 时代双行结构 (101=wrapper +
 102=child) 已知，M4.6 chat 表分流时未处理显示关联。
 
 ## Fix (A+B+C)

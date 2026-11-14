@@ -3,7 +3,7 @@
 
 ## Summary
 
-Extended nick's golden regression-canary (real-session fixture + byte-exact
+Extended the operator's golden regression-canary (real-session fixture + byte-exact
 snapshots) from `gopi stats`/`gopi raw` to the `gopi log` CONTENT views.
 No production code was changed — tests + snapshots only (acceptance #5).
 

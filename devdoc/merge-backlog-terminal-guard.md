@@ -166,7 +166,7 @@ $ go test ./internal/tools/ -run 'TestMergeBacklogTerminalGuard_(RefusesUnmerged
 --- FAIL: TestMergeBacklogTerminalGuard_SyncDoorRecordsInsteadOfRefusing (0.05s)
     task_merge_backlog_terminal_guard_test.go:460: the sync door adopted a verified row for an unmerged branch with no merge-backlog-terminal-refused trail entry — this is exactly the silent write that produced t-1788218295
 FAIL
-FAIL	github.com/nick/gopi/internal/tools	2.148s
+FAIL	github.com/the operator/gopi/internal/tools	2.148s
 RED_EXIT=1
 ```
 
@@ -187,7 +187,7 @@ $ go test ./internal/tools/ -run TestMergeBacklogTerminalGuard -count=1 -v
 --- PASS: TestMergeBacklogTerminalGuard_AllowsCherryPickedLanding (0.13s)
 --- PASS: TestMergeBacklogTerminalGuard_SyncDoorRecordsInsteadOfRefusing (0.12s)
 PASS
-ok  	github.com/nick/gopi/internal/tools	3.928s
+ok  	github.com/the operator/gopi/internal/tools	3.928s
 GREEN_EXIT=0
 ```
 

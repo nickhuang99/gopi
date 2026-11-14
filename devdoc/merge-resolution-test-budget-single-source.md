@@ -51,7 +51,7 @@ claiming the value names an SB arm it no longer names.
 - `go build ./...`: exit 0. `go vet ./cmd/agent/`: exit 0.
 - Touched tests: `go test ./cmd/agent/ -run
   'TestUserHomeDirOrDefaultFallsBack|TestWorkerHelpDoesNotRun|TestWorkerReleaseOwnWorktree_Acceptance|TestOwnRelease_RefusesLiveSibling'
-  -count=1 -v` → all four PASS (`ok github.com/nick/gopi/cmd/agent 1.193s`).
+  -count=1 -v` → all four PASS (`ok github.com/the operator/gopi/cmd/agent 1.193s`).
 - `go test ./internal/standards/` → ok (the env-escape window the resolution
   targets is the gate this check exercises).
 

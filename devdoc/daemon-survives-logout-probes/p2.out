@@ -8,69 +8,69 @@ stat: cannot statx '/run/user/1000/systemd/private': No such file or directory
 
 === ls -la $XDG_RUNTIME_DIR/systemd/ ===
 total 0
-drwxr-xr-x  3 nick nick   60 Sep 13 12:12 .
-drwx------ 53 nick nick 1140 Sep 14 22:39 ..
-drwxr-xr-x  3 nick nick  140 Sep 13 12:12 inaccessible
+drwxr-xr-x  3 the operator the operator   60 Sep 13 12:12 .
+drwx------ 53 the operator the operator 1140 Sep 14 22:39 ..
+drwxr-xr-x  3 the operator the operator  140 Sep 13 12:12 inaccessible
 
 === ls -la $XDG_RUNTIME_DIR/ (full, alphabetical) ===
 total 16
-drwx------ 53 nick nick 1140 Sep 14 22:39 .
+drwx------ 53 the operator the operator 1140 Sep 14 22:39 .
 drwxr-xr-x  4 root root   80 Sep 13 01:01 ..
-drwx------  2 nick nick   60 Sep 11 06:03 at-spi
-drwx------  2 nick nick   60 Sep 10 23:03 at-spi2-KBUQV3
-drwxrwxr-x  2 nick nick   40 Sep 13 05:38 ccache-tmp
-drwxr-xr-x  2 nick nick   40 Sep 14 22:38 daemoncwd-holder-fixtures
-drwx------  3 nick nick   60 Aug 27 07:18 dbus-1
-drwx------  2 nick nick   40 Sep 14 06:48 dconf
-dr-x------  2 nick nick    0 Jan  1  1970 doc
-drwxrwxr-x  3 nick nick   80 Sep 12 22:45 gopi-scratch-verify
-dr-x------  2 nick nick    0 Jul 15 21:44 gvfs
-drwx------  2 nick nick   40 Aug 27 07:18 gvfsd
-drwxrwxr-x  2 nick nick   40 Sep 14 22:32 mv-c
-drwxrwxr-x  6 nick nick  120 Sep 14 22:38 mv-d1
-drwxrwxr-x  6 nick nick  120 Sep 14 22:38 mv-d2
-drwxrwxr-x  8 nick nick  160 Sep 14 22:39 mv-di1
-drwxrwxr-x  8 nick nick  160 Sep 14 22:39 mv-di2
-drwxrwxr-x  8 nick nick  160 Sep 14 22:39 mv-di3
-drwxrwxr-x  8 nick nick  160 Sep 14 22:39 mv-di4
-drwxrwxr-x  2 nick nick   60 Sep 14 22:37 mv-h11
-drwxrwxr-x  2 nick nick   60 Sep 14 22:37 mv-h12
-drwxrwxr-x  2 nick nick   60 Sep 14 22:37 mv-h13
-drwxrwxr-x  2 nick nick   60 Sep 14 22:37 mv-h14
-drwxrwxr-x  2 nick nick   60 Sep 14 22:37 mv-h21
-drwxrwxr-x  2 nick nick   60 Sep 14 22:37 mv-h22
-drwxrwxr-x  2 nick nick   60 Sep 14 22:37 mv-h23
-drwxrwxr-x  2 nick nick   60 Sep 14 22:37 mv-h24
-drwxrwxr-x  2 nick nick   60 Sep 14 22:37 mv-h31
-drwxrwxr-x  2 nick nick   60 Sep 14 22:37 mv-h32
-drwxrwxr-x  2 nick nick   60 Sep 14 22:37 mv-h33
-drwxrwxr-x  2 nick nick   60 Sep 14 22:37 mv-h34
-drwxrwxr-x  3 nick nick   60 Sep 14 22:13 mv-home
-drwxrwxr-x  8 nick nick  180 Sep 14 22:38 mv-i11
-drwxrwxr-x  8 nick nick  180 Sep 14 22:38 mv-i12
-drwxrwxr-x  8 nick nick  180 Sep 14 22:38 mv-i13
-drwxrwxr-x  8 nick nick  180 Sep 14 22:38 mv-i14
-drwxrwxr-x  8 nick nick  180 Sep 14 22:38 mv-i21
-drwxrwxr-x  8 nick nick  180 Sep 14 22:38 mv-i22
-drwxrwxr-x  8 nick nick  180 Sep 14 22:38 mv-i23
-drwxrwxr-x  8 nick nick  180 Sep 14 22:38 mv-i24
-drwxrwxr-x  8 nick nick  180 Sep 14 22:38 mv-i31
-drwxrwxr-x  8 nick nick  180 Sep 14 22:38 mv-i32
-drwxrwxr-x  8 nick nick  180 Sep 14 22:38 mv-i33
-drwxrwxr-x  8 nick nick  180 Sep 14 22:38 mv-i34
-drwxrwxr-x  2 nick nick  120 Sep 14 22:35 mv-p
--rw-r--r--  1 nick nick  853 Sep 14 22:37 mv-run.sh
--rw-r--r--  1 nick nick  881 Sep 14 22:38 mv-run2.sh
--rw-r--r--  1 nick nick 1046 Sep 14 22:38 mv-run3.sh
--rw-r--r--  1 nick nick  988 Sep 14 22:39 mv-run4.sh
-drwxrwxr-x  6 nick nick  120 Sep 14 22:38 mv-s
-drwxrwxr-x  3 nick nick   60 Sep 14 22:21 mv-scratch
-drwxrwxr-x  8 nick nick  160 Sep 14 22:39 mv-sh
-drwx------  2 nick nick   40 Aug 27 07:18 pulse
-drwx------  2 nick nick   40 Aug 29 13:53 snap.chromium
-drwx------  2 nick nick   40 Sep 10 23:11 snap.firefox
-drwx------  2 nick nick   40 Aug 23 13:00 snap.ollama
-drwxr-xr-x  3 nick nick   60 Sep 13 12:12 systemd
+drwx------  2 the operator the operator   60 Sep 11 06:03 at-spi
+drwx------  2 the operator the operator   60 Sep 10 23:03 at-spi2-KBUQV3
+drwxrwxr-x  2 the operator the operator   40 Sep 13 05:38 ccache-tmp
+drwxr-xr-x  2 the operator the operator   40 Sep 14 22:38 daemoncwd-holder-fixtures
+drwx------  3 the operator the operator   60 Aug 27 07:18 dbus-1
+drwx------  2 the operator the operator   40 Sep 14 06:48 dconf
+dr-x------  2 the operator the operator    0 Jan  1  1970 doc
+drwxrwxr-x  3 the operator the operator   80 Sep 12 22:45 gopi-scratch-verify
+dr-x------  2 the operator the operator    0 Jul 15 21:44 gvfs
+drwx------  2 the operator the operator   40 Aug 27 07:18 gvfsd
+drwxrwxr-x  2 the operator the operator   40 Sep 14 22:32 mv-c
+drwxrwxr-x  6 the operator the operator  120 Sep 14 22:38 mv-d1
+drwxrwxr-x  6 the operator the operator  120 Sep 14 22:38 mv-d2
+drwxrwxr-x  8 the operator the operator  160 Sep 14 22:39 mv-di1
+drwxrwxr-x  8 the operator the operator  160 Sep 14 22:39 mv-di2
+drwxrwxr-x  8 the operator the operator  160 Sep 14 22:39 mv-di3
+drwxrwxr-x  8 the operator the operator  160 Sep 14 22:39 mv-di4
+drwxrwxr-x  2 the operator the operator   60 Sep 14 22:37 mv-h11
+drwxrwxr-x  2 the operator the operator   60 Sep 14 22:37 mv-h12
+drwxrwxr-x  2 the operator the operator   60 Sep 14 22:37 mv-h13
+drwxrwxr-x  2 the operator the operator   60 Sep 14 22:37 mv-h14
+drwxrwxr-x  2 the operator the operator   60 Sep 14 22:37 mv-h21
+drwxrwxr-x  2 the operator the operator   60 Sep 14 22:37 mv-h22
+drwxrwxr-x  2 the operator the operator   60 Sep 14 22:37 mv-h23
+drwxrwxr-x  2 the operator the operator   60 Sep 14 22:37 mv-h24
+drwxrwxr-x  2 the operator the operator   60 Sep 14 22:37 mv-h31
+drwxrwxr-x  2 the operator the operator   60 Sep 14 22:37 mv-h32
+drwxrwxr-x  2 the operator the operator   60 Sep 14 22:37 mv-h33
+drwxrwxr-x  2 the operator the operator   60 Sep 14 22:37 mv-h34
+drwxrwxr-x  3 the operator the operator   60 Sep 14 22:13 mv-home
+drwxrwxr-x  8 the operator the operator  180 Sep 14 22:38 mv-i11
+drwxrwxr-x  8 the operator the operator  180 Sep 14 22:38 mv-i12
+drwxrwxr-x  8 the operator the operator  180 Sep 14 22:38 mv-i13
+drwxrwxr-x  8 the operator the operator  180 Sep 14 22:38 mv-i14
+drwxrwxr-x  8 the operator the operator  180 Sep 14 22:38 mv-i21
+drwxrwxr-x  8 the operator the operator  180 Sep 14 22:38 mv-i22
+drwxrwxr-x  8 the operator the operator  180 Sep 14 22:38 mv-i23
+drwxrwxr-x  8 the operator the operator  180 Sep 14 22:38 mv-i24
+drwxrwxr-x  8 the operator the operator  180 Sep 14 22:38 mv-i31
+drwxrwxr-x  8 the operator the operator  180 Sep 14 22:38 mv-i32
+drwxrwxr-x  8 the operator the operator  180 Sep 14 22:38 mv-i33
+drwxrwxr-x  8 the operator the operator  180 Sep 14 22:38 mv-i34
+drwxrwxr-x  2 the operator the operator  120 Sep 14 22:35 mv-p
+-rw-r--r--  1 the operator the operator  853 Sep 14 22:37 mv-run.sh
+-rw-r--r--  1 the operator the operator  881 Sep 14 22:38 mv-run2.sh
+-rw-r--r--  1 the operator the operator 1046 Sep 14 22:38 mv-run3.sh
+-rw-r--r--  1 the operator the operator  988 Sep 14 22:39 mv-run4.sh
+drwxrwxr-x  6 the operator the operator  120 Sep 14 22:38 mv-s
+drwxrwxr-x  3 the operator the operator   60 Sep 14 22:21 mv-scratch
+drwxrwxr-x  8 the operator the operator  160 Sep 14 22:39 mv-sh
+drwx------  2 the operator the operator   40 Aug 27 07:18 pulse
+drwx------  2 the operator the operator   40 Aug 29 13:53 snap.chromium
+drwx------  2 the operator the operator   40 Sep 10 23:11 snap.firefox
+drwx------  2 the operator the operator   40 Aug 23 13:00 snap.ollama
+drwxr-xr-x  3 the operator the operator   60 Sep 13 12:12 systemd
 
 === grep for bus/systemd entries in that listing ===
 dbus-1
@@ -160,46 +160,46 @@ u_str LISTEN 0      4096                    /run/user/1000/at-spi/bus_95 2590210
 === manager pid + its socket fds ===
 user@1000 MainPID=2321
 total 0
-lr-x------ 1 nick nick 64 Sep 14 21:50 0 -> /dev/null
-lrwx------ 1 nick nick 64 Sep 14 21:50 1 -> socket:[39102]
-lr-x------ 1 nick nick 64 Sep 14 21:50 10 -> /proc/2321/mountinfo
-lr-x------ 1 nick nick 64 Sep 14 21:50 11 -> anon_inode:inotify
-lrwx------ 1 nick nick 64 Sep 14 21:50 12 -> anon_inode:[timerfd]
-lr-x------ 1 nick nick 64 Sep 14 21:50 13 -> anon_inode:inotify
-lr-x------ 1 nick nick 64 Sep 14 21:50 14 -> /proc/swaps
-lrwx------ 1 nick nick 64 Sep 14 21:50 15 -> socket:[39138]
-lrwx------ 1 nick nick 64 Sep 14 21:50 18 -> socket:[39141]
-lrwx------ 1 nick nick 64 Sep 14 21:50 19 -> socket:[39144]
-lrwx------ 1 nick nick 64 Sep 14 21:50 2 -> socket:[39102]
-lrwx------ 1 nick nick 64 Sep 14 21:50 20 -> socket:[39146]
-lrwx------ 1 nick nick 64 Sep 14 21:50 21 -> anon_inode:[timerfd]
-lrwx------ 1 nick nick 64 Sep 14 21:50 22 -> socket:[39142]
-lrwx------ 1 nick nick 64 Sep 14 21:50 23 -> socket:[39143]
-lrwx------ 1 nick nick 64 Sep 14 21:50 24 -> socket:[40138]
-lrwx------ 1 nick nick 64 Sep 14 21:50 27 -> socket:[40136]
-lrwx------ 1 nick nick 64 Sep 14 21:50 28 -> socket:[40156]
-lrwx------ 1 nick nick 64 Sep 14 21:50 29 -> socket:[40144]
-lrwx------ 1 nick nick 64 Sep 14 21:50 3 -> socket:[39122]
-lrwx------ 1 nick nick 64 Sep 14 21:50 30 -> socket:[40148]
-lrwx------ 1 nick nick 64 Sep 14 21:50 31 -> socket:[40154]
-lrwx------ 1 nick nick 64 Sep 14 21:50 32 -> socket:[40146]
-lrwx------ 1 nick nick 64 Sep 14 21:50 33 -> socket:[40142]
-lrwx------ 1 nick nick 64 Sep 14 21:50 34 -> socket:[40152]
-lrwx------ 1 nick nick 64 Sep 14 21:50 35 -> socket:[40150]
-lrwx------ 1 nick nick 64 Sep 14 21:50 36 -> socket:[40140]
-lrwx------ 1 nick nick 64 Sep 14 21:50 37 -> socket:[38388]
-lrwx------ 1 nick nick 64 Sep 14 21:50 4 -> anon_inode:[eventpoll]
-lrwx------ 1 nick nick 64 Sep 14 21:50 5 -> anon_inode:[signalfd]
-lr-x------ 1 nick nick 64 Sep 14 21:50 6 -> anon_inode:inotify
-lr-x------ 1 nick nick 64 Sep 14 21:50 7 -> /sys/fs/cgroup/user.slice/user-1000.slice/user@1000.service
-lrwx------ 1 nick nick 64 Sep 14 21:50 8 -> anon_inode:[timerfd]
-lrwx------ 1 nick nick 64 Sep 14 21:50 9 -> anon_inode:[eventpoll]
+lr-x------ 1 the operator the operator 64 Sep 14 21:50 0 -> /dev/null
+lrwx------ 1 the operator the operator 64 Sep 14 21:50 1 -> socket:[39102]
+lr-x------ 1 the operator the operator 64 Sep 14 21:50 10 -> /proc/2321/mountinfo
+lr-x------ 1 the operator the operator 64 Sep 14 21:50 11 -> anon_inode:inotify
+lrwx------ 1 the operator the operator 64 Sep 14 21:50 12 -> anon_inode:[timerfd]
+lr-x------ 1 the operator the operator 64 Sep 14 21:50 13 -> anon_inode:inotify
+lr-x------ 1 the operator the operator 64 Sep 14 21:50 14 -> /proc/swaps
+lrwx------ 1 the operator the operator 64 Sep 14 21:50 15 -> socket:[39138]
+lrwx------ 1 the operator the operator 64 Sep 14 21:50 18 -> socket:[39141]
+lrwx------ 1 the operator the operator 64 Sep 14 21:50 19 -> socket:[39144]
+lrwx------ 1 the operator the operator 64 Sep 14 21:50 2 -> socket:[39102]
+lrwx------ 1 the operator the operator 64 Sep 14 21:50 20 -> socket:[39146]
+lrwx------ 1 the operator the operator 64 Sep 14 21:50 21 -> anon_inode:[timerfd]
+lrwx------ 1 the operator the operator 64 Sep 14 21:50 22 -> socket:[39142]
+lrwx------ 1 the operator the operator 64 Sep 14 21:50 23 -> socket:[39143]
+lrwx------ 1 the operator the operator 64 Sep 14 21:50 24 -> socket:[40138]
+lrwx------ 1 the operator the operator 64 Sep 14 21:50 27 -> socket:[40136]
+lrwx------ 1 the operator the operator 64 Sep 14 21:50 28 -> socket:[40156]
+lrwx------ 1 the operator the operator 64 Sep 14 21:50 29 -> socket:[40144]
+lrwx------ 1 the operator the operator 64 Sep 14 21:50 3 -> socket:[39122]
+lrwx------ 1 the operator the operator 64 Sep 14 21:50 30 -> socket:[40148]
+lrwx------ 1 the operator the operator 64 Sep 14 21:50 31 -> socket:[40154]
+lrwx------ 1 the operator the operator 64 Sep 14 21:50 32 -> socket:[40146]
+lrwx------ 1 the operator the operator 64 Sep 14 21:50 33 -> socket:[40142]
+lrwx------ 1 the operator the operator 64 Sep 14 21:50 34 -> socket:[40152]
+lrwx------ 1 the operator the operator 64 Sep 14 21:50 35 -> socket:[40150]
+lrwx------ 1 the operator the operator 64 Sep 14 21:50 36 -> socket:[40140]
+lrwx------ 1 the operator the operator 64 Sep 14 21:50 37 -> socket:[38388]
+lrwx------ 1 the operator the operator 64 Sep 14 21:50 4 -> anon_inode:[eventpoll]
+lrwx------ 1 the operator the operator 64 Sep 14 21:50 5 -> anon_inode:[signalfd]
+lr-x------ 1 the operator the operator 64 Sep 14 21:50 6 -> anon_inode:inotify
+lr-x------ 1 the operator the operator 64 Sep 14 21:50 7 -> /sys/fs/cgroup/user.slice/user-1000.slice/user@1000.service
+lrwx------ 1 the operator the operator 64 Sep 14 21:50 8 -> anon_inode:[timerfd]
+lrwx------ 1 the operator the operator 64 Sep 14 21:50 9 -> anon_inode:[eventpoll]
 
 === manager mount namespace view of the paths ===
 total 0
-drwxr-xr-x  3 nick nick   60 Sep 13 12:12 .
-drwx------ 53 nick nick 1140 Sep 14 22:39 ..
-drwxr-xr-x  3 nick nick  140 Sep 13 12:12 inaccessible
+drwxr-xr-x  3 the operator the operator   60 Sep 13 12:12 .
+drwx------ 53 the operator the operator 1140 Sep 14 22:39 ..
+drwxr-xr-x  3 the operator the operator  140 Sep 13 12:12 inaccessible
 stat: cannot statx '/proc/2321/root/run/user/1000/bus': No such file or directory
 
 === namespace identity (self vs manager) ===

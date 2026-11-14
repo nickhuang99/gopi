@@ -172,7 +172,7 @@ then reverted):
     UNDECLARED TREE: internal/config/scratch_trees.go — …
 --- FAIL: TestGateCatchesUndeclaredTree (0.00s)
     gate fires on the real declared set: [{writer:internal/agent/rawlog.go covers:session-raw …} …]
-FAIL	github.com/nick/gopi/internal/scratch	0.490s
+FAIL	github.com/the operator/gopi/internal/scratch	0.490s
 ```
 
 ## Files

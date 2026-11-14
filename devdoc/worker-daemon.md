@@ -70,7 +70,7 @@ for one resident daemon); there is no second supervisor process, no init/tmux/sy
 | M3 | explicit display, valid cookie path | `DISPLAY=:0` under the same detach | `X display :0 refused the connection (server refused the connection; see the setup failure reason frame) — check DISPLAY and Xauthority` — exit 1 |
 | M4 | headless | `env -u DISPLAY` | `no X11 display: DISPLAY is unset and no display was given (X11-only path; a Wayland session needs a portal, which gopi does not implement yet)` — exit 1 |
 | M5 | **durable local display** | `DISPLAY=:99` under the same detach | `screen_capture` **exit 0**, JSON: `{"path":"…/xvfb99.png","display":":99","width":1280,"height":800,"depth":24,"bands":7,"bytes":8318,"sha256_16":"e848bfbef64e5f7f"}` |
-| M6 | which displays exist on this host | `ls -la /tmp/.X11-unix/`; `pgrep -a Xvfb` | sockets `X0` (root), `X240`, `X99` (uid nick); `Xvfb :99 -screen 0 1280x800x24` running since 01:00 |
+| M6 | which displays exist on this host | `ls -la /tmp/.X11-unix/`; `pgrep -a Xvfb` | sockets `X0` (root), `X240`, `X99` (uid the operator); `Xvfb :99 -screen 0 1280x800x24` running since 01:00 |
 | M7 | who may launch | `GOPI_EXECUTOR_SESSION_ID=x GOPI_AGENT_SESSION=x gopi worker --once` and the same with `setsid` | both **exit 3**, refusal names the agent session and states “it cannot be detached (setsid leaves the process tree/cgroup intact)”; `gopi worker --status` and `gopi task run --help` stay **exit 0** (read-only/help are never refused) |
 | M9 | the real operating model on this host | `gopi worker --status`; `ps -p <pid>` | two detached workers alive (`Ssl gopi-worker worker`, pids 2140436 / 2140461) with **no lock and no state file** — i.e. started by the launcher script's `setsid nohup gopi worker` path, not by `--daemon` |
 
@@ -176,7 +176,7 @@ idle round(s)`).
    the settled re-check exists for exactly that race, and 3 × 30 s is the measured compromise between
    latency and cost.
 4. *“Always keep N workers warm by never letting the loop exit.”* Rejected: it is available
-   (`GOPI_WORKER_IDLE_EXITS=0`) but is not the default, because a worker is a task-DRAIN tool (nick
+   (`GOPI_WORKER_IDLE_EXITS=0`) but is not the default, because a worker is a task-DRAIN tool (the operator
    9/1 design) and a drained queue should not keep a process (and its cgroup scope membership) alive
    forever.
 
@@ -496,7 +496,7 @@ exercise `--stop/--restart/--force` on one to “see what happens”.
 
 ### Verification
 - Build: `go build ./...` → **exit 0, no output** (tree at master 7c24ea06 + this doc only).
-- Gates: `go test ./internal/standards/` → `ok github.com/nick/gopi/internal/standards 13.665s`.
+- Gates: `go test ./internal/standards/` → `ok github.com/the operator/gopi/internal/standards 13.665s`.
 - Measurements: every [measured] claim above is a quoted command output from this host on 2026-09-13
   (probe script: `~/.cache/gopi-probe/detach-probe.sh`, self-terminating, off the `/` partition).
 - Commit: `055924af docs(daemon): operating-model decision record (launcher=DISPLAY owner, singleton

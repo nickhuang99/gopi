@@ -82,7 +82,7 @@ Red proof (fix removed via a `false &&` in front of the new arm):
     got …/workspace/01a16033-c069-…
 --- FAIL: TestTaskSubmitFromACloneGroundStampsTheSourceRepo
 --- FAIL: TestTaskSubmitRefusesACloneGroundWhoseOriginIsUnnameable
-FAIL	github.com/nick/gopi/internal/tools	1.272s
+FAIL	github.com/the operator/gopi/internal/tools	1.272s
 ```
 
 Restore verified against a revision, not the index:

@@ -163,18 +163,18 @@ ROOT (the shape Rule 34 bans):
   the GOPI.md/CONFIG.md edits).
 - `go vet ./...` → no output, `VET_EXIT=0` (job stdout line `vet done` with
   nothing above it).
-- `go test ./internal/sandbox/` → `ok github.com/nick/gopi/internal/sandbox
+- `go test ./internal/sandbox/` → `ok github.com/the operator/gopi/internal/sandbox
   1.689s`.
 - `go test ./internal/scratch/ -run 'TestSweepCollects|TestSweepKeeps|TestSweepIsIdem|TestSandbox'`
-  → `ok github.com/nick/gopi/internal/scratch 7.198s`, then `7.942s` after the
+  → `ok github.com/the operator/gopi/internal/scratch 7.198s`, then `7.942s` after the
   empty-root refusal fix (both observed).
 - `go test ./cmd/agent/ -run 'TestScratchGCTick' -v` →
   `--- PASS: TestScratchGCTickSweepsAbandonedSandboxes (0.29s)`,
   `--- PASS: TestScratchGCTickSandboxArmFailsOpenAndRespectsTheOffSwitch (0.00s)`,
   `--- PASS: TestScratchGCTick_ThrottleAndFailOpen (1.18s)`,
-  `ok github.com/nick/gopi/cmd/agent 2.044s`.
+  `ok github.com/the operator/gopi/cmd/agent 2.044s`.
 - `go test ./internal/config/ -run 'TestSessionsDirNameNoHardcodedLiterals'` →
-  `ok github.com/nick/gopi/internal/config 1.034s` (the first run of the full
+  `ok github.com/the operator/gopi/internal/config 1.034s` (the first run of the full
   config package FAILED on `internal/config/sandbox.go:108`, a comment spelling
   the literal "sessions" next to the constant — fixed by rewording the comment,
   the constant itself already referenced `SessionsDirName`; red-then-green

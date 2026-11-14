@@ -259,7 +259,7 @@ func TestBoolVocab_Semantics(t *testing.T) {
 // package a consumer imports, not about its test scaffolding), and it spells
 // the import prefix in two pieces so the probe cannot match itself.
 func TestBoolVocab_ImportsNothingFromTheProject(t *testing.T) {
-	probe := "github.com/" + "nick/"
+	probe := "github.com/" + "the operator/"
 	entries, err := os.ReadDir(".")
 	if err != nil {
 		t.Fatalf("read package dir: %v", err)

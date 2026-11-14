@@ -374,7 +374,7 @@ func TestAgent_Run_SearchRemoveContextSlimming(t *testing.T) {
 	}
 }
 
-// ── Whitelist context slimming (nick design) ──────────────────────────────
+// ── Whitelist context slimming (the operator design) ──────────────────────────────
 //
 // Whitelist semantics: default = drop EVERY memory_search pair; only a pair
 // whose returned records were explicitly voted useful survives. Test trace:

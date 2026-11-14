@@ -103,9 +103,9 @@ spelling never written again would be the wrong direction).
 - Tests: `go test ./internal/tools/ ./internal/tasksource/ ./internal/standards/`
   → green. Branch-scoped (the diff's packages), not a whole-tree run.
   ```
-  ok  github.com/nick/gopi/internal/tools        4.172s
-  ok  github.com/nick/gopi/internal/tasksource   0.002s
-  ok  github.com/nick/gopi/internal/standards   37.331s
+  ok  github.com/the operator/gopi/internal/tools        4.172s
+  ok  github.com/the operator/gopi/internal/tasksource   0.002s
+  ok  github.com/the operator/gopi/internal/standards   37.331s
   ```
 - Ran (the changed surface, for real — a real ledger, the real CLI):
   ```

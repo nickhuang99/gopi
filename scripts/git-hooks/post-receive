@@ -1,5 +1,5 @@
 #!/bin/sh
-# post-receive — ONE-LINE trigger (nick's design correction, 2026-09-01):
+# post-receive — ONE-LINE trigger (the operator's design correction, 2026-09-01):
 # ALL merge logic lives in `gopi task merge --all` (token-free Go, testable).
 # The v1-v4 inline bash loops (16c391a/b9aabac/d63a6f5/c80f870) are gone.
 # GIT_DIR/GIT_WORK_TREE/GIT_QUARANTINE_PATH are unset so the gopi child

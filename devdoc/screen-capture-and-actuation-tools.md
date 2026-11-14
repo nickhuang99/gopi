@@ -83,7 +83,7 @@ $ compare -metric RMSE /tmp/pure99.png /tmp/ref99.png null: → 0 (0)
 # real desktop (ssh-forwarded, 1920x1080) — vision-analyzed content matches reality
 $ DISPLAY=localhost:10.0 import -window root /tmp/cap10.png → PNG 1920x1080
   vision_analyze: "real, active desktop … Firefox (platform.deepseek.com/usage),
-  terminal 'nick@peer2:~/work/hermes-agent', dock, system tray" — matches the host.
+  terminal 'the operator@peer2:~/work/hermes-agent', dock, system tray" — matches the host.
 
 # ACTUATION prototype (raw before/after) — see §5 for the full transcript
 $ ./bin/gopi act move 400 260    → {"pointer":"400,260",...}   (read back from the server)
@@ -96,16 +96,16 @@ $ compare -metric AE before.png after.png null: → 878
 
 # the whole suite — the targeted gate (the packages this change touches)
 $ go test ./internal/shot/ ./internal/agent/ ./internal/toolnames/
-ok   github.com/nick/gopi/internal/shot    (cached)
-ok   github.com/nick/gopi/internal/agent
-ok   github.com/nick/gopi/internal/toolnames
+ok   github.com/the operator/gopi/internal/shot    (cached)
+ok   github.com/the operator/gopi/internal/agent
+ok   github.com/the operator/gopi/internal/toolnames
 $ go test ./internal/tools/
-ok   github.com/nick/gopi/internal/tools  314.575s       <- PASS (see the note below)
+ok   github.com/the operator/gopi/internal/tools  314.575s       <- PASS (see the note below)
 $ go test ./cmd/agent/ -run 'TestCLI|TestCompletion|TestGOPIToolNames|TestTopLevel'
-ok   github.com/nick/gopi/cmd/agent       24.430s        <- all contract/drift guards PASS
+ok   github.com/the operator/gopi/cmd/agent       24.430s        <- all contract/drift guards PASS
 $ go test -p 1 ./...
-ok   github.com/nick/gopi/testsuite       ...
-FAIL github.com/nick/gopi/cmd/agent        591.982s       <- environmental, NOT this change
+ok   github.com/the operator/gopi/testsuite       ...
+FAIL github.com/the operator/gopi/cmd/agent        591.982s       <- environmental, NOT this change
 ```
 
 **About that one FAIL (honest, with the diagnosis).** It is
@@ -132,7 +132,7 @@ failure; and no "fix" to a test this branch never touched).
 
 Also observed, and worth recording for the next agent: the first
 `go test ./...` run reported
-`FAIL github.com/nick/gopi/internal/tools 222.762s`, but a re-run of that
+`FAIL github.com/the operator/gopi/internal/tools 222.762s`, but a re-run of that
 package alone passed in `314.575s` with zero test failures. **The suite runs
 concurrently with sibling worktree sessions** (`/home/user/workspace/gopi-cov-tools-*`
 were compiling and testing at the same time), and several suites in this repo
@@ -276,7 +276,7 @@ ssh-forwarded display `localhost:10.0` is a listening X socket
 (`ss -ltn` → `127.0.0.1:6010`) and `import` captured a real 1920×1080 desktop
 (344,941 B) whose `vision_analyze` read-out matches the host exactly
 (Firefox on `platform.deepseek.com/usage`, a terminal titled
-`nick@peer2:~/work/hermes-agent` showing a nightly handoff report, the dock,
+`the operator@peer2:~/work/hermes-agent` showing a nightly handoff report, the dock,
 the system tray with `Sep 11 00:32`). Full text of that analysis: §5.4.
 
 Note the honest limitation: an **ssh-forwarded** display is a real X server
@@ -588,7 +588,7 @@ in §6 is built on.
 > … Firefox Browser (Top Left): Multiple tabs … '火山方舟 - 在线推理',
 > 'DeepSeek 开放平台', '模型 & 价格 | DeepSeek'. The active page is
 > `platform.deepseek.com/usage` … Terminal Window (Center/Right, in focus):
-> dark-themed … `nick@peer2:~/work/hermes-agent` … system tray … date/time
+> dark-themed … `the operator@peer2:~/work/hermes-agent` … system tray … date/time
 > 'Sep 11 00:32'."
 
 That description matches this host's live state — i.e. the tool saw *this

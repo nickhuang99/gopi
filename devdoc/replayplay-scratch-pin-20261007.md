@@ -51,7 +51,7 @@ one new test file.
 ## Verification
 
 - Build:     `go build ./...` → exit 0
-- Tests:     `go test ./internal/replayplay/ -count=1` → `ok github.com/nick/gopi/internal/replayplay 0.559s`
+- Tests:     `go test ./internal/replayplay/ -count=1` → `ok github.com/the operator/gopi/internal/replayplay 0.559s`
 - Ran:       `go test ./internal/testutil/ -count=1 -run 'TestScriptsAreBoundedAndOffTmp|TestEveryTempUsingSuiteIsPinned|TestPinCoverageTable$'`
              (the brief's exact command) — **exit 1 before / exit 0 after**; logs
              `base.log`, `final-green.log` in the session dir.
@@ -65,7 +65,7 @@ one new test file.
              `internal/replayplay`), `--- FAIL: TestScriptsAreBoundedAndOffTmp`
              (`scripts/replay/chat_replay_xtest.sh`), `--- FAIL:
              TestEveryTempUsingSuiteIsPinned` (`internal/replayplay`); after → `ok
-             github.com/nick/gopi/internal/testutil 1.794s` and the replayplay row of
+             github.com/the operator/gopi/internal/testutil 1.794s` and the replayplay row of
              the coverage table reads `PIN PIN`.
 - Commit:    see the branch tip (single commit).
 

@@ -264,7 +264,7 @@ func TestDaemonProfileUnitTagIsUniqueAndReadable(t *testing.T) {
 	// The DEFAULT profile's directory is ".gopi" for every such profile, so the
 	// readable half comes from the HOME it lives in — otherwise the tag would
 	// read "/(garbage)-<hash>" and tell the operator nothing.
-	if !strings.HasPrefix(alpha, "nick") {
+	if !strings.HasPrefix(alpha, "user") {
 		t.Errorf("daemonProfileUnitTag(/home/user/.gopi) = %q, want it to lead with the profile's readable "+
 			"half (the HOME for a default profile, not the shared %q)", alpha, config.ProfileDirName)
 	}

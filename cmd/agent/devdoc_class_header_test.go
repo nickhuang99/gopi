@@ -141,12 +141,18 @@ func devdocTrackedProse(t *testing.T, root string) []string {
 
 // devdocClassScanFloor is the non-vacuity floor of the whole-corpus arm below:
 // the number of tracked prose documents the walk must JUDGE before its green
-// counts as evidence. Measured on this ground (2026-10-24): 2404 tracked
-// markdown files under devdoc/, every one carrying a banner. The floor is slack
-// on purpose (~17% below the measured corpus) so archiving documents does not
-// need a change here, while a walk that reads a wrong root, an empty listing or
-// a filtered one is caught by name.
-const devdocClassScanFloor = 2000
+// counts as evidence, so a walk that reads a wrong root, an empty listing or a
+// filtered one is caught by name.
+//
+// 800, MEASURED ON THIS TREE (2026-11-15): 917 tracked markdown files under
+// devdoc/. The private development checkout carries 2404 and this constant was
+// 2000 there — this public export deliberately ships only the documents a
+// reader of the CODE needs (1693 of them, mostly per-task post-mortems, are not
+// here), so carrying 2000 over would have been a floor measuring the OTHER
+// repository. The number is the export's own: ~13% slack below what the walk
+// actually judges, which is the same margin the original had, so it still
+// catches a corpus that halves while allowing documents to be archived.
+const devdocClassScanFloor = 800
 
 // TestEveryTrackedDevdocDeclaresItsClassInItsHeader is the corpus arm, and it is
 // the one that keeps the replaced manifest check honest: the whole shipped

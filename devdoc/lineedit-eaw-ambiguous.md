@@ -158,17 +158,17 @@ $ go build ./...
 
 ```
 $ go test ./internal/config/ -run 'Ambiguous' -count=1
-ok  	github.com/nick/gopi/internal/config	5.935s
+ok  	github.com/the operator/gopi/internal/config	5.935s
 
 $ GOPI_AMBIGUOUS_WIDTH=wide go test ./internal/lineedit/ -run 'Ambiguous' -count=1
-ok  	github.com/nick/gopi/internal/lineedit	1.648s
+ok  	github.com/the operator/gopi/internal/lineedit	1.648s
 
 $ go test ./internal/lineedit/ ./internal/config/ -count=1          # default (narrow)
-ok  	github.com/nick/gopi/internal/lineedit	49.839s
-ok  	github.com/nick/gopi/internal/config	4.396s
+ok  	github.com/the operator/gopi/internal/lineedit	49.839s
+ok  	github.com/the operator/gopi/internal/config	4.396s
 
 $ go test ./internal/standards/ -run 'ConfigDoc' -count=1
-ok  	github.com/nick/gopi/internal/standards	7.271s
+ok  	github.com/the operator/gopi/internal/standards	7.271s
 
 $ make test-budget PKGS='./internal/config'
 stamp: 2026-10-06T10:31:20+08:00 host=peer1 pkg=./internal/config budget=25m elapsed=28s exit=0 outcome=pass

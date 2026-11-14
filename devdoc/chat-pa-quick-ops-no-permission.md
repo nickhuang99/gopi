@@ -160,7 +160,7 @@ $ go test ./internal/agent/ -run 'TestChatPADuty' -count=1 -v
 --- PASS: TestChatPADutyNamesItsVocabularyFromTheLeafConstants (0.00s)
 --- PASS: TestChatPADutyRendersNoDestructiveBranchForm (0.02s)
 --- PASS: TestChatPADutyAgreesWithTheWriteBoundaryOnWhatIsATask (0.00s)
-ok  	github.com/nick/gopi/internal/agent	0.382s
+ok  	github.com/the operator/gopi/internal/agent	0.382s
 ```
 
 Neighbours kept green (density budget, the pre-existing same-origin pair):
@@ -171,10 +171,10 @@ $ go test ./internal/agent/ -run 'TestSystemPromptDensity|TestPromptSectionsSort
 --- PASS: TestPromptSectionsSorted (0.00s)
 
 $ go test ./internal/agent/ -run 'TestChatPADuty|TestChatOpsBudgetPrompt|TestChatPromptsCarryTheWriteBoundary'
-ok  	github.com/nick/gopi/internal/agent	2.485s
+ok  	github.com/the operator/gopi/internal/agent	2.485s
 
 $ go test ./internal/tools/ -count=1
-ok  	github.com/nick/gopi/internal/tools	260.935s
+ok  	github.com/the operator/gopi/internal/tools	260.935s
 ```
 
 #### 4.1.1 One package test is red, and it was red on master first (measured, not assumed)
@@ -188,14 +188,14 @@ carries **none** of this branch's commits, and it fails identically.
 $ cd /home/user/workspace/gopi-01a11d88a7487504b4f5355bb787b4ce   # this branch
 $ go test ./internal/agent/ -run TestDocAnchorsResolveInNormativeDocs -count=1
 --- FAIL: TestDocAnchorsResolveInNormativeDocs (1.28s)
-FAIL	github.com/nick/gopi/internal/agent	1.711s
+FAIL	github.com/the operator/gopi/internal/agent	1.711s
 $ grep -c 'BASELINE DRIFT' …   → 256
 
 $ cd /home/user/work/GoPi && git log --oneline -1   # master, no branch commits
 823305a17 feat(voice): streaming dictation — drafts live in the line, Ctrl+G settles the sentence
 $ go test ./internal/agent/ -run TestDocAnchorsResolveInNormativeDocs -count=1
 --- FAIL: TestDocAnchorsResolveInNormativeDocs (1.31s)
-FAIL	github.com/nick/gopi/internal/agent	1.718s
+FAIL	github.com/the operator/gopi/internal/agent	1.718s
 $ grep -c 'BASELINE DRIFT' …   → 256
 ```
 
@@ -296,7 +296,7 @@ $ cp <session>/artifacts/chat_pa_duty.go.fixed internal/agent/chat_pa_duty.go   
 $ grep -c 'ONLY a change to the REPOSITORY is a task' internal/agent/chat_pa_duty.go
 1
 $ go test ./internal/agent/ -run TestChatPADutyQuickOpsKeepsTheOtherTwoClasses -count=1
-ok  	github.com/nick/gopi/internal/agent	0.748s
+ok  	github.com/the operator/gopi/internal/agent	0.748s
 ```
 
 `master` (`823305a17`, no branch commit) renders clause (2) **once** — the duplicate was this

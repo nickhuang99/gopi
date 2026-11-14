@@ -38,7 +38,7 @@ func TestExpandFileRef_Passthrough(t *testing.T) {
 		"user@host", // @ not at start → untouched
 		// whitespace in the path → almost certainly prose, not a ref
 		// (a file ref must be a single path token: '@<path>', no spaces).
-		"@nick mentioned this in #chan",
+		"@the operator mentioned this in #chan",
 		"see @briefing.md for details", // @ not at start
 	}
 	for _, in := range cases {

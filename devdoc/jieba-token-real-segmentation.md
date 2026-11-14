@@ -346,7 +346,7 @@ tip `485881ab4`; the numbers below are that run's own observation, not a copy of
 §3's):
 
 Ran: cd /home/user/workspace/gopi-01a11460082276cc8215053d2952e43b && CGO_ENABLED=0 go build -o bin/gopi ./cmd/agent/   → exit 0 (BUILD_OK)
-Ran: go test ./internal/tools/ -run 'Jieba|Token|FTS' -count=1   → ok  github.com/nick/gopi/internal/tools  2.908s (exit 0)
+Ran: go test ./internal/tools/ -run 'Jieba|Token|FTS' -count=1   → ok  github.com/the operator/gopi/internal/tools  2.908s (exit 0)
 Ran: bash /home/user/.gopi/sessions/01a11460-0822-76cc-8215-053d2952e43b/e2e/measure-e2e.run.sh /home/user/.gopi/sessions/01a11460-0822-76cc-8215-053d2952e43b/e2e/gopi-before /home/user/.gopi/sessions/01a11460-0822-76cc-8215-053d2952e43b/e2e/before.db BEFORE   → index column holds grams: `id=1  逐步, 步缩, 缩小, 小检, 检索, 索算, 算法, …`
 Ran: bash /home/user/.gopi/sessions/01a11460-0822-76cc-8215-053d2952e43b/e2e/measure-e2e.run.sh /home/user/workspace/gopi-01a11460082276cc8215053d2952e43b/bin/gopi /home/user/.gopi/sessions/01a11460-0822-76cc-8215-053d2952e43b/e2e/after.db AFTER   → index column holds words: `id=1  逐步 缩小 检索 算法 逐步 缩小 and 检索 算法 在 哪里 实现 …`
 Ran: bash /home/user/.gopi/sessions/01a11460-0822-76cc-8215-053d2952e43b/e2e/probe-shapes.run.sh /home/user/.gopi/sessions/01a11460-0822-76cc-8215-053d2952e43b/e2e/gopi-before /home/user/.gopi/sessions/01a11460-0822-76cc-8215-053d2952e43b/e2e/before.db   → 移|0 , 干怎|1

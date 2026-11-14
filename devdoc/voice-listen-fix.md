@@ -100,7 +100,7 @@ green, and every red-proof reverted-and-restored below.
 **Voice suite** — `go test ./cmd/agent/ -run Voice` → `ok … 14.1s` (includes the pre-existing
 subprocess end-to-end tests, which run against the refactored handler).
 
-**Full package** — `go test ./cmd/agent/` → `ok  github.com/nick/gopi/cmd/agent  209.224s`
+**Full package** — `go test ./cmd/agent/` → `ok  github.com/the operator/gopi/cmd/agent  209.224s`
 (re-run by the verification session on the FINAL tree — after all red-proof reverts were restored
 and the branch tip was `cd83b46c`; the earlier same-day run on `39ffa706` read `192.722s`. The
 voice subset alone is `ok  1.567s`).

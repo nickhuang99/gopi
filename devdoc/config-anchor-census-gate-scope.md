@@ -135,7 +135,7 @@ That was the obvious alternative and it is measured here: `internal/standards` i
 $ scripts/test-budget.sh ./internal/standards/   # exit 1, elapsed 112s
   NEW violation (checklist 4.3) at internal/tools/memory_sync_child_cwd.go:369
   NEW violation (checklist 1b/git-env) at internal/tools/task_briefing_authoring_test.go:457
-  package verdict: FAIL: github.com/nick/gopi/internal/standards
+  package verdict: FAIL: github.com/the operator/gopi/internal/standards
 ```
 
 Hanging an always-run arm on a package that is already red would make every

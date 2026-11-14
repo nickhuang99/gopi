@@ -116,7 +116,7 @@ exported session variables flip declared outputs:
 - Build: `go build ./...` → OK (exit 0)
 - Vet: `go vet ./internal/tools/` → OK (exit 0)
 - Tests: `go test ./internal/tools/ -count=1 -timeout 1800s` → exit 1,
-  `FAIL github.com/nick/gopi/internal/tools 973.321s`, 14 `--- FAIL` lines, none
+  `FAIL github.com/the operator/gopi/internal/tools 973.321s`, 14 `--- FAIL` lines, none
   of them a bidir test and none of them a timeout event.
 - Ran: `git worktree add /home/user/workspace/gopi-control-master --detach master`
   + `go test ./internal/tools/ -count=1 -timeout 300s -run '<the 14 names>'` at
@@ -129,7 +129,7 @@ exported session variables flip declared outputs:
 ## Evidence (self-filed)
 
 - Run 2 raw transcript: `/dev/shm/gopi-bidir-full.txt` — 183 049 bytes; line
-  `EXIT=1` after `FAIL github.com/nick/gopi/internal/tools 973.321s`; the 14
+  `EXIT=1` after `FAIL github.com/the operator/gopi/internal/tools 973.321s`; the 14
   `--- FAIL` lines are at lines 67, 206, 385, 504, 540, 573, 637, 660, 682, 706,
   731, 776, 799, 869.
 - Run 3 raw transcript: `/dev/shm/gopi-bidir-dump.txt` — `panic: test timed out
@@ -139,7 +139,7 @@ exported session variables flip declared outputs:
   (`claim_holder_freshness_test.go:41`). The only `connectionOpener` frame is
   the ordinary `select` at `sql.go:1261` — memory #1296's "connectionOpener
   deadlock" reading of this dump was wrong, and #1296 has been corrected.
-- `TestDeadHolderReclaim*` alone: `ok github.com/nick/gopi/internal/tools
+- `TestDeadHolderReclaim*` alone: `ok github.com/the operator/gopi/internal/tools
   30.145s` — the family that owns the 90 s-capped panic is green on its own.
 - `git diff --stat master..HEAD` → only `devdoc/DOC-INDEX.tsv` and
   `devdoc/pty-agent-channel-feasibility.md` (deletions); `git diff master..HEAD
@@ -196,9 +196,9 @@ base I measured the three provenance rows **green in both directions**:
 
 ```
 $ go test ./internal/tools/ -count=1 -run '^(TestTaskShowBriefingFromPayload|TestTaskShowBriefingFromSession|TestTaskShowBriefingMissingSession)$'
-ok  	github.com/nick/gopi/internal/tools	3.415s
+ok  	github.com/the operator/gopi/internal/tools	3.415s
 $ env -i PATH=$PATH HOME=$HOME go test ./internal/tools/ -count=1 -run '^(same)$'
-ok  	github.com/nick/gopi/internal/tools	3.989s
+ok  	github.com/the operator/gopi/internal/tools	3.989s
 ```
 
 (all four commands in this document that name this base were run in the pristine
@@ -285,7 +285,7 @@ $ env -i PATH=$PATH HOME=$HOME go test ./internal/tools/ -count=1 -run '^TestDis
 FAIL
 
 $ env -i PATH=$PATH HOME=$HOME go test ./internal/tools/ -count=1 -run '^TestTaskShowBriefingFromPayload$'
-ok  	github.com/nick/gopi/internal/tools	0.548s
+ok  	github.com/the operator/gopi/internal/tools	0.548s
 ```
 
 The second command is the point: **the offending fixture still passed**. In a bare

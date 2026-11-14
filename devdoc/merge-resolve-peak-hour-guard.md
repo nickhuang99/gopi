@@ -203,7 +203,7 @@ than opening a fresh one — the failed path being avoided is the reverted
 - `internal/pricing/pricing.go` now references `internal/peakhours` instead of
   its own hardcoded window pair; the pricing assertions were not re-derived
   beyond the full-suite run above (the package itself passes: `ok
-  github.com/nick/gopi/internal/pricing`).
+  github.com/the operator/gopi/internal/pricing`).
 - **A real defect in the feature was found by the runtime probe and intentionally
   NOT fixed here** (it is a semantic change, not a conflict resolution, and it is
   deliberately pinned by the feature's own test). `internal/peakhours.NextOffPeak`

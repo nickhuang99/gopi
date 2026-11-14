@@ -375,7 +375,7 @@ func TestTaskSyncForwardMigrationGates(t *testing.T) {
 	}
 	// M4.20-B rank model: forward is FORWARD — in_progress→completed is a
 	// legal rank advance (2<3), and the cancelled remote intent rides the
-	// same-tier ruling. The old state-machine-refusal semantics (nick veto:
+	// same-tier ruling. The old state-machine-refusal semantics (the operator veto:
 	// "status cannot go backward, it must go forward") is retired.
 	if stats.RowsAlready != 1 || stats.RowsMigrated != 1 {
 		t.Errorf("rank model: want 1 already (pending vs pending echo) + 1 migrated (in_progress→completed): %+v", stats)

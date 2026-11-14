@@ -25,15 +25,15 @@ systemd 249 (249.11-0ubuntu3.16)
 +PAM +AUDIT +SELINUX +APPARMOR +IMA +SMACK +SECCOMP +GCRYPT +GNUTLS +OPENSSL +ACL +BLKID +CURL +ELFUTILS +FIDO2 +IDN2 -IDN +IPTC +KMOD +LIBCRYPTSETUP +LIBFDISK +PCRE2 -PWQUALITY -P11KIT -QRENCODE +BZIP2 +LZ4 +XZ +ZLIB +ZSTD -XKBCOMMON +UTMP +SYSVINIT default-hierarchy=unified
 
 === id ===
-uid=1000(nick) gid=1000(nick) groups=1000(nick),4(adm),24(cdrom),27(sudo),30(dip),44(video),46(plugdev),110(lxd),998(ollama)
+uid=1000(the operator) gid=1000(the operator) groups=1000(the operator),4(adm),24(cdrom),27(sudo),30(dip),44(video),46(plugdev),110(lxd),998(ollama)
 
 === /proc/self/cgroup ===
 0::/user.slice/user-1000.slice/session-18257.scope
 
-=== loginctl show-user nick ===
+=== loginctl show-user the operator ===
 UID=1000
 GID=1000
-Name=nick
+Name=the operator
 Timestamp=Wed 2026-07-15 21:44:21 CST
 TimestampMonotonic=661874274
 RuntimePath=/run/user/1000
@@ -49,14 +49,14 @@ Linger=yes
 
 === loginctl list-sessions ===
 SESSION  UID USER    SEAT  TTY
-  18200 1000 nick          pts/1
-  18205 1000 nick          pts/2
-  18252 1000 nick          pts/3
-  18257 1000 nick          pts/4
-  18855 1000 nick          pts/5
-  18893 1000 nick          pts/6
-  19166 1000 nick          pts/7
-  19205 1000 nick          pts/0
+  18200 1000 the operator          pts/1
+  18205 1000 the operator          pts/2
+  18252 1000 the operator          pts/3
+  18257 1000 the operator          pts/4
+  18855 1000 the operator          pts/5
+  18893 1000 the operator          pts/6
+  19166 1000 the operator          pts/7
+  19205 1000 the operator          pts/0
      c1  117 lightdm seat0 
 
 9 sessions listed.
@@ -325,7 +325,7 @@ CollectMode=inactive
 
 === XDG_RUNTIME_DIR / /run/user/1000 ===
 XDG_RUNTIME_DIR=[/run/user/1000]
-drwx------ 53 nick nick 1140 Sep 14 22:39 /run/user/1000
+drwx------ 53 the operator the operator 1140 Sep 14 22:39 /run/user/1000
 
 === systemctl status user@1000.service (head) ===
 * user@1000.service - User Manager for UID 1000
@@ -342,11 +342,11 @@ drwx------ 53 nick nick 1140 Sep 14 22:39 /run/user/1000
      CGroup: /user.slice/user-1000.slice/user@1000.service
 
 === utmp/who ===
-nick     pts/0        Sep 15 05:30 (192.0.2.113)
-nick     pts/1        Sep  6 02:45 (192.0.2.113)
-nick     pts/2        Sep  6 04:01 (192.0.2.113)
-nick     pts/3        Sep  7 02:37 (192.0.2.113)
-nick     pts/4        Sep  7 04:13 (192.0.2.113)
-nick     pts/5        Sep 12 19:35 (192.0.2.113)
-nick     pts/6        Sep 13 05:12 (192.0.2.113)
-nick     pts/7        Sep 14 19:26 (192.0.2.113)
+the operator     pts/0        Sep 15 05:30 (192.0.2.113)
+the operator     pts/1        Sep  6 02:45 (192.0.2.113)
+the operator     pts/2        Sep  6 04:01 (192.0.2.113)
+the operator     pts/3        Sep  7 02:37 (192.0.2.113)
+the operator     pts/4        Sep  7 04:13 (192.0.2.113)
+the operator     pts/5        Sep 12 19:35 (192.0.2.113)
+the operator     pts/6        Sep 13 05:12 (192.0.2.113)
+the operator     pts/7        Sep 14 19:26 (192.0.2.113)

@@ -102,7 +102,7 @@ $ CGO_ENABLED=0 go test ./internal/testutil/ -run 'TestWorkerOwnership' -v
 --- PASS: TestWorkerOwnershipCanonicalBlockIsReal (0.00s)
 --- PASS: TestWorkerOwnershipGateScansTheTree (0.03s)
 --- PASS: TestWorkerOwnershipDismissTableIsHonest (0.00s)
-ok  	github.com/nick/gopi/internal/testutil
+ok  	github.com/the operator/gopi/internal/testutil
 
 # The dismiss table is honest in the other direction too: TestWorkerOwnershipDismissTableIsHonest
 # (a dismissed file that carries the marker fails) passes on all 9 new entries.

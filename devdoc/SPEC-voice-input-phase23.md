@@ -111,7 +111,7 @@ gopi voice_input --role server --listen :7788
 - 非实时需求使延迟抖动无关（16 kHz mono f32 = 64 KB/s）
 - 30 秒录音 = 1.9 MB，ssh 传输 < 1 秒
 
-**nick 指出的硬件难点**（我没有经验的地方）：
+**the operator 指出的硬件难点**（我没有经验的地方）：
 ```
 mic 设备选择：miniaudio 枚举 / ALSA vs PulseAudio / 权限 / 多设备选错
 ```
@@ -122,7 +122,7 @@ Phase 3 才碰硬件，先列可行性再动手。
 
 ## 5. Phase 4/5：与 gopi 接线
 
-**nick 的设计（关键）**：
+**the operator 的设计（关键）**：
 ```
 转写文本 → 填入用户输入框 → 用户修改 → 按发送
 （不自动提交）
@@ -194,4 +194,4 @@ Phase 4: 文本出现在输入框且可编辑
 - CLI 参考实现: `~/work/runtime/llama.cpp/fun-asr-nano/funasr-cli/funasr-cli.cpp`
 - 模型: `~/work/funasr-models/`
 - llama.cpp 源码: `~/work/llama.cpp`（pinned 803b7fc）
-- nick 的文档: `~/work/claude/nick/asr_deepseek.txt`
+- the operator 的文档: `~/work/claude/the operator/asr_deepseek.txt`

@@ -1,6 +1,6 @@
 // Package agent — epic reframe + evaluate as ONE structured tool call.
 //
-// SPEC: briefings/SPEC-reframe-evaluate-merge.md (nick 2026-09-10, the
+// SPEC: briefings/SPEC-reframe-evaluate-merge.md (the operator 2026-09-10, the
 // 3-verdict zero-loophole revision).
 //
 // A task run starts with a raw [EPIC GOAL] briefing that may be huge (long

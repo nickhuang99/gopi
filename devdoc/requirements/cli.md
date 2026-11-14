@@ -70,7 +70,7 @@ mode the two drift guards described in §4 exist to prevent.
 
 ## 2. Who is served
 
-**The operator (nick) — the primary user, and the only one who can accept this
+**The operator (the operator) — the primary user, and the only one who can accept this
 module.** His need is stated above. Everything in §5 and §6 is judged against *his*
 ability to hold the surface, because he is the one who pays for its size. He is also
 the one who has been **shrinking** it: ledger `t-1788037892` (`source=human`,
@@ -297,15 +297,15 @@ command — that is what the gate is for.
 
 The enforcement, from the operator, each one *removing* something:
 
-- `t-1788037892` (`source=human`, **cancelled**) — "task new 彻底移除（nick 终审：
+- `t-1788037892` (`source=human`, **cancelled**) — "task new 彻底移除（the operator 终审：
   shell 层不接受此命令参数整体删除"): one word removed from the external surface
   because a second legitimate path to the same act already existed internally.
 - `t-1788039140` (`source=human`, **completed**) — "task update 收窄为 status-only
-  （nick 终审：payload/summary 全不可变 —— a job is just a job）": the *flags* of an
+  （the operator 终审：payload/summary 全不可变 —— a job is just a job）": the *flags* of an
   existing word were cut, and the reason is a principle about what a word may do, not
   a bug.
 - `t-1788039618` (`source=human`, **completed**) — "task next CLI 收缩 + claimed
-  降级为瞬时态（nick 终审：claim-and-run 原子化，无停留中间态）": a word removed and
+  降级为瞬时态（the operator 终审：claim-and-run 原子化，无停留中间态）": a word removed and
   its state hidden, with the explicit instruction to sync the help page.
 - `01a0927b-fdea-7341-ad34-8db9c9f62841` (`source=human`, completed) — the operator
   moving a word **up** to the top level because its nesting *lied* about what it is:

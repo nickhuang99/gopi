@@ -442,7 +442,7 @@ func TestLogUsageShowsText2imgFilter(t *testing.T) {
 // TestTopLevelUsageShowsTaskLedger guards the task-as-memory ledger's
 // discoverability: gopi -h must advertise the task family, its resident
 // process forms, and its append-only semantics (records permanent, no delete —
-// nick's iron rule). The per-verb detail lives in `gopi task -h`.
+// the operator's iron rule). The per-verb detail lives in `gopi task -h`.
 func TestTopLevelUsageShowsTaskLedger(t *testing.T) {
 	// The command index REFLOWS each row at a column width, so a multi-word
 	// phrase can be split across a line break ("… — append-only, never\n

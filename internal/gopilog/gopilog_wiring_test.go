@@ -28,7 +28,7 @@ import (
 
 // importToolsRe matches an actual IMPORT of the ledger package: the quoted full
 // path (a comment that merely names internal/tools does not carry the quotes).
-var importToolsRe = regexp.MustCompile(`"github\.com/nick/gopi/internal/tools"`)
+var importToolsRe = regexp.MustCompile(`"github\.com/the operator/gopi/internal/tools"`)
 
 // TestGopilogConsumesTheSharedPredicate pins that the guard is the textguard
 // one — the same predicate internal/tools uses, exercised through the actual

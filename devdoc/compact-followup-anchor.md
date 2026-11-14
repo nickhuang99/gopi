@@ -139,7 +139,7 @@ git stash pop
 --- FAIL: TestTakeOldest_HarnessFollowUpIsNotTheInstructionFloor
     the deletion stopped on the harness injection ("last user") — a framework message must not
     be the instruction floor
-FAIL  github.com/nick/gopi/internal/agent  1.865s
+FAIL  github.com/the operator/gopi/internal/agent  1.865s
 ```
 
 That failure output is the field symptom reproduced in a unit test: the context
@@ -151,7 +151,7 @@ with `AnchorStop="last user"` naming a framework message.
 ```
 --- PASS: TestCompact_HarnessFollowUpDoesNotPinTheWindow (0.14s)
 --- PASS: TestTakeOldest_HarnessFollowUpIsNotTheInstructionFloor (0.00s)
-ok  github.com/nick/gopi/internal/agent  1.456s
+ok  github.com/the operator/gopi/internal/agent  1.456s
 ```
 
 Measured with the fix (probe run, same fixture): `calls=1 before=151269

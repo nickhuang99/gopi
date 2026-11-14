@@ -1,5 +1,5 @@
 <!-- doc-class: historical -->
-# gopi 中心化调度架构定稿（2026-08-30 深夜，nick 四砍后终稿）
+# gopi 中心化调度架构定稿（2026-08-30 深夜，the operator 四砍后终稿）
 
 ## 架构（一句话）
 peer1 = 唯一大脑（队列/台账/serve/源码仓）；HP/RPi5/未来节点 = 无状态计算位（gopi 二进制 + settings + ssh 免密，零队列零存储零 serve）。

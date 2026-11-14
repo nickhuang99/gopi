@@ -255,14 +255,14 @@ three reproduced standalone on master — none is caused by the guard**:
 | `internal/tools` `TestMergeConflictTagHasOneLiteralAndOneTokenMatcher` | `go test ./internal/tools/ -run TestMergeConflictTagHasOneLiteralAndOneTokenMatcher -count=1` → **FAIL on master**, identical (`task_adoption_dedup_token_test.go:326`). (The `internal/tools` *hang* recorded in the earlier revision of this section was that same package hitting its 600s/900s timeout; with the master tip merged the package now reports its real failures in 465s instead of hanging.) |
 
 ```
-ok    github.com/nick/gopi/testsuite          10.896s
-ok    github.com/nick/gopi/internal/config      0.467s
-ok    github.com/nick/gopi/internal/standards  23.047s
-ok    github.com/nick/gopi/internal/stylegate  12.080s
-ok    github.com/nick/gopi/internal/testutil   36.730s
-FAIL  github.com/nick/gopi/cmd/agent          297.499s   ← RED on master too
-FAIL  github.com/nick/gopi/internal/agent     218.241s   ← RED on master too
-FAIL  github.com/nick/gopi/internal/tools     465.244s   ← RED on master too
+ok    github.com/the operator/gopi/testsuite          10.896s
+ok    github.com/the operator/gopi/internal/config      0.467s
+ok    github.com/the operator/gopi/internal/standards  23.047s
+ok    github.com/the operator/gopi/internal/stylegate  12.080s
+ok    github.com/the operator/gopi/internal/testutil   36.730s
+FAIL  github.com/the operator/gopi/cmd/agent          297.499s   ← RED on master too
+FAIL  github.com/the operator/gopi/internal/agent     218.241s   ← RED on master too
+FAIL  github.com/the operator/gopi/internal/tools     465.244s   ← RED on master too
 exit=1
 ```
 

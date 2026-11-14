@@ -74,9 +74,9 @@ $ go test -count=1 -run 'TestScreenAssertionDoesNotSyncOnProducerCounters' ./int
 
 # the branch carrying only the 5 escapes
 $ go test ./internal/standards/ -count=1
-ok  	github.com/nick/gopi/internal/standards	33.646s        (exit 0)
+ok  	github.com/the operator/gopi/internal/standards	33.646s        (exit 0)
 $ go test -count=1 -run 'TestScreenAssertionCountersRedProof' ./internal/standards/
-ok  	github.com/nick/gopi/internal/standards	0.194s         ← the gate still bites (its probe is untouched)
+ok  	github.com/the operator/gopi/internal/standards	0.194s         ← the gate still bites (its probe is untouched)
 $ git diff master -- internal/standards/ | wc -l
 0                                                           ← the gate package is byte-identical to master
 ```
@@ -145,10 +145,10 @@ that test had run 0s and the goroutine dump says where the binary really is —
 goroutine 17177 [syscall]:
   modernc.org/libc.Xfsync → sqlite _unixSync → _walFrames → _pagerWalFrames
   → _sqlite3PagerCommitPhaseOne → _vdbeCommit → … → database/sql.(*Tx).Commit
-  github.com/nick/gopi/internal/tools.execSchemaBatchOnce   internal/tools/memory.go:795
-  github.com/nick/gopi/internal/tools.initKnowledgeBase     internal/tools/memory.go:1067
-  github.com/nick/gopi/internal/tools.TaskNew               internal/tools/tasks.go:1484
-  github.com/nick/gopi/cmd/agent.TestClaimGroundStampNoRepoIsANoop
+  github.com/the operator/gopi/internal/tools.execSchemaBatchOnce   internal/tools/memory.go:795
+  github.com/the operator/gopi/internal/tools.initKnowledgeBase     internal/tools/memory.go:1067
+  github.com/the operator/gopi/internal/tools.TaskNew               internal/tools/tasks.go:1484
+  github.com/the operator/gopi/cmd/agent.TestClaimGroundStampNoRepoIsANoop
       cmd/agent/task_claim_ground_test.go:257
 ```
 
@@ -189,7 +189,7 @@ with the same verdict.
 $ scripts/test-budget.sh ./cmd/agent/         # budget 25m per package
 --- summary (953s wall, load 6.85->3.98, cores 4) ---
 packages: 1 finished, 1 with a failure
-  FAILED: github.com/nick/gopi/cmd/agent
+  FAILED: github.com/the operator/gopi/cmd/agent
 ```
 
 Read off that run's own `-json` stream: **the tests' summed wall clock is 973.5 s**
@@ -205,7 +205,7 @@ $ CGO_ENABLED=0 go build -o bin/gopi ./cmd/agent/        # BIN BUILT 26695891
 $ GOPI_TEST_TIMEOUT=25m scripts/test-budget.sh ./cmd/agent/
 --- summary (745s wall, load 3.98 5.09 7.07 -> 2.67 3.07 4.85, cores 4) ---
 packages: 1 finished, 1 with a failure
-  FAILED: github.com/nick/gopi/cmd/agent
+  FAILED: github.com/the operator/gopi/cmd/agent
 stamp: 2026-09-25T05:13:35… pkg=./cmd/agent/ budget=25m elapsed=745s … exit=1 outcome=fail
         stream=run-1790284415-451451.json
 # from that stream: summed test wall 762.7 s; 25 tests ≥5s; NO timeout marker.

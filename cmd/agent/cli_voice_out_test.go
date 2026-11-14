@@ -12,7 +12,7 @@ import (
 )
 
 // The --out flag is the client's debug evidence: `gopi tool voice_input --client
-// --out nick.wav` must keep the captured audio on disk. These tests pin the
+// --out voice.wav` must keep the captured audio on disk. These tests pin the
 // three properties that made the shipped state a defect — the flag was
 // ADVERTISED (usage text) while the parser REFUSED it ("unknown flag"), so the
 // advertised capability did not exist. The last test in this file is the
@@ -97,7 +97,7 @@ func TestVoiceParseOutRejectsMisuse(t *testing.T) {
 
 func TestVoiceWriteCaptureFileWritesPlayableWAV(t *testing.T) {
 	dir := t.TempDir()
-	path := filepath.Join(dir, "nick.wav")
+	path := filepath.Join(dir, "voice.wav")
 	// 0.25s of PCM16 at the capture contract — enough for a real header.
 	pcm := make([]byte, voiceCaptureSampleRate*voiceCaptureBytesPerSample/4)
 
@@ -160,7 +160,7 @@ func TestVoiceWriteCaptureFileRefusesToClobberAndKeepsTheOldFile(t *testing.T) {
 
 func TestVoiceWriteCaptureFileMissingDirectoryNamesTheAction(t *testing.T) {
 	dir := t.TempDir()
-	path := filepath.Join(dir, "absent", "nick.wav")
+	path := filepath.Join(dir, "absent", "voice.wav")
 	_, err := voiceWriteCaptureFile(path, make([]byte, 100))
 	if err == nil {
 		t.Fatal("expected a refusal for a missing parent directory")
@@ -177,7 +177,7 @@ func TestVoiceWriteCaptureFileMissingDirectoryNamesTheAction(t *testing.T) {
 
 // TestVoiceUsageAdvertisesOnlyAcceptedFlags is the class-level guard for the
 // defect this file was written for: the usage text listed `--out` while the
-// parser rejected it, so `gopi tool voice_input --client --out nick.wav` answered
+// parser rejected it, so `gopi tool voice_input --client --out voice.wav` answered
 // "unknown flag" for a capability the command's own help promised. Every flag
 // the Flags section advertises must be a member the parser accepts.
 func TestVoiceUsageAdvertisesOnlyAcceptedFlags(t *testing.T) {
@@ -253,9 +253,9 @@ var voiceUsageFlagToken = regexp.MustCompile(`^--[a-z0-9][a-z0-9-]*$`)
 // disk" — errors.Is/As reached only the write error.
 func TestVoiceCaptureFailureKeepsBothErrorsReachable(t *testing.T) {
 	writeErr := errors.New("short write: 3 of 44 bytes")
-	rmErr := errors.New("remove nick.wav: permission denied")
+	rmErr := errors.New("remove voice.wav: permission denied")
 
-	joined := voiceCaptureFailure("nick.wav", writeErr, rmErr)
+	joined := voiceCaptureFailure("voice.wav", writeErr, rmErr)
 	if !errors.Is(joined, writeErr) {
 		t.Error("the write error left the chain — errors.Is cannot reach it")
 	}
@@ -272,7 +272,7 @@ func TestVoiceCaptureFailureKeepsBothErrorsReachable(t *testing.T) {
 	}
 
 	// No cleanup failure ⇒ nothing to join, and the sentence says so.
-	clean := voiceCaptureFailure("nick.wav", writeErr, nil)
+	clean := voiceCaptureFailure("voice.wav", writeErr, nil)
 	if !errors.Is(clean, writeErr) {
 		t.Error("the write error left the chain in the clean path")
 	}

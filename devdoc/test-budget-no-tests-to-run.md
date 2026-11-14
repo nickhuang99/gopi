@@ -13,7 +13,7 @@ mistyped and the archive read as green).
 ```
 testing: warning: no tests to run
 PASS
-ok  	github.com/nick/gopi/cmd/agent	3.400s [no tests to run]
+ok  	github.com/the operator/gopi/cmd/agent	3.400s [no tests to run]
 ```
 
 and **exits 0** — measured, in a real repo package, against a near-miss typo of a
@@ -136,7 +136,7 @@ Green with the verdict restored (3/3 PASS). Raw output:
   empty; `bash -n scripts/test-budget.sh` → OK.
 * **Tests:** `go test ./internal/testutil/ -count=1 -run
   'TestBudgetFilterMatchingNoTestIsNotAPass|TestBudgetNoTestsMarkerIsStillWhatGoPrints|TestBudgetNoTestsVerdictRunsInAFixtureModule' -v`
-  → 3/3 PASS (`ok github.com/nick/gopi/internal/testutil 10.667s`).
+  → 3/3 PASS (`ok github.com/the operator/gopi/internal/testutil 10.667s`).
   The packages this diff touched, through the declared entry point:
   `make test-budget PKGS='./internal/testutil/ ./internal/smokegate/'`.
 * **Ran (the surface itself, real arguments, real repo):**

@@ -143,7 +143,7 @@ $ go test ./internal/standards/ -run TestStandardGates -count=1 -v
      so 0 STALE is a real measurement, not an artefact of the NEW count.)
 
 $ go test ./internal/standards/ -count=1
-ok  github.com/nick/gopi/internal/standards  7.796s
+ok  github.com/the operator/gopi/internal/standards  7.796s
     (whole package: TestStandardGates, TestStandardGateDataReport,
      TestBaselineReasonsAreCarried, all red-proofs — PASS)
 
@@ -157,7 +157,7 @@ $ go test ./internal/standards/ -run TestStandardGateDataReport -count=1 -v
 --- PASS: TestBaselineReasonsAreCarried (0.00s)
 
 $ go test ./internal/agent/ -count=1
-ok  github.com/nick/gopi/internal/agent  98.981s     (TestMain pin still live:
+ok  github.com/the operator/gopi/internal/agent  98.981s     (TestMain pin still live:
                                                       TestSuiteLedgerPin_IsActive PASS)
 ```
 
@@ -208,13 +208,13 @@ surfaces — flagged for master instead of patched.
 
 ```
 $ make test          # go test ./...
-ok  github.com/nick/gopi/cmd/agent          94.157s
-ok  github.com/nick/gopi/internal/agent    116.966s
-ok  github.com/nick/gopi/internal/config     0.164s
-ok  github.com/nick/gopi/internal/standards 14.093s
-ok  github.com/nick/gopi/internal/stylegate  8.404s
-ok  github.com/nick/gopi/internal/tools    266.334s
-ok  github.com/nick/gopi/testsuite           2.113s
+ok  github.com/the operator/gopi/cmd/agent          94.157s
+ok  github.com/the operator/gopi/internal/agent    116.966s
+ok  github.com/the operator/gopi/internal/config     0.164s
+ok  github.com/the operator/gopi/internal/standards 14.093s
+ok  github.com/the operator/gopi/internal/stylegate  8.404s
+ok  github.com/the operator/gopi/internal/tools    266.334s
+ok  github.com/the operator/gopi/testsuite           2.113s
 ... (22 packages total, all ok; 3 packages report [no test files])
 MAKE_TEST_EXIT=0
 ```

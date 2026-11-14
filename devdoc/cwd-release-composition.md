@@ -105,7 +105,7 @@ neither could see the composition:
       cwd_release_composition_test.go:463: pin observed: 5 reading(s) inside a REMOVED directory, e.g. ".../001/wt/.gopi/sessions/t-cwd-release-composition (deleted)" — the composition is live (the release is what ends this state)
       cwd_release_composition_test.go:500: composition observed: readings=.../001/wt → .../001/wt/.gopi/sessions/t-cwd-release-composition → .../001/wt/.gopi/sessions/t-cwd-release-composition (deleted) → /; session-inside=true; pinned=5; released=true; exited=false
   --- PASS: TestWorkerRoundReleasesCwdOfTheWorktreeItRemoves (6.23s)
-  ok  	github.com/nick/gopi/cmd/agent	10.085s
+  ok  	github.com/the operator/gopi/cmd/agent	10.085s
   ```
 - RED (both release calls neutered with `_ = worktreerelease.ReleaseReporting`,
   rebuilt, re-run, restored, quoted):
@@ -114,7 +114,7 @@ neither could see the composition:
   cwd_release_composition_test.go:472: worker pid 1220795 was never observed at / (composition=readings=.../001/wt → .../sessions/t-cwd-release-composition → .../sessions/t-cwd-release-composition (deleted); session-inside=true; pinned=234; released=false; exited=false) — the round's cwd release did not run, so the process is left standing in the directory its own close-out removed
   cwd_release_composition_test.go:476: worker pid 1220795 still stands inside the REMOVED worktree (".../sessions/t-cwd-release-composition (deleted)") after its round — the deleted inode (and every file under it) stays pinned, which is the defect this composition exists to stop
   --- FAIL: TestWorkerRoundReleasesCwdOfTheWorktreeItRemoves (23.20s)
-  FAIL	github.com/nick/gopi/cmd/agent	27.653s
+  FAIL	github.com/the operator/gopi/cmd/agent	27.653s
   ```
   (First attempt, worker-side call alone neutered: PASSED — evidence that the
   wrapper tail's call also releases; recorded in Not Done.)

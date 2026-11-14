@@ -12,11 +12,11 @@
 panic: test timed out after 10m0s
 	running tests:
 		TestScratchGCTickReportsUndeclaredProfileChildren (0s)
-github.com/nick/gopi/internal/scratch.procMapsPaths ... holder.go:354
-github.com/nick/gopi/internal/scratch.LiveHolders ... holder.go:170
-github.com/nick/gopi/internal/scratch.BaseSuiteRunReport ... base_suite_runs.go:219
-github.com/nick/gopi/cmd/agent.scratchGCTick ... scratch_gc_tick.go:180
-FAIL	github.com/nick/gopi/cmd/agent	606.210s
+github.com/the operator/gopi/internal/scratch.procMapsPaths ... holder.go:354
+github.com/the operator/gopi/internal/scratch.LiveHolders ... holder.go:170
+github.com/the operator/gopi/internal/scratch.BaseSuiteRunReport ... base_suite_runs.go:219
+github.com/the operator/gopi/cmd/agent.scratchGCTick ... scratch_gc_tick.go:180
+FAIL	github.com/the operator/gopi/cmd/agent	606.210s
 ```
 
 ## 三个必须先分清的事实（否则会修错东西）

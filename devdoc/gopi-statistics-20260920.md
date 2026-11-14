@@ -201,7 +201,7 @@ platform layer for the terminal, the screen, and the whole test harness.
 | Gate | Status | Evidence |
 |---|---|---|
 | LICENSE file | ❌ **NONE** | no `LICENSE`/`COPYING`; 0 Go files carry an SPDX header. Without one the code is "all rights reserved" — **GitHub cannot legally be used as a public repo target yet** |
-| Module path | ⚠️ `module github.com/nick/gopi` | already shaped for GitHub, but a public repo must own that path |
+| Module path | ⚠️ `module github.com/the operator/gopi` | already shaped for GitHub, but a public repo must own that path |
 | Secrets in tracked files | ✅ **none found** | no `sk-…`/`AKIA…` matches; no tracked `.env`/`*.pem`/credential files |
 | **Hardcoded operator paths in production code** | ❌ **blocker** | 70 tracked files (go/sh) carry `/home/user`; includes *production* constants: `internal/tools/task_verify_closure.go:101 taskClosureDefaultRepo = "/home/user/work/GoPi"`, `internal/tools/memory_provenance_latent.go:143 latentColumnProbeRoot = "/home/user/work/GoPi"` + 3 personal repo paths (`~/work/hermes-upstream`, …) |
 | Tracked media/logs | ⚠️ noise | 236 PNG, 32 WAV, 293 `.log/.out/.err` tracked — evidence artifacts, not source; they make a public repo look like a dump and bloat clone size |

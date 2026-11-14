@@ -181,7 +181,7 @@ func TestVoiceParseAdvertisedShapesStillParse(t *testing.T) {
 		"--list-devices":                                  {"--" + voiceFlagListDevices},
 		"--client --list-devices":                         {"--" + voiceFlagClient, "--" + voiceFlagListDevices},
 		"--client --seconds N --stdio":                    {"--" + voiceFlagClient, "--" + voiceFlagSeconds, "8", "--" + voiceFlagStdio},
-		"--client --seconds 8 --out nick.wav":             {"--" + voiceFlagClient, "--" + voiceFlagSeconds, "8"},
+		"--client --seconds 8 --out voice.wav":             {"--" + voiceFlagClient, "--" + voiceFlagSeconds, "8"},
 		"--client --self --seconds 8":                     {"--" + voiceFlagClient, "--" + voiceFlagSelf, "--" + voiceFlagSeconds, "8"},
 		"--client --self --seconds 8 --display :57":       {"--" + voiceFlagClient, "--" + voiceFlagSelf, "--" + voiceFlagSeconds, "8", "--" + voiceFlagDisplay, ":57"},
 		"--client --server-url … --seconds 8":             {"--" + voiceFlagClient, "--" + voiceFlagServerURL, "http://192.0.2.6:7788", "--" + voiceFlagSeconds, "8"},

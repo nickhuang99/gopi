@@ -226,7 +226,7 @@ All six run from the task worktree `~/workspace/gopi-testdb-scaffold`.
 
 1. **Writer shape (real test, invocation, pass)**
    `go test ./internal/tools/ -run TestMemorySearchEmptyFreshDB -count=1 -v`
-   → `--- PASS: TestMemorySearchEmptyFreshDB (0.66s)` / `ok github.com/nick/gopi/internal/tools 1.531s`.
+   → `--- PASS: TestMemorySearchEmptyFreshDB (0.66s)` / `ok github.com/the operator/gopi/internal/tools 1.531s`.
    The test's helper is `setMemoryDB` → `testutil.NewTestDBPath(t)` (§5).
 2. **Reader shape + measured cost**
    `go test ./internal/testutil/ -run TestSampleIsBuiltOnceAndTheSharedCostIsMeasured -count=1 -v`

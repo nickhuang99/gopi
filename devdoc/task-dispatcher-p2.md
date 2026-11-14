@@ -9,7 +9,7 @@ instance (`task next` / `task run` / `task serve`) claims and executes. This
 is the divide-and-conquer experiment's data plane (ADDENDUM #8: observe LLM
 behavior first, constrain later).
 
-Naming follows nick's verdict: `task_evaluate` / `task_submit` tools, `gopi
+Naming follows the operator's verdict: `task_evaluate` / `task_submit` tools, `gopi
 task next|run|submit|serve` CLI.
 
 ## Schema (internal/tools/tasks.go)

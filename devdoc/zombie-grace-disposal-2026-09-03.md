@@ -10,9 +10,9 @@
 
 Date: 2026-09-03. Branch: `feat/zombie-grace-disposal`.
 Epic: parameterized max-run + heartbeat-stall detection; the SERVER may kill
-and mark failed. nick's design 2026-09-02.
+and mark failed. the operator's design 2026-09-02.
 
-## Design intent (nick, verbatim)
+## Design intent (the operator, verbatim)
 
 > We should have a grace period for dead process. Say, 1.5 hour for any task
 > running max hours, or like current one: if any process doesn't update
@@ -89,7 +89,7 @@ The pre-existing machinery (M4.5/M4.8, merged before this epic):
 
 ## Stage-1 / Stage-2 split
 
-nick: "I suggest next time, we observe by PA to see if manual kill and
+the operator: "I suggest next time, we observe by PA to see if manual kill and
 resume can work and then decide."
 
 - **Stage 1 (this task)**: full detection + notify (restored delivery) +

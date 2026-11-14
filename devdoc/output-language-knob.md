@@ -81,7 +81,7 @@ untouched**, one knob, reply language only, three channels.
 - **Build**: `CGO_ENABLED=0 go build ./...` → no output (OK);
   `CGO_ENABLED=0 go build -o /tmp/gopi-new ./cmd/agent/` → OK.
 - **Tests**:
-  `go test ./internal/config/ -run OutputLanguage` → `ok github.com/nick/gopi/internal/config 0.796s` (14/14).
+  `go test ./internal/config/ -run OutputLanguage` → `ok github.com/the operator/gopi/internal/config 0.796s` (14/14).
   `go test ./internal/agent/ -run 'OutputLanguage|ChatPromptByteIdentical|TaskPromptByteIdentical|TaskPromptCarries|ChatPromptCarries|CompactionPromptCarries'` → `ok … 1.275s` (7/7).
   `go test ./internal/config/ ./internal/agent/` → config `ok`; agent fails ONLY
   on the pre-existing `TestDocAnchorsResolveInNormativeDocs` (master-red, see
@@ -119,10 +119,10 @@ untouched**, one knob, reply language only, three channels.
 ## Evidence (self-filed)
 
 - `CGO_ENABLED=0 go build ./...` → exit 0, no diagnostics.
-- `go test ./internal/config/ -run OutputLanguage` → `ok github.com/nick/gopi/internal/config 0.796s` (was FAIL 3/14 before the `BootstrapEnvFromArgs` hoist was added — red-then-green).
-- `go test ./internal/agent/ -run 'OutputLanguage|ChatPrompt…'` → `ok github.com/nick/gopi/internal/agent 1.275s`.
-- `go test ./internal/standards/ -run TestConfigDoc` → `ok github.com/nick/gopi/internal/standards 3.021s`.
-- `go test ./cmd/agent/ -run 'Chat|TermOnce'` → `ok github.com/nick/gopi/cmd/agent 14.035s`.
+- `go test ./internal/config/ -run OutputLanguage` → `ok github.com/the operator/gopi/internal/config 0.796s` (was FAIL 3/14 before the `BootstrapEnvFromArgs` hoist was added — red-then-green).
+- `go test ./internal/agent/ -run 'OutputLanguage|ChatPrompt…'` → `ok github.com/the operator/gopi/internal/agent 1.275s`.
+- `go test ./internal/standards/ -run TestConfigDoc` → `ok github.com/the operator/gopi/internal/standards 3.021s`.
+- `go test ./cmd/agent/ -run 'Chat|TermOnce'` → `ok github.com/the operator/gopi/cmd/agent 14.035s`.
 - byte-identity hashes: `sha256(c1 prompt) == sha256(c8 prompt) == c582d0432d3a4501e034ba18632d0c033839967a48fe0a1b88590a3157d1deb7` (201 bytes each).
 - master-red of the unrelated agent test: `go test ./internal/agent/ -run TestDocAnchorsResolveInNormativeDocs` in a detached worktree at `HEAD` (master `933c9a8c`) → `--- FAIL` — same failure, so it predates this change.
 - `gofmt -l` on the three new files and every touched Go file → the only entries are `internal/config/config.go`, whose diff is **pre-existing** formatting drift (the ①② comment bullets, untouched by this change).

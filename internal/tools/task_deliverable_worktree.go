@@ -1,5 +1,5 @@
 // Deliverable.worktree backfill at worktree-CREATION time (bugfix epic
-// 2026-09-03, nick's workflow-gap finding — the M4.8 information-closure
+// 2026-09-03, the operator's workflow-gap finding — the M4.8 information-closure
 // loop's missing worktree half). A task row carries repo at submit; the
 // executor's worktree (PROJECT.md Rule 6a — the branch + linked worktree the
 // actual work happens in) was recorded NOWHERE until close-out, so:

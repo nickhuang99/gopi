@@ -57,14 +57,14 @@
 
 **不推翻，条件是"只登记不参与"**。逐层拆解：
 
-1. **Stateless 的实际含义**（brief E 段引 nick 原话）："每次 response 携带全量表，scheduler 纯兜底，浪费一点 token 换零同步复杂度"——它约束的是**运行时任务状态的控制权**：谁决定任务进行到哪、谁驱动进度。LLM 每轮携带 tasklist，框架只读（todoState）+ 兜底（heartbeat/nudge）。
+1. **Stateless 的实际含义**（brief E 段引 the operator 原话）："每次 response 携带全量表，scheduler 纯兜底，浪费一点 token 换零同步复杂度"——它约束的是**运行时任务状态的控制权**：谁决定任务进行到哪、谁驱动进度。LLM 每轮携带 tasklist，框架只读（todoState）+ 兜底（heartbeat/nudge）。
 2. **tasks 表的定位**（tasks.go:8-9 注释原文）："the ledger is an AUDIT/TRAIL layer, not runtime control. It does not touch loop.go's tasklist/todoState/heartbeat/nudge machinery"——台账是**跨会话审计记录**，与运行时控制分层。tasks-ledger-impl-report.md 决策 1 同样明确。
 3. **自动登记做了什么**：在任务已经结束（LLM 声明全部 completed、R3 出口已判定）之后，把**既成事实**（task_id/summary/状态=completed）抄写入审计表。它：
    - 不读 todoState 做任何运行时判断（只消费当轮 tasks 变量）✓
    - 不注入新 prompt / 不改 exit 逻辑 / 不影响 heartbeat / nudge ✓
    - 不修改任务状态本身——LLM 说 completed 才登记 completed，框架从不自作主张 ✓
 4. **越界设计是反面教材**：若自动登记在任务中途读取 todoState 并"纠正"或"同步"状态，或把台账写回 tasklist 影响下一轮上下文——那就确实推翻 Stateless。本方案明确不这样做。
-5. **登记 vs 控制正交性**：Stateless 管"状态怎么活"，台账管"事实怎么留"。登记是单向抄写（LLM → 表），控制是双向协商（LLM ↔ 框架）——单向抄写不产生控制权。brief F-7 引 nick："LLM 仅能新增、修改摘要、修改状态；任何场景不能删除；调度器只读过滤，记录永久留存用于追溯"——**"记录永久留存"本身就是 nick 拍板的 Stateless 配套要求**，自动登记是它的执行手段，而非对立面。
+5. **登记 vs 控制正交性**：Stateless 管"状态怎么活"，台账管"事实怎么留"。登记是单向抄写（LLM → 表），控制是双向协商（LLM ↔ 框架）——单向抄写不产生控制权。brief F-7 引 the operator："LLM 仅能新增、修改摘要、修改状态；任何场景不能删除；调度器只读过滤，记录永久留存用于追溯"——**"记录永久留存"本身就是 the operator 拍板的 Stateless 配套要求**，自动登记是它的执行手段，而非对立面。
 
 **附加约束（设计上写死）**：登记只做 INSERT + 状态推进到 completed；不自动改 summary（LLM 摘要质量不可控，但审计重事实；人工可用 `gopi task update --summary` 修正）；不做 completed→in_progress 回退（CLI 手动才允许）；绝不删除。
 
@@ -84,7 +84,7 @@
 **对策组合**：
 1. **单次登记（结构性去重）**：只在 task-end 出口登记一次，每 run 最多写 len(tasks) 行——没有"多轮更新"场景，漂移只在跨轮中间态存在，最终列表以完成出口那轮为准。这是选 task-end 而非每轮登记的根本原因（§1）。
 2. **冲突走 UPDATE**：对每个 task_id 先 `TaskUpdate(taskID, "completed", "")` 探测（不存在会报错，tasks.go:407-409），报错则回退 `TaskNew(summary, taskID, sessionID)`；成功则已是 completed（幂等收尾）。或更简单：先 `TaskNew`，ErrDuplicate 时改走 `TaskUpdate`。两种顺序皆可，实现时选一种，报告不锁定。
-3. **跨 session 同名 task_id**（如 resume 续跑、多次运行同任务）：保留首次记录（审计完整性，nick "记录永久留存"），冲突仅 log 提示；resume 语义本身跳过登记（§6），所以正常 resume 不会撞。
+3. **跨 session 同名 task_id**（如 resume 续跑、多次运行同任务）：保留首次记录（审计完整性，the operator "记录永久留存"），冲突仅 log 提示；resume 语义本身跳过登记（§6），所以正常 resume 不会撞。
 4. **task_id 为空**：TaskNew 缺省自动生成 `t-<unix>`（tasks.go:216-217），不违反 UNIQUE。
 5. **latch 防重复**：登记用一个 per-run 布尔（如 `tasksRegistered`），与 `completionStorePrompted`（loop.go:2120）同款——R3 出口可能因 `maybeEnforceCompletionStore` 返回 true 而 continue 重入，latch 保证登记只发生一次。
 
@@ -104,14 +104,14 @@
 ## 7. 收益 vs 成本：真的比 CLI 手动更有价值吗
 
 **收益（显著 > 成本）**：
-1. **覆盖目标是核心驱动**：nick 铁则"记录永久留存用于追溯"（brief F-7）在纯 CLI 手动下**实际不可达**——memory_update 1/21435 实证 LLM 自觉调用率≈0（brief F 段），人也不会记得每任务跑 `gopi task new`。自动登记是唯一能让"每次运行的全部 completed 任务" 100% 入表的机制。
+1. **覆盖目标是核心驱动**：the operator 铁则"记录永久留存用于追溯"（brief F-7）在纯 CLI 手动下**实际不可达**——memory_update 1/21435 实证 LLM 自觉调用率≈0（brief F 段），人也不会记得每任务跑 `gopi task new`。自动登记是唯一能让"每次运行的全部 completed 任务" 100% 入表的机制。
 2. **跨会话追溯从"可能"变"必然"**：tasks.go 开篇定位"later sessions can trace what was done"——自动登记让 tasks 表真正成为可依赖的审计源，而不是靠运气的空表。
 3. **与 feedback.task_id 聚合打通**：memory_feedback 表已有 task_id 列（每 record 每 task 一票去重，brief A1 段）——自动登记后，台账 task_id 与 feedback 的 task_id 同源（都取 LLM 声明值），未来"按任务看反馈/看执行"的 join 成为可能（tasks-ledger-impl-report.md Not Done 段明确"memory_feedback 的 task_id 聚合展示留未来"——自动登记是激活该未来的前提）。
 4. **成本极低**：无新工具、无 schema 变更、无 prompt 变化、无新依赖；改动面 = loop.go R3 出口一个私有方法 + 对应测试；引擎函数全部复用。
 
 **诚实对比 CLI 手动的优势**：CLI 摘要质量更高（人工/LLM 主动写）、可登记 failed/cancelled、可改状态回退。**结论：两者互补而非替代**——自动登记保证基线覆盖（completed 100% 入表），CLI 保留为增强通道（failed/cancelled、人工修正摘要/状态）。这正是"自动兜底 + 手动精修"的分层，与调度器"纯兜底"哲学同构。
 
-**结论**：自动登记比纯 CLI 手动**更匹配 nick 的追溯目标**——后者让台账沦为仪式性空表，前者让"永久留存"落到实处。
+**结论**：自动登记比纯 CLI 手动**更匹配 the operator 的追溯目标**——后者让台账沦为仪式性空表，前者让"永久留存"落到实处。
 
 ---
 

@@ -25,7 +25,7 @@ workerDefaultMaxRounds=0=永不退出）。Fix: 连续 N 轮空队列后自动 e
 - **文档同步**：workerUsageHead（main.go）、cli_tasks.go worker block、config/help.go
   （FormatUsage worker block + GOPI_WORKER_IDLE_EXITS 入 --help-env 分组表）、
   settings.go EnvVars catalog（GOPI_WORKER_IDLE_EXITS 条目）。
-- 设计符合 nick 9/1 哲学：worker 是任务消化工具（run and self-die），非守护进程；
+- 设计符合 the operator 9/1 哲学：worker 是任务消化工具（run and self-die），非守护进程；
   要常驻则显式 `GOPI_WORKER_IDLE_EXITS=0` 或外部循环重启。
 
 ### Bug 1: worktree 移除时机（验证已修，无代码改动）

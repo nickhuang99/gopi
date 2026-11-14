@@ -27,7 +27,7 @@ being a real REPL. Measured on this machine, with the replay impl at
 ```
 $ script -qec "./bin/gopi chat --replay bd3ecf46-d9f7-49d6-8576-798cde8e8a08" /dev/null
 $ ls -l --time-style=full-iso ~/.gopi/chat_session_id_2.txt
--rw------- 1 nick nick 162 2026-10-12 06:26:25 …   # mtime was 2026-10-11 21:29:07
+-rw------- 1 the operator the operator 162 2026-10-12 06:26:25 …   # mtime was 2026-10-11 21:29:07
 $ cat ~/.gopi/chat_session_id_2.txt
 1293979:/home/user/workspace/gopi-test-scratch/queue/queue-runtime-ui-session-1293979/chatreplay-sessions-100619221/sessions/122864df-…
 ```

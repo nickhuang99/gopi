@@ -185,7 +185,7 @@ Tests:  make test-budget PKGS='./internal/devworkspace'
         → stamp: 2026-11-04T21:24:51+08:00 host=host-b pkg=./internal/devworkspace
           budget=45m elapsed=25s load_start=8.74 10.65 12.37 load_end=9.90 10.74 12.36
           cores=32 exit=0 outcome=pass stream=run-1793798691-2489991.json
-        → (floor line) github.com/nick/gopi/internal/devworkspace: 103 finished arm(s)
+        → (floor line) github.com/the operator/gopi/internal/devworkspace: 103 finished arm(s)
 Ran:    go test ./internal/devworkspace/ -run 'TestPushAccept|TestPushLanded' -count=1 -v
 Result: === RUN   TestPushAcceptedRequiresThePeerToCarryTheCommit
         --- PASS: TestPushAcceptedRequiresThePeerToCarryTheCommit (0.08s)

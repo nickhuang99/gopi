@@ -189,7 +189,7 @@ touched anywhere on this branch** (`git diff` is the baseline TSV alone).
     (1768 explicit + 381 bare continuations; 414 bare out of row/table/heading
     scope; 233 pre-existing drift entries permitted, 0 new, 0 stale permits)
   --- PASS: TestDocAnchorsResolveInNormativeDocs (0.86s)
-  ok  github.com/nick/gopi/internal/agent  1.324s
+  ok  github.com/the operator/gopi/internal/agent  1.324s
   ```
   Pre-state, same command in a detached worktree at `ccdd5f1e`: `222 pre-existing
   drift entries permitted, 22 new, 11 stale permits` → exit 1.

@@ -48,7 +48,7 @@ import (
 	"os"
 	"time"
 
-	"github.com/nick/gopi/internal/worktreerelease"
+	"github.com/the operator/gopi/internal/worktreerelease"
 )
 
 func main() {

@@ -153,7 +153,7 @@ gopi: `keyword_search` is RETIRED — use `gopi tool keyword_search` (`gopi tool
 | 断言 | 观测 |
 |---|---|
 | 构建 OK | `CGO_ENABLED=0 go build …` → `exit 0` |
-| cmd/agent 13 红 | `grep -c -- '--- FAIL' q1-cmdagent-focused-full.txt` → `13`；`FAIL github.com/nick/gopi/cmd/agent 18.177s` |
+| cmd/agent 13 红 | `grep -c -- '--- FAIL' q1-cmdagent-focused-full.txt` → `13`；`FAIL github.com/the operator/gopi/cmd/agent 18.177s` |
 | standards 3 红（聚焦亦红） | job-22：`rc=1`, `grep -c -- '--- FAIL'` → `3`，`FAIL … internal/standards 32.166s` |
 | standards 红的落点 | `docclass_gate_test.go:212` 引 `devdoc/cli-help-user-audit.md`（banner `historical` vs `DOC-INDEX.tsv:374` `normative`） |
 | checkpoint 全损 | job-19：`rc=137`、`real 4m40.127s`、`user 0m0.002s`、stdout 空 |

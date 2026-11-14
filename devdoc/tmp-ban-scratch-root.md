@@ -583,7 +583,7 @@ stronger claim — the sweep is namespace-limited, not age-limited:
 11:0x:xx  planted  /dev/shm/gopi-test-scratch/orphan-verify-3603305   (7h old, name matches NO marker)
 …  a manual watchdog run (removed=2 in that pass: the two suite-*/queue-* probes) …
 $ ls -d /dev/shm/gopi-test-scratch/orphan-verify-3603305
-drwxrwxr-x 2 nick nick 40 Sep 11 03:46                     # SURVIVED
+drwxrwxr-x 2 the operator the operator 40 Sep 11 03:46                     # SURVIVED
 ```
 
 `orphan-verify-3603305` did **not** match `SuiteRunMarker` / `LegacyScratchMarker`
@@ -618,7 +618,7 @@ $ crontab -l | grep gopi-scratch-gc-watchdog
 $ pgrep -ax cron
 1524 /usr/sbin/cron -f -P
 $ journalctl --since 10:51 --no-pager | grep CMD
-10:52:01 peer1 CRON[3613078]: (nick) CMD (GOPI_TEST_SCRATCH_HOME=/dev/shm/gopi-scratch-watchdog-proof \
+10:52:01 peer1 CRON[3613078]: (the operator) CMD (GOPI_TEST_SCRATCH_HOME=/dev/shm/gopi-scratch-watchdog-proof \
           /home/user/.local/bin/gopi-scratch-gc-watchdog.sh >/dev/null 2>&1 # gopi-scratch-gc-watchdog-TEMP-PROOF)
 $ grep gopi-scratch-watchdog-proof /home/user/.gopi/logs/scratch-gc-watchdog.log
 2026-09-11T10:52:01+08:00 scratch-gc-watchdog scratch-gc role=cli \

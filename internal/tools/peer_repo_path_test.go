@@ -207,7 +207,7 @@ func TestPeerRepoPathLastResortAnnouncesItself(t *testing.T) {
 func TestPeerRepoPathRefusesAGitURLAsADeliveryPoint(t *testing.T) {
 	for _, declared := range []string{
 		"ssh://git@peer/srv/gopi.git",
-		"nick@peer:/srv/gopi.git",
+		"the operator@peer:/srv/gopi.git",
 	} {
 		t.Run(declared, func(t *testing.T) {
 			peerRepoPathTestSettings(t, map[string]any{config.DevRepoSettingsKey: declared})

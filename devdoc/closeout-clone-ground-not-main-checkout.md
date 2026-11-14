@@ -20,7 +20,7 @@ git rev-parse --abbrev-ref HEAD      # master   ← 被切走了
 
 ```
 BEFORE: task/01a17e6759f77c52bfa2150b154a2a2b
-ok  	github.com/nick/gopi/internal/agent	0.473s
+ok  	github.com/the operator/gopi/internal/agent	0.473s
 AFTER: master
 9ef4e74 HEAD@{0}: checkout: moving from task/01a17e6759f77c52bfa2150b154a2a2b to master
 9ef4e74 HEAD@{1}: checkout: moving from master to task/01a17e6759f77c52bfa2150b154a2a2b
@@ -106,20 +106,20 @@ func finishCleanupCloneGroundSkipReason(dir, branch string) string
     main_checkout_clone_ground_test.go:78: the clone ground was moved to "master" (want it left on "feat/parked-by-a-run") — the close-out switched a LIVE run off its task branch
 --- FAIL: TestFinishCleanupPlanPredictsNothingForACloneGround (0.02s)
     main_checkout_clone_ground_test.go:130: the plan predicted {Step:main-checkout … Detail:would on feat/parked-by-a-run, would put the main checkout back on master} for a clone ground the apply declines
-FAIL	github.com/nick/gopi/internal/tools	0.572s
+FAIL	github.com/the operator/gopi/internal/tools	0.572s
 ```
 
 绿（同一组测试，修复在位）：
 
 ```
-ok  	github.com/nick/gopi/internal/tools	0.520s
+ok  	github.com/the operator/gopi/internal/tools	0.520s
 ```
 
 真 ground 上的复现命令（修复后）：
 
 ```
 BEFORE: task/01a17e6759f77c52bfa2150b154a2a2b  reflog_lines=8
-ok  	github.com/nick/gopi/internal/agent	0.458s
+ok  	github.com/the operator/gopi/internal/agent	0.458s
 AFTER: task/01a17e6759f77c52bfa2150b154a2a2b  reflog_lines=8
 ```
 
@@ -183,7 +183,7 @@ Rule 6a 说的那条"分支名就是本行的地址"），那它就是**某个�
 ```
 go build ./...                        → BUILD_OK
 go test ./internal/tools/ -run 'CloneGround|MainCheckout|FinishCleanup|Restore' -count=1
-                                      → ok  github.com/nick/gopi/internal/tools  31.519s
+                                      → ok  github.com/the operator/gopi/internal/tools  31.519s
 ```
 
 红证（逐个 mutate 后还原，每次还原后 grep `if false &&` 归零）：

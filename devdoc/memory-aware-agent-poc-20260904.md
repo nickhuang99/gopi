@@ -1,7 +1,7 @@
 <!-- doc-class: normative -->
 # Memory-Aware Agent — POC Results & Design Conclusion (2026-09-04)
 
-Source: ~/work/claude/nick/memory-aware-agent.txt (nick's design, 556 lines) + systematic POC (pure API prompt tests, no gopi in the loop).
+Source: ~/work/claude/the operator/memory-aware-agent.txt (the operator's design, 556 lines) + systematic POC (pure API prompt tests, no gopi in the loop).
 Data: /tmp/poc/results/*.jsonl (36 + 12 + 9 + earlier calls, deepseek-v4-flash, thinking disabled).
 Companion implementation ticket: write_task_area + memlayout prompt injection (gopi).
 

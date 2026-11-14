@@ -137,7 +137,7 @@ running it). Every fixture decision reads the tail after the last `"role":"user"
 ## Evidence (self-filed)
 
 - `go build ./...` printed nothing, exit 0 — BUILD_OK echoed.
-- `go test ./cmd/agent/ -run TestChatSurface -count=1` printed `ok github.com/nick/gopi/cmd/agent`
+- `go test ./cmd/agent/ -run TestChatSurface -count=1` printed `ok github.com/the operator/gopi/cmd/agent`
   three times in a row.
 - Red-proof observation: the arm-gate revert produced `--- FAIL: TestChatSurfaceBound_TerminatesAndIsRenewedOnlyByTheOperator (10.47s)`
   at `chat_surface_bound_e2e_test.go:304`, then the patch was restored and

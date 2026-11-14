@@ -92,7 +92,7 @@ refused on, naming the dead owner the kernel still records).
   `go test ./cmd/agent/ -run 'TestServeLockDiagnosisReadyBudget|TestServeLockDiagnosisHandshake|TestServeLockDiagnosisStderr' -count=1` → `ok 4.025s`.
 - **Ran** (Rule 31, the changed surface, verbatim):
   `go test ./cmd/agent/ -run 'TestServeLockRefusalDiagnosis' -count=3`
-  → `ok github.com/nick/gopi/cmd/agent 8.003s` at load **7.78 / 8.99 / 10.05**,
+  → `ok github.com/the operator/gopi/cmd/agent 8.003s` at load **7.78 / 8.99 / 10.05**,
   then `ok … 13.763s` at load **9.57 / 12.59 / 11.70**, with earlier identical
   runs green at load **12.81** and **12.24** (the latter under the pre-fix window,
   see red proof 2). `uptime` before and after each is recorded in the session's

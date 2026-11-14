@@ -29,17 +29,17 @@ TEST_RC=0
 TESTUTIL_RC=0
     --- PASS: TestHpWorkerLaunchersDryRunStartsNothing/scripts/hp/hp-worker-nightsafe.sh (0.03s)
 PASS
-ok  	github.com/nick/gopi/internal/testutil	0.388s
+ok  	github.com/the operator/gopi/internal/testutil	0.388s
 === DONE ===
 ```
 
 ## B. test package results + tail (tests.log)
 ```
-ok  	github.com/nick/gopi/internal/config	0.353s
-ok  	github.com/nick/gopi/internal/tools	428.657s
-ok  	github.com/nick/gopi/cmd/agent	244.899s
+ok  	github.com/the operator/gopi/internal/config	0.353s
+ok  	github.com/the operator/gopi/internal/tools	428.657s
+ok  	github.com/the operator/gopi/cmd/agent	244.899s
 PASS
-ok  	github.com/nick/gopi/cmd/agent	244.899s
+ok  	github.com/the operator/gopi/cmd/agent	244.899s
 PASS=1601 FAIL=0 SKIP=8
 ```
 
@@ -74,7 +74,7 @@ PREFIX_JOB_DONE
 
 ## E. standards gate
 ```
-ok  	github.com/nick/gopi/internal/standards	5.615s
+ok  	github.com/the operator/gopi/internal/standards	5.615s
 STANDARDS_RC=0
 --- SKIP: TestHelperRecycleCwdHolder (0.00s)
 --- SKIP: TestHelperWorktreeCwdHolder (0.00s)

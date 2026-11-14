@@ -146,7 +146,7 @@ Red on master (the two new test functions, classifier reverted, tests in place):
 
 ```
 --- FAIL: TestLineComposerMarkerToggleNeedsAWholeLine
-    fence_marker_test.go:117: line 4: StyleFor("module github.com/nick/gopi") = 0, want 1
+    fence_marker_test.go:117: line 4: StyleFor("module github.com/the operator/gopi") = 0, want 1
     fence_marker_test.go:117: line 6: StyleFor("prose after the block") = 1, want 0
 --- FAIL: TestBoldAfterASpuriousFenceMarkerIsBoldOnTheGrid
     fence_marker_test.go:193: row 9 still shows the marker: "the **bold title** line"
@@ -157,8 +157,8 @@ Full log: `~/.gopi/sessions/01a0dcc4-7967-7cce-8412-78e86983ab4a/red-final.txt`
 (11 FAIL lines). Green after the fix:
 
 ```
-ok  github.com/nick/gopi/internal/lineedit   8.291s
-ok  github.com/nick/gopi/internal/uiclient   0.286s
+ok  github.com/the operator/gopi/internal/lineedit   8.291s
+ok  github.com/the operator/gopi/internal/uiclient   0.286s
 ```
 
 Cell-grid measurement logged by the green run:

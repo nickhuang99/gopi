@@ -222,7 +222,7 @@ and `agent_spawn_guard_env_isolation_test.go`
 was measured both ways on the real merge:
 
 - resolution keeping BOTH sides (the correct union): gate PASSES, 60 pins,
-  `ok github.com/nick/gopi/cmd/agent 0.875s`;
+  `ok github.com/the operator/gopi/cmd/agent 0.875s`;
 - resolution taking the sibling's side only (pin dropped — the mistake a conflict
   resolver makes by hand): gate **FAILS** and names exactly the two functions —
 
@@ -289,9 +289,9 @@ floor) survived and will be removed by me, not left for the pass.
 $ CGO_ENABLED=0 go build -o bin/gopi ./cmd/agent/     # OK, 22791168 bytes
 $ go test -count=1 -run TestSpawnersPinTheRepoContext ./cmd/agent/
     repo-context gate: 53 lifecycle spawn site(s) scanned, 50 pinned, 3 escaped
-    ok  github.com/nick/gopi/cmd/agent
+    ok  github.com/the operator/gopi/cmd/agent
 $ go test -count=1 -run 'TestSpawnersPinTheRepoContext|TestRepoContextHazard|TestWorkerWaitsAndPicksUpNewTaskWithoutRestart' ./cmd/agent/
-    ok  github.com/nick/gopi/cmd/agent  4.392s
+    ok  github.com/the operator/gopi/cmd/agent  4.392s
 ```
 
 Mutation proof that the hardened recognition is load-bearing: with the 5 pins

@@ -75,15 +75,15 @@
 - **全量测试**（master 合并后）：`go test ./...` → **9/9 包 PASS**：
 
 ```
-ok  github.com/nick/gopi/cmd/agent
-ok  github.com/nick/gopi/internal/agent
-ok  github.com/nick/gopi/internal/checkpoint
-ok  github.com/nick/gopi/internal/config
-ok  github.com/nick/gopi/internal/deepseek
-ok  github.com/nick/gopi/internal/gopilog
-ok  github.com/nick/gopi/internal/proxy
-ok  github.com/nick/gopi/internal/text2img
-ok  github.com/nick/gopi/internal/tools
+ok  github.com/the operator/gopi/cmd/agent
+ok  github.com/the operator/gopi/internal/agent
+ok  github.com/the operator/gopi/internal/checkpoint
+ok  github.com/the operator/gopi/internal/config
+ok  github.com/the operator/gopi/internal/deepseek
+ok  github.com/the operator/gopi/internal/gopilog
+ok  github.com/the operator/gopi/internal/proxy
+ok  github.com/the operator/gopi/internal/text2img
+ok  github.com/the operator/gopi/internal/tools
 ```
 
 - **E2E（隔离 HOME + 临时 DB，真库零污染）**：

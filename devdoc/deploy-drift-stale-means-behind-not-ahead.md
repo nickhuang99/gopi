@@ -156,7 +156,7 @@ go test ./cmd/agent/ -run 'TestVersion|TestDeployDriftRefLine|TestDeployDriftSum
 # 在一个真仓库里，把 master / origin/master 指到 TIP，把 gitPushcheck 指到更早的提交，
 # 然后造两份真二进制（否则 toolchain 的 VCS 信息会覆盖伪造的 revision）
 CGO_ENABLED=0 go build -buildvcs=false \
-  -ldflags "-X github.com/nick/gopi/internal/version.Revision=<sha>" \
+  -ldflags "-X github.com/the operator/gopi/internal/version.Revision=<sha>" \
   -o <repo>/bin/gopi ./cmd/agent/
 <repo>/bin/gopi version --drift
 ```

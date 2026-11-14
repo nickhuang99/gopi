@@ -1,6 +1,6 @@
 package tools
 
-// Failed-merge auto-revert (epic merger-failure-dual-mechanism, nick
+// Failed-merge auto-revert (epic merger-failure-dual-mechanism, the operator
 // 2026-09-08 mechanism 2 — "merger is responsible to maintain master
 // buildable. if new merging failure causing master not buildable, then
 // revert the failed merging branch back to original buildable state,
@@ -8,7 +8,7 @@ package tools
 //
 // When a merger sweep round lands ≥1 branch into master and the post-merge
 // rebuild FAILS, the landed merge leaves master UNBUILDABLE — the exact
-// regression nick's mechanism 2 eliminates. This helper restores master to
+// regression the operator's mechanism 2 eliminates. This helper restores master to
 // the PRE-SWEEP buildable tip and re-creates the branch refs the sweep
 // deleted on landing (git branch -d), so the branch WORK survives for a
 // re-developer even though the merge itself is unwound.
@@ -22,7 +22,7 @@ package tools
 // change is preserved: merge commits come from branches whose refs are
 // re-created at their pre-merge tips. So no work is lost by the reset; the
 // throwaway master simply returns to the last buildable state, exactly
-// nick's verdict.
+// the operator's verdict.
 
 import (
 	"context"

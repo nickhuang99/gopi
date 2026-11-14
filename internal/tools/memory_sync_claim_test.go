@@ -136,7 +136,7 @@ func TestRollbackLocalClaimRevertsToPending(t *testing.T) {
 	}
 
 	// The anti-deadlock property: the reverted row is claimable again
-	// (both sides get another chance — the nick veto of cancel).
+	// (both sides get another chance — the the operator veto of cancel).
 	res, err := TaskNextFiltered("tester2", "", "")
 	if err != nil {
 		t.Fatalf("re-claim: %v", err)

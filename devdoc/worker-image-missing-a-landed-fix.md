@@ -42,7 +42,7 @@ toolchain stamps every build with its VCS revision:
 ```bash
 for p in 1033859 1035646 1038465 3633443; do
   printf 'pid=%s rev=%s\n' "$p" \
-    "$(go version -m /proc/$p/exe 2>/dev/null | awk '/mod\tgithub.com\/nick\/gopi/{print $3}')"
+    "$(go version -m /proc/$p/exe 2>/dev/null | awk '/mod\tgithub.com\/the operator\/gopi/{print $3}')"
 done
 # pid=1033859 rev=v0.0.0-20261028060848-84beb309ce3c
 # pid=1035646 rev=v0.0.0-20261028060848-84beb309ce3c
@@ -210,14 +210,14 @@ written between 01:24:13 and 01:24:15
 $ ls -l --time-style=+%H:%M:%S ~/.gopi/worker/ACK_*.consumed | wc -l
 8
 $ ls -l --time-style=+%H:%M:%S ~/.gopi/worker/ACK_*.consumed
--rw-r--r-- 1 nick nick 185 01:24:14 ACK_1033859.3929899.consumed
--rw-r--r-- 1 nick nick 185 01:24:14 ACK_1034814.3929899.consumed
--rw-r--r-- 1 nick nick 185 01:24:13 ACK_1035646.3929899.consumed
--rw-r--r-- 1 nick nick 185 01:24:15 ACK_1037353.3929899.consumed
--rw-r--r-- 1 nick nick 185 01:24:15 ACK_1038465.3929899.consumed
--rw-r--r-- 1 nick nick 185 01:24:15 ACK_1040879.3929899.consumed
--rw-r--r-- 1 nick nick 185 01:24:15 ACK_1042251.3929899.consumed
--rw-r--r-- 1 nick nick 185 01:24:14 ACK_3633443.3929899.consumed
+-rw-r--r-- 1 the operator the operator 185 01:24:14 ACK_1033859.3929899.consumed
+-rw-r--r-- 1 the operator the operator 185 01:24:14 ACK_1034814.3929899.consumed
+-rw-r--r-- 1 the operator the operator 185 01:24:13 ACK_1035646.3929899.consumed
+-rw-r--r-- 1 the operator the operator 185 01:24:15 ACK_1037353.3929899.consumed
+-rw-r--r-- 1 the operator the operator 185 01:24:15 ACK_1038465.3929899.consumed
+-rw-r--r-- 1 the operator the operator 185 01:24:15 ACK_1040879.3929899.consumed
+-rw-r--r-- 1 the operator the operator 185 01:24:15 ACK_1042251.3929899.consumed
+-rw-r--r-- 1 the operator the operator 185 01:24:14 ACK_3633443.3929899.consumed
 ```
 
 Drain is "finish this round, then leave", so the population keeps shrinking

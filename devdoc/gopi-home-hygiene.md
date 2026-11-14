@@ -358,7 +358,7 @@ peer1's `/home/user/.gopi/logs/` likewise holds today's
 `worker-20260912-03301{6,7,8}-{1,2,3}.log` with a root count of 0.
 
 **Test gate at branch head.** `go test ./internal/testutil -run
-'GopiHome|GopiWorker' -count=1` → `ok github.com/nick/gopi/internal/testutil
+'GopiHome|GopiWorker' -count=1` → `ok github.com/the operator/gopi/internal/testutil
 12.2s` (all four hygiene tests). `bash -n` clean, `shellcheck` 0 findings.
 Full `go test ./...` (background job) fails ONLY in `cmd/agent` +
 `internal/stylegate`, both **inherited from master**: `git diff master --

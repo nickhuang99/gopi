@@ -32,7 +32,7 @@ sql "select printf('  of those telemetry (gopi run): %d', count(*)) from tasks w
 sql "select printf('  substantive (non-telemetry)  : %d', count(*)) from tasks where $WHERE and summary not like 'gopi run%';"
 sql "select printf('  with payload >200 chars      : %d', count(*)) from tasks where $WHERE and length(payload)>200;"
 sql "select printf('  summary-only (payload<=200)  : %d', count(*)) from tasks where $WHERE and summary not like 'gopi run%' and (length(payload)<=200 or payload='');"
-sql "select printf('  operator-quote marker hit    : %d', count(*)) from tasks where $WHERE and (payload like '%nick 原话%' or payload like '%nick 终审%' or payload like '%nick 拍板%' or payload like '%nick 明确要求%' or payload like '%nick 同意%' or payload like '%nick 裁决%' or payload like '%不采用%' or payload like '%我们不%' or payload like '%I want%');"
+sql "select printf('  operator-quote marker hit    : %d', count(*)) from tasks where $WHERE and (payload like '%the operator 原话%' or payload like '%the operator 终审%' or payload like '%the operator 拍板%' or payload like '%the operator 明确要求%' or payload like '%the operator 同意%' or payload like '%the operator 裁决%' or payload like '%不采用%' or payload like '%我们不%' or payload like '%I want%');"
 sql "select printf('  id shape t-<unix>            : %d', count(*)) from tasks where $WHERE and task_id like 't-%';"
 sql "select printf('  id shape <uuid>              : %d', count(*)) from tasks where $WHERE and task_id not like 't-%';"
 sql "select printf('  snapshot max(created_at) IS  : %s', datetime(max(created_at),'unixepoch')) from tasks where $WHERE;"
@@ -56,7 +56,7 @@ echo
 echo "== E4  commit messages explaining a why =="
 echo "commits reachable (--all)           : $(git log --all --format=%H | wc -l)"
 echo "subject/body rationale grep         : $(git log --all -i -E --grep='because|so that|instead of|to avoid|root cause|rather than|the reason|the real' --format=%H | wc -l)"
-echo "commit body quoting the operator    : $(git log --all -i -E --grep='operator ruling|operator.s rule|nick .*终审|原话' --format=%H | wc -l)"
+echo "commit body quoting the operator    : $(git log --all -i -E --grep='operator ruling|operator.s rule|the operator .*终审|原话' --format=%H | wc -l)"
 
 echo
 echo "== E5  intent-stating comments in production Go =="

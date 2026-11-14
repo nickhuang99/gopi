@@ -1,6 +1,6 @@
 package tools
 
-// TaskMerge (epic "gopi task merge", 2026-09-01, nick's design correction:
+// TaskMerge (epic "gopi task merge", 2026-09-01, the operator's design correction:
 // "why is it not a gopi cli interface?"): the merge back-pressure that used
 // to live as inline bash loops in the post-receive hook (v1-v4 incident
 // chain 16c391a/b9aabac/d63a6f5/c80f870) is now ONE token-free Go command.

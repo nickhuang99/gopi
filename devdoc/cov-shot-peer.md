@@ -40,9 +40,9 @@
 $ go vet ./internal/shot/            → clean (exit 0)
 
 # tests
-$ go test -count=1 ./internal/shot/  → ok  github.com/nick/gopi/internal/shot  38.677s
+$ go test -count=1 ./internal/shot/  → ok  github.com/the operator/gopi/internal/shot  38.677s
 $ go test -count=1 -cover ./internal/shot/
-    ok  github.com/nick/gopi/internal/shot  8.179s  coverage: 78.5% of statements
+    ok  github.com/the operator/gopi/internal/shot  8.179s  coverage: 78.5% of statements
 $ go tool cover -func=/tmp/cov.out | grep Capture
     shot.go:93   Capture        92.6%     ← was 0% (no test mentioned it)
 
@@ -142,7 +142,7 @@ Two tests are wall-clock-bound and skip under `-short`
 $ cd ~/workspace/gopi-cov-shot
 $ go vet ./internal/shot/                     # exit 0, no output
 $ go test -count=1 -short ./internal/shot/
-ok  	github.com/nick/gopi/internal/shot	8.196s
+ok  	github.com/the operator/gopi/internal/shot	8.196s
 
 $ go test -count=1 -v ./internal/shot/        # new tests (existing ones elided)
 --- PASS: TestCaptureHappyPathStubChrome (0.55s)
@@ -170,7 +170,7 @@ $ go test -count=1 -v ./internal/shot/        # new tests (existing ones elided)
     --- PASS: TestCaptureWaitSelector/never_matches
 --- PASS: TestCaptureBareHostnameGetsScheme (0.50s)
 PASS
-ok  	github.com/nick/gopi/internal/shot	38.771s
+ok  	github.com/the operator/gopi/internal/shot	38.771s
 
 $ python3 scripts/func_coverage.py --pkg internal/shot --uncovered
 package                                     funcs    cov    pct  tests
@@ -391,7 +391,7 @@ $ go test -count=1 -run 'TestFindChromeEnvOverride|TestIsExecutableFile|TestCapt
 
 # full package (acceptance gate)
 $ go build ./...                        → OK
-$ go test -count=1 ./internal/shot/     → ok github.com/nick/gopi/internal/shot 38.731s
+$ go test -count=1 ./internal/shot/     → ok github.com/the operator/gopi/internal/shot 38.731s
 $ gofmt -l internal/shot/ ; go vet ./internal/shot/   → clean, exit 0
 
 # end-to-end repro through the real binary

@@ -1,7 +1,7 @@
 <!-- doc-class: roadmap -->
 # GoPi ↔ Scheduler Integration — Design
 
-> 源自: ~/work/claude/nick/gopi_scheduler_integration_design_talk.txt Part 2
+> 源自: ~/work/claude/the operator/gopi_scheduler_integration_design_talk.txt Part 2
 > 日期: 2026-08-02
 > 状态: 设计阶段。GoPi 和 Scheduler 各自独立开发，集成在未来阶段。
 >       不污染 Scheduler 项目的核心调度逻辑。
@@ -154,5 +154,5 @@ Phase 4:        与外部 scheduler 项目对接                未来
 ## 参考
 
 - `~/work/scheduler/DESIGN.md` — 外部 Scheduler 项目设计（独立）
-- `~/work/claude/nick/gopi_scheduler_integration_design_talk.txt` — 原始讨论
+- `~/work/claude/the operator/gopi_scheduler_integration_design_talk.txt` — 原始讨论
 - GoPi 5 工具: read, write, edit, bash (local), remote (cross-machine)

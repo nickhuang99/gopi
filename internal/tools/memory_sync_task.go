@@ -36,7 +36,7 @@
 //	       ④ provenance — tags are FORCED to carry the from-node tag
 //	       (from-peer1 style, decided at import, never trusted from the
 //	       file — the same rule as brew rows' node:<host>).
-//	       ⑤ no-overwrite (the nick hard rule) — an existing row's
+//	       ⑤ no-overwrite (the the operator hard rule) — an existing row's
 //	          summary is NEVER rewritten: a same-task_id pending
 //	          row only gets a tags union.
 package tools
@@ -436,7 +436,7 @@ func SyncTaskExport(opts SyncTaskExportOptions) (*SyncTaskPatch, *SyncTaskExport
 	// row, B mirrored it, B's pull must deliver A's verdict back even
 	// though B's copy carries from-A; the import face absorbs the echo
 	// idempotently). Terminal verdicts are history, not channel spam.
-	// M4.24 anti-reflow correction (nick's anchor-premise doctrine): the
+	// M4.24 anti-reflow correction (the operator's anchor-premise doctrine): the
 	// gate must exclude rows the PEER sent us (from-<peer> — relaying them
 	// back is the reflow), NOT rows tagged from-<self>. Self-tagged rows
 	// are either local-born (first export is their WHOLE POINT) or
@@ -1405,7 +1405,7 @@ func importTaskAdoptParentsTx(ctx context.Context, tx *sql.Tx, existing *Task, r
 }
 
 // importTaskExisting handles a task_id collision without ever rewriting the
-// row's data (mechanic ⑤ — the nick hard rule):
+// row's data (mechanic ⑤ — the the operator hard rule):
 //   - live patch row + SAME work: tags union ONLY / already (idempotent
 //     re-import — the pre-collision semantics, unchanged). "Same work" is
 //     the SUMMARY (epic 01a0fea1 ③): the payload is the briefing's free-text
@@ -1499,7 +1499,7 @@ func importTaskExistingTx(ctx context.Context, tx *sql.Tx, existing *Task, r Syn
 	if !syncTaskForwardable(r.Status) {
 		// A cancelled patch row: the intent to abandon travels, but the
 		// RULING on a terminal collision is completed-wins (the epic's
-		// completed-vs-cancelled ruling — work is never dropped, the nick
+		// completed-vs-cancelled ruling — work is never dropped, the the operator
 		// hard rule). See terminalConflictRuling below.
 		return terminalConflictRulingTx(ctx, tx, existing, r, tags, stats, lifecycle)
 	}
@@ -1517,7 +1517,7 @@ func importTaskExistingTx(ctx context.Context, tx *sql.Tx, existing *Task, r Syn
 	if syncTaskForwardable(r.Status) && existing.Status != taskStatusPending {
 		// M4.20-B rank advance over a live row. If the local row was
 		// cancelled, that intent is provenance — it survives the ruling as
-		// the cancel-was-intent tag (the nick hard rule: the cancel was
+		// the cancel-was-intent tag (the the operator hard rule: the cancel was
 		// only intent, work is never dropped, and audits see WHY).
 		if existing.Status == taskStatusCancelled {
 			if err := taskTagsUnionTx(ctx, tx, existing.TaskID, existing.Tags,
@@ -1537,7 +1537,7 @@ func importTaskExistingTx(ctx context.Context, tx *sql.Tx, existing *Task, r Syn
 			// Terminal-vs-terminal divergence: local was cancelled (the
 			// intent to abandon), the patch carries finished work
 			// (completed|failed|verified). The ruling is COMPLETED WINS —
-			// work is never dropped (the nick hard rule); the cancel was
+			// work is never dropped (the the operator hard rule); the cancel was
 			// only intent, and it stays on the row as a tag.
 			if err := taskTagsUnionTx(ctx, tx, existing.TaskID, existing.Tags,
 				syncTaskCancelIntentTag); err != nil {
@@ -1602,7 +1602,7 @@ const syncTaskCancelIntentTag = "cancel-was-intent"
 
 // terminalConflictRuling applies the completed-vs-cancelled ruling for a
 // cancelled patch row colliding with an existing local row. The principle:
-// completed (work exists) outranks cancelled (intent to abandon) — the nick
+// completed (work exists) outranks cancelled (intent to abandon) — the the operator
 // hard rule "never drop work". The cancel intent is NOT discarded: it lands
 // on the row as the cancel-was-intent tag (provenance, visible in
 // devdocs and audits). Matrix:
@@ -1687,7 +1687,7 @@ func syncStatusMoveRecord(ctx context.Context, q QueryExecer, leg, peer, taskID,
 // sync-back row completed on ANOTHER node — its remote walk was legal there;
 // this row is catching up to distributed truth. The gates here are stricter
 // where it matters: the source must be pending (a claimed/in_progress row is
-// live local execution — never clobbered, the nick rule) and the target
+// live local execution — never clobbered, the the operator rule) and the target
 // must be forwardable (syncTaskForwardable — cancelled stays local).
 func syncTaskMoveStatusTx(ctx context.Context, tx *sql.Tx, taskID, fromStatus, status, peer string) error {
 	now := float64(time.Now().Unix())
@@ -1769,7 +1769,7 @@ func stringSetEqual(a, b []string) bool {
 //   same id, remote newer  → adopt remote truth … migrated
 //   same id, remote older  → local already ahead … skipped
 //   local terminal row     → never demoted, whatever the remote says … skipped
-//                            (终态不回退 — the nick hard rule)
+//                            (终态不回退 — the the operator hard rule)
 //   same ts, same content  → duped (idempotent re-harvest)
 //   same ts, diverging     → conflict (two truths, one stamp — human eyes)
 //   row-level error        → failed (+ reason in Errors)
@@ -1916,7 +1916,7 @@ func harvestStatusRank(status string) int {
 // harvestBlockedLocal re-states the hard ownership rules the same-stamp
 // ladder must respect even when the remote row wins the rank comparison: a
 // local terminal row is never rewritten (终态不回退), and a live local
-// execution is never clobbered by a live-status rewrite (the nick rule).
+// execution is never clobbered by a live-status rewrite (the the operator rule).
 func harvestBlockedLocal(localStatus, remoteStatus string) bool {
 	if terminalTaskStatus(localStatus) {
 		return true
@@ -2381,7 +2381,7 @@ func harvestReconcile(ctx context.Context, tx *sql.Tx, bus *taskNotifyBus, count
 	// same-second collision. The incoming live row is relabeled and queued —
 	// a conflict line would leave HP's new work stranded on the peer. Only a
 	// locally-pending row relabels: a protected local state (terminal — 终态
-	// 不回退 / live-owned — the nick rule) keeps the status ladder, a remote
+	// 不回退 / live-owned — the the operator rule) keeps the status ladder, a remote
 	// TERMINAL report for a different task is refused (inserting a ghost
 	// completion fabricates history), and a remoteLive twin keeps the ladder
 	// (the peer is executing it — queuing it here invites double execution).
@@ -2435,7 +2435,7 @@ func harvestReconcile(ctx context.Context, tx *sql.Tx, bus *taskNotifyBus, count
 			}
 			counts.Migrated++
 		case remoteRank > harvestStatusRank(local.status):
-			// Terminal outranks the local live row but the nick rule blocks
+			// Terminal outranks the local live row but the the operator rule blocks
 			// the rewrite of a locally-owned run — unless the content is
 			// identical (the twin-in-flight case: the shared row's own
 			// completion result).
@@ -2476,7 +2476,7 @@ func harvestReconcile(ctx context.Context, tx *sql.Tx, bus *taskNotifyBus, count
 		return
 	}
 	// A live local execution owned by this node is protected from
-	// live-status rewrites (the nick rule): the remote twin arrives
+	// live-status rewrites (the the operator rule): the remote twin arrives
 	// coerced to pending, and pending must never pull a live row back
 	// down the ladder. A remote TERMINAL row (the run's result) is NOT a
 	// live rewrite — it lands via harvestUpdate below, migrating the live

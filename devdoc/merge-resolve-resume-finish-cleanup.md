@@ -92,7 +92,7 @@ adopts master's naming:
    action", which is what the assertion was for.
 
 Verification: the same bounded selection then reports `ok
-github.com/nick/gopi/internal/tools 8.496s`; `go build ./...` is clean.
+github.com/the operator/gopi/internal/tools 8.496s`; `go build ./...` is clean.
 
 ## Pre-existing break proven on the master baseline (not introduced here)
 

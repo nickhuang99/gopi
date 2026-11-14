@@ -151,7 +151,7 @@ EOF
 === 9. sanity: the SECOND independent path into a working session bus (X11 autolaunch) ===
 DISPLAY=[localhost:14.0] XAUTHORITY=[<unset>]
 total 0
-drwx------  3 nick nick   60 Aug 27 07:18 .
-drwx------ 53 nick nick 1140 Sep 14 22:39 ..
-drwx------  2 nick nick   40 Aug 27 07:18 services
+drwx------  3 the operator the operator   60 Aug 27 07:18 .
+drwx------ 53 the operator the operator 1140 Sep 14 22:39 ..
+drwx------  2 the operator the operator   40 Aug 27 07:18 services
 === end p7 ===

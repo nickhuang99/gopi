@@ -180,7 +180,7 @@ gate gets disabled):
 
 - `go build ./...` → `BUILD_OK` (exit 0).
 - Injection-contract tests, `go test ./internal/agent/ -run 'GOPI|Kernel|Prompt|Resume|System' -count=1`:
-  `ok github.com/nick/gopi/internal/agent 0.299s` — includes the resume test
+  `ok github.com/the operator/gopi/internal/agent 0.299s` — includes the resume test
   asserting exactly two system messages `[kernel, GOPI.md]` and the kernel-purity
   test (project wording must NOT be in the kernel). Both still pass.
 - Existing criterion tests that scan the file this change edited,

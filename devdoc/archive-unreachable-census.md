@@ -153,7 +153,7 @@ reason: unowned
 
 branch: rescued-216459d87ffd
 repo:   /home/user/work/GoPi
-actor:  nick@peer1
+actor:  the operator@peer1
 task:   (none)
 at:     2026-10-12T17:44:59+08:00
 detail: unreachable tip rescued by epic 01a12f65 …

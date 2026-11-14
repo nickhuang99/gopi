@@ -81,15 +81,15 @@ none:
 ```
 --- failures (from this run's own events: Action=="fail"; the budget did NOT trip) ---
   failing tests: 15
-  --- FAIL: TestBareRunKeepsAllItsArtifactsInOneSessionDir  (github.com/nick/gopi/cmd/agent)
+  --- FAIL: TestBareRunKeepsAllItsArtifactsInOneSessionDir  (github.com/the operator/gopi/cmd/agent)
       === RUN   TestBareRunKeepsAllItsArtifactsInOneSessionDir
           bare_session_one_dir_e2e_test.go:78: …-tested-bin/gopi (mtime 2026-10-13T07:56:32+08:00)
           is OLDER than …/internal/agent/clock.go (mtime 2026-10-13T07:56:33+08:00) — …
       --- FAIL: TestBareRunKeepsAllItsArtifactsInOneSessionDir (0.01s)
   --- FAIL: TestNoOutputRowsAtAll  (…)
       (NO output rows in this stream for this test: the 'Action":"fail' event carries no body of its own, so this verdict is recorded with its evidence absent — the full stream below is the only place left to look)
-  package verdict: FAIL: github.com/nick/gopi/cmd/agent
-  package verdict: FAIL: github.com/nick/gopi/internal/agent
+  package verdict: FAIL: github.com/the operator/gopi/cmd/agent
+  package verdict: FAIL: github.com/the operator/gopi/internal/agent
 full stream: /home/user/workspace/gopi-test-scratch/queue/test-budget/run-1791849386-333342.json
 ```
 

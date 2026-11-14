@@ -175,7 +175,7 @@ miss 高度集中：**65/684 个请求（9.5%）贡献 96.4% 的 miss**（7,620,
 **运行**：
 ```
 CGO_ENABLED=0 go test ./internal/agent/ -count=1 -run 'Trim|Cache|Prefix|Compact|Estimate|Context|Measured'
-ok  github.com/nick/gopi/internal/agent
+ok  github.com/the operator/gopi/internal/agent
 ```
 **红→绿实测**：把调用点换回 `TrimToFit(limit)` 后
 `TestCacheEvictionIsAmortizedNotNibbled` FAIL（`amortized=6`），换回即绿。
@@ -386,7 +386,7 @@ GOPI_HOME=$EV/real_ab8/base  GOPI_CONTEXT_WINDOW=60000 $EV/gopi.baseline chat --
 CGO_ENABLED=0 go build ./...                       # BUILD_OK
 CGO_ENABLED=0 go build -o $EV/gopi.fixed ./cmd/agent/   # BUILD_FIXED_OK
 CGO_ENABLED=0 go test ./internal/agent/ -count=1 -run 'Trim|Cache|Prefix|Compact|Estimate|Context|Measured'
-# ok github.com/nick/gopi/internal/agent 2.070s
+# ok github.com/the operator/gopi/internal/agent 2.070s
 # TestCacheEvictionIsAmortizedNotNibbled 日志：sliding-window TrimToFit=6, cache-aware trimToFitStickyHead=1
 # 把 loop.go 调用点换回 a.Ctx.TrimToFit(limit) 后同一测试 FAIL(amortized=6) —— 红→绿已实测
 CGO_ENABLED=0 go test ./internal/agent/ -count=1

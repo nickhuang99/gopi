@@ -151,7 +151,7 @@ $ go test ./internal/tools/ -run 'TestSelfPeer|TestRemotePeerSendIsNotTouched' -
 --- PASS: TestRemotePeerSendIsNotTouchedByTheSelfPeerGate (0.04s)
 --- PASS: TestSelfPeerGateDoesNotFireWhenTheLedgerIsAlreadyPrivate (0.03s)
 --- PASS: TestSelfPeerTransferTakeOverIsRefusedBeforeTheOffer (0.00s)
-ok  	github.com/nick/gopi/internal/tools
+ok  	github.com/the operator/gopi/internal/tools
 ```
 
 `TestRemotePeerSendIsNotTouchedByTheSelfPeerGate` is the no-collateral arm: an

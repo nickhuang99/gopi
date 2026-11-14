@@ -118,7 +118,7 @@ were implicitly waiting for.
 - `gofmt -l cmd/agent/cli_worker_resume.go internal/tools/task_resume_ground.go
   cmd/agent/cli_worker_daemon.go cmd/agent/main.go` → no output.
 - `go test ./internal/tools/ -run 'TestResumeGround' -count=1` → `ok
-  github.com/nick/gopi/internal/tools 23.462s` (7 tests).
+  github.com/the operator/gopi/internal/tools 23.462s` (7 tests).
 - `go test ./cmd/agent/ -run 'TestWorkerResume' -v -count=1` → all PASS, incl.
   `TestWorkerResumeOwnsTheGround` (`--- PASS: … (5.63s)`).
 - `testsuite/resume_acceptance.sh` on `/tmp/gopi-new`:

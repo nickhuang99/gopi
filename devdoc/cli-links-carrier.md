@@ -109,7 +109,7 @@ the REAL binary (`-h` runs nothing; an unknown subcommand fails).
   `go test ./cmd/agent/ -run 'Cli|Term|Usage|Completion|Contract' -count=1`
   → before the fix, 2 FAIL (`topLevelCommandNames contains "cli" but no dispatcher
   handles it`; `dispatcherOfToken key "cli" (→ TermSubcommand) is not a cliVerbs
-  constant`); after → `ok github.com/nick/gopi/cmd/agent 19.052s`.
+  constant`); after → `ok github.com/the operator/gopi/cmd/agent 19.052s`.
 - Re-verified after the fix, unscoped per package:
   `go test ./internal/config/ -count=1` → ok 0.883s;
   `go test ./internal/tools/ -run 'Chat|Mode' -count=1` → ok 38.172s;
@@ -155,7 +155,7 @@ you> Run the bash tool with exactly: head -3 go.mod
 ⚙ result bash exit=0
 ```
 ```
-module github.com/nick/gopi
+module github.com/the operator/gopi
 go 1.24.0
 (exit=0; the third line is blank.)
 ```
@@ -185,7 +185,7 @@ turn is typed in place, no navigation.
 
 ⚙ call bash head -3 go.mod
 ⚙ result bash exit=0
-First line: `module github.com/nick/gopi`</pre>
+First line: `module github.com/the operator/gopi`</pre>
 <form action="/cli/chat" method="post">
 <input type="text" name="message" size="72" autocomplete="off">
 </form>
@@ -199,7 +199,7 @@ page load renders:
 
 ```
 <pre>you&gt; Run the bash tool with exactly: head -3 go.mod  Then tell me the first line.
-gopi&gt; First line: `module github.com/nick/gopi`
+gopi&gt; First line: `module github.com/the operator/gopi`
 </pre>
 ```
 
@@ -208,7 +208,7 @@ gopi&gt; First line: `module github.com/nick/gopi`
 
 ```
  you> Run the bash tool with exactly: head -3 go.mod  Then tell me the first line.
- gopi> First line: `module github.com/nick/gopi`
+ gopi> First line: `module github.com/the operator/gopi`
  you> Reply with exactly: OK
  gopi> OK
 

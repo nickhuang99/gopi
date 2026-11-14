@@ -143,7 +143,7 @@ ARM_B_MS=0 ERR=<nil>
 ARM_C_WRITE_ERR=attempt to write a readonly database (8)
 --- PASS: TestReadOnlyDSNRefusesWrites (0.14s)
 PASS
-ok  	github.com/nick/gopi/internal/tools/probe_seam	16.834s
+ok  	github.com/the operator/gopi/internal/tools/probe_seam	16.834s
 ```
 
 ### 5c. What each arm establishes

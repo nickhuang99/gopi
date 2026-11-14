@@ -49,7 +49,7 @@ membership is not a cgroup operation at all.
 
 **5-why #5 — why no unprivileged migration works here:** cgroup v2 gates a `cgroup.procs`
 write on the **common ancestor** of the source and the target, not on the target directory
-(measured: `user@1000.service/cgroup.procs` is `nick:nick 0644`, `mkdir` in the same subtree
+(measured: `user@1000.service/cgroup.procs` is `the operator:the operator 0644`, `mkdir` in the same subtree
 succeeds, the write still returns `EACCES`). The common ancestor of
 `session-18855.scope` and `user@1000.service/<dir>` is `user-1000.slice`, owned `root:root 0755`.
 

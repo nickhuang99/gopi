@@ -44,7 +44,7 @@ echo "=== systemctl status user@1000.service ==="
 systemctl status user@1000.service --no-pager 2>&1 | head -20
 
 echo "=== logind record ==="
-loginctl show-user nick -p RuntimePath -p Service -p Slice -p Linger -p State -p Timestamp 2>&1
+loginctl show-user the operator -p RuntimePath -p Service -p Slice -p Linger -p State -p Timestamp 2>&1
 
 echo "=== journal (this boot): user-runtime-dir@1000 / user@1000 ==="
 journalctl --no-pager -b 2>/dev/null | grep -E 'user-runtime-dir@1000|user@1000\.service|User Runtime Directory /run/user/1000' | tail -30

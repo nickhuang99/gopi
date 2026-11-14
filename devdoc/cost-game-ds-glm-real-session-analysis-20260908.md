@@ -1,7 +1,7 @@
 <!-- doc-class: normative -->
 # DS vs GLM 成本博弈：真实 session 数据核算（cache 二次增长 / trim 边界 / 输出大头）
 
-日期 2026-09-08。触发：nick 指出成本精读报告未转行动 + 强调 DS/GLM 竞争的关键是
+日期 2026-09-08。触发：the operator 指出成本精读报告未转行动 + 强调 DS/GLM 竞争的关键是
 cache-hit-rate 维持能力。用 gopi 真实 session 数据核算。
 
 ## 数据源
@@ -13,7 +13,7 @@ cache-hit-rate 维持能力。用 gopi 真实 session 数据核算。
 - 88299d17: 命中/新增 = 22.4x（3.16M 命中 vs 141K miss）
 - 15f8ff7a: 命中/新增 = 22.9x（7.47M vs 326K）
 - 接近理论 n/2（101 轮≈50x 上界被 trim 打断）——agent 反复小请求全命中，
-  命中量是输入的 n(n-1)/2 二次增长。nick 理解正确。
+  命中量是输入的 n(n-1)/2 二次增长。the operator 理解正确。
 
 ## 核心发现 2：trim 经济——9 次中 7 次净赚（出人意料）
 | session | trim 轮 | 省前缀/轮 | 额外 miss/轮 | DS 净 |
@@ -46,7 +46,7 @@ cache-hit-rate 维持能力。用 gopi 真实 session 数据核算。
   钱的第一杠杆 = 控制 thinking 输出（thinking-trim 已做，剥离 reasoning 省 99.8%）
 - **GLM 大头 = 命中**（68-70%）——cache 单价 0.115 贵。GLM 跑长会话的省钱 =
   最大化命中率（少 trim / 保持前缀稳定）
-- **同一个 session，两模型的省钱策略相反**——印证 nick 的"不同模型玩不同游戏"
+- **同一个 session，两模型的省钱策略相反**——印证 the operator 的"不同模型玩不同游戏"
 
 ## 对策略的含义
 1. **compaction vs cache 竞争被化解大半**：write_task_area 稳定结论块 = trim 后

@@ -862,8 +862,8 @@ func TestPeerWorkerLaunchersRefusalSurvivesASchedulerEnvironment(t *testing.T) {
 			out, status, _ := peerRunStarter(t, tc.rel, sb.dir, nil, append(sb.base,
 				"SHELL=/bin/sh",
 				"PATH=/usr/bin:/bin",
-				"USER=nick",
-				"LOGNAME=nick",
+				"USER=the operator",
+				"LOGNAME=the operator",
 				"GOPI_ALLOW_AUTOSTART=1", // a would-be escape hatch: it must mean NOTHING
 				"GOPI_WORKER_FORCE=1",
 			)...)

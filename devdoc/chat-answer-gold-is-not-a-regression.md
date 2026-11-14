@@ -88,7 +88,7 @@ So `you>` was styled and `hello` was left at the terminal's default colour —
 2. **Guards, observed green**:
    `go test ./internal/lineedit/ -run 'TestPaletteChangeNeverMovesACell|TestHermesAnswerBodyCarriesTheGoldText' -v`
    → `--- PASS: TestHermesAnswerBodyCarriesTheGoldText`, `--- PASS: TestPaletteChangeNeverMovesACell`,
-   `ok github.com/nick/gopi/internal/lineedit 2.482s` (whole package `ok 9.792s`;
+   `ok github.com/the operator/gopi/internal/lineedit 2.482s` (whole package `ok 9.792s`;
    `TestEditorPromptIsEmphasisedAndBufferIsNot` PASS).
 3. **Live PTY, real binary, mock model** (`devdoc/evidence/sgr-grid/capture.sh`):
    - default capture (`TERM=xterm-256color`, no `COLORTERM`) → the answer body is

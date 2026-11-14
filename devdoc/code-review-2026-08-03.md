@@ -193,9 +193,9 @@ $ go build ./...          ✅ clean
 $ go vet ./...            ✅ clean
 $ go test -race ./...     ✅ all pass (no races)
 
-ok   github.com/nick/gopi/internal/agent     5.040s  coverage: 62.4%
-ok   github.com/nick/gopi/internal/deepseek  13.437s  coverage: 63.2%
-ok   github.com/nick/gopi/internal/tools     1.051s  coverage: 56.1%
+ok   github.com/the operator/gopi/internal/agent     5.040s  coverage: 62.4%
+ok   github.com/the operator/gopi/internal/deepseek  13.437s  coverage: 63.2%
+ok   github.com/the operator/gopi/internal/tools     1.051s  coverage: 56.1%
 ```
 
 The deepseek package took 13s because integration tests (`TestChatSimple`,

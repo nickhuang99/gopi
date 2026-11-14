@@ -82,7 +82,7 @@ later widening the absence rule into "any failure is a precondition".
 * before (fresh checkout of the parent commit, zero `docs/`):
   `FAIL capdemo_external_gate_test.go:64: ... which is NOT a pass`
 * after (fresh checkout of the branch, zero `docs/`):
-  `ok github.com/nick/gopi/internal/standards` (exit 0), marker printed under `-v`
+  `ok github.com/the operator/gopi/internal/standards` (exit 0), marker printed under `-v`
 * real bundle copied in (796 KB, `/home/user/work/GoPi/docs/archive/demo/external`)
   → the real script runs and the gate goes **red** on its real stale anchors
   (`A6`/`A7`: the pinned commit `30f655b1…` does not resolve in that checkout) —

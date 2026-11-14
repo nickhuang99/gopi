@@ -281,7 +281,7 @@ $ go test ./internal/testutil/ -run 'TestGlmNightWatch|TestWorkerStartupLogNameI
 --- PASS: TestGlmNightWatchRefusedLaunchIsLoudAndNonZero (2.32s)   [refused/accepted/dry-run all PASS]
 --- PASS: TestGlmNightWatchOperatorPathStartsWorkersUnattended (5.59s)
 --- PASS: TestWorkerStartupLogNameIsTheLaunchersFile (0.00s)
-ok  	github.com/nick/gopi/internal/testutil	7.958s
+ok  	github.com/the operator/gopi/internal/testutil	7.958s
 ```
 
 RED-proof — the documented pre-fix injection (one line, verbatim from
@@ -362,7 +362,7 @@ $ go test ./internal/testutil/ -run 'TestGlmNightWatch|TestWorkerStartupLogNameI
 --- PASS: TestGlmNightWatchRefusedLaunchIsLoudAndNonZero (3.45s)
 --- PASS: TestGlmNightWatchOperatorPathStartsWorkersUnattended (13.39s)
 --- PASS: TestWorkerStartupLogNameIsTheLaunchersFile (0.00s)
-ok  	github.com/nick/gopi/internal/testutil	17.003s
+ok  	github.com/the operator/gopi/internal/testutil	17.003s
 ```
 
 RED-proof (the documented pre-fix injection, appended to `scripts/glm-night-watch.sh`, then
@@ -419,7 +419,7 @@ $ (fresh worktree of 8380ce9c) go test -count=1 ./internal/testutil/ -run TestGl
     glm_night_watch_test.go:421: the operator-path probe failed: exit status 1
         gopi-worker-up.sh: /dev/shm/gnw-ctl-new/bin/gopi is missing or not executable (build with: make build)
 $ (fresh worktree of the branch tip) … same command → PASS
-ok  	github.com/nick/gopi/internal/testutil	16.689s      # 5/5 GlmNightWatch* + launcher-log-name
+ok  	github.com/the operator/gopi/internal/testutil	16.689s      # 5/5 GlmNightWatch* + launcher-log-name
 ```
 
 So the direction of the fix is measured, not asserted: **red on master, green on the branch**,

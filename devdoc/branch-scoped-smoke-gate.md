@@ -85,9 +85,9 @@ the same text the helper writes).
 
 `internal/smoke/e2e_test.go` — the **executed** gate. Real git repo + real
 `scripts/test-budget.sh` as the child process, with the fixture module named
-`github.com/nick/gopi/smokefixture` and hot-linked to the repo by a `replace`
+`github.com/the operator/gopi/smokefixture` and hot-linked to the repo by a `replace`
 directive. That module path is deliberate: Go's internal-visibility rule is a
-**path** rule, so only a module under `github.com/nick/gopi/` may import
+**path** rule, so only a module under `github.com/the operator/gopi/` may import
 `internal/heavytest` — proven necessary by measurement (see "Pitfall 1").
 
 Two sub-tests:
@@ -112,9 +112,9 @@ working-tree scan) never see a `heavytest.Require` call site that is not real.
 ## Pitfalls found (worth the next agent's time)
 
 1. **`internal` visibility is a PATH rule, not a module rule.** A fixture module
-   named `example.com/smokefix` cannot import `github.com/nick/gopi/internal/…`
+   named `example.com/smokefix` cannot import `github.com/the operator/gopi/internal/…`
    (`use of internal package … not allowed`). Naming the fixture module
-   `github.com/nick/gopi/smokefixture` and `replace`-ing the repo fixes it and
+   `github.com/the operator/gopi/smokefixture` and `replace`-ing the repo fixes it and
    needs no `go.sum`.
 2. **The entry point's summary hides passing tests.** `scripts/test-budget.sh`
    streams `go test -json` into its artifact and prints only a summary; only the

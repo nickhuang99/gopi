@@ -93,17 +93,17 @@ func TestCategoryMatchSeesTheSubcommandBehindWrapperOperands(t *testing.T) {
 		want  string
 		ok    bool
 	}{
-		{"a privileged wrapper's operand", []string{"sudo", "-u", "nick", "git", "push", "--force", "origin", "master"}, CategoryRefMoveWord, true},
+		{"a privileged wrapper's operand", []string{"sudo", "-u", "the operator", "git", "push", "--force", "origin", "master"}, CategoryRefMoveWord, true},
 		{"a group operand", []string{"sudo", "-g", "staff", "git", "reset", "--hard", "HEAD~3"}, CategoryRefMoveWord, true},
 		{"env's assignment operand", []string{"env", "FOO=1", "git", "push", "--force", "origin", "master"}, CategoryRefMoveWord, true},
 		{"env's consuming option", []string{"env", "-u", "GIT_DIR", "git", "update-ref", "-d", "refs/heads/x"}, CategoryRefMoveWord, true},
 		{"a bare assignment prefix", []string{"GIT_DIR=/nowhere", "git", "push", "--force", "origin", "main"}, CategoryRefMoveWord, true},
 		{"a scheduler's operand", []string{"nice", "-n", "10", "git", "push", "--force", "origin", "main"}, CategoryRefMoveWord, true},
-		{"stacked wrappers", []string{"sudo", "-u", "nick", "env", "FOO=1", "git", "push", "--force", "origin", "master"}, CategoryRefMoveWord, true},
+		{"stacked wrappers", []string{"sudo", "-u", "the operator", "env", "FOO=1", "git", "push", "--force", "origin", "master"}, CategoryRefMoveWord, true},
 		// THE DISCRIMINATOR: `git` is `echo`'s argument, so no row applies, and
 		// the typed words (which name no `echo` row) decide.
 		{"git only as an argument", []string{"echo", "git", "push", "--force"}, "", false},
-		{"a read behind a wrapper", []string{"sudo", "-u", "nick", "git", "status"}, "", false},
+		{"a read behind a wrapper", []string{"sudo", "-u", "the operator", "git", "status"}, "", false},
 	}
 	for _, c := range cases {
 		t.Run(c.name, func(t *testing.T) {

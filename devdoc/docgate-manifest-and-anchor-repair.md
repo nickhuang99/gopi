@@ -155,11 +155,11 @@ classified and the generators re-run):
 
 ```
 $ go test ./internal/standards/ -run TestDocManifestCoversEveryDevdocFile -count=1
-ok  	github.com/nick/gopi/internal/standards	0.906s
+ok  	github.com/the operator/gopi/internal/standards	0.906s
     docclass_gate_test.go:130: devdoc/DOC-INDEX.tsv: 2084 rows cover 2084 files under devdoc/ (classes: map[historical:1638 index-meta:1 normative:433 roadmap:12])
 
 $ go test ./internal/agent/ -run TestDocAnchorsResolveInNormativeDocs -count=1
-ok  	github.com/nick/gopi/internal/agent	1.465s
+ok  	github.com/the operator/gopi/internal/agent	1.465s
     docanchor_test.go:214: doc anchors verified: 2013 across 433 normative docs (1634 explicit + 379 bare continuations; 393 bare out of row/table/heading scope; 243 pre-existing drift entries permitted, 0 new, 0 stale permits)
 
 $ go test ./internal/standards/ -run TestDocManifestCoversEveryDevdocFile -count=1 >/dev/null 2>&1; echo "gate1 exit=$?"
@@ -175,9 +175,9 @@ merely looked clean — the acceptance shape:
 ```
 $ git status --porcelain
 $ go test ./internal/standards/ -run TestDocManifestCoversEveryDevdocFile -count=1
-ok  	github.com/nick/gopi/internal/standards	0.876s        # exit=0
+ok  	github.com/the operator/gopi/internal/standards	0.876s        # exit=0
 $ go test ./internal/agent/ -run TestDocAnchorsResolveInNormativeDocs -count=1
-ok  	github.com/nick/gopi/internal/agent	1.458s            # exit=0
+ok  	github.com/the operator/gopi/internal/agent	1.458s            # exit=0
 $ python3 tools/docclass/classify.py . && python3 tools/docclass/banner.py .
 $ git status --porcelain
 $ CGO_ENABLED=0 go build -o /tmp/gopi-docgate ./cmd/agent/

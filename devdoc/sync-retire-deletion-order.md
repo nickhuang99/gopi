@@ -231,7 +231,7 @@ measured here rather than assumed. Removing the three files
 
 ```bash
 $ go build -gcflags="-e" ./...    # the three files removed
-# github.com/nick/gopi/cmd/agent
+# github.com/the operator/gopi/cmd/agent
 cmd/agent/cli_tasks_worker.go:667:12: undefined: newWorkerRefLagCheck
 1 error line
 ```
@@ -372,7 +372,7 @@ function:
 
 ```bash
 $ go build ./...    # after renaming SyncInstalledScripts
-# github.com/nick/gopi/cmd/agent
+# github.com/the operator/gopi/cmd/agent
 cmd/agent/cli_tasks_rebuild.go:380:15: undefined: tools.SyncInstalledScripts
 ```
 

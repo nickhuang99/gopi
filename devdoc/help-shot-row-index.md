@@ -67,8 +67,8 @@ own `-h`, which is the row's stated policy. Budgets hold:
 
 ```
 $ go test -count=1 -run 'TestUsageAdvertisesShot|TestShotUsageShowsDefaults|TestTopLevelUsage|TestFormatUsage' ./cmd/agent/ ./internal/config/
-ok  github.com/nick/gopi/cmd/agent     0.522s
-ok  github.com/nick/gopi/internal/config 0.720s
+ok  github.com/the operator/gopi/cmd/agent     0.522s
+ok  github.com/the operator/gopi/internal/config 0.720s
 
 $ go build -o bin/gopi ./cmd/agent/ && ./bin/gopi -h | wc -l
 148

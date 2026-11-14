@@ -23,9 +23,9 @@ doccheck: malformed-row  — devdoc/DOC-INDEX.tsv line 2369: 1 field(s), want 4 
 doccheck: 1 gap(s) between devdoc/ and devdoc/DOC-INDEX.tsv       # exit 1
 
 $ go test ./internal/standards/ ./internal/docindex/ ./cmd/agent/ -run 'DocIndex|Manifest|DocClass|DocCheck'
-ok  	github.com/nick/gopi/internal/standards
-ok  	github.com/nick/gopi/internal/docindex
-ok  	github.com/nick/gopi/cmd/agent
+ok  	github.com/the operator/gopi/internal/standards
+ok  	github.com/the operator/gopi/internal/docindex
+ok  	github.com/the operator/gopi/cmd/agent
 ```
 
 Three defects, and they are separate:
@@ -149,7 +149,7 @@ Pre-fix `classify.py`, post-fix Go readers, the fixed manifest, the new test:
     manifest carrying a blank line while both Go readers refuse it — the three faces cannot print
     opposite verdicts about one file (the defect this shape rule exists to remove):
         0 gap(s) between devdoc/ and devdoc/DOC-INDEX.tsv
-FAIL	github.com/nick/gopi/internal/standards	1.268s
+FAIL	github.com/the operator/gopi/internal/standards	1.268s
 ```
 
 Pre-fix sources, pre-fix manifest: the Go standards gates were green while the

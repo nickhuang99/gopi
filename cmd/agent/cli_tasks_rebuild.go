@@ -70,11 +70,11 @@ func rebuildMeasureSuffix(res *tools.RebuildResult) string {
 // matches the new master tip. Never fatal: skip/failure are logged (or
 // notified for a real failure), the pass result is already committed.
 //
-// Mechanism 2 (epic merger-failure-dual-mechanism, nick 2026-09-08): when
+// Mechanism 2 (epic merger-failure-dual-mechanism, the operator 2026-09-08): when
 // the landing rebuild FAILS and the caller supplied revert (the merger
 // sweep's pre-round restore snapshot — non-nil only when this pass's own
 // sweep landed the merged commits), master is UNBUILDABLE and the merger
-// must not leave it that way ("period" in nick's verdict). serveRebuild
+// must not leave it that way ("period" in the operator's verdict). serveRebuild
 // then auto-reverts: RestoreMaster unwinds this round's landing back to the
 // pre-sweep buildable tip + re-creates the deleted branch refs, and reports
 // the revert (notify). revert nil = caller did NOT merge anything of its own

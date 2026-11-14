@@ -21,7 +21,7 @@ memsync 前向迁移规则（M4 五机制）未定义终态间冲突：
 
 ## 裁决原则
 
-**completed 赢**（工作成果不可丢——nick 的 DO NOT drop 数据约束推论）；
+**completed 赢**（工作成果不可丢——the operator 的 DO NOT drop 数据约束推论）；
 **cancelled 让位但留痕**（意图不丢失，落到行 tags：`cancel-was-intent`）。
 
 ## 冲突矩阵（实现于 importTaskExisting + terminalConflictRuling）

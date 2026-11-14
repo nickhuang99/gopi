@@ -27,7 +27,7 @@ import (
 // it without a cycle). The testutil import lives in THIS _test.go only, so
 // heavytest's production import set stays empty — proven, not argued:
 //
-//	CGO_ENABLED=0 go list -deps ./internal/heavytest | grep -c 'nick/gopi'  ->  1
+//	CGO_ENABLED=0 go list -deps ./internal/heavytest | grep -c 'the operator/gopi'  ->  1
 //
 // (the package itself; testutil and its transitive deps are _test-only and
 // never appear in the production import graph).

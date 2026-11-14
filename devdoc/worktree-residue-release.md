@@ -159,7 +159,7 @@ other repos, any branch ref, any `archive/*` tag.
 
 - Build: `CGO_ENABLED=0 go build ./...` → OK (exit 0).
 - Tests: `go test ./internal/tools/ -run 'WorktreeSweep|Reclaim|ClaimHolder|FinishCleanup' -count=1`
-  → `ok github.com/nick/gopi/internal/tools 6.104s`;
+  → `ok github.com/the operator/gopi/internal/tools 6.104s`;
   `go test ./internal/tools/ -run MergeBuildGate -count=1` → `ok … 6.653s` (the gates this
   epic diagnoses: the stale-registration sweeper, both reclaim legs, the finish-cleanup chain
   and the merge-time build gate).

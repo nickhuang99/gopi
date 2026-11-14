@@ -1,12 +1,12 @@
 <!-- doc-class: normative -->
-# 夜间推进报告 — 2026-09-11（nick 休息期间，PA 自主推进）
+# 夜间推进报告 — 2026-09-11（the operator 休息期间，PA 自主推进）
 
 **交接**：07:25 ｜ **上次更新**：08:45 ｜ **状态**：进行中
 **基线**：master `0bc42bd`（独立验证 EXIT=0 / 零 FAIL / 20 包全绿）
 
 ---
 
-## 一、对表结果（nick 要求）
+## 一、对表结果（the operator 要求）
 
 ### A. TODO 陈旧状态已修正（6 项已完成未标记）
 
@@ -42,7 +42,7 @@ Rule 16 全流程链条 / 能动性第一步 / cgroup 资源路线 / 测试基�
 |---|---|---|
 | `/tmp` 禁令全套（`7c96ecf`） | scratch 落 `~/workspace` + **硬 device-id 断言**（非 warning）+ 12 个脚本迁移 + 生产者修复 | PA 实测 device 2052≠2051 ✅ |
 | Computer-Use 闭环（`902bab4`） | `screen_capture`（眼）+ `act`（手，**纯 Go X11，零 CGO**） | cap sha 变化证明闭环 ✅ |
-| **测试套件严密性审查**（`0bc42bd`） | nick 指出的漏洞：报告 `devdoc/test-code-discipline-audit.md`（311 行）+ `/tmp` 检查扩展到 Go 测试源码 | **独立全量 EXIT=0** ✅ |
+| **测试套件严密性审查**（`0bc42bd`） | the operator 指出的漏洞：报告 `devdoc/test-code-discipline-audit.md`（311 行）+ `/tmp` 检查扩展到 Go 测试源码 | **独立全量 EXIT=0** ✅ |
 
 > **WORKER-OWNERSHIP: OPERATOR-ONLY — devdoc/worker-ownership.md** — the operator owns this; an agent must never run it (submit the work instead: `gopi task submit`).
 
@@ -111,7 +111,7 @@ Rule 16 全流程链条 / 能动性第一步 / cgroup 资源路线 / 测试基�
 
 ---
 
-## 七、待 nick 决策
+## 七、待 the operator 决策
 
 1. **`make test` 的环境依赖**：`cmd/agent` 的 brew 测试需 `ANTHROPIC_AUTH_TOKEN`，无凭证时 FAIL。
    是否要让它在无凭证时 skip（而不是 FAIL）？

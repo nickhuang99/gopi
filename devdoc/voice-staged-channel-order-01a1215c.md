@@ -158,7 +158,7 @@ it fails on the nil-channel assertion; against the fix it passes in 0.00 s.
   the mode reports "produced no audio within 10s" about a live device`
   → `--- FAIL: TestVoiceStagedStreamTakesTheChannelOfTheOpenSource (0.00s)` → `FAIL`
 - **Ran (regression, green)**: with the fix restored →
-  `--- PASS: TestVoiceStagedStreamTakesTheChannelOfTheOpenSource (0.00s)` → `ok github.com/nick/gopi/cmd/agent 1.129s`
+  `--- PASS: TestVoiceStagedStreamTakesTheChannelOfTheOpenSource (0.00s)` → `ok github.com/the operator/gopi/cmd/agent 1.129s`
 - **Ran (device enumeration, to name the device the probe used)**:
   `pactl list short sources` → `1 alsa_input.pci-0000_00_1f.3.analog-stereo … SUSPENDED` (the source `@DEFAULT_SOURCE@` resolves to on this host).
 

@@ -108,7 +108,7 @@ so the two agree with each other while both disagree with `HEAD`.
 ```
 Build:  go build ./... / go vet ./internal/standards/     -> OK (exit 0)
 Tests:  go test ./internal/standards/ -run TestGateRedProofRestore -count=1
-        -> ok github.com/nick/gopi/internal/standards  6.462s (4 sub-tests PASS)
+        -> ok github.com/the operator/gopi/internal/standards  6.462s (4 sub-tests PASS)
         make test-budget PKGS='./internal/standards' -> FAILED, 2 tests, BOTH
         PRE-EXISTING and unrelated to this diff (see the note below the block)
 Ran:    the gate's own red proof + corpus/floor + real-tree + LIVE fixture, listed below,
@@ -152,7 +152,7 @@ the same commit). Filed as a bug row, with the raw commands and output:
 ### Evidence (self-filed)
 
 - `go test ./internal/standards/ -run TestGateRedProofRestore -count=1` → `ok
-  github.com/nick/gopi/internal/standards 6.462s` (exit 0), four sub-tests
+  github.com/the operator/gopi/internal/standards 6.462s` (exit 0), four sub-tests
   PASS: `RedProof`, `CorpusAndFloor`, `RealTreeIsGreen`, `LiveFailureAndHardenedCriterion`.
 - Real-tree run with its own figure: `red-proof restore criterion: 2517 file(s)
   scanned, 0 hit(s)` — a read floor of 300 files / 500 units is asserted

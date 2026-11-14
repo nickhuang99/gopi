@@ -64,14 +64,14 @@
   （本会话观察到）。
 - **Tests（分支范围 smoke）:**
   - `go test ./internal/memoryprefetch/ -run 'Turn|Defaults' -count=1` →
-    `ok github.com/nick/gopi/internal/memoryprefetch 0.027s`
+    `ok github.com/the operator/gopi/internal/memoryprefetch 0.027s`
   - `go test ./internal/lineedit/ -run 'PasteRef|StripPaste' -count=1` →
-    `ok github.com/nick/gopi/internal/lineedit 1.486s`
+    `ok github.com/the operator/gopi/internal/lineedit 1.486s`
   - `go test ./cmd/agent/ -run 'Prefetch|TurnAdoption|TurnInput|TurnPlan|TurnSeal' -count=1` →
-    `ok github.com/nick/gopi/cmd/agent 6.084s`，**EXIT=0**
+    `ok github.com/the operator/gopi/cmd/agent 6.084s`，**EXIT=0**
   - 交付点同步（`3f48a0fd`）**之后**重跑：
     `go test ./cmd/agent/ -run 'TurnAdoption|TurnInput|TurnPlan|TurnSeal' -count=1` →
-    `ok github.com/nick/gopi/cmd/agent 2.526s`（后台 job-6，报 exited code=0）；
+    `ok github.com/the operator/gopi/cmd/agent 2.526s`（后台 job-6，报 exited code=0）；
     同一条命令在同步前（含 `Prefetch` 项）也报 `ok … 6.084s`。
   - `make test-budget PKGS='./internal/memoryprefetch ./internal/lineedit ./cmd/agent'`
     本会话**未跑完**：`./cmd/agent` 整包耗时远超本次会话预算，被本会话主动结束

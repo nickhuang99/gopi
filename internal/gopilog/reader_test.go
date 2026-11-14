@@ -38,8 +38,8 @@ var anthropicSession = []string{
 	`{"message":{"content":[{"thinking":"Let me read go.mod.","type":"thinking"}],"role":"assistant"},"timestamp":"2026-08-06T14:58:13.908451918+08:00","type":"assistant"}`,
 	`{"message":{"content":[{"id":"call_00_abc","input":{"path":"go.mod"},"name":"read","type":"tool_use"}],"role":"assistant"},"timestamp":"2026-08-06T14:58:13.909299996+08:00","type":"assistant"}`,
 	`{"cache_hit":1920,"cache_miss":138,"completion_tokens":81,"iteration":0,"prompt_tokens":2058,"timestamp":"2026-08-06T14:58:13.91019884+08:00","type":"request"}`,
-	`{"message":{"content":[{"content":"module github.com/nick/demo\n\ngo 1.22\n","tool_use_id":"call_00_abc","type":"tool_result"}],"role":"user"},"timestamp":"2026-08-06T14:58:13.911110238+08:00","type":"tool_result"}`,
-	`{"message":{"content":[{"text":"The module is **github.com/nick/demo**.\n\n[TASK_LIST_BEGIN]\n[{\"task_id\":\"1\",\"summary\":\"Read go.mod\",\"status\":\"completed\",\"create_at\":\"1712345678\"}]\n[TASK_LIST_END]","type":"text"}],"role":"assistant"},"timestamp":"2026-08-06T14:58:14.980063789+08:00","type":"assistant"}`,
+	`{"message":{"content":[{"content":"module github.com/the operator/demo\n\ngo 1.22\n","tool_use_id":"call_00_abc","type":"tool_result"}],"role":"user"},"timestamp":"2026-08-06T14:58:13.911110238+08:00","type":"tool_result"}`,
+	`{"message":{"content":[{"text":"The module is **github.com/the operator/demo**.\n\n[TASK_LIST_BEGIN]\n[{\"task_id\":\"1\",\"summary\":\"Read go.mod\",\"status\":\"completed\",\"create_at\":\"1712345678\"}]\n[TASK_LIST_END]","type":"text"}],"role":"assistant"},"timestamp":"2026-08-06T14:58:14.980063789+08:00","type":"assistant"}`,
 	`{"cache_hit":2048,"cache_miss":117,"completion_tokens":94,"iteration":1,"prompt_tokens":2165,"timestamp":"2026-08-06T14:58:14.98078569+08:00","type":"request"}`,
 	`{"elapsed_sec":3.5,"exit_code":0,"total_iterations":2,"total_tokens":6796,"timestamp":"2026-08-06T14:58:16.164767078+08:00","type":"session_end"}`,
 }
@@ -117,7 +117,7 @@ func TestParseAnthropicSession(t *testing.T) {
 		t.Errorf("ToolCall.Args = %v", tc.Args)
 	}
 	// tool_result arrived AFTER the request flushed iter0 → cross-iteration match
-	if tc.Result != "module github.com/nick/demo\n\ngo 1.22\n" {
+	if tc.Result != "module github.com/the operator/demo\n\ngo 1.22\n" {
 		t.Errorf("ToolCall.Result = %q (cross-iteration match failed)", tc.Result)
 	}
 

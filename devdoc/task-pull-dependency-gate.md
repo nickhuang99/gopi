@@ -76,7 +76,7 @@
 
 - Build: `go build ./...` → 无输出（exit 0）；`go vet ./internal/tools/` → 无输出（exit 0）。
 - Tests:
-  - `go test ./internal/tools/ -run 'TestTaskTransferArrival|TestArrivalView|TestRowReceive|TestRowRemoteSelect|TestRemoteProjection|TestHarvestRemoteSelect' -count=1` → `ok github.com/nick/gopi/internal/tools 1.616s`
+  - `go test ./internal/tools/ -run 'TestTaskTransferArrival|TestArrivalView|TestRowReceive|TestRowRemoteSelect|TestRemoteProjection|TestHarvestRemoteSelect' -count=1` → `ok github.com/the operator/gopi/internal/tools 1.616s`
   - `go test ./internal/tools/ -run 'TestRowRemoteSelectBindsThroughTheRealCLI|TestRowReceiveRefusesAnArrivalThatCannotLand|TestRowReceiveLandsAChildOnAQueuedParent|TestArrivalViewReadsTheLedgerTheCallerPinned|TestTaskTransferArrivalEligible' -count=1 -v` → 8/8 PASS
   - `make test-budget PKGS='./internal/tools'`（branch-scoped）→ 见 §Evidence ③（与 **pristine
     master 对照**同机、同 `PKGS`、同一时刻各跑一次，逐条归因）

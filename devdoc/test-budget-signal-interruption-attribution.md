@@ -10,9 +10,9 @@ Two `cmd/agent` budget runs (streams `run-1792694068-3762702` at 02:34 and
 
 ```
   failing tests: 0
-  package verdict: FAIL: github.com/nick/gopi/cmd/agent
+  package verdict: FAIL: github.com/the operator/gopi/cmd/agent
 --- package-level failures (build/panic — no test to name) ---
-  PACKAGE FAILED: github.com/nick/gopi/cmd/agent (a package-level verdict — a panic or a TestMain exit; no test to name)
+  PACKAGE FAILED: github.com/the operator/gopi/cmd/agent (a package-level verdict — a panic or a TestMain exit; no test to name)
 ```
 
 Both halves of that sentence are false. There was no panic (no `panic:` row
@@ -87,7 +87,7 @@ own kill, then the handler's mandatory re-raise after `signal.Reset`):
 
 | candidate | criterion | reading |
 |---|---|---|
-| a cron/at job | `crontab -l` | `no crontab for nick` |
+| a cron/at job | `crontab -l` | `no crontab for the operator` |
 | a systemd timer | `systemctl --user list-timers` | `0 timers listed` |
 | terminal / logind teardown | `journalctl -b` around 02:51:44–02:51:50 | zero session/logind/scope-stop lines |
 | a sibling budget run | the test binary's own pid in `si_pid`, above | it is the sender |
@@ -119,10 +119,10 @@ came from) through `scripts/test-budget.sh` showed:
 
 ```
 --- SIGNAL INTERRUPTION (the test binary was killed — not a panic, not a TestMain exit) ---
-  INTERRUPTED: github.com/nick/gopi/cmd/agent — killed by hangup (no test carries a verdict: the process died)
+  INTERRUPTED: github.com/the operator/gopi/cmd/agent — killed by hangup (no test carries a verdict: the process died)
       testutil: suite "cmd-agent": scratch root /dev/shm is tmpfs …     ← the suite's startup log
       testutil: cmd-agent: kept suite run root /dev/shm/suite-…        ← more startup log
-      FAIL github.com/nick/gopi/cmd/agent 440.462s
+      FAIL github.com/the operator/gopi/cmd/agent 440.462s
 ```
 
 The `signal: hangup` row was **nowhere in it**, because the quote came from
@@ -134,7 +134,7 @@ returns the row's verbatim TEXT:
 
 ```
 --- SIGNAL INTERRUPTION (the test binary was killed — not a panic, not a TestMain exit) ---
-  INTERRUPTED: github.com/nick/gopi/cmd/agent — killed by hangup (no test carries a verdict: the process died)
+  INTERRUPTED: github.com/the operator/gopi/cmd/agent — killed by hangup (no test carries a verdict: the process died)
       signal: hangup
   ^ this package's red is an INTERRUPTION, not a code verdict: the run was ended by a
     signal, so the tests that never reported a verdict did not fail — they never ran.

@@ -356,7 +356,7 @@ not).
 write-like action only once; the count in the rule file dropped; nothing that used to work
 stopped working.
 
-**Evidence.** The merge is a recorded operator decision — "nick 2026-09-10 拍板 A+B 都做"
+**Evidence.** The merge is a recorded operator decision — "the operator 2026-09-10 拍板 A+B 都做"
 (`briefings/SPEC-tool-family-merge.md:3`) — and the design rationale is in that file: same
 object with multiple operations becomes one tool with an action parameter (`:9-30`), while
 tools with genuinely different *semantics* stay apart (`:31-33`: the two search tools are
@@ -845,7 +845,7 @@ decision, or record with evidence that nobody ever decided.*
 
 **The canon decision exists, and it is the operator's, verbatim, dated:**
 
-> **核心命题（nick 2026-08-21）** web search 不是 gopi 的 builtin，而是一组**0-token 脚本 +
+> **核心命题（the operator 2026-08-21）** web search 不是 gopi 的 builtin，而是一组**0-token 脚本 +
 > skill 注入**的插件。关键洞察：**脚本执行消耗 0 agent token，可以无限并行；agent 只花
 > token 在"选择方法 + 评估结果"上。**
 > — `~/work/hermes-agent/devdoc/gopi-websearch-plugin-design.md:3-5`

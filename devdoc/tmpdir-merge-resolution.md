@@ -156,7 +156,7 @@ still guards the table in both directions.
 | RED PROOF at the baseline | `go test -run TestWorkerOwnershipPointerPresent ./internal/testutil/` in a pristine worktree at master **`399ea474`** → `--- FAIL`, listing **exactly these 11 files** (same list, same order as after the fix removes them) |
 | RED PROOF at the CURRENT master | after rebasing onto master `faf5f219` the gate failed again — listing **exactly one** file, `devdoc/peakhours-exact-boundary.md` (the 12th), i.e. master grew a new offender while the branch was in flight (§3b) |
 | the gate, after the fix | `go test -run TestWorkerOwnership ./internal/testutil/` → `ok … 1.922s` (all 4 gate tests: `PointerPresent`, `CanonicalBlockIsReal`, `GateScansTheTree`, `DismissTableIsHonest`) |
-| whole package | `go test -count=1 ./internal/testutil/` → `ok github.com/nick/gopi/internal/testutil 50.234s` (was FAIL) |
+| whole package | `go test -count=1 ./internal/testutil/` → `ok github.com/the operator/gopi/internal/testutil 50.234s` (was FAIL) |
 | build | `CGO_ENABLED=0 go build -o /dev/null ./...` → exit 0 (`go build ./...` → exit 0 as well) |
 | full suite | `go test -count=1 ./...` (see §5 — reported honestly, per-package, not summarised away) |
 

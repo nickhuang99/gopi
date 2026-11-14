@@ -291,7 +291,7 @@ exit=0
   → `FAIL`，并打印上面 §1 引用的两条 RED 行；恢复后同命令 `ok`。
 - **GREEN 证明（本项全部测试）**：
   `go test ./internal/tools/ -run 'TestSyncOrigin|TestOriginLocalOnly|TestImportedOrigin|TestLocalOrigin|TestExportSucceedsOnAPreOriginSchema|TestImportOfAPreOrigin|TestImportRefusesAHalfPointer|TestOriginWire' -count=1`
-  → `ok  github.com/nick/gopi/internal/tools  1.474s`。
+  → `ok  github.com/the operator/gopi/internal/tools  1.474s`。
 - **本包全量**：`make test-budget PKGS='./internal/tools'`（结果见 §6）。
 - **Ran**：§4 的每条命令都是逐字真跑；被测二进制是**本分支新建**的
   `/tmp/gopi-origin`（本机）与 `/tmp/gopi-origin-hp`（对端，为 hp 交叉编译后 scp）。
@@ -334,7 +334,7 @@ exit=0
 
 ```
 cli_version_stamp_test.go:352: go build -o /dev/shm/suite-cmd-agent-run-*/.../gopi-main ./cmd/agent: exit status 1
-    # github.com/nick/gopi/internal/tools
+    # github.com/the operator/gopi/internal/tools
     internal/tools/memory_sync.go:80:10: undefined: SyncRowOrigin
 ```
 

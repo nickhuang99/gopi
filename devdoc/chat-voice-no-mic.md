@@ -64,7 +64,7 @@ Task `01a121fc-eebc-7391-8785-db2d149f931e`（epic voice-audio 的交付项 B）
 
 - Build: `CGO_ENABLED=0 go build -o bin/gopi ./cmd/agent/` → OK。
 - Tests: `GOPI_AUDIO_ENGINE=local go test ./cmd/agent/ -run 'TestChatVoiceAudioFileRun' -count=1`
-  → `ok github.com/nick/gopi/cmd/agent 10.819s`（红证另见 `## Evidence`）。
+  → `ok github.com/the operator/gopi/cmd/agent 10.819s`（红证另见 `## Evidence`）。
 - Ran: 真 pty（python `openpty` + `TIOCSWINSZ` 220×40，argv 逐参传递，不经 shell 重组）：
   `PTY_ARGV="$G/bin/gopi chat --voice-audio $SB/artifacts/voicectl-11s.wav" GOPI_VOICE_ENGINE=local
   GOPI_AUDIO_ENGINE=local python3 ptydrv2.py $G 220 40 s5.txt official-N.raw`

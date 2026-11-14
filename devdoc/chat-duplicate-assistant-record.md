@@ -89,7 +89,7 @@ at all) and removes the only case where it produced a duplicate.
     `TestDocAnchorsResolveInNormativeDocs`, **pre-existing** (see
     `## Evidence`)
   - `go test ./cmd/agent/ -run 'Chat|Web' -count=1` (the surface this diff
-    touches, branch-scoped per Rule 27) → `ok github.com/nick/gopi/cmd/agent
+    touches, branch-scoped per Rule 27) → `ok github.com/the operator/gopi/cmd/agent
     20.372s`. The FULL `cmd/agent` package was not run to completion: the
     composite whole-package run exceeded the budget on this host, so **no
     whole-package claim is made** — only the scoped command above was observed
@@ -128,7 +128,7 @@ branch. Same test file, same repro prompt (`"Reply with exactly: pty-ok."`).
   ```
   --- PASS: TestChat_TerseAnswer_OneAssistantRecordPerTurn (1.81s)
   PASS
-  ok  	github.com/nick/gopi/testsuite	4.622s
+  ok  	github.com/the operator/gopi/testsuite	4.622s
   ```
   Record counts, same turn: **assistant = 1**, user = 1; the concatenated SSE
   deltas equal `pty-ok` once.

@@ -23,8 +23,8 @@ so the reference resolved nowhere:
 
 ```
 $ go vet ./...
-# github.com/nick/gopi/internal/docclass
-# [github.com/nick/gopi/internal/docclass]
+# github.com/the operator/gopi/internal/docclass
+# [github.com/the operator/gopi/internal/docclass]
 vet: internal/docclass/anchor_number_material_test.go:158:14: undefined: gitDirEnvName
 → rc=1
 ```
@@ -107,7 +107,7 @@ broken names restored by an inert mutation, run for real:
 $ go test ./internal/standards/ -run TestTestTreeTypecheckIsGreen -count=1
 --- FAIL: TestTestTreeTypecheckIsGreen (51.58s)
     1 package(s) do not compile — a test build of this tree is RED. …
-      github.com/nick/gopi/internal/docclass [github.com/nick/gopi/internal/docclass.test]
+      github.com/the operator/gopi/internal/docclass [github.com/the operator/gopi/internal/docclass.test]
         internal/docclass/anchor_number_material_test.go:158:14: undefined: gitDirEnvName
         …
 rc=1

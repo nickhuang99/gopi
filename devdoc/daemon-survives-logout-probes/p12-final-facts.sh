@@ -3,7 +3,7 @@
 echo "### probe script: p12-final-facts.sh"
 
 echo "=== 1. per-user KillUserProcesses (effective, as logind reports it) ==="
-loginctl show-user nick -p KillUserProcesses -p Linger -p RuntimePath -p Service 2>&1
+loginctl show-user the operator -p KillUserProcesses -p Linger -p RuntimePath -p Service 2>&1
 echo "--- the same for the control user (uid 117) ---"
 loginctl show-user 117 -p KillUserProcesses -p Linger -p RuntimePath -p Service 2>&1
 

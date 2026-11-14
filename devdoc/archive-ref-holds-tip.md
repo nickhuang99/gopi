@@ -35,7 +35,7 @@ its own writer deletes.**
 The audit trail of the disposal chain on peer1 carries the decision, verbatim:
 
 ```
-/ home/ nick/ .gopi/ logs/ removal-audit.log
+/ home/ the operator/ .gopi/ logs/ removal-audit.log
 {"version":1,"ts":"2026-10-11T22:40:16.74792688Z","kind":"branch-delete","arm":"merge-run-spent-branch",
  "op":"branch:delete","repo":"/home/user/work/GoPi","target":"task/01a12cb5eee0737fb63caaad45194e85",
  "evidence":"merge --ff-only landed the ref in master (a fast-forward cannot conflict, nothing is left to hand over)"}
@@ -286,7 +286,7 @@ GONE: the unarchived commit is unrecoverable
   (`TestOrphanGuardRefusesATipOnlyAScratchMirrorHolds`,
   `TestRemovalPathLeavesNoUnreachableTip`,
   `TestBranchDeleteGuardRefusesAScratchOnlyHolder`); after re-applying the fix: `ok
-  github.com/nick/gopi/internal/tools`. Transcript: `red-proof-prefix.txt`.
+  github.com/the operator/gopi/internal/tools`. Transcript: `red-proof-prefix.txt`.
 - **Commit**: `500a37d38` — `fix(tools): the branch-delete orphan guard decides on DURABLE
   holders, not scratch mirrors` (the production hunk + tests + this doc). Report refinements
   ride `29c01be60 … 148c9927b`; the branch is

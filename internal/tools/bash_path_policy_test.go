@@ -106,7 +106,7 @@ func TestPathPolicy_AllowsInRootTargets(t *testing.T) {
 		{"absolute recursive delete of a session subtree", "rm -rf " + filepath.Join(session, "build")},
 		{"recursive delete inside the scratch home", "rm -rf " + filepath.Join(scratchHome, "suite-x")},
 		{"recursive delete inside a temp fixture the guard DOES declare", "rm -rf " + filepath.Join(os.TempDir(), "wbr-time")},
-		{"recursive chown inside the declared root", "chown -R nick:nick " + root},
+		{"recursive chown inside the declared root", "chown -R the operator:the operator " + root},
 		{"worktree REMOVAL inside the declared root", "git worktree remove " + filepath.Join(root, "wt")},
 		{"a non-destructive command mentioning a path", "ls -la /etc && cat /proc/meminfo"},
 		{"a read-only git command mentioning worktree", "git worktree list --porcelain"},

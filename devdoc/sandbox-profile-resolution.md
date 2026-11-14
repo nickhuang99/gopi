@@ -104,7 +104,7 @@ $ GOPI_TEST_BIN=/tmp/gopi-repro-bin  go test ./cmd/agent/ -run TestSandboxCreate
       (stat …: no such file or directory) — the created shape and the readers disagree
 FAIL
 $ GOPI_TEST_BIN=/tmp/gopi-fixed-bin  go test ./cmd/agent/ -run TestSandboxCreateProfileRootIsWhatReadersResolve -count=1
-ok  github.com/nick/gopi/cmd/agent  2.529s
+ok  github.com/the operator/gopi/cmd/agent  2.529s
 ```
 
 ## Acceptance run (verbatim — the documented invocation, red before / green after)

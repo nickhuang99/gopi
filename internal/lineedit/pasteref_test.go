@@ -104,7 +104,7 @@ func TestExceedsInputLineBoundIsTheLinesOwnCapacity(t *testing.T) {
 // MEASURED defect this function was added for (2026-10-06, the paste half of the
 // turn-boundary retrieval): a consumer that has already read the payload behind a
 // reference must not spend its keyword budget on the pointer. The live run
-// recorded `paste turn 5411 home nick workspace gopi sandbox` — the operator's two
+// recorded `paste turn 5411 home the operator workspace gopi sandbox` — the operator's two
 // words plus the path's components and the size — for a turn whose pasted text was
 // about something else entirely.
 func TestStripPasteRefsRemovesThePointerAndKeepsTheWords(t *testing.T) {

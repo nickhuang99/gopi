@@ -204,7 +204,7 @@ runEngine 正常返回
 ## Verification
 
 - **Build**: `CGO_ENABLED=0 go build -o /tmp/gopi-01a12b08 ./cmd/agent/` → `BUILD OK`
-- **Tests**: `go test ./internal/tools/ -run 'TestAutoRunLitter' -count=1` → `ok  github.com/nick/gopi/internal/tools  0.384s`
+- **Tests**: `go test ./internal/tools/ -run 'TestAutoRunLitter' -count=1` → `ok  github.com/the operator/gopi/internal/tools  0.384s`
 - **Ran**（判别式，在 peer1 上，真实账本只读）:
   `python3 /tmp/verify-01a12b08.py` → 见 `artifacts/discriminator-20260911.tsv`
   `python3 /tmp/fc-01a12b08.py` → 见 `artifacts/field-compare-20260911.tsv`

@@ -4,7 +4,7 @@
 Date: 2026-09-08 · Investigator verdict report (no code change needed from this
 lane — diagnostic + regression confirmation)
 
-## Symptom (nick's finding)
+## Symptom (the operator's finding)
 
 Two worker-run tasks delivered on peer1 and left their worktrees behind:
 
@@ -40,7 +40,7 @@ launch workdir, which for these runs was the main repo (master) — so the
 writeback exempted master and left the row branchless. **The sibling worker
 task t-1788815951 (live, 2026-09-08 05:19) is fixing exactly this backfill**
 — it owns the code fix + regression. This report does not duplicate it; it
-confirms the surrounding machinery and the worker-path sharing question nick
+confirms the surrounding machinery and the worker-path sharing question the operator
 raised.
 
 ## Code-path sharing: worker and manual `task run` already funnel together
@@ -83,7 +83,7 @@ Fresh verification on current master:
 
 ```
 go test ./cmd/agent/ -run 'TestWorkerServerDelivery|TestManualRunRecycles|TestManualRunMain' -count=1
-ok  github.com/nick/gopi/cmd/agent  7.269s
+ok  github.com/the operator/gopi/cmd/agent  7.269s
 ```
 
 ## Verdict
@@ -96,7 +96,7 @@ ok  github.com/nick/gopi/cmd/agent  7.269s
   deliverable → master-exempt skip), owned by sibling t-1788815951.
 - Cleanup of the two parked worktrees (feat/cli-param-review,
   feat/prompt-review) is deliberately deferred: they are the sibling's live
-  repro + nick's evidence. After the sibling's fix lands, the PA/merger flow
+  repro + the operator's evidence. After the sibling's fix lands, the PA/merger flow
   (or a manual recycle) removes them.
 
 ## Verification

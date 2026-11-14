@@ -1,6 +1,6 @@
 package tools
 
-// Merged-branch cleanup (epic 2026-09-02, nick's finding): the serve tick's
+// Merged-branch cleanup (epic 2026-09-02, the operator's finding): the serve tick's
 // merge paths (merge-backlog audit/executor, branch adoption ③a) merge a
 // branch into master, then attempt `git branch -d <branch>` — which git
 // REFUSES when the branch is checked out in a linked worktree ("Cannot

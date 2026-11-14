@@ -50,7 +50,7 @@
 
 - 截图证据：devdoc/assets/bm-pricing-20260830.png（HP 采集 scp 回）+ bm-pricing-cny-20260830.txt
 - HP 采集 session：~/.gopi/sessions/6d57ea58…jsonl（HP 侧）
-- DS 单价来源：~/work/claude/nick/deepseek_usage_amount.txt 账单 price 字段
+- DS 单价来源：~/work/claude/the operator/deepseek_usage_amount.txt 账单 price 字段
 - 采集任务：HP 台账 t-1788041789（11m9s completed）
 
 ## 附录：截图脚本全文（原始脚本，非重建）

@@ -116,7 +116,7 @@ $ go test -run 'TestWorkerBareSignalReachesChildDuringRound|TestWorkerDrainStill
 --- PASS: TestWorkerDrainStillLetsTheRoundFinish (20.02s)
 --- PASS: TestWorkerStopReachesChildWhoseGroupWasAssumed (0.01s)
 --- PASS: TestWorkerStopReachesGrandchildren (0.12s)
-ok  	github.com/nick/gopi/cmd/agent	23.250s
+ok  	github.com/the operator/gopi/cmd/agent	23.250s
 ```
 
 The red→green transition is on the SAME assertions, unmodified.
@@ -175,7 +175,7 @@ unchanged.
 |---|---|---|
 | build | `CGO_ENABLED=0 go build ./...` (salvage worktree) | exit 0, no output |
 | vet | `CGO_ENABLED=0 go vet ./cmd/agent/` | exit 0 |
-| scoped tests | `go vet ./cmd/agent/ && go test -count=1 -run 'TestWorkerBareSignalReachesChildDuringRound\|TestWorkerDrainStillLetsTheRoundFinish\|TestWorkerStopReachesChildWhoseGroupWasAssumed\|TestWorkerStopReachesGrandchildren' ./cmd/agent/` | `vet_exit=0`; `ok github.com/nick/gopi/cmd/agent 23.652s` (re-observed at close-out) |
+| scoped tests | `go vet ./cmd/agent/ && go test -count=1 -run 'TestWorkerBareSignalReachesChildDuringRound\|TestWorkerDrainStillLetsTheRoundFinish\|TestWorkerStopReachesChildWhoseGroupWasAssumed\|TestWorkerStopReachesGrandchildren' ./cmd/agent/` | `vet_exit=0`; `ok github.com/the operator/gopi/cmd/agent 23.652s` (re-observed at close-out) |
 | the tag's own tests | `go test -run '…' ./cmd/agent/` | 4/4 PASS (transcript above) |
 | red proof | probe worktree at master `fa12d97f` | 3/3 FAIL (transcript above) |
 | worktree clean | `git status --porcelain` | empty |

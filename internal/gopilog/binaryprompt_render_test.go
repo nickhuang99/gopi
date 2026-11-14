@@ -108,7 +108,7 @@ func TestSummaryRowsNeverRenderBinaryTask(t *testing.T) {
 // through byte-for-byte, so no legitimate session view changes.
 func TestSessionTaskGuardIsIdentityForText(t *testing.T) {
 	for _, task := range []string{
-		"[EPIC GOAL]\n修复 merge 冲突：fix/cwd-and-lifetime（背景：nick 的 harvest 是否也 push HP 分支）",
+		"[EPIC GOAL]\n修复 merge 冲突：fix/cwd-and-lifetime（背景：the operator 的 harvest 是否也 push HP 分支）",
 		"single line task with emoji 🙂 and symbols → ✓",
 		"line one\nline two\n\tindented",
 	} {

@@ -8,14 +8,14 @@ package tools
 // 01a19d6e closed the hole where a GIT global option stood between `git` and the
 // subcommand (`git -C <dir> push --force`). The same fence was still open one
 // word EARLIER: a WRAPPER's operand. The head scan read every plain word before
-// `git` as "the git token is somebody's argument", so `-u`'s operand `nick` and
+// `git` as "the git token is somebody's argument", so `-u`'s operand `the operator` and
 // env's assignment `FOO=1` ended the scan with "no git here" — and the class
 // fell to OPERATOR WORK, the class that RUNS. Measured on this ground before the
 // fix (the run's own probe, quoted in the report):
 //
-//	sudo -u nick git branch -f main HEAD~3   OPERATOR WORK / allowed=true
+//	sudo -u the operator git branch -f main HEAD~3   OPERATOR WORK / allowed=true
 //	env FOO=1 git branch -f main HEAD~3      OPERATOR WORK / allowed=true
-//	sudo -u nick git reset --hard HEAD~5          OPERATOR WORK / allowed=true
+//	sudo -u the operator git reset --hard HEAD~5          OPERATOR WORK / allowed=true
 //	nice -n 10 git branch -f main HEAD~3     OPERATOR WORK / allowed=true
 //	doas -u root git branch -f main HEAD~3   OPERATOR WORK / allowed=true
 //
@@ -27,7 +27,7 @@ package tools
 // Three things, and the third is the one that makes the fix safe to land:
 //
 //  1. THE WRAPPER SPELLINGS ARE REF MOVES (allowed=false);
-//  2. THE READS ARE NOT — `sudo -u nick git status`, `sudo -u nick ls`,
+//  2. THE READS ARE NOT — `sudo -u the operator git status`, `sudo -u the operator ls`,
 //     `env FOO=1 git log`, `echo git push` all stay OPERATOR WORK and run;
 //  3. THE DEMOTION LEGS CANNOT READ A WRAPPER'S OPTION AS GIT'S. `nice -n 10 git
 //     push --force` carries nice's `-n`, and the dry-run predicate read it as
@@ -38,7 +38,7 @@ package tools
 // ── THE DIRECTION OF EVERY REFUSAL HERE IS FAIL-CLOSED ─────────────────────
 //
 // A shape the scanner cannot resolve keeps the class it already had. That is why
-// the read controls are not decoration: a fix that refused `sudo -u nick git
+// the read controls are not decoration: a fix that refused `sudo -u the operator git
 // status` would have traded an operator's hand's-breadth work (Rule 37) for a
 // fence, which is not a trade this fence may make.
 
@@ -51,11 +51,11 @@ import "testing"
 func TestRefMoveFamilySurvivesWrapperOperands(t *testing.T) {
 	refMoves := []string{
 		// The privileged wrappers and their separated-operand options.
-		"sudo -u nick git branch -f main HEAD~3",
+		"sudo -u the operator git branch -f main HEAD~3",
 		"sudo -g staff git branch -f main HEAD~3",
-		"sudo -u nick git reset --hard HEAD~5",
-		"sudo -u nick git update-ref -d refs/heads/main",
-		"sudo -u nick git branch -D main",
+		"sudo -u the operator git reset --hard HEAD~5",
+		"sudo -u the operator git update-ref -d refs/heads/main",
+		"sudo -u the operator git branch -D main",
 		"doas -u root git branch -f main HEAD~3",
 		// env: the assignment SHAPE and its own consuming options.
 		"env FOO=1 git branch -f main HEAD~3",
@@ -74,7 +74,7 @@ func TestRefMoveFamilySurvivesWrapperOperands(t *testing.T) {
 		"xargs git branch -f main HEAD~3",
 		"xargs -n 1 git branch -f main HEAD~3",
 		// Stacked wrappers.
-		"sudo -u nick env FOO=1 git branch -f main HEAD~3",
+		"sudo -u the operator env FOO=1 git branch -f main HEAD~3",
 	}
 	for _, cmd := range refMoves {
 		adm := ChatOpAdmitIn(cmd, chatRefMoveGitOptionProbeDir, "")
@@ -100,10 +100,10 @@ func TestRefMoveFamilySurvivesWrapperOperands(t *testing.T) {
 // keep out — there `git` really IS an argument, and it must stay that way.
 func TestWrapperOperandReadsAreNotRefMoves(t *testing.T) {
 	reads := []string{
-		"sudo -u nick git status",
-		"sudo -u nick git log --oneline -3",
-		"sudo -u nick ls",
-		"sudo -u nick cat README.md",
+		"sudo -u the operator git status",
+		"sudo -u the operator git log --oneline -3",
+		"sudo -u the operator ls",
+		"sudo -u the operator cat README.md",
 		"env FOO=1 git log --oneline",
 		"env FOO=1 git diff --stat",
 		"nice -n 10 git status",

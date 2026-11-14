@@ -178,9 +178,9 @@ Sep 15 07:26:50 peer1 org.xfce.ScreenSaver[2586]: Xlib:  extension "DPMS" missin
         CPU: 2d 20h 54min 4.369s
      CGroup: /user.slice/user-1000.slice/user@1000.service
 === G. does anything still hold the unlinked sockets (fds + inode) ===
-lrwx------ 1 nick nick 64 Sep 15 07:29 19 -> socket:[39144]
-lrwx------ 1 nick nick 64 Sep 15 07:29 27 -> socket:[40136]
-lrwx------ 1 nick nick 64 Sep 12 04:15 3 -> socket:[40136]
+lrwx------ 1 the operator the operator 64 Sep 15 07:29 19 -> socket:[39144]
+lrwx------ 1 the operator the operator 64 Sep 15 07:29 27 -> socket:[40136]
+lrwx------ 1 the operator the operator 64 Sep 12 04:15 3 -> socket:[40136]
 === H. uptime/manager start vs the unlink moment ===
 boot:            2026-07-15 21:33:20
 manager 2321 start: 2026-07-15 21:44:21.534724314 +0800

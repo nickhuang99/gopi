@@ -6,7 +6,7 @@
 bug051 的"虚假关账"症状再次出现（3128f17f 行，task-merge-CLI EPIC 的 auto
 镜像 summary 被覆写为 `gopi run completed — run: elapsed=…`）。根因：harness
 写回通道 `TaskUpdateWithResult → taskUpdate` 仍把结果摘要写进 `tasks.summary`
-列——summary 不可变规则（nick 2026-08-30 终审）的唯一漏网之鱼。
+列——summary 不可变规则（the operator 2026-08-30 终审）的唯一漏网之鱼。
 
 本修复实现 bug051 的真实意图：**执行结果不再写 summary 列**，改走独立
 append-only `task_events` 审计表（Epic A 选型：倾向 task_events，tag 前缀

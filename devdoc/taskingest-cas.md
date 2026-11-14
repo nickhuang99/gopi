@@ -5,7 +5,7 @@ Branch: `feat/taskingest-cas` (base: master e1449e9)
 
 ## Context / incident
 
-- Epic: nick flagged the ingest mirror path as non-atomic toggle: SELECT read
+- Epic: the operator flagged the ingest mirror path as non-atomic toggle: SELECT read
   → Go-side forward-migration check → unguarded `UPDATE tasks SET status=...
   WHERE task_id=?`. A local writer (task serve claim / writeback) could win
   the row inside the check→write gap and be blind-overwritten (e.g. local

@@ -823,7 +823,7 @@ func syncDeltaInsertRow(ctx context.Context, db *sql.DB, r SyncTaskRow, fromTag 
 }
 
 // syncDeltaMergeRow applies the newer-wins forward-only rules onto a known
-// row. Content (summary/payload) is NEVER rewritten (the nick rule) — the
+// row. Content (summary/payload) is NEVER rewritten (the the operator rule) — the
 // merge moves STATUS and unions TAGS, nothing else.
 func syncDeltaMergeRow(ctx context.Context, db *sql.DB, bus *taskNotifyBus, existing *Task, r SyncTaskRow, peer string, stats *SyncTaskImportStats) error {
 	// M4.20-B: the merge is RANK-first. syncDeltaApplyNewer owns every
@@ -865,7 +865,7 @@ func syncDeltaMergeRow(ctx context.Context, db *sql.DB, bus *taskNotifyBus, exis
 	// peer's OWN tags (its local tag edits) propagate. Identical STATUS +
 	// tags = the pure no-op every re-sync depends on. Differing STATUS at
 	// the same anchor = two nodes each advanced the row differently.
-	// RULING (nick, 冲突语义定稿): the task status is a mere enum — the
+	// RULING (the operator, 冲突语义定稿): the task status is a mere enum — the
 	// real deliverable lives in the git branch (the merge conflict is LLM
 	// work, nothing the task marker should agonize over). So the SERVER
 	// side simply writes completed (ended_at=now, tags += sync-resolved)
@@ -914,7 +914,7 @@ func syncDeltaMergeRow(ctx context.Context, db *sql.DB, bus *taskNotifyBus, exis
 		return syncDeltaServerResolve(ctx, db, bus, existing, merged, stats)
 	}
 	if existing.Status == r.Status {
-		// 内容分歧 = WARNING (nick, 内容冲突降级): same status but DIFFERING
+		// 内容分歧 = WARNING (the operator, 内容冲突降级): same status but DIFFERING
 		// summary/payload is two nodes' free-text restatements of the same
 		// task_id — the row's IDENTITY is its task_id (UUID), and payload is
 		// a briefing's prose, which differs across nodes by NATURE (the same
@@ -923,7 +923,7 @@ func syncDeltaMergeRow(ctx context.Context, db *sql.DB, bus *taskNotifyBus, exis
 		// tag is the MUST-ARBITRATE-BY-A-HUMAN marker, reserved for the
 		// status divergence below (and for the server ruling the bug053/M4.16
 		// guard blocks). The merge still NEVER overwrites either side's
-		// content (nick rule) — it unions the peer's OWN tags and, when that
+		// content (the operator rule) — it unions the peer's OWN tags and, when that
 		// union changes the row, records one RowsTagged; an unchanged union
 		// is the idempotent no-op (RowsAlready). The divergence itself is
 		// recorded (warn log + RowsDiverged) and surfaced on the report line,
@@ -1083,7 +1083,7 @@ func notifyLedgerConflictHumanTask(taskID, detail string) {
 	deliverTaskNotify(cfg, payload)
 }
 
-// syncDeltaServerResolve is the SERVER's conflict ruling (nick 定稿): a
+// syncDeltaServerResolve is the SERVER's conflict ruling (the operator 定稿): a
 // both-sides-wrote-the-same-row collision (equal updated_at, differing
 // status) resolves as completed right here — status=completed, ended_at=now,
 // tags += sync-resolved (union with BOTH sides' own tags), updated_at=now.

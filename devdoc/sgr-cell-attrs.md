@@ -134,9 +134,9 @@ SEPARATE detached worktrees (this branch was not mutated):
 ## Evidence (self-filed)
 
 - `CGO_ENABLED=0 go build ./...` → exit 0, no output.
-- `CGO_ENABLED=0 go test ./internal/sgr/ -count=1` → `ok github.com/nick/gopi/internal/sgr 0.003s`.
-- `CGO_ENABLED=0 go test ./internal/lineedit/ -count=1` → `ok github.com/nick/gopi/internal/lineedit 7.880s`.
-- `CGO_ENABLED=0 go test ./internal/lineedit/ -run 'Screen|Render|Layout' -count=1` → `ok github.com/nick/gopi/internal/lineedit 1.343s`.
+- `CGO_ENABLED=0 go test ./internal/sgr/ -count=1` → `ok github.com/the operator/gopi/internal/sgr 0.003s`.
+- `CGO_ENABLED=0 go test ./internal/lineedit/ -count=1` → `ok github.com/the operator/gopi/internal/lineedit 7.880s`.
+- `CGO_ENABLED=0 go test ./internal/lineedit/ -run 'Screen|Render|Layout' -count=1` → `ok github.com/the operator/gopi/internal/lineedit 1.343s`.
 - Red-before: `go test -overlay=<scratch>/overlay.json ./internal/lineedit/ -run 'Attr|Wide|Styled|SGR|Erase|Scroll' -count=1` → exit 1; the log names nine `--- FAIL:` tests, e.g. `TestScreenRecordsPerCellAttributes`: `cell (0,0) = 'r' rune, want the probe's red fg=red` and `the red cell compares equal to a default cell: attributes are not recorded`.
 - `git status --porcelain` in the worktree after the commit → prints nothing.
 - Independent red-proof #1 (pre-change tree, `~/workspace/gopi-sgr-red` at
@@ -150,7 +150,7 @@ SEPARATE detached worktrees (this branch was not mutated):
   sub-cases, reset ×2, extended colours) while 15 pre-change tests PASS; on the
   unmutated tree the same command is `ok … 0.685s` with 25 PASS.
 - `CGO_ENABLED=0 go test ./cmd/agent/ -run 'Screen|Stream|Height|Completion|LineEdit' -count=1`
-  → `ok github.com/nick/gopi/cmd/agent 11.250s` (a plain `Line`/`Contents`
+  → `ok github.com/the operator/gopi/cmd/agent 11.250s` (a plain `Line`/`Contents`
   consumer is unaffected).
 - `CGO_ENABLED=0 go test ./internal/standards/ ./internal/stylegate/ -count=1` on
   this branch and on pristine master `92d14684` → the SAME three failures on both

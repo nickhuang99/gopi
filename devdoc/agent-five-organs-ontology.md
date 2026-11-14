@@ -1,9 +1,9 @@
 <!-- doc-class: normative -->
 # 智能体五器官本体论 (Agent Five-Organs Ontology)
 
-> 状态: **AUTHORED SPEC** (2026-09-10) — 本文档在写之前**不存在**于仓库、git 历史或 nick 的
+> 状态: **AUTHORED SPEC** (2026-09-10) — 本文档在写之前**不存在**于仓库、git 历史或 the operator 的
 > 设计目录中（见 §0 溯源）。它是一个**提案**，供 hippocampus epic 的三个子任务实现时对齐；
-> 有争议的命名请以"哪一部分是 nick 原文 / 哪一部分是本文演绎"的标注为准。
+> 有争议的命名请以"哪一部分是 the operator 原文 / 哪一部分是本文演绎"的标注为准。
 >
 > 锚点基准: 分支 `feat/hippocampus-spec`，基线 commit `2516e09`。
 > 所有 `文件:行号` 均在 2516e09 上**实际验证过**（行内容与所述符号一致）。
@@ -14,21 +14,21 @@
 
 | 材料 | 位置 | 性质 |
 |---|---|---|
-| 海马体设计（523 行） | `/home/user/work/claude/nick/create_hippocampus-agent.txt` | **nick 原文**。全篇 "海马体" 出现 211 次，"前额叶" 6 次，"记忆巩固" 2 次，"器官" **0 次** |
-| 四要素本体论（70 行） | `/home/user/work/claude/nick/AI智能体的本体论与计算模型.md` | **nick 原文**：脑(推理)/眼(感知)/手(执行)/外置持久记忆(记忆) 四要素 + 自动机谱系 + 冯·诺依曼映射 |
-| 语境 / 虚拟内存类比 | `/home/user/work/claude/nick/what_is_harness.txt`、`/home/user/work/claude/nick/builtin_memory_search_tool_call.txt` | nick 原文：harness 四职责、海马体 Memory-Agent 架构、pre-LLM hook 与主动 Agent 的区别 |
-| **五器官命名与编号** | 本文 §2、§3 | **本文演绎**（nick 原文只有四要素 + 海马体/前额叶两个脑区隐喻，没有"五器官"清单） |
+| 海马体设计（523 行） | `/home/user/work/claude/the operator/create_hippocampus-agent.txt` | **the operator 原文**。全篇 "海马体" 出现 211 次，"前额叶" 6 次，"记忆巩固" 2 次，"器官" **0 次** |
+| 四要素本体论（70 行） | `/home/user/work/claude/the operator/AI智能体的本体论与计算模型.md` | **the operator 原文**：脑(推理)/眼(感知)/手(执行)/外置持久记忆(记忆) 四要素 + 自动机谱系 + 冯·诺依曼映射 |
+| 语境 / 虚拟内存类比 | `/home/user/work/claude/the operator/what_is_harness.txt`、`/home/user/work/claude/the operator/builtin_memory_search_tool_call.txt` | the operator 原文：harness 四职责、海马体 Memory-Agent 架构、pre-LLM hook 与主动 Agent 的区别 |
+| **五器官命名与编号** | 本文 §2、§3 | **本文演绎**（the operator 原文只有四要素 + 海马体/前额叶两个脑区隐喻，没有"五器官"清单） |
 
 **诚实声明**：epic briefing 引用的 `devdoc/agent-five-organs-ontology.md` 是**幻影引用**——
 仓库无此文件，git 历史无此文件（`devdoc/hippocampus-epic-reframe.md:47` 独立核实同一结论）。
-因此本文不是"补全一个已有文档"，而是**按原文事实新写一份**。凡 nick 未说过的推论，均以
+因此本文不是"补全一个已有文档"，而是**按原文事实新写一份**。凡 the operator 未说过的推论，均以
 **[推论]** 标注；凡 gopi 代码事实，均给 `文件:行号`。
 
 ---
 
 ## 1. 为什么需要本体论：模型 ≠ 智能体
 
-nick 原文（`AI智能体的本体论与计算模型.md` §0）的核心论点：
+the operator 原文（`AI智能体的本体论与计算模型.md` §0）的核心论点：
 
 > 将具备对话能力的 LLM 直接等同于自主智能体，等同于将离体存活的人脑视作完整的人类个体。
 > …… 每一次对话重置，都会丢失所有过程信息，**不具备时间维度的智能连续性**。
@@ -66,7 +66,7 @@ epic 指定 memory=hippocampus 是核心器官，原文给了两条独立理由�
 
 1. **能力上界由它决定**（`AI智能体的本体论与计算模型.md` §2/§4）：存储结构决定智能等级，
    感知/推理/执行只支撑单轮瞬时响应。
-2. **它是唯一被 LLM 的"惰性"反复击穿的器官**（`create_hippocampus-agent.txt` 第 3 段 nick 的
+2. **它是唯一被 LLM 的"惰性"反复击穿的器官**（`create_hippocampus-agent.txt` 第 3 段 the operator 的
    亲身案例）："我们之前已经实现了一个流程……他完全不知道，然后我说了半天，他又去重新去把它
    实现了"。被动 pre-LLM hook 的失配点在于——**它不思考该搜什么**，只执行硬编码检索；
    而"该搜什么"本身是智能（原文："记忆检索不是一个工具调用动作，它本身就是一种思考"）。
@@ -92,7 +92,7 @@ epic 指定 memory=hippocampus 是核心器官，原文给了两条独立理由�
 
 ## 3. 器官协作：两条通路
 
-nick 原文区分两条通路，二者**不是同一件事的快慢版**，而是用途不同：
+the operator 原文区分两条通路，二者**不是同一件事的快慢版**，而是用途不同：
 
 ```
 输入
@@ -210,7 +210,7 @@ drift this test exists to catch). Master's superset prose
 | **预算失控** | 升档由海马体自决 → 极端情况每轮深度检索 | 成本回到高位 | 预算控制器：单位时间高阶检索配额 + 单会话深度检索上限，超限强制回落 Flash |
 | **资源膨胀** | 每条消息一个后台协程 | 高频会话下并发检索爆炸 | 队列 + 限流 + 任务丢弃（会话已转新话题 → 终止未完成的检索） |
 | **上下文撕裂** | 主 Agent 已输出一大段，后台才发现相反经验 | 补正消息造成对话逻辑断裂 | 迟来记忆**只能作为提示**，不能无条件推翻已发出的输出；两种策略可选：温和提醒 / 主动发起重新审视 |
-| **漏召回（新增风险）** | `/home/user/work/claude/nick/builtin_memory_search_tool_call.txt:171`–`:176`（原文 "代价 3"）与静态大 prompt 的对比 | 静态 prompt 至少"信息都在，只是信号弱"；海马体判错则**信息直接消失** | 逃逸出口：前额叶可发"请调取 XX 历史记忆"的**反向请求**（双向交互，非单向流水线） |
+| **漏召回（新增风险）** | `/home/user/work/claude/the operator/builtin_memory_search_tool_call.txt:171`–`:176`（原文 "代价 3"）与静态大 prompt 的对比 | 静态 prompt 至少"信息都在，只是信号弱"；海马体判错则**信息直接消失** | 逃逸出口：前额叶可发"请调取 XX 历史记忆"的**反向请求**（双向交互，非单向流水线） |
 
 ---
 

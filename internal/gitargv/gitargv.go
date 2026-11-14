@@ -82,13 +82,13 @@ var OptionsWithOperand = map[string]bool{
 //
 // A wrapper word in front of `git` (`sudo git …`, `xargs git …`) does NOT mean
 // the next word is `git`: most of them take their own operands first, and an
-// operand is a plain word. `sudo -u nick git push --force` and
+// operand is a plain word. `sudo -u the operator git push --force` and
 // `env FOO=1 git push --force` both spell a REAL git invocation, and a scanner
 // that reads every plain word before `git` as "an argument to some other
 // command" answers "there is no git here" for both of them.
 //
 // THAT WAS A MEASURED DEFECT, not a hypothetical one (task 01a19d8a): with the
-// operand-blind scan, `sudo -u nick git push --force origin master` and
+// operand-blind scan, `sudo -u the operator git push --force origin master` and
 // `env FOO=1 git reset --hard HEAD~5` were classified OPERATOR WORK /
 // allowed=true — the class that RUNS — while the directory-level spelling of the
 // same hole (`git -C <dir> push --force`) had already been closed by 01a19d6e.
@@ -210,7 +210,7 @@ func AssignmentWord(w string) bool {
 //  5. any other plain word → it is an argument to another command: no git.
 //
 // Step 2 is the whole point of this row. Before it, steps 3-5 read `-u`'s
-// operand `nick` as a plain foreign word and answered "no git here".
+// operand `the operator` as a plain foreign word and answered "no git here".
 //
 // A wrapper ALREADY KNOWN but asked with an option this table does not carry
 // falls to step 5's plain-word refusal rather than to a guess — the fail-closed

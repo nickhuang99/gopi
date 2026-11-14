@@ -38,7 +38,7 @@
     2. **task_id 保留原号**：TaskSubmit 传 `--task-id` 原样入队，t-* 号跨节点可追溯。冲突不重写：同 id 且 **summary 相同（payload 不参与判定）** → tags union / already；不同 summary + 本地 pending → 原行不动 + `-n<node>` relabel 入队（见上方 2026-10-03 小节）；终态 patch 行无本地对应行 → **refused**（绝不把已完成工作重新 pending——防重复执行）。
     3. **状态机前向迁移**：fresh import 只写 pending；本地行后续状态由本地执行推进；反向 sync-back（终态 patch 行 + 本地 pending 行）走 `syncTaskMigrate`——**pending-only 的 CAS UPDATE**（`WHERE task_id=? AND status='pending'`），目标限 completed/failed/verified（cancelled 不远端迁移：本地判断留本地）。故意不走 `taskAllowedTransitions`：单机状态机建模的是本地 claim→run→writeback 生命周期，远端合法走完的行是"分布式真相补齐"，本迁移的门（pending-only + 可前向目标）比状态机更严。
     4. **provenance 强制**：import 强制给每行 tags 追加 `from-<patch.Node>`（node 缺失 → `from-unknown-node`），与 brew 行 `node:<host>` 同构；文件里的 tags 只描述工作，通道标记在导入时决定。
-    5. **永不覆写**（nick 硬约束）：已有行的 summary/payload 永不 UPDATE；同 task_id、同 summary 且本地 pending → 仅 tags union（`taskTagsUnion`，幂等：tag 集合相等 → already 不动）。
+    5. **永不覆写**（the operator 硬约束）：已有行的 summary/payload 永不 UPDATE；同 task_id、同 summary 且本地 pending → 仅 tags union（`taskTagsUnion`，幂等：tag 集合相等 → already 不动）。
   - `WriteSyncTaskPatch` — 与 brew patch 相同的 pretty-JSON 落盘。
 - **cmd/agent/cli_memsync.go**：`--export-tasks --out [--status][--tags][--since][--limit][--db]`、`--import-tasks <patch> [--db]`；usage 文档化五机制；原 brew `--export/--import` 逻辑拆成 `runMemsyncBrewExport/Import`（行为零改动）；退出码沿用 0/1/2（partial）。
 - **internal/tools/memory_sync_task_test.go**（11 个测试，tools 包 `TestTaskSync*` 全 PASS）：

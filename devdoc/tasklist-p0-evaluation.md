@@ -11,7 +11,7 @@
 ## TL;DR (decisive conclusions)
 
 1. **P0 partial-parse + warning is WORTH DOING.** Full-run role-aware scan finds **23 recoverable BEGIN-no-END messages across 10 real-work sessions; a partial parser recovers 23/23 = 100%**, and produces **zero garbage lists** on prose references. Critically, in **every one of the 10 sessions the dropped list was the session's ONLY task-list emission** (`hasList` never became true), so the drop did not lose "one list" — it made the entire session's progress tracking invisible and structurally disabled the unfinished-task exit protection (loop.go:1702). P0 is a high-value, low-risk, mechanical fix. **It should ALSO be paired with a prompt-side anchor** (see recommendation) because the root cause is the LLM forgetting the END marker, not a parser bug — partial-parse is the harness backstop, not the fix.
-2. **nick's compaction hypothesis is DISPROVEN by the data.** Across all 1444 sessions there are **ZERO B-class cases** (no JSON-mid-truncation anywhere — no `finish_reason=length` truncation of a list). 17/23 instances occurred at prompt_tokens 1.4K–58K, nowhere near the 150K compact threshold. Even the 6 instances at high context (123K–227K prompt_tokens) wrote **complete, balanced JSON** — they simply omitted the END marker. The source is an **LLM behavioral pattern (forgetting the closing marker)**, not memory-compaction timing. Compaction is irrelevant to this bug.
+2. **the operator's compaction hypothesis is DISPROVEN by the data.** Across all 1444 sessions there are **ZERO B-class cases** (no JSON-mid-truncation anywhere — no `finish_reason=length` truncation of a list). 17/23 instances occurred at prompt_tokens 1.4K–58K, nowhere near the 150K compact threshold. Even the 6 instances at high context (123K–227K prompt_tokens) wrote **complete, balanced JSON** — they simply omitted the END marker. The source is an **LLM behavioral pattern (forgetting the closing marker)**, not memory-compaction timing. Compaction is irrelevant to this bug.
 3. **RC2 governance recommendation: do P1.3 (rewarding) FIRST, hold P1.5 (policy).** P1.3 is cheap and low-risk (system-prompt section edit, one-time ~350-token cache re-fill per session). P1.5 (accepting `tasks==nil && hasList` for fast-exit) is the earlier proposal but carries a real **stale-tracked-state premature-exit** risk and is **orthogonal to P0** (the dropped-list case never sets `hasList=true`, so P1.5 doesn't help it). Recommend P1.3 now, P1.5 only with a guard that verifies tracked-state recency.
 
 ---
@@ -56,7 +56,7 @@
 
 ---
 
-## Q2 — 验证 nick 的 compaction 假设
+## Q2 — 验证 the operator 的 compaction 假设
 
 Test: for each A-class instance, read the nearest `request` event's `prompt_tokens`. Compact threshold = `DefaultContextWindow(200_000) × DefaultCompactTriggerRatio(0.75)` ≈ **150K** (context.go:16-33, memory #931/#932).
 

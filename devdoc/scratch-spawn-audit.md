@@ -242,12 +242,12 @@ Re-run on the FROZEN commit `707e0ed`, host loaded by other sessions' suites:
 
 ```
 $ go test ./internal/testutil/ ./internal/tools/ ./cmd/agent/ -count=1
-ok  github.com/nick/gopi/internal/testutil   0.809s
-ok  github.com/nick/gopi/internal/tools    162.825s
-ok  github.com/nick/gopi/cmd/agent          33.264s
+ok  github.com/the operator/gopi/internal/testutil   0.809s
+ok  github.com/the operator/gopi/internal/tools    162.825s
+ok  github.com/the operator/gopi/cmd/agent          33.264s
 $ GOPI_TEST_SCRATCH_HOME=$(mktemp -d /dev/shm/gopi-iso-XXXX) go test ./cmd/agent/ ./internal/testutil/ -count=1
-ok  github.com/nick/gopi/cmd/agent  42.877s    # isolated home: 0 roots left
-ok  github.com/nick/gopi/internal/testutil  0.856s
+ok  github.com/the operator/gopi/cmd/agent  42.877s    # isolated home: 0 roots left
+ok  github.com/the operator/gopi/internal/testutil  0.856s
 ```
 
 `scripts/safe-merge.sh feat/test-spawn-pgid-reaper` at the same commit ✅ a/b/d,

@@ -1,5 +1,5 @@
 #!/bin/bash
-# p11 — discriminators: is the missing-bus state per-user (nick-only) or host-wide?
+# p11 — discriminators: is the missing-bus state per-user (the operator-only) or host-wide?
 # Read-only.
 echo "### probe script: p11-discriminators.sh"
 

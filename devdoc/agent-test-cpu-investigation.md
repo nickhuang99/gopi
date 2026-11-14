@@ -64,10 +64,10 @@ over ~90 s, plus a fresh snapshot at 04:28:16). Across the entire window **not a
 Artifacts found on disk, timestamped during the burst window:
 
 ```
--rwxrwxr-x 1 nick nick 14254372 Sep 11 08:40 /tmp/go-build1483818303/b001/tools.test
--rwxrwxr-x 1 nick nick 21828505 Sep 11 08:06 /dev/shm/gopi-test-scratch/buildprobe/cmd-agent.test
--rwxrwxr-x 1 nick nick 20945420 Sep 11 08:04 /dev/shm/gopi-test-scratch/buildprobe/internal-tools.test
--rwxrwxr-x 1 nick nick 11301964 Sep 11 08:07 /dev/shm/gopi-test-scratch/buildprobe/internal-shot.test
+-rwxrwxr-x 1 the operator the operator 14254372 Sep 11 08:40 /tmp/go-build1483818303/b001/tools.test
+-rwxrwxr-x 1 the operator the operator 21828505 Sep 11 08:06 /dev/shm/gopi-test-scratch/buildprobe/cmd-agent.test
+-rwxrwxr-x 1 the operator the operator 20945420 Sep 11 08:04 /dev/shm/gopi-test-scratch/buildprobe/internal-tools.test
+-rwxrwxr-x 1 the operator the operator 11301964 Sep 11 08:07 /dev/shm/gopi-test-scratch/buildprobe/internal-shot.test
 ```
 
 A ~29 MB RSS against a 20 MB binary is a *freshly started* test process (image + Go

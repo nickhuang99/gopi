@@ -39,14 +39,14 @@ inferred from documentation.
 | mechanism | command | result |
 |---|---|---|
 | declarative scope, user bus | `systemd-run --user --scope --quiet --unit=… /bin/true` | **FAIL** `Failed to connect to bus: No such file or directory` |
-| — | `ls /run/user/1000/bus /run/user/1000/systemd/private` | **absent**; `/run/user/1000/systemd/` (0755 nick) holds only `inaccessible/` |
-| — | `systemctl is-active user@1000.service` / `loginctl show-user nick` | **active** / `Linger=yes` — the manager runs, its **private socket does not exist** |
+| — | `ls /run/user/1000/bus /run/user/1000/systemd/private` | **absent**; `/run/user/1000/systemd/` (0755 the operator) holds only `inaccessible/` |
+| — | `systemctl is-active user@1000.service` / `loginctl show-user the operator` | **active** / `Linger=yes` — the manager runs, its **private socket does not exist** |
 | — | same probe re-run *from inside a real ssh session* | **FAIL**, same message (the socket is not created by a new session either) |
 | declarative scope, system bus | `systemd-run --scope …` (system bus) | **FAIL** polkit `Interactive authentication required` |
 | — | `systemctl stop session-18982.scope` | **FAIL** polkit `Interactive authentication required` |
 | — | `systemctl --user stop session-18982.scope` | **FAIL** `Failed to connect to bus` |
 | cgroupfs self-migration | `mkdir /sys/fs/cgroup/user.slice/user-1000.slice/user@1000.service/<dir>` | **SUCCEEDS** (delegation present: `cgroup.controllers` = `memory pids`) |
-| — | `echo $$ > …/<dir>/cgroup.procs` | **EACCES** — the dir is `nick nick 0664` and the write still fails |
+| — | `echo $$ > …/<dir>/cgroup.procs` | **EACCES** — the dir is `the operator the operator 0664` and the write still fails |
 | — | `/sys/fs/cgroup/user.slice/user-1000.slice/` | `root:root 0755` — the kernel checks write permission on the **common ancestor** cgroup |
 
 **5-why of the EACCES:** mkdir succeeded → the subtree is delegated → but a *write into
@@ -164,8 +164,8 @@ Three properties, all test-asserted:
 Build:  CGO_ENABLED=0 go build ./...                      → BUILD-OK
 Tests:  go build ./... && go test ./...                   → 2 pre-existing failures, see below
 Tests:  go test ./internal/cgroupscope/ -v                → ok (8/8 PASS)
-Tests:  go test ./cmd/agent/ -run 'Daemon'                → ok  github.com/nick/gopi/cmd/agent  16.343s
-Tests:  go test ./internal/standards/                     → ok  github.com/nick/gopi/internal/standards  3.013s
+Tests:  go test ./cmd/agent/ -run 'Daemon'                → ok  github.com/the operator/gopi/cmd/agent  16.343s
+Tests:  go test ./internal/standards/                     → ok  github.com/the operator/gopi/internal/standards  3.013s
 Tests:  go test ./internal/stylegate/                     → FAIL (PRE-EXISTING, proven by git stash, see below)
 ```
 
@@ -199,7 +199,7 @@ same two tests, which is what they will assert on a host with a working user bus
 
 Done, with the measured transcript:
 
-1. `ssh nick@127.0.0.1` lands in a real login session scope —
+1. `ssh the operator@127.0.0.1` lands in a real login session scope —
    `/proc/self/cgroup` → `0::/user.slice/user-1000.slice/session-18981.scope`.
 2. A daemon started **from inside a real ssh session** →
    `/proc/2172242/cgroup` = `0::/user.slice/user-1000.slice/session-18982.scope`, `PPID=1`,

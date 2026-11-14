@@ -210,7 +210,7 @@ FAIL
 Restored to the committed state:
 
 ```
-ok  	github.com/nick/gopi/internal/testutil	2.063s
+ok  	github.com/the operator/gopi/internal/testutil	2.063s
 ```
 
 Raw logs: `artifacts/gate-red-proof.out`, `artifacts/gate-green-proof.out`.
@@ -223,7 +223,7 @@ new gate file.
 **MEASURED (this run, commands and outputs in `## Verification` below):**
 
 - all five fixtures **PASS** individually on the clean HEAD tree, each with `-run`;
-- the whole five in one `-run` set: `ok github.com/nick/gopi/cmd/agent 108.248s`;
+- the whole five in one `-run` set: `ok github.com/the operator/gopi/cmd/agent 108.248s`;
 - **the base red, reproduced by this run** in a detached worktree at `96a4320f2`
   (`dirty=0`): `harness turn stamps = 0, model requests = 2` at
   `cli_lineedit_test.go:113`;
@@ -306,13 +306,13 @@ partially-restated shape — and not a third, unexplained tree. Archived:
 - **Build**: `go build ./...` → OK (before the commit).
 - **Tests**: `go vet ./internal/testutil/` → clean;
   `go test ./internal/testutil/ -count=1 -run 'TestSessionViewIsNeverFilteredASecondTime|TestSessionViewGateHasTeeth'`
-  → `ok github.com/nick/gopi/internal/testutil` (gate green, 24 view call sites,
+  → `ok github.com/the operator/gopi/internal/testutil` (gate green, 24 view call sites,
   0 re-filter sites; teeth 6/6 PASS);
   `go test ./internal/testutil/ -count=1 -run 'TestSession'` →
-  `ok github.com/nick/gopi/internal/testutil 0.780s` (the existing session
+  `ok github.com/the operator/gopi/internal/testutil 0.780s` (the existing session
   accounting fixtures still pass);
   all five `cmd/agent` fixtures in one set →
-  `ok github.com/nick/gopi/cmd/agent 108.248s`.
+  `ok github.com/the operator/gopi/cmd/agent 108.248s`.
 - **Ran** (verbatim, on the clean HEAD tree `21284bdf3`):
 
 ```
@@ -340,7 +340,7 @@ $ for n in TestChatCookedFallback_NonTTY TestRunPathPlainPromptIsVerbatim \
 --- FAIL: TestChatCookedFallback_NonTTY (12.27s)
     cli_lineedit_test.go:113: harness turn stamps = 0, model requests = 2 — want exactly one stamp per request (stamps: [])
     cli_lineedit_test.go:116: the run wrote no turn stamp at all — every request carries one (internal/agent/clock.go)
-FAIL	github.com/nick/gopi/cmd/agent	14.375s
+FAIL	github.com/the operator/gopi/cmd/agent	14.375s
 ```
 
 - **The master red, and the `:50/53/60` placement — measured this run**
@@ -354,7 +354,7 @@ $ go test ./cmd/agent/ -count=1 -v -run '^TestChatCookedFallback_NonTTY$'
     cli_lineedit_test.go:53: session: user events = 4, want 2 (types: [session_start user user assistant request user user assistant request session_end])
     cli_lineedit_test.go:60: user messages = [hello there [system] [t+0s] — first request of this session. what is two plus two [system] [t+0s] — +0s since your previous request.], want the two piped turns
 --- FAIL: TestChatCookedFallback_NonTTY (1.30s)
-FAIL	github.com/nick/gopi/cmd/agent	3.377s
+FAIL	github.com/the operator/gopi/cmd/agent	3.377s
 ```
 
 - **The five, archived verbatim this run** — `artifacts/five-run-archive-finaltip.out`
@@ -379,7 +379,7 @@ FAIL	github.com/nick/gopi/cmd/agent	3.377s
 
 - **The gate, re-run first-hand this run on the committed tree**:
   `go test ./internal/testutil/ -count=1 -v -run 'TestSessionViewIsNeverFilteredASecondTime|TestSessionViewGateHasTeeth'`
-  → `ok github.com/nick/gopi/internal/testutil 3.148s`, with
+  → `ok github.com/the operator/gopi/internal/testutil 3.148s`, with
   `views derived from internal/testutil/session.go: [HarnessUserContents UserContents]`
   printed and all six teeth sub-cases passing (arm 1, arm 2, the two legitimate
   shapes, the documented escape, and an escape without a reason).
@@ -388,7 +388,7 @@ FAIL	github.com/nick/gopi/cmd/agent	3.377s
 - **Rule 36 / doccheck, this run**: `gopi tool doccheck` →
   *"the devdoc corpus is consistent — every file under devdoc/ has a well-formed
   row"*, exit 0; `go test ./internal/standards/ -run 'DocAnchor|DocClass|DocIndex|DocManifest'`
-  → `ok github.com/nick/gopi/internal/standards 3.554s`.
+  → `ok github.com/the operator/gopi/internal/standards 3.554s`.
 
 - **The write side, measured in that tree's own record** — the probe quoted in
   §2b (`artifacts/base-write-side-probe.out`): 4 raw user rows, 2 of them
@@ -406,7 +406,7 @@ $ go test ./internal/testutil/ -count=1 -run TestSessionViewIsNeverFilteredASeco
 FAIL
 $ cp artifacts/cli_lineedit_test.go.backup cmd/agent/cli_lineedit_test.go
 $ go test ./internal/testutil/ -count=1 -run TestSessionViewIsNeverFilteredASecondTime
-ok  	github.com/nick/gopi/internal/testutil	2.063s
+ok  	github.com/the operator/gopi/internal/testutil	2.063s
 ```
 
 - **Rule 30**: `git status --porcelain` prints nothing in this worktree after the

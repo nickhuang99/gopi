@@ -180,11 +180,11 @@ func TestTraceCachesNothing(t *testing.T) {
 // TestSourceRepoDisplayPathReducesOriginURLsToTheDeclaredSpelling pins the
 // mapping from git's own origin spellings onto the repos table's key.
 func TestSourceRepoDisplayPathReducesOriginURLsToTheDeclaredSpelling(t *testing.T) {
-	abs := filepath.Join(string(filepath.Separator), "home", "nick", "work", "gopi")
+	abs := filepath.Join(string(filepath.Separator), "home", "the operator", "work", "gopi")
 	cases := []struct{ origin, want string }{
 		{abs, abs},
 		{"file://" + abs, abs},
-		{"nick@example-host:" + abs, abs},
+		{"the operator@example-host:" + abs, abs},
 		{"example-host:" + abs, abs},
 		{"git@github.com:some/remote.git", ""}, // no local checkout: not declarable
 	}

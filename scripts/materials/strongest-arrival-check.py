@@ -101,7 +101,7 @@ scan("codex  ~/.codex/sessions/**/rollout-*.jsonl",
      sorted(glob.glob(os.path.expanduser("~/.codex/sessions/2026/09/30/rollout-*.jsonl"))), jsonl)
 scan("claude ~/.claude/projects/<cwd-hash>/*.jsonl",
      sorted(glob.glob(os.path.expanduser(
-         "~/.claude/projects/-home-nick--gopi-sessions-01a0eec1-*/*.jsonl"))), jsonl)
+         "~/.claude/projects/-home-the operator--gopi-sessions-01a0eec1-*/*.jsonl"))), jsonl)
 scan("dsh    ~/.dsh/sessions/<cwd-hash>/session-*/session.jsonl.zstd",
      sorted(glob.glob(os.path.expanduser("~/.dsh/sessions/*01a0eec1*/*/session.jsonl.zstd"))), zstd)
 scan("hermes ~/.hermes/state.db  messages(role=user, newest 4000 rows)",

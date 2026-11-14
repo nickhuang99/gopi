@@ -7,7 +7,7 @@ import (
 	"github.com/nickhuang99/gopi/internal/deepseek"
 )
 
-// SessionClock is a cheap monotonic session clock (CLOCK-TICK design, nick
+// SessionClock is a cheap monotonic session clock (CLOCK-TICK design, the operator
 // 定案): t0 is recorded when the session starts, and every tool result
 // carries an elapsed tick label like [t+47s]. The LLM is bad at computing
 // differences between wall-clock timestamps ("bad at math"), so instead of

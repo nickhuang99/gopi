@@ -1,7 +1,7 @@
 package tools
 
 // Deliverable.worktree creation-time backfill tests (bugfix epic
-// 2026-09-03, nick's finding — the M4.8 information-closure loop's
+// 2026-09-03, the operator's finding — the M4.8 information-closure loop's
 // missing worktree half). Each acceptance case maps to one test:
 //
 //	(a) taskWorktreeOwningDir: cwd inside a linked worktree of the repo →

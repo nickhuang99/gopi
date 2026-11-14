@@ -166,10 +166,10 @@ $ go test ./cmd/agent/ ./internal/config/ -count=1 -run 'TestRemovedPeak|TestPea
 --- PASS: TestPeakGuardSymbolsAreAbsentFromTheTree (0.02s)
 --- PASS: TestPeakGuardWireTokensAreAbsentOutsideHistoryAndBackwardTolerance (0.03s)
 --- PASS: TestRemovedPeakHoursFlagsNoLongerAffectAStart (1.12s)
-ok  	github.com/nick/gopi/cmd/agent	1.572s
+ok  	github.com/the operator/gopi/cmd/agent	1.572s
 --- PASS: TestRemovedPeakHoursSettingsKeysAreTolerated (0.00s)
 --- PASS: TestRemovedPeakHoursSettingsKeysHaveNoField (0.00s)
-ok  	github.com/nick/gopi/internal/config	0.715s
+ok  	github.com/the operator/gopi/internal/config	0.715s
 ```
 
 ### 2b. The one thing that WAS broken by the removal wave — and is already repaired
@@ -181,7 +181,7 @@ $ export TMPDIR=/home/user/workspace/tmp-verify GOTMPDIR=/home/user/workspace/tm
 $ go vet ./cmd/agent/
 $                                     ← exit 0, no output
 $ go test -run 'TestNothingXYZ' ./cmd/agent/ -count=1
-ok  	github.com/nick/gopi/cmd/agent	0.431s [no tests to run]
+ok  	github.com/the operator/gopi/cmd/agent	0.431s [no tests to run]
 ```
 
 The defect fixed itself by *deletion* (`82f44223`, "delete the stray peak-guard test files that broke the test build"), and the decision to keep the guard removed was recorded with an executable red proof (`a6715b7b`). **Nothing stale survives, nothing to do.**
@@ -198,7 +198,7 @@ $                                       ← exit 0
 $ go vet ./cmd/agent/ ./internal/tools/
 $                                       ← exit 0
 $ go test ./internal/tools/ -count=1 -run 'TestNothingXYZ'
-ok  	github.com/nick/gopi/internal/tools	0.387s [no tests to run]   ← the test tree COMPILES
+ok  	github.com/the operator/gopi/internal/tools	0.387s [no tests to run]   ← the test tree COMPILES
 ```
 
 `go vet` is the important one: it compiles the test tree, which `go build` structurally cannot see. Both named reds from the briefing (`internal/stylegate errorf-verb`, `cmd/agent test tree not compiling`) — **the second is gone; the first is real but is a *gate* red, not a compile error.** They are §3b.
@@ -534,15 +534,15 @@ $                                              ← exit 0
 $ go vet ./cmd/agent/ ./internal/tools/
 $                                              ← exit 0
 $ go test -run 'TestNothingXYZ' ./cmd/agent/ -count=1
-ok  	github.com/nick/gopi/cmd/agent	0.431s [no tests to run]     ← test tree COMPILES
+ok  	github.com/the operator/gopi/cmd/agent	0.431s [no tests to run]     ← test tree COMPILES
 $ go test ./internal/tools/ -count=1 -run 'TestNothingXYZ'
-ok  	github.com/nick/gopi/internal/tools	0.387s [no tests to run]
+ok  	github.com/the operator/gopi/internal/tools	0.387s [no tests to run]
 
 # stylegate red (briefing item 1) — REPRODUCED
 $ go test ./internal/stylegate/ -count=1
 --- FAIL: TestStyleGate (2.17s)
     gate_test.go:150: stylegate errorf-verb: 9 production hit(s), ceiling 8 — new violations of a swept rule are regressions
-FAIL	github.com/nick/gopi/internal/stylegate	4.103s
+FAIL	github.com/the operator/gopi/internal/stylegate	4.103s
 
 # standards gate red — the merge-detritus (Rule 16/18, task_merge.go)
 $ go test ./internal/standards/ -count=1 -run 'TestStandardGates' -v
@@ -559,8 +559,8 @@ $ go test ./cmd/agent/ ./internal/config/ -count=1 -run 'TestRemovedPeak|TestPea
 --- PASS: TestRemovedPeakHoursFlagsNoLongerAffectAStart (1.12s)
 --- PASS: TestRemovedPeakHoursSettingsKeysAreTolerated (0.00s)
 --- PASS: TestRemovedPeakHoursSettingsKeysHaveNoField (0.00s)
-ok  	github.com/nick/gopi/cmd/agent	1.572s
-ok  	github.com/nick/gopi/internal/config	0.715s
+ok  	github.com/the operator/gopi/cmd/agent	1.572s
+ok  	github.com/the operator/gopi/internal/config	0.715s
 
 # cwd-release: the static gate AND the runtime rig both PASS
 $ go test ./internal/standards/ -count=1 -run 'CwdRelease' -v

@@ -71,7 +71,7 @@ also belong to a test whose own event failed.
   binary was built from — so the binary the run drove does not contain this tree:
        differ M internal/agent/clock.go
   this run's refusals, by test (each names the artifact it would not verify):
-       --- REFUSED: TestTaskRunStandsInTheSessionDirAndHandsTheWorkdirToTheChild  (github.com/nick/gopi/cmd/agent)
+       --- REFUSED: TestTaskRunStandsInTheSessionDirAndHandsTheWorkdirToTheChild  (github.com/the operator/gopi/cmd/agent)
           would not verify: <run>-tested-bin/gopi
 ```
 

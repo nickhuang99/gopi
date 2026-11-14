@@ -138,7 +138,7 @@ $ cd "$SCRATCH" && go test -count=1 -run TestZZRedProof_MainCheckoutDeposit ./in
     (reproduction: row 01a0dabe-3fa1-7cc8-b601-66f1456b8ffd)
 
 $ cd <this branch> && go test -count=1 -run TestZZRedProof_MainCheckoutDeposit ./internal/tools/
-ok  	github.com/nick/gopi/internal/tools
+ok  	github.com/the operator/gopi/internal/tools
 
 $ git worktree remove --force "$SCRATCH"    # the measurement is reproducible; leave nothing registered
 ok  	git worktree list shows only the repo and this run's own worktree

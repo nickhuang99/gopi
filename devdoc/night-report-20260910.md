@@ -1,5 +1,5 @@
 <!-- doc-class: normative -->
-# 夜间报告 — 2026-09-10 深夜（nick 睡前全权委托）
+# 夜间报告 — 2026-09-10 深夜（the operator 睡前全权委托）
 
 **报告时间**：2026-09-10 23:05
 **委托**："make good use of night time and I will check with your report tomorrow morning"

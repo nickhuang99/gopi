@@ -234,7 +234,7 @@ func TestGitCommitTrailersSkipOnlyUnspellableValues(t *testing.T) {
 
 	t.Run("an unspellable host name is refused by HostTrailerLine", func(t *testing.T) {
 		for _, host := range []string{
-			"nick'; rm -rf /; echo '",
+			"the operator'; rm -rf /; echo '",
 			"two words",
 			"",
 			"   ",

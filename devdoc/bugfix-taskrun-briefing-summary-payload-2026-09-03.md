@@ -11,7 +11,7 @@ completely suppressed, and only an EMPTY payload fell back to the summary.
 With the normal submit convention (`gopi task submit "<summary>" --payload
 <briefing>` — both fields set), the child gopi received ONLY the payload via
 stdin. A submitter who put the essential one-line intent in the summary and
-omitted it from the payload (to avoid repetition — nick, 2026-09-02) had
+omitted it from the payload (to avoid repetition — the operator, 2026-09-02) had
 that intent silently dropped from the child's execution context, so the
 child executed on an incomplete briefing.
 

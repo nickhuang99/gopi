@@ -7,8 +7,8 @@ probe-m5-worktree file=840562969ef5edfd52d349af155f40e9bdbf7e999e2a42c64237225aa
 probe-m6-sync file=15e478801ecb17240b5e564dfce7d307a15858ae57dae28b3d962129fec19b72 (835 bytes) delivered=b1bb844bf6f2775e0e24a098eae5f0af42f70985c439ddc23f432a9d3e9c91c6 (834 bytes)
 
 === ARRIVAL-SIDE (read back from each product's own session record) ===
-claude files: /home/user/.claude/projects/-home-nick--gopi-sessions-01a0eec1-e2a4-7366-bcf3-d2c2e183fe18-strongest-work-claude/5595e2c3-d0e1-457e-9e9f-24aa7d9645a8.jsonl
-/home/user/.claude/projects/-home-nick--gopi-sessions-01a0eec1-e2a4-7366-bcf3-d2c2e183fe18-strongest-work-claude/1429aa19-a692-420f-89c2-6f5f48b40342.jsonl
+claude files: /home/user/.claude/projects/-home-the operator--gopi-sessions-01a0eec1-e2a4-7366-bcf3-d2c2e183fe18-strongest-work-claude/5595e2c3-d0e1-457e-9e9f-24aa7d9645a8.jsonl
+/home/user/.claude/projects/-home-the operator--gopi-sessions-01a0eec1-e2a4-7366-bcf3-d2c2e183fe18-strongest-work-claude/1429aa19-a692-420f-89c2-6f5f48b40342.jsonl
 claude arrival: 620b709d183081369cf33d5755e38d046c3c9000df36efe7795cb64333554ef9 (1239 bytes)
   head: 【机制探测 M2：父子依赖闸门（父未释放，子不得被调度）】//目标：判断你自身产
 claude arrival: 78477cd68ec19e115480dfccd7595796ead5f516d33fd65a4d7122542e61d5c2 (1288 bytes)

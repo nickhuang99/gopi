@@ -169,7 +169,7 @@ frames, and the film's closing notice says which row joins which frame.
   → `ok … 0.406s`); an earlier draft of this branch failed it, which is why the
   branch's `cmd/agent` files are all in `syncPeersBare*`'s lists.
 - `go test ./internal/standards/ -run 'RepoHygiene' -count=1` →
-  `ok github.com/nick/gopi/internal/standards 8.613s` (exit 0) — no blob was
+  `ok github.com/the operator/gopi/internal/standards 8.613s` (exit 0) — no blob was
   added by this branch; Rule 39's own evidence here is also
   `git status --porcelain go.mod go.sum` printing nothing, and the worktree clean.
 - `../bin/gopi doccheck` → `doccheck: the devdoc corpus is consistent — every file

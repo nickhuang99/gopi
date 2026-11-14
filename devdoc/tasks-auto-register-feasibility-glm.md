@@ -14,7 +14,7 @@
 
 三个关键判断：
 
-1. **手动登记是死路**：gopi 是无人值守自动化 agent，跑完任务的不是人，没人会敲 `gopi task new`。Rule 11 实证（memory_update 曾 1/21435，LLM 不会自觉用低使用率工具；task 连工具都不是，LLM 根本无调用面）→ **自动登记是台账有数据的唯一现实路径**，也是唯一能兑现 nick "记录永久留存用于追溯" 铁则的路径。
+1. **手动登记是死路**：gopi 是无人值守自动化 agent，跑完任务的不是人，没人会敲 `gopi task new`。Rule 11 实证（memory_update 曾 1/21435，LLM 不会自觉用低使用率工具；task 连工具都不是，LLM 根本无调用面）→ **自动登记是台账有数据的唯一现实路径**，也是唯一能兑现 the operator "记录永久留存用于追溯" 铁则的路径。
 2. **登记 ≠ 控制，Stateless 可保住**：tasks.go 服务定位声明（tasks.go:8-14）= "AUDIT/TRAIL layer, not runtime control"。自动登记只是把 **LLM 自己声明过的** tasklist JSON（每轮 [TASK_LIST_BEGIN]...END）持久化镜像，写入方向是 LLM→harness→DB 单向，不存在 harness→LLM 的状态反馈回路。"LLM 拥有状态"指运行时控制权（每轮携带全量表），不受影响。
 3. **简单方案 > 复杂方案**：不做每轮变化驱动 upsert（演化史诱惑大，但 task_id 每轮漂移使合并成为最复杂易错的组件，见 §5）；session 末尾一次性登记最终快照，天然规避幂等难题，热路径零成本。
 
@@ -84,7 +84,7 @@
 ## Q7. 收益 vs 成本
 
 **收益**：
-- 手动登记的现状 = 登记率趋近零（无人值守 agent 无"人"）；自动登记是台账有数据的唯一路径 → **直接兑现 nick 铁则"所有任务记录永久留存用于追溯"**（简报 F7，gopi_big_view）。
+- 手动登记的现状 = 登记率趋近零（无人值守 agent 无"人"）；自动登记是台账有数据的唯一路径 → **直接兑现 the operator 铁则"所有任务记录永久留存用于追溯"**（简报 F7，gopi_big_view）。
 - 结构化查询面：`gopi task list --status` 走 idx_tasks_status（tasks.go:62 value-signal）；跨会话聚合（"这周跑过哪些任务、哪些 failed"）CLI 手动时代不可能有数据。
 - **feedback.task_id join 锚点**：memory_feedback 表已有 task_id 按任务去重先例（简报 A1），自动登记让 feedback 的任务级聚合有可 join 的实体键。
 - 与 `gopi log --todo`（session JSONL 回放）互补：回放是"每 session 的文本视图"，台账是"跨 session 的结构化查询面"，两者服务不同检索需求。
@@ -94,7 +94,7 @@
 - 热路径成本 = 0（不在每轮写；defer 一次写 N 行，WAL + SetMaxOpenConns(1) 下毫秒级）。
 - 风险：summary 质量由 LLM 决定（与 CLI 手动同源，不更差）；task_id 跨 session 冲突需 §5 对策。
 
-**判定**：自动登记与 nick 目标（永久留存追溯）的匹配度**显著高于** CLI 手动。CLI 保留为四态补全渠道。
+**判定**：自动登记与 the operator 目标（永久留存追溯）的匹配度**显著高于** CLI 手动。CLI 保留为四态补全渠道。
 
 ---
 

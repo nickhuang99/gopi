@@ -397,7 +397,7 @@ $ CGO_ENABLED=0 go build ./...
 build_exit=0
 
 $ go test -run 'TestWorktreeSweep|TestDeadHolder|TestResume.*Row|TestBackfillDeliverable|TestTaskDeliverableWorktree' ./internal/tools/
-ok  	github.com/nick/gopi/internal/tools	3.841s
+ok  	github.com/the operator/gopi/internal/tools	3.841s
 ```
 
 The stat line is the acceptance condition itself: **one path, a `.md`, zero `.go` files** — the diff

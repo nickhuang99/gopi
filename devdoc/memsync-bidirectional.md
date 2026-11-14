@@ -51,7 +51,7 @@ payload）会被静默吸收成 tags-union —— 违反"冲突不静默"；④d
 
 - brew 通道（M4 已有，epic 明示零改动——未触碰）。
 - git 分支 push-back 通道（epic b 项：标准 git 语义，PA/gopi 处理——无代码改动需求）。
-- conflict 的人工裁决工具（沿用 M4.12 的立场：计数+报行+tag，裁决留 nick）。
+- conflict 的人工裁决工具（沿用 M4.12 的立场：计数+报行+tag，裁决留 the operator）。
 - Rule 11 LLM 调用验证：N/A——`task sync` 是 CLI 运维动词（人/PA 执行），不在 agent 工具面。
 
 ## Verification

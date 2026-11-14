@@ -146,7 +146,7 @@ gopi worker: daemon start failed: another worker daemon is already running (lock
 held by pid 2330009) — refusing a second resident worker: …      [exit 1]
 
 === [3] the four worker-daemon tests, WITH the production daemons up ===
-ok  github.com/nick/gopi/cmd/agent  10.344s
+ok  github.com/the operator/gopi/cmd/agent  10.344s
 --- units immediately after the suite: (the same three units, still running)
 
 === [4] cleanup: both production daemons are stopped (no residue) ===
@@ -229,7 +229,7 @@ gopi worker: daemon start failed: another worker daemon is already running
 
 === [3] the four worker-daemon tests, WITH the production daemons up ===
   … three units listed immediately BEFORE the suite (the two production ones + the operator's merger)
-ok  	github.com/nick/gopi/cmd/agent	10.194s          ← suite exit 0
+ok  	github.com/the operator/gopi/cmd/agent	10.194s          ← suite exit 0
   … immediately AFTER the suite:
   gopi-daemon-merger.scope                     loaded active running /home/user/work/GoPi/bin/gopi merger
   gopi-daemon-worker-001-ab07c6ec2aa3.scope    loaded active running …/worker-daemon-bin/gopi worker

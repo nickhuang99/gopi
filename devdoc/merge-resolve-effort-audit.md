@@ -361,7 +361,7 @@ change needed) or is a KEEP with its reason recorded above.
 CGO_ENABLED=0 go build ./...                                        -> exit 0 (no output)
 go test ./internal/tools/ \
   -run 'Adoption|ResolveRow|RepoResolve|TaskMerge|RepoSweepNotFF' -count=1
-                                                                    -> ok  github.com/nick/gopi/internal/tools  77.786s
+                                                                    -> ok  github.com/the operator/gopi/internal/tools  77.786s
 git status --porcelain                                              -> (empty before this doc's edit)
 ```
 

@@ -106,12 +106,12 @@ run_client() { # run_client <workdir-name> <logfile> [args...]
 }
 
 # --- A: --out writes a real WAV, and --out is accepted ---------------------
-code=$(run_client a a.log --client --seconds 1 --out "$WORK/a/nick.wav" --stdio) || true
+code=$(run_client a a.log --client --seconds 1 --out "$WORK/a/voice.wav" --stdio) || true
 [ "$code" = "0" ] || { cat "$WORK/a.log.stderr" >&2; fail "case A: exit $code"; }
 grep -q "unknown flag" "$WORK/a.log.stderr" && fail "case A: --out was refused as an unknown flag (the pre-fix defect)"
 grep -q "wrote" "$WORK/a.log.stderr" || fail "case A: the client never reported writing the file"
 
-python3 - "$WORK/a/nick.wav" "$WORK/a.log.stdout" <<'PY' || fail "case A: the WAV is not what the capture contract promises"
+python3 - "$WORK/a/voice.wav" "$WORK/a.log.stdout" <<'PY' || fail "case A: the WAV is not what the capture contract promises"
 import struct, sys
 wav = open(sys.argv[1], "rb").read()
 raw = open(sys.argv[2], "rb").read()
@@ -145,10 +145,10 @@ code=$(run_client b b.log --client --seconds 1 --stdio) || true
 grep -q "wrote" "$WORK/b.log.stderr" && fail "case B: the client claimed to write a file it was not asked for"
 
 # --- C: a FAILED forward still leaves the recording (the bug report) --------
-code=$(run_client c c.log --client --seconds 1 --out "$WORK/c/nick.wav" --server-url http://127.0.0.1:1) || true
+code=$(run_client c c.log --client --seconds 1 --out "$WORK/c/voice.wav" --server-url http://127.0.0.1:1) || true
 [ "$code" != "0" ] || fail "case C: the forward to a dead port should have failed"
-[ -s "$WORK/c/nick.wav" ] || fail "case C: the forward failed and the recording was LOST — the defect this feature fixes"
-python3 - "$WORK/c/nick.wav" <<'PY' || fail "case C: the surviving file is not a valid recording"
+[ -s "$WORK/c/voice.wav" ] || fail "case C: the forward failed and the recording was LOST — the defect this feature fixes"
+python3 - "$WORK/c/voice.wav" <<'PY' || fail "case C: the surviving file is not a valid recording"
 import struct, sys
 wav = open(sys.argv[1], "rb").read()
 assert wav[0:4] == b"RIFF" and wav[8:12] == b"WAVE"
@@ -171,7 +171,7 @@ grep -q "already exists" "$WORK/d.log.stderr" || fail "case D: the refusal does 
 # using the previous run's server". The hint must be derived from the target
 # that failed.
 DEADPORT=7951
-code=$(run_client e e.log --client --seconds 1 --out "$WORK/e/nick.wav" \
+code=$(run_client e e.log --client --seconds 1 --out "$WORK/e/voice.wav" \
 	--server-url "http://127.0.0.1:$DEADPORT") || true
 [ "$code" != "0" ] || fail "case E: the forward to a dead port should have failed"
 grep -q "cannot reach transcriber at http://127.0.0.1:$DEADPORT/transcribe" "$WORK/e.log.stderr" ||
@@ -179,6 +179,6 @@ grep -q "cannot reach transcriber at http://127.0.0.1:$DEADPORT/transcribe" "$WO
 grep -q ":$DEADPORT" "$WORK/e.log.stderr" || fail "case E: the advice does not name the port that failed"
 grep -q ":7788" "$WORK/e.log.stderr" &&
 	fail "case E: the advice names the :7788 DEFAULT under a refusal for :$DEADPORT — the address of a different run"
-[ -s "$WORK/e/nick.wav" ] || fail "case E: the failed forward lost the recording"
+[ -s "$WORK/e/voice.wav" ] || fail "case E: the failed forward lost the recording"
 
 echo "[proof] voice_input --client --out: A/B/C/D/E all PASS (binary: $BIN)"

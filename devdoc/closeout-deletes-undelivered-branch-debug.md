@@ -555,7 +555,7 @@ task/01a0dda167de7a3cb840d7a6457bf383
 - **Build:** `CGO_ENABLED=0 go build ./...` → `BUILD_EXIT=0`, no output (executed at close-out,
   Rule 31 — no source moved, so this only proves the tree still compiles).
 - **Tests:** `go test ./internal/standards/ -run 'DocIndex|DocClass|DocManifest' -count=1` →
-  `ok github.com/nick/gopi/internal/standards 2.613s` (the only gate a new devdoc file
+  `ok github.com/the operator/gopi/internal/standards 2.613s` (the only gate a new devdoc file
   touches). No other test moved, because no code moved. The three cited test files
   (`internal/tools/cov_finish_cleanup_test.go`, `task_finish_cleanup_test.go`,
   `internal/tools/is_server_node_test.go`) were **read**, not executed, and only as

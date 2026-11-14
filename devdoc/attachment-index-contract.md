@@ -101,7 +101,7 @@ existing `config.SessionsDirName` / consts are referenced as before.
   --- FAIL: TestAttIdxCtrEmptyMiddleReplicaRel (0.08s)
       attach_index_contract_test.go:151: replicaPaths = 2, want 3 (one per
       manifest entry — an empty replica_rel_path must not shorten the index)
-  FAIL	github.com/nick/gopi/internal/tools	0.088s
+  FAIL	github.com/the operator/gopi/internal/tools	0.088s
   ```
 
   With the fix in place both new tests pass:
@@ -109,14 +109,14 @@ existing `config.SessionsDirName` / consts are referenced as before.
   ```
   === NEW internal/tools test ===
   --- PASS: TestAttIdxCtrEmptyMiddleReplicaRel (0.05s)
-  ok  	github.com/nick/gopi/internal/tools	0.055s
+  ok  	github.com/the operator/gopi/internal/tools	0.055s
   === NEW cmd/agent test ===
   --- PASS: TestAttIdxBriefFacesAgreeOnEmptyMiddleEntry (2.52s)
-  ok  	github.com/nick/gopi/cmd/agent	2.527s
+  ok  	github.com/the operator/gopi/cmd/agent	2.527s
   ```
 
 - `go build ./...` → `BUILD_OK`
-- `go test ./internal/tools/...` → `ok github.com/nick/gopi/internal/tools
+- `go test ./internal/tools/...` → `ok github.com/the operator/gopi/internal/tools
   190.238s` (run 1, job-2) / `ok … 201.055s` (run 2, job-1).
   A third full run (job-5) reported `ok` for `./cmd/agent/...` (250.263s) and
   failed `./internal/tools/...` on ONE test only —
@@ -125,12 +125,12 @@ existing `config.SessionsDirName` / consts are referenced as before.
   That test is a load/timing budget, unrelated to attachments: it PASSES in
   isolation on this branch (0.17s) and on the untouched base
   (`/tmp/master-base`, 0.239s). Not caused by this change.
-- `go test ./cmd/agent/...` → `ok github.com/nick/gopi/cmd/agent 250.263s`
+- `go test ./cmd/agent/...` → `ok github.com/the operator/gopi/cmd/agent 250.263s`
   (job-5; also `ok … 279.242s` in job-1).
 - **Final confirmation run (branch tip 212703c, `-count=1`)**: `go build ./...`
   → `BUILD_OK`; `go test ./internal/tools/...` → `ok
-  github.com/nick/gopi/internal/tools 193.455s`; `go test ./cmd/agent/...` →
-  `ok github.com/nick/gopi/cmd/agent 262.945s` (no failures — this run's
+  github.com/the operator/gopi/internal/tools 193.455s`; `go test ./cmd/agent/...` →
+  `ok github.com/the operator/gopi/cmd/agent 262.945s` (no failures — this run's
   `TestFreshDBOpenCloseIsFast` passed, confirming the earlier single failure
   was the fsync-timing flake, not this change).
 - **Red→green re-confirmed on the committed tree** (the documented recipe is

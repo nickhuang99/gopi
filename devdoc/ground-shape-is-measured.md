@@ -19,7 +19,7 @@ $ pwd
 $ test -d .git && echo "DIRECTORY (clone)"
 DIRECTORY (clone)
 $ ls -ld .git
-drwxrwxr-x 8 nick nick 4096 Oct 27 03:57 .git
+drwxrwxr-x 8 the operator the operator 4096 Oct 27 03:57 .git
 $ git rev-parse --git-common-dir
 .git
 $ git rev-parse --git-dir

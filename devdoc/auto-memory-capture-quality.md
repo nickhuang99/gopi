@@ -157,7 +157,7 @@ $ CGO_ENABLED=0 go build -o /tmp/gopi-cap ./cmd/agent/    # 无输出
 
 ```
 $ go test ./internal/agent/ -run 'TestClassifySelfNote|TestCaptureSelfNotes' -count=1
-ok  	github.com/nick/gopi/internal/agent	1.320s
+ok  	github.com/the operator/gopi/internal/agent	1.320s
 ```
 
 **真跑（Rule 31：在独立 sandbox profile 里跑一个真实 task run，不是本会话）**

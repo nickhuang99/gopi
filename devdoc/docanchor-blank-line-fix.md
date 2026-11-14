@@ -55,7 +55,7 @@ re-derives. `memory.go` gained lines above the anchored symbol, the symbol moved
   → `docanchor_test.go:127: … memory.go:1244 points at a BLANK line` / FAIL.
 - After: same command → `doc anchors verified: 72 across 2 spec files` / PASS.
 - Symbol identity: python audit of all 21 re-keyed anchors → `symbol-identity failures: 0`.
-- Full package: `go test ./internal/agent/ -count=1` → `ok github.com/nick/gopi/internal/agent 22.870s`.
+- Full package: `go test ./internal/agent/ -count=1` → `ok github.com/the operator/gopi/internal/agent 22.870s`.
 - Build: `CGO_ENABLED=0 go build ./...` → OK.
 - gofmt: `gofmt -l $(git diff --name-only)` → empty (clean).
 - Commit: `8867f88d` on `fix/docanchor-blank-line` (worktree-shared ref).

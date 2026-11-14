@@ -11,5 +11,5 @@ testutil: scratch GC removed 1 stale entry older than 6h0m0s
 --- FAIL: TestMergeBacklogTerminalGuard_SyncDoorRecordsInsteadOfRefusing (0.08s)
     task_merge_backlog_terminal_guard_test.go:485: the sync door adopted a verified row for an unmerged branch with no merge-backlog-terminal-refused trail entry — this is exactly the silent write that produced t-1788218295
 FAIL
-FAIL	github.com/nick/gopi/internal/tools	1.246s
+FAIL	github.com/the operator/gopi/internal/tools	1.246s
 FAIL

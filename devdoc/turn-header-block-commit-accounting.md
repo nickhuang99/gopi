@@ -11,7 +11,7 @@ changed: the implementation was right and the expectation was stale.
 $ go test ./internal/lineedit/ -count=1 -run TestTurnHeaderLines_BlockRowsAreCommittedOnePerRow
 --- FAIL: TestTurnHeaderLines_BlockRowsAreCommittedOnePerRow (0.00s)
     turn_header_block_test.go:364: BeginTurn committed 8 row(s), want 5 (one per block row)
-FAIL	github.com/nick/gopi/internal/lineedit	0.546s
+FAIL	github.com/the operator/gopi/internal/lineedit	0.546s
 ```
 
 Reproduced in this run's own worktree at cols=40 (the harness width), before

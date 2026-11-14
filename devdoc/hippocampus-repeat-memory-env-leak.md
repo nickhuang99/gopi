@@ -63,7 +63,7 @@ Epic: 把这次排除故障的教训写进记忆：gopi 会话里 hippocampus �
 - Build: 未构建 —— 本任务零代码变更（无代码可构建，如实声明）。
 - Tests（只读复现，证明回归面绿且定位假失败）：
   - `env -u GOPI_MEMORY_DB GOPI_HIPPOCAMPUS= go test ./internal/agent/ -run TestHippocampus_ -count=1`
-    → `ok github.com/nick/gopi/internal/agent`，**16/16 PASS**。
+    → `ok github.com/the operator/gopi/internal/agent`，**16/16 PASS**。
   - 反证（未清 DB 路径）：`GOPI_HIPPOCAMPUS= go test … -run TestHippocampus_DefaultOffLeavesBehaviourUnchanged`
     → FAIL（`hippocampus_test.go:785` want/got 差异）——泄漏可复现。
 - 记忆验证：`memory(action=search, query="hippocampus 备忘每轮重复投递 收敛门…")` → 命中

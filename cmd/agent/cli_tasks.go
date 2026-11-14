@@ -326,7 +326,7 @@ const (
 
 // tasksUsage is the help text for the gopi task subcommand family. It is
 // printed when a subcommand is missing required arguments or the user passes
-// -h/--help. The ledger is append-only — no delete subcommand exists (nick's
+// -h/--help. The ledger is append-only — no delete subcommand exists (the operator's
 // iron rule: LLM/CLI may create tasks, edit summaries, change status — never
 // delete; records are permanent for cross-session tracing/audit).
 const tasksUsage = `GoPi task subcommands — the task-as-memory ledger (跨会话追溯/审计).
@@ -1653,7 +1653,7 @@ func parseTasksArgs(verb string, args []string) (*tasksOptions, error) {
 			return nil, fmt.Errorf("unexpected positional argument %q", positionals[0])
 		}
 	case taskverbs.AuditMerges:
-		// Merge-backlog audit's CLI face (nick's post-receive hook design):
+		// Merge-backlog audit's CLI face (the operator's post-receive hook design):
 		// discover unmerged client branches → enqueue merge-backlog tasks.
 		// The hook calls this detached right after a push lands — the
 		// event-driven stage-1 (no serve daemon needed for discovery).
@@ -1987,7 +1987,7 @@ const (
 // often the essential line a submitter wrote FIRST) and the payload (the
 // detailed request) feed the briefing — a non-empty payload no longer
 // suppresses the summary, so a submitter who put the intent in the summary
-// and the detail in the payload loses neither (nick, 2026-09-02).
+// and the detail in the payload loses neither (the operator, 2026-09-02).
 //
 // Composition (stable format):
 //
@@ -4100,7 +4100,7 @@ func reconcileChildMirror(wrapperTaskID, status, reason string) {
 // runTaskRunOnce callers are manual + worker) and the
 // VERBATIM re-runnable command line. run_cmd on a crashed row doubles as the
 // resume recipe, so it must be a command an operator can actually paste —
-// never a human-readable description of the launch (the defect nick reported:
+// never a human-readable description of the launch (the defect the operator reported:
 // `gopi worker (claim→run round, target <id>)` is a parenthesis, not a
 // command).
 //
@@ -4538,14 +4538,14 @@ const taskServeAliasPointerFmt = "gopi task %s is a deprecated alias — the mer
 // tools.TaskMerge (devdoc/merge-landing-path-ownership.md, and
 // `gopi task merge -h`).
 //
-// What the pass was built as (epic serve/worker-split 2026-09-03, nick's final
+// What the pass was built as (epic serve/worker-split 2026-09-03, the operator's final
 // design — REFINED by architecture-fix-v2 2026-09-03; its PROCESS FORM became
 // one-tick-and-exit in epic daemon-machinery-removal, 2026-09-17):
 // A merger is a
 // PURE branch-merge process — it owns NO task execution: claim/run/writeback
 // is the worker's job (runTaskWorker), which runs on BOTH client and server.
 //
-// Architecture-fix-v2 (nick's SIMPLER design): the merger's real work is a
+// Architecture-fix-v2 (the operator's SIMPLER design): the merger's real work is a
 // CONFIG-DRIVEN PURE GIT SWEEP — NOT task-oriented, NOT DB-driven. Each pass
 // iterates the settings.json "repos" table keys (the sweep list) and, per
 // repo, runs MergerRepoSweep: cd to the repo, merge every branch whose
@@ -4579,7 +4579,7 @@ const taskServeAliasPointerFmt = "gopi task %s is a deprecated alias — the mer
 // (epic architecture-fix-v2, config-driven pure git sweep). The merger is
 // NO LONGER task-oriented or DB-driven: settings.json "repos" is the sweep
 // list, and each pass cd's to every configured repo and merges all
-// branches whose worktree protection has been removed (nick's exact model:
+// branches whose worktree protection has been removed (the operator's exact model:
 // "in the config file we specify the repo.path and the merger just
 // periodically cd's to repo.path and merges all branches"). Whether a task
 // row tracks a branch is irrelevant to the merge decision.
@@ -6604,7 +6604,7 @@ func mergerSweepRepo(repo string) tools.RepoSweepResult {
 	// Mechanism-2 snapshot (epic merger-failure-dual-mechanism, 2026-09-08):
 	// BEFORE the sweep runs, capture master's pre-sweep tip + the branch
 	// registry, so a landing whose rebuild FAILS can be auto-reverted to the
-	// pre-sweep buildable state (master must stay buildable — nick). If the
+	// pre-sweep buildable state (master must stay buildable — the operator). If the
 	// capture fails (no PreTip) the tick simply lands WITHOUT auto-revert
 	// capability — never abort the sweep over the snapshot.
 	capture := tools.CaptureFailedMergeRevert(repo)

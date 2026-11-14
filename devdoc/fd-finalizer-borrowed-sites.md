@@ -199,7 +199,7 @@ $ go test -count=1 -v ./cmd/agent/ -run 'TestDaemonDeathPipeDroppedWrapperLeaves
     → after dropping the wrapper + 8×runtime.GC(): link "" err=readlink /proc/self/fd/7: no
     such file or directory ⇒ CLOSED …
 --- FAIL: TestDaemonDeathPipeDroppedWrapperLeavesTheNumberLive (0.20s)
-FAIL	github.com/nick/gopi/cmd/agent	2.522s
+FAIL	github.com/the operator/gopi/cmd/agent	2.522s
 
 $ go test -count=1 -v ./cmd/agent/ -run 'TestWorkerDaemonDeadlineRefusalLeavesTheBorrowedFDLive'
     worker_daemon_refused_wrapper_test.go:132: production deadline refusal measured:
@@ -261,8 +261,8 @@ The helper's own red-proof, one line apart (the body of `Detach` disabled):
 --- PASS: TestWorkerDaemonInheritLockRefusalInARealChildLeavesTheLockFDAlive (5.18s)
 --- PASS: TestWatchDetachesItsBorrowedWrapper (0.00s)
 --- PASS: TestWriteReadinessClosesItsBorrowedDescriptor (0.00s)
-ok  github.com/nick/gopi/cmd/agent  6.892s
-ok  github.com/nick/gopi/internal/borrowedfd  0.202s
+ok  github.com/the operator/gopi/cmd/agent  6.892s
+ok  github.com/the operator/gopi/internal/borrowedfd  0.202s
 ```
 
 ## Why a real CHILD is the instrument for the worker-lock site

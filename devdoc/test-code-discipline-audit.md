@@ -68,7 +68,7 @@ somewhere else" — it is no longer written at all):
 $ stat -c %Y /tmp/gopi-version-test /tmp/gopi-home-settings-test
 1789083317  1788877178
 $ go test -count=1 -run 'TestVersion|TestHomeSettings' ./cmd/agent/
-ok  github.com/nick/gopi/cmd/agent  1.323s
+ok  github.com/the operator/gopi/cmd/agent  1.323s
 $ stat -c %Y /tmp/gopi-version-test /tmp/gopi-home-settings-test
 1789083317  1788877178        # IDENTICAL — the fixed /tmp paths were not touched
 ```

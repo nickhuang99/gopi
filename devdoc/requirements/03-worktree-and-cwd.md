@@ -86,7 +86,7 @@ work he thought was delivered turning out to exist on only one machine.*
 
 ## 2. Who is served
 
-**The operator (nick)** — he owns the disk and the machines. He needs: his work
+**The operator (the operator)** — he owns the disk and the machines. He needs: his work
 survives; a workspace does not silently consume a device the rest of the machine
 depends on; when something is left behind he is told, in his own terms, and the
 leftover carries enough information to decide. His own words: *"is gopi clean up

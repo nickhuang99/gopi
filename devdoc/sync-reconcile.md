@@ -13,7 +13,7 @@
 > a *periodic full pass* describe a mechanism this repository no longer has.
 
 Epic: the timestamp-delta protocol's anchor has one **self-evident premise**
-(nick: common sense — the anchor is a *synchronized starting timeline*;
+(the operator: common sense — the anchor is a *synchronized starting timeline*;
 everything BEFORE the anchor must be identical on both sides). Nothing
 mechanized that premise: a row created on one side whose `updated_at` is
 older than the peer's receive-anchor is **permanently outside the delta
@@ -22,7 +22,7 @@ trigger: `aad7e286` (an auto-created task on HP whose peer anchor had
 already advanced) nearly vanished. This epic mechanizes the premise in
 three tools.
 
-## Anchor semantics (nick's common sense, written into the design)
+## Anchor semantics (the operator's common sense, written into the design)
 
 | Property | Meaning | Enforced by |
 |---|---|---|

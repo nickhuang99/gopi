@@ -272,8 +272,8 @@ verified by diffing the two tables after alignment, not by reading them.
 - **Build:** `CGO_ENABLED=0 go build -o bin/gopi ./cmd/agent/` — OK (used for
   every probe in this document).
 - **Tests:** `go test ./cmd/agent -run 'Census|Guard|Contract|Completion'
-  -count=1` → `ok github.com/nick/gopi/cmd/agent 49.4s`;
-  `go test ./internal/config -count=1` → `ok github.com/nick/gopi/internal/config
+  -count=1` → `ok github.com/the operator/gopi/cmd/agent 49.4s`;
+  `go test ./internal/config -count=1` → `ok github.com/the operator/gopi/internal/config
   2.4s`; the two new tests are green, and each was measured RED under the
   mutation it exists for (both mutations reverted). Full package budget:
   `make test-budget PKGS='./cmd/agent'` — see `## Evidence (self-filed)`.

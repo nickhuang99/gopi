@@ -1,58 +1,58 @@
 ### probe script: p14-residue-reap-actor.sh
 === A. journal: every sudo/privileged line mentioning gopi-residue-reap ===
-Sep 14 03:43:51 peer1 sudo[2065611]:     nick : PWD=/home/user/workspace/gopi-residue-reap/internal/tools ; USER=root ; COMMAND=/usr/bin/true
-Sep 14 03:43:52 peer1 sudo[2065657]:     nick : PWD=/home/user/workspace/gopi-residue-reap/internal/tools ; USER=root ; COMMAND=/usr/bin/true
-Sep 14 03:51:13 peer1 sudo[2089230]:     nick : TTY=pts/4 ; PWD=/home/user/workspace/gopi-residue-reap/internal/tools ; USER=root ; COMMAND=/usr/bin/true
-Sep 14 03:51:13 peer1 sudo[2089369]:     nick : TTY=pts/4 ; PWD=/home/user/workspace/gopi-residue-reap/internal/tools ; USER=root ; COMMAND=/usr/bin/true
-Sep 14 03:57:08 peer1 sudo[2116074]:     nick : PWD=/home/user/workspace/gopi-residue-reap/internal/tools ; USER=root ; COMMAND=/usr/bin/true
-Sep 14 03:57:11 peer1 sudo[2116749]:     nick : PWD=/home/user/workspace/gopi-residue-reap/internal/tools ; USER=root ; COMMAND=/usr/bin/true
-Sep 14 03:58:52 peer1 sudo[2131027]:     nick : PWD=/home/user/workspace/gopi-residue-reap/internal/tools ; USER=root ; COMMAND=/usr/bin/true
-Sep 14 03:59:01 peer1 sudo[2131627]:     nick : PWD=/home/user/workspace/gopi-residue-reap/internal/tools ; USER=root ; COMMAND=/usr/bin/true
-Sep 14 03:59:29 peer1 sudo[2134423]:     nick : PWD=/home/user/workspace/gopi-residue-reap/internal/tools ; USER=root ; COMMAND=/usr/bin/true
-Sep 14 03:59:32 peer1 sudo[2134684]:     nick : PWD=/home/user/workspace/gopi-residue-reap/internal/tools ; USER=root ; COMMAND=/usr/bin/true
-Sep 14 04:01:37 peer1 sudo[2151496]:     nick : PWD=/home/user/workspace/gopi-residue-reap/internal/tools ; USER=root ; COMMAND=/usr/bin/true
-Sep 14 04:01:45 peer1 sudo[2152181]:     nick : PWD=/home/user/workspace/gopi-residue-reap/internal/tools ; USER=root ; COMMAND=/usr/bin/true
-Sep 14 04:10:08 peer1 sudo[2205853]:     nick : PWD=/home/user/workspace/gopi-residue-reap/internal/tools ; USER=root ; COMMAND=/usr/bin/true
-Sep 14 04:10:11 peer1 sudo[2206234]:     nick : PWD=/home/user/workspace/gopi-residue-reap/internal/tools ; USER=root ; COMMAND=/usr/bin/true
-Sep 14 04:10:36 peer1 sudo[2208857]:     nick : TTY=pts/4 ; PWD=/home/user/workspace/gopi-residue-reap/internal/tools ; USER=root ; COMMAND=/usr/bin/true
-Sep 14 04:10:39 peer1 sudo[2209039]:     nick : TTY=pts/4 ; PWD=/home/user/workspace/gopi-residue-reap/internal/tools ; USER=root ; COMMAND=/usr/bin/true
-Sep 14 04:13:14 peer1 sudo[2236474]:     nick : PWD=/home/user/workspace/gopi-residue-reap/internal/tools ; USER=root ; COMMAND=/usr/bin/true
-Sep 14 04:13:17 peer1 sudo[2236776]:     nick : PWD=/home/user/workspace/gopi-residue-reap/internal/tools ; USER=root ; COMMAND=/usr/bin/true
-Sep 14 04:13:26 peer1 sudo[2238315]:     nick : PWD=/home/user/workspace/gopi-residue-reap/internal/tools ; USER=root ; COMMAND=/usr/bin/true
-Sep 14 04:13:29 peer1 sudo[2238510]:     nick : PWD=/home/user/workspace/gopi-residue-reap/internal/tools ; USER=root ; COMMAND=/usr/bin/true
+Sep 14 03:43:51 peer1 sudo[2065611]:     the operator : PWD=/home/user/workspace/gopi-residue-reap/internal/tools ; USER=root ; COMMAND=/usr/bin/true
+Sep 14 03:43:52 peer1 sudo[2065657]:     the operator : PWD=/home/user/workspace/gopi-residue-reap/internal/tools ; USER=root ; COMMAND=/usr/bin/true
+Sep 14 03:51:13 peer1 sudo[2089230]:     the operator : TTY=pts/4 ; PWD=/home/user/workspace/gopi-residue-reap/internal/tools ; USER=root ; COMMAND=/usr/bin/true
+Sep 14 03:51:13 peer1 sudo[2089369]:     the operator : TTY=pts/4 ; PWD=/home/user/workspace/gopi-residue-reap/internal/tools ; USER=root ; COMMAND=/usr/bin/true
+Sep 14 03:57:08 peer1 sudo[2116074]:     the operator : PWD=/home/user/workspace/gopi-residue-reap/internal/tools ; USER=root ; COMMAND=/usr/bin/true
+Sep 14 03:57:11 peer1 sudo[2116749]:     the operator : PWD=/home/user/workspace/gopi-residue-reap/internal/tools ; USER=root ; COMMAND=/usr/bin/true
+Sep 14 03:58:52 peer1 sudo[2131027]:     the operator : PWD=/home/user/workspace/gopi-residue-reap/internal/tools ; USER=root ; COMMAND=/usr/bin/true
+Sep 14 03:59:01 peer1 sudo[2131627]:     the operator : PWD=/home/user/workspace/gopi-residue-reap/internal/tools ; USER=root ; COMMAND=/usr/bin/true
+Sep 14 03:59:29 peer1 sudo[2134423]:     the operator : PWD=/home/user/workspace/gopi-residue-reap/internal/tools ; USER=root ; COMMAND=/usr/bin/true
+Sep 14 03:59:32 peer1 sudo[2134684]:     the operator : PWD=/home/user/workspace/gopi-residue-reap/internal/tools ; USER=root ; COMMAND=/usr/bin/true
+Sep 14 04:01:37 peer1 sudo[2151496]:     the operator : PWD=/home/user/workspace/gopi-residue-reap/internal/tools ; USER=root ; COMMAND=/usr/bin/true
+Sep 14 04:01:45 peer1 sudo[2152181]:     the operator : PWD=/home/user/workspace/gopi-residue-reap/internal/tools ; USER=root ; COMMAND=/usr/bin/true
+Sep 14 04:10:08 peer1 sudo[2205853]:     the operator : PWD=/home/user/workspace/gopi-residue-reap/internal/tools ; USER=root ; COMMAND=/usr/bin/true
+Sep 14 04:10:11 peer1 sudo[2206234]:     the operator : PWD=/home/user/workspace/gopi-residue-reap/internal/tools ; USER=root ; COMMAND=/usr/bin/true
+Sep 14 04:10:36 peer1 sudo[2208857]:     the operator : TTY=pts/4 ; PWD=/home/user/workspace/gopi-residue-reap/internal/tools ; USER=root ; COMMAND=/usr/bin/true
+Sep 14 04:10:39 peer1 sudo[2209039]:     the operator : TTY=pts/4 ; PWD=/home/user/workspace/gopi-residue-reap/internal/tools ; USER=root ; COMMAND=/usr/bin/true
+Sep 14 04:13:14 peer1 sudo[2236474]:     the operator : PWD=/home/user/workspace/gopi-residue-reap/internal/tools ; USER=root ; COMMAND=/usr/bin/true
+Sep 14 04:13:17 peer1 sudo[2236776]:     the operator : PWD=/home/user/workspace/gopi-residue-reap/internal/tools ; USER=root ; COMMAND=/usr/bin/true
+Sep 14 04:13:26 peer1 sudo[2238315]:     the operator : PWD=/home/user/workspace/gopi-residue-reap/internal/tools ; USER=root ; COMMAND=/usr/bin/true
+Sep 14 04:13:29 peer1 sudo[2238510]:     the operator : PWD=/home/user/workspace/gopi-residue-reap/internal/tools ; USER=root ; COMMAND=/usr/bin/true
 grep: write error: Broken pipe
 --- count ---
 36
 === B. privileged commands in the two unlink windows ===
 --- window 1: 2026-09-14 22:30 .. 22:45 ---
-Sep 14 22:30:44 peer1 sudo[1206316]:     nick : PWD=/home/user/workspace/gopi-tlrework-verify/internal/tools ; USER=root ; COMMAND=/usr/bin/true
+Sep 14 22:30:44 peer1 sudo[1206316]:     the operator : PWD=/home/user/workspace/gopi-tlrework-verify/internal/tools ; USER=root ; COMMAND=/usr/bin/true
 Sep 14 22:30:44 peer1 sudo[1206316]: pam_unix(sudo:session): session opened for user root(uid=0) by (uid=1000)
 Sep 14 22:30:44 peer1 sudo[1206316]: pam_unix(sudo:session): session closed for user root
-Sep 14 22:30:49 peer1 sudo[1206835]:     nick : PWD=/home/user/workspace/gopi-tlrework-verify/internal/tools ; USER=root ; COMMAND=/usr/bin/true
+Sep 14 22:30:49 peer1 sudo[1206835]:     the operator : PWD=/home/user/workspace/gopi-tlrework-verify/internal/tools ; USER=root ; COMMAND=/usr/bin/true
 Sep 14 22:30:49 peer1 sudo[1206835]: pam_unix(sudo:session): session opened for user root(uid=0) by (uid=1000)
 Sep 14 22:30:49 peer1 sudo[1206835]: pam_unix(sudo:session): session closed for user root
-Sep 14 22:30:59 peer1 sudo[1208502]:     nick : PWD=/home/user/workspace/gopi-ctl79738/internal/tools ; USER=root ; COMMAND=/usr/bin/true
+Sep 14 22:30:59 peer1 sudo[1208502]:     the operator : PWD=/home/user/workspace/gopi-ctl79738/internal/tools ; USER=root ; COMMAND=/usr/bin/true
 Sep 14 22:30:59 peer1 sudo[1208502]: pam_unix(sudo:session): session opened for user root(uid=0) by (uid=1000)
 Sep 14 22:30:59 peer1 sudo[1208502]: pam_unix(sudo:session): session closed for user root
-Sep 14 22:31:04 peer1 sudo[1209186]:     nick : PWD=/home/user/workspace/gopi-ctl79738/internal/tools ; USER=root ; COMMAND=/usr/bin/true
+Sep 14 22:31:04 peer1 sudo[1209186]:     the operator : PWD=/home/user/workspace/gopi-ctl79738/internal/tools ; USER=root ; COMMAND=/usr/bin/true
 Sep 14 22:31:04 peer1 sudo[1209186]: pam_unix(sudo:session): session opened for user root(uid=0) by (uid=1000)
 Sep 14 22:31:04 peer1 sudo[1209186]: pam_unix(sudo:session): session closed for user root
-Sep 14 22:33:01 peer1 sudo[1237302]:     nick : PWD=/home/user/workspace/gopi-staleguard/internal/tools ; USER=root ; COMMAND=/usr/bin/true
+Sep 14 22:33:01 peer1 sudo[1237302]:     the operator : PWD=/home/user/workspace/gopi-staleguard/internal/tools ; USER=root ; COMMAND=/usr/bin/true
 Sep 14 22:33:01 peer1 sudo[1237302]: pam_unix(sudo:session): session opened for user root(uid=0) by (uid=1000)
 Sep 14 22:33:01 peer1 sudo[1237302]: pam_unix(sudo:session): session closed for user root
-Sep 14 22:33:03 peer1 sudo[1237510]:     nick : PWD=/home/user/workspace/gopi-staleguard/internal/tools ; USER=root ; COMMAND=/usr/bin/true
+Sep 14 22:33:03 peer1 sudo[1237510]:     the operator : PWD=/home/user/workspace/gopi-staleguard/internal/tools ; USER=root ; COMMAND=/usr/bin/true
 Sep 14 22:33:03 peer1 sudo[1237510]: pam_unix(sudo:session): session opened for user root(uid=0) by (uid=1000)
 Sep 14 22:33:03 peer1 sudo[1237510]: pam_unix(sudo:session): session closed for user root
-Sep 14 22:33:30 peer1 sudo[1242639]:     nick : PWD=/home/user/work/GoPi ; USER=root ; COMMAND=/usr/bin/fuser -v /home/user/.gopi/serve.lock
+Sep 14 22:33:30 peer1 sudo[1242639]:     the operator : PWD=/home/user/work/GoPi ; USER=root ; COMMAND=/usr/bin/fuser -v /home/user/.gopi/serve.lock
 Sep 14 22:33:30 peer1 sudo[1242639]: pam_unix(sudo:session): session opened for user root(uid=0) by (uid=1000)
 --- window 2: 2026-09-15 07:20 .. 07:30 ---
-Sep 15 07:24:13 peer1 sudo[2863244]:     nick : TTY=pts/4 ; PWD=/dev/shm/gopi-daemon-research ; USER=root ; COMMAND=/usr/bin/true
-Sep 15 07:24:13 peer1 sudo[2863244]: pam_unix(sudo:session): session opened for user root(uid=0) by nick(uid=1000)
+Sep 15 07:24:13 peer1 sudo[2863244]:     the operator : TTY=pts/4 ; PWD=/dev/shm/gopi-daemon-research ; USER=root ; COMMAND=/usr/bin/true
+Sep 15 07:24:13 peer1 sudo[2863244]: pam_unix(sudo:session): session opened for user root(uid=0) by the operator(uid=1000)
 Sep 15 07:24:13 peer1 sudo[2863244]: pam_unix(sudo:session): session closed for user root
-Sep 15 07:29:38 peer1 sudo[2867815]:     nick : PWD=/home/user/workspace/gopi-tasklistaddr/internal/tools ; USER=root ; COMMAND=/usr/bin/true
+Sep 15 07:29:38 peer1 sudo[2867815]:     the operator : PWD=/home/user/workspace/gopi-tasklistaddr/internal/tools ; USER=root ; COMMAND=/usr/bin/true
 Sep 15 07:29:38 peer1 sudo[2867815]: pam_unix(sudo:session): session opened for user root(uid=0) by (uid=1000)
 Sep 15 07:29:38 peer1 sudo[2867815]: pam_unix(sudo:session): session closed for user root
-Sep 15 07:29:41 peer1 sudo[2868136]:     nick : PWD=/home/user/workspace/gopi-tasklistaddr/internal/tools ; USER=root ; COMMAND=/usr/bin/true
+Sep 15 07:29:41 peer1 sudo[2868136]:     the operator : PWD=/home/user/workspace/gopi-tasklistaddr/internal/tools ; USER=root ; COMMAND=/usr/bin/true
 Sep 15 07:29:41 peer1 sudo[2868136]: pam_unix(sudo:session): session opened for user root(uid=0) by (uid=1000)
 Sep 15 07:29:41 peer1 sudo[2868136]: pam_unix(sudo:session): session closed for user root
 === C. does that checkout still exist, and what does it do? ===

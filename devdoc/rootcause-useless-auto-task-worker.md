@@ -71,7 +71,7 @@ Exhaustive checks ruled out every automated launcher:
   the prompt), producing the bare `[EPIC GOAL]\nworker` framing.
 
 Conclusion: the launcher was **manual / an external terminal tool feeding the
-word `worker` into a bare `gopi`** — most plausibly a human (nick) or the PA
+word `worker` into a bare `gopi`** — most plausibly a human (the operator) or the PA
 probing the worker mode (`echo worker | gopi`-style), at 02:32:54 while R4 was
 running. The run itself was harmless and self-terminated in 22.8 s; its only
 "damage" is that the harness minted a **useless ledger row** from a
@@ -139,7 +139,7 @@ child would get.
 2. **Prevent degenerate auto rows from becoming dispatchable** — the
    register-hook content gate (fix 1) is the primary defense. As a second
    layer, `task run <id>` on an auto-audit row could warn when the briefing
-   is a single token (advisory, never a hard refusal — nick may
+   is a single token (advisory, never a hard refusal — the operator may
    legitimately want to resume a crashed auto run). The stale sweep already
    covers crashed in_progress zombies.
 3. **Task-run briefing guard already exists for dispatch** (taskRunBriefing
@@ -166,7 +166,7 @@ child would get.
 
 ## Not Done
 
-- No code fix landed; the proposed fixes above are analysis awaiting nick's
+- No code fix landed; the proposed fixes above are analysis awaiting the operator's
   pick. Recommended minimal fix: (1) register-hook content gate (skip
   degenerate one-token briefings like "worker") — it directly prevents the
   useless-row class at the source.

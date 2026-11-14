@@ -128,7 +128,7 @@ anchor（第 3 段）**只追加本机 payload**：对端事件在它自己的 a
    状态只有两类，都在 `<profile>/notify/` 下：10 个既有 slot 文件 + 每 peer 一个单行游标文件。
    回收：游标文件是幂等的单行覆盖写，`PEER_LIMIT` 之外的 peer 下一轮自动接管；ssh 输出落在
    `$$` 命名的临时文件，`trap … EXIT` 清理，无残留。**本 run 实测无 crontab、无 systemd user timer**
-   （`no crontab for nick`、`systemctl --user list-timers` 0 个）—— 没有第二处调度。
+   （`no crontab for the operator`、`systemctl --user list-timers` 0 个）—— 没有第二处调度。
 4. **下一个人发现它时看到什么**：脚本头部三段式注释写清了它做什么、为什么这么分段、
    哪些值是别的包定义的（`ChatSessionSlotLimit`、`SyncPeersSettingsKey`、`TaskNotifyCmdTimeout` 的 30s）；
    每个失败分支都在 stderr 上点名（谁的错、哪个文件、什么后果）。游标文件在 `notify/` 下、

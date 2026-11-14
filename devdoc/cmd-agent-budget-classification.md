@@ -7,7 +7,7 @@
 `go test -json` wall clock on an ambient host.
 
 The standing condition this closes: the scope's four most recent runs were all non-green, the latest
-ending `{"Action":"fail","Package":"github.com/nick/gopi/cmd/agent","Elapsed":1506.26}` against the
+ending `{"Action":"fail","Package":"github.com/the operator/gopi/cmd/agent","Elapsed":1506.26}` against the
 script's own `-timeout 25m` = 1500 s, with 155 of 2812 top-level arms never terminated.
 
 ---

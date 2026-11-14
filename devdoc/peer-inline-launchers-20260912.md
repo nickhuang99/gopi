@@ -78,7 +78,7 @@ go test ./internal/testutil/ -run 'TestHpWorker|TestHpNight' -count=1
   --- PASS: TestHpNightLegacyAuditDrainerChecksEveryRoundStatus
   --- PASS: TestHpNightLegacyAuditDrainerStopsLoudlyOnRefusal
   --- PASS: TestHpWorkerLaunchersDryRunStartsNothing
-  ok  github.com/nick/gopi/internal/testutil
+  ok  github.com/the operator/gopi/internal/testutil
 bash -n  scripts/peer-worker/*.sh scripts/gopi-worker-up.sh    → all OK (incl. on HP)
 ```
 

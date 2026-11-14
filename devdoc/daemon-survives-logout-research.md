@@ -3,7 +3,7 @@
 
 **Status**: research only — **no implementation, no fix landed** (a separate task consumes this finding).
 **Branch**: `research/daemon-survives-logout` · **Worktree**: `~/workspace/gopi-daemon-research`
-**Host**: `peer1`, Ubuntu 22.04.4, `systemd 249 (249.11-0ubuntu3.16)`, kernel `5.15.0-163-generic`, cgroup v2 unified, uid 1000 (`nick`).
+**Host**: `peer1`, Ubuntu 22.04.4, `systemd 249 (249.11-0ubuntu3.16)`, kernel `5.15.0-163-generic`, cgroup v2 unified, uid 1000 (`the operator`).
 **Evidence**: every host claim below is backed by a recorded command + verbatim output. The 14 read-only probe scripts and their full outputs are committed beside this file in `devdoc/daemon-survives-logout-probes/` (`p1…p14`). Citations are upstream man pages / specifications; secondary sources are marked.
 
 ---
@@ -11,7 +11,7 @@
 ## 1. Recommended solution (one paragraph)
 
 Run the daemon as a **`systemd --user` unit** (`~/.config/systemd/user/<name>.service`, pulled in by
-`WantedBy=default.target`) with **lingering enabled** for the user (`loginctl enable-linger nick`;
+`WantedBy=default.target`) with **lingering enabled** for the user (`loginctl enable-linger the operator`;
 already `yes` on this host — measured). Lingering keeps `user@1000.service` alive with no session, so
 the daemon's process lives in `user@1000.service/…` — **outside every login-session scope** — and is
 therefore not a member of the cgroup that `loginctl terminate-session`, an ssh disconnect, or
@@ -46,8 +46,8 @@ Sources: [`loginctl(1)`](https://man.archlinux.org/man/loginctl.1.en) (`enable-l
 **Guarantee**: the user manager (`user@UID.service`) exists and stays alive **with no session**.
 Everything started as a user unit therefore has a lifetime independent of any login. This is the
 foundation of every other mechanism here.
-**Measured on this host**: `loginctl show-user nick` → `Linger=yes`; the linger state file
-`/var/lib/systemd/linger/nick` exists (0 bytes, 2026-09-13 12:16, p10); `user@1000.service` has been
+**Measured on this host**: `loginctl show-user the operator` → `Linger=yes`; the linger state file
+`/var/lib/systemd/linger/the operator` exists (0 bytes, 2026-09-13 12:16, p10); `user@1000.service` has been
 `active (running) since Wed 2026-07-15 21:44:22 CST; 2 months 0 days ago` — it has **never
 restarted** since boot (p6/p10).
 
@@ -178,9 +178,9 @@ buses, one of them a private X-autolaunched session.
 | Hypothesis | Probe | Result |
 |---|---|---|
 | `KillUserProcesses` / logind misconfig | `/etc/systemd/logind.conf` (p10) | only `[Login]`, no drop-ins → compiled default `no`; `EnableWallMessages`/`KillUserProcesses` unset |
-| linger missing (the 2026-09-11 devdoc reading) | `loginctl show-user nick` (p1/p10) | `Linger=yes`, `/var/lib/systemd/linger/nick` present |
+| linger missing (the 2026-09-11 devdoc reading) | `loginctl show-user the operator` (p1/p10) | `Linger=yes`, `/var/lib/systemd/linger/the operator` present |
 | manager not running | `systemctl status user@1000.service` (p6) | `active (running) … 2 months … Main PID: 2321` |
-| wrong runtime dir / permissions | `stat /run/user/1000`, `mountinfo` (p5) | tmpfs `mode=700,uid=1000,gid=1000`, owned by `nick` — spec-correct |
+| wrong runtime dir / permissions | `stat /run/user/1000`, `mountinfo` (p5) | tmpfs `mode=700,uid=1000,gid=1000`, owned by `the operator` — spec-correct |
 | a private mount namespace on the manager | `readlink /proc/{2321,2342,self}/ns/mnt` (p5) | all three = `mnt:[4026531841]` — **same** namespace |
 | the gvfs tmpfiles rule removing it | `/usr/lib/tmpfiles.d/*` (p10/p6) | only `x /run/user/*/gvfs` and `d /run/user 0755 root root -`; no age rule touching sockets |
 | the operator's GC script removing it | `gopi-home-gc.sh` (p8), `grep` for `rm` on the runtime dir | one `rm -f -- "$target"` on a *relocation* target; no runtime-dir sweep |
@@ -200,9 +200,9 @@ stat: cannot statx '/run/user/1000/bus': No such file or directory
 stat: cannot statx '/run/user/1000/systemd/private': No such file or directory
 
 === G. holders ===
-lrwx------ 1 nick nick 64 … 19 -> socket:[39144]     # user manager 2321
-lrwx------ 1 nick nick 64 … 27 -> socket:[40136]     # user manager 2321
-lrwx------ 1 nick nick 64 Sep 12 04:15 3 -> socket:[40136]   # dbus-daemon 2342
+lrwx------ 1 the operator the operator 64 … 19 -> socket:[39144]     # user manager 2321
+lrwx------ 1 the operator the operator 64 … 27 -> socket:[40136]     # user manager 2321
+lrwx------ 1 the operator the operator 64 Sep 12 04:15 3 -> socket:[40136]   # dbus-daemon 2342
 
 === sanity: does ANY process's filesystem view carry the path? ===
 visible_in_any_process=0
@@ -245,7 +245,7 @@ What the evidence DOES establish:
   (namespace: `gopi-*` + `suite-tmp-*`, **directories only**) can name `bus` or `systemd/private`.
   So no *default* gopi sweep explains it.
 - **A privileged blank-sudo probe family exists and runs constantly**: 36 journal lines of
-  `sudo[nnn]: nick : PWD=/home/user/workspace/gopi-<task>/internal/tools ; USER=root ;
+  `sudo[nnn]: the operator : PWD=/home/user/workspace/gopi-<task>/internal/tools ; USER=root ;
   COMMAND=/usr/bin/true` on 2026-09-14 (p14) — these are gopi's own sudo-availability *tests*
   (the command is `/usr/bin/true`), i.e. **evidence, not the actor**: they change nothing.
 - **The XDG-copy pattern is demonstrably in use on this host** (p14): a live abandoned scope
@@ -536,7 +536,7 @@ Key excerpts are quoted inline above (§3.1–§3.3, §4). Every quoted line is 
    bound) plus the uid-1000 `sudo`-free evidence. Operator command if the VFS half matters:
    `sudo ls -la /run/user/117/systemd/`.
 4. **Logout survival was not exercised end-to-end** (a real logout would terminate the operator's
-   sessions; `loginctl terminate-user nick` / `terminate-session` were deliberately not run). The §5
+   sessions; `loginctl terminate-user the operator` / `terminate-session` were deliberately not run). The §5
    recipe is written to be run on a host/console where that is acceptable; the indirect evidence
    (78 live processes in 6 abandoned scopes; `KillUserProcesses` effective `no`) is recorded and
    labelled as evidence, not as the live test.

@@ -113,7 +113,7 @@ Two further gaps made that state undiagnosable and sticky:
 
 - Build: `go build ./...` → OK (exit 0).
 - Focused tests: `go test ./cmd/agent/ -run 'WebToken|WebPageToken|ChatAuth' -count=1`
-  → `ok github.com/nick/gopi/cmd/agent` (16 tests PASS, 0 FAIL).
+  → `ok github.com/the operator/gopi/cmd/agent` (16 tests PASS, 0 FAIL).
 - Red-then-green: with master's `cli_web.go` restored (and a shim test supplying
   the new Go identifiers so the package compiles), the SAME test run gives
   **8 FAIL / 8 PASS**:
@@ -133,14 +133,14 @@ Two further gaps made that state undiagnosable and sticky:
 
 - `go build ./...` → `BUILD OK` (exit 0), run from `/home/user/workspace/gopi-webtoken`.
 - Green: `go test ./cmd/agent/ -run 'WebToken|WebPageToken|ChatAuth' -count=1`
-  → `ok  	github.com/nick/gopi/cmd/agent	0.899s`; `-v` shows all 16
+  → `ok  	github.com/the operator/gopi/cmd/agent	0.899s`; `-v` shows all 16
   `--- PASS` lines, including `--- PASS: TestWebTokenGate_SelfHealsFromAStaleCookie`,
   `--- PASS: TestWebTokenGate_RefusalIsLogged`,
   `--- PASS: TestWebPageToken_PageLoadThenSendCarriesTheToken`.
 - Red proof (same command, master `cmd/agent/cli_web.go`, shim file
   `cmd/agent/zz_redshim_test.go` declaring only
   `webChatPath`/`webTranscriptPath`/`webTokenQuerySep`/`webRefusalLogPrefix`/`webRedactedTokenMarker`/`webTokenPair`
-  so the test file compiles): `FAIL github.com/nick/gopi/cmd/agent 0.950s` with
+  so the test file compiles): `FAIL github.com/the operator/gopi/cmd/agent 0.950s` with
   the 9 `--- FAIL` lines quoted above. The shim was deleted and the fixed file
   restored (`cp` from `~/.gopi/sessions/evidence/red-kept-cli_web.go`) before the
   commit; `git status --porcelain` is empty afterwards.

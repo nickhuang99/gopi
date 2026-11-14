@@ -573,7 +573,7 @@ section keeps them visible to project-level agents (GOPI.md readers):
    ZERO-DEP is the target (stdlib first; external deps are the last resort,
    not the default).
 
-## Rule 11: Tool Development Requires LLM Adoption Proof (nick deliverable standard)
+## Rule 11: Tool Development Requires LLM Adoption Proof (the operator deliverable standard)
 
 **Any tool development or modification (a new tool, a changed tool description, a changed prompt routing guide) must be accepted by the standard "the LLM really calls that tool".**
 

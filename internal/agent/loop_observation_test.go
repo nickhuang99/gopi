@@ -654,7 +654,7 @@ func TestAgent_ObservationLoop_RedProofB_SameCallSameResultTrips(t *testing.T) {
 	observeCaptureNotify(t, captureFile)
 	t.Setenv(observationRunEnv, "") // default threshold: 40
 
-	frozen := "drwxr-xr-x 2 nick nick 4096 .\n-rw-r--r-- 1 nick nick 12 stale.tmp"
+	frozen := "drwxr-xr-x 2 the operator the operator 4096 .\n-rw-r--r-- 1 the operator the operator 12 stale.tmp"
 	round := 0
 	server := httptest.NewServer(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
 		round++

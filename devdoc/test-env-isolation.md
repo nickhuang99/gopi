@@ -144,13 +144,13 @@ made `TestHippocampus_DefaultOffLeavesBehaviourUnchanged` fail spuriously.
   `/tmp/ambient-e2e-memory.db`, 3 hot-tier rows):
   - A) `GOPI_MEMORY_DB=<fixture> go test ./internal/agent/ -run
     TestHippocampus_DefaultOffLeavesBehaviourUnchanged` with the fix →
-    `ok github.com/nick/gopi/internal/agent 5.200s`.
+    `ok github.com/the operator/gopi/internal/agent 5.200s`.
   - B) same command, fix reverted → `--- FAIL: TestHippocampus_
     DefaultOffLeavesBehaviourUnchanged (2.89s)` with
     `hippocampus_test.go:785: gate-on session differs from gate-off beyond the
     hippocampus artifacts` — **the incident reproduced on demand**.
   - C) `GOPI_HIPPO_DB=<fixture>` (legacy spelling), fix in place →
-    `ok github.com/nick/gopi/internal/agent 4.554s`.
+    `ok github.com/the operator/gopi/internal/agent 4.554s`.
 - **Regression surface, ambient export present**: the two packages that read
   the memory env were exercised together with
   `GOPI_MEMORY_DB=/tmp/ambient-e2e-memory.db` (result recorded in the commit

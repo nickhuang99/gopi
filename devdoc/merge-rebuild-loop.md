@@ -255,7 +255,7 @@ cli_tasks_rebuild_pending_test.go:38:8: undefined: tools.MarkRebuildPending
 cli_tasks_rebuild_pending_test.go:47:18: undefined: tools.RebuildPendingRepos
 cli_tasks_rebuild_pending_test.go:69:20: undefined: tools.RebuildPendingDir
 cli_tasks_rebuild_pending_test.go:73:36: undefined: tools.RebuildPendingPrefix
-FAIL	github.com/nick/gopi/cmd/agent [build failed]
+FAIL	github.com/the operator/gopi/cmd/agent [build failed]
 ```
 
 So each new test is red for the right reason (a missing call, or a missing
@@ -267,9 +267,9 @@ symbol) — not merely red.
 $ CGO_ENABLED=0 go build ./...     → build exit=0
 $ go vet ./...                     → vet exit=0
 $ go test ./internal/tools/ -run 'Rebuild|MergeLoop|RebuildPending' -count=1
-ok  	github.com/nick/gopi/internal/tools	2.171s
+ok  	github.com/the operator/gopi/internal/tools	2.171s
 $ CGO_ENABLED=0 go test ./internal/tools/ -count=1 -timeout 25m
-ok  	github.com/nick/gopi/internal/tools
+ok  	github.com/the operator/gopi/internal/tools
 ```
 
 `./cmd/agent` is 480s and has FOUR failures; none is attributable to this change

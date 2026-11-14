@@ -20,7 +20,7 @@ output | 2026-10-12T20:38:11.97495769+08:00  | '=== RUN   TestTaskRunningSuffixM
 output | 2026-10-12T20:38:12.000931903+08:00 | '    tasklist_running_test.go:217: after 1st re-arm age = "4h0m1s", want unchanged "4h0m0s"\n'
 output | 2026-10-12T20:38:12.001032442+08:00 | '--- FAIL: TestTaskRunningSuffixMonotonicAcrossRearm (0.03s)\n'
 fail   | 2026-10-12T20:38:12.001046589+08:00 | Test: TestTaskRunningSuffixMonotonicAcrossRearm, Elapsed: 0.03
-output | 2026-10-12T20:39:27.421206318+08:00 | 'FAIL\tgithub.com/nick/gopi/internal/tools\t724.127s\n'
+output | 2026-10-12T20:39:27.421206318+08:00 | 'FAIL\tgithub.com/the operator/gopi/internal/tools\t724.127s\n'
 ```
 
 `Elapsed: 0.03` — the failing test is the only `fail` action in the whole
@@ -68,7 +68,7 @@ $ go test ./internal/tools/ -run 'TestZZReproRearmWallClockRed' -count=3 -v
     zz_rearm_wallclock_red_proof_test.go:78: after 1st re-arm age = "4h0m1s", want unchanged "4h0m0s"
 --- FAIL: TestZZReproRearmWallClockRed (1.13s)
 ... (rep 3 identical to rep 2) ...
-FAIL	github.com/nick/gopi/internal/tools	14.046s
+FAIL	github.com/the operator/gopi/internal/tools	14.046s
 ```
 
 3/3 deterministic, and the failure line is byte-identical to the production
@@ -117,7 +117,7 @@ restored immediately; `git diff internal/tools/tasks.go` is empty in the commit.
 Build:  go build ./...                                            -> OK
         go vet ./internal/tools/                                  -> exit 0
 Tests:  go test ./internal/tools/ -run 'TestTaskRunning|TestTaskListRunningSuffix|TestTaskFormatDuration' -count=20
-        -> ok  github.com/nick/gopi/internal/tools  10.734s
+        -> ok  github.com/the operator/gopi/internal/tools  10.734s
         go test ./internal/tools/ -run TestTaskRunningSuffixMonotonicAcrossRearm -count=20 -v
         -> 20/20 '--- PASS'
 Ran:    see §3 (RED proof) and §5's count runs — the surfaces the change

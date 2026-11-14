@@ -89,7 +89,7 @@ BUILD OK (post-fix)
     cli_tool_test.go:121: the group forwards to "web", but "web" is refused NOWHERE at argv[0] — …
 --- FAIL: TestToolGroupForwardsToTheSameImplementation (0.38s)
     cli_tool_test.go:153: `gopi web -h` exited 0 — the bare spelling must refuse now that the group is its only door
-FAIL	github.com/nick/gopi/cmd/agent	8.115s   EXIT=1
+FAIL	github.com/the operator/gopi/cmd/agent	8.115s   EXIT=1
 ```
 
 修复后（`4fda65dcf`）—— 证据 `<session>/round2/green-focused.txt`：
@@ -99,7 +99,7 @@ FAIL	github.com/nick/gopi/cmd/agent	8.115s   EXIT=1
 --- PASS: TestToolGroupWordsAreTheOnlyDoor (0.00s)
 --- PASS: TestToolGroupForwardsToTheSameImplementation (0.42s)   [19/19 子测试，含 /web]
 --- PASS: TestToolGroupDeclaredSecondDoorIsPrintedAndPinned (0.03s)
-ok  	github.com/nick/gopi/cmd/agent	8.652s   EXIT=0
+ok  	github.com/the operator/gopi/cmd/agent	8.652s   EXIT=0
 ```
 
 **Ran（Rule 31：每条改动面的真实调用，隔离 profile，verbatim）**
@@ -160,7 +160,7 @@ $ go test ./cmd/agent/ -count=1 -run '<this list>'     （本分支，真跑）
 --- FAIL: TestTaskMergeCanonicalFlagRefusalOnTheRealBinary
 --- FAIL: TestToolsMaintenanceHelpSurfaceInventoryMatchesDerivation
 --- FAIL: TestToolsMaintenanceHelpSurfaceEveryFormIsTestedOrBlockedWithAReason
-FAIL	github.com/nick/gopi/cmd/agent	26.358s   MINE_EXIT=1
+FAIL	github.com/the operator/gopi/cmd/agent	26.358s   MINE_EXIT=1
 （证据 round3/suspects-mine.txt）
 ```
 
@@ -177,7 +177,7 @@ $ cd <session>/baseline-archive && go test ./cmd/agent/ -count=1 -run '<同一�
 --- FAIL: TestToolsMaintenanceHelpSurfaceInventoryMatchesDerivation (0.00s)
 --- FAIL: TestToolsMaintenanceHelpSurfaceEveryFormIsTestedOrBlockedWithAReason (0.00s)
 --- FAIL: TestMergePromptCoversEveryRequiredSection (0.00s)
-FAIL	github.com/nick/gopi/cmd/agent	34.172s   BASE_EXIT=1
+FAIL	github.com/the operator/gopi/cmd/agent	34.172s   BASE_EXIT=1
 （证据 round3/suspects-base.txt）
 ```
 
@@ -199,7 +199,7 @@ FAIL	github.com/nick/gopi/cmd/agent	34.172s   BASE_EXIT=1
     precondition: the committed document's block is already stale
 --- FAIL: TestDocClassBannerMatchesManifest (0.02s)
     devdoc/cli-help-user-audit.md: carries the "historical" banner but devdoc/DOC-INDEX.tsv classes it "normative"
-（FAIL github.com/nick/gopi/internal/standards 5.438s）
+（FAIL github.com/the operator/gopi/internal/standards 5.438s）
 ```
 
 且**本基线（`3255973cc`，`toolUsage` 在 `cli_tool.go:258`）的 `internal/standards` 只有 1 条 `TestDocClassBannerMatchesManifest` 红**，`TestCommandsDoc*` 两条是**绿的** —— 真跑于 `git archive 3255973cc` 展开的纯净快照（`<session>/baseline-archive/`），证据 `round3/baseline-standards.txt`：
@@ -209,7 +209,7 @@ $ go test ./internal/standards/ -count=1 -run 'TestCommandsDoc|TestDocClassBanne
 --- FAIL: TestDocClassBannerMatchesManifest (0.05s)
     docclass_gate_test.go:212: devdoc/cli-help-user-audit.md: carries the "historical" banner but devdoc/DOC-INDEX.tsv classes it "normative" …
     docclass_gate_test.go:222: devdoc/DOC-INDEX.tsv: 1166 markdown docs of a bannered class carry their banner (1 mislabelled)
-FAIL	github.com/nick/gopi/internal/standards	10.327s
+FAIL	github.com/the operator/gopi/internal/standards	10.327s
 （`TestCommandsDoc*` 未出现在 FAIL 行中 = 基线绿）
 ```
 
@@ -221,7 +221,7 @@ FAIL	github.com/nick/gopi/internal/standards	10.327s
 $ go run internal/standards/testdata/commands-census.go . COMMANDS.md
 commands-census: wrote COMMANDS.md (44 verbs)          # 唯一变更：cli_tool.go:374 -> :431
 $ go test ./internal/standards/ -count=1 -run 'TestCommandsDoc'
-ok  	github.com/nick/gopi/internal/standards	11.910s   # 两条红 -> 绿
+ok  	github.com/the operator/gopi/internal/standards	11.910s   # 两条红 -> 绿
 ```
 
   证据：commit `406e24860`（`git show --stat` = `COMMANDS.md | 2 +-`，一行改），`round3/commands-census-gen.txt` 的生成回读。**之所以能这么确定是「补另一半」而不是「顺手改」**：`3255973cc` 上这两条是**绿**的（`round3/baseline-standards.txt`：该名单里只冒出 `TestDocClassBannerMatchesManifest` 一条 FAIL），变红只发生在插入 57 行的那一刻 —— 是本 diff 自身的义务，不是既有缺陷。若上游已有同源重生成，本分支的合并在内容层退化/no-op，仍无冲突。

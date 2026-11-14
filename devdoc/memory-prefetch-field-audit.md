@@ -436,7 +436,7 @@ $ GOPI_TMPDIR=… go test ./cmd/agent/ \
 --- FAIL: TestCLINamingExceptionsAreStillDispatchable (0.00s)
     cli_completion_exceptions_test.go:92: "web_search" has no contract-inventory entry — the exception would be unreachable from the contract suite
     cli_completion_exceptions_test.go:92: "web_fetch" has no contract-inventory entry — the exception would be unreachable from the contract suite
-FAIL	github.com/nick/gopi/cmd/agent	5.713s
+FAIL	github.com/the operator/gopi/cmd/agent	5.713s
 ```
 
 **两条都在未修复的树上同样失败 → 预先存在，不是本分支引入的。** 各自的机理：
@@ -601,7 +601,7 @@ $ grep -h '"outcome":"hits"' … | grep -c '"hits":0.*"adopted":"yes"'   → 0
 
 ```
 cmd/agent/chat_prefetch_adoption_semantics_test.go:213:35: undefined: prefetchHitsLabel
-FAIL	github.com/nick/gopi/cmd/agent [build failed]
+FAIL	github.com/the operator/gopi/cmd/agent [build failed]
 ```
 
 **一个编译失败证明不了语义门是有效的**（它只证明 helper 是新的）。
@@ -634,7 +634,7 @@ FAIL	github.com/nick/gopi/cmd/agent [build failed]
 === RUN   TestQuerylessEventDoesNotReadAsAnEmptyQuery
     chat_prefetch_adoption_semantics_test.go:247: a query-less event still carries "query"="" — an event that asked nothing must not render as one that asked the empty string (Rule 15a): {"query":"","outcome":"superseded","adopted":"no"}
 --- FAIL: TestQuerylessEventDoesNotReadAsAnEmptyQuery (0.00s)
-FAIL	github.com/nick/gopi/cmd/agent	7.382s
+FAIL	github.com/the operator/gopi/cmd/agent	7.382s
 ```
 
 ①② 合并注入的**完整观察**（`-v`，逐字）：
@@ -648,7 +648,7 @@ FAIL	github.com/nick/gopi/cmd/agent	7.382s
 --- PASS: TestLookupLineKeepsItsMeasuredZero (0.00s)
 === RUN   TestQuerylessEventDoesNotReadAsAnEmptyQuery
 --- PASS: TestQuerylessEventDoesNotReadAsAnEmptyQuery (0.00s)
-FAIL	github.com/nick/gopi/cmd/agent	1.858s
+FAIL	github.com/the operator/gopi/cmd/agent	1.858s
 ```
 
 断言文本（逐字）：

@@ -875,6 +875,23 @@ var auditedRootAbsences = map[string]string{
 		"measured at 76e6faf: `git ls-files tasks | grep -cE '\\.(sh|py)$'` = 0, `git ls-files tasks | wc -l` = 3",
 	"text2img-eval": "the tree carries no text2img-eval/ entry — the source snapshot 964b240 excluded it; " +
 		"measured at 76e6faf: `git ls-tree --name-only HEAD | grep -cx text2img-eval` = 0, `git ls-files text2img-eval | wc -l` = 0",
+	// THE THREE .evid*/ ROOTS, added for the public export (2026-11-15). In the
+	// private development checkout they are the evidence directories of finished
+	// tasks — harness scripts written next to the finding they prove. A public
+	// export ships the FINDING and not the one-off harness, so all three are
+	// absent here. Measured on this tree (ef3ee03):
+	//   $ git ls-files '.evid*' | wc -l            → 0
+	//   $ for d in .evid .evid2 .evid4; do [ -d "$d" ] && echo present || echo absent; done
+	//     absent, absent, absent
+	// Each is listed SEPARATELY rather than folded into one entry, because the
+	// table is checked against the walk list both ways: an entry naming a root
+	// nobody walks is a permit nobody checks, so the names must match the walk.
+	evidDirName: "the public export carries no .evid/ evidence tree — the private checkout's finished-task " +
+		"harnesses are not shipped; measured at ef3ee03: `git ls-files '.evid*' | wc -l` = 0, `[ -d .evid ]` = absent",
+	evid2DirName: "the public export carries no .evid2/ evidence tree — same exclusion as .evid/; " +
+		"measured at ef3ee03: `git ls-files '.evid*' | wc -l` = 0, `[ -d .evid2 ]` = absent",
+	evid4DirName: "the public export carries no .evid4/ evidence tree — same exclusion as .evid/; " +
+		"measured at ef3ee03: `git ls-files '.evid*' | wc -l` = 0, `[ -d .evid4 ]` = absent",
 }
 
 // auditedScriptRootsText renders the walk list for a failure message, so a

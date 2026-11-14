@@ -101,7 +101,7 @@ costs a build per merge round, and that cost is paid deliberately.
 Four actors, four distinct needs. They are not interchangeable, and two of
 them are served only indirectly.
 
-**The operator (nick).** *Need:* to never lose an evening to a stale binary,
+**The operator (the operator).** *Need:* to never lose an evening to a stale binary,
 and to be told when catching up cannot be arranged. His own words for the
 symptom are in the governing row (§4). He is the one who pays the trust cost
 when the promise quietly fails, because he is the one who debugs the resulting

@@ -12,8 +12,8 @@ Two independent sessions closed with the same claim:
 
 ```
 go test ./cmd/agent/ -count=1
-  branch tree:          FAIL github.com/nick/gopi/cmd/agent 482.724s
-  pristine master:      FAIL github.com/nick/gopi/cmd/agent 445.639s
+  branch tree:          FAIL github.com/the operator/gopi/cmd/agent 482.724s
+  pristine master:      FAIL github.com/the operator/gopi/cmd/agent 445.639s
   "both with NO --- FAIL: line (a package-level budget red under host contention, load ~8-12)"
 ```
 

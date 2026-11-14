@@ -1,6 +1,6 @@
 package main
 
-// Serve/worker-split acceptance tests (epic 2026-09-03, nick's final
+// Serve/worker-split acceptance tests (epic 2026-09-03, the operator's final
 // design): serve → merger (a PURE merge pass — server-only, branch merge
 // + conflict resolve) and worker → the general task-management loop (runs
 // on BOTH client and server). The core acceptance invariants pinned here:

@@ -135,7 +135,7 @@ copy agrees with itself.
 
 - Build: `CGO_ENABLED=0 go build -o bin/gopi ./cmd/agent/` → exit 0.
 - Tests: `go test ./cmd/agent/ -run 'TestStatus|TestCtx|TestMetrics|TestCache' -count=1`
-  → `ok github.com/nick/gopi/cmd/agent 4.323s`; the three new tests
+  → `ok github.com/the operator/gopi/cmd/agent 4.323s`; the three new tests
   (`TestStatusRowCountsShareOneLadder`, `TestStatusRowUnitRuleIsRedOnTheRetiredFormatter`,
   `TestStatusCtxPairReservationCoversTheLadder`) → `ok … 0.230s`, all PASS.
 - Ran: two real pty sessions per binary at 117x26, scripted SSE stub, no traffic:
@@ -170,7 +170,7 @@ copy agrees with itself.
   `req 0 input_tokens=19500` / `req 0 input_tokens=19500128`.
 - Dump provenance line, `evidence/after-k.dump:1`:
   `#gopi-chat-dump pid=… terminal=117x26 model=117x26 grid=117x26 geometry=layout mode=ansi frames=79`.
-- Scoped suites: `ok github.com/nick/gopi/cmd/agent 4.323s` (observed).
+- Scoped suites: `ok github.com/the operator/gopi/cmd/agent 4.323s` (observed).
 - **Evidence integrity**: `sha256sum` of a fresh build of the committed tree, of
   `bin/gopi`, and of the binary the after-state pty ran, are all
   `c400ce0c0665fbfc…` — the row quoted above is provably from the shipped code, not
@@ -180,7 +180,7 @@ copy agrees with itself.
   TestStatusCtxPairReservationCoversTheLadder` (observed).
 - **Re-observed on the branch tip `81c29f95`** (this revision): `CGO_ENABLED=0 go build
   ./cmd/agent/` → exit 0; the three new tests → `ok … 2.084s`, each `--- PASS`; the doc's
-  stated suite → `ok github.com/nick/gopi/cmd/agent 9.922s`; the dump rows re-read at the
+  stated suite → `ok github.com/the operator/gopi/cmd/agent 9.922s`; the dump rows re-read at the
   corrected line numbers.
 - `gofmt -l` on the touched files: only `chat_stream.go`, whose single hunk is at line
   796 (pre-existing prose drift, proven by `git show HEAD:cmd/agent/chat_stream.go |

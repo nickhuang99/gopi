@@ -1,7 +1,7 @@
 package main
 
 // cli_tasks_worker.go — the WORKER LOOP (`gopi worker`): the general
-// task-management service (epic serve/worker-split 2026-09-03, nick's final
+// task-management service (epic serve/worker-split 2026-09-03, the operator's final
 // design). The worker is the ONLY task-execution process — it runs
 // identically on BOTH the client (HP) and the server (peer1), while
 // `task serve`/`task merger` were the SERVER-ONLY merge pass — the retired
@@ -42,7 +42,7 @@ package main
 //	⑥ claim the next task. When nothing claimable remains the worker
 //	   re-checks after workerIdleInterval; after workerIdleExits
 //	   CONSECUTIVE empty rounds (no task executed in between) it exits 0
-//	   on its own — a worker is a task-DRAIN tool, not a daemon (nick 9/1
+//	   on its own — a worker is a task-DRAIN tool, not a daemon (the operator 9/1
 //	   design: it runs and self-dies). The M4.20-D drain-exit is preserved
 //	   as the `--once` flag (a drained queue then exits 0 immediately,
 //	   SUCCESS not error); GOPI_WORKER_IDLE_EXITS=0 opts back into the old
@@ -108,7 +108,7 @@ const (
 	// workerDefaultIdleExits bounds an idle worker's life: after this many
 	// CONSECUTIVE drained rounds (queue empty, no task executed between
 	// them — a busy round always resets the count) the worker exits 0 on
-	// its own. A worker is a task-DRAIN tool, not a daemon (nick 9/1: it
+	// its own. A worker is a task-DRAIN tool, not a daemon (the operator 9/1: it
 	// runs and self-dies); default 3 × the drained-queue wait = ~90s of
 	// quiet before a drained worker stops waiting for a Ctrl+C that should
 	// not be needed. 0 = never exit on idle (the pre-fix daemon wait).
@@ -928,7 +928,7 @@ func runTaskWorkerLoop(once bool) {
 		// count this drained round toward the idle self-exit.
 		idleStreak++
 		if idleExits > 0 && idleStreak >= idleExits {
-			// Run-and-self-die (nick 9/1): a worker is a drain tool, not a
+			// Run-and-self-die (the operator 9/1): a worker is a drain tool, not a
 			// daemon. N consecutive empty rounds ≈ no new work is coming —
 			// exit 0 (drained is SUCCESS, never an error).
 			if n := tools.LiveRowsOwnedByOthers(); n > 0 {

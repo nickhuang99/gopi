@@ -223,7 +223,7 @@ $ cd ~/workspace/redproof-pre && GOPI_BIN=~/workspace/redproof-pre/bin/gopi \
       want the internal version "v0.1.0"
 --- FAIL: TestVersionIsIdenticalInAndOutOfACheckout
 --- FAIL: TestVersionDoesNotBorrowANameTheCheckoutCarries
-FAIL    github.com/nick/gopi/cmd/agent
+FAIL    github.com/the operator/gopi/cmd/agent
 ```
 
 All three RED on the old tree, all three green here. (The old tree has no

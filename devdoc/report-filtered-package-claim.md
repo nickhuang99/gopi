@@ -29,7 +29,7 @@ go test ./internal/standards/ -run TestConfigDoc  → ok … 3.304s  exit 0
 ```
 
 **A filtered command prints a package-level `ok` on a RED tree.** The report then
-carried `ok github.com/nick/gopi/internal/standards`, and no instrument in the
+carried `ok github.com/the operator/gopi/internal/standards`, and no instrument in the
 close-out looked at it.
 
 ## 2. Why the two neighbouring checks could not see it

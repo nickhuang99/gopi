@@ -89,10 +89,10 @@ $ go test -count=1 -run 'TestRead_Tilde' -v ./internal/tools/
 --- PASS: TestRead_TildeExpansion (0.00s)
 --- PASS: TestRead_TildeAlone (0.00s)
 --- PASS: TestRead_TildeAloneStillDirectoryError (0.00s)
-ok  github.com/nick/gopi/internal/tools
+ok  github.com/the operator/gopi/internal/tools
 
 $ go test -count=1 ./internal/tools/          # full package suite
-ok  github.com/nick/gopi/internal/tools  284.912s
+ok  github.com/the operator/gopi/internal/tools  284.912s
 
 $ ls -A ~ > /tmp/home-after-final.txt && diff /tmp/home-before-final.txt /tmp/home-after-final.txt
 HOME-UNCHANGED

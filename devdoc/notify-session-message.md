@@ -211,7 +211,7 @@ no sessions root at all is the same refusal said with the path, never an opaque
   host=peer1 … exit=0 outcome=pass`); slowest case
   `TestNotifyDeliverReachesARunningChatSession` 30.12s. Re-run at close-out
   (`go test -run 'TestNotifyDeliverReachesARunningChatSession|TestNotifyDeliverRefuses'
-  ./cmd/agent/`) → `ok github.com/nick/gopi/cmd/agent 39.773s`; the single-take-point
+  ./cmd/agent/`) → `ok github.com/the operator/gopi/cmd/agent 39.773s`; the single-take-point
   source gate alone → `ok internal/agent 0.364s`.
 - **Ran** (the surface itself, verbatim, against real state):
   - `gopi notify --session 11111111-2222-3333-4444-555555555555 --message

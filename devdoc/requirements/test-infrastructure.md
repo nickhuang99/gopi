@@ -58,7 +58,7 @@ the adoptable landing and the referee gets switched off. Take away the fast/slow
 
 | actor | the need it has | evidence |
 |---|---|---|
-| **the operator** (nick) | my decided standards must still hold when I am not looking; my development loop must stay fast; my machine must not be used as a load generator to make a test pass; I must not be handed a *green* that a skipped test produced | `GOPI.md:1145` ("**The rule is checked, not trusted** (原则无效，检查才有效)"); `GOPI.md:906` Rule 27; ledger `01a0a88e` (operator verbatim on the heavy classification, quoted in §4.4) |
+| **the operator** (the operator) | my decided standards must still hold when I am not looking; my development loop must stay fast; my machine must not be used as a load generator to make a test pass; I must not be handed a *green* that a skipped test produced | `GOPI.md:1145` ("**The rule is checked, not trusted** (原则无效，检查才有效)"); `GOPI.md:906` Rule 27; ledger `01a0a88e` (operator verbatim on the heavy classification, quoted in §4.4) |
 | **the agent** (Bond) | I must learn a standard *at the moment I break it*, from the build, not from a document I did not read | `internal/standards/gate.go:1-16` ("the reader is the thing being audited"); §4.1 below |
 | **the next agent** | I must be able to appeal a referee I believe is wrong, without weakening it | the inline-escape mechanism, `internal/standards/gate.go:462,530,692,736,792`; `GOPI.md:538-716` |
 | **the future maintainer** | I must be able to read a rule's *why* and see which alternative was deliberately rejected, so I do not re-propose it | `GOPI.md:538-716` each carries a "Deliberately rejected:" paragraph; `devdoc/standards-gate.md:237-252` |

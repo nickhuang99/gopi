@@ -12,7 +12,7 @@ ls -l /usr/lib/systemd/user-preset/ 2>&1
 grep -rn 'dbus.socket' /usr/lib/systemd/user-preset/ 2>&1 | head
 echo "=== 4. linger state file (the on-disk truth for enable-linger) ==="
 ls -la /var/lib/systemd/linger/ 2>&1
-cat /var/lib/systemd/linger/nick 2>&1 | head -2
+cat /var/lib/systemd/linger/the operator 2>&1 | head -2
 echo "=== 5. KillUserProcesses / logind.conf on-disk (verbatim, effective file) ==="
 grep -vE '^\s*#|^\s*$' /etc/systemd/logind.conf 2>&1
 ls /etc/systemd/logind.conf.d/ 2>&1

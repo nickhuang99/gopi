@@ -6,11 +6,11 @@ drwxr-xr-x   2 root root  4096 Sep 13 09:57 .
 drwxr-xr-x 176 root root 12288 Sep 14 09:13 ..
 -rw-r--r--   1 root root   119 Feb 17  2024 screen-cleanup.conf
 --- journal lines that referenced it (privileged, 2026-09-13) ---
-Sep 14 04:38:26 peer1 sudo[2406443]:     nick : TTY=pts/4 ; PWD=/home/user/workspace/gopi-residue-reap/internal/tools ; USER=root ; COMMAND=/usr/bin/true
-Sep 14 04:40:20 peer1 sudo[2415575]:     nick : PWD=/home/user/workspace/gopi-residue-reap/internal/tools ; USER=root ; COMMAND=/usr/bin/true
-Sep 14 04:40:21 peer1 sudo[2415603]:     nick : PWD=/home/user/workspace/gopi-residue-reap/internal/tools ; USER=root ; COMMAND=/usr/bin/true
-Sep 14 04:42:46 peer1 sudo[2423919]:     nick : PWD=/home/user/workspace/gopi-residue-reap/internal/tools ; USER=root ; COMMAND=/usr/bin/true
-Sep 14 04:42:47 peer1 sudo[2423951]:     nick : PWD=/home/user/workspace/gopi-residue-reap/internal/tools ; USER=root ; COMMAND=/usr/bin/true
+Sep 14 04:38:26 peer1 sudo[2406443]:     the operator : TTY=pts/4 ; PWD=/home/user/workspace/gopi-residue-reap/internal/tools ; USER=root ; COMMAND=/usr/bin/true
+Sep 14 04:40:20 peer1 sudo[2415575]:     the operator : PWD=/home/user/workspace/gopi-residue-reap/internal/tools ; USER=root ; COMMAND=/usr/bin/true
+Sep 14 04:40:21 peer1 sudo[2415603]:     the operator : PWD=/home/user/workspace/gopi-residue-reap/internal/tools ; USER=root ; COMMAND=/usr/bin/true
+Sep 14 04:42:46 peer1 sudo[2423919]:     the operator : PWD=/home/user/workspace/gopi-residue-reap/internal/tools ; USER=root ; COMMAND=/usr/bin/true
+Sep 14 04:42:47 peer1 sudo[2423951]:     the operator : PWD=/home/user/workspace/gopi-residue-reap/internal/tools ; USER=root ; COMMAND=/usr/bin/true
 --- does the system tmpfiles-clean sweep the runtime dir? (rules + last runs) ---
 /usr/lib/tmpfiles.d/systemd.conf:10:d /run/user 0755 root root -
 /usr/lib/tmpfiles.d/systemd.conf:11:F! /run/utmp 0664 root utmp -
@@ -30,7 +30,7 @@ Sep 14 21:51:45 peer1 systemd[1]: systemd-tmpfiles-clean.service: Deactivated su
 total 8
 drwxr-xr-x  2 root root 4096 Sep 13 12:16 .
 drwxr-xr-x 13 root root 4096 Aug 23  2024 ..
--rw-r--r--  1 root root    0 Sep 13 12:16 nick
+-rw-r--r--  1 root root    0 Sep 13 12:16 the operator
 [Login]
 --- user@.service: the delegation + dependency lines ---
 After=systemd-user-sessions.service user-runtime-dir@%i.service dbus.service

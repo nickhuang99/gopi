@@ -124,13 +124,13 @@ named below are under that task's session directory.
 
 ```
 $ go test ./internal/tools/ -run 'TestChatWriteBoundaryAPromptIsAnsweredByThisTurnsOperator|TestChatBashBoundaryAPromptIsAnsweredByThisTurnsOperator|TestApprovalNeverOpensAForbiddenRule|TestChatTurnApprovesTheToolQuestion' -count=1
-ok  	github.com/nick/gopi/internal/tools	0.415s
+ok  	github.com/the operator/gopi/internal/tools	0.415s
 
 $ GOPI_BIN=./bin/gopi go test ./testsuite/ -run '^TestChatOnce_ToolsTurnReallyCallsATool$' -count=1
-ok  	github.com/nick/gopi/testsuite	1.660s
+ok  	github.com/the operator/gopi/testsuite	1.660s
 
 $ GOPI_BIN=./bin/gopi go test ./testsuite/ -run '^TestChatPTY_EscapeKillsARunningBashCommand$' -count=1
-ok  	github.com/nick/gopi/testsuite	15.934s
+ok  	github.com/the operator/gopi/testsuite	15.934s
 ```
 
 **RED proof** (the minimal reproduction, and the restore criterion): with the
@@ -145,7 +145,7 @@ $ go test ./internal/tools/ -run 'TestChatWriteBoundaryAPromptIsAnsweredByThisTu
 — and with the arm restored:
 ```
 $ go test ./internal/tools/ -run 'TestChatWriteBoundaryAPromptIsAnsweredByThisTurnsOperator' -count=1
-ok  	github.com/nick/gopi/internal/tools	1.902s
+ok  	github.com/the operator/gopi/internal/tools	1.902s
 $ test "$(git hash-object internal/tools/chat_write_guard.go)" = "$(git hash-object /tmp/cwg.bak)"
 RESTORE IDENTICAL to pre-mutation backup
 ```

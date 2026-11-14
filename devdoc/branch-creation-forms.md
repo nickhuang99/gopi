@@ -292,7 +292,7 @@ FAIL
 
 ########## REVERT ##########
 $ git checkout -- GOPI.md && go test ./internal/standards/ -run TestBranchForceGateScansTheRealTree
-ok      github.com/nick/gopi/internal/standards   0.871s
+ok      github.com/the operator/gopi/internal/standards   0.871s
 $ git status --porcelain
                                    ← empty (Rule 30)
 ```

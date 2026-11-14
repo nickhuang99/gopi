@@ -97,7 +97,7 @@ Branch `fix/worker-idle-drained-stop` in the worktree
 | `go vet ./cmd/agent/` + `gofmt -l` on the five touched files | clean |
 | Unit, 4 cases (`worker_idle_drained_stop_test.go`) | PASS — flag door 1.00s, file door 1.00s (file left standing, flag NOT flipped), whole-span negative 0.30s, unreadable location 0.10s |
 | `TestWorkerIdleWaitDoesNotDeferToAPeakWindow` | PASS (0.30s) — the untouched contract still holds |
-| E2E, 3 cases (`worker_idle_drained_stop_e2e_test.go`, real binary, `GOPI_WORKER_IDLE_SEC=3600 GOPI_WORKER_IDLE_EXITS=0`) | PASS — SIGTERM 3.36s, `--stop --wait 20s` 2.37s, no residue 2.50s (`ok github.com/nick/gopi/cmd/agent 8.466s`) |
+| E2E, 3 cases (`worker_idle_drained_stop_e2e_test.go`, real binary, `GOPI_WORKER_IDLE_SEC=3600 GOPI_WORKER_IDLE_EXITS=0`) | PASS — SIGTERM 3.36s, `--stop --wait 20s` 2.37s, no residue 2.50s (`ok github.com/the operator/gopi/cmd/agent 8.466s`) |
 | **RED PROOF** — the same e2e file on pristine `master` in the detached worktree `~/workspace/gopi-wis-redproof` | **FAIL as it must**: `pid 3337587 is STILL ALIVE 5.03s after the stop … serves out its whole 3600s idle interval`; `--stop --wait 20s` → `exited 1`, `pid 3337755 is STILL running 20s after the graceful stop request`; all three cases FAIL in 125.9s |
 | `go test ./internal/stylegate/` vs pristine master | identical hit set (only durations differ) — **no new violation** |
 | `go test ./internal/standards/` vs pristine master | byte-identical escape list (33 lines) — **no new violation**; the gate's pre-existing red (`/tmp/.X11-unix` literal, `getRootImage` accessor) is on master too |
@@ -142,7 +142,7 @@ independently reports no live daemon afterwards.
     `worker --stop --wait 20s` exited 1 — the stop did not reach its end state:
       gopi worker: pid 3337755 is STILL running 20s after the graceful stop request
 --- FAIL: TestWorkerDaemon_IdleDrainedStopLeavesNoResidue (36.63s)
-FAIL	github.com/nick/gopi/cmd/agent	125.926s
+FAIL	github.com/the operator/gopi/cmd/agent	125.926s
 ```
 
 The RED proof is the load-bearing one: the e2e case fails on pristine master

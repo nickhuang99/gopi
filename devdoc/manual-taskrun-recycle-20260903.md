@@ -65,7 +65,7 @@ worktrees behind:
 
 ## Not Done / Deferred
 
-- The live merger daemon (`gopi task merger --every 30s`, started by nick
+- The live merger daemon (`gopi task merger --every 30s`, started by the operator
   08:32) auto-merged my FIRST worktree branch mid-development via the
   **merge-backlog audit** path (`TaskMerge`, task_merge.go) which has NO
   worktree-occupancy guard — grep 'worktree' = 0 hits there — while the
@@ -73,7 +73,7 @@ worktrees behind:
   guard. Recorded to memory (#1344). Closing that audit-path guard gap is a
   SEPARATE task (out of scope here: this epic is about the manual run
   releasing ITS worktree, not about the merger respecting an active one).
-- Live-ledger evidence rows cleaned by hand earlier (nick) were NOT
+- Live-ledger evidence rows cleaned by hand earlier (the operator) were NOT
   re-created; the fix prevents the class going forward.
 
 ## Verification

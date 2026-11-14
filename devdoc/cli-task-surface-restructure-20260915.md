@@ -183,13 +183,13 @@ the pre-restructure merger synopsis into `tasksUsage` in the working tree:
     cli_tasks_advert_gate_test.go:158: ledger group re-advertises "adopt": the family usage documents
     the flag --every, which belongs to the service/git-infrastructure surface …
     (… one finding per git atom + service …)
-FAIL	github.com/nick/gopi/cmd/agent	1.291s
+FAIL	github.com/the operator/gopi/cmd/agent	1.291s
 ```
 
 then restored the file and re-ran:
 
 ```
-ok  	github.com/nick/gopi/cmd/agent	2.923s
+ok  	github.com/the operator/gopi/cmd/agent	2.923s
 ```
 
 **Re-proved after merging master (`1f741097`, commit `b02ea536`)** with a
@@ -210,9 +210,9 @@ $ go test -run 'TestNoServiceOrSyncVerbInLedgerGroup$|TestLedgerGroupTeachesNoSe
 --- FAIL: TestLedgerGroupTeachesNoServiceBlock (0.00s)
     cli_tasks_advert_gate_test.go:279: the family usage carries a service SYNOPSIS block
     (`gopi worker …` / `gopi merger …`) — a service is documented by its own page
-FAIL	github.com/nick/gopi/cmd/agent	2.068s
+FAIL	github.com/the operator/gopi/cmd/agent	2.068s
 $ # restored (git status → clean for cli_tasks.go), re-ran:
-ok  	github.com/nick/gopi/cmd/agent	1.359s
+ok  	github.com/the operator/gopi/cmd/agent	1.359s
 ```
 
 Each of the three re-addition routes is independently caught, so the gate is
@@ -301,10 +301,10 @@ BUILD_OK
 $ CGO_ENABLED=0 go build -o bin/gopi ./cmd/agent/
 BIN_OK
 $ go test -count=1 ./cmd/agent/... ./internal/taskverbs/... ./internal/config/... ./internal/standards/
-ok  	github.com/nick/gopi/cmd/agent	235.777s
-ok  	github.com/nick/gopi/internal/taskverbs	0.051s
-ok  	github.com/nick/gopi/internal/config	1.543s
-ok  	github.com/nick/gopi/internal/standards	12.208s
+ok  	github.com/the operator/gopi/cmd/agent	235.777s
+ok  	github.com/the operator/gopi/internal/taskverbs	0.051s
+ok  	github.com/the operator/gopi/internal/config	1.543s
+ok  	github.com/the operator/gopi/internal/standards	12.208s
 ```
 
 FINAL run, on the tree with master merged (`1f741097` → `b02ea536`):
@@ -313,11 +313,11 @@ FINAL run, on the tree with master merged (`1f741097` → `b02ea536`):
 $ go build ./...
 go build ./... OK
 $ go test -count=1 ./cmd/agent/... ./internal/taskverbs/... ./internal/config/...
-ok  	github.com/nick/gopi/cmd/agent	210.149s
-ok  	github.com/nick/gopi/internal/taskverbs	0.064s
-ok  	github.com/nick/gopi/internal/config	1.842s
+ok  	github.com/the operator/gopi/cmd/agent	210.149s
+ok  	github.com/the operator/gopi/internal/taskverbs	0.064s
+ok  	github.com/the operator/gopi/internal/config	1.842s
 $ go test -count=1 ./internal/standards/
-ok  	github.com/nick/gopi/internal/standards	7.909s
+ok  	github.com/the operator/gopi/internal/standards	7.909s
 ```
 
 (One intermediate merged-tree run failed two `task_session_cwd_e2e_test.go`
@@ -334,8 +334,8 @@ re-pin.)
   → OK (binary rebuilt **before** the e2e probes; `bin/gopi` mtime checked —
   `task_session_cwd_e2e_test.go` fails loudly on a stale binary).
 - Tests: `go test -count=1 ./cmd/agent/... ./internal/taskverbs/... ./internal/config/... ./internal/standards/`
-  → `ok github.com/nick/gopi/internal/taskverbs`, `ok …/internal/config`,
-  `ok …/internal/standards`, `ok github.com/nick/gopi/cmd/agent` (see the
+  → `ok github.com/the operator/gopi/internal/taskverbs`, `ok …/internal/config`,
+  `ok …/internal/standards`, `ok github.com/the operator/gopi/cmd/agent` (see the
   final run log in the commit message / `## Verification` of the report below).
 - Acceptance checks on the shipped binary (all run, output quoted above):
   `gopi task -h` service/worker usage blocks = **0**; `gopi merger -h` + `gopi worker -h`

@@ -87,7 +87,7 @@ identical to the `diverged` contract.
     merge_unrelated_history_test.go:103: the raw probe failure "refusing to merge unrelated histories" is still printed
     merge_unrelated_history_test.go:103: the raw probe failure "exit status 128" is still printed
     merge_unrelated_history_test.go:103: the raw probe failure "probe merge" is still printed
-FAIL	github.com/nick/gopi/cmd/agent	3.816s
+FAIL	github.com/the operator/gopi/cmd/agent	3.816s
 ```
 
 The fixture's own orphan branch reproduces the operator's line **byte for
@@ -98,11 +98,11 @@ byte** — the diagnosis matches the report, not a guess about it.
 ```
 --- PASS: TestMergeUnrelatedHistoryBranchIsDiagnosedNotAnError (1.03s)
 --- PASS: TestMergeHasCommonAncestorTellsOrphanFromRelated (0.43s)
-ok  	github.com/nick/gopi/cmd/agent	2.186s
+ok  	github.com/the operator/gopi/cmd/agent	2.186s
 ```
 
 `go build ./...`: OK. Branch-scoped smoke `go test ./cmd/agent/ -run Merge
--count=1`: `ok github.com/nick/gopi/cmd/agent 53.142s` (the whole merge command
+-count=1`: `ok github.com/the operator/gopi/cmd/agent 53.142s` (the whole merge command
 surface — the new verdict changes no existing arm).
 
 ## The test pair (why two tests and not one)

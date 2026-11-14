@@ -17,7 +17,7 @@ tasks 台账**应当**自动登记运行时任务，但必须满足四个设计�
 
 1. **单向流**：runtime → ledger 只写不读。loop.go 任何路径都不得读 tasks 表来影响行为（Stateless 哲学不动摇——LLM 仍拥有任务状态，台账只是转录它的持久副本）。
 2. **转录不虚构**：harness 只转录 LLM 已声明的 task_id/summary/status，绝不代编摘要或状态；唯一例外是 session-end 清扫（把该 session 残留的 in_progress 行按客观退出码盖终态章）——这是"兜底"角色的记录动作，不是对 LLM 状态的覆盖。
-3. **append-only 不动摇**：无 delete（nick 铁则），改名遗留的孤儿行是审计真相，永远不删不重写。
+3. **append-only 不动摇**：无 delete（the operator 铁则），改名遗留的孤儿行是审计真相，永远不删不重写。
 4. **可关停**：GOPI_NO_TASK_REGISTER 类开关（镜像 GOPI_NO_ENFORCE_MEMORY 先例），A/B 隔离与"框架默认零副作用"可证伪。
 
 **否掉的方案**：(a) 依赖 LLM 显式 tool_use 登记——顶撞 Rule 3（18 工具封顶）且被经验证伪（todo 19 次调用零使用、memory_update 1/21435、feedback 软提示采纳率 9-15%：LLM 不会自觉做记账，自愿登记 = 台账永远是空的 = memory-lowquality 死列教训）；(b) 仅 task-end 完成时登记——max-iterations/timeout/abort 的会话（恰恰是审计最该记录的失败）永远进不了台账，与"记录永久留存用于追溯"目标直接相悖。
@@ -57,7 +57,7 @@ tasks 台账**应当**自动登记运行时任务，但必须满足四个设计�
 张力是真实的："自动写入 = 框架侧获得任务状态写入权"。但：
 
 - 台账的定位已是**审计/追溯层**（tasks.go:8-14："the ledger is an AUDIT/TRAIL layer, not runtime control. It does not touch loop.go's tasklist/todoState/heartbeat/nudge machinery"）。自动登记只是让这个审计层从"人工喂"变成"自动喂"，定位未变。
-- nick 铁则原文（memory-catchup-brief F7）："LLM 仅能新增、修改摘要、修改状态；任何场景不能删除；**调度器只读过滤，记录永久留存用于追溯**"——台账是"记录永久留存"那一半的落地；自动登记让"永久留存"从口号变成事实。Stateless 保护的是**运行时**：LLM 每轮带全量表、scheduler 纯兜底——**只要 loop.go 不读 tasks 表，运行时语义零变化**。
+- the operator 铁则原文（memory-catchup-brief F7）："LLM 仅能新增、修改摘要、修改状态；任何场景不能删除；**调度器只读过滤，记录永久留存用于追溯**"——台账是"记录永久留存"那一半的落地；自动登记让"永久留存"从口号变成事实。Stateless 保护的是**运行时**：LLM 每轮带全量表、scheduler 纯兜底——**只要 loop.go 不读 tasks 表，运行时语义零变化**。
 - "只登记不修改"的方案太弱：状态必须能推进到 completed，否则台账烂在 in_progress（死列教训）。正确护栏是**转录 + 兜底**：harness 转述 LLM 声明的状态变迁（LLM 是状态的唯一宣言者），唯一例外是 session-end 清扫盖终态（客观事件：run 确实异常结束了）。
 - 硬约束写进代码注释与本文档：**loop.go 禁止任何读 tasks 表路径**；转录钩子只写不读（除 openTasksDB 自身校验）。
 
@@ -88,10 +88,10 @@ tasks 台账**应当**自动登记运行时任务，但必须满足四个设计�
 | 输出截断（finish_reason=length） | 解析取 LAST 块（tasklist.go:121 LastIndex）；截断可能丢尾块 → 本轮 diff 不全 → 下轮自愈；已登记行不受影响 |
 | summary 噪音/截断 | LLM 原始摘要质量低于人工——审计优先完整性，策展由 CLI 补（Q7） |
 
-## 7. 收益 vs 成本（Q7）：自动登记更匹配 nick 的目标
+## 7. 收益 vs 成本（Q7）：自动登记更匹配 the operator 的目标
 
 **收益**：
-- 台账完备性 = "记录永久留存用于追溯"（nick 铁则）的唯一可靠实现。经验数据：自愿记账行为采纳率 9-15%（feedback）/近乎为零（todo 19 调零用、memory_update 1/21435）——**CLI 手动 = 台账实际上永远填不满**。自动登记让每个声明过 tasklist 的 session 都留下持久记录（task_id/摘要/状态/时间戳/session_id），`gopi task list --status` 审计查询第一天就有意义。
+- 台账完备性 = "记录永久留存用于追溯"（the operator 铁则）的唯一可靠实现。经验数据：自愿记账行为采纳率 9-15%（feedback）/近乎为零（todo 19 调零用、memory_update 1/21435）——**CLI 手动 = 台账实际上永远填不满**。自动登记让每个声明过 tasklist 的 session 都留下持久记录（task_id/摘要/状态/时间戳/session_id），`gopi task list --status` 审计查询第一天就有意义。
 - value-signal 教训直接兑现：status 索引、created_at/updated_at/ended_at 生命周期从第一天就是活数据，不做死列。
 - 零边际成本：数据已解析、session_id 列已预留、schema 不动、无新工具、无 prompt 密度、无每轮 token 成本。
 

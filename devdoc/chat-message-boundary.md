@@ -446,8 +446,8 @@ boundary, i.e. the message tracked the input byte for byte; with it, 3823 bytes
 built BEFORE the run, which is the order these tests require):
 
 ```
-ok  	github.com/nick/gopi/cmd/agent	425.193s
-ok  	github.com/nick/gopi/internal/lineedit	29.284s
+ok  	github.com/the operator/gopi/cmd/agent	425.193s
+ok  	github.com/the operator/gopi/internal/lineedit	29.284s
 ```
 
 `go test ./internal/standards/` → **ok** (the gates, including the ones that scan

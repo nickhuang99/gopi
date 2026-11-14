@@ -15,12 +15,12 @@ The acceptance run of the worker-help-surface epic (13:49:39 → 14:10:00, 1221s
 ```
 suite goroutine sweep: parked repository goroutines: 6
   goroutine 34616 [chan receive]:
-  github.com/nick/gopi/cmd/agent.workerDaemonCtx.installFileWatcher.func1()
+  github.com/the operator/gopi/cmd/agent.workerDaemonCtx.installFileWatcher.func1()
   	…/cmd/agent/cli_worker_control.go:2164 +0xc5
   created by …installFileWatcher in goroutine 34611
   	…/cmd/agent/cli_worker_control.go:2161 +0x99
 …
-FAIL	github.com/nick/gopi/cmd/agent	1221.139s
+FAIL	github.com/the operator/gopi/cmd/agent	1221.139s
 ```
 
 Six blocks, three goroutine ids each (`34616/17426/30677/8178/8011/17440`), all the
@@ -85,7 +85,7 @@ Before the fix (red):
 ```
 suite goroutine sweep: parked repository goroutines: 2
   …installFileWatcher.func1()
-FAIL	github.com/nick/gopi/cmd/agent	9.659s
+FAIL	github.com/the operator/gopi/cmd/agent	9.659s
 ```
 
 Control, same binary, a set that does not drive the loop in-process (green):
@@ -93,7 +93,7 @@ Control, same binary, a set that does not drive the loop in-process (green):
 ```
 GOPI_TEST_SCRATCH_HOME=<off-/ dir> go test ./cmd/agent/ -count=1 \
   -run 'TestManSourcesMatchTheirHelpPage|TestPublishedHelpPagesStayWithinTheirUsageBudget'
-ok  	github.com/nick/gopi/cmd/agent	7.611s
+ok  	github.com/the operator/gopi/cmd/agent	7.611s
 ```
 
 The control is the point: the leak is not "this machine" or "a loaded host", it is

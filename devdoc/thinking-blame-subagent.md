@@ -43,7 +43,7 @@ DeepSeek /anthropic 端点在字段省略时默认启用 thinking。gopi 原代�
 ## Task B — git_blame 工具 (c33cd45)
 
 ### 设计来源
-doubao 完整设计: ~/work/claude/nick/gitblame-tool.txt
+doubao 完整设计: ~/work/claude/the operator/gitblame-tool.txt
 
 ### 为什么需要专用工具（bash 替代不了）
 1. 原始输出杂乱（行号/hash/作者/时间混合——LLM 耗 token 解析噪声）

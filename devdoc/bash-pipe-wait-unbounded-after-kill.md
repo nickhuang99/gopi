@@ -95,7 +95,7 @@ With the fix in place:
 
 ```
 --- PASS: TestBashKillReturnsWhenADescendantHoldsThePipe (4.00s)
-ok  	github.com/nick/gopi/internal/tools	5.494s
+ok  	github.com/the operator/gopi/internal/tools	5.494s
 ```
 
 ## 4. The fix — one bound, at the rung that failed

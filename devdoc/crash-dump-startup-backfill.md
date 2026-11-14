@@ -112,7 +112,7 @@ JSONL was still being appended 90 seconds later.
 - Build (worktree `~/workspace/gopi-crashdiag`, branch `diag/crash-dump-startup`):
   `CGO_ENABLED=0 go build ./...` → exit 0, no output.
 - Tests: `go test ./internal/agent/ -run 'Crash|Orphan|SessionEnd' -count=1` →
-  `ok github.com/nick/gopi/internal/agent 0.023s`.
+  `ok github.com/the operator/gopi/internal/agent 0.023s`.
 - Repo hygiene: nothing in the main repo was modified; the only edits are on branch
   `diag/crash-dump-startup` in worktree `~/workspace/gopi-crashdiag`
   (`git status --short` in `/home/user/work/GoPi` lists no file from this diagnosis).
@@ -151,8 +151,8 @@ import (
 	"strings"
 	"time"
 
-	"github.com/nick/gopi/internal/agent"
-	"github.com/nick/gopi/internal/config"
+	"github.com/the operator/gopi/internal/agent"
+	"github.com/the operator/gopi/internal/config"
 )
 
 func rssKB() int { // VmHWM is the true high-water mark; TotalAlloc is churn

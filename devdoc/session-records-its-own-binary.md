@@ -175,7 +175,7 @@ three arm-states, each run in a `gopi tool sandbox create` profile with
 | arm | how the binary was built | `session_start` / `metadata.json` |
 |---|---|---|
 | `absent` | `CGO_ENABLED=0 go build -o bin/gopi ./cmd/agent/` **inside a linked worktree** (no stamp, no `-X`) | `{"exePath":"…/gopi-01a1362e…/bin/gopi","source":"absent","reason":"the artifact carries no revision: …"}` |
-| `ldflags-self-declared` | the same tree + `-ldflags "-X github.com/nick/gopi/internal/version.Revision=$(git rev-parse HEAD)"` | `{"exePath":"/tmp/gopi-declared","revision":"adafe54b…","source":"ldflags-self-declared"}` |
+| `ldflags-self-declared` | the same tree + `-ldflags "-X github.com/the operator/gopi/internal/version.Revision=$(git rev-parse HEAD)"` | `{"exePath":"/tmp/gopi-declared","revision":"adafe54b…","source":"ldflags-self-declared"}` |
 | `toolchain-vcs` | the same source **cloned** into the sandbox (real `.git` directory) so cmd/go stamps it | `{"exePath":"…/probe/gopi-attested/bin/gopi","revision":"adafe54b…","source":"toolchain-vcs"}` |
 
 Three-way reconciliation for the declared arm — the recorded path against the
@@ -226,12 +226,12 @@ which imports `internal/sessionevent`, so `internal/sessionevent` →
 `internal/version` is refused:
 
 ```console
-$ # artifact.go temporarily importing github.com/nick/gopi/internal/version
+$ # artifact.go temporarily importing github.com/the operator/gopi/internal/version
 $ go vet ./internal/sessionevent/ ./internal/version/
-package github.com/nick/gopi/internal/version
-	imports github.com/nick/gopi/internal/testutil from testmain_scratchroot_test.go
-	imports github.com/nick/gopi/internal/sessionevent from session.go
-	imports github.com/nick/gopi/internal/version from artifact.go: import cycle not allowed in test
+package github.com/the operator/gopi/internal/version
+	imports github.com/the operator/gopi/internal/testutil from testmain_scratchroot_test.go
+	imports github.com/the operator/gopi/internal/sessionevent from session.go
+	imports github.com/the operator/gopi/internal/version from artifact.go: import cycle not allowed in test
 ```
 
 A production-only build succeeds (`go build ./internal/sessionevent/` → exit 0),

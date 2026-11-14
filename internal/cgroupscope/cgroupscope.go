@@ -578,7 +578,7 @@ func Enter(uid int, scopeDirName string) (ScopeName, error) {
 //
 //	this run's process:  vte-spawn-….scope under user@1000.service
 //	  → target /user.slice/user-1000.slice/user@1000.service/<scope>
-//	  → common ancestor = user@1000.service (nick:nick 0755) → PERMITTED
+//	  → common ancestor = user@1000.service (the operator:the operator 0755) → PERMITTED
 //	an ssh session:      session-3452.scope, a SIBLING of user@1000.service
 //	  → the SAME target
 //	  → common ancestor = user-1000.slice (root:root 0755) → EACCES

@@ -263,7 +263,7 @@ func rule35CrontabInstallIn(line string) bool {
 		}
 		rest := strings.TrimSpace(strings.TrimPrefix(seg, rule35CrontabBin))
 		// `crontab -l` READS. Anything else — `crontab -`, `crontab <file>`,
-		// `crontab -u nick <file>` — installs.
+		// `crontab -u the operator <file>` — installs.
 		if rest == "" || strings.HasPrefix(rest, "-l") || strings.HasPrefix(rest, "--list") {
 			continue
 		}

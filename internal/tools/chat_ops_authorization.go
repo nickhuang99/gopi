@@ -489,7 +489,7 @@ func chatOpNestedClauses(words []string, depth int) [][]string {
 // never a demotion: it is "nothing more to add".
 func chatOpScriptClauses(words []string) [][]string {
 	// THE HEAD IS FOUND BY THE ONE SHARED WALK, so the wrapper→operand rule
-	// (`sudo -u nick sh -c …`) cannot be right in one reader and missing here
+	// (`sudo -u the operator sh -c …`) cannot be right in one reader and missing here
 	// (task 01a19d8a).
 	i, ok := commandHeadIdx(words, gitCommandPreambleWords, func(w string) bool {
 		return chatShellInterpreterWords[w]

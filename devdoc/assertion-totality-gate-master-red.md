@@ -205,8 +205,8 @@ line number to the file's length): **no out-of-range anchor remains.**
 - Build: `go build ./...` → exit 0, no output.
 - Vet: `go vet ./...` → exit 0, no output.
 - Tests: `go test ./internal/tools/ -run 'AssertionTotality' -count=1` →
-  **before**: `FAIL github.com/nick/gopi/internal/tools 1.463s` (2 findings);
-  **after**: `ok github.com/nick/gopi/internal/tools 4.875s`.
+  **before**: `FAIL github.com/the operator/gopi/internal/tools 1.463s` (2 findings);
+  **after**: `ok github.com/the operator/gopi/internal/tools 4.875s`.
 - Formatted: `gofmt -l internal/tools/assertion_totality_allow_test.go internal/tools/assertion_totality_audit_test.go` → no output. (7 unrelated pre-existing
   offenders on master, untouched.)
 - Smoke, branch-scoped: `make test-budget PKGS='./internal/tools'` (see Result).
@@ -232,7 +232,7 @@ exit=1
 --- FAIL: TestAssertionTotalityAuditGateClassifiesTheLiveTree (0.67s)
     assertion_totality_audit_test.go:245: the incident's own assertion (internal/tools/task_finish_cleanup_test.go:TestServerRecycleDirtyWorktreeSkipped) is not in the scan result — the predicate no longer sees the shape it was written for.
 FAIL
-FAIL	github.com/nick/gopi/internal/tools	1.463s
+FAIL	github.com/the operator/gopi/internal/tools	1.463s
 FAIL
 ```
 
@@ -240,7 +240,7 @@ FAIL
 
 ```
 exit=0
-ok  	github.com/nick/gopi/internal/tools	4.875s
+ok  	github.com/the operator/gopi/internal/tools	4.875s
 ```
 
 ### Ran: the predicate still fails on a fresh violation (mutation probe)
@@ -275,7 +275,7 @@ After deleting the probe:
 ```
 $ rm internal/tools/zz_mutation_probe_test.go
 $ go test ./internal/tools/ -run 'AssertionTotality' -count=1
-ok  	github.com/nick/gopi/internal/tools	4.525s
+ok  	github.com/the operator/gopi/internal/tools	4.525s
 ```
 
 ### Ran: the red proof's own cases
@@ -295,7 +295,7 @@ exactly the stale one).
 ## Evidence (self-filed)
 
 - `go test ./internal/tools/ -run 'AssertionTotality' -count=1` before →
-  `exit=1`, `FAIL github.com/nick/gopi/internal/tools 1.463s`, two findings
+  `exit=1`, `FAIL github.com/the operator/gopi/internal/tools 1.463s`, two findings
   quoted verbatim above (unclassified key A, stale key B); after → `exit=0`,
   `ok … 4.875s`.
 - Mutation probe: `go test … -run 'TestAssertionTotalityAuditGate'` with

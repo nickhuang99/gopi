@@ -149,7 +149,7 @@ ls: 无法访问 'bin/gopi': 没有那个文件或目录
 --- CGO_ENABLED=0 go build -o bin/gopi ./cmd/agent/ ---
 --- go build exit=0  elapsed=2s ---
 --- ls -l bin/gopi ---
--rwxrwxr-x 1 nick nick 65997732 Oct 12 19:49 bin/gopi
+-rwxrwxr-x 1 the operator the operator 65997732 Oct 12 19:49 bin/gopi
 --- ./bin/gopi tool doccheck ---
 doccheck: the devdoc corpus is consistent — every file under devdoc/ has a well-formed row
 --- doccheck exit=0 ---

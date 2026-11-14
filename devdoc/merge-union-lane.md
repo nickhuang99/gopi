@@ -299,11 +299,11 @@ re-resolving it. A stale binary is the trap to re-check on any re-run.
 >
 > ```
 > $ go test ./cmd/agent -run TestMergeSiblingAppendIsCleanAtStartAndConflictedAfterTheRunMovesMaster -count=1
-> ok  	github.com/nick/gopi/cmd/agent	3.346s [no tests to run]
+> ok  	github.com/the operator/gopi/cmd/agent	3.346s [no tests to run]
 > $ go test ./cmd/agent -run 'TestMergeUnion|TestMergeHandoverBudget' -count=1
-> ok  	github.com/nick/gopi/cmd/agent	3.033s [no tests to run]
+> ok  	github.com/the operator/gopi/cmd/agent	3.033s [no tests to run]
 > $ go test ./cmd/agent -run TestMergeUnionRowCheckOnTheRealManifest -count=1
-> ok  	github.com/nick/gopi/cmd/agent	3.073s [no tests to run]
+> ok  	github.com/the operator/gopi/cmd/agent	3.073s [no tests to run]
 > ```
 >
 > Kept as the record of how that lane was verified, not as a recipe to run. The

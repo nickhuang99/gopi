@@ -66,7 +66,7 @@ repo-wide. A single push drains the whole backlog posture.
 
 ### 5. Local worktree vs remote branch-push difference
 - **post-receive fires on ANY ref update arriving via git transport** — ssh remote
-  (`nick@192.0.2.6:/home/user/work/GoPi`, as hp pushes) or file-path push from a
+  (`the operator@192.0.2.6:/home/user/work/GoPi`, as hp pushes) or file-path push from a
   client clone behave identically. Both are "receive-pack" events.
 - **A worktree checkout inside the same repo does NOT fire anything**: worktree
   branches are just local refs; creating/committing/deleting them never enters
@@ -87,7 +87,7 @@ repo-wide. A single push drains the whole backlog posture.
 - 74bddd3: fix audit-merges verb parse (surfaced BY the hook firing — self-debugged).
 - b9aabac v2→v3: token-free FF-merge + branch -d + audit enqueue.
 - d63a6f5: installed v3 with worker-spawn (flock/pid/setsid).
-- c80f870: **reverted to simplified enqueue-only** per nick — "v3 worker-spawn too
+- c80f870: **reverted to simplified enqueue-only** per the operator — "v3 worker-spawn too
   complex; serve daemon owns queue draining". **The currently installed hook is the
   simplified version: enqueue on push; merging happens when `gopi task serve` (or a
   manual `gopi task run`) drains the pending merge tasks.**

@@ -46,7 +46,7 @@ raw json: …/test-budget/last.json
 
 --- summary (1503s wall, load 7.91 7.53 9.30 -> 5.62 6.56 7.50) ---
 packages: 1 finished, 1 with a failure
-  FAILED: github.com/nick/gopi/internal/tools
+  FAILED: github.com/the operator/gopi/internal/tools
 slowest 15 tests (wall-clock seconds):
     34.05  tools                    TestFirstOpenBlockDeviceCostIsTheSync
     29.12  tools                    TestRepoSweepRefGuard_RealBranchStillReachesTheGates
@@ -166,9 +166,9 @@ Final assignment: **33 `CriterionDeviceExec`** (the `rebuild_vet_*`, `repo_sweep
 
 ```
 $ go test ./internal/standards/ -run TestHeavyTestInventoryMatchesItsCallSites -count=1
-ok  	github.com/nick/gopi/internal/standards	1.726s
+ok  	github.com/the operator/gopi/internal/standards	1.726s
 $ go test ./internal/standards/ -run 'TestHeavy' -count=1
-ok  	github.com/nick/gopi/internal/standards	1.718s
+ok  	github.com/the operator/gopi/internal/standards	1.718s
 ```
 
 ### Both halves of the switch were OBSERVED, not asserted
@@ -180,7 +180,7 @@ $ env -u GOPI_HEAVY_TESTS GOPI_HEAVY_SKIP_LEDGER=<l> go test ./internal/tools/ -
   --- SKIP: TestFirstOpenBlockDeviceCostIsTheSync (0.00s)
   --- SKIP: TestManyFreshDBsNoHang (0.00s)
   --- SKIP: TestMergeUnionGate_RefusesTheIncidentShape (0.00s)
-  ok  	github.com/nick/gopi/internal/tools	1.090s          # ledger lines: 3
+  ok  	github.com/the operator/gopi/internal/tools	1.090s          # ledger lines: 3
 
 # DECLARED ON: the same test runs
 $ GOPI_HUMAN_TERMINAL=1 GOPI_HEAVY_TESTS=1 go test ./internal/tools/ -run '^TestMergeUnionGate_RefusesTheIncidentShape$' -v
@@ -193,7 +193,7 @@ $ GOPI_HUMAN_TERMINAL=1 GOPI_HEAVY_TESTS=1 go test ./internal/tools/ -run '^Test
 ```
 --- summary (1009s wall, load 5.84 5.73 6.75 -> 5.41 4.85 5.41) ---
 packages: 1 finished, 1 with a failure
-  FAILED: github.com/nick/gopi/internal/tools
+  FAILED: github.com/the operator/gopi/internal/tools
 slowest 15 tests (wall-clock seconds):
     11.00  tools                    TestTaskVerifyWaitDelayBoundsPipeHold
      9.07  tools                    TestVerifyGateReworkBriefingRendersNoVerdictAsNoVerdict
@@ -332,7 +332,7 @@ worth stating because it silently inflates any post-classification measurement.
   `stamp: … budget=25m elapsed=1009s … exit=1 outcome=fail`, `EXIT=1`; no
   `panic: test timed out` line anywhere in the file.
 - **Inventory gate**: `go test ./internal/standards/ -run TestHeavyTestInventoryMatchesItsCallSites -count=1`
-  → `ok github.com/nick/gopi/internal/standards 1.726s` (103 rows ↔ 103 call sites).
+  → `ok github.com/the operator/gopi/internal/standards 1.726s` (103 rows ↔ 103 call sites).
 - **Positive half of the switch**: `GOPI_HUMAN_TERMINAL=1 GOPI_HEAVY_TESTS=1 go test … -run '^TestMergeUnionGate_RefusesTheIncidentShape$' -v`
   → `--- PASS: TestMergeUnionGate_RefusesTheIncidentShape (12.51s)`.
 - **Negative half**: `env -u GOPI_HEAVY_TESTS … -v` → three `--- SKIP:` at

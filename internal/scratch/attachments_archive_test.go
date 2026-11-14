@@ -91,10 +91,10 @@ func TestAttachmentsArchiveSweepPinsBothSides(t *testing.T) {
 	// The operator's measured shape: a container whose archive holds the only
 	// surviving copy of an archived branch.
 	withBundle := fixtureArchiveContainer(t, sessions, "01a0f4f9-bundle-0000-0000-000000000002",
-		filepath.Join("home", "nick", "workspace", "branch-capture-list-windows.bundle"))
+		filepath.Join("home", "the operator", "workspace", "branch-capture-list-windows.bundle"))
 	// Any content at all counts — this is the weakest form of "holds evidence".
 	withByte := fixtureArchiveContainer(t, sessions, "01a0f4f9-byte-0000-0000-000000000003",
-		"home/nick/workspace/gopi_list.txt")
+		"home/the operator/workspace/gopi_list.txt")
 	// A nested DIRECTORY with no file in it: still not nothing, still kept.
 	nested := fixtureArchiveContainer(t, sessions, "01a0f4f9-nested-0000-0000-000000000004")
 	if err := os.Mkdir(filepath.Join(nested, "sub"), DirPerm); err != nil {
@@ -154,7 +154,7 @@ func TestAttachmentsArchiveSweepPinsBothSides(t *testing.T) {
 	}
 	// KEEP side — and the KEEP side is checked on the CONTENT, not only on the
 	// directory: the evidence file itself must still be readable.
-	bundle := filepath.Join(withBundle, "home", "nick", "workspace", "branch-capture-list-windows.bundle")
+	bundle := filepath.Join(withBundle, "home", "the operator", "workspace", "branch-capture-list-windows.bundle")
 	if _, err := os.Stat(bundle); err != nil {
 		t.Errorf("the archive's evidence file %s is gone — this is the loss the operator's principle forbids: %v", bundle, err)
 	}
@@ -180,7 +180,7 @@ func TestAttachmentsArchiveSweepPinsBothSides(t *testing.T) {
 func TestAttachmentsArchiveRedProofTakesEvidenceWhenTheVerdictIsNeutered(t *testing.T) {
 	sessions := fixtureSessionsTree(t)
 	withBundle := fixtureArchiveContainer(t, sessions, "01a0f4f9-red----0000-0000-00000000000a",
-		filepath.Join("home", "nick", "workspace", "branch-capture-list-windows.bundle"))
+		filepath.Join("home", "the operator", "workspace", "branch-capture-list-windows.bundle"))
 
 	real := attachmentsArchiveHoldsNoEvidence
 	t.Cleanup(func() { attachmentsArchiveHoldsNoEvidence = real })

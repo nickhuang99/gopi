@@ -186,7 +186,7 @@ fa12d97f   # == master, nothing of mine on it
 $ cd /home/user/workspace/gopi-taskid-ws-base \
   && go test -count=1 -v -run 'Padded|Whitespace|Normalize|Residual' ./internal/tools/ \
      > .probe-red.log 2>&1 ; echo "exit=$?"
-exit=1    # 18 FAIL, 4 PASS, 1 SKIP  → FAIL github.com/nick/gopi/internal/tools 45.340s
+exit=1    # 18 FAIL, 4 PASS, 1 SKIP  → FAIL github.com/the operator/gopi/internal/tools 45.340s
 ```
 
 The 18 red names, each carrying a *live-defect* message (never a shape
@@ -226,7 +226,7 @@ exit=0    # 0 FAIL, 22 PASS, 1 SKIP
 --- PASS: TestTaskIDWhitespaceNormalizedUnknownIDStillFails (1.09s)
 --- PASS: TestTaskIDNormalizeIsTheSingleSeam (0.00s)
 PASS
-ok  	github.com/nick/gopi/internal/tools	48.245s
+ok  	github.com/the operator/gopi/internal/tools	48.245s
 ```
 
 tally: **22 `--- PASS`, 0 `--- FAIL`, 1 `--- SKIP`** — the delta between the two
@@ -267,7 +267,7 @@ master-authored test file:
 $ cd /home/user/workspace/gopi-taskid-ws-base && go test -count=1 -v -run TestWriteTaskArea_PaddedTaskIDKeysTheSameRow ./internal/tools/
 === RUN   TestWriteTaskArea_PaddedTaskIDKeysTheSameRow
 --- PASS: TestWriteTaskArea_PaddedTaskIDKeysTheSameRow (1.25s)     ← GREEN on clean master
-ok  	github.com/nick/gopi/internal/tools	2.174s
+ok  	github.com/the operator/gopi/internal/tools	2.174s
 ```
 
 That PASS is the honest measurement behind U13's OBSOLETE verdict: the tag's own
@@ -345,12 +345,12 @@ $ cd <worktree> && go test -count=1 -run 'TestTaskDeliverableWorktreeBashReadOnl
 BRANCH (fix/taskid-whitespace-normalize):
 --- FAIL: TestTaskDeliverableWorktreeBashReadOnlyProbeDoesNotBind (2.93s)
 --- FAIL: TestTaskBashWorkdirCandidates_MalformedTildeIsDroppedNotStatted (0.00s)
-FAIL	github.com/nick/gopi/internal/tools	3.714s
+FAIL	github.com/the operator/gopi/internal/tools	3.714s
 
 MASTER (clean fa12d97f, detached, none of my code):
 --- FAIL: TestTaskDeliverableWorktreeBashReadOnlyProbeDoesNotBind (1.78s)
 --- FAIL: TestTaskBashWorkdirCandidates_MalformedTildeIsDroppedNotStatted (0.00s)
-FAIL	github.com/nick/gopi/internal/tools	2.594s
+FAIL	github.com/the operator/gopi/internal/tools	2.594s
 ```
 
 Identical on both sides ⇒ **master's, untouched by this change**. The timeout is
@@ -370,7 +370,7 @@ $ cd /home/user/workspace/gopi-taskid-ws && CGO_ENABLED=0 go build ./...
 BUILD_EXIT=0
 
 $ cd /home/user/workspace/gopi-taskid-ws && go test -count=1 -run 'Padded|Whitespace|Normalize|Residual' ./internal/tools/
-ok  	github.com/nick/gopi/internal/tools	54.009s
+ok  	github.com/the operator/gopi/internal/tools	54.009s
 
 $ cd /home/user/workspace/gopi-taskid-ws && git status --porcelain
 (no output)

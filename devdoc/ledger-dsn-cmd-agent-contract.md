@@ -119,7 +119,7 @@ Red proof (run on a pristine copy of the tree, not asserted from memory):
     `database is locked (5) (SQLITE_BUSY)` instead of queueing behind the resident
     daemon this suite starts. Use sql.Open("sqlite", tools.LedgerDSN(path))
 === AFTER removing it ===
-ok  	github.com/nick/gopi/cmd/agent	0.628s
+ok  	github.com/the operator/gopi/cmd/agent	0.628s
 ```
 
 The synthetic half (`TestLedgerBareOpenerPredicateReddensOnSyntheticSources`, 8
@@ -280,7 +280,7 @@ control A run8 exit=1 wall=17s fails=2   branch A run8 exit=0 wall=49s fails=0 o
 
 control union (8 runs): TestKilledWorkerDaemon_MergerTickRecoversTheStalledRound
                         TestMergerDaemon_DisposesZombieWithZeroWorkerProcesses
-branch  union (8 runs): (empty — every run printed `ok github.com/nick/gopi/cmd/agent`)
+branch  union (8 runs): (empty — every run printed `ok github.com/the operator/gopi/cmd/agent`)
 ```
 
 ### The full-suite shape on THIS host, measured 2026-09-16 (honest, and not a branch defect)
@@ -335,11 +335,11 @@ suite stall: … running 8m0s (watchdog budget 8m0s) …
 live child processes: none — nothing this suite spawned is still alive …
 goroutines of this repository still running (3) — the blocked work is here:
 goroutine 916 [syscall, 1 minutes]:
-github.com/nick/gopi/internal/tools.execSchemaBatchOnce(…)
+github.com/the operator/gopi/internal/tools.execSchemaBatchOnce(…)
 	/home/user/wl2/internal/tools/memory.go:595 +0x145          ← tx.Commit()
-github.com/nick/gopi/internal/tools.execSchemaBatch(…)  memory.go:570
-github.com/nick/gopi/internal/tools.ensureSchema(…)     memory.go:526
-github.com/nick/gopi/internal/tools.initKnowledgeBase(…) memory.go:864
+github.com/the operator/gopi/internal/tools.execSchemaBatch(…)  memory.go:570
+github.com/the operator/gopi/internal/tools.ensureSchema(…)     memory.go:526
+github.com/the operator/gopi/internal/tools.initKnowledgeBase(…) memory.go:864
 ```
 
 Root cause (5-why, measured rather than assumed): the ledger's first-open schema
@@ -371,12 +371,12 @@ is the ledger, not this branch's changes:
 
 ```
 control (51edd8d9) run2, goroutine 1133 [syscall, 6 minutes]:
-github.com/nick/gopi/cmd/agent.strandedSeedRow(…)
+github.com/the operator/gopi/cmd/agent.strandedSeedRow(…)
 	…/cli_tasks_stranded_sweep_test.go:51
 database/sql.(*DB).ExecContext(…)  database/sql/sql.go:1671     ← an INSERT that never returns
 control  run1, goroutine 3956 [runnable]:
 modernc.org/sqlite.(*conn).Close(…) / database/sql.(*DB).Close(…)
-github.com/nick/gopi/cmd/agent.strandedScan(…)
+github.com/the operator/gopi/cmd/agent.strandedScan(…)
 	…/cli_tasks_stranded_sweep_test.go:70                      ← a Close that never returns
 ```
 

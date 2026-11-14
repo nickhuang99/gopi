@@ -1,5 +1,5 @@
 # host-b 192.0.2.113 — non-interactive access evidence
-# captured: 2026-09-13T06:21:48+08:00  from: peer1 as nick
+# captured: 2026-09-13T06:21:48+08:00  from: peer1 as the operator
 
 ## 1. reachability (host is UP)
 --- 192.0.2.113 ping statistics ---
@@ -7,38 +7,38 @@
 rtt min/avg/max/mdev = 0.568/0.764/0.951/0.143 ms
 
 ## 2. THE blocker — keyless login, exactly as the epic states
-$ ssh -o BatchMode=yes nick@192.0.2.113 hostname
-nick@192.0.2.113: Permission denied (publickey,password).
+$ ssh -o BatchMode=yes the operator@192.0.2.113 hostname
+the operator@192.0.2.113: Permission denied (publickey,password).
 exit=255
 
 ## 3. every credential peer1 holds x every plausible account (15 combos)
-key=id_ed25519     user=nick    -> nick@192.0.2.113: Permission denied (publickey,password).
+key=id_ed25519     user=the operator    -> the operator@192.0.2.113: Permission denied (publickey,password).
 key=id_ed25519     user=root    -> root@192.0.2.113: Permission denied (publickey,password).
 key=id_ed25519     user=pi      -> pi@192.0.2.113: Permission denied (publickey,password).
 key=id_ed25519     user=admin   -> admin@192.0.2.113: Permission denied (publickey,password).
 key=id_ed25519     user=ubuntu  -> ubuntu@192.0.2.113: Permission denied (publickey,password).
-key=hp_to_peer1    user=nick    -> nick@192.0.2.113: Permission denied (publickey,password).
+key=hp_to_peer1    user=the operator    -> the operator@192.0.2.113: Permission denied (publickey,password).
 key=hp_to_peer1    user=root    -> root@192.0.2.113: Permission denied (publickey,password).
 key=hp_to_peer1    user=pi      -> pi@192.0.2.113: Permission denied (publickey,password).
 key=hp_to_peer1    user=admin   -> admin@192.0.2.113: Permission denied (publickey,password).
 key=hp_to_peer1    user=ubuntu  -> ubuntu@192.0.2.113: Permission denied (publickey,password).
-key=do_id_ed25519  user=nick    -> nick@192.0.2.113: Permission denied (publickey,password).
+key=do_id_ed25519  user=the operator    -> the operator@192.0.2.113: Permission denied (publickey,password).
 key=do_id_ed25519  user=root    -> root@192.0.2.113: Permission denied (publickey,password).
 key=do_id_ed25519  user=pi      -> pi@192.0.2.113: Permission denied (publickey,password).
 key=do_id_ed25519  user=admin   -> admin@192.0.2.113: Permission denied (publickey,password).
 key=do_id_ed25519  user=ubuntu  -> ubuntu@192.0.2.113: Permission denied (publickey,password).
 
 ## 4. second vantage point: HP's OWN keys (not peer1's) from 192.0.2.55
-HP key=id_ed25519 user=nick -> nick@192.0.2.113: Permission denied (publickey,password).
+HP key=id_ed25519 user=the operator -> the operator@192.0.2.113: Permission denied (publickey,password).
 HP key=id_ed25519 user=root -> root@192.0.2.113: Permission denied (publickey,password).
-HP key=id_rsa user=nick -> nick@192.0.2.113: Permission denied (publickey,password).
+HP key=id_rsa user=the operator -> the operator@192.0.2.113: Permission denied (publickey,password).
 HP key=id_rsa user=root -> root@192.0.2.113: Permission denied (publickey,password).
-HP key=hp_to_peer1 user=nick -> nick@192.0.2.113: Permission denied (publickey,password).
+HP key=hp_to_peer1 user=the operator -> the operator@192.0.2.113: Permission denied (publickey,password).
 HP key=hp_to_peer1 user=root -> root@192.0.2.113: Permission denied (publickey,password).
 
 ## 5. no agent / no forwarding path
-$ ssh -o BatchMode=yes -J hp nick@192.0.2.113 hostname   (JumpHost)
-nick@192.0.2.113: Permission denied (publickey,password).
+$ ssh -o BatchMode=yes -J hp the operator@192.0.2.113 hostname   (JumpHost)
+the operator@192.0.2.113: Permission denied (publickey,password).
 $ ssh-add -l
 Could not open a connection to your authentication agent.
 
@@ -71,4 +71,4 @@ $ /home/user/.ssh/config: no Host stanza for 192.0.2.113 (falls through to 'Host
 $ memory.db (distilled_qa): 0 hits for a host-b password
 
 ## 8. the asset this unblock gates (exists, ready to ship)
--rwxrwxr-x 1 nick nick 19387 Sep 13 06:20 scripts/voice-mic-probe.sh
+-rwxrwxr-x 1 the operator the operator 19387 Sep 13 06:20 scripts/voice-mic-probe.sh

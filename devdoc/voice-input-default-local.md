@@ -494,7 +494,7 @@ cmd/agent/cli_voice.go:842		}
 cmd/agent/cli_voice.go:848				return nil, fmt.Errorf("--client records from a device and takes no audio file (got %q)", positionals[0])
 cmd/agent/cli_voice.go:857				return nil, fmt.Errorf("--%s takes no audio-file argument (got %q): a file is transcribed by `%s <audio-file>`, and the microphone by a bare `%s`",
 cmd/agent/cli_voice.go:872	func voiceValidateOutPath(path string) error {
-cmd/agent/cli_voice.go:874			return fmt.Errorf("--%s requires a file path (e.g. --%s nick.wav)", voiceFlagOut, voiceFlagOut)
+cmd/agent/cli_voice.go:874			return fmt.Errorf("--%s requires a file path (e.g. --%s voice.wav)", voiceFlagOut, voiceFlagOut)
 cmd/agent/cli_voice.go:883			return fmt.Errorf("--%s %s is a directory — name the file to write", voiceFlagOut, path)
 cmd/agent/cli_voice.go:885		return fmt.Errorf("--%s %s already exists — remove it or name a new file "+
 cmd/agent/cli_voice.go:886			"(a capture must not overwrite a recording you kept)", voiceFlagOut, path)

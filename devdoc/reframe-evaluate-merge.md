@@ -2,7 +2,7 @@
 # Task Report: reframe + evaluate merged into ONE structured toolcall — `task(action=reframe)`
 
 **Branch**: `feat/reframe-verdict` (worktree `/home/user/workspace/gopi-reframe-verdict`)
-**Spec**: `briefings/SPEC-reframe-evaluate-merge.md` (nick 2026-09-10, 四档→三档 + POC)
+**Spec**: `briefings/SPEC-reframe-evaluate-merge.md` (the operator 2026-09-10, 四档→三档 + POC)
 **Task**: `01a088ef-c0d2-785e-8b63-d2357ca55c6a`
 
 ---

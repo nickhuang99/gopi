@@ -537,7 +537,7 @@ hunk was removed from `voiceResolveDevice` and the two new tests fail —
     error "unknown device \"default\" — available: pulse:@DEFAULT_SOURCE@, …" must name "alsa:default"
     error … must name "Device or resource busy"
     the system default is a real device — the error must not call it unknown
-FAIL	github.com/nick/gopi/cmd/agent
+FAIL	github.com/the operator/gopi/cmd/agent
 ```
 
 — then restored, and the whole `TestVoice*` set is green. On the real host the

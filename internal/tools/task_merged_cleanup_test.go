@@ -1,6 +1,6 @@
 package tools
 
-// Merged-branch cleanup tests (epic 2026-09-02, nick's finding — serve
+// Merged-branch cleanup tests (epic 2026-09-02, the operator's finding — serve
 // merges branches but never removes the worktree). Real-git fixture (merge
 // + worktree + branch -d semantics are git-truth — mocks cannot prove the
 // -d refusal for worktree-checked-out branches, porcelain dirt, or the

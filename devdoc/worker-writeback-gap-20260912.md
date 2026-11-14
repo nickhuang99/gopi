@@ -395,7 +395,7 @@ behind a live wrapper and the child self-report path is untouched code:
 
 ```
 go test -count=1 -run 'TestTaskRunChildNonZeroExitClosesWrapperRowE2E|TestTaskRunSurvivesClosedStdoutPipe|TestTaskRunNormalExitSingleRowE2E|TestTaskRunChildSIGKILLClosesWrapperRowE2E' ./cmd/agent/
-ok  	github.com/nick/gopi/cmd/agent	20.7s
+ok  	github.com/the operator/gopi/cmd/agent	20.7s
 ```
 
 ## E.5 Environment caveat — what was NOT verified, and why (2026-09-12 late session)

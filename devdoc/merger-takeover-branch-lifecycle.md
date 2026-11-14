@@ -184,7 +184,7 @@ $ go test ./cmd/agent/ -run 'MergerTakeover|PromptGate' -v
 --- PASS: TestMergerTakeoverPromptCoversEveryRequiredSection
 --- PASS: TestMergerTakeoverPromptIsEmbedded
 --- PASS: TestMergerTakeoverPromptGateIsCwdIndependent
-ok  	github.com/nick/gopi/cmd/agent	1.563s
+ok  	github.com/the operator/gopi/cmd/agent	1.563s
 $ go vet ./cmd/agent/ ; echo $?
 0
 ```

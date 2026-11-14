@@ -36,7 +36,7 @@ func TestSubcommandPathReadsGitGlobalOptions(t *testing.T) {
 		// command, so a wrapper's OPERAND ended it — and the ref-move fence never
 		// saw the subcommand behind the wrapper. Closed by OperatorWords +
 		// OperandWords and the consumption rule in GitHead.
-		{"a privileged wrapper's separated operand", []string{"sudo", "-u", "nick", "git", "push"}, "git push"},
+		{"a privileged wrapper's separated operand", []string{"sudo", "-u", "the operator", "git", "push"}, "git push"},
 		{"a privileged wrapper's group operand", []string{"sudo", "-g", "staff", "git", "push"}, "git push"},
 		{"env's assignment operand", []string{"env", "FOO=1", "git", "push"}, "git push"},
 		{"env's several assignment operands", []string{"env", "LC_ALL=C", "LANG=C", "git", "push"}, "git push"},
@@ -46,7 +46,7 @@ func TestSubcommandPathReadsGitGlobalOptions(t *testing.T) {
 		{"time's operand", []string{"time", "-p", "git", "push"}, "git push"},
 		{"a wrapper that takes no operand", []string{"nohup", "git", "push"}, "git push"},
 		{"xargs with its own operand", []string{"xargs", "-n", "1", "git", "push"}, "git push"},
-		{"stacked wrappers", []string{"sudo", "-u", "nick", "env", "FOO=1", "git", "push"}, "git push"},
+		{"stacked wrappers", []string{"sudo", "-u", "the operator", "env", "FOO=1", "git", "push"}, "git push"},
 		// ── AND THE DISCRIMINATOR STILL HOLDS ──────────────────────────────
 		// `git` here really IS an argument to another command, and the operand
 		// rule is exactly what tells the two apart: `echo` consumes nothing, so

@@ -124,7 +124,7 @@ reverted; the transcripts are committed under `.evid/`.
 $ go test ./cmd/agent/ -run TestServeLockRefusalDiagnosisNamesTheStrayHolderAndItsLiveness -count=1 -v
     serve_lock_diagnosis_liveness_test.go:339: the refusal carries no "lock-stray-holder:" line:
 --- FAIL: TestServeLockRefusalDiagnosisNamesTheStrayHolderAndItsLiveness (1.46s)
-FAIL	github.com/nick/gopi/cmd/agent	2.100s
+FAIL	github.com/the operator/gopi/cmd/agent	2.100s
 ```
 
 **Mutation B — the pid is listed, the liveness is dropped**:
@@ -159,7 +159,7 @@ FAIL	github.com/nick/gopi/cmd/agent	2.100s
 --- PASS: TestServeLockRefusalDiagnosisNamesTheStrayHolderAndItsLiveness (1.48s)
 --- PASS: TestServeLockRefusalDiagnosisReadsTheDescriptorNotThePath (0.05s)
 --- PASS: TestServeLockLivenessNoteReportsADeadHolder (0.64s)
-ok  	github.com/nick/gopi/cmd/agent	2.976s
+ok  	github.com/the operator/gopi/cmd/agent	2.976s
 ```
 
 ---
@@ -181,7 +181,7 @@ ok  	github.com/nick/gopi/cmd/agent	2.976s
   `TestKernelFlockRecordsDistinguishesUnreadableFromEmpty`,
   `TestInodeOfFileInfoExposesTheStatKey` — PASS.
 - Standards gates (Rules 16–21): `go test ./internal/standards/ -count=1` —
-  `ok github.com/nick/gopi/internal/standards 14.333s`.
+  `ok github.com/the operator/gopi/internal/standards 14.333s`.
 
 ### `go test ./cmd/agent/ -count=1` — NOT green, and NOT green on pristine master
 

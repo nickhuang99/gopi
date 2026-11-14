@@ -224,7 +224,7 @@ decision is the operator's.
   prints nothing. The 9 are pre-existing on master and untouched by this branch.
 - Focused suite from the branch tip:
   `go test -count=1 -run 'SystemPrompt|SessionBudget|Unlimited|ClockRule|CommitTaskItemReturn|EmissionContract|Prompt' ./internal/agent/`
-  → `ok github.com/nick/gopi/internal/agent 1.161s`.
+  → `ok github.com/the operator/gopi/internal/agent 1.161s`.
 - Density: `TestSystemPromptDensity` PASS with the assembled prompt at **4488**
   chars vs the gate's `>= 4500` failure condition (re-measured this session on
   all three budget modes).

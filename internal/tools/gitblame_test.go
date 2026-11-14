@@ -21,12 +21,12 @@ func TestParseGitBlamePorcelain(t *testing.T) {
 	hash1 := strings.Repeat("a", 40)
 	hash2 := strings.Repeat("b", 40)
 	out := hash1 + ` 1 1 2
-author nick
-author-mail <nick@example.com>
+author the operator
+author-mail <the operator@example.com>
 author-time 1750000000
 author-tz +0800
-committer nick
-committer-mail <nick@example.com>
+committer the operator
+committer-mail <the operator@example.com>
 committer-time 1750000000
 committer-tz +0800
 summary fix: memory update avoid duplicate write
@@ -35,12 +35,12 @@ filename internal/memory/store.go
 ` + hash1 + ` 2 2
 		meta := Metadata{}
 ` + hash2 + ` 3 3
-author nick
-author-mail <nick@example.com>
+author the operator
+author-mail <the operator@example.com>
 author-time 1740000000
 author-tz +0000
-committer nick
-committer-mail <nick@example.com>
+committer the operator
+committer-mail <the operator@example.com>
 committer-time 1740000000
 committer-tz +0000
 summary feat: add memory metadata tag
@@ -55,14 +55,14 @@ filename internal/memory/store.go
 		t.Fatalf("expected 3 line items, got %d", len(items))
 	}
 	want := []GitBlameLineItem{
-		{LineNo: 1, CommitHash: hash1, Author: "nick",
+		{LineNo: 1, CommitHash: hash1, Author: "the operator",
 			Timestamp: "2025-06-15T15:06:40Z", CommitMessage: "fix: memory update avoid duplicate write", CodeLine: "func UpdateMemory(...) error {"},
 		// Incremental header for the same commit must NOT wipe the fields.
 		// CodeLine keeps the file's own indentation (one porcelain marker
 		// tab is stripped).
-		{LineNo: 2, CommitHash: hash1, Author: "nick",
+		{LineNo: 2, CommitHash: hash1, Author: "the operator",
 			Timestamp: "2025-06-15T15:06:40Z", CommitMessage: "fix: memory update avoid duplicate write", CodeLine: "	meta := Metadata{}"},
-		{LineNo: 3, CommitHash: hash2, Author: "nick",
+		{LineNo: 3, CommitHash: hash2, Author: "the operator",
 			Timestamp: "2025-02-19T21:20:00Z", CommitMessage: "feat: add memory metadata tag", CodeLine: "return nil"},
 	}
 	for i, w := range want {

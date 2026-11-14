@@ -194,7 +194,7 @@ the two new files before the commit.
          stream=run-1791504883-3705588.json
   ```
 - **Ran** (Rule 31) — the nine cases, verbatim:
-  `go test ./internal/doubaostream/ -run 'TestSession|TestFinish|TestOpen' -count=1 -v` → **9/9 PASS** (`ok github.com/nick/gopi/internal/doubaostream 11.601s`).
+  `go test ./internal/doubaostream/ -run 'TestSession|TestFinish|TestOpen' -count=1 -v` → **9/9 PASS** (`ok github.com/the operator/gopi/internal/doubaostream 11.601s`).
 - **Result** — red→green, two assertions, each a temporary mutation of `session.go`
   in this worktree (restored byte-identically afterwards; sha256 of the restored
   file equals the pre-mutation hash):

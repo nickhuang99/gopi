@@ -4,7 +4,7 @@ package deepseek
 // whose error body contains "1214" (DeepSeek invalid-request-shape error).
 //
 // Root cause is NOT yet identified — prime suspect: messages shape after
-// compact/context folding (authorized incidents: nick 2026-12-14, two long
+// compact/context folding (authorized incidents: the operator 2026-12-14, two long
 // 1.5h+ sessions, first turn after a mid-session legal streaming round).
 // Static config cannot police runtime message-shape changes, hence this
 // runtime ladder. REMOVE THIS FILE once the root cause is fixed properly.

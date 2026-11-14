@@ -83,16 +83,16 @@ Description=GoPi profile hygiene — weekly sweep
 /home/user/work/GoPi/scripts/setup-scratch-home.sh:76:        echo "  Either use the tree itself (GOPI_TEST_SCRATCH_HOME=$SHM_DIR) or a path outside it." >&2
 === 4. residue at the runtime dir ROOT: was the dir itself used as a scratch root? ===
 total 0
-drwxr-xr-x  2 nick nick   40 Sep 14 22:38 .
-drwx------ 53 nick nick 1140 Sep 14 22:39 ..
+drwxr-xr-x  2 the operator the operator   40 Sep 14 22:38 .
+drwx------ 53 the operator the operator 1140 Sep 14 22:39 ..
 total 0
-drwxrwxr-x  2 nick nick   40 Sep 14 22:32 .
-drwx------ 53 nick nick 1140 Sep 14 22:39 ..
+drwxrwxr-x  2 the operator the operator   40 Sep 14 22:32 .
+drwx------ 53 the operator the operator 1140 Sep 14 22:39 ..
 total 0
-drwxrwxr-x  3 nick nick   80 Sep 12 22:45 .
-drwx------ 53 nick nick 1140 Sep 14 22:39 ..
-drwxr-xr-x  2 nick nick   40 Sep 12 22:45 fixture-suite-tools-run-
--rw-rw-r--  1 nick nick    0 Sep 12 22:45 x
+drwxrwxr-x  3 the operator the operator   80 Sep 12 22:45 .
+drwx------ 53 the operator the operator 1140 Sep 14 22:39 ..
+drwxr-xr-x  2 the operator the operator   40 Sep 12 22:45 fixture-suite-tools-run-
+-rw-rw-r--  1 the operator the operator    0 Sep 12 22:45 x
 --- mtimes of the residue (brackets the last sweep window) ---
 2026-09-14 22:32:32.961932545 +0800 /run/user/1000/mv-c
 2026-09-14 22:35:57.328619318 +0800 /run/user/1000/mv-p
@@ -133,5 +133,5 @@ tmp-ban-scratch-root.md
 tmpbin-test-scratch-closeout.md
 === 7. the two sockets' holders, once more (unchanged?) ===
 2
-lrwx------ 1 nick nick 64 Sep 12 04:15 3 -> socket:[40136]
+lrwx------ 1 the operator the operator 64 Sep 12 04:15 3 -> socket:[40136]
 === end p8 ===

@@ -44,7 +44,7 @@ annotation branch merged):
 
 ```
 $ go test ./internal/stylegate/ -count=1
-ok  	github.com/nick/gopi/internal/stylegate	12.858s
+ok  	github.com/the operator/gopi/internal/stylegate	12.858s
 ```
 
 Green. So the mode left in the tree is not "master is red" — it is "the next

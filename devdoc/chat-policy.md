@@ -158,7 +158,7 @@ The write arm maps a write TARGET into the same vocabulary — the tool verb the
 word per path segment, repo-relative: `write devdoc/chat-notes.md` →
 `[write, devdoc, chat-notes.md]`, so `allow write devdoc *` permits every file under
 `devdoc/`. A target outside the repository is spelled by its leading segments
-(`home nick …`), which no rule mentions, so the POSTURE answers — the safe direction
+(`home the operator …`), which no rule mentions, so the POSTURE answers — the safe direction
 for a path nobody wrote a rule for.
 
 The ONE gate kept beside the rules is the cleanup faces' authorization

@@ -83,7 +83,7 @@ marker there would be a lie. The marker is scoped to the no-manifest case.
 
 - `go build ./...` → OK (`CGO_ENABLED=0 go build ./...`).
 - `go test ./internal/tools -run 'TestAttachmentClaim|AttachIndex|Attachment'` →
-  `ok github.com/nick/gopi/internal/tools 34.8s`;
+  `ok github.com/the operator/gopi/internal/tools 34.8s`;
   `go test ./cmd/agent -run Attach` → `ok 3.1s` (the byte-identity guard).
 - **Red-proof**: with both wirings disabled (`if false &&`), the three positive
   tests FAIL and every negative test stays green; restored afterwards.

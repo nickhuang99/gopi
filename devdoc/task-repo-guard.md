@@ -1,11 +1,11 @@
 <!-- doc-class: normative -->
-# Task queue FIFO + priority + repo guardrail (nick 三问)
+# Task queue FIFO + priority + repo guardrail (the operator 三问)
 
 **Date:** 2026-02-26 · **Branch:** feat/task-id-collision · **Files:** internal/tools/tasks.go, internal/tools/tasks_repo_guard_test.go, cmd/agent/cli_tasks.go, internal/agent/loop.go, devdoc/task-repo-guard.md
 
 ## Context
 
-nick 三问：FIFO/FILO? latest 饿死 oldest? vcmi 跨项目任务无 repo 无优先级?
+the operator 三问：FIFO/FILO? latest 饿死 oldest? vcmi 跨项目任务无 repo 无优先级?
 诊断前两项已被 **M4.11 (308014a, t-1788087991) 解决**：TaskNextFiltered 显式 `ORDER BY COALESCE(priority,5) ASC, created_at ASC, id ASC`（FIFO + priority=1 插队），list 显示 `created_at DESC` 是设计非执行序。
 
 ## What was done this task (③ repo 护栏)

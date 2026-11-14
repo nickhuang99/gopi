@@ -98,7 +98,7 @@ important number in this document.
 
 | actor | the distinct need it has here | where it shows up |
 |---|---|---|
-| **the operator (nick)** — a single person who must accept work he did not read | to know that a decided standard cannot silently lapse, and to be able to *see* every deliberate exception rather than trust that none exists | the check census he can print on demand (§4.4); the recorded rejections (§4.9); the copy budget of the rule file (§6.4 F4) |
+| **the operator (the operator)** — a single person who must accept work he did not read | to know that a decided standard cannot silently lapse, and to be able to *see* every deliberate exception rather than trust that none exists | the check census he can print on demand (§4.4); the recorded rejections (§4.9); the copy budget of the rule file (§6.4 F4) |
 | **the agent (Bond)** — the worker that writes the change | to be told, in the run that introduced the problem, which line to fix and which alternative to use — and to have a visible, reviewed way to say "this one is correct, and here is why" | the failure text carries the fixture and the command to re-run (§4.10, §5); the inline escape mechanism (§4.2); the "don't re-add this" clause (§4.9) |
 | **the reviewer / verifier** — whoever stamps a change as verified | a cheap, *bounded*, reproducible verdict — not "the whole test suite passed" but "the packages this change touched were exercised, with this command" | the branch-scoped smoke command frozen in one place (§4.7); the merge-verdict language |
 | **the server node** — the machine that merges and rebuilds | that the checks run without a human present, inside the same test invocation the machine already runs, and that the checks themselves are never classified as "too expensive to run on the merge path" | the checks are ordinary tests in ordinary packages (§4.1, §4.3); the gate packages are excluded from heavy classification (§6.5 C3) |
@@ -571,7 +571,7 @@ Measured in this session, in **my own worktree at clean master `90e664e0`**:
 ```
 go test -count=1 -run TestStyleGate ./internal/stylegate/
 --- FAIL: TestStyleGate (24.50s)
-FAIL    github.com/nick/gopi/internal/stylegate   26.218s
+FAIL    github.com/the operator/gopi/internal/stylegate   26.218s
 ```
 
 The failures are six rules over their declared ceilings, each reported by the same

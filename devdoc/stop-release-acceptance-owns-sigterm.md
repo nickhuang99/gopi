@@ -104,7 +104,7 @@ $ go test ./cmd/agent -run 'TestWorkerStopReleasesOwnWorktree' -count=1 -v ; ech
     worker_stop_accept_test.go:125: release lines: own worktree released:
       feat/self-release-e2e (01a0962e-stop-release) freed for merge; branch kept
 --- PASS: TestWorkerStopReleasesOwnWorktree (0.13s)
-ok  	github.com/nick/gopi/cmd/agent	2.006s
+ok  	github.com/the operator/gopi/cmd/agent	2.006s
 0
 ```
 
@@ -112,7 +112,7 @@ Whole group, package verdict:
 
 ```
 $ go test ./cmd/agent -run 'TestWorkerStop' -count=1 > /tmp/g.txt 2>&1 ; echo $?
-ok  	github.com/nick/gopi/cmd/agent	12.885s
+ok  	github.com/the operator/gopi/cmd/agent	12.885s
 0        (--- FAIL: count = 0)
 ```
 

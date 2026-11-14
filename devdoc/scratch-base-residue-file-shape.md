@@ -18,10 +18,10 @@ scratch-gc role=cli-base base=/dev/shm removed=0 stale=6h0m0s disabled=false dry
 One line. Not one `would-remove`, not one verdict — while `/dev/shm` held
 
 ```
--rwxrwxr-x 1 nick nick 29005304 Sep 30 08:01 gopi-red2
--rwxrwxr-x 1 nick nick 29003704 Sep 30 08:02 gopi-red3
--rwxrwxr-x 1 nick nick 28404218 Sep 29 00:36 gopi-after-01a0e8c7
--rwxrwxr-x 1 nick nick 28396285 Sep 29 00:14 gopi-before-01a0e8c7
+-rwxrwxr-x 1 the operator the operator 29005304 Sep 30 08:01 gopi-red2
+-rwxrwxr-x 1 the operator the operator 29003704 Sep 30 08:02 gopi-red3
+-rwxrwxr-x 1 the operator the operator 28404218 Sep 29 00:36 gopi-after-01a0e8c7
+-rwxrwxr-x 1 the operator the operator 28396285 Sep 29 00:14 gopi-before-01a0e8c7
 ```
 
 — four 28 MB **regular files**, four names this system's own command wrote
@@ -130,10 +130,10 @@ decision — and widening a 1777-path predicate is not something this change doe
 $ go test ./internal/scratch/ -run 'TestBaseResidueSeam|TestBaseResidueKind|TestBaseResidueVerdict'
 --- FAIL: TestBaseResidueSeam_NameLayerAgreesWithCandidateLayer (1.89s)
 --- FAIL: TestBaseResidueVerdicts_ExplainsEveryInNamespaceEntry (3.37s)
-FAIL	github.com/nick/gopi/internal/scratch	9.353s
+FAIL	github.com/the operator/gopi/internal/scratch	9.353s
 
 $ go test ./internal/scratch/ -run 'TestBaseResidue|TestSuiteRun|TestSweepBase'   # fix in place
-ok  	github.com/nick/gopi/internal/scratch	34.579s
+ok  	github.com/the operator/gopi/internal/scratch	34.579s
 ```
 
 ```
@@ -197,7 +197,7 @@ $ ls -la /dev/shm/gopi-red2 /dev/shm/gopi-after-01a0e8c7 /dev/shm/gocache-01a0e8
 ls: cannot access '/dev/shm/gopi-red2': No such file or directory
 ls: cannot access '/dev/shm/gopi-after-01a0e8c7': No such file or directory
 ls: cannot access '/dev/shm/gocache-01a0e8c7': No such file or directory
-lrwxrwxrwx 1 nick nick 13 Oct  1 07:09 /dev/shm/gopi-link-01a0e8c7 -> /etc/hostname
+lrwxrwxrwx 1 the operator the operator 13 Oct  1 07:09 /dev/shm/gopi-link-01a0e8c7 -> /etc/hostname
 ```
 
 A directory, a regular file, a symlink and a foreign neighbour in one run: the

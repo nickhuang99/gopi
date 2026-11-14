@@ -70,10 +70,10 @@ listed as blocked rather than faked.
 | 42 | `voice_input` | `gopi tool voice_input talk.wav` | no — transcribes only with the speech model available |
 | 43 | `voice_input` | `gopi tool voice_input long-interview.wav --chunk 15` | no — transcribes only with the speech model available |
 | 44 | `voice_input` | `gopi tool voice_input --client --seconds 8` | no — needs a real capture device (pulse/alsa) |
-| 45 | `voice_input` | `gopi tool voice_input --client --seconds 8 --out nick.wav` | no — needs a real capture device (pulse/alsa) |
+| 45 | `voice_input` | `gopi tool voice_input --client --seconds 8 --out voice.wav` | no — needs a real capture device (pulse/alsa) |
 | 46 | `voice_input` | `gopi tool voice_input --client --self --seconds 8` | yes — typed by `TestToolsMaintenanceHelpSurfaceFormsAreTyped` |
 | 47 | `voice_input` | `gopi tool voice_input --client --self --seconds 8 --display :57` | yes — typed by `TestToolsMaintenanceHelpSurfaceFormsAreTyped` |
-| 48 | `voice_input` | `gopi tool voice_input --client --server-url http://192.0.2.6:7788 --seconds 8` | no — needs a peer voice server on the LAN |
+| 48 | `voice_input` | `gopi tool voice_input --client --server-url http://voice-host:7788 --seconds 8` | no — needs a peer voice server on the LAN |
 | 49 | `voice_input` | `gopi tool voice_input clip.ogg` | yes — typed by `TestToolsMaintenanceHelpSurfaceFormsAreTyped` |
 | 50 | `voice_input` | `gopi tool voice_input clip.pcm` | yes — typed by `TestToolsMaintenanceHelpSurfaceFormsAreTyped` |
 | 51 | `voice_input` | `gopi tool voice_input --server --stdio < clip.pcm` | no — needs the speech engine model on disk |

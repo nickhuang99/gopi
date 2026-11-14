@@ -39,7 +39,7 @@ run and `6.72` for the cold-cache and whole-package runs. Everything below is a
 
 ```
 $ go test ./internal/tools/ -run TestMergeConfigAnchorGate -count=1
-ok  	github.com/nick/gopi/internal/tools	9.790s                     # exit 0, wall 11 s
+ok  	github.com/the operator/gopi/internal/tools	9.790s                     # exit 0, wall 11 s
 $ GOPI_HEAVY_TESTS=1 go test ./internal/tools/ -run TestMergeConfigAnchorGate -count=1 -v
 13 PASS, 0 FAIL, 0 SKIP                                            # exit 0, wall 16 s
 ```
@@ -50,9 +50,9 @@ generated):
 
 ```
 $ go test ./internal/tools/ -run TestMergeConfigAnchorGate -count=1
-ok  	github.com/nick/gopi/internal/tools	85.510s                    # exit 0, no FAIL
+ok  	github.com/the operator/gopi/internal/tools	85.510s                    # exit 0, no FAIL
 $ GOPI_HEAVY_TESTS=1 go test ./internal/tools/ -run TestMergeConfigAnchorGate -count=1 -timeout 45m
-ok  	github.com/nick/gopi/internal/tools	86.795s                    # exit 0, 13 PASS / 0 FAIL
+ok  	github.com/the operator/gopi/internal/tools	86.795s                    # exit 0, 13 PASS / 0 FAIL
 ```
 
 85.5 s is 14 % of the 10 minute default. The spread between `9.790 s` and `85.510 s`
@@ -83,7 +83,7 @@ pays a full compile of the 102 KB generator, which is what a fresh CI box pays:
 
 ```
 $ GOCACHE=<empty dir> go test ./internal/tools/ -run TestMergeConfigAnchorGate -count=1
-ok  	github.com/nick/gopi/internal/tools	15.174s                     # exit 0, wall 35 s
+ok  	github.com/the operator/gopi/internal/tools	15.174s                     # exit 0, wall 35 s
 ```
 
 `15.174 s` against a 10 minute cap. Both runs are in this run's evidence directory
@@ -137,7 +137,7 @@ This is the defect the epic felt, and it is not this gate's:
 
 ```
 $ go test ./internal/tools/ -count=1                                # load average 6.72, 32 cores
-ok  	github.com/nick/gopi/internal/tools	397.080s                    # exit 0, wall 404 s
+ok  	github.com/the operator/gopi/internal/tools	397.080s                    # exit 0, wall 404 s
 ```
 
 **397 s at a modest load is 66 % of go's 10 minute default**, with zero headroom
@@ -149,7 +149,7 @@ records the measurement:
 > `internal/tools 600.3xx s` at load 42-63)
 
 A whole-package run crossing 10 minutes produces `panic: test timed out` and
-`FAIL github.com/nick/gopi/internal/tools 600.3xx s`, which reads exactly like a
+`FAIL github.com/the operator/gopi/internal/tools 600.3xx s`, which reads exactly like a
 failing assertion while proving nothing about the code.
 
 **That defect already has its owner, and the owner is not heavytest**: it is the
@@ -205,7 +205,7 @@ this task's acceptance names — matches **no test at all**:
 
 ```
 $ go test ./internal/tools/ -run 'HeavyTestInventory' -count=1
-ok  	github.com/nick/gopi/internal/tools	3.959s [no tests to run]      # exit 0
+ok  	github.com/the operator/gopi/internal/tools	3.959s [no tests to run]      # exit 0
 ```
 
 It exits 0 having executed nothing, which is the green Rule 36 and Rule 38 both

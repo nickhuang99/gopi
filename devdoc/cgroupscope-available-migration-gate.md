@@ -32,7 +32,7 @@ the low-level vet. On one host, at one instant:
 
 | caller's real position | same target | common ancestor | verdict |
 |---|---|---|---|
-| this run: `…/user@1000.service/app.slice/…/vte-spawn-….scope` | `…/user@1000.service/<scope>` | `…/user@1000.service` (nick:nick 755) | **OK** |
+| this run: `…/user@1000.service/app.slice/…/vte-spawn-….scope` | `…/user@1000.service/<scope>` | `…/user@1000.service` (the operator:the operator 755) | **OK** |
 | ssh: `…/user-1000.slice/session-3452.scope` | the same target | `…/user-1000.slice` (root:root 755) | **EACCES** |
 
 The two positions are **siblings** (a session scope and `user@1000.service` are
@@ -114,13 +114,13 @@ untouched:
 --- FAIL: TestNaiveSliceCheckIsNotTheMigrationGate
 ```
 
-Restored → `ok github.com/nick/gopi/internal/cgroupscope`.
+Restored → `ok github.com/the operator/gopi/internal/cgroupscope`.
 
 ## Verification
 
 - Build: `go build ./...` → OK (exit 0, no output).
 - Tests: `go test ./internal/cgroupscope/ -count=1` → ok
-  github.com/nick/gopi/internal/cgroupscope; host-dependent cases skipped with a
+  github.com/the operator/gopi/internal/cgroupscope; host-dependent cases skipped with a
   printed reason on this host by their own design (`t.Skip` + reason).
 - Ran: `go test ./internal/cgroupscope/ -run TestAvailable_AgreesWithEnter -count=1 -v`
   → `--- PASS: TestAvailable_AgreesWithEnter`, ok … 0.0xxs — from the in-manager
@@ -181,7 +181,7 @@ Restored → `ok github.com/nick/gopi/internal/cgroupscope`.
 
 - `go build ./...` → exit 0, no output.
 - `go test ./internal/cgroupscope/ -run TestAvailable_AgreesWithEnter -count=1` →
-  `ok github.com/nick/gopi/internal/cgroupscope` (PASS).
+  `ok github.com/the operator/gopi/internal/cgroupscope` (PASS).
 - Red proof observed, not asserted: with the naive access(slice) predicate
   spliced back into `Available`'s body alone, the same command printed
   `--- FAIL: TestAvailable_AgreesWithEnter` (quoting

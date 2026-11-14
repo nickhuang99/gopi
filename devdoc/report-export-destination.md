@@ -136,7 +136,7 @@ pre-fix behaviour) and both new test files in place:
 FAIL
 ```
 
-Green after the fix: `ok github.com/nick/gopi/internal/tools 8.243s`.
+Green after the fix: `ok github.com/the operator/gopi/internal/tools 8.243s`.
 
 ## Related, and deliberately out of scope
 

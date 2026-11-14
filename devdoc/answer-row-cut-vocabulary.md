@@ -65,7 +65,7 @@ does not claim a fix.
   master baseline).
 - Tests: `go test ./internal/lineedit/ -timeout 900s` → the package's pre-existing
   suite passes with the new file skipped:
-  `ok github.com/nick/gopi/internal/lineedit`.
+  `ok github.com/the operator/gopi/internal/lineedit`.
   RED proof on master (the new file alone, dropped into a `git archive master`
   tree at `/home/user/workspace/gopi-redbase-gi7m`):
   `go test ./internal/lineedit/ -run TestAnswerCut` →
@@ -294,14 +294,14 @@ Build:
   case runs).
 
 Tests:
-* `go test ./internal/lineedit/` → `ok github.com/nick/gopi/internal/lineedit 38.3s`
+* `go test ./internal/lineedit/` → `ok github.com/the operator/gopi/internal/lineedit 38.3s`
   (whole package, `-count=1`; includes the four cut cases, the emphasis family, the
   table grid family, the CJK marker-column case, the cell-loss rig and the A5B wrap
   guards).
 * `go test ./internal/lineedit/ -run TestAnswerCut -count=1` → `ok … 0.9s`.
 * `go test ./testsuite/ -run TestChatPTYCut_MidWordCutIsMarkedOnARealTerminal -v`
   → `--- PASS: TestChatPTYCut_MidWordCutIsMarkedOnARealTerminal (12.86s)`.
-* `go test ./cmd/agent/ -count=1` → **`ok github.com/nick/gopi/cmd/agent 499.024s`**
+* `go test ./cmd/agent/ -count=1` → **`ok github.com/the operator/gopi/cmd/agent 499.024s`**
   (exit 0, zero failures) — the whole package, and the leg that mattered: its FIRST
   run was `FAIL … 470.811s` with exactly one failure,
   `TestChatTurnDump_ReadsTheWholeAnswerOnARealPtyWithoutInput` (0.01s), which is the
@@ -326,9 +326,9 @@ Result:
 
 Evidence (self-filed):
 * `go test ./cmd/agent/ -count=1` → the RED leg and the GREEN leg, same session, same
-  tree: before the fold `FAIL github.com/nick/gopi/cmd/agent 470.811s` with
+  tree: before the fold `FAIL github.com/the operator/gopi/cmd/agent 470.811s` with
   `--- FAIL: TestChatTurnDump_ReadsTheWholeAnswerOnARealPtyWithoutInput (0.01s)`;
-  after it the whole package is `ok github.com/nick/gopi/cmd/agent 499.024s` (exit 0).
+  after it the whole package is `ok github.com/the operator/gopi/cmd/agent 499.024s` (exit 0).
   The 0.00–0.01s duration is the discriminator that rules out load: a wall-clock
   failure would not fail in a hundredth of a second.
 * Attribution of the FIRST full-package run (the one whose failure line `tail` ate):

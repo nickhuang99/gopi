@@ -25,7 +25,7 @@ The defect site is the **installed** copy, not the repo file. Checked directly:
 
 ```
 $ ls -la ~/.gopi/glm-night-watch.sh
--rwxr-xr-x 1 nick nick 13862 Sep 12 07:43 /home/user/.gopi/glm-night-watch.sh
+-rwxr-xr-x 1 the operator the operator 13862 Sep 12 07:43 /home/user/.gopi/glm-night-watch.sh
 $ diff -q ~/.gopi/glm-night-watch.sh scripts/glm-night-watch.sh
 IDENTICAL
 $ grep -n 'LAUNCHER_NAME' ~/.gopi/glm-night-watch.sh | head
@@ -122,7 +122,7 @@ $ CGO_ENABLED=0 go build -o bin/gopi ./cmd/agent/         # the repo's own bin, 
 $ go test ./internal/testutil/ -run TestGlmNightWatchOperatorPathStartsWorkersUnattended -v
     glm_night_watch_test.go:388: sandbox scratch root /dev/shm/gopi-test-scratch/... is off /
     --- PASS: TestGlmNightWatchOperatorPathStartsWorkersUnattended (5.07s)
-ok  	github.com/nick/gopi/internal/testutil	5.091s
+ok  	github.com/the operator/gopi/internal/testutil	5.091s
 ```
 
 Two workers announced their loop banner before claiming anything — so the operator path is intact while the
@@ -147,7 +147,7 @@ $ go test ./internal/testutil/ -run 'TestGlmNightWatch|TestWorkerStartupLogNameI
     --- PASS: .../refused   .../accepted   .../dry-run
 --- PASS: TestGlmNightWatchOperatorPathStartsWorkersUnattended (5.06s)
 --- PASS: TestWorkerStartupLogNameIsTheLaunchersFile (0.00s)
-ok  	github.com/nick/gopi/internal/testutil	7.134s
+ok  	github.com/the operator/gopi/internal/testutil	7.134s
 ```
 
 **6.2 RED-PROOF — the gate really catches launcher-identity divergence.** Two independent red-proofs. The
@@ -199,7 +199,7 @@ $ GOPI_BIN=$PWD/bin/gopi go test ./cmd/agent/ -run TestAgentSpawnGuard -v
 --- PASS: TestAgentSpawnGuardHelpIsNeverRefused (0.01s)
 --- PASS: TestAgentSpawnGuardWorkerTaskRunChainIsAllowed (1.33s)
 --- PASS: TestAgentSpawnGuardAllowsOperatorTerminalInsideAgentSession (3.07s)
-ok  	github.com/nick/gopi/cmd/agent	5.464s
+ok  	github.com/the operator/gopi/cmd/agent	5.464s
 ```
 
 ## 7. Build / lint / repo-level gates, and honest gaps

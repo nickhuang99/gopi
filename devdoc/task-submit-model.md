@@ -1,7 +1,7 @@
 <!-- doc-class: normative -->
 # Task Report: task submit --model 旗标 + 执行端 model 回填（task-submit-model）
 
-## 背景（nick 发现的问题）
+## 背景（the operator 发现的问题）
 `gopi task list` 里 human source 行显示 `model (unknown)`。根因：`task submit` CLI
 没有 `--model` 参数，human 行的 model 列恒空；auto 行有值是因为 taskregister
 在启动时从进程带 `a.Model` 写入（TaskNew）。

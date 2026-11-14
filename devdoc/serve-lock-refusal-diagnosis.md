@@ -132,14 +132,14 @@ while that pid was gone) and in the operator's own session ("held by pid
   --- PASS: TestServeLockRefusalPairsTheStampedPidWithItsLiveness (1.76s)
   --- PASS: TestServeLockKernelEvidenceReportsAnAbsentRecord (0.05s)
   --- PASS: TestServeLockRefusalReportsTheRefusedInodeAcrossProcesses (1.95s)
-  ok  github.com/nick/gopi/cmd/agent  5.550s
+  ok  github.com/the operator/gopi/cmd/agent  5.550s
   ```
   (The three SKIPs are the re-exec helper process bodies — each names the test that drives it.)
 - **Red proof 1 — liveness pairing reverted to the bare stamp**:
   ```
   --- FAIL: TestServeLockRefusalPairsTheStampedPidWithItsLiveness
       serve_lock_refusal_diagnosis_test.go:124: a dead stamped pid must be reported as no such process, got:
-  FAIL github.com/nick/gopi/cmd/agent 1.934s
+  FAIL github.com/the operator/gopi/cmd/agent 1.934s
   ```
 - **Red proof 2 — kernel evidence removed from the contention arm**:
   ```
@@ -207,7 +207,7 @@ failure isolates the liveness pairing:
     serve_lock_refusal_diagnosis_test.go:124: a dead stamped pid must be reported as no such process, got:
         serve lock held by a live daemon: … (lock …/001/.gopi/serve.lock held by pid 2497124) — refusing double-serve: …
         kernel lock table (inode 30027393): 1: FLOCK  ADVISORY  WRITE 2497099 103:05:30027393 0 EOF | live pids holding an fd on that inode: 2497099 (scan incomplete)
-FAIL	github.com/nick/gopi/cmd/agent	1.192s
+FAIL	github.com/the operator/gopi/cmd/agent	1.192s
 ```
 
 Same signature as red proof 1 and for the same reason: the stamp names **2497124**
@@ -258,7 +258,7 @@ green again afterwards.
           … (lock …/.gopi/serve.lock held by pid 2518159) …        ← the reaped corpse (the stamp)
           kernel lock table (inode 30029897): 24: FLOCK  ADVISORY  WRITE 2518050 …  ← the live
                                                                      descriptor-copy holder
-  FAIL	github.com/nick/gopi/cmd/agent	1.303s
+  FAIL	github.com/the operator/gopi/cmd/agent	1.303s
   ```
   Transcript committed at `.evid/redproof-liveness-accept2-20260917.log`; the
   worktree was restored with `git checkout -- cmd/agent/cli_tasks.go`.

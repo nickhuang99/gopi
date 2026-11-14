@@ -48,7 +48,7 @@ worktree's `.git` is a FILE:
 
 ```console
 $ ls -la .git; cat .git
--rw-rw-r-- 1 nick nick 82 Oct 13 16:01 .git
+-rw-rw-r-- 1 the operator the operator 82 Oct 13 16:01 .git
 gitdir: /home/user/work/GoPi/.git/worktrees/gopi-01a1339fcf367ebebc52917adf3cf2b9
 ```
 
@@ -123,7 +123,7 @@ The toolchain cannot stamp a shape it does not recognize; **the recipe can say
 what it built**. So the identity is supplied by the linker:
 
 ```bash
-CGO_ENABLED=0 go build -ldflags "-X github.com/nick/gopi/internal/version.Revision=$(git rev-parse HEAD)" -o bin/gopi ./cmd/agent/
+CGO_ENABLED=0 go build -ldflags "-X github.com/the operator/gopi/internal/version.Revision=$(git rev-parse HEAD)" -o bin/gopi ./cmd/agent/
 ```
 
 `internal/version` carries `Revision` (empty by default, so a plain build has no
@@ -139,7 +139,7 @@ v0.1.0
 go: go1.24.0
 platform: linux/amd64
 revision: b888461f2544e7baaca80048c3e9f265a2b180e8
-revision-source: self-declared by the build recipe (-ldflags github.com/nick/gopi/internal/version.Revision) — NOT attested by the toolchain, which writes vcs.revision only in a checkout it recognizes (a linked worktree gets none)
+revision-source: self-declared by the build recipe (-ldflags github.com/the operator/gopi/internal/version.Revision) — NOT attested by the toolchain, which writes vcs.revision only in a checkout it recognizes (a linked worktree gets none)
 
 $ git rev-parse HEAD
 b888461f2544e7baaca80048c3e9f265a2b180e8
@@ -159,7 +159,7 @@ $ /tmp/gopi-wrongx version | sed -n 4p
 revision: unavailable — this build carries no VCS stamp: …          # the recipe looked applied; it was not
 ```
 
-The module path above is wrong (`go.mod` says `module github.com/nick/gopi`) and the
+The module path above is wrong (`go.mod` says `module github.com/the operator/gopi`) and the
 build **exits 0**. So the recipe is only as good as its spelling, and the failure
 mode is the *same sentence* a plain build prints — the one arm where the reader has
 no signal that anything went wrong. Two habits remove the risk:

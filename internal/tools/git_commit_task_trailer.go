@@ -388,7 +388,7 @@ func gitCommitInPreamble(words []string) bool {
 	// preamble.
 	pre := words[:len(words)-1]
 	// Leading process wrappers (`sudo`, `env`, `nohup`), their own flag words AND
-	// the operands those flags consume (`sudo -u nick git …`) — the shared walk, so
+	// the operands those flags consume (`sudo -u the operator git …`) — the shared walk, so
 	// this reader cannot keep the operand-blind shape the ref guard was repaired of
 	// (task 01a19d8a).
 	head, ok := gitCommandHeadIdx(pre, gitCommandPreambleWords)

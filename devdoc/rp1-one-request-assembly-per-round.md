@@ -104,18 +104,18 @@ Ran:  go test ./cmd/agent/ -run 'TestRunPathPlainPromptIsVerbatim' -count=1
     plainprompt_firstmessage_test.go:328: the first user message is not the prompt verbatim with a live clock:
          got (154 chars): "PP-FIRSTMESSAGE-PLAIN-9c31[system] [t+0s] @ 2026-11-07T06:18:58+08:00 — +0s since your previous request. session budget: 0s elapsed of 1h0m0s (0% used)."
         want (26 chars): "PP-FIRSTMESSAGE-PLAIN-9c31"
-FAIL	github.com/nick/gopi/internal/agent	4.573s
+FAIL	github.com/the operator/gopi/internal/agent	4.573s
 
 === RUN   TestPlainPrompt_FirstRequestCarriesNoTurnStamp
 --- PASS: TestPlainPrompt_FirstRequestCarriesNoTurnStamp (0.00s)      ← the nil-clock arm cannot see it
 === RUN   TestPlainPrompt_TaskSurfaceKeepsOneStampPerRequest
 --- PASS: TestPlainPrompt_TaskSurfaceKeepsOneStampPerRequest (0.00s)
-ok  	github.com/nick/gopi/internal/agent	4.028s
+ok  	github.com/the operator/gopi/internal/agent	4.028s
 
     cli_runpath_boundary_rp1_test.go:298: the FIRST user message is not the prompt verbatim:
          got (158 chars): "RP1-BOUNDARY-PLAIN-PROMPT-4f2a[system] [t+0s] @ 2026-11-07T06:19:26+08:00 — +0s since your previous request. session budget: 0s elapsed of 1h0m0s (0% used)."
         want (30 chars): "RP1-BOUNDARY-PLAIN-PROMPT-4f2a"
-FAIL	github.com/nick/gopi/cmd/agent	7.969s
+FAIL	github.com/the operator/gopi/cmd/agent	7.969s
 ```
 
 The three lines that matter together: arm D and the out-of-process boundary arm

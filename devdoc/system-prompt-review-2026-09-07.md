@@ -1,7 +1,7 @@
 <!-- doc-class: normative -->
 # System Prompt Review — GoPi agent prompt vs Claude Code / Codex / leaks
 
-- **Reviewed file**: `~/work/claude/nick/system_prompt_review.txt` (363 lines = agent prompt lines 1–80, then GOPI.md appended as project context)
+- **Reviewed file**: `~/work/claude/the operator/system_prompt_review.txt` (363 lines = agent prompt lines 1–80, then GOPI.md appended as project context)
 - **Ground truth cross-checked against**: `internal/agent/loop.go` (`promptSections`, `claudeToolDefs`), `internal/agent/tasklist.go`
 - **Comparison corpora**: `~/work/Downloads/claude-code-system-prompts/system-prompts/` (690 fragments, v2.1.238), `~/work/Downloads/system_prompts_leaks/` (Codex/Cursor/GLM/etc.)
 - **Date**: 2026-09-07
@@ -171,7 +171,7 @@ Chinese glosses appear in `[ENGINEERING RULES]` and `[TOOL ROUTING]` memory item
 
 > the gateway of local network is at 192.0.2.1 with user/pass as **[REDACTED]** … two router HRC-RC3000 at 192.0.2.7 and 192.0.2.9 both with browser login pass as : **[REDACTED]**
 
-Line 45 additionally records that *"login password = WiFi password on both devices."* This is a home-network credential set committed to a repo, in a file whose purpose (a pasted CLI transcript) is unrelated to GoPi. Regardless of how the rest of devdoc is organized, this file should be removed from history and the credentials rotated. Note the irony: it is itself a transcript of a `claude -p --dangerously-skip-permissions` run. **[2026-09-07: file purged from git history via filter-repo; credentials rotated — nick to confirm.]**
+Line 45 additionally records that *"login password = WiFi password on both devices."* This is a home-network credential set committed to a repo, in a file whose purpose (a pasted CLI transcript) is unrelated to GoPi. Regardless of how the rest of devdoc is organized, this file should be removed from history and the credentials rotated. Note the irony: it is itself a transcript of a `claude -p --dangerously-skip-permissions` run. **[2026-09-07: file purged from git history via filter-repo; credentials rotated — the operator to confirm.]**
 
 ### 4.2 — No index
 

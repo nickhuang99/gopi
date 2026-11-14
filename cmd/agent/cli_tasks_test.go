@@ -143,7 +143,7 @@ func TestParseTasksErrors(t *testing.T) {
 	}
 }
 
-// TestTasksUsageIsAppendOnly guards nick's iron rules at the help-text
+// TestTasksUsageIsAppendOnly guards the operator's iron rules at the help-text
 // level: the usage documents the no-delete semantics, must NOT advertise a
 // delete subcommand — and since M4.5 neither `task new` nor `task next`
 // exist on the CLI surface (content immutable, run next is the queue entry).
@@ -278,7 +278,7 @@ func TestTasksCLIFullFlow(t *testing.T) {
 
 // TestTaskRunBriefingComposesSummaryAndPayload: `task run` feeds the child
 // BOTH the summary and the payload — a non-empty payload must no longer
-// suppress the summary (nick, 2026-09-02: a submitter often puts the
+// suppress the summary (the operator, 2026-09-02: a submitter often puts the
 // essential one-line intent in the summary and the detail in the payload,
 // omitting the intent from the payload to avoid repetition; the old
 // single-source briefing dropped the summary entirely). The composed form

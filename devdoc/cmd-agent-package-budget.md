@@ -20,7 +20,7 @@ and neither of them is a hang:
 
 | # | configuration | wall / verdict | what it actually is |
 |---|---|---|---|
-| **M1** | whole package, **credential env stripped** (`env -u DEEPSEEK_API_KEY -u ANTHROPIC_AUTH_TOKEN`), Go's default 10m | **13.9 s**, `FAIL github.com/nick/gopi/cmd/agent 13.963s`, **no `--- FAIL:` line**, no panic, 46 of 1129 tests ever ran | the test BINARY dies mid-suite: `TestIsBrewSubcommand` calls `isBrewSubcommand(["brew"])`, which **executes** the subcommand, whose credential resolution fails and calls **`os.Exit(1)`** |
+| **M1** | whole package, **credential env stripped** (`env -u DEEPSEEK_API_KEY -u ANTHROPIC_AUTH_TOKEN`), Go's default 10m | **13.9 s**, `FAIL github.com/the operator/gopi/cmd/agent 13.963s`, **no `--- FAIL:` line**, no panic, 46 of 1129 tests ever ran | the test BINARY dies mid-suite: `TestIsBrewSubcommand` calls `isBrewSubcommand(["brew"])`, which **executes** the subcommand, whose credential resolution fails and calls **`os.Exit(1)`** |
 | **M2/M3** | identical, same env | **10.1 s**, same anonymous shape, 46 tests | deterministic — not a flake, not a timeout |
 | **M5** | whole package, **ambient env (credentials present)**, Go's default 10m | **447.354 s**, exit 1, **5 NAMED `--- FAIL:` tests**, `1129/1129` terminated | the real, honest package cost — 152 s UNDER Go's 600 s default |
 | **M6** | same as M5, **after the classification this branch lands** | see §5 | the default (smoke) path, heavy tests skipping themselves |
@@ -89,7 +89,7 @@ nice -n 10 go test ./cmd/agent/ -count=1 -json > /home/user/workspace/_evid/cmd-
 **Per-package wall time — 447.354 s**, from the stream's own package event:
 
 ```
-{"Action":"fail","Package":"github.com/nick/gopi/cmd/agent","Elapsed":447.354}
+{"Action":"fail","Package":"github.com/the operator/gopi/cmd/agent","Elapsed":447.354}
 ```
 
 1129 top-level tests, **1129 terminated** (`run` events without a terminal
@@ -273,7 +273,7 @@ so the classification cannot drift from the code.
 $ go build ./...                                              -> exit 0 (BUILD_OK)
 $ go vet ./cmd/agent/                                         -> exit 0
 $ go test ./internal/standards/ -run 'TestHeavy' -count=1
-ok  github.com/nick/gopi/internal/standards  0.905s            # 123 rows ↔ 123 call sites
+ok  github.com/the operator/gopi/internal/standards  0.905s            # 123 rows ↔ 123 call sites
 ```
 
 **Drift report on the measured stream** (every slow test accounted for):
@@ -302,7 +302,7 @@ ALL 21 classified tests, in one run:**
 ```
 $ GOPI_HUMAN_TERMINAL=1 GOPI_HEAVY_TESTS=1 go test ./cmd/agent/ -run '<the 21>' -count=1 -v
 … 21 × "--- PASS: Test…"   # the then-21-row set; 20 rows remain after the flake revert
-ok  github.com/nick/gopi/cmd/agent  161.517s        EXIT=0
+ok  github.com/the operator/gopi/cmd/agent  161.517s        EXIT=0
 $ grep -cE '^--- PASS' classified-on.log   -> 21
 $ grep -cE '^--- (SKIP|FAIL)' …            -> 0
 ```
@@ -320,7 +320,7 @@ silent.
 $ go test ./cmd/agent/ -run '^(TestWorkerIdleExitZeroWaitsForever|TestWorkerServesEachTaskInItsOwnRepoAcrossConsecutiveRounds)$' -count=1 -v
 --- SKIP: TestWorkerIdleExitZeroWaitsForever  (HEAVY TEST SKIPPED (set GOPI_HEAVY_TESTS=1 to run): device-exec: …)
 --- SKIP: TestWorkerServesEachTaskInItsOwnRepoAcrossConsecutiveRounds  (… same …)
-ok  github.com/nick/gopi/cmd/agent  1.545s
+ok  github.com/the operator/gopi/cmd/agent  1.545s
 ```
 
 Both halves are OBSERVED, and a skip is never silent — it logs a greppable line
@@ -381,7 +381,7 @@ $ tail -2 /home/user/workspace/_evid/cmd-agent-budget/m6.log                    
 EXIT=1
  10:20:35 up 67 days, 12:47,  load average: 1.67, 2.04, 2.28
 $ # package event
-{"Action":"fail","Package":"github.com/nick/gopi/cmd/agent","Elapsed":382.513}
+{"Action":"fail","Package":"github.com/the operator/gopi/cmd/agent","Elapsed":382.513}
 ```
 
 **−64.8 s (−14.5 %) with no `-timeout` override, both runs on Go's default 10 m
@@ -735,12 +735,12 @@ Recovery (Rule 6d): the branch is worktree-shared with the main repo
 
 - **Anonymous FAIL is a binary exit, not a timeout**: `grep -c 'panic: test timed out'` on the M1 stream → **0**; no `"Action":"fail"` event carries a `Test` field in `/home/user/workspace/_evid/cmd-agent-budget/m1.json`; 46 `"Action":"run"` events vs 1129 in `/home/user/workspace/_evid/cmd-agent-budget/m5.json`.
 - **The named cause**: `env -u DEEPSEEK_API_KEY -u ANTHROPIC_AUTH_TOKEN go test ./cmd/agent/ -run '^TestIsBrewSubcommand$' -count=1 -json` → package-level `fail 0.955` with the last output line `gopi brew: brew: deepseek: ANTHROPIC_AUTH_TOKEN not set (env, DEEPSEEK_API_KEY, or ~/.gopi/settings.json)`; the same run with ambient env → `pass 0.557`.
-- **Whole-package wall** (M5): `{"Action":"fail","Package":"github.com/nick/gopi/cmd/agent","Elapsed":447.354}` in `/home/user/workspace/_evid/cmd-agent-budget/m5.json`; `grep -c '"Action":"panic"'` → 0.
+- **Whole-package wall** (M5): `{"Action":"fail","Package":"github.com/the operator/gopi/cmd/agent","Elapsed":447.354}` in `/home/user/workspace/_evid/cmd-agent-budget/m5.json`; `grep -c '"Action":"panic"'` → 0.
 - **Timeouts still panic in this package** (so the M1 shape is distinguishable by construction): `go test ./cmd/agent/ -run '^TestWorkerDrainStillLetsTheRoundFinish$' -timeout 5s -json` → `grep -c 'panic: test timed out' /home/user/workspace/_evid/cmd-agent-budget/timeout_probe.json` → **1**.
 - **Ledger first-open probe**: `/home/user/workspace/_evid/cmd-agent-budget/probe.out` phase lines `enableWAL wall=0.149s` (49 samples blocked-in `fsync`, wchan `jbd2_log_wait_commit`), `ensureSchema wall=0.059s` (17 samples), on `fs-type 0xef53 (device-backed)`, `sync=NORMAL`.
 - **Build/vet/gate**: `go build ./...` → exit 0; `go vet ./cmd/agent/` → exit 0; `go test ./internal/standards/ -run 'TestHeavy' -count=1` → `ok … 0.905s` (123 rows ↔ 123 call sites).
 - **Drift**: `scripts/heavy-drift-report.sh /home/user/workspace/_evid/cmd-agent-budget/m5.json` → `19 test(s) at or above it, 0 without a heavy-tests.tsv row`.
-- **Both halves of the switch**: OFF → `--- SKIP: TestWorkerIdleExitZeroWaitsForever`, `--- SKIP: TestWorkerServesEachTaskInItsOwnRepoAcrossConsecutiveRounds`, `ok … 1.545s`; ON → `grep -cE '^--- PASS'` on `classified-on.log` = **21**, `grep -cE '^--- (SKIP|FAIL)'` = **0**, `ok github.com/nick/gopi/cmd/agent 161.517s`, `EXIT=0`.
+- **Both halves of the switch**: OFF → `--- SKIP: TestWorkerIdleExitZeroWaitsForever`, `--- SKIP: TestWorkerServesEachTaskInItsOwnRepoAcrossConsecutiveRounds`, `ok … 1.545s`; ON → `grep -cE '^--- PASS'` on `classified-on.log` = **21**, `grep -cE '^--- (SKIP|FAIL)'` = **0**, `ok github.com/the operator/gopi/cmd/agent 161.517s`, `EXIT=0`.
 - **Rule 30**: `git status --porcelain` in the worktree prints nothing at close-out.
 - **M6 → M7 replication**: same command, same env, Go default 10 m → `{"Action":"fail","Package":"…/cmd/agent","Elapsed":382.513}` (M6) vs `382.769` (M7); `panic` events 0 in both; terminated tests 1129/1129 (M6) and 1363/1363 (M7).
 - **The 3 named FAILs of M7**: `TestCLICodeSearchSelfHealsCorruptIndex` (0.02 s, whole-package run) → in isolation on this branch `go test ./cmd/agent/ -run '^TestCLICodeSearchSelfHealsCorruptIndex$' -count=1` → `ok 0.550s`; the other two → control on pristine master `2fdc65e4` `-run '^(TestCompletionCandidateSetsCoverTopLevel|TestTopLevelHelpCoversEveryDispatchedSubcommand)$'` → `--- FAIL:` each, `FAIL 0.934s`.

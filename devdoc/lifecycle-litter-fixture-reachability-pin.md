@@ -35,7 +35,7 @@ $ go test -count=1 -run '^TestTaskLifecycleTick_DisposesTheNeverStartedAutoRow$'
         [gopi] [lifecycle] resident task-lifecycle sweep (stale report + confirmed-zombie disposal + finish cleanup) active on this process; every 10m0s
         [worker] [lifecycle] stale reported=2 disposed=0 sink=cat >> /dev/shm/suite-cmd-agent-run-…/notify.log
 FAIL
-FAIL	github.com/nick/gopi/cmd/agent	4.475s
+FAIL	github.com/the operator/gopi/cmd/agent	4.475s
 ```
 
 `stale reported=2 disposed=0` is the peer's symptom verbatim: the stale-report
@@ -52,7 +52,7 @@ afterwards.
 
 ```
 # master's tree untouched            → FAIL   (the run above)
-# master's tree, prefix flipped only → ok     github.com/nick/gopi/cmd/agent	3.549s
+# master's tree, prefix flipped only → ok     github.com/the operator/gopi/cmd/agent	3.549s
 ```
 
 The mechanism, line-verified:
@@ -192,9 +192,9 @@ $ gofmt -l cmd/agent/task_lifecycle_litter_test.go internal/tools/taskzombie_ext
 
 ```
 $ go test -count=1 -run '^TestTaskLifecycleTick_DisposesTheNeverStartedAutoRow$' ./cmd/agent   # ×3
-ok  	github.com/nick/gopi/cmd/agent	4.211s
-ok  	github.com/nick/gopi/cmd/agent	4.007s
-ok  	github.com/nick/gopi/cmd/agent	3.732s
+ok  	github.com/the operator/gopi/cmd/agent	4.211s
+ok  	github.com/the operator/gopi/cmd/agent	4.007s
+ok  	github.com/the operator/gopi/cmd/agent	3.732s
 ```
 
 (3/3, the acceptance criterion.)
@@ -219,7 +219,7 @@ TIP=bbf9649a3346083d4dc0f4c659d2b67f23d7ec04
   $ go test -count=1 -run 'TestChatVoice_TheRunOfFailuresEndsTheMode|TestChatCookedFallback_NonTTY|TestRunPathPlainPromptIsVerbatim' ./cmd/agent
   --- FAIL: TestChatCookedFallback_NonTTY (15.44s)
   --- FAIL: TestRunPathPlainPromptIsVerbatim (0.31s)
-  FAIL	github.com/nick/gopi/cmd/agent	19.931s
+  FAIL	github.com/the operator/gopi/cmd/agent	19.931s
   ```
 
   None of the three names a file this diff touches, and the acceptance test —
@@ -248,7 +248,7 @@ $ go test -count=1 -run 'TaskLifecycleLitter|TaskLifecycleTick_DisposesTheNeverS
 ### Result
 
 1. `--- FAIL … disposed=0` — master is red, the premise refuted (raw output above).
-2. `ok github.com/nick/gopi/cmd/agent 3.549s` — one variable flips the colour,
+2. `ok github.com/the operator/gopi/cmd/agent 3.549s` — one variable flips the colour,
    so the mechanism is the fixture's summary, not the predicate.
 3. `YES` for `71577959e`, `YES` for `29af4042a` — the peer's master is already
    repaired; nothing more needs to land there.
@@ -270,7 +270,7 @@ this run's own session evidence
 * master red, raw: `go test -count=1 -run '^TestTaskLifecycleTick_DisposesTheNeverStartedAutoRow$' ./cmd/agent`
   in `/home/user/workspace/gopi-master-repro-01a12b79` (detached at `a3a31da42`)
   → `--- FAIL … task_lifecycle_litter_test.go:95 … stale reported=2 disposed=0`, exit 1.
-* one-variable flip → `ok github.com/nick/gopi/cmd/agent 3.549s`, exit 0; tree
+* one-variable flip → `ok github.com/the operator/gopi/cmd/agent 3.549s`, exit 0; tree
   restored, `git status --porcelain` empty in that worktree afterwards.
 * ancestry: `git merge-base --is-ancestor 29af4042a master` → exit 1 (absent);
   same against HEAD → exit 0 (present). `peer1/master` at `ec7342d72`, both
@@ -289,6 +289,6 @@ this run's own session evidence
   (elapsed 380.119); `cmd/agent` failures were `TestChatVoice_TheRunOfFailuresEndsTheMode`,
   `TestChatCookedFallback_NonTTY`, `TestRunPathPlainPromptIsVerbatim`, none of
   which names a file this diff touches. The last two reproduced on master's own
-  tree (unmodified) → `FAIL github.com/nick/gopi/cmd/agent 19.931s`.
+  tree (unmodified) → `FAIL github.com/the operator/gopi/cmd/agent 19.931s`.
 * `git show --stat HEAD` — 5 files: the fixture, the exported predicate, the
   mirror test, the report, the index row.

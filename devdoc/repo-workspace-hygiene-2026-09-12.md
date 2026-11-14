@@ -204,7 +204,7 @@ Commands run in `~/workspace/gopi-ws-hygiene` on `chore/workspace-hygiene`.
   `report-*.md` citation remains as a live path claim.
 - **Full suite (load-sensitive — read this before calling the suite red)**:
   `CGO_ENABLED=0 go test -count=1 ./...` → everything green **except**
-  `FAIL github.com/nick/gopi/internal/tools 600.3xx s`, which is Go's
+  `FAIL github.com/the operator/gopi/internal/tools 600.3xx s`, which is Go's
   **default per-package timeout** (600s), not an assertion failure: the dump
   shows a `panic: test timed out` with ~20 idle `database/sql.…
   connectionOpener` goroutines. Proven environmental, twice over:

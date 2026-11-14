@@ -169,7 +169,7 @@ fixed at the source, and the test that found it stays:
     cli_annotate_test.go:467: the anchored cell (20,32)-(30,64) contains only 0 of 75 glyph pixels (floor 0.80)
 
 # GREEN — margin restored:
-ok  github.com/nick/gopi/cmd/agent
+ok  github.com/the operator/gopi/cmd/agent
 ```
 
 ### The scrollback band is declared, never inferred

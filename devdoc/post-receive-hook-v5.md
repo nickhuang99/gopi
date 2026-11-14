@@ -1,11 +1,11 @@
 <!-- doc-class: historical -->
-# Task Report: post-receive hook v5 — direct `git merge` per nick's final design
+# Task Report: post-receive hook v5 — direct `git merge` per the operator's final design
 
 Epic: hook should first call gopi with token-free-hard-logic to execute simple git
 merge and cleanup — "most merge is no brainer. just git merge branch-name and done".
 Node: peer1 · Date: 2026-09-01 23:05–23:20
 
-## Design (nick's verdict, zero ceremony)
+## Design (the operator's verdict, zero ceremony)
 
 On every push that updates a **non-master** branch, the hook merges it into master
 RIGHT NOW. Git is the sole merge decision maker (ort built in):
@@ -69,7 +69,7 @@ deletion-push replay (newrev=zeros) → zero merge traces; `hp-unique-test` repl
   executed — executing the real backlog is t-1788275343 / t-1788275389 (dispatched).
 - ssh-push (hp remote) path not live-fired from this session (no key); file-path
   push is protocol-identical (receive-pack), per hook-investigation-report.md §4.
-- `gopi task merge` CLI subcommand (nick's alternate direction "why is it not a
+- `gopi task merge` CLI subcommand (the operator's alternate direction "why is it not a
   gopi cli interface?") — separate task #3128f17f already in flight; the hook
   works standalone without it.
 

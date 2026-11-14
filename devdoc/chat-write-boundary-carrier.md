@@ -103,9 +103,9 @@ $ grep -rn "func runWeb\b" --include=*.go cmd/agent     # 只有一个 runWeb，
 ```
 --- FAIL: TestChatCarrierWebRunsTheWriteTheConsoleAsksAbout (0.00s)
     chat_carrier_boundary_test.go:86: the WEB turn still got a boundary answer instead of running:
-FAIL	github.com/nick/gopi/internal/agent
+FAIL	github.com/the operator/gopi/internal/agent
 ```
-复原后：`ok github.com/nick/gopi/internal/agent`，且
+复原后：`ok github.com/the operator/gopi/internal/agent`，且
 `test "$(git hash-object internal/tools/chat_policy_carrier.go)" = "$(git hash-object /tmp/carrier.bak)"` → `restore-identical`。
 
 ## 5. Rule 31 真跑（不是单测）

@@ -76,9 +76,9 @@ root for the same reason; this report follows that precedent.
   that older base is superseded by the `fa12d97f` baseline above, which is current master.)
 - **After** — the same two gates (branch, close-out run):
   `go test -count=1 ./internal/standards/ -run 'TestDocManifestCoversEveryDevdocFile|TestDocClassBannerMatchesManifest'`
-  → `ok  github.com/nick/gopi/internal/standards  3.249s`
+  → `ok  github.com/the operator/gopi/internal/standards  3.249s`
 - **After** — the whole package: `go test -count=1 ./internal/standards/` →
-  `ok  github.com/nick/gopi/internal/standards  61.203s` (no doc-class failure)
+  `ok  github.com/the operator/gopi/internal/standards  61.203s` (no doc-class failure)
 - **Idempotence** (the stability criterion): consecutive `classify.py` + `banner.py` runs at the
   committed state produce **zero git diff** — measured by hashing the manifest across a re-run:
   `sha256(devdoc/DOC-INDEX.tsv)` = `3bf4cc4e45de6bd136f47785357475d0d9034103f3ed3fd878e0ed5e7d9cc964`

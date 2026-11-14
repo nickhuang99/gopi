@@ -24,7 +24,7 @@
   → proves contributions from each side survived, nothing was wholesale-taken.
 - Build: `go build ./...` → exit 0.
 - Touched-package tests: `go test ./internal/testutil/ -run TestMemoryBaseNameMatchesTheSetupScript -v`
-  → PASS (`ok github.com/nick/gopi/internal/testutil 4.872s`).
+  → PASS (`ok github.com/the operator/gopi/internal/testutil 4.872s`).
 - `gofmt` clean, `git diff --check` clean.
 
 ## Not Done (honest)

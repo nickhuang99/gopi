@@ -115,7 +115,7 @@ them.
   ./internal/tools'` → see the task report's `## Verification` for the run's own
   transcript.
 - Ran: `CGO_ENABLED=0 go test ./cmd/agent/ -count=1 -run 'TestResumeReclaimsTheWorktreeItFinishedIn|TestResumeKeepsADirtyWorktree|TestResumeRescuesUntrackedResidueBeforeRemoval|TestResumeTailDeclaresOwnershipBeforeTheSessionStarts' -v` <!-- selector-ok: RECORD of the run that produced this report, quoted verbatim. All four selectors died with the finish-cleanup mechanism (`58b5618b refactor(task): retire the finish-cleanup mechanism (slice 3/4)`), so they cannot match again; this page is the record of that delivery, not a recipe. -->
-  → `--- PASS` ×4, `ok github.com/nick/gopi/cmd/agent 7.664s`
+  → `--- PASS` ×4, `ok github.com/the operator/gopi/cmd/agent 7.664s`
 - Red→green (each arm proved to fail without its own fix):
   - rescue call disabled (`if false && …finishCleanupDirtyReasonIsResidue…`) →
     `--- FAIL: TestResumeRescuesUntrackedResidueBeforeRemoval`

@@ -150,8 +150,8 @@ completion     84,463
 ```
 $ go build ./...                                        # BUILD ok
 $ go test -count=1 ./internal/pricing/ ./internal/gopilog/
-ok      github.com/nick/gopi/internal/pricing   0.077s
-ok      github.com/nick/gopi/internal/gopilog   2.259s   # golden 未改
+ok      github.com/the operator/gopi/internal/pricing   0.077s
+ok      github.com/the operator/gopi/internal/gopilog   2.259s   # golden 未改
 ```
 
 新增 5 个测试（`internal/pricing/deepseek_v41_test.go`）全绿：

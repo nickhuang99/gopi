@@ -12,17 +12,17 @@ $ CGO_ENABLED=0 go test ./cmd/agent/ -run TestChatInject_EscapeByNameReachesTheT
 PASS
 suite goroutine sweep: parked repository goroutines: 2
 suite goroutine sweep: goroutine 37 [runnable]:
-  github.com/nick/gopi/internal/lineedit.(*Terminal).startWinch.func1()
+  github.com/the operator/gopi/internal/lineedit.(*Terminal).startWinch.func1()
         /…/internal/lineedit/raw.go:362
-  created by github.com/nick/gopi/internal/lineedit.(*Terminal).startWinch (raw.go:360)
+  created by github.com/the operator/gopi/internal/lineedit.(*Terminal).startWinch (raw.go:360)
 suite goroutine sweep: goroutine 38 [runnable]:
-  github.com/nick/gopi/internal/lineedit.(*Terminal).ReadEvent(...)
+  github.com/the operator/gopi/internal/lineedit.(*Terminal).ReadEvent(...)
         /…/internal/lineedit/raw.go:479
-  github.com/nick/gopi/internal/lineedit.(*Injector).ReadEvent(...)  /…/internal/lineedit/inject.go:656
-  github.com/nick/gopi/internal/lineedit.(*Editor).Run(…)             /…/internal/lineedit/editor.go:1361
-  github.com/nick/gopi/cmd/agent.newInjectPtyGrid.func1()
+  github.com/the operator/gopi/internal/lineedit.(*Injector).ReadEvent(...)  /…/internal/lineedit/inject.go:656
+  github.com/the operator/gopi/internal/lineedit.(*Editor).Run(…)             /…/internal/lineedit/editor.go:1361
+  github.com/the operator/gopi/cmd/agent.newInjectPtyGrid.func1()
         /…/cmd/agent/chat_inject_pty_test.go:94
-FAIL	github.com/nick/gopi/cmd/agent	6.083s
+FAIL	github.com/the operator/gopi/cmd/agent	6.083s
 ```
 
 It was **intermittent**: 6 consecutive `-count=5` batches each carried one red bit.
@@ -147,7 +147,7 @@ here rather than implied.
   --- PASS: TestChatInject_KeysReachTheEditorOnARealPty (0.49s)
   --- PASS: TestChatInject_EscapeByNameReachesTheTurnSeam (0.28s)
   suite goroutine sweep: parked repository goroutines: 0
-  ok  	github.com/nick/gopi/cmd/agent	7.353s
+  ok  	github.com/the operator/gopi/cmd/agent	7.353s
   ```
 
   and `-run 'TestChatInject|TestPrefetchGoroutineSettleGap' -count=5` → `ok`,
@@ -179,5 +179,5 @@ here rather than implied.
 
 - Pre-fix sweep line, observed verbatim: `suite goroutine sweep: parked repository goroutines: 2` with `startWinch.func1 (raw.go:362)` and `Terminal.ReadEvent (raw.go:479)`.
 - The spin, observed with a temporary poll trace (`pollDbg`): `POLLDBG n=1 in=0 winch=32 wakeIdx=2 fds=[{7 1 0} {8 1 32} {10 1 32}] wake=true closed=true` — POLLNVAL on the descriptors `Close` had just closed, round after round, while `GRIDDBG loopexit` printed only after `pair.Master.Close()`.
-- Sweep red-proof, observed: a temporary test leaking one goroutine gave `suite goroutine sweep: parked repository goroutines: 1` naming `zz_sweep_redproof_temp_test.go:8` and `FAIL github.com/nick/gopi/cmd/agent` (file deleted afterwards).
+- Sweep red-proof, observed: a temporary test leaking one goroutine gave `suite goroutine sweep: parked repository goroutines: 1` naming `zz_sweep_redproof_temp_test.go:8` and `FAIL github.com/the operator/gopi/cmd/agent` (file deleted afterwards).
 - `gofmt -l` on the three touched files → clean (`internal/lineedit/paste_envelope_test.go` is unformatted on master, untouched by this task).

@@ -147,7 +147,7 @@ incident; and the operator's own input log records the deliberate kill:
 `~/.hermes/hot_notes/20260912_040123_ec45a1.md` (the 04:05–05:08 session's own memory note)
 independently states the cause as established:
 
-> "nick 揭示 04:12 事件真因：**是他 kill hermes 连带杀死了 6 个 worker**（机制已验：worker 是裸进程
+> "the operator 揭示 04:12 事件真因：**是他 kill hermes 连带杀死了 6 个 worker**（机制已验：worker 是裸进程
 > cli_tasks_worker.go:9 "A worker is a PLAIN process"，我用的 `setsid nohup` 只脱离会话不脱离进程树
 > /cgroup → hermes 被杀 → 整条链 SIGTERM → 6 个 worker 同时优雅退出 terminated received)".
 
@@ -186,7 +186,7 @@ systemctl is-active systemd-oomd                                                
 ```
 journalctl --since "2026-09-12 04:00:00" --until "2026-09-12 04:20:00" | grep -iE "Started|Stopped|scope|\.service|\.socket"
 2026-09-12T04:00:10 systemd[1]: motd-news.service: Deactivated successfully.
-2026-09-12T04:00:40 systemd[1]: Started Session 18793 of User nick.
+2026-09-12T04:00:40 systemd[1]: Started Session 18793 of User the operator.
 2026-09-12T04:18:27 systemd[1]: session-18700.scope: Deactivated successfully.
 2026-09-12T04:18:27 systemd[1]: session-18700.scope: Consumed 19h 53min 49.616s CPU time.
 ```
@@ -196,7 +196,7 @@ list-units --type=scope` shows only `init.scope` + `session-*.scope` (no transie
 **(d) login-session teardown — present but re-opened 3 s later.** `journalctl -u systemd-logind`:
 ```
 2026-09-12T04:00:37 Session 18700 logged out. Waiting for processes to exit.
-2026-09-12T04:00:40 New session 18793 of user nick.
+2026-09-12T04:00:40 New session 18793 of user the operator.
 2026-09-12T04:18:27 Removed session 18700.
 ```
 `/etc/systemd/logind.conf:20` = `#KillUserProcesses=no` (default no) — so logind did not sweep.

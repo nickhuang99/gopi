@@ -35,7 +35,7 @@
 // channel validates its peer against settings.json "memory_peers" /
 // GOPI_MEMORY_PEERS — a deliberately DECOUPLED key from the task ledger's
 // sync_peers. Single-node task mode (sync_peers=[]) must not disable asset
-// sync; nick explicitly keeps this cross-node feature. A deployment declares
+// sync; the operator explicitly keeps this cross-node feature. A deployment declares
 // both: sync_peers=[] (no task sync) + memory_peers=["hp"] (asset sync up).
 //
 // SEMANTICS — unique-only superset merge (deliberately conservative):

@@ -151,7 +151,7 @@ my assumption that it is.
 
 ## 2. Who is served
 
-### 2.1 The operator (nick) — "I should not be the transfer mechanism"
+### 2.1 The operator (the operator) — "I should not be the transfer mechanism"
 
 The need is that work crosses machines while I am asleep. Concretely: I file a task
 on peer1 in the evening; the laptop picks it up, does it, and the result and the
@@ -262,7 +262,7 @@ able to mean two different things on the two machines.
 **Evidence:** `t-1788036628` (operator: HP-side runs only ever wrote back to HP's
 own database, "peer1 台账永远 pending" — remote SQLite is the wrong answer by
 design); `t-1788093118` `[M4.13]` (the timestamp-delta design, "SyncML 协议核心
-简化"), with the operator's own confirming wording in the same row — **nick 确认
+简化"), with the operator's own confirming wording in the same row — **the operator 确认
 willing to implement**; `SyncTaskExportDelta` `internal/tools/memory_sync_delta.go:187`
 (export: rows newer than the anchor), `SyncTaskImportDelta`
 `internal/tools/memory_sync_delta.go:431` (import: one transactional apply).
@@ -282,7 +282,7 @@ table-rebuild predicate; the sync_state accessors are the pair named above.)*
 and a contradiction that nobody is allowed to settle becomes a stuck row.
 **Evidence:** `t-1788091028` `[M4.9 增补]`, operator verbatim in his own words:
 **"this is price we have to pay"** (the price of independent parallel development);
-the ruling itself is recorded inside the code as **nick 冲突语义定稿**
+the ruling itself is recorded inside the code as **the operator 冲突语义定稿**
 (`internal/tools/memory_sync_delta.go:563-570`, verbatim: the task status "is a mere
 enum — the real deliverable lives in the git branch … So the SERVER side simply
 writes completed … the CLIENT side keeps the legacy keep-row + 'conflict' tag …

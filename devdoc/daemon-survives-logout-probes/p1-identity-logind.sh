@@ -8,7 +8,7 @@ sec "os-release"; cat /etc/os-release
 sec "systemd --version"; systemd --version
 sec "id"; id
 sec "/proc/self/cgroup"; cat /proc/self/cgroup
-sec "loginctl show-user nick"; loginctl show-user nick
+sec "loginctl show-user the operator"; loginctl show-user the operator
 sec "loginctl list-sessions"; loginctl list-sessions
 sec "effective /etc/systemd/logind.conf (comments stripped)"; grep -vE '^[[:space:]]*(#|$)' /etc/systemd/logind.conf
 sec "logind.conf.d dir"; ls -la /etc/systemd/logind.conf.d/ 2>&1

@@ -279,7 +279,7 @@ gofmt -l cmd/agent/ internal/testutil/             # empty
 go vet ./cmd/agent/ ./internal/testutil/           # clean
 go test ./cmd/agent/ -run 'TestVoice|TestTranscribeFile|TestWriteVoiceJSON|
     TestDiscardFile|TestUserHomeDir' -count=1      # ok — 44 PASS, 0 FAIL, 0 SKIP
-go test ./cmd/agent/ -count=1                      # ok  github.com/nick/gopi/cmd/agent  109.143s
+go test ./cmd/agent/ -count=1                      # ok  github.com/the operator/gopi/cmd/agent  109.143s
 go test ./cmd/agent/ -run '…' -count=1 -cover      # coverage profile captured (numbers in §2)
 ```
 

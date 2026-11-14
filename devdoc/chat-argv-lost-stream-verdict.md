@@ -118,7 +118,7 @@ $ go test -count=1 -run 'TestChatRunArgsLostStreamVerdictAgreesWithItsRelease' .
     chat_argv_test.go:552: the real lost stream (fd 3) classified as 1, want the recorded-loss verdict (2)
 FAIL
 # after reverting the patch:
-ok  	github.com/nick/gopi/cmd/agent	3.911s
+ok  	github.com/the operator/gopi/cmd/agent	3.911s
 ```
 
 The guard drives BOTH halves off ONE real foreign release in one test, and pins the

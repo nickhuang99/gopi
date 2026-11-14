@@ -74,7 +74,7 @@ gitRun(t, repo, "config", selfDeliveryPeerWireKey(peerDir, selfDeliveryPeerTail(
 
 ```
 Ran:    go test ./internal/tools/ -run 'TestSelfDelivery' -count=1 -v  # selector-ok: this line records WHAT WAS RUN on 2026-10-27; the test file was deleted 2026-10-31 (task 01a19052, alone-deletion probe), so the selector is a historical citation and cannot match again.
-Result: 5/5 PASS（含三条目标臂）；ok github.com/nick/gopi/internal/tools 3.674s
+Result: 5/5 PASS（含三条目标臂）；ok github.com/the operator/gopi/internal/tools 3.674s
 Ran:    make test-budget PKGS='./internal/tools'
 Result: 见 task-report.md（无任何 peerfixture 解析失败）
 Ran:    bash <session>/evidence/probe-namespace.sh

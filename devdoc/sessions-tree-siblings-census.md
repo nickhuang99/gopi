@@ -150,10 +150,10 @@ separates them:
 
 ```
 $ ls -la --time-style=+%F <fixture>/.gopi/dumps
--rw-rw-r-- 1 nick nick    0 2025-01-01 20250101-010101.dump.json
--rw-rw-r-- 1 nick nick    0 2025-01-01 20250101-010102-1.dump.json
-drwxrwxr-x 2 nick nick 4096 2025-01-01 keepdir
--rw-rw-r-- 1 nick nick    0 2025-01-01 notes.txt
+-rw-rw-r-- 1 the operator the operator    0 2025-01-01 20250101-010101.dump.json
+-rw-rw-r-- 1 the operator the operator    0 2025-01-01 20250101-010102-1.dump.json
+drwxrwxr-x 2 the operator the operator 4096 2025-01-01 keepdir
+-rw-rw-r-- 1 the operator the operator    0 2025-01-01 notes.txt
 
 $ gopi scratch-gc trees --dry-run
 removed=2 stale=336h0m0s tree=sibling-dumps dry-run=true

@@ -145,4 +145,4 @@ the terminal actually received).
   `TestChatReplayArrowsLeaveTheSurfaceSilent`.
 - `internal/replayplay`'s own tests are unchanged and green — that is the
   regression evidence for the range correction: `go test ./internal/replayplay/`
-  → `ok github.com/nick/gopi/internal/replayplay 1.214s`.
+  → `ok github.com/the operator/gopi/internal/replayplay 1.214s`.

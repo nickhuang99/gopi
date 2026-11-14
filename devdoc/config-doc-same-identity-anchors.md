@@ -128,7 +128,7 @@ it is a separate change with its own acceptance, not a weakening of this one.
 ## Verification
 
 - **Build:** `go build ./...` → **OK** (exit 0, no output).
-- **Tests:** `go test ./internal/standards/ -count=1` → **`ok github.com/nick/gopi/internal/standards 35.512s`** (whole gate package, real tree).
+- **Tests:** `go test ./internal/standards/ -count=1` → **`ok github.com/the operator/gopi/internal/standards 35.512s`** (whole gate package, real tree).
   - `go test ./internal/standards/ -run 'TestConfigDocGateRedProof' -count=1` → **`ok … 0.567s`**.
   - `go test ./internal/standards/ -run TestConfigDoc -count=1` → **`ok … 3.151s`** (green on the real tree AFTER the re-point; the same test was RED before it, naming all 18 — see Result).
 - **Ran:** the gate's own assertion, verbatim —

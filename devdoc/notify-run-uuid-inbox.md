@@ -126,7 +126,7 @@ directory, never the append.
   `GOPI_BIN=$PWD/bin/gopi go test ./cmd/agent/ -run 'TestNotifyDeliverRunUUID|TestNotifyDeliverUnknownRunUUID' -count=1`
   → `--- PASS: TestNotifyDeliverRunUUIDLandsInTheContainerInbox (0.01s)`,
   `--- PASS: TestNotifyDeliverUnknownRunUUIDIsRefusedByName (0.01s)`,
-  `ok github.com/nick/gopi/cmd/agent 3.425s`
+  `ok github.com/the operator/gopi/cmd/agent 3.425s`
 - **Ran** (the surface the diff changed, verbatim, with real arguments):
 
   ```
@@ -193,7 +193,7 @@ $ git status --porcelain | wc -l                      →  0     (Rule 30)
 $ GOPI_BIN=$PWD/bin/gopi go test ./cmd/agent/ -run 'TestNotifyDeliverRunUUID|TestNotifyDeliverUnknownRunUUID' -count=1 -v
 --- PASS: TestNotifyDeliverRunUUIDLandsInTheContainerInbox (0.01s)
 --- PASS: TestNotifyDeliverUnknownRunUUIDIsRefusedByName (0.01s)
-ok  github.com/nick/gopi/cmd/agent  4.271s
+ok  github.com/the operator/gopi/cmd/agent  4.271s
 ```
 
 ## Evidence (self-filed)
@@ -212,7 +212,7 @@ kept under this run's session directory
   session dir: /dev/shm/notify-red-RgdY/home/.gopi/sessions (resolved as a session record with that id)
   EXIT=0
   --- sessions root stray inbox ---
-  -rw-r--r-- 1 nick nick 182 Oct 13 12:19 inbox.jsonl        ← <sessions>/messages/inbox.jsonl
+  -rw-r--r-- 1 the operator the operator 182 Oct 13 12:19 inbox.jsonl        ← <sessions>/messages/inbox.jsonl
   --- container inbox ---
   ls: cannot access '/dev/shm/notify-red-RgdY/home/.gopi/sessions/01a1330e-…/messages/': No such file or directory
   ```

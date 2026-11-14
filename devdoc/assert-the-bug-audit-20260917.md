@@ -351,10 +351,10 @@ order-dependent test that is *less* flaky on the branch, not more.
 
 ```
 $ go test ./internal/tools/ -run 'TestAssertionTotalityAudit' -count=1
-ok  	github.com/nick/gopi/internal/tools	1.660s
+ok  	github.com/the operator/gopi/internal/tools	1.660s
 
 $ go test ./internal/tools/ -run 'TestIsServerNode' -count=1
-ok  	github.com/nick/gopi/internal/tools	1.090s        # 7 tests / 8 cases, incl. arm ④
+ok  	github.com/the operator/gopi/internal/tools	1.090s        # 7 tests / 8 cases, incl. arm ④
 
 $ go test ./internal/tools/ -run 'TestFinishCleanupClientDirtyStillDelivers' -count=1 -v
 --- SKIP: TestFinishCleanupClientDirtyStillDelivers (0.00s)   # the enumerated missing cell
@@ -373,7 +373,7 @@ $ go test ./internal/tools/ -run 'TestZZTmpClientDirtyCellRed' -count=1
     report: skipped=true
       reason="worktree dirty (live bond protected) — carries ONLY UNTRACKED files …: ?? wip.txt"
       steps=[{Step:worktree Target:…/wt OK:false Detail:untracked-only residue in the worktree of a finished run …}]
-FAIL	github.com/nick/gopi/internal/tools	1.240s
+FAIL	github.com/the operator/gopi/internal/tools	1.240s
 ```
 The peer arm of the assertion (branch survives locally, worktree survives) **passes**; the delivery
 arm fails — i.e. the false half is precisely "an idempotent push must not run". The same body is
@@ -383,7 +383,7 @@ stored in the skipped test, so un-skipping it after 01a0aab8 is the green proof.
 > The cell was un-skipped and the same body asserted directly:
 > ```
 > $ go test ./internal/tools/ -run 'TestFinishCleanupClientDirtyStillDelivers|TestClientPush|TestClientDelivery' -count=1
-> ok  github.com/nick/gopi/internal/tools  7.078s
+> ok  github.com/the operator/gopi/internal/tools  7.078s
 > ```
 > The recorded red run above is the pre-fix observation, and re-running the new
 > contract tests against the pre-fix production files reproduces it (`step push

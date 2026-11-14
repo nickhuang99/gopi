@@ -155,7 +155,7 @@ go test ./internal/tools/ -run 'TestPeerRemoteTarget|TestDeliveryTarget' -count=
     --- FAIL: TestMergeConfigAnchorGate_RealTreeIsClean (0.04s)
     --- FAIL: TestMergeConfigAnchorGate_ReportsTheOffendingPathAndLine (0.71s)
     --- FAIL: TestMergeConfigAnchorGate_ARePointedCitationIsAStaleRecord (0.86s)
-    FAIL    github.com/nick/gopi/internal/tools        rc=1
+    FAIL    github.com/the operator/gopi/internal/tools        rc=1
 
 三条**同名、同失败句子、同 ROT 行**（`internal/shot/filmlocale.go:268`，记录文本现在 273 行）在 base 上复现
 ⇒ 这份红是 base 状态，与本 diff 无因果关系。原始输出留在本 run 的

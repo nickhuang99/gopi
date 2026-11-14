@@ -190,7 +190,7 @@ in place, the same command is **5/5 GREEN** (`bound-count5-r4.log`: five
   `go test ./cmd/agent/ -count=1 -run 'TestBoundNotice' -v`
   → `--- PASS: TestBoundNoticeCountIsReadPerPeriodNotPerPaint (0.00s)`,
   `--- PASS: TestBoundNoticeLedgerCountsAnnouncementsNotRepaints (0.00s)`,
-  `ok github.com/nick/gopi/cmd/agent 0.624s`.
+  `ok github.com/the operator/gopi/cmd/agent 0.624s`.
 - Tests (the acceptance case):
   `go test ./cmd/agent/ -count=1 -run 'TestChatSurfaceBound_TerminatesAndIsRenewedOnlyByTheOperator' -v`
   → PASS, with the case's own printed accounting:
@@ -237,7 +237,7 @@ text) … }` arm), running the guard, and restoring the file byte-identically
 $ CGO_ENABLED=0 go test ./cmd/agent/ -count=1 -run 'TestBoundNotice'
 --- FAIL: TestBoundNoticeLedgerCountsAnnouncementsNotRepaints (0.00s)
     chat_surface_bound_notice_count_test.go:121: after ONE announcement the ledger counted 0, want exactly 1
-FAIL	github.com/nick/gopi/cmd/agent	3.460s
+FAIL	github.com/the operator/gopi/cmd/agent	3.460s
 ```
 
 `announcements counted 0` — the ledger is silent because the announcement seam is gone;

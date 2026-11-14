@@ -5580,7 +5580,7 @@ func (a *Agent) runEngine(userInput string, resume bool, history []deepseek.Mess
 			}
 		}
 
-		// Context slimming — WHITELIST semantics (nick design): unlike the
+		// Context slimming — WHITELIST semantics (the operator design): unlike the
 		// former blacklist (only rating=useless + explicit tool_use_id got
 		// dropped, which the LLM almost never issued → slimming never ran),
 		// the default is now DROP EVERY memory_search pair. Only a pair whose
@@ -5640,7 +5640,7 @@ func (a *Agent) runEngine(userInput string, resume bool, history []deepseek.Mess
 			// armed before the loop so the first commit always carries it.
 			a.maybeInjectConsultCheckpoint()
 			// ===== post-commit review moved to a structured TOOL CALL
-			// (tool-family merge — task family, nick 2026-09-10) =====
+			// (tool-family merge — task family, the operator 2026-09-10) =====
 			// The old injectPostCommitReview text prompt (which asked the
 			// model to free-text a REVIEW-VERDICT: reply that NOTHING parsed
 			// — a void slot) is gone. Post-commit review is now the model
@@ -8842,7 +8842,7 @@ func taskReviewMenuFor(verdict, taskID, reason string) string {
 
 // handleTaskReview implements task(action=review): the POST-COMMIT CHECKPOINT as
 // a structured TOOL CALL — the tool-family-merge successor to the removed
-// injectPostCommitReview text injection (nick 2026-09-10 design). The model
+// injectPostCommitReview text injection (the operator 2026-09-10 design). The model
 // calls it right after each task(action=commit) (drilled by the system TASK
 // MANAGEMENT RULES); when the committed item is the LAST one, this review
 // doubles as the whole-epic closing review.

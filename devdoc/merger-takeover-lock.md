@@ -37,7 +37,7 @@ merger:      not running
 lock holder: pid 3616234  (stale: the process is gone; the lock is FREE)
 
 $ ls -l ~/.gopi/serve.lock
--rw-r--r-- 1 nick nick 7 Sep 17 22:51 ~/.gopi/serve.lock   ← the dead launcher's pid
+-rw-r--r-- 1 the operator the operator 7 Sep 17 22:51 ~/.gopi/serve.lock   ← the dead launcher's pid
 ```
 
 Three consequences, all real:
@@ -319,7 +319,7 @@ gopi merger: serve lock held by a live daemon: another merge process is already 
 $ cat /proc/3893375/cgroup
 0::/user.slice/user-1000.slice/user@1000.service/app.slice/gopi-takeover-home-d08a2168fb59.scope
 $ ls -l /proc/3893375/fd/3
-lrwx------ 1 nick nick 64 … /proc/3893375/fd/3 -> …/home/.gopi/serve.lock
+lrwx------ 1 the operator the operator 64 … /proc/3893375/fd/3 -> …/home/.gopi/serve.lock
 $ grep -i flock /proc/3893375/fdinfo/3
 lock:	1: FLOCK  ADVISORY  WRITE 3892665 08:04:31347175 0 EOF
 ```
@@ -410,8 +410,8 @@ the superseded run is kept below because the *distinction* is the lesson.
 
 ```
 $ go test -count=1 ./cmd/agent/ ./internal/tools/     # BEFORE the rebuild
-ok   github.com/nick/gopi/internal/tools   310.054s
-FAIL github.com/nick/gopi/cmd/agent        228.353s   (8 failures, listed below)
+ok   github.com/the operator/gopi/internal/tools   310.054s
+FAIL github.com/the operator/gopi/cmd/agent        228.353s   (8 failures, listed below)
 ```
 
 The 8 failures then were the stale binary's, and they were also consistent with

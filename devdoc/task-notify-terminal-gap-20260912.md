@@ -244,7 +244,7 @@ Observed delivery-failure-is-not-fatal and allow-list logging samples:
   worktree `/tmp/notifygap-prefix` @ `3b51fc00` → **4/4 FAIL**, every one with
   `delivered events: []` (the ruling test with `[legacy-conflict]`). Exit 1.
   Post-fix `-run TestNotifyGap -count=1` → ok.
-- **Full-suite claim collected**: `ok github.com/nick/gopi/internal/tools 315.226s`, exit 0.
+- **Full-suite claim collected**: `ok github.com/the operator/gopi/internal/tools 315.226s`, exit 0.
 - **Production sink cross-check** (acceptance 1/2, on the operator's real
   `~/.gopi/notify/task-events.jsonl`): of the last 400 terminal ledger rows, 329
   carry their terminal event; **every one of the 71 missing is >24h old**

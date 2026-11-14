@@ -6,7 +6,7 @@ import (
 	"testing"
 	"time"
 
-	"github.com/nick/gopi/internal/worktreeroots"
+	"github.com/the operator/gopi/internal/worktreeroots"
 )
 
 // This file is the A/B RED PROOF for the guard-③/⑤ change (epic: worktree stay,

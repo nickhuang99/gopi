@@ -3,7 +3,7 @@
 
 Date: 2026-09-04 · Epic t-1788389175 (BUG FIX + QUALITY) · Branch feat/server-worker-recycle
 
-## Problem (nick's finding, 2026-09-03)
+## Problem (the operator's finding, 2026-09-03)
 
 The HOMM3 maps project ran 4 feasibility bonds on peer1 (the SERVER). All 4
 delivered — branches + reports committed — but all 4 worktrees
@@ -140,7 +140,7 @@ shape, branch exemptions).
 
 - No production-code change was required for this epic: the server-mode
   recycle arm (319f063, epic t-1788397248) and the delivery-time hook were
-  already in master — what was MISSING was exactly what nick called out:
+  already in master — what was MISSING was exactly what the operator called out:
   the full-chain E2E proof that a WORKER (not just a manual run) delivering
   on the server recycles its worktree and that the merger then merges
   without manual intervention. This report + the two E2E tests are the

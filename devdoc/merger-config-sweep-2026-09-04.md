@@ -4,7 +4,7 @@
 ## Summary
 
 Reworked the GoPi merger from a task-oriented / DB-driven design into a
-**pure git sweep driven by a config repo list** (nick's final 2026-09-03
+**pure git sweep driven by a config repo list** (the operator's final 2026-09-03
 design). Before, the merger's merge surfaces were woven into task-backlog
 rows and ran only against a **single repo implied by the daemon's launch cwd**
 (`GitSyncRepoRoot` → `~/work/GoPi`). The old sweep never reached a SECOND
@@ -17,7 +17,7 @@ Now the merger is config-drive: settings.json's existing `repos` table
 **IS** the sweep list. Every tick the merger cd's to EACH configured
 repo path and merges all worktree-unprotected branches.
 
-## The design (nick's words, 2026-09-03)
+## The design (the operator's words, 2026-09-03)
 
 > "In the config file we specify the repo.path, the merger periodically
 > cd's to repo.path and merges all branches... and deletes cleaned

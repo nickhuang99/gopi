@@ -445,7 +445,7 @@ func (a *Agent) maybeRegisterSessionTask(briefing string) {
 		// "how was this launched" question unanswerable. The argv is
 		// rendered by the shared runcmd renderer (basename + shell quoting),
 		// never hand-written: a pseudo-command here would be worse than
-		// nothing (nick's report on the in_progress worker rows).
+		// nothing (the operator's report on the in_progress worker rows).
 		RunMethod: runcmd.MethodAuto,
 		RunCmd:    runcmd.Command(os.Args),
 	})
@@ -903,7 +903,7 @@ func (a *Agent) finishSessionTaskRecorded(exitCode, iterations, tokens int, elap
 	// M4.19 ② terminal must-succeed push: the row's terminal state
 	// (completed/failed) MUST reach every sync_peers peer — the start point
 	// already guaranteed a single runner, so this push has no interference
-	// and "no reason to fail" (nick). Retries with backoff; exhaustion
+	// and "no reason to fail" (the operator). Retries with backoff; exhaustion
 	// alarms through the GOPI_TASK_NOTIFY pipe (terminal-push-failed
 	// synthetic event — abnormal, never silent). GOPI_SKIP_TERMINAL_PUSH=1
 	// opts out (sims / callers managing sync themselves). config.TaskSyncEnabled()

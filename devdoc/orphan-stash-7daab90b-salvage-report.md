@@ -112,7 +112,7 @@ this row as 'no salvageable content' — the archive diff remains the record."**
 - Build: `go build ./...` → **rc=0** (worktree of master `96325d30`, unmodified)
 - Vet:   `go vet ./...` → **rc=0** (same tree)
 - Tests: `go test -run 'TestPeakGuard|TestRemovedPeakHours|TestCostFreeVerbs|TestWorkerIdleWait' -count=1 ./cmd/agent/`
-  → **`ok github.com/nick/gopi/cmd/agent 4.782s`** — master's own peak-guard
+  → **`ok github.com/the operator/gopi/cmd/agent 4.782s`** — master's own peak-guard
   removal gate (the negative scan + the runtime refusal A/B) passes on this tree.
 - Tests: `make test-budget PKGS="./internal/peakhours/ ..."` is **NOT RUN — the
   package does not exist on master and this run adds nothing that could be
@@ -183,7 +183,7 @@ copied nothing.
 - `go build ./...` → **rc=0**
 - `go vet ./...` → **rc=0**
 - `go test -count=1 -run 'TestPeakGuard|TestRemovedPeakHours|TestCostFreeVerb|TestWorkerIdleWait' ./cmd/agent/`
-  → `ok github.com/nick/gopi/cmd/agent 4.049s`, **rc=0** (master's own peak-guard
+  → `ok github.com/the operator/gopi/cmd/agent 4.049s`, **rc=0** (master's own peak-guard
   removal gate — the negative symbol scan and the runtime refusal A/B)
 - `make test-budget PKGS="./internal/pricing ./internal/config"` → **rc=0**,
   2 packages, 0 failures, 2s wall

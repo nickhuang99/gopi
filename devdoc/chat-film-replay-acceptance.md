@@ -393,7 +393,7 @@ in-suite and green alone, on a two-file `devdoc/` diff. Re-measured here:
 
 ```bash
 go test ./cmd/agent/ -run 'TestServeLockReplacementMechanism' -count=1
-→ ok  github.com/nick/gopi/cmd/agent  1.818s
+→ ok  github.com/the operator/gopi/cmd/agent  1.818s
 ```
 
 It is **not** in `testdata/flakes.tsv` (grep: no rows). This run therefore does not

@@ -23,7 +23,7 @@ exit=1
 === systemctl start of a transient unit (system bus, polkit path) — SKIPPED: a polkit-gated start can raise an interactive auth dialog on the operator's desktop; the systemd-run --scope probe above exercises the same privileged path ===
 
 === loginctl enable-linger (already set?) and terminate-user (NOT run) ===
-linger state above; 'loginctl terminate-user nick' deliberately NOT run (kills every session)
+linger state above; 'loginctl terminate-user the operator' deliberately NOT run (kills every session)
 
 === cgroupfs: per-uid slice writability ===
 drwxr-xr-x 17 root root 0 Sep 15 05:30 /sys/fs/cgroup/user.slice/user-1000.slice
@@ -39,9 +39,9 @@ os.access(/sys/fs/cgroup/cgroup.procs, W_OK) = False  exists=True
 === cgroupfs: the REAL migration attempt (mkdir + write own pid + fresh read) — transient, removed after ===
 mkdir /sys/fs/cgroup/user.slice/user-1000.slice/user@1000.service/gopi-probe-2863223
 mkdir exit=0
-drwxrwxr-x 2 nick nick 0 Sep 15 07:24 /sys/fs/cgroup/user.slice/user-1000.slice/user@1000.service/gopi-probe-2863223
+drwxrwxr-x 2 the operator the operator 0 Sep 15 07:24 /sys/fs/cgroup/user.slice/user-1000.slice/user@1000.service/gopi-probe-2863223
 mkdir dir cgroup.procs mode:
--rw-r--r-- 1 nick nick 0 Sep 15 07:24 /sys/fs/cgroup/user.slice/user-1000.slice/user@1000.service/gopi-probe-2863223/cgroup.procs
+-rw-r--r-- 1 the operator the operator 0 Sep 15 07:24 /sys/fs/cgroup/user.slice/user-1000.slice/user@1000.service/gopi-probe-2863223/cgroup.procs
 echo $$ > /sys/fs/cgroup/user.slice/user-1000.slice/user@1000.service/gopi-probe-2863223/cgroup.procs
 sh: 1: echo: echo: I/O error
 write exit=1

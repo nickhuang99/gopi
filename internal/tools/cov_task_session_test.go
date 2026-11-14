@@ -165,7 +165,7 @@ func TestCovTaskSessionDirLegacyCollisionNewWins(t *testing.T) {
 func TestCovTaskAttachmentRelPathMapping(t *testing.T) {
 	cases := []struct{ in, want string }{
 		{"/tmp/log.txt", "tmp/log.txt"},
-		{"/home/user/log.txt", "home/nick/log.txt"},
+		{"/home/user/log.txt", "home/the operator/log.txt"},
 		{"  /tmp/trimmed.txt  ", "tmp/trimmed.txt"}, // whitespace-trimmed
 		{"//tmp/double.txt", "/tmp/double.txt"},     // exactly ONE leading slash removed
 		{"/", ""},                                   // the root is empty after the strip

@@ -153,7 +153,7 @@ this change's own contract are:
        --- FAIL: TestZZRedProofChatJoinReadLoop/never-closed (5.00s)
        zz_redproof_join_test.go:19: the run's read loop did not return within 5s
        after its terminal was closed — it is still parked (red proof); ...
-   FAIL github.com/nick/gopi/cmd/agent 5.859s
+   FAIL github.com/the operator/gopi/cmd/agent 5.859s
    ```
 
    The sub-case that matters is the **fail** one: the same call with a closed
@@ -216,7 +216,7 @@ PASS
 suite child sweep: live child processes: 0 (settled 1s)
 suite child sweep: live child processes: 0 (guard measured live child processes: 0 earlier; live child processes: 0 at close-out)
 suite goroutine sweep: parked repository goroutines: 0
-ok  	github.com/nick/gopi/cmd/agent	1.451s        ← rc=0
+ok  	github.com/the operator/gopi/cmd/agent	1.451s        ← rc=0
 ```
 
 **Both halves of the syndrome are already fixed in master, and the fix is in this
@@ -247,11 +247,11 @@ A temporary test leaked one goroutine. Observed verbatim:
 ```
 suite goroutine sweep: parked repository goroutines: 1
 suite goroutine sweep: goroutine 28 [chan receive]:
-  github.com/nick/gopi/cmd/agent.TestZZLeakProbeTemp.func1()
+  github.com/the operator/gopi/cmd/agent.TestZZLeakProbeTemp.func1()
   	…/cmd/agent/zz_leak_probe_temp_test.go:8 +0x19
   created by …TestZZLeakProbeTemp in goroutine 27
 --- PASS: TestZZLeakProbeTemp (0.00s)      ← the CASE passed
-FAIL	github.com/nick/gopi/cmd/agent	1.893s   ← the PACKAGE failed (rc=1)
+FAIL	github.com/the operator/gopi/cmd/agent	1.893s   ← the PACKAGE failed (rc=1)
 ```
 
 The temporary file was deleted immediately; `git status --porcelain` is empty.
@@ -272,10 +272,10 @@ briefing's symptom **character for character**:
 --- PASS: TestChatSurfaceKey_DrivesTheRealREPLEditorOnARealPty (0.70s)
 suite goroutine sweep: parked repository goroutines: 1
 suite goroutine sweep: goroutine 37 [select]:
-  github.com/nick/gopi/internal/lineedit.(*Terminal).startWinch.func1()
+  github.com/the operator/gopi/internal/lineedit.(*Terminal).startWinch.func1()
   	…/internal/lineedit/raw.go:380 +0xbc
   created by …(*Terminal).startWinch in goroutine 19
-FAIL	github.com/nick/gopi/cmd/agent	3.544s
+FAIL	github.com/the operator/gopi/cmd/agent	3.544s
 ```
 
 A passing case, a failing package, and the **SIGWINCH watcher** as the parked
@@ -314,7 +314,7 @@ distinguish them — a `-count=5` green is not evidence of the order):
 $ go test ./cmd/agent/ -run TestZZJoinLoudArmTemp -count=1 -v      # temporary, never closed channel
     zz_join_loud_temp_test.go:8: the run's read loop did not return within 5s after its terminal was closed — it is a channel that is never closed (deliberate red-proof); …
 --- FAIL: TestZZJoinLoudArmTemp (5.00s)
-FAIL	github.com/nick/gopi/cmd/agent	6.666s    ← rc=1
+FAIL	github.com/the operator/gopi/cmd/agent	6.666s    ← rc=1
 ```
 
 Temp file deleted; the closed-channel half returns at once, so the arm is not a
@@ -359,7 +359,7 @@ fully in place:
 --- FAIL: TestChatInject_EscapeByNameReachesTheTurnSeam (3.28s)
 suite goroutine sweep: parked repository goroutines: 1
 suite goroutine sweep: goroutine 15 [select]:
-FAIL	github.com/nick/gopi/cmd/agent	5.660s        ← rc=1
+FAIL	github.com/the operator/gopi/cmd/agent	5.660s        ← rc=1
 ```
 
 **ARM A — a temporary parked goroutine in a repository frame, run beside BOTH
@@ -374,7 +374,7 @@ PASS
 suite goroutine sweep: parked repository goroutines: 1
 suite goroutine sweep: goroutine 7 [chan receive]:
   	…/cmd/agent/zz_redproof_parked_goroutine_test.go:11 +0x19
-FAIL	github.com/nick/gopi/cmd/agent	1.573s        ← rc=1
+FAIL	github.com/the operator/gopi/cmd/agent	1.573s        ← rc=1
 ```
 
 Read the two arms together and they say exactly one thing each: the two
@@ -431,7 +431,7 @@ branch's own two files):
     runs with no terminal stop ahead of it in its own function — the join is what OBSERVES the
     stop, so a join placed first observes the pty master's close instead (the pre-fix shape), and a
     join with no stop at all observes a bound that elapsed. …
-FAIL	github.com/nick/gopi/cmd/agent	1.214s        ← rc=1
+FAIL	github.com/the operator/gopi/cmd/agent	1.214s        ← rc=1
 ```
 
 *ARM B — the stop deleted, the join kept*:
@@ -440,7 +440,7 @@ FAIL	github.com/nick/gopi/cmd/agent	1.214s        ← rc=1
 --- FAIL: TestChatReplTeardownOrder_EveryJoinStopsTheTerminalFirst (0.21s)
     chat_repl_teardown_order_test.go:111: chat_surface_bound_e2e_test.go:1047: chatJoinReadLoop runs
     with no terminal stop ahead of it in its own function — …
-FAIL	github.com/nick/gopi/cmd/agent	0.896s        ← rc=1
+FAIL	github.com/the operator/gopi/cmd/agent	0.896s        ← rc=1
 ```
 
 *GREEN — guard + the acceptance pair on the branch tip*:
@@ -450,7 +450,7 @@ FAIL	github.com/nick/gopi/cmd/agent	0.896s        ← rc=1
 --- PASS: TestPrefetchGoroutineSettleGapDetectsALiveLeak (0.20s)
 --- PASS: TestChatReplTeardownOrder_EveryJoinStopsTheTerminalFirst (0.29s)
 suite goroutine sweep: parked repository goroutines: 0
-ok  	github.com/nick/gopi/cmd/agent	1.456s        ← rc=0
+ok  	github.com/the operator/gopi/cmd/agent	1.456s        ← rc=0
 ```
 
 **The fifth join was moved onto the helper**, so the guard covers every REPL
@@ -494,7 +494,7 @@ subtest's temporary swap is restored. Measured after:
 
 ```
 $ go test ./cmd/agent/ -run 'TestChatCLIVocabularyIsClosedEveryAcceptedFlagParses' -count=3 -race
-ok  	github.com/nick/gopi/cmd/agent	9.272s        ← rc=0   (was: FAIL, "race detected during execution of test", rc=1)
+ok  	github.com/the operator/gopi/cmd/agent	9.272s        ← rc=0   (was: FAIL, "race detected during execution of test", rc=1)
 ```
 
 This is the closest thing to a *mechanism* found for the `--verbose` case the
@@ -509,7 +509,7 @@ offered as "a real race existed here and is now gone", not as the explanation.
   re-run red-proofs restored).
 - Tests: `go test ./cmd/agent/ -run 'TestChatSurfaceKey_DrivesTheRealREPLEditorOnARealPty|TestChatInject_EscapeByNameReachesTheTurnSeam|TestPrefetchGoroutineSettleGapDetectsALiveLeak|TestChatCLIVocabularyIsClosedEveryAcceptedFlagParses' -count=1 -v`
   → 4/4 PASS, `suite goroutine sweep: parked repository goroutines: 0`,
-  `ok github.com/nick/gopi/cmd/agent 6.652s`.
+  `ok github.com/the operator/gopi/cmd/agent 6.652s`.
   The three other changed fixtures together: 3/3 PASS, sweep 0,
   `ok … 3.311s`.
   `go test ./internal/lineedit/ -run TestTerminalClose -count=1` → `ok`; with the
@@ -530,7 +530,7 @@ offered as "a real race existed here and is now gone", not as the explanation.
 ## Evidence (self-filed)
 
 - HEAD is green, observed: `suite goroutine sweep: parked repository goroutines: 0`,
-  `ok github.com/nick/gopi/cmd/agent 1.529s`.
+  `ok github.com/the operator/gopi/cmd/agent 1.529s`.
 - Fix is in history, observed: `git merge-base --is-ancestor e6e1791d HEAD` → true;
   `git log -1 --format='%h %ci %s' e6e1791d` → `e6e1791d 2026-10-02 13:36:06 +0800`.
 - Sweep unweakened, observed: `parked repository goroutines: 1` naming

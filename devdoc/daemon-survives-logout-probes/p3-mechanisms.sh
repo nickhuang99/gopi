@@ -10,7 +10,7 @@ sec "systemctl --user status"; systemctl --user status 2>&1 | head -3; echo "exi
 sec "busctl --user list"; busctl --user list 2>&1 | head -3; echo "exit=$?"
 sec "systemd-run --scope (SYSTEM bus, no --user) — transient system scope"; /usr/bin/systemd-run --scope --quiet --unit=gopi-probe-readonly-$UID_N /bin/true 2>&1; echo "exit=$?"
 sec "systemctl start of a transient unit (system bus, polkit path) — SKIPPED: a polkit-gated start can raise an interactive auth dialog on the operator's desktop; the systemd-run --scope probe above exercises the same privileged path"
-sec "loginctl enable-linger (already set?) and terminate-user (NOT run)"; echo "linger state above; 'loginctl terminate-user nick' deliberately NOT run (kills every session)"
+sec "loginctl enable-linger (already set?) and terminate-user (NOT run)"; echo "linger state above; 'loginctl terminate-user the operator' deliberately NOT run (kills every session)"
 sec "cgroupfs: per-uid slice writability"; S=/sys/fs/cgroup/user.slice/user-1000.slice; ls -ld "$S"; test -w "$S" && echo "test -w $S: YES" || echo "test -w $S: NO"
 sec "access(2) W_OK on the common ancestor (what the kernel gates on)"; python3 - <<'PY' 2>&1
 import os

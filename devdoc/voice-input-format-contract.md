@@ -211,7 +211,7 @@ $ bash redproof2.sh   # RED PROOF A
 --- FAIL: TestVoiceFormatContractLiteralGate (0.11s)
     cli_voice_format_test.go:189: cli_voice.go carries the format list "wav/mp3/flac/ogg" — reference voiceAcceptedFormats (declared in cli_voice_format.go) instead of re-spelling it
     cli_voice_format_test.go:193: cli_voice.go carries the retired literal "wav/mp3/flac/ogg" — the engine refuses ogg (measured); the accepted set comes from cli_voice_format.go
-FAIL	github.com/nick/gopi/cmd/agent	0.735s
+FAIL	github.com/the operator/gopi/cmd/agent	0.735s
 ```
 
 `B` — the OTHER direction (so the contract cannot be satisfied by drifting the
@@ -226,7 +226,7 @@ constant instead of the help): leave the help rendering the constant, and add
 FAIL
 ```
 
-GREEN after restoring the fixed tree: `ok github.com/nick/gopi/cmd/agent 0.733s`.
+GREEN after restoring the fixed tree: `ok github.com/the operator/gopi/cmd/agent 0.733s`.
 
 ## Not Done (honest)
 
@@ -253,7 +253,7 @@ and are superseded where they differ.
 
 - Build: `CGO_ENABLED=0 go build ./...` → `BUILD_OK` (and `BUILD_ALL_OK`).
 - Contract tests: `go test ./cmd/agent/ -run TestVoiceFormatContract -count=1 -v`
-  → **8/8 PASS**, `ok github.com/nick/gopi/cmd/agent 0.831s` (the eighth is
+  → **8/8 PASS**, `ok github.com/the operator/gopi/cmd/agent 0.831s` (the eighth is
   `…HelpStatesTheBytesNotNameRule`, added this round).
 - Branch-scoped voice suite: `go test ./cmd/agent/ -run Voice -count=1` →
   **118/118 PASS**, `ok … 2.604s`; `go test ./internal/doubaoasr/` → `ok 7.585s`.
