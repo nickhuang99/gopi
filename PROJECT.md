@@ -1856,6 +1856,59 @@ same run's scan reports; an absolute row count could only tighten as the table
 legitimately ratchets down), so a gate that read an empty tree or a fragmentary
 table cannot pass.
 
+## Rule 40: A Project That Belongs to One Host Is Filed on That Host's Ledger
+
+**The rule.** When a project is developed and run on ONE machine, its task rows
+go on **that machine's ledger** — never on a peer's just because the peer holds
+a git upstream of it. A checkout existing somewhere is not a commission to work
+there.
+
+**The operable criteria — how such a row is filed correctly:**
+
+- The row goes on the ledger of the host that will RUN it.
+- Its `deliverable.repo` resolves to a path that exists **on that host** and is
+  the tree the work actually happens in.
+- **A verified repo is NOT evidence the row landed on the right host.** This is
+  the dangerous signal, and it is measured, not hypothetical: the same absolute
+  path exists on two machines (a shared home layout is the normal case), so
+  `task_submit`'s repo verification — `taskRepoVerifiable`, `git rev-parse
+  --is-inside-work-tree` — passes on the **wrong** host and the row goes out
+  looking correct. What it proves is path existence on a filesystem; what it
+  cannot prove is which machine owns the work. A row nobody claims is not
+  "slow"; it is **never dispatched at all** (the wrong ledger holds it, and the
+  sync peers forward nothing).
+
+**Migration, when such a row WAS filed on the wrong host — three steps, in this
+order** (structurally the same move Rule 28 describes, applied to one project
+instead of to a layer):
+
+1. **Export the payload** — read the row's briefing text and any attachments off
+   the wrong ledger, so nothing is re-typed from memory.
+2. **Re-submit on the target host and verify `deliverable.repo`** — file the row
+   there, then confirm the stamped repo resolves to that host's own tree, not to
+   a path that merely looks the same.
+3. **Cancel the original row, naming the new id in the reason** — the cancel is
+   not optional: without it the work is live in two places and both hosts may
+   claim it. The reason names the new row id so a reader of the cancelled row can
+   follow the trail (Rule 26: an incomplete fix is repaired by dispatching again,
+   never by waiting).
+
+**Relation to Rule 28 — a specialisation, not a conflict.** Rule 28 draws the
+host line by LAYER (one host owns the system layer, another owns features).
+This rule pins a **single project** to a single host regardless of which layer a
+particular change touches. Where the two appear to disagree, this rule is the
+narrower and decides for that project; Rule 28 governs everything else.
+
+**Machine check — the honest answer.** There is **no gate** that can decide
+this. Ownership is a fact about a *machine*, and the only instrument at the
+submit seam compares *paths*, which are identical across hosts — so a check that
+refused would be guessing, and its false positives (a renamed host, a container,
+a peer shell, and the legitimate remote-side submit itself) would be worse than
+the defect. What exists at that seam is a **warning, never a refusal**: a
+submit whose `deliverable.repo` names a tree this host does not own appends a
+warning to its confirmation, so the submitter learns BEFORE the row is
+dispatched. The row still queues.
+
 ## Rule 41: Capturing the evidence the moment something stops adding up, and filing the bug right there — the bar is set deliberately low
 
 **The rule.** Whenever a run, in the middle of its work, **sees something that does not add up** — a measurement contradicting
