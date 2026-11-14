@@ -11,7 +11,7 @@
 #     "这个 cronjob 必须终止，我们不能依赖这种系统来做，它掩盖了问题。"
 #
 # THE MEASUREMENT THAT PRODUCED THE RULING (recorded once; do not re-derive):
-#   `crontab -l` carried `*/10 * * * * /home/user/bin/hp-worker-autostart.sh`.
+#   `crontab -l` carried `*/10 * * * * /home/user/bin/peer-launcher-autostart.sh`.
 #   Its log ~/.gopi/logs/worker-autostart.log was 36,398 lines and recorded
 #   1,214 delegations. The log shows the shape plainly — the line fired, a
 #   worker started, the count read zero seconds later, ten minutes later it
@@ -84,7 +84,7 @@
 #      named, logged, the refusal code spelled out, an explicit "no worker was
 #      started by this script", and a non-zero exit so the operator sees it.
 #
-# Usage:  hp-worker-autostart.sh [--dry-run] [-h|--help]
+# Usage:  peer-launcher-autostart.sh [--dry-run] [-h|--help]
 #   --dry-run  print the launcher call this script would make and exit 0;
 #              asks for NOTHING and starts NOTHING (it is NOT an exemption from
 #              the retirement gate: reading what would happen is still running

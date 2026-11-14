@@ -4,7 +4,7 @@
 # THE IPv6 FIX (Epic: google search quality):
 #   search-bot's IPv4 (DigitalOcean datacenter) is blocked by google.com with the
 #   hard reCAPTCHA /sorry wall (even for a headed Chrome — Runtime.evaluate hangs).
-#   Its IPv6 (2604:a880:4:1d0::/64) only gets the soft "enablejs" wall, which a
+#   Its IPv6 (2001:db8:4:1d0::/64) only gets the soft "enablejs" wall, which a
 #   JS-capable browser passes automatically. Chrome's own Happy-Eyeballs resolver
 #   ignores the OS getaddrinfo IPv6 preference, so we FORCE google.com -> Google
 #   IPv6 anycast (2001:4860:482a:7700::) via --host-resolver-rules.

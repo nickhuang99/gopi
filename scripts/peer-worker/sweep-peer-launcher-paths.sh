@@ -41,8 +41,8 @@ grep -rIl --max-depth 3 "${EXCLUDES[@]}" \
   -e 'gopi worker' -e 'gopi-worker-up' -e 'worker-up.sh' "$H" 2>/dev/null | sort | head -30
 
 echo "=== 6. the legacy audit script ==="
-ls -la "$H/.gopi/hp-night-legacy-audit.sh" 2>&1
-grep -rIn --max-depth 3 "${EXCLUDES[@]}" "hp-night-legacy-audit" "$H" 2>/dev/null | head
+ls -la "$H/.gopi/peer-worker-night-legacy-audit.sh" 2>&1
+grep -rIn --max-depth 3 "${EXCLUDES[@]}" "peer-worker-night-legacy-audit" "$H" 2>/dev/null | head
 echo "--- legacy-audit task rows by status"
 sqlite3 "$H/.gopi/memory.db" "select status,count(*) from tasks where summary like 'legacy-audit%' group by status" 2>&1
 

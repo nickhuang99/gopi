@@ -9,7 +9,7 @@
 
 访问路径（2026-08 实证，重要！）：
   - search-bot（DigitalOcean 机房）IPv4 对 google.com/search 返回 reCAPTCHA /sorry
-    硬墙；IPv6（2604:a880:4:1d0::/64）只把"墙的类型"从 /sorry 换成 enablejs 软墙
+    硬墙；IPv6（2001:db8:4:1d0::/64）只把"墙的类型"从 /sorry 换成 enablejs 软墙
     ——curl 无论 v4/v6/udm=14/gbv=1/带 cookie 都只能拿到 enablejs 页（无结果），
     有头 Chrome 无论 v4/v6 都被 /sorry 拦（页面明示该 VPS 的 IPv6 地址），
     预热（先开首页再搜索）与 reCAPTCHA 复选框点击均无效。

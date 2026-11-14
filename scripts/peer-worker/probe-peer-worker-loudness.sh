@@ -35,7 +35,7 @@ chmod +x "$SB/launcher-ok.sh"
 
 echo "=== PROBE 1: launcher RENAMED (missing) — acceptance construction ==="
 mv "$HOME/bin/gopi-worker-up.sh" "$HOME/bin/gopi-worker-up.sh.hidden"
-for f in hp-worker-autostart.sh hp-worker-nightsafe.sh; do
+for f in peer-launcher-autostart.sh peer-launcher-nightsafe.sh; do
   out=$(GOPI_NIGHT_START_HOUR=0 GOPI_NIGHT_END_HOUR=24 "$HOME/bin/$f" 2>&1); rc=$?
   echo "[$f] rc=$rc"
   echo "$out" | sed 's/^/    /'
@@ -44,7 +44,7 @@ done
 mv "$HOME/bin/gopi-worker-up.sh.hidden" "$HOME/bin/gopi-worker-up.sh"
 
 echo "=== PROBE 2: refusing stub launcher (agent-session guard exit 3) ==="
-for f in hp-worker-autostart.sh hp-worker-nightsafe.sh; do
+for f in peer-launcher-autostart.sh peer-launcher-nightsafe.sh; do
   out=$(GOPI_WORKER_LAUNCHER="$SB/launcher-refuse.sh" GOPI_WORKER_REPO="$SB/repo" \
         GOPI_NIGHT_START_HOUR=0 GOPI_NIGHT_END_HOUR=24 "$HOME/bin/$f" 2>&1); rc=$?
   echo "[$f] rc=$rc"
@@ -52,22 +52,22 @@ for f in hp-worker-autostart.sh hp-worker-nightsafe.sh; do
 done
 
 echo "=== PROBE 3: accepting stub (exit 0) — the success path stays non-noisy ==="
-for f in hp-worker-autostart.sh hp-worker-nightsafe.sh; do
+for f in peer-launcher-autostart.sh peer-launcher-nightsafe.sh; do
   out=$(GOPI_WORKER_LAUNCHER="$SB/launcher-ok.sh" GOPI_WORKER_REPO="$SB/repo" \
         GOPI_NIGHT_START_HOUR=0 GOPI_NIGHT_END_HOUR=24 "$HOME/bin/$f" 2>&1); rc=$?
   echo "[$f] rc=$rc failed_lines=$(printf '%s' "$out" | grep -c FAILED)"
   echo "$out" | sed 's/^/    /'
 done
 
-echo "=== PROBE 4: hp-night-legacy-audit.sh rounds stop loudly on a refusal ==="
+echo "=== PROBE 4: peer-worker-night-legacy-audit.sh rounds stop loudly on a refusal ==="
 cat > "$SB/gopi-refuse" <<'EOS'
 #!/bin/bash
 echo "agent-session guard: refusing to start a worker" >&2
 exit 3
 EOS
 chmod +x "$SB/gopi-refuse"
-out=$(GOPI_WORKER_BIN="$SB/gopi-refuse" bash "$HOME/.gopi/hp-night-legacy-audit.sh" 2>&1); rc=$?
-echo "[hp-night-legacy-audit.sh] rc=$rc"
+out=$(GOPI_WORKER_BIN="$SB/gopi-refuse" bash "$HOME/.gopi/peer-worker-night-legacy-audit.sh" 2>&1); rc=$?
+echo "[peer-worker-night-legacy-audit.sh] rc=$rc"
 echo "$out" | sed 's/^/    /'
 echo "    rounds started: $(printf '%s' "$out" | grep -c 'round .*: 起 worker')  (must be 1 — the loop stops at the refusal)"
 

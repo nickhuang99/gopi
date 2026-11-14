@@ -1,6 +1,6 @@
 #!/bin/bash
 # WORKER-OWNERSHIP: OPERATOR-ONLY — devdoc/worker-ownership.md
-# hp-night-legacy-audit.sh — HP 夜间 legacy-audit 执行器（GLM 免费窗口 23:00-09:00）
+# peer-worker-night-legacy-audit.sh — HP 夜间 legacy-audit 执行器（GLM 免费窗口 23:00-09:00）
 #
 # SWEEP DISPOSITION (2026-09-12, devdoc/hp-inline-launchers-20260912.md):
 # this was the THIRD inline worker-start path found on HP — an executable .sh
@@ -16,7 +16,7 @@
 # (no setsid/nohup, no second log contract, no process accounting). A general
 # worker launch belongs to the ONE launcher: ~/bin/gopi-worker-up.sh.
 #
-# 用法: bash hp-night-legacy-audit.sh
+# 用法: bash peer-worker-night-legacy-audit.sh
 # 每批: gopi worker --once（领一个 legacy-audit 任务 → GLM 审查 → 操作 audit DB）
 
 cd /tmp

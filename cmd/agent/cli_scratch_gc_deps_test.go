@@ -261,7 +261,7 @@ func TestScratchGCDepsCronLineIsASchedule(t *testing.T) {
 		wantOK  bool
 	}{
 		{"weekly gopi entry", "0 3 * * 0 /home/user/bin/gopi-home-gc.sh", "/home/user/bin/gopi-home-gc.sh", true},
-		{"step field", "*/10 * * * * /home/user/bin/hp-worker-autostart.sh", "/home/user/bin/hp-worker-autostart.sh", true},
+		{"step field", "*/10 * * * * /home/user/bin/peer-launcher-autostart.sh", "/home/user/bin/peer-launcher-autostart.sh", true},
 		{"reboot shorthand", "@reboot /home/user/bin/gopi-worker-up", "/home/user/bin/gopi-worker-up", true},
 		{"environment assignment", "PATH=/usr/bin:/bin", "", false},
 		{"comment", "# 0 3 * * 0 /home/user/bin/gopi-home-gc.sh", "", false},
@@ -329,7 +329,7 @@ func TestScratchGCDepsOriginIgnoresNonExecutableArgs(t *testing.T) {
 // visible (including the HP worker family Rule 35's incident was about), and a
 // neighbour's is not silently dropped from the report.
 func TestScratchGCDepsClassifyGopiShapes(t *testing.T) {
-	ours := []string{"gopi", "gopi-worker-up", "hp-worker-autostart.sh", "/home/user/bin/gopi"}
+	ours := []string{"gopi", "gopi-worker-up", "peer-launcher-autostart.sh", "/home/user/bin/gopi"}
 	for _, s := range ours {
 		if got := depsClassify(s); got != depsOriginGopi {
 			t.Errorf("depsClassify(%q) = %q, want %q", s, got, depsOriginGopi)

@@ -1,9 +1,9 @@
 #!/bin/bash
 # WORKER-OWNERSHIP: OPERATOR-ONLY — devdoc/worker-ownership.md
-# apply-hp-sweep-dispositions.sh — the disposition half of the HP sweep
+# apply-peer-worker-sweep-dispositions.sh — the disposition half of the HP sweep
 # (devdoc/hp-inline-launchers-20260912.md §sweep). Run ON HP:
 #
-#     ssh hp 'bash -s' < scripts/hp/apply-hp-sweep-dispositions.sh
+#     ssh hp 'bash -s' < scripts/peer-worker/apply-peer-worker-sweep-dispositions.sh
 #
 # SAFETY: it touches NO running process and NO worker (no pkill, no pgrep -f
 # kill, no PID it did not create). Three narrow actions only:
@@ -19,7 +19,7 @@
 set -u
 
 echo "=== A: de-execute the pre-fix inline starter copies ==="
-for f in /home/user/bin/*.bak-* /home/user/.gopi/hp-night-legacy-audit.sh.bak-*; do
+for f in /home/user/bin/*.bak-* /home/user/.gopi/peer-worker-night-legacy-audit.sh.bak-*; do
   [ -e "$f" ] || continue
   chmod a-x "$f"
   echo "de-executed: $f"
@@ -30,7 +30,7 @@ if [ -e /home/user/.gopi-ship/gopi-worker-up.sh ]; then
   echo "de-executed (bytes kept as ship evidence): /home/user/.gopi-ship/gopi-worker-up.sh"
 fi
 ls -l /home/user/bin/ | grep -E 'bak-|worker-'
-ls -l /home/user/.gopi/hp-night-legacy-audit.sh* /home/user/.gopi-ship/gopi-worker-up.sh
+ls -l /home/user/.gopi/peer-worker-night-legacy-audit.sh* /home/user/.gopi-ship/gopi-worker-up.sh
 
 echo "=== B: remove the epic's own regenerable probe stubs ==="
 rm -rf /home/user/.gopi-ship/probe

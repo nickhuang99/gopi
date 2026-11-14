@@ -10,7 +10,7 @@
 #
 #     "这个 cronjob 必须终止，我们不能依赖这种系统来做，它掩盖了问题。"
 #
-# It carries the SAME hazard as its sister hp-worker-autostart.sh, and this
+# It carries the SAME hazard as its sister peer-launcher-autostart.sh, and this
 # file was audited before being changed (brief §4: "check it; do not assume").
 # Its night window (`23:00-09:00`) is what made it worse, not better: the
 # window is precisely when nobody is watching, so a scheduled caller here would
@@ -18,7 +18,7 @@
 # operator may still run it by hand, inside the window, in a terminal.
 #
 # THE MEASUREMENT THAT PRODUCED THE RULING (recorded once; do not re-derive):
-#   `crontab -l` carried `*/10 * * * * /home/user/bin/hp-worker-autostart.sh`.
+#   `crontab -l` carried `*/10 * * * * /home/user/bin/peer-launcher-autostart.sh`.
 #   Its log ~/.gopi/logs/worker-autostart.log was 36,398 lines and recorded
 #   1,214 delegations. The log shows the shape plainly — the line fired, a
 #   worker started, the count read zero seconds later, ten minutes later it
@@ -80,7 +80,7 @@
 #   4. CHECK THE STATUS (loud FAILED + explicit "no worker was started by this
 #      script" + non-zero exit).
 #
-# Usage:  hp-worker-nightsafe.sh [--dry-run] [-h|--help]
+# Usage:  peer-launcher-nightsafe.sh [--dry-run] [-h|--help]
 #   --dry-run  print the launcher call this script would make and exit 0;
 #              asks for NOTHING and starts NOTHING. It does NOT bypass the
 #              window gate — a dry run reports what a real run would do NOW —

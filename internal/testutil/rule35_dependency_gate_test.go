@@ -1,6 +1,6 @@
 // The RULE-35 half of the scripts gate (PROJECT.md Rule 35: "Zero Dependency Is a
 // Discipline — Nothing New Is Created Casually"). The rule's own post-mortem is
-// a cron line nobody knew about: `*/10 * * * * /home/user/bin/hp-worker-autostart.sh`,
+// a cron line nobody knew about: `*/10 * * * * /home/user/bin/peer-launcher-autostart.sh`,
 // installed by a task that had been asked to fix two launchers, 1,214
 // delegations later still running, COVERING a worker-death loop. This file makes
 // the shapes a gate CAN see a build failure, and — just as important — says out
@@ -606,7 +606,7 @@ func TestRule35CronExpressionPredicateTightened(t *testing.T) {
 		// ---- the true positives the tightening must keep ----
 		{
 			name: "a plain installed cron line",
-			line: `*/10 * * * * /home/user/bin/hp-worker-autostart.sh`,
+			line: `*/10 * * * * /home/user/bin/peer-launcher-autostart.sh`,
 			want: true,
 		},
 		{
@@ -660,7 +660,7 @@ func TestRule35DetectorFlagsASyntheticShape(t *testing.T) {
 		{
 			name: "literal cron expression in a script",
 			rel:  "scripts/planted-scheduler.sh",
-			body: "entry=\"*/10 * * * * /home/user/bin/hp-worker-autostart.sh\"\n",
+			body: "entry=\"*/10 * * * * /home/user/bin/peer-launcher-autostart.sh\"\n",
 			want: true,
 		},
 		{
@@ -710,7 +710,7 @@ func TestRule35DetectorFlagsASyntheticShape(t *testing.T) {
 		{
 			name: "a COMMENT quoting the retired cron line is documentation",
 			rel:  "devdoc/planted-evidence.md.sh",
-			body: "# */10 * * * * /home/user/bin/hp-worker-autostart.sh   <- the line nobody knew about\n",
+			body: "# */10 * * * * /home/user/bin/peer-launcher-autostart.sh   <- the line nobody knew about\n",
 			want: false,
 		},
 		{

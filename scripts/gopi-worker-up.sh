@@ -486,7 +486,7 @@ report_counts() {
 # NOTE for any OTHER caller that parses this report: the two count LINES above
 # keep their existing label and shape, so a caller that reads one of them by
 # regex (`^live <name> workers: N` / `^other <name> processes: N`) is unaffected
-# by the third line — scripts/hp/hp-worker-autostart.sh reads the worker line
+# by the third line — scripts/peer-worker/peer-launcher-autostart.sh reads the worker line
 # exactly that way. What a parser must NOT do is assume the report ENDS after
 # the two lines it knows: the third state is part of the measurement, and a
 # reader that stops early is the silent drop this branch removed.

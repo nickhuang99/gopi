@@ -1288,7 +1288,7 @@ gopi tool scratch-gc sandboxes --dry-run    # what WOULD go, with the reason per
 session was asked to fix two HP-side worker starters that launched workers without
 checking the exit status. It did the right thing to the launchers — and then, to
 make them reliable, it **installed a cron line**:
-`*/10 * * * * /home/user/bin/hp-worker-autostart.sh`. Author of both the script and
+`*/10 * * * * /home/user/bin/peer-launcher-autostart.sh`. Author of both the script and
 the install: `gopi <gopi@gopi>`, commit `4fade437`.
 
 Nobody knew it was running. Its log reached **36,398 lines / 1,214 delegations**,
@@ -1299,12 +1299,12 @@ verdict on discovering it:
 > "This cronjob must be stopped. We cannot rely on this kind of system to do the work — it covers the problem up."
 
 **RETIRED 2026-09-26 — the line is gone and the script now REFUSES an automatic
-caller.** `scripts/hp/hp-worker-autostart.sh` and its sister
-`hp-worker-nightsafe.sh` exit non-zero and print the ruling when invoked from a
+caller.** `scripts/peer-worker/peer-launcher-autostart.sh` and its sister
+`peer-launcher-nightsafe.sh` exit non-zero and print the ruling when invoked from a
 scheduler context (no terminal on stdin, or a `cron`/`atd`/`anacron` ancestor in the
 process table); an operator in a terminal may still run them by hand. **Do not
 re-install the cron line: no replacement auto-launcher, no escape hatch** — see
-`devdoc/hp-worker-autostart-retired-20260926.md`.
+`devdoc/peer-launcher-autostart-retired-20260926.md`.
 
 and then, as a standing principle:
 
@@ -1375,7 +1375,7 @@ gopi — that is the moment this rule is for. Fix the thing. Do not wrap it.
 ### How to satisfy this rule when a dependency IS the right answer
 
 Say the four things, then make it **refuse by default and explain itself** (see the
-retirement of the HP autostart, `briefings/brief-retire-hp-worker-autostart.md`, for
+retirement of the HP autostart, `briefings/brief-retire-peer-launcher-autostart.md`, for
 the shape): it must not run unattended unless it was designed to, it must name this
 rule and the reason in its own header, and there must be a test that fails if the
 silent form comes back. A persistent dependency that a future reader can neither

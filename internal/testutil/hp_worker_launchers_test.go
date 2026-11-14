@@ -12,7 +12,7 @@ package testutil
 // — with no exit-status check. A launch REFUSED by the agent-session guard
 // (exit 3) was therefore logged exactly like a success, and nothing was left
 // pointing at the operator-owned launcher. Those two scripts live OUTSIDE the
-// repo (~/bin on HP), so the repo copies under scripts/hp/ are their source of
+// repo (~/bin on HP), so the repo copies under scripts/peer-worker/ are their source of
 // truth and the object this gate audits: an HP-side edit that re-inlines a
 // worker start is caught by `go test`, not by reading a remote file.
 //
@@ -46,11 +46,11 @@ import (
 const (
 	// hpScriptsDir is the repo-side home of the HP launchers (Rule 6b: the
 	// deliverable is shipped FROM here to ~/bin on the peer).
-	hpScriptsDir = scriptsDirName + "/hp"
+	hpScriptsDir = scriptsDirName + "/peer-worker"
 	// hpAutostartName / hpNightsafeName are the two starters the epic rewrites.
 	// They are the names the peer installs, so the repo copy must match exactly.
-	hpAutostartName = "hp-worker-autostart.sh"
-	hpNightsafeName = "hp-worker-nightsafe.sh"
+	hpAutostartName = "peer-launcher-autostart.sh"
+	hpNightsafeName = "peer-launcher-nightsafe.sh"
 	hpAutostartRel  = hpScriptsDir + "/" + hpAutostartName
 	hpNightsafeRel  = hpScriptsDir + "/" + hpNightsafeName
 	// hpLauncherVar is the shell variable holding the peer-side launcher path:
@@ -84,13 +84,13 @@ const (
 	hpNightStartKnob = "GOPI_NIGHT_START_HOUR"
 	hpNightEndKnob   = "GOPI_NIGHT_END_HOUR"
 	// hpLegacyAuditRel is the THIRD inline worker-start path the sweep found on
-	// the peer (~/.gopi/hp-night-legacy-audit.sh), kept repo-side for the same
+	// the peer (~/.gopi/peer-worker-night-legacy-audit.sh), kept repo-side for the same
 	// reason as the two starters. It is deliberately NOT in hpScripts: it is a
 	// bounded per-round drainer (a hand-run campaign tool, scheduled by
 	// nothing), not a launcher — so the delegation rule does not apply to it,
 	// while the CHECKED-STATUS rule does (it used to loop over a worker start
 	// with no status check, the same silent-success hole).
-	hpLegacyAuditRel = hpScriptsDir + "/hp-night-legacy-audit.sh"
+	hpLegacyAuditRel = hpScriptsDir + "/peer-worker-night-legacy-audit.sh"
 	// hpWorkerBinKnob is the drainer's binary knob — a knob only so the
 	// loudness path is driveable with a stub; the default is the real binary.
 	hpWorkerBinKnob = "GOPI_WORKER_BIN"
