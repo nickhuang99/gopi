@@ -10,7 +10,7 @@ system-layer production code was touched, no gate/guard/baseline weakened, no te
 ## 1. The incident this audit is about
 
 A gopi **client** host finished tasks whose branches never reached the server, and nothing
-reported a problem. Root cause (diagnosed 2026-09-16, HP→peer1, devdoc/hp-push-diagnosis-20260916.md,
+reported a problem. Root cause (diagnosed 2026-09-16, HP→peer1, devdoc/peer-push-diagnosis-20260916.md,
 memory records #1815/#1816/#1817): in the client close-out chain the **dirty-worktree guard ran
 BEFORE the push**, so one untracked `.evid/` scratch file skipped the whole chain
 (`internal/tools/task_finish_cleanup.go`: the dirty gate at `:1007-1010` returns `Skipped` for the

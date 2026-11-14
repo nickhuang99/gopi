@@ -95,6 +95,7 @@ const (
 	workerOwnershipMinScannedFiles  = 100
 	workerOwnershipMinTriggerFiles  = 5
 	workerOwnershipAuditedDocSuffix = workerownership.SuffixDoc
+
 	// workerOwnershipMaxReportedHits caps the per-file LISTING only: the total
 	// uncovered count is ALWAYS stated (see workerOwnershipUncoveredReport).
 	// The 2026-09-15 incident was truncation WITHOUT disclosure — the cap
@@ -114,6 +115,18 @@ const (
 	// devdoc/ still READS as a copyable launch sequence, so it is in scope.
 	workerOwnershipAuditedTxtSuffix = workerownership.SuffixPlain
 )
+
+// workerOwnershipAbsentRootsAllowed names the audited roots whose ABSENCE this
+// tree has DECIDED on (see workerOwnershipKnownAbsent for the measurement and
+// the reasoning). It is a list rather than a bool because it must stay an exact
+// set: a second root going missing is a regression, not a shape.
+var workerOwnershipAbsentRootsAllowed = []string{workerOwnershipDirBriefings}
+
+// workerOwnershipAbsentAnchors is how many entries of workerOwnershipAnchors
+// live inside a decided-absent root — ONE, and asserted rather than skipped:
+// the anchor for briefings/brief-worker-idle-exit.md (see that test's arm).
+// A second one appearing is a scope change, and it fails there.
+const workerOwnershipAbsentAnchors = 1
 
 // workerOwnershipVerbNeedles are the command SHAPES that read as an
 // instruction to start a worker or run a task. They come from the leaf package
@@ -412,9 +425,12 @@ func workerOwnershipUncovered(root string) ([]string, error) {
 		if _, ok := workerOwnershipDismissed[rel]; ok {
 			continue
 		}
-		body, err := os.ReadFile(filepath.Join(root, filepath.FromSlash(rel)))
+		body, ok, err := workerOwnershipReadFile(root, rel)
 		if err != nil {
 			return nil, fmt.Errorf("read %s: %w", rel, err)
+		}
+		if !ok {
+			continue // its audited root is a decided absence (see workerOwnershipKnownAbsent)
 		}
 		if !workerownership.Annotated(string(body)) {
 			missing = append(missing, rel)
@@ -496,10 +512,13 @@ func TestWorkerOwnershipCanonicalBlockIsReal(t *testing.T) {
 		anchored[rel] = true
 	}
 	for rel := range anchored {
-		doc, err := os.ReadFile(filepath.Join(root, filepath.FromSlash(rel)))
+		doc, ok, err := workerOwnershipReadFile(root, rel)
 		if err != nil {
 			t.Errorf("read %s: %v", rel, err)
 			continue
+		}
+		if !ok {
+			continue // its audited root is a decided absence (see workerOwnershipKnownAbsent)
 		}
 		if _, ok := workerOwnershipPointerLine(string(doc)); !ok {
 			t.Errorf("%s: no pointer line carrying %q AND naming %s", rel, workerOwnershipMarker, workerOwnershipCanonicalRel)
@@ -530,8 +549,20 @@ func TestWorkerOwnershipGateScansTheTree(t *testing.T) {
 	for _, rel := range scanned {
 		seen[rel] = true
 	}
+	// AN ANCHOR INSIDE A DECIDED-ABSENT ROOT IS COUNTED, NOT FAILED — and the
+	// count is asserted, so this arm cannot silently stop covering anything
+	// (Rule 15: an exemption that is not counted is a silent skip).
+	// briefings/brief-worker-idle-exit.md is the ONE such anchor: it landed at
+	// devdoc/bugfix-worker-idle-exit-20260908.md's subject matter, and the
+	// briefings/ input tree was never exported (measured: git ls-files |
+	// grep -c '^briefings/' → 0).
+	absentAnchors := 0
 	for rel, anchor := range workerOwnershipAnchors {
 		if !seen[rel] {
+			if workerOwnershipKnownAbsent(workerOwnershipRootOf(rel)) {
+				absentAnchors++
+				continue
+			}
 			t.Errorf("audited location %s is not in the scan (moved or deleted?) — the audit's §7 location list must stay covered", rel)
 			continue
 		}
@@ -544,6 +575,9 @@ func TestWorkerOwnershipGateScansTheTree(t *testing.T) {
 			t.Error(err)
 		}
 	}
+	if absentAnchors != workerOwnershipAbsentAnchors {
+		t.Errorf("anchors inside decided-absent roots: saw %d, the tree's decided shape says %d — an exemption count that moves is a silent change of scope (briefings/ is the only absent root; see workerOwnershipKnownAbsent)", absentAnchors, workerOwnershipAbsentAnchors)
+	}
 }
 
 // workerOwnershipCheckAnchor asserts one audited location still carries the
@@ -551,9 +585,12 @@ func TestWorkerOwnershipGateScansTheTree(t *testing.T) {
 // lose its pointer) and that it is not also dismissed.
 func workerOwnershipCheckAnchor(t *testing.T, root, rel, anchor string) string {
 	t.Helper()
-	body, err := os.ReadFile(filepath.Join(root, filepath.FromSlash(rel)))
+	body, ok, err := workerOwnershipReadFile(root, rel)
 	if err != nil {
 		return fmt.Sprintf("read %s: %v", rel, err)
+	}
+	if !ok {
+		return "" // its audited root is a decided absence (see workerOwnershipKnownAbsent)
 	}
 	if !strings.Contains(string(body), anchor) {
 		return fmt.Sprintf("%s: the annotated line %q is gone — re-anchor the pointer", rel, anchor)
@@ -583,10 +620,13 @@ func TestWorkerOwnershipDismissTableIsHonest(t *testing.T) {
 		if _, isAnchor := workerOwnershipAnchors[rel]; isAnchor {
 			continue // reported by TestWorkerOwnershipGateScansTheTree
 		}
-		body, err := os.ReadFile(filepath.Join(root, filepath.FromSlash(rel)))
+		body, ok, err := workerOwnershipReadFile(root, rel)
 		if err != nil {
 			t.Errorf("dismissed file %s is unreadable (gone? then drop the entry): %v", rel, err)
 			continue
+		}
+		if !ok {
+			continue // its audited root is a decided absence (see workerOwnershipKnownAbsent)
 		}
 		if _, ok := workerOwnershipPointerLine(string(body)); ok {
 			t.Errorf("%s is dismissed as out of scope but carries the pointer — drop the dismiss entry so the audit sees it as annotated", rel)
@@ -622,10 +662,78 @@ func workerOwnershipScan(t *testing.T, root string) (scanned, triggers []string,
 // MentionsLaunchShape) — the SAME one the write path uses to decide whether a
 // document needs the pointer, so the gate cannot flag a shape the writer does
 // not know about (which is exactly how master re-reddened per merge round).
+// workerOwnershipKnownAbsent reports whether an audited root's ABSENCE is a
+// decided property of THIS tree rather than a regression.
+//
+// The exempt list is exact and one line long on purpose (Rule 1: a named
+// constant, not a literal; Rule 15: the absence is stated, never swallowed).
+//
+//	workerOwnershipDirBriefings — devdoc/ holds these documents in this
+//	public export; briefings/ was the development checkout's dispatch input
+//	tree and was never exported. Measured on this rev:
+//	  $ ls -d briefings      → No such file or directory
+//	  $ git ls-files | grep -c '^briefings/'  → 0
+//
+// The SAME fact is what 75d262c recorded for internal/standards' arms, with
+// the same shape: a floor of 0 while the directory is absent, restored the
+// moment it exists. A root that is NOT on this list and vanishes still fails
+// the walk — that is the difference between a decided shape and a silently
+// narrowing audit.
+func workerOwnershipKnownAbsent(dir string) bool {
+	for _, known := range workerOwnershipAbsentRootsAllowed {
+		if dir == known {
+			return true
+		}
+	}
+	return false
+}
+
+// workerOwnershipRootOf returns the top-level directory of a repo-relative
+// path — the unit workerOwnershipKnownAbsent judges.
+func workerOwnershipRootOf(rel string) string {
+	if i := strings.IndexByte(rel, '/'); i >= 0 {
+		return rel[:i]
+	}
+	return rel
+}
+
+// workerOwnershipReadFile reads one repo-relative audited file and answers
+// THREE things, because "absent" and "unreadable" are different findings: ok is
+// false only when the file is missing AND its audited root is a decided absence
+// (workerOwnershipAbsentRootsAllowed), while err carries every other failure so
+// a permissions problem is never mistaken for the export's shape.
+func workerOwnershipReadFile(root, rel string) (body []byte, ok bool, err error) {
+	b, readErr := os.ReadFile(filepath.Join(root, filepath.FromSlash(rel)))
+	if readErr == nil {
+		return b, true, nil
+	}
+	if os.IsNotExist(readErr) && workerOwnershipKnownAbsent(workerOwnershipRootOf(rel)) {
+		return nil, false, nil
+	}
+	return nil, false, readErr
+}
+
 func workerOwnershipScanRoot(root string) (scanned, triggers []string, err error) {
 	for _, dir := range workerOwnershipAuditedRoots() {
 		base := filepath.Join(root, dir)
 		if _, statErr := os.Stat(base); statErr != nil {
+			// AN ABSENT ROOT IS A RECORDED FACT, NEVER A SILENT SKIP AND NEVER
+			// AN ABORT (GOPI.md Rule 15; same ruling as 75d262c, which taught
+			// the standards gates that a public export is a different SHAPE).
+			// This tree is published WITHOUT git history and without the
+			// development checkout's briefings/ tree — measured: `ls -d
+			// briefings` → No such file or directory, `git ls-files |
+			// grep -c '^briefings/'` → 0. Aborting the walk there reds a gate
+			// that the devdoc/ and scripts/ roots can still answer over, and
+			// reports "the gate is broken" for a tree that never had it.
+			//
+			// The exemption is an EXACT LIST, not "any missing root": a root
+			// that disappears LATER still fails, because it is not on it. That
+			// is the whole difference between a decided shape and a silently
+			// narrowing audit.
+			if workerOwnershipKnownAbsent(dir) {
+				continue
+			}
 			return nil, nil, statErr
 		}
 		walkErr := filepath.WalkDir(base, func(path string, d os.DirEntry, walkErr error) error {

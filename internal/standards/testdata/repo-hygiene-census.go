@@ -279,6 +279,8 @@ func reasonFor(p, class string) string {
 	}
 	ext := strings.ToLower(filepath.Ext(p))
 	switch {
+	case p == "docs/quickstart.gif":
+		return "the README's own four-frame quickstart GIF: README.md embeds it by path, so it is the first thing a visitor sees, and it IS regenerable — docs/quickstart.md carries the exact gopi tool gif invocation that re-renders it from four real command runs. It is frozen here rather than removed because the recipe and the artefact are one deliverable; a future clean-up must re-render it, not delete the embed"
 	case top == "sandbox":
 		return "a committed sandbox/ tree holding copied .gopi state and a compiled binary: sandboxes are execution environments (Rule 34), never tracked artefacts; removal owned by epic 01a0fd2e scope 3"
 	case class == "font":

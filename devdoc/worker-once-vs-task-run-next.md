@@ -156,7 +156,7 @@ finish-cleanup delivery chain on the wrapper row (`cli_tasks.go:1706-1730` (`Tas
      `worker_daemon_singleton_e2e_test.go`, `cli_tasks_worker_unknown_arg_test.go`.
    - **4 shell acceptance rigs**: `scripts/acceptance-self-release.sh` (rounds r1/r2,
      status-checked), `-stop.sh`, `acceptance-zombie-auto-dispose.sh`,
-     `scripts/hp/hp-night-legacy-audit.sh`.
+     `scripts/peer-worker/hp-night-legacy-audit.sh`.
    - separate but adjacent: `internal/testutil/hp_worker_launchers_test.go` and
      `worker_ownership_gate_test.go` pin the *launcher argv shapes* that carry
      `--once` into the spawned worker (they assert on the logged argv, they do
@@ -167,9 +167,9 @@ finish-cleanup delivery chain on the wrapper row (`cli_tasks.go:1706-1730` (`Tas
    `task run next` **cannot stand in** for any of these: no lifecycle pass, no
    own-release claim stamp, no output attribution, no quarantine filter, and a
    different exit contract.
-2. **The operator drain scripts.** `scripts/hp/hp-night-legacy-audit.sh:46`
+2. **The operator drain scripts.** `scripts/peer-worker/hp-night-legacy-audit.sh:46`
    runs `gopi worker --once` in a *serial* loop — "one batch, then the next"
-   — and checks the exit status; `devdoc/hp-inline-launchers-20260912.md:120`
+   — and checks the exit status; `devdoc/peer-inline-launchers-20260912.md:120`
    explicitly calls its `--once` round "a deliberate bounded drain".
 3. **Detached bounded drain.** `gopi worker --daemon --once` = "put a worker in
    its own session, let it drain whatever is queued *now*, and do not leave a

@@ -217,11 +217,11 @@ refusal" reproduced live.
 ### 2.8 The resident worker's OWN log — the sweep ran, and re-skipped in silence
 
 The resident `gopi worker` (pid 2928345) was launched with its stdout redirected, so its
-own log exists and is readable — `/proc/2928345/fd/1 → /home/user/workspace/hp-worker-2.log`
+own log exists and is readable — `/proc/2928345/fd/1 → /home/user/workspace/peer-worker-2.log`
 (54 KB, 1019 lines):
 
 ```
-$ grep -n 'finish-cleanup skipped:' ~/workspace/hp-worker-2.log
+$ grep -n 'finish-cleanup skipped:' ~/workspace/peer-worker-2.log
 167:task 01a0aa0e-88ca-7625-9943-d73c68a09d28: finish-cleanup skipped:
      git status: chdir /home/user/workspace/gopi-cleanup-singlenode: no such file or directory
 471:task 01a0aa61-9e26-7031-8b8e-69f3cc2bb168: finish-cleanup skipped:
@@ -249,7 +249,7 @@ Three things this closes and one it opens:
    client pass, and it re-examined these rows. But it printed **nothing** for them:
 
 ```
-$ grep -c '\[finish-cleanup\]' ~/workspace/hp-worker-2.log
+$ grep -c '\[finish-cleanup\]' ~/workspace/peer-worker-2.log
 0            # the sweep emitted zero lines while the per-row refusals above exist
 ```
 
@@ -460,8 +460,8 @@ diagnosis and the evidence; the fix belongs to the system host per the two-host 
 
 ## 5. Rule 6d — deliverable declaration
 
-- **Branch:** `docs/hp-push-diagnosis` (worktree `~/workspace/gopi-push-diagnosis`)
-- **Recovery:** `git -C ~/work/GoPi show docs/hp-push-diagnosis:devdoc/hp-push-diagnosis-20260916.md`
+- **Branch:** `docs/peer-push-diagnosis` (worktree `~/workspace/gopi-push-diagnosis`)
+- **Recovery:** `git -C ~/work/GoPi show docs/peer-push-diagnosis:devdoc/peer-push-diagnosis-20260916.md`
 - Follow-up dispatched: `01a0aaef-5a90-7e02-9276-471d61b8f565` (system layer, peer1).
 - **Persistent in the main repo:** the worktree shares `~/work/GoPi`'s refs, so the
   commit is in the main repo — no push required for this branch to survive.

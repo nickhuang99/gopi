@@ -81,7 +81,7 @@ unconditional. Everything else in this document stands.
   and `scripts/gopi-worker-up.sh … --worker-log-root …`): exit 2, naming the
   retired spelling, the replacement, and (on the CLI) the stale-binary cause.
 - **Scripts swept**: `scripts/acceptance-self-release{,-stop}.sh` no longer pass
-  the flag; `scripts/hp/hp-checkout-staleness.sh`'s probe comment records why the
+  the flag; `scripts/peer-worker/hp-checkout-staleness.sh`'s probe comment records why the
   string is still a valid staleness probe.
 - **Devdoc**: `devdoc/child-stream-task-output.md`; the superseded mechanism in
   `devdoc/worker-log-session-attribution-20260912.md` carries a

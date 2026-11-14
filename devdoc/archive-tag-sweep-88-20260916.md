@@ -84,7 +84,7 @@ standing, produces a confidently wrong verdict:
 3. **The owning ledger row is the one that owns the BRANCH (`deliverable.branch`),
    chosen earliest-first.** Matching `summary LIKE %branch%` newest-first picks up
    the *recovery* task filed against that same branch name and inverts the finding:
-   it reported `archive/docs/hp-push-diagnosis` as owned by `01a0aaf2` (pending)
+   it reported `archive/docs/peer-push-diagnosis` as owned by `01a0aaf2` (pending)
    when its owner is `01a0aab1` (`completed`). The summary match remains only as a
    fallback for rows that predate the deliverable stamp, and it is ordered the same
    way.
@@ -181,12 +181,12 @@ REVIEW instead of rounded.
 
 ## 5. The former UNKNOWN row — decided, and its deliverable RECOVERED
 
-`archive/docs/hp-push-diagnosis` (tip `dcb35012`) was reported UNKNOWN by the first
+`archive/docs/peer-push-diagnosis` (tip `dcb35012`) was reported UNKNOWN by the first
 pass because the tag arrived after `audit.tsv` was measured. It is now decided and
 its content restored:
 
 - Census: 3 commits beyond master, master lacks exactly one path —
-  `devdoc/hp-push-diagnosis-20260916.md` (466 lines) → **CLOSE-TESTDOC**, owner row
+  `devdoc/peer-push-diagnosis-20260916.md` (466 lines) → **CLOSE-TESTDOC**, owner row
   `01a0aab1-587a-7ca3-ba98-4b66b11b8b90` = **completed** → buried.
 - Master has a *sibling* diagnosis, not this one: `devdoc/hp-push-topology-audit.md`
   (the `sync_peers` finding) is present, while `git grep 'chain skip' master` is
@@ -194,11 +194,11 @@ its content restored:
   still-**pending** task `01a0aaef` ("client close-out: deliver the branch
   independently of worktree cleanup …"). Master thus lacks the document the open
   repair task's own evidence chain points at.
-- **Recovered**: `devdoc/hp-push-diagnosis-20260916.md` is now on this branch,
-  copied from the archived tag (`git show archive/docs/hp-push-diagnosis:devdoc/hp-push-diagnosis-20260916.md`).
+- **Recovered**: `devdoc/peer-push-diagnosis-20260916.md` is now on this branch,
+  copied from the archived tag (`git show archive/docs/peer-push-diagnosis:devdoc/peer-push-diagnosis-20260916.md`).
   Rule 23: a fresh branch, the archived branch is never worked on.
-- The archive record `01a0aaf2` ("resolve merge conflict for docs/hp-push-diagnosis …
-  parked at archive/docs/hp-push-diagnosis") is independent evidence for §6: the
+- The archive record `01a0aaf2` ("resolve merge conflict for docs/peer-push-diagnosis …
+  parked at archive/docs/peer-push-diagnosis") is independent evidence for §6: the
   conflict-resolution path is a SECOND writer that parks a branch under `archive/`
   with no reason recorded.
 

@@ -227,7 +227,7 @@ $ git grep -l -F 'pactl load-module' master -- | wc -l
 8
 $ git grep -l -F 'module-remap-source' master --
 master:cmd/agent/cli_voice_client_test.go
-master:devdoc/voice-client-e2e-hp.md
+master:devdoc/voice-client-e2e-peer.md
 master:devdoc/voice-input-default-shape-reverification.md
 ```
 

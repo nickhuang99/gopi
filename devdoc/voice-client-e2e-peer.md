@@ -1,9 +1,9 @@
 <!-- doc-class: normative -->
-# Voice input — the `--client` leg, end to end on HP (closes devdoc/voice-e2e-hp.md §7.3)
+# Voice input — the `--client` leg, end to end on HP (closes devdoc/voice-e2e-peer.md §7.3)
 
 **Task:** prove the real **user** path — `gopi voice_input --client` captures on HP
 and the transcript comes back — instead of the `--stdio` manual pipes the earlier
-epic used (which silently mis-decode PCM16 as f32, devdoc/voice-e2e-hp.md §6.1).
+epic used (which silently mis-decode PCM16 as f32, devdoc/voice-e2e-peer.md §6.1).
 
 | | |
 |---|---|
@@ -11,7 +11,7 @@ epic used (which silently mis-decode PCM16 as f32, devdoc/voice-e2e-hp.md §6.1)
 | Engine node | `peer1` = 192.0.2.6, Fun-ASR-Nano at `~/work/funasr-models` |
 | Repo / branch | GoPi `feat/voice-client-e2e` (worktree `~/workspace/gopi-voice-client-e2e`) |
 | Client binary | built on peer1 from this branch, `scp`ed to HP (`~/workspace/gopi-vce2e/bin/gopi`, `CGO_ENABLED=0`) |
-| Evidence | `devdoc/assets/voice-client-e2e-hp/*.log` (raw, unedited) + this file |
+| Evidence | `devdoc/assets/voice-client-e2e-peer/*.log` (raw, unedited) + this file |
 
 **Where the epic's deliverables land:** A = §3 (A1/A2/A3/A1http) **+ §5's two
 full-length runs**; B = §5 (**CER 3.76 %** aligned `--client`, 6.82 % misaligned,
@@ -352,7 +352,7 @@ a padded WAV is the rig that works; do not re-derive this one.
 
 ## 6. Deliverable C — the six device-policy questions (real commands, real output)
 
-Raw: `devdoc/assets/voice-client-e2e-hp/vce2e-audit.log`.
+Raw: `devdoc/assets/voice-client-e2e-peer/vce2e-audit.log`.
 
 **C.1 explicit `--device`, success and loud failure.** Success:
 `--device pulse:alsa_input.pci-0000_05_00.6.analog-stereo --seconds 2 --stdio` →
@@ -582,7 +582,7 @@ two real runs on HP.
 | Control | pristine fixture → same `--server --stdio` transcribes the opening (baseline log) |
 | HP as engine node | real transcript, 8.0 s for 12 s audio |
 | Six policy questions | all answered with command + output (§6) |
-| Raw evidence | `devdoc/assets/voice-client-e2e-hp/` (25 logs/transcripts, unedited) |
+| Raw evidence | `devdoc/assets/voice-client-e2e-peer/` (25 logs/transcripts, unedited) |
 
 **Two red trees that are NOT this change** (checked, because a green claim needs
 the comparison):
@@ -658,5 +658,5 @@ Two traps the rerun must respect (both measured, both in §5.2/§5.3): play the
 carrying it (use a bracket, e.g. `pkill -f 'voice_input --server --stdi[o]'`).
 
 Recovery (Rule 6d): branch **`feat/voice-client-e2e`** in the shared repo —
-`git show feat/voice-client-e2e:devdoc/voice-client-e2e-hp.md`, worktree
+`git show feat/voice-client-e2e:devdoc/voice-client-e2e-peer.md`, worktree
 `~/workspace/gopi-voice-client-e2e` (never merged by this task).

@@ -1,7 +1,7 @@
 #!/bin/bash
 # WORKER-OWNERSHIP: OPERATOR-ONLY — devdoc/worker-ownership.md
 # peer-worker-checkout-staleness.sh — report HP's checkout/binary staleness as evidence
-# for devdoc/hp-inline-launchers-20260912.md §staleness. Read-only.
+# for devdoc/peer-inline-launchers-20260912.md §staleness. Read-only.
 set -u
 echo "=== checkouts on HP (HEAD + date) ==="
 for d in /home/user/work/GoPi /home/user/work/gopi-wprov; do

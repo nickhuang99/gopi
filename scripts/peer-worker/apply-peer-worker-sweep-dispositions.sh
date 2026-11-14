@@ -1,7 +1,7 @@
 #!/bin/bash
 # WORKER-OWNERSHIP: OPERATOR-ONLY — devdoc/worker-ownership.md
 # apply-peer-worker-sweep-dispositions.sh — the disposition half of the HP sweep
-# (devdoc/hp-inline-launchers-20260912.md §sweep). Run ON HP:
+# (devdoc/peer-inline-launchers-20260912.md §sweep). Run ON HP:
 #
 #     ssh hp 'bash -s' < scripts/peer-worker/apply-peer-worker-sweep-dispositions.sh
 #

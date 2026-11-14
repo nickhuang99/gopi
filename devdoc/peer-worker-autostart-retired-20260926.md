@@ -14,7 +14,7 @@ system; it covered the problem up.
 
 ## The measurement that produced it (recorded once, never re-derived)
 
-- `crontab -l` on HP carried `*/10 * * * * /home/user/bin/hp-worker-autostart.sh`.
+- `crontab -l` on HP carried `*/10 * * * * /home/user/bin/peer-worker-autostart.sh`.
 - Its log `~/.gopi/logs/worker-autostart.log`: **36,398 lines, 1,214 delegations.**
 - The shape, from the log itself:
 
@@ -42,7 +42,7 @@ system; it covered the problem up.
 
 ## What changed
 
-### 1. `scripts/hp/hp-worker-autostart.sh` — the retirement gate
+### 1. `scripts/peer-worker/peer-worker-autostart.sh` — the retirement gate
 
 A scheduler context REFUSES LOUDLY (Rule 15): non-zero exit, a message naming the
 ruling and the reason, and **no launcher call**. The gate has exactly two arms:
@@ -73,7 +73,7 @@ gate reads the process table and fd 0 only; it consults no variable, so
 hatches are NAMED in the refusal message (that naming is the point) and never
 honoured.
 
-### 2. `scripts/hp/hp-worker-nightsafe.sh` — audited, then changed
+### 2. `scripts/peer-worker/peer-worker-nightsafe.sh` — audited, then changed
 
 It carried the same hazard and for a sharper reason: its window is precisely when
 nobody is watching. Same gate, same status, same two arms; its night window and its
@@ -113,8 +113,8 @@ been measuring the refusal, not the delegation. `hpRunStarter`'s default stdin i
 
 The repo documents that recorded the cron install now carry the retirement note
 inline, so a future operator cannot read "install the cron line" without the ruling:
-`devdoc/gopi-home-hygiene.md`, `devdoc/hp-inline-launchers-20260912.md`,
-`devdoc/hp-inline-launchers-verification-2026-09-12.md`,
+`devdoc/gopi-home-hygiene.md`, `devdoc/peer-inline-launchers-20260912.md`,
+`devdoc/peer-inline-launchers-verification-2026-09-12.md`,
 `devdoc/01a092db-closedout-20260915.md`, `devdoc/OVERNIGHT-SUMMARY-20260910.md`
 and `briefings/brief-why-hp-branches-vanish.md`.
 
@@ -160,7 +160,7 @@ and `briefings/brief-why-hp-branches-vanish.md`.
   scheduler** is outside the gate's reach by construction (it looks like an
   operator). Deliberately: the gate refuses the AUTOMATIC shapes, and an operator
   who detaches a run by hand owns it. Stated rather than papered over.
-- `scripts/hp/probe-hp-loudness.sh` (the HP-side probe, run by hand) still probes
+- `scripts/peer-worker/probe-hp-loudness.sh` (the HP-side probe, run by hand) still probes
   the delegation arms and is NOT retirement-aware; a future run of it will now see
   refusals where it expected delegation. It was left untouched (it is a hand-run
   probe, out of this task's deliverable list) and is named here so the next reader

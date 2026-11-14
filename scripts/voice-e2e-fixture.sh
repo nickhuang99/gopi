@@ -22,7 +22,7 @@
 # defaulted directory is removed on exit; a caller-supplied one is left alone
 # but must still be off `/` (asserted below).
 #
-# Cross-node use: the capture rig (scripts/voice-e2e-hp.sh) runs this fixture on
+# Cross-node use: the capture rig (scripts/voice-e2e-peer.sh) runs this fixture on
 # HP and needs the files to keep existing, so it passes the SAME scratch home it
 # will pass here (GOPI_TEST_SCRATCH_HOME) — the fixture path printed at the end
 # is what that rig feeds to FIXTURE_WAV/FIXTURE_REF.

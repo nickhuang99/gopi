@@ -7,7 +7,7 @@ package shot
 // Capture is unexported-helper glue: resolveURL → findChrome → exec chrome →
 // waitDevToolsPort → captureOverCDP. To exercise it end-to-end WITHOUT a real
 // browser (the host's chromium is a snap that cannot start outside the snap
-// sandbox — see devdoc/cov-shot-hp.md §Environment) the tests inject:
+// sandbox — see devdoc/cov-shot-peer.md §Environment) the tests inject:
 //
 //  1. GOPI_SHOT_CHROME → a generated POSIX-shell stub that impersonates
 //     chrome's stderr "DevTools listening on ws://…" handshake, and
@@ -479,7 +479,7 @@ func TestCaptureMissingChrome(t *testing.T) {
 // override that exists but carries no execute bit (chmod 644) is rejected AT
 // DISCOVERY with the actionable "is not an executable file" message. It must
 // NOT reach chrome start, where the failure was opaque
-// ("shot: start …: permission denied", devdoc/cov-shot-hp.md §7 finding 1).
+// ("shot: start …: permission denied", devdoc/cov-shot-peer.md §7 finding 1).
 func TestCaptureChromeStartFailure(t *testing.T) {
 	notExec := filepath.Join(t.TempDir(), "not-executable")
 	if err := os.WriteFile(notExec, []byte("#!/bin/sh\nexit 0\n"), 0o644); err != nil {

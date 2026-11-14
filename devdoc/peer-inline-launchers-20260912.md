@@ -3,8 +3,8 @@
 
 <!-- WORKER-OWNERSHIP: OPERATOR-ONLY — devdoc/worker-ownership.md -->
 
-Epic: `hp-inline-launchers` (2026-09-12). Worktree `~/workspace/gopi-hplaunch`,
-branch `fix/hp-inline-launchers`. Host under test: HP (remote laptop, `ssh hp`).
+Epic: `peer-inline-launchers` (2026-09-12). Worktree `~/workspace/gopi-hplaunch`,
+branch `fix/peer-inline-launchers`. Host under test: HP (remote laptop, `ssh hp`).
 
 ## The defect
 
@@ -16,8 +16,8 @@ HP (the second worker host) bypassed the single-launcher contract in three ways:
    object store (`git cat-file -e master:scripts/gopi-worker-up.sh` → *not a
    valid object name*). HP therefore had **no path to the launcher source at
    all**: it had to be shipped, not assumed.
-2. **Two unsupervised inline starters.** `~/bin/hp-worker-autostart.sh` (cron,
-   `*/10 * * * *`) and `~/bin/hp-worker-nightsafe.sh` each ran
+2. **Two unsupervised inline starters.** `~/bin/peer-worker-autostart.sh` (cron,
+   `*/10 * * * *`) and `~/bin/peer-worker-nightsafe.sh` each ran
    `setsid nohup ./bin/gopi worker >> "$LOG" 2>&1 < /dev/null &` and then
    `echo "started pid $!"` — **never reading the child's status**. A launch
    refused by the agent-session guard (exit 3) was logged exactly like a
@@ -35,7 +35,7 @@ HP (the second worker host) bypassed the single-launcher contract in three ways:
    argv) and exits 0; `--count` prints
    `live gopi workers: 0 (pids: none)`.
 2. **Both starters rewritten to delegate** — repo copies live in
-   `scripts/hp/hp-worker-{autostart,nightsafe}.sh` (they are the source of
+   `scripts/peer-worker/peer-launcher-{autostart,nightsafe}.sh` (they are the source of
    truth for the peer's `~/bin` copies), installed byte-identically via `scp` +
    `install -m 0755`:
    - `grep -vE '^\s*#' <script> | grep -c 'bin/gopi worker'` → **0** for both.
@@ -61,11 +61,11 @@ HP (the second worker host) bypassed the single-launcher contract in three ways:
    `TestHpNightLegacyAuditDrainerChecksEveryRoundStatus` and
    `TestHpNightLegacyAuditDrainerStopsLoudlyOnRefusal`.
 5. **Sweep + dispositions applied on HP** (§sweep), reproducible through
-   `scripts/hp/{sweep-hp-worker-paths,apply-hp-sweep-dispositions,probe-hp-loudness,hp-checkout-staleness}.sh`.
+   `scripts/peer-worker/{sweep-peer-launcher-paths,apply-peer-worker-sweep-dispositions,probe-peer-worker-loudness,peer-worker-checkout-staleness}.sh`.
 
 ## Verification
 
-Build/test (branch `fix/hp-inline-launchers`, commit `4fade437`):
+Build/test (branch `fix/peer-inline-launchers`, commit `4fade437`):
 
 ```
 go build ./...                                        → OK
@@ -79,7 +79,7 @@ go test ./internal/testutil/ -run 'TestHpWorker|TestHpNight' -count=1
   --- PASS: TestHpNightLegacyAuditDrainerStopsLoudlyOnRefusal
   --- PASS: TestHpWorkerLaunchersDryRunStartsNothing
   ok  github.com/nick/gopi/internal/testutil
-bash -n  scripts/hp/*.sh scripts/gopi-worker-up.sh    → all OK (incl. on HP)
+bash -n  scripts/peer-worker/*.sh scripts/gopi-worker-up.sh    → all OK (incl. on HP)
 ```
 
 **Red-proof** (the gate fails on the pre-fix shape): restoring
@@ -95,7 +95,7 @@ deleting the drainer's `status=$?` block turns the gate red —
 
 then both are restored and the suite is green again.
 
-**HP acceptance probes** (`scripts/hp/probe-hp-loudness.sh`, run on HP):
+**HP acceptance probes** (`scripts/peer-worker/probe-peer-worker-loudness.sh`, run on HP):
 
 | probe | construction | result |
 |---|---|---|
@@ -111,16 +111,16 @@ every probe exited with **no live `gopi` process** and **zero task rows touched*
 
 ## Sweep — every worker-start path on HP, with its disposition
 
-Reproduce: `ssh hp 'bash -s' < scripts/hp/sweep-hp-worker-paths.sh`.
+Reproduce: `ssh hp 'bash -s' < scripts/peer-worker/sweep-peer-launcher-paths.sh`.
 
 | # | path | disposition |
 |---|---|---|
-| 1 | `crontab -l` → `*/10 * * * * /home/user/bin/hp-worker-autostart.sh` | **THE only scheduled worker path.** Fixed: it now delegates (§Completed 2). Re-run verified end to end. |
-  **[RETIRED 2026-09-26 — the schedule is gone and the script now REFUSES an automatic caller:** operator ruling 「这个 cronjob 必须终止，我们不能依赖这种系统来做，它掩盖了问题。」— the cron net MASKED a worker-death loop (1,214 delegations); `scripts/hp/hp-worker-autostart.sh` + `hp-worker-nightsafe.sh` refuse any scheduler context. **Do not re-install it: no replacement auto-launcher, no escape hatch.** See devdoc/hp-worker-autostart-retired-20260926.md.]**
+| 1 | `crontab -l` → `*/10 * * * * /home/user/bin/peer-worker-autostart.sh` | **THE only scheduled worker path.** Fixed: it now delegates (§Completed 2). Re-run verified end to end. |
+  **[RETIRED 2026-09-26 — the schedule is gone and the script now REFUSES an automatic caller:** operator ruling 「这个 cronjob 必须终止，我们不能依赖这种系统来做，它掩盖了问题。」— the cron net MASKED a worker-death loop (1,214 delegations); `scripts/peer-worker/peer-worker-autostart.sh` + `peer-worker-nightsafe.sh` refuse any scheduler context. **Do not re-install it: no replacement auto-launcher, no escape hatch.** See devdoc/peer-worker-autostart-retired-20260926.md.]**
 | 2 | `crontab -l` → `@reboot … doubao_browser_daemon.py`; `*/2 … evennia-health-probe.py`; commented-out smart_backup / glow-moon scheduler | **Not a worker path** — no gopi involvement. Left untouched (out of scope). |
 | 3 | `~/.config/systemd/user/*` — `gopi-home-gc.{service,timer}` (ExecStart `~/.local/bin/gopi-home-gc.sh --apply`), `hermes-scheduler.service`, 3 evolution units | **Not a worker path.** `gopi-home-gc.sh` is the profile-hygiene sweeper (its own docstring: it *relocates/prunes* `worker-*.log`); `hermes-scheduler.service` is a symlink to `/dev/null` (inert). Left untouched. **No systemd unit starts a worker.** |
 | 4 | `~/.gopi/hp-night-legacy-audit.sh` — ran `/usr/local/bin/gopi worker --once` in an 8-round loop, **no status check** | **Third inline path; FIXED.** Nothing schedules it (no cron entry, no unit, no shell-startup reference — it is a hand-run campaign tool), so the defect was not "unsupervised autostart" but the silent-success hole: a refused round logged like a success. Its `--once` round is a deliberate bounded drain, *not* launcher-shaped (no setsid/nohup, no second log contract, no accounting), so it keeps the round and gains the checked status. |
-| 5 | `~/bin/*.bak-*` — 4 pre-fix copies of the two starters (`-ghome-hygiene`, `-hp-inline-launchers-20260912`), **each still executable in a PATH directory** | **De-executed, bytes kept as evidence** (`chmod a-x`): a loose executable copy of the deleted defect in `~/bin` is still a launcher-shaped path. |
+| 5 | `~/bin/*.bak-*` — 4 pre-fix copies of the two starters (`-ghome-hygiene`, `-peer-inline-launchers-20260912`), **each still executable in a PATH directory** | **De-executed, bytes kept as evidence** (`chmod a-x`): a loose executable copy of the deleted defect in `~/bin` is still a launcher-shaped path. |
 | 6 | `~/.gopi/hp-night-legacy-audit.sh.bak-ghome-hygiene` (executable pre-fix copy, same status hole) | **De-executed**, same reasoning. |
 | 7 | `~/.gopi-ship/gopi-worker-up.sh` — the launcher copy left by the ship step | **De-executed, bytes kept** as the ship evidence; the *installed* `~/.local/bin/gopi-worker-up.sh` is authoritative (same sha256 `4b2ad5a2…`). |
 | 8 | `~/.gopi-ship/probe/*` — the epic's own stub launchers | **Removed** (regenerable test scaffolding; never a worker path). |
@@ -147,7 +147,7 @@ git cat-file -e master:scripts/gopi-worker-up.sh  →  NOT in the object store
 **file through its own `--install` seam** (the seam exists exactly for this),
 never assumed present, and never pushed into the stale checkout. The two starters
 were shipped the same way (`scp` + `install`), and the drainer likewise.
-Evidence recipe: `scripts/hp/hp-checkout-staleness.sh`.
+Evidence recipe: `scripts/peer-worker/peer-worker-checkout-staleness.sh`.
 
 ## Not Done / honest boundary
 
@@ -173,9 +173,9 @@ Evidence recipe: `scripts/hp/hp-checkout-staleness.sh`.
   clean. If a root entry existed it would be outside `operator`-launcher control;
   the fix would be the same delegation.
 - **What can still auto-start a worker on HP** (after this change): (a) the
-  `*/10` cron entry → `hp-worker-autostart.sh` → the single launcher (checked,
+  `*/10` cron entry → `peer-worker-autostart.sh` → the single launcher (checked,
   loud, operator-owned) — the intended path; (b) a hand-run of
-  `hp-worker-nightsafe.sh` (nothing schedules it today) or of the legacy-audit
+  `peer-worker-nightsafe.sh` (nothing schedules it today) or of the legacy-audit
   drainer, both now status-checked; (c) any **new** file that a future agent or
   operator drops in `~/bin` or `~/.config/systemd/user/` — outside the repo, no
   gate can see it, so the repo-side gate only covers the copies it ships;
@@ -186,7 +186,7 @@ Evidence recipe: `scripts/hp/hp-checkout-staleness.sh`.
   `TestWorkerOwnershipPointerPresent` fail identically **on master in the main
   repo** (`cd ~/work/GoPi && go test ./internal/testutil/ -run '…' ` → same 3
   files / same doc list). They are outside this epic's diff
-  (`git diff --stat master...HEAD` → only `scripts/hp/*` + the new gate).
+  (`git diff --stat master...HEAD` → only `scripts/peer-worker/*` + the new gate).
 - **Probe incident (disclosed).** While writing probe 4 my `python3` replacement
   of the drainer's invocation line silently did **not** match (the file already
   contained the `$GOPI_WORKER_BIN` line at a different offset), so the probe ran
@@ -209,7 +209,7 @@ Evidence recipe: `scripts/hp/hp-checkout-staleness.sh`.
 - **HP's deployed binary predates the agent-session guard and the worker
   output-attribution flag** — on HP the exit-3 refusal cannot occur and the
   launcher's `--worker-log-root` is silently ignored (unattributed worker
-  output). Repro: `scripts/hp/hp-checkout-staleness.sh` + the probe in §Verification.
+  output). Repro: `scripts/peer-worker/peer-worker-checkout-staleness.sh` + the probe in §Verification.
 - **`gopi worker` accepts unknown flags and starts the loop anyway** — a launcher
   that passes an option the running binary does not know is *silently* degraded
   instead of refused (Rule 15). Repro: `gopi worker --totally-bogus-flag-xyz`
@@ -221,15 +221,15 @@ Evidence recipe: `scripts/hp/hp-checkout-staleness.sh`.
 4fade437 fix(hp-launcher): both HP starters delegate to the single launcher, refusal is loud
 ```
 (+ this report and the drainer fix in the follow-up commit on
-`fix/hp-inline-launchers`.)
+`fix/peer-inline-launchers`.)
 
 ## Deliverable declaration (Rule 6d)
 
-- **Branch**: `fix/hp-inline-launchers` (worktree `~/workspace/gopi-hplaunch`,
+- **Branch**: `fix/peer-inline-launchers` (worktree `~/workspace/gopi-hplaunch`,
   shared with the main repo's object store — the commit is already in
   `~/work/GoPi`; no push needed).
-- **Recovery**: `git show fix/hp-inline-launchers:devdoc/hp-inline-launchers-20260912.md`
-  (scripts: `git show fix/hp-inline-launchers:scripts/hp/hp-worker-autostart.sh`).
-- **Peer-side truth**: HP `~/bin/hp-worker-{autostart,nightsafe}.sh` +
+- **Recovery**: `git show fix/peer-inline-launchers:devdoc/peer-inline-launchers-20260912.md`
+  (scripts: `git show fix/peer-inline-launchers:scripts/peer-worker/peer-worker-autostart.sh`).
+- **Peer-side truth**: HP `~/bin/peer-launcher-{autostart,nightsafe}.sh` +
   `~/.gopi/hp-night-legacy-audit.sh` + `~/.local/bin/gopi-worker-up.sh`
   (sha256 `4b2ad5a2…d128f`, symlinked from `~/bin/gopi-worker-up.sh`).

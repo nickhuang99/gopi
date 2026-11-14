@@ -1,5 +1,5 @@
 <!-- doc-class: normative -->
-# Task Report: internal/shot — close the Capture coverage gap (`feat/cov-shot-hp`)
+# Task Report: internal/shot — close the Capture coverage gap (`feat/cov-shot-peer`)
 
 ## Completed
 
@@ -274,7 +274,7 @@ failure, not just against the stub.
 ## §9 Commit
 
 ```
-$ cd ~/workspace/gopi-cov-shot && git add internal/shot/capture_test.go devdoc/cov-shot-hp.md
+$ cd ~/workspace/gopi-cov-shot && git add internal/shot/capture_test.go devdoc/cov-shot-peer.md
 $ git commit -m "test(shot): cover Capture end-to-end via injected chrome stub + fake CDP"
 $ git log --oneline -2
 baf3ff9 test(shot): cover Capture end-to-end via injected chrome stub + fake CDP
@@ -282,7 +282,7 @@ dbe61aa docs(cov-hippocampus): correct subtest count in report (30 named t.Run c
 $ git status --short          # clean (devdoc backfill lands in the follow-up commit)
 ```
 
-Branch `feat/cov-shot-hp`, worktree `~/workspace/gopi-cov-shot` (worktree shares the main
+Branch `feat/cov-shot-peer`, worktree `~/workspace/gopi-cov-shot` (worktree shares the main
 repo's object store → no push needed). Main repo (`master`) untouched: `git status` there
 shows only unrelated untracked devdoc files that existed before this task started.
 
@@ -324,10 +324,10 @@ Stored:
 
 ## §12 Deliverable declaration (Rule 6d)
 
-- **Branch**: `feat/cov-shot-hp` (worktree `~/workspace/gopi-cov-shot`, shares the main
+- **Branch**: `feat/cov-shot-peer` (worktree `~/workspace/gopi-cov-shot`, shares the main
   repo's object store).
-- **Recovery**: `git show feat/cov-shot-hp:devdoc/cov-shot-hp.md` and
-  `git show feat/cov-shot-hp:internal/shot/capture_test.go`.
+- **Recovery**: `git show feat/cov-shot-peer:devdoc/cov-shot-peer.md` and
+  `git show feat/cov-shot-peer:internal/shot/capture_test.go`.
 - The worktree may be removed after merge; the commit is already in the main repo's refs.
 
 ---

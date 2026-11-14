@@ -121,7 +121,7 @@ const workerResumeSpellingGateMsg = "  resume: `gopi worker " + workerFlagResume
 // UNKNOWN ARGUMENTS ARE REFUSED (Rule 15, devdoc/worker-unknown-flag.md): the
 // scan used to ignore every word it did not recognize, so a launcher passing
 // an option the deployed binary predates got a SILENTLY DEGRADED worker — the
-// option dropped, the loop started, nothing said so (the hp-inline-launchers
+// option dropped, the loop started, nothing said so (the peer-inline-launchers
 // sweep: a stale remote binary swallowed `--worker-log-root`, so the worker
 // ran with output attribution OFF). An unrecognized word now exits
 // workerUnexpectedArgExitCode with workerUnexpectedArgMessage BEFORE the

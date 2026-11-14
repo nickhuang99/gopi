@@ -63,7 +63,7 @@ means anything. Points worth keeping:
 ## Files
 
 `scripts/{scratch-gc-watchdog,demo-coverage,demo-materials-coverage,demo-memory-loop,
-voice-capture-failmatrix,voice-e2e-hp,voice-out-e2e-stub,demo-memory-loop-figs}.sh`
+voice-capture-failmatrix,voice-e2e-peer,voice-out-e2e-stub,demo-memory-loop-figs}.sh`
 
 ## Not done
 

@@ -329,7 +329,7 @@ person's work. The escape hatch is an alarm for a human to adjudicate.
 **"only DB-sync means nothing"** (`t-1788125937`, bug038); and when the machine
 went quiet on this, he filed the diagnosis himself — *"why did HP never push its
 finished branches to peer1? client leg silently skipped"* (`01a0aab1`,
-briefed in full at `briefings/brief-hp-push-diagnosis.md`), then the repair
+briefed in full at `briefings/brief-peer-push-diagnosis.md`), then the repair
 `t-1788252501` ("gopi client should push git branch to server and clean up").
 **Evidence for the mechanism:** the client chain's own ordering
 (`internal/tools/task_finish_cleanup.go:3-30` — push, then remove, then delete, the

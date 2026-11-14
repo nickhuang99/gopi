@@ -48,9 +48,9 @@ The same defect existed on the **HP peer**, three more producers:
 | script | old path |
 |---|---|
 | `~/.gopi/glm-night-watch.sh` (peer1, ssh-launches HP workers) | `> ~/.gopi/worker-night-$i.log` |
-| `~/bin/hp-worker-nightsafe.sh` (HP cron) | `LOG=/home/user/.gopi/worker-night-cron.log` |
-| `~/bin/hp-worker-autostart.sh` (HP cron, `*/10`) | `LOG=/home/user/.gopi/worker-autostart.log` |
-  **[RETIRED 2026-09-26 — the schedule is gone and the script now REFUSES an automatic caller:** operator ruling 「这个 cronjob 必须终止，我们不能依赖这种系统来做，它掩盖了问题。」— the cron net MASKED a worker-death loop (1,214 delegations); `scripts/hp/hp-worker-autostart.sh` + `hp-worker-nightsafe.sh` refuse any scheduler context. **Do not re-install it: no replacement auto-launcher, no escape hatch.** See devdoc/hp-worker-autostart-retired-20260926.md.]**
+| `~/bin/peer-worker-nightsafe.sh` (HP cron) | `LOG=/home/user/.gopi/worker-night-cron.log` |
+| `~/bin/peer-worker-autostart.sh` (HP cron, `*/10`) | `LOG=/home/user/.gopi/worker-autostart.log` |
+  **[RETIRED 2026-09-26 — the schedule is gone and the script now REFUSES an automatic caller:** operator ruling 「这个 cronjob 必须终止，我们不能依赖这种系统来做，它掩盖了问题。」— the cron net MASKED a worker-death loop (1,214 delegations); `scripts/peer-worker/peer-worker-autostart.sh` + `peer-worker-nightsafe.sh` refuse any scheduler context. **Do not re-install it: no replacement auto-launcher, no escape hatch.** See devdoc/peer-worker-autostart-retired-20260926.md.]**
 | `~/.gopi/hp-night-legacy-audit.sh` (HP) | `>> ~/.gopi/night-audit-worker.log` |
 
 Measured on HP before the fix: 11 log files at the profile root
@@ -172,7 +172,7 @@ have fired. Re-running `--install` is safe and idempotent on both paths.
 * **Session/raw run logs** under `sessions/` and `raw/`: real run history, not
   clutter — the sweep never recurses into `sessions/` (28k dirs, and other
   tooling owns its retention, `devdoc/session-dir-merge-…`).
-* **HP's `~/bin/hp-worker-*.sh` were patched in place** (no repo copy exists);
+* **HP's `~/bin/peer-launcher-*.sh` were patched in place** (no repo copy exists);
   each carries a `.bak-ghome-hygiene` original. Bringing them into the repo is
   a separate (small) follow-up.
 
@@ -273,7 +273,7 @@ week-1 work is done and only the clock is left running. Verified without
   dedupe (§8.3) handles the identical-generation case immediately. Widening this
   to a pure size budget would need a `--max-bytes` rule and a real profile to
   tune it on — proposed, not shipped.
-* **HP's three producer scripts were patched in place** (`~/bin/hp-worker-*.sh`,
+* **HP's three producer scripts were patched in place** (`~/bin/peer-launcher-*.sh`,
   `~/.gopi/hp-night-legacy-audit.sh`) — no repo copy exists for them, so they
   are outside `make test`'s reach. Bringing them into `scripts/` is a real,
   small follow-up, not something this task can call done.
@@ -349,8 +349,8 @@ for `/home/user/.local/bin/gopi-home-gc.sh` (peer1 + HP) and for the worktree
 
 **Producers re-pointed, on the host that matters for each.** peer1:
 `/home/user/.gopi/glm-night-watch.sh`, `/home/user/.gopi/night-progress.sh` (+ their
-`.bak-ghome-hygiene` copies). HP: `/home/user/bin/hp-worker-autostart.sh`
-→ `LOG=/home/user/.gopi/logs/worker-autostart.log`, `/home/user/bin/hp-worker-nightsafe.sh`
+`.bak-ghome-hygiene` copies). HP: `/home/user/bin/peer-worker-autostart.sh`
+→ `LOG=/home/user/.gopi/logs/worker-autostart.log`, `/home/user/bin/peer-worker-nightsafe.sh`
 → `…/logs/worker-night-cron.log`, `/home/user/.gopi/hp-night-legacy-audit.sh` — and the
 write path is *observed*, not inferred: HP's `/home/user/.gopi/logs/worker-autostart.log`
 has mtime 03:41 (after the 03:17 re-point) while HP's root `*.log` count is 0;

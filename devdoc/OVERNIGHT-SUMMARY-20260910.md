@@ -159,8 +159,8 @@ less devdoc/voice-input-design-space.md
 6. **同步源码**：HP 到 `b7b8000` + bin 重建
 7. **重派任务**：5 个覆盖率任务重新提交（gopilog/hippocampus/shot/deepseek/config）
 8. **启动 worker**：2 个（pid 1787516 / 1787552）
-9. **恢复 cron 兜底**：`~/bin/hp-worker-autostart.sh`（每 10 分钟，`pgrep -x gopi` 正确检测）
-  **[RETIRED 2026-09-26 — the schedule is gone and the script now REFUSES an automatic caller:** operator ruling 「这个 cronjob 必须终止，我们不能依赖这种系统来做，它掩盖了问题。」— the cron net MASKED a worker-death loop (1,214 delegations); `scripts/hp/hp-worker-autostart.sh` + `hp-worker-nightsafe.sh` refuse any scheduler context. **Do not re-install it: no replacement auto-launcher, no escape hatch.** See devdoc/hp-worker-autostart-retired-20260926.md.]**
+9. **恢复 cron 兜底**：`~/bin/peer-worker-autostart.sh`（每 10 分钟，`pgrep -x gopi` 正确检测）
+  **[RETIRED 2026-09-26 — the schedule is gone and the script now REFUSES an automatic caller:** operator ruling 「这个 cronjob 必须终止，我们不能依赖这种系统来做，它掩盖了问题。」— the cron net MASKED a worker-death loop (1,214 delegations); `scripts/peer-worker/peer-worker-autostart.sh` + `peer-worker-nightsafe.sh` refuse any scheduler context. **Do not re-install it: no replacement auto-launcher, no escape hatch.** See devdoc/peer-worker-autostart-retired-20260926.md.]**
 
 ### 验证
 ```

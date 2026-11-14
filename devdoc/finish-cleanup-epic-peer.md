@@ -74,4 +74,4 @@ server merge 链。任务域: taskregister.go / serve tick pass。
 ## 交付声明（Rule 6d）
 - 分支: `feat/task-id-collision`（main checkout /home/user/work/GoPi，
   worktree 共享 refs，无需 push）
-- 恢复: `git -C ~/work/GoPi show feat/task-id-collision:devdoc/finish-cleanup-epic-hp.md`
+- 恢复: `git -C ~/work/GoPi show feat/task-id-collision:devdoc/finish-cleanup-epic-peer.md`

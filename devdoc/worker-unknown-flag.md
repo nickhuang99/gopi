@@ -12,7 +12,7 @@ Branch: `fix/worker-unknown-flag` (worktree `~/workspace/gopi-workerbadflag`)
 started the loop. A launcher passing an option the deployed binary predates was
 therefore **silently degraded**: the option was dropped, the worker ran without
 it, and nothing said so. That is exactly what let HP's stale binary swallow
-`--worker-log-root` during the hp-inline-launchers sweep — the worker ran with
+`--worker-log-root` during the peer-inline-launchers sweep — the worker ran with
 output attribution **OFF** and no line reported it (a Rule 15 silent failure).
 
 Measured on master's binary (`bin/gopi`, commit `e1e8cf21`):

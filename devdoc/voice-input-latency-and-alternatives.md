@@ -124,7 +124,7 @@ TOTAL_WALL=79.99 s   ROUNDS=3   录到的音频=18 s        # → 4.45× 实时
 **关键**：短音频的 RTF 更差，因为每轮都要付 1.5 s 的模型加载；`/voice` 每轮都是一个**新进程**，所以这笔钱每轮都付。
 
 > **历史备注（诚实）**：`+10 s grace` 不是隐藏 bug —— 它写在代码注释里（`cli_voice_client.go:116-120`），
-> 也在 `devdoc/voice-client-e2e-hp.md` §F5 被记为 "intended (documented in code)"、「`--seconds N` 约等于 N + 13 s」。
+> 也在 `devdoc/voice-client-e2e-peer.md` §F5 被记为 "intended (documented in code)"、「`--seconds N` 约等于 N + 13 s」。
 > 本次的新事实是：**它从未在「交互式口述」的延迟账本上被定价** —— 交互场景下它占了一轮的 54%，并且是漏字的直接原因。
 
 ---

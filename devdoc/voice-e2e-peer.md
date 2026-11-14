@@ -8,9 +8,9 @@ engine on peer1 → text, scored against a known reference.
 |---|---|
 | Capture node | `hp` — `hostb-Laptop` (ALC236 Analog, card 1 device 0) |
 | Engine node | `peer1` — `llama-funasr-cli` + Fun-ASR-Nano at `~/work/funasr-models` |
-| Repo / branch | GoPi `feat/voice-e2e-hp` (worktree `~/workspace/gopi-voice-e2e`) |
-| Deliverables | `scripts/voice-e2e-hp.sh`, `scripts/voice-e2e-fixture.sh`, `devdoc/assets/voice-e2e-hp/` |
-| Rerun | `SRCDIR=<hp dir with bin/gopi> bash scripts/voice-e2e-hp.sh` |
+| Repo / branch | GoPi `feat/voice-e2e-peer` (worktree `~/workspace/gopi-voice-e2e`) |
+| Deliverables | `scripts/voice-e2e-peer.sh`, `scripts/voice-e2e-fixture.sh`, `devdoc/assets/voice-e2e-peer/` |
+| Rerun | `SRCDIR=<hp dir with bin/gopi> bash scripts/voice-e2e-peer.sh` |
 
 ---
 
@@ -59,7 +59,7 @@ git archive --format=tar HEAD | ssh hp 'D=~/gopi-ve2e-src-$(date +%s); mkdir -p 
 # 2. both legs + scoring, one command (the fixture on hp must sit at the same
 #    path the script computes: create it there with the SAME script/env)
 FIXTURE_OUTDIR="$SCRATCH" LEG_B_SECONDS=228 \
-  SRCDIR=/home/user/gopi-ve2e-src-1789249662 bash scripts/voice-e2e-hp.sh
+  SRCDIR=/home/user/gopi-ve2e-src-1789249662 bash scripts/voice-e2e-peer.sh
 ```
 
 Inside the script, the two legs are:
@@ -112,7 +112,7 @@ monitor src : 36  voice_e2e_null.monitor  module-null-sink.c  s16le 2ch 44100Hz
 captured    : 7038140+ bytes, 16 kHz mono PCM16
 ```
 
-Transcript (`devdoc/assets/voice-e2e-hp/legA.txt`):
+Transcript (`devdoc/assets/voice-e2e-peer/legA.txt`):
 
 > LEG_A_TRANSCRIPT_PLACEHOLDER
 
@@ -129,7 +129,7 @@ alsa device : default   (raw hw:1,0 and plughw:1,0 are BUSY — the audio server
 captured    : 16 kHz mono PCM16, 228 s window
 ```
 
-Transcript (`devdoc/assets/voice-e2e-hp/legB.txt`):
+Transcript (`devdoc/assets/voice-e2e-peer/legB.txt`):
 
 > LEG_B_TRANSCRIPT_PLACEHOLDER
 
@@ -244,9 +244,9 @@ the playback as the end of the capture and says so in a comment.
 |---|---|
 | HP build of the branch (`CGO_ENABLED=0 go build ./cmd/agent/`) | OK (45 s, `BUILD_RC=0`) |
 | Harness syntax (`bash -n` both scripts) | OK |
-| End-to-end run | `devdoc/assets/voice-e2e-hp/run.log` (see §4/§5) |
-| Engine-only baseline | `devdoc/assets/voice-e2e-hp/baseline.log` |
-| Short-clip control | `devdoc/assets/voice-e2e-hp/shortclip.log` |
+| End-to-end run | `devdoc/assets/voice-e2e-peer/run.log` (see §4/§5) |
+| Engine-only baseline | `devdoc/assets/voice-e2e-peer/baseline.log` |
+| Short-clip control | `devdoc/assets/voice-e2e-peer/shortclip.log` |
 
 Artifacts: `run.log`, `legA.txt`, `legB.txt`, `baseline.{log,txt}`,
-`shortclip.log`, `fixture.log` under `devdoc/assets/voice-e2e-hp/`.
+`shortclip.log`, `fixture.log` under `devdoc/assets/voice-e2e-peer/`.

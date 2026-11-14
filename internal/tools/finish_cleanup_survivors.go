@@ -929,7 +929,7 @@ const (
 // refusal and goes on to deliver. Before this epic each of the three returned
 // a report that said `Skipped` at the HEAD of the chain, so a run that left
 // one untracked scratch file behind never handed its branch over at all
-// (devdoc/hp-push-diagnosis-20260916.md §1, finding A/A′), and a close-out is
+// (devdoc/peer-push-diagnosis-20260916.md §1, finding A/A′), and a close-out is
 // a SINGLE SHOT per row: nothing re-runs it.
 //
 // Each marker is the skip reason's PREFIX — the refusal is followed by the
@@ -1332,7 +1332,7 @@ func finishCleanupRemovalReason(ctx context.Context, rep *FinishCleanupReport, d
 		// BEFORE THIS EPIC this state aborted the whole chain, which is how
 		// a row whose directory was removed by hand reported "never handed
 		// off" instead of "the directory is gone"
-		// (devdoc/hp-push-diagnosis-20260916.md A′). It is now a
+		// (devdoc/peer-push-diagnosis-20260916.md A′). It is now a
 		// REMOVAL-side fact, and the delivery proceeds — with ONE
 		// deliberate narrowing: a gone directory is also the branch-check
 		// lane's missing GROUND, so the chain pushes with the branch's own

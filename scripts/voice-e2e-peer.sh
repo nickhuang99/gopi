@@ -1,13 +1,13 @@
 #!/usr/bin/env bash
-# voice-e2e-hp.sh — deterministic, human-free end-to-end proof of the two-node
+# voice-e2e-peer.sh — deterministic, human-free end-to-end proof of the two-node
 # voice-input path. Rerunnable by any reader with access to the two nodes.
 #
-#   HP   (`ssh hp`,    host-b) = capture node. Owns the microphone, the
+#   host-b (`ssh host-b`) = capture node. Owns the microphone, the
 #                                       ALSA/Pulse stack and the client binary.
-#   peer1(`ssh peer1`)                 = engine node. Owns gopi + the
+#   host-a(`ssh host-a`)                 = engine node. Owns gopi + the
 #                                       Fun-ASR-Nano weights (~/work/funasr-models).
 #
-# Claim proven: audio captured on HP crosses to peer1 and comes back as text.
+# Claim proven: audio captured on host-b crosses to host-a and comes back as text.
 # Why it needs no human: nothing is spoken live. A fixed WAV (a spoken Chinese
 # paragraph with a written reference transcript) is played into a PulseAudio
 # null-sink and the sink's `.monitor` is captured as the "microphone" — the same
@@ -17,7 +17,7 @@
 #
 # Scoring: scripts/asr_score.py from THIS repo (CER against the reference text).
 #
-#   Usage:  SRCDIR=<HP dir containing bin/gopi> bash scripts/voice-e2e-hp.sh
+#   Usage:  SRCDIR=<host-b dir containing bin/gopi> bash scripts/voice-e2e-peer.sh
 #   Exit:   0 = both legs transcribed and were scored; 1 = prerequisite missing.
 set -euo pipefail
 
@@ -33,16 +33,16 @@ HERE="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 # and asserted off `/` here, and the capture node's twin is created at the same
 # path (WORKDIR) and asserted with the SAME device-id criterion before use — no
 # path is ever typed inline and nothing lands on /tmp.
-WORK_ROOT="$(gopi_scratch_mkdir voice-e2e-hp)" || { echo "FATAL: scratch root unavailable" >&2; exit 2; }
+WORK_ROOT="$(gopi_scratch_mkdir voice-e2e-peer)" || { echo "FATAL: scratch root unavailable" >&2; exit 2; }
 # Cleanup runs through cleanup_all once the capture node is known (it removes
-# HP's twin, then this side's scratch directory, killing stray children first).
+# host-b's twin, then this side's scratch directory, killing stray children first).
 trap gopi_scratch_cleanup EXIT INT TERM
 
 # ------------------------------------------------------------------ constants
 # Every device string / rate / path / volume is named here; nothing is typed
 # inline at a use site (Rule 1). Any of them can be overridden from the env.
-readonly HP_HOST=${HP_HOST:-hp}
-readonly PEER_HOST=${PEER_HOST:-peer1}
+readonly B_HOST=${B_HOST:-host-b}
+readonly PEER_HOST=${PEER_HOST:-host-a}
 # WORKDIR: the scratch directory on BOTH nodes (default above; an explicit env
 # override is honoured for a reader who already has a prepared workspace).
 readonly WORKDIR=${WORKDIR:-$WORK_ROOT}
@@ -69,7 +69,7 @@ readonly NEEDS_F32_CONVERSION=1
 # (see the report §Fixtures) and pinned by sha256 in the log. The default DERIVES
 # from the shared scratch directory rather than from a path baked into this
 # file: the producer is `bash scripts/voice-e2e-fixture.sh $FIXTURE_OUTDIR` run
-# on HP (its own default is the same scratch tree), so the two scripts agree
+# on host-b (its own default is the same scratch tree), so the two scripts agree
 # without a hardcoded location.
 readonly FIXTURE_OUTDIR=${FIXTURE_OUTDIR:-$WORK_ROOT/voice-e2e-fixture}
 readonly FIXTURE_WAV=${FIXTURE_WAV:-$FIXTURE_OUTDIR/clip.wav}
@@ -98,53 +98,53 @@ readonly LEG_B_SINK_VOLUME=40%
 readonly LEG_B_SECONDS=${LEG_B_SECONDS:-228}
 
 section() { printf '\n=== %s ===\n' "$*"; }
-run_hp() { ssh "$HP_HOST" "$@"; }
+run_b() { ssh "$B_HOST" "$@"; }
 
 # ------------------------------------------------------------------ scratch
 # Both nodes work in the SAME scratch directory (WORKDIR). The control side's
-# copy was created and asserted off `/` by gopi_scratch_mkdir above; HP's twin is
-# created below through the same device-id criterion (HP has no checkout of this
+# copy was created and asserted off `/` by gopi_scratch_mkdir above; host-b's twin is
+# created below through the same device-id criterion (host-b has no checkout of this
 # repo, so the fragment is self-contained: stat -c %d of the directory vs of /).
 # Neither copy is ever /tmp, and both are removed on exit — the control side by
-# gopi_scratch_cleanup, HP by cleanup_all below.
-readonly HP_SCRATCH_DEVID_CMD="printf '# hp scratch  : %s  dev=%s (/ dev=%s)\n' '$WORKDIR' \"\$(stat -c %d '$WORKDIR')\" \"\$(stat -c %d /)\""
+# gopi_scratch_cleanup, host-b by cleanup_all below.
+readonly B_SCRATCH_DEVID_CMD="printf '# host-b scratch: %s  dev=%s (/ dev=%s)\n' '$WORKDIR' \"\$(stat -c %d '$WORKDIR')\" \"\$(stat -c %d /)\""
 
 cleanup_all() {
-    # Best effort, in order: HP's twin (a remote failure must never leave the
+    # Best effort, in order: host-b's twin (a remote failure must never leave the
     # control-side cleanup unrun — Rule 15b reports, never swallows silently).
-    ssh -o BatchMode=yes "$HP_HOST" "rm -rf '$WORKDIR'" >/dev/null 2>&1 \
-        || echo "warning: could not remove $WORKDIR on $HP_HOST (age-GC it there)" >&2
+    ssh -o BatchMode=yes "$B_HOST" "rm -rf '$WORKDIR'" >/dev/null 2>&1 \
+        || echo "warning: could not remove $WORKDIR on $B_HOST (age-GC it there)" >&2
     gopi_scratch_cleanup
 }
 trap cleanup_all EXIT INT TERM
 
 # ------------------------------------------------------------------ preflight
 command -v ssh >/dev/null || { echo "FAIL: ssh not found"; exit 1; }
-ssh -o BatchMode=yes "$HP_HOST" true 2>/dev/null || { echo "FAIL: no ssh to $HP_HOST"; exit 1; }
+ssh -o BatchMode=yes "$B_HOST" true 2>/dev/null || { echo "FAIL: no ssh to $B_HOST"; exit 1; }
 ssh -o BatchMode=yes "$PEER_HOST" 'command -v gopi' >/dev/null 2>&1 \
   || { echo "FAIL: gopi not on $PEER_HOST PATH"; exit 1; }
-run_hp "test -x '$CLIENT_BIN'" || { echo "FAIL: client binary not executable: $CLIENT_BIN"; exit 1; }
+run_b "test -x '$CLIENT_BIN'" || { echo "FAIL: client binary not executable: $CLIENT_BIN"; exit 1; }
 
 section "preflight"
-echo "# hp          : $HP_HOST  ($(run_hp hostname))"
-echo "# peer1       : $PEER_HOST  ($(ssh "$PEER_HOST" hostname))"
+echo "# host-b      : $B_HOST  ($(run_b hostname))"
+echo "# host-a       : $PEER_HOST  ($(ssh "$PEER_HOST" hostname))"
 echo "# client bin  : $CLIENT_BIN  built from $(cd "$HERE/.." && git rev-parse --short HEAD)"
 echo "# capture     : $CAP_RATE Hz, $CAP_CHANNELS ch, PCM${CAP_BITS}LE"
-echo "# fixture wav : $FIXTURE_WAV  sha256=$(run_hp "sha256sum '$FIXTURE_WAV' | cut -c1-32")"
-echo "# reference   : $FIXTURE_REF  sha256=$(run_hp "sha256sum '$FIXTURE_REF' | cut -c1-32")"
+echo "# fixture wav : $FIXTURE_WAV  sha256=$(run_b "sha256sum '$FIXTURE_WAV' | cut -c1-32")"
+echo "# reference   : $FIXTURE_REF  sha256=$(run_b "sha256sum '$FIXTURE_REF' | cut -c1-32")"
 
 # The capture node's workspace: created here, asserted off `/` (the same
 # criterion the control side's scratch root just passed), reported with both
 # device ids as evidence.
-run_hp "mkdir -p '$WORKDIR'" || { echo "FAIL: cannot create $WORKDIR on $HP_HOST"; exit 1; }
-run_hp "$HP_SCRATCH_DEVID_CMD"
-run_hp "test \"\$(stat -c %d '$WORKDIR')\" != \"\$(stat -c %d /)\"" \
-  || { echo "FAIL: $WORKDIR on $HP_HOST is on the / filesystem (Rule 22) — set WORKDIR to a path off /"; exit 2; }
+run_b "mkdir -p '$WORKDIR'" || { echo "FAIL: cannot create $WORKDIR on $B_HOST"; exit 1; }
+run_b "$B_SCRATCH_DEVID_CMD"
+run_b "test \"\$(stat -c %d '$WORKDIR')\" != \"\$(stat -c %d /)\"" \
+  || { echo "FAIL: $WORKDIR on $B_HOST is on the / filesystem (Rule 22) — set WORKDIR to a path off /"; exit 2; }
 mkdir -p "$LOGDIR"
 
 # ---------------------------------------------------------------------- leg A
 section "LEG A — null-sink monitor ($NULL_SINK_MONITOR) -> $SERVER_CMD @ $PEER_HOST"
-run_hp bash -s <<HPSCRIPT
+run_b bash -s <<BSCRIPT
 set -euo pipefail
 cd $WORKDIR
 MOD=\$(pactl load-module module-null-sink sink_name=$NULL_SINK \\
@@ -173,19 +173,19 @@ if [ "$NEEDS_F32_CONVERSION" = 1 ]; then
   sox legA.wav -t raw -e floating-point -b 32 -c $CAP_CHANNELS legA.f32
   echo "# converted    : PCM16 -> f32 (\$(stat -c%s legA.f32) bytes) for the --stdio wire"
 fi
-HPSCRIPT
+BSCRIPT
 
 echo "# transport   : ssh $PEER_HOST \"$SERVER_CMD\" < legA.f32"
-run_hp "ssh $PEER_HOST '$SERVER_CMD' < $WORKDIR/legA.f32" > "$LOGDIR/legA.txt" 2>"$LOGDIR/legA.err" || true
+run_b "ssh $PEER_HOST '$SERVER_CMD' < $WORKDIR/legA.f32" > "$LOGDIR/legA.txt" 2>"$LOGDIR/legA.err" || true
 echo "# engine      : $(tr '\n' ' ' < "$LOGDIR/legA.err")"
 echo "# transcript  : $(cat "$LOGDIR/legA.txt")"
-run_hp "cat '$FIXTURE_REF'" > "$LOGDIR/reference.txt"
+run_b "cat '$FIXTURE_REF'" > "$LOGDIR/reference.txt"
 echo "# CER (scripts/asr_score.py):"
 python3 "$HERE/asr_score.py" "$LOGDIR/legA.txt" "$LOGDIR/reference.txt" | sed -n '1,12p'
 
 # ---------------------------------------------------------------------- leg B
 section "LEG B — physical device ($LEG_B_ALSA_DEVICE, $LEG_B_SOURCE) -> $SERVER_CMD @ $PEER_HOST"
-run_hp bash -s <<HPSCRIPT
+run_b bash -s <<BSCRIPT
 set -euo pipefail
 cd $WORKDIR
 pactl set-source-volume $LEG_B_SOURCE $LEG_B_SOURCE_VOLUME
@@ -205,16 +205,16 @@ if [ "$NEEDS_F32_CONVERSION" = 1 ]; then
   sox legB.wav -t raw -e floating-point -b 32 -c $CAP_CHANNELS legB.f32
   echo "# converted    : PCM16 -> f32 (\$(stat -c%s legB.f32) bytes) for the --stdio wire"
 fi
-HPSCRIPT
+BSCRIPT
 
 echo "# transport   : ssh $PEER_HOST \"$SERVER_CMD\" < legB.f32"
-run_hp "ssh $PEER_HOST '$SERVER_CMD' < $WORKDIR/legB.f32" > "$LOGDIR/legB.txt" 2>"$LOGDIR/legB.err" || true
+run_b "ssh $PEER_HOST '$SERVER_CMD' < $WORKDIR/legB.f32" > "$LOGDIR/legB.txt" 2>"$LOGDIR/legB.err" || true
 echo "# engine      : $(tr '\n' ' ' < "$LOGDIR/legB.err")"
 echo "# transcript  : $(cat "$LOGDIR/legB.txt")"
 echo "# CER (scripts/asr_score.py):"
 python3 "$HERE/asr_score.py" "$LOGDIR/legB.txt" "$LOGDIR/reference.txt" | sed -n '1,12p'
 
 section "done"
-echo "# scratch     : $WORKDIR (removed on exit on both nodes; HP's copy is the same path)"
+echo "# scratch     : $WORKDIR (removed on exit on both nodes; host-b's copy is the same path)"
 echo "# transcripts : $LOGDIR/legA.txt $LOGDIR/legB.txt"
-echo "# rerun       : SRCDIR=$SRCDIR bash scripts/voice-e2e-hp.sh"
+echo "# rerun       : SRCDIR=$SRCDIR bash scripts/voice-e2e-peer.sh"

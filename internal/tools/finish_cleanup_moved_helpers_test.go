@@ -2872,7 +2872,7 @@ func taskFinishCleanupChain(ctx context.Context, rep *FinishCleanupReport, d tas
 	// knowable: the refusal is a REMOVAL-side fact, and the delivery (①b
 	// pre-merge + ② push) must happen before it (epic client-push-rebase,
 	// 2026-09-19). A guard that returns HERE would make the whole chain skip
-	// again — the exact defect (devdoc/hp-push-diagnosis-20260916.md A/A′).
+	// again — the exact defect (devdoc/peer-push-diagnosis-20260916.md A/A′).
 
 	// Push target: the first declared sync peer is the server, asked of THE
 	// ROW's repo (finishCleanupRowTargetResolution) and never of this process's

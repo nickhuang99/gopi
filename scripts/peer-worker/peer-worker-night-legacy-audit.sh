@@ -2,7 +2,7 @@
 # WORKER-OWNERSHIP: OPERATOR-ONLY — devdoc/worker-ownership.md
 # peer-worker-night-legacy-audit.sh — HP 夜间 legacy-audit 执行器（GLM 免费窗口 23:00-09:00）
 #
-# SWEEP DISPOSITION (2026-09-12, devdoc/hp-inline-launchers-20260912.md):
+# SWEEP DISPOSITION (2026-09-12, devdoc/peer-inline-launchers-20260912.md):
 # this was the THIRD inline worker-start path found on HP — an executable .sh
 # that ran `/usr/local/bin/gopi worker --once` in a loop and never looked at
 # the exit status (a refusal read exactly like a success, the same defect class

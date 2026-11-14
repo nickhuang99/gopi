@@ -154,7 +154,7 @@ ROOT (the shape Rule 34 bans):
 |---|---|
 | `scripts/docclass-red-proofs.sh:86,118` | `mktemp -d` twice, one under `$HOME`, one under `${TMPDIR:-$PWD}` |
 | `scripts/probe-scope-rig.sh:14` | `mktemp -d "${TMPDIR:-/home/user/workspace/_tmp}/…"` |
-| `scripts/hp/probe-hp-loudness.sh:7` | `SB="$HOME/.gopi-ship/probe"` (a fixed private root) |
+| `scripts/peer-worker/probe-hp-loudness.sh:7` | `SB="$HOME/.gopi-ship/probe"` (a fixed private root) |
 | `scripts/e2e-task-merge.sh:43`, `parent-gate-ab.sh:28`, `e2e-m421-claim-lock.sh:33-34` (the last one is GONE — deleted with the cross-node claim lock, batch 4) | `GOPI_HOME="$WORK/home"` / `$ROOT/home` / `$A`,`$B` — per-script roots, no standard shape |
 
 ## Evidence (self-filed)

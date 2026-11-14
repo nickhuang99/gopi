@@ -5,7 +5,7 @@ op-20260916	e3dfc1ce	+0	-0	0	0	ALREADY-DONE	git cherry -v master archive/archive
 archive/branch-scan-archive-filter-20260901	82bbc4e4	+0	-0	0	0	ALREADY-DONE	git cherry -v master archive/branch-scan-archive-filter-20260901 prints no + line: every patch is on master by identity
 archive/claim-broadcast-m418	0371c403	+2	-3	10	5	UNLANDED	10 of 23 prod decl the tip adds are absent from master
 archive/docs/daemon-no-privilege-remedy-rework	b76942b8	+0	-0	0	0	ALREADY-DONE	git cherry -v master archive/docs/daemon-no-privilege-remedy-rework prints no + line: every patch is on master by identity
-archive/docs/hp-push-diagnosis	dcb35012	+0	-0	0	0	ALREADY-DONE	git cherry -v master archive/docs/hp-push-diagnosis prints no + line: every patch is on master by identity
+archive/docs/peer-push-diagnosis	dcb35012	+0	-0	0	0	ALREADY-DONE	git cherry -v master archive/docs/peer-push-diagnosis prints no + line: every patch is on master by identity
 archive/docs/requirements-merge-branch-lifecycle	13d2bbcf	+0	-0	0	0	ALREADY-DONE	git cherry -v master archive/docs/requirements-merge-branch-lifecycle prints no + line: every patch is on master by identity
 archive/docs/requirements-task-ledger	5961f171	+0	-0	0	0	ALREADY-DONE	git cherry -v master archive/docs/requirements-task-ledger prints no + line: every patch is on master by identity
 archive/docs/requirements-umbrella	12e1ac74	+0	-0	0	0	ALREADY-DONE	git cherry -v master archive/docs/requirements-umbrella prints no + line: every patch is on master by identity
@@ -27,7 +27,7 @@ archive/feat/cov-config-hp	829681ff	+1	-0	0	11	ALREADY-DONE	patch-equivalent: al
 archive/feat/cov-deepseek-hp	03c624e0	+2	-0	0	43	ALREADY-DONE	patch-equivalent: all 0 prod decl the tip adds exist on master (cherry ids differ, content landed by another path)
 archive/feat/cov-gopilog-hp	d9b26fcd	+2	-0	0	10	ALREADY-DONE	patch-equivalent: all 0 prod decl the tip adds exist on master (cherry ids differ, content landed by another path)
 archive/feat/cov-hippocampus-hp	5cd0b643	+3	-0	0	43	ALREADY-DONE	patch-equivalent: all 0 prod decl the tip adds exist on master (cherry ids differ, content landed by another path)
-archive/feat/cov-shot-hp	569f7fdb	+4	-0	0	41	ALREADY-DONE	patch-equivalent: all 0 prod decl the tip adds exist on master (cherry ids differ, content landed by another path)
+archive/feat/cov-shot-peer	569f7fdb	+4	-0	0	41	ALREADY-DONE	patch-equivalent: all 0 prod decl the tip adds exist on master (cherry ids differ, content landed by another path)
 archive/feat/cov-tools-rest	3e128733	+14	-0	6	108	UNLANDED	6 of 6 prod decl the tip adds are absent from master
 archive/feat/cwd-release-inventory-verified	455a7751	+0	-0	0	0	ALREADY-DONE	git cherry -v master archive/feat/cwd-release-inventory-verified prints no + line: every patch is on master by identity
 archive/feat/foreground-component-lifecycle	f545a311	+2	-0	11	11	UNLANDED	11 of 11 prod decl the tip adds are absent from master

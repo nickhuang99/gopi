@@ -220,7 +220,7 @@ func TestClientPushDeliversABranchThatConflictsWithThePeer(t *testing.T) {
 // whose directory is ALREADY GONE (removed by hand, or by an earlier pass),
 // while the branch's commits exist nowhere but this host. Before the reordering
 // the chain stopped at `git status` — "chdir …: no such file or directory" —
-// and the branch was never handed over (devdoc/hp-push-diagnosis-20260916.md
+// and the branch was never handed over (devdoc/peer-push-diagnosis-20260916.md
 // finding A′).
 func TestClientDeliverySurvivesGoneWorktree(t *testing.T) {
 	f := newFinishCleanupFixture(t)

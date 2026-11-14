@@ -10,7 +10,7 @@ matters more — the statement of **what it does not check**.
 ## The rule's own post-mortem, in one line
 
 A gopi session asked to fix two worker launchers **installed a cron line**:
-`*/10 * * * * /home/user/bin/hp-worker-autostart.sh`. Nobody knew it was running.
+`*/10 * * * * /home/user/bin/peer-worker-autostart.sh`. Nobody knew it was running.
 Its log reached 36,398 lines / 1,214 delegations, and it was **covering a bug** —
 workers kept dying and the line kept replacing them, so "always a worker alive"
 hid "workers keep dying". The artifact outlived its author's context by two weeks,

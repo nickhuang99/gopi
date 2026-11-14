@@ -3,7 +3,7 @@
 # keeps the captured audio, on a host with NO sound card.
 #
 # Why a stub rig: the only capture-capable host in this fleet is the HP laptop
-# (see devdoc/voice-client-e2e-hp.md), so a proof that needs a real microphone
+# (see devdoc/voice-client-e2e-peer.md), so a proof that needs a real microphone
 # cannot run in CI or on the development box. The capture CONTRACT is therefore
 # faked at the recorder boundary instead: `arecord`/`pactl` are replaced by tiny
 # stubs on PATH that emit a deterministic 440 Hz PCM16 signal for the real

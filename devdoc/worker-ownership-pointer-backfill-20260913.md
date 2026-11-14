@@ -43,7 +43,7 @@ is a launcher change, or a report whose finding is "the daemon must detach"):
 | File | What it teaches |
 |---|---|
 | `briefings/brief-daemon-cgroup-detach.md` | the deliverable is "let `gopi worker --daemon` detach itself" |
-| `briefings/brief-hp-inline-launchers.md` | the re-take whose subject IS the launcher (`~/bin/gopi-worker-up.sh` install seam) |
+| `briefings/brief-peer-inline-launchers.md` | the re-take whose subject IS the launcher (`~/bin/gopi-worker-up.sh` install seam) |
 | `briefings/brief-worker-daemon-flag.md` | "make `gopi worker --daemon` self-background" with a run-the-daemon acceptance step |
 | `briefings/brief-worker-log-session-attribution.md` | assigns launcher `logdir` work to the launcher's owner |
 | `briefings/brief-worker-process-independence.md` | the correct-independent-launch research brief (`setsid nohup … worker`) |
@@ -78,7 +78,7 @@ in `devdoc/` — i.e. where a reader sees it *before* the instructions.
   1 on this branch — see Verification), it belongs to the /tmp-ban workstream
   (task lineage `#01a092a8` cancelled / `#01a0987d` verified TMPDIR), and its demands
   (rewrite `scripts/verify-rehome.sh` to source `scripts/lib/tmp-ban.sh`; de-`/tmp`
-  `scripts/voice-e2e-hp.sh` lines 126/131/etc.) are outside worker-ownership. Touching
+  `scripts/voice-e2e-peer.sh` lines 126/131/etc.) are outside worker-ownership. Touching
   them here would smuggle an unrelated fix into a red-gate backfill. It is reported,
   not hidden.
 - **No `workerOwnershipDismissed` pruning.** The table still carries the pre-existing

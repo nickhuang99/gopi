@@ -59,7 +59,7 @@ drift is recorded as a permit by design (the gate's own message text says so).
 | rule31-ran-check.md (branch `feat/rule31-ran-check`) | ev-sym | `RanCheckVerdict` |
 | taskid-whitespace-normalize-salvage.md (base master `fa12d97f`) | blank | `memory_sync_claim.go:185` |
 | taskid-whitespace-normalize-salvage.md | ev-anchor | `185` |
-| voice-client-e2e-hp.md (branch `feat/voice-client-e2e`) | blank | `internal/shot/x11.go:129` |
+| voice-client-e2e-peer.md (branch `feat/voice-client-e2e`) | blank | `internal/shot/x11.go:129` |
 | why-worktree-residue.md (branch `doc/why-worktree-residue`, base `bb67757f`) | blank | `cmd/agent/cli_tasks.go:2817` |
 | worker-term-exit-salvage.md (branch `verdict/worker-term-exit-remeasure`) | blank | `internal/tools/bash.go:451` |
 
