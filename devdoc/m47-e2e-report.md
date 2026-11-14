@@ -7,14 +7,14 @@
   - peerbox 造 pending 单（payload=三步 fixture briefing），HP 端预置孪生行（#142 缺口的 fixture 变通）
 > **WORKER-OWNERSHIP: OPERATOR-ONLY — devdoc/worker-ownership.md** — the operator owns this; an agent must never run it (submit the work instead: `gopi task submit`).
 
-  - 派发命令 = `cd ~/work/GoPi && nohup gopi task run t-1788065578 --report-to peerbox --repo nick@192.168.7.6:/home/user/work/GoPi &`（镜像 dispatchRemoteCommand 输出 + 显式 cd）
+  - 派发命令 = `cd ~/work/GoPi && nohup gopi task run t-1788065578 --report-to peerbox --repo nick@10.0.0.6:/home/user/work/GoPi &`（镜像 dispatchRemoteCommand 输出 + 显式 cd）
   - 中心镜像 dispatchToNode 的 claimed→in_progress 翻转
 - **三断言全过**：
   1. peerbox 台账终态：t-1788065578 status=completed（--report-to → `ssh peerbox gopi task update` 正确落行）
-  2. feat 分支到达 peerbox 主仓：feat/m47-e2e-hp @ 39118b9（--repo → `git push nick@192.168.7.6:/home/user/work/GoPi HEAD`）
+  2. feat 分支到达 peerbox 主仓：feat/m47-e2e-hp @ 39118b9（--repo → `git push nick@10.0.0.6:/home/user/work/GoPi HEAD`）
   3. 内容完整性：`git show feat/m47-e2e-hp:e2e/m47-report-e2e.txt` 逐字等于 fixture 单行
   - 附加：master 停在 f1aff7e 未被污染；HP 端自账 writeback 正常（/tmp/m47-e2e.log 有 "reported completed → peerbox" + "pushed feat/m47-e2e-hp"）
-- **拓扑确认**：settings.json compute_nodes 已是 `{name:hp, max_concurrent:2, report_to:peerbox, repo:nick@192.168.7.6:/home/user/work/GoPi}` 四字段完整描述；HP 二进制含 --report-to（master f1aff7e 同基线）。
+- **拓扑确认**：settings.json compute_nodes 已是 `{name:hp, max_concurrent:2, report_to:peerbox, repo:nick@10.0.0.6:/home/user/work/GoPi}` 四字段完整描述；HP 二进制含 --report-to（master f1aff7e 同基线）。
 
 ## Not Done（发现的真实缺口，已另开单）
 - **#142（已存在）**：dispatch→remote 纯 ssh 派发不带远端本地行 → 远端 TaskStart/TaskPayload 必失败。本次以"HP 端孪生 fixture 行"变通验证，正式修复待 #142。

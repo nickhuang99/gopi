@@ -105,7 +105,7 @@ git clone --mirror /home/user/work/GoPi <off-/>/GoPi-pre-rewrite.git
 1. **操作者显式确认冻结**（如 `GOPI_HISTREWRITE_CONFIRM=freeze-attested`）——执行器唯一的授权闸，**没有 `--force`**。
 2. `ps -eo args | grep -E 'gopi (worker|chat|serve)'` **为 0**（实测本会话并行跑着 4 个 worker + 2 个 chat）。
 3. `git worktree list` 的每个 worktree `git status --porcelain` **为空**，main 仓同样为空（Rule 30）。
-4. **HP 侧 clone 与所有在场 clone 已停手**（本机只能断言本机；HP 在 `192.168.7.5`，需操作者确认）。
+4. **HP 侧 clone 与所有在场 clone 已停手**（本机只能断言本机；HP 在 `10.0.0.5`，需操作者确认）。
 5. `.git/refs/original/` **不存在**（存在 = 上次重写残留，先人工处理）。
 6. 磁盘：备份需 ~560 MB，且**不得落在 `/`**（`/` 已用 89%，剩 16 G）。
 7. 备份先建成 —— 执行器在动手前建，建不成就拒绝执行。
@@ -199,7 +199,7 @@ join -j1 <(sort refs-original.txt | awk '{print $1"\t"$2}') \
 
 | # | 对象 | 动作 | 判据/命令 |
 |---|---|---|---|
-| 1 | **HP 侧 clone**（`hp=192.168.7.5`） | 最干净：**重新 clone**；或 `git fetch` 后按 `refs-rewritten.tsv` 硬重置各分支；**不要** merge（旧历史与新历史无共同祖先，会得到 `unrelated-history`） | HP 上 `git rev-parse master` 应等于新 SHA |
+| 1 | **HP 侧 clone**（`hp=10.0.0.5`） | 最干净：**重新 clone**；或 `git fetch` 后按 `refs-rewritten.tsv` 硬重置各分支；**不要** merge（旧历史与新历史无共同祖先，会得到 `unrelated-history`） | HP 上 `git rev-parse master` 应等于新 SHA |
 | 2 | 本机各 `task/*` 分支 | 重写范围是 `--all`，`task/*` 也换 hash；在飞分支须由「新 master 重开分支」取代，不要在其上继续 commit | `git log --oneline -1 <branch>` 对照 `commit-map` |
 | 3 | 6 个 worktree | 删除后用新分支重建：`git worktree remove <dir>` → 按新 SHA `git worktree add` | `git worktree list` 只剩新分支 |
 | 4 | `devdoc/**`、`tasks/**` 报告里的 hash 引用 | 全文按 `commit-map` 换算；查不到的引用按「重写已删」处理 | `git log --all --name-only` 里不再有旧 SHA；`.git/filter-repo/suboptimal-issues` 列出的残留引用要人工改 |

@@ -40,8 +40,8 @@ carrier prints, through the same helpers:
 ```
 gopi ui: listening (Ctrl+C to stop)
   open: http://localhost:8097?t=<token>
-  open: http://192.168.7.9:8097?t=<token>
-  open: http://192.168.7.6:8097?t=<token>
+  open: http://10.0.0.9:8097?t=<token>
+  open: http://10.0.0.6:8097?t=<token>
 gopi ui: LAN-REACHABLE bind — every URL below carries the per-run access token; …
 ```
 

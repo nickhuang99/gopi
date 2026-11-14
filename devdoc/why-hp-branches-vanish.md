@@ -5,7 +5,7 @@
 
 **Task** `01a0ddf2-f527-792d-95e0-f3f469102d1e` · **Date** 2026-09-26 · **Master** `933c9a8c`
 *(the host this revision ran on is `peerbox` — `hostname` → `peerbox`, `whoami` → `nick`; the SSH alias to
-the client laptop is `hp` = `nick@192.168.7.5`, the operator's actual machine, whose log the operator's
+the client laptop is `hp` = `nick@10.0.0.5`, the operator's actual machine, whose log the operator's
 complaint is about)*
 **Type** INVESTIGATION — no product code was changed, no branch/worktree/log on HP was mutated.
 
@@ -499,7 +499,7 @@ as `56870d4c` at `13:01:37Z`, **six minutes BEFORE** the chain's last force-dele
 - **Tests:** `go test` — **not run**, same reason (no code changed). The claims here are about the
   behaviour of `933c9a8c` as already committed.
 - **Ran** — this revision's own commands (every claim above traces to one of them; the host is `peerbox`):
-  - `hostname; whoami` → `peerbox` / `nick` (the SSH alias `hp` = `nick@192.168.7.5` is the client).
+  - `hostname; whoami` → `peerbox` / `nick` (the SSH alias `hp` = `nick@10.0.0.5` is the client).
   - `git ls-remote hp refs/heads/master` → `933c9a8c360678c802c1baa79512ab5fe9872be3`; `git rev-parse master` → **same** (§6.1).
   - `git for-each-ref --format='%(refname) %(objectname:short) %(committerdate:iso)' refs/remotes/peerbox/` → `refs/remotes/peerbox/master db379f68 … 2026-09-07 12:44:27 +0800`; `git rev-list --count peerbox/master..master` → `4950` (the stale-ref proof).
   - `ssh hp 'grep -o "\"arm\":\"[a-z-]*\"" ~/.gopi/logs/removal-audit.log | sort | uniq -c | sort -rn'` → `393 finish-cleanup-branch-force`, `393 finish-cleanup-branch`, `103 task-ground-anchor`, `66 merge-build-gate-ground`, `38 finish-cleanup-worktree-force`, `36 task-self-reclaim`, `27 task-self-own-sweep`, `17 merge-run-spent-branch`, `4 finish-cleanup-worktree`, `1 task-row-reclaim`.

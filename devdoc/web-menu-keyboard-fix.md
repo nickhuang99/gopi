@@ -91,7 +91,7 @@
     TestWebMenu_KeydownKeyupPairKeepsTheHighlight`, `--- FAIL:
     TestWebMenu_NavigationKeysAreNamedConstants`; harness `FAIL: 21/28 checks`
     with the seven quoted failures above.
-- **Live CDP verification on HP (192.168.7.5) — the real browser, not the shim.**
+- **Live CDP verification on HP (10.0.0.5) — the real browser, not the shim.**
   A throwaway `gopi web --addr 127.0.0.1:8095 --no-tools` instance (never the
   operator's 8090 server) plus headless Chrome on ports 9223/9224, driven by the
   proven zero-dep raw-WebSocket CDP client; `/api/menu` and `/api/chat` calls were

@@ -37,7 +37,7 @@ func TestAddressIsLoopback(t *testing.T) {
 		{":8090", false},        // all interfaces
 		{"0.0.0.0:8090", false}, // wildcard v4
 		{"[::]:8090", false},    // wildcard v6
-		{"192.168.7.6:8090", false},
+		{"10.0.0.6:8090", false},
 		{"10.0.0.7:8090", false},
 		{"not-an-address", false}, // unparseable: loopback cannot be promised
 		{"", false},
@@ -59,9 +59,9 @@ func TestWebParseFlags_LANBindForms(t *testing.T) {
 		t.Fatalf("--addr=0.0.0.0:8090 → %+v (err %v), want (0.0.0.0:8090,false,false,false,nil)", opts, err)
 	}
 
-	opts, err = webParseFlags([]string{"--addr", "192.168.7.6:8090", "--tools"}, webDefaultAddrValue, false, false)
-	if err != nil || opts.Help || !opts.Tools || opts.Thinking || opts.Addr != "192.168.7.6:8090" {
-		t.Fatalf("--addr 192.168.7.6:8090 --tools → %+v (err %v), want the LAN addr with tools", opts, err)
+	opts, err = webParseFlags([]string{"--addr", "10.0.0.6:8090", "--tools"}, webDefaultAddrValue, false, false)
+	if err != nil || opts.Help || !opts.Tools || opts.Thinking || opts.Addr != "10.0.0.6:8090" {
+		t.Fatalf("--addr 10.0.0.6:8090 --tools → %+v (err %v), want the LAN addr with tools", opts, err)
 	}
 
 	if opts, err = webParseFlags([]string{"-h"}, webDefaultAddrValue, false, false); err != nil || !opts.Help {
@@ -206,7 +206,7 @@ func TestWebTokenGate_RedProof(t *testing.T) {
 // token, and the loopback banner stays clean.
 func TestWebTokenURL(t *testing.T) {
 	const token = "abc123"
-	if got := webTokenURL("http://192.168.7.6:8090", token, false); got != "http://192.168.7.6:8090?t=abc123" {
+	if got := webTokenURL("http://10.0.0.6:8090", token, false); got != "http://10.0.0.6:8090?t=abc123" {
 		t.Fatalf("webTokenURL = %q, want the token appended", got)
 	}
 	if got := webTokenURL("http://127.0.0.1:8090", "", false); got != "http://127.0.0.1:8090" {
@@ -334,7 +334,7 @@ func TestWebGatedHandler_WiringIsLoadBearing(t *testing.T) {
 	// A pinned token is used instead of a minted one (operator-controlled
 	// secret), and it is the one in the URL.
 	t.Setenv(webTokenEnv, "pinned-secret-for-tests")
-	lan, token, err = webGatedHandler("192.168.7.6:8090", bare, false)
+	lan, token, err = webGatedHandler("10.0.0.6:8090", bare, false)
 	if err != nil {
 		t.Fatalf("pinned: %v", err)
 	}

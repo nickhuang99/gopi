@@ -17,16 +17,16 @@ entry the harness has.
 
 | Host | ssh keyless | Identity | ALSA capture hardware | Verdict |
 |---|---|---|---|---|
-| 192.168.7.5 | ✅ `hostb-Laptop` | x86_64 | card 1 `Generic_1` ALC236, `arecord -l` non-empty | **capture-capable** |
-| 192.168.7.6 | ✅ (this host) `peerbox` | x86_64 | ALC3228: refused to uid 1000 (13/13 `/dev/snd` DENIED, ∉ group `audio`), **but captures as root (`sudo -n`) and as uid 1000 + group `audio`** — see §2 | client-side **denied** for uid 1000; node **privilege-gated capable** |
-| 192.168.7.9 | ✅ `DS918Plus` (NAS) | x86_64 | none — `arecord`/`parecord`/`pactl` **ABSENT** | no ALSA at all |
-| 192.168.7.15 | ✅ `rpi5` | aarch64 | only `vc4-hdmi-0/1` **playback** cards; `arecord -l` empty | no capture device |
-| 192.168.7.11 | ❌ key refused (peerbox's own wlo1) | — | — | out of scope |
-| 192.168.7.13 | ❌ key refused (**hosta**) | — | — | **blocked** (§3) |
+| 10.0.0.5 | ✅ `hostb-Laptop` | x86_64 | card 1 `Generic_1` ALC236, `arecord -l` non-empty | **capture-capable** |
+| 10.0.0.6 | ✅ (this host) `peerbox` | x86_64 | ALC3228: refused to uid 1000 (13/13 `/dev/snd` DENIED, ∉ group `audio`), **but captures as root (`sudo -n`) and as uid 1000 + group `audio`** — see §2 | client-side **denied** for uid 1000; node **privilege-gated capable** |
+| 10.0.0.9 | ✅ `DS918Plus` (NAS) | x86_64 | none — `arecord`/`parecord`/`pactl` **ABSENT** | no ALSA at all |
+| 10.0.0.15 | ✅ `rpi5` | aarch64 | only `vc4-hdmi-0/1` **playback** cards; `arecord -l` empty | no capture device |
+| 10.0.0.11 | ❌ key refused (peerbox's own wlo1) | — | — | out of scope |
+| 10.0.0.13 | ❌ key refused (**hosta**) | — | — | **blocked** (§3) |
 | 1, 3, 7, 8, 10, 12 | ❌ port 22 refused/no sshd | — | — | no ssh path |
 
-`~/.ssh/config` carries a **stale** `Host rpi5 → 192.168.7.14` (`.14` is DOWN,
-no route); the live rpi5 answers at **192.168.7.15**.
+`~/.ssh/config` carries a **stale** `Host rpi5 → 10.0.0.14` (`.14` is DOWN,
+no route); the live rpi5 answers at **10.0.0.15**.
 
 **Node-coverage conclusion**: the keyless node universe is exactly three hosts
 (HP, peerbox, NAS) plus rpi5 — and **HP is the only capture-capable one**. No
@@ -47,7 +47,7 @@ Outcomes are the probe vocabulary (`scripts/voice-mic-probe.sh`) with the
 client's mode in parentheses where the live client was run.
 `OK` = data captured; everything else is a named refusal.
 
-### peerbox (`192.168.7.6`, x86_64) — the privilege-gated node (REWORKED 2026-09-13)
+### peerbox (`10.0.0.6`, x86_64) — the privilege-gated node (REWORKED 2026-09-13)
 
 **This section's original conclusion was wrong and is corrected here.** The
 32/32 non-`OK` cells below are real *for uid 1000*, and they were reported as the
@@ -106,7 +106,7 @@ Multiset: **24 NO_DEVICE, 4 PULSE_REFUSED, 4 HW_PARAM_UNSUPPORTED**.
 soundcards found)"*. **Not one cell is OK** — honest, and the reason is access
 control (`/dev/snd` DENIED, Pulse socket unlinked), not missing silicon.
 
-### HP (`192.168.7.5`, x86_64) — 32/32 probe cells
+### HP (`10.0.0.5`, x86_64) — 32/32 probe cells
 
 | device | 16k mono | 48k 2ch | client mode |
 |---|---|---|---|
@@ -133,7 +133,7 @@ Two facts the client contract depends on, both measured here:
    (translated to `PULSE_SOURCE`) captures `alsa_input.pci-0000_05_00.6.analog-stereo`
    at 32000 B/1 s, while the ALSA spelling `gopi_e2e.monitor` is `no_device`.
 
-### rpi5 (`192.168.7.15`, aarch64) — 12/12 probe cells + client
+### rpi5 (`10.0.0.15`, aarch64) — 12/12 probe cells + client
 
 | device | 16k mono | 48k 2ch | client mode |
 |---|---|---|---|
@@ -148,7 +148,7 @@ HDMI **playback-only**; `arecord -l` prints an empty capture list and
 `--list-devices` exits 0 with that same empty list. Cross-arch proof for the
 client: the arm64 binary runs, enumerates, and names its refusals on aarch64.
 
-### NAS DS918Plus (`192.168.7.9`, x86_64) — 1/1 probe cells + client
+### NAS DS918Plus (`10.0.0.9`, x86_64) — 1/1 probe cells + client
 
 No ALSA stack at all: `arecord`, `parecord`, `pactl` all ABSENT; no
 `/proc/asound/*`. Probe emits one honest row
@@ -159,15 +159,15 @@ No ALSA stack at all: `arecord`, `parecord`, `pactl` all ABSENT; no
 
 ---
 
-## 3. The ssh blocker — hosta (192.168.7.13)
+## 3. The ssh blocker — hosta (10.0.0.13)
 
 Re-verified 2026-09-13 06:25 from peerbox, still blocked:
 
 ```
-$ ping -c4 192.168.7.13       → 4 received, 0% loss, rtt avg 0.82 ms
-$ curl -m5 -o /dev/null -w '%{http_code}' http://192.168.7.13/   → 200
-$ ssh -o BatchMode=yes nick@192.168.7.13 hostname
-nick@192.168.7.13: Permission denied (publickey,password).
+$ ping -c4 10.0.0.13       → 4 received, 0% loss, rtt avg 0.82 ms
+$ curl -m5 -o /dev/null -w '%{http_code}' http://10.0.0.13/   → 200
+$ ssh -o BatchMode=yes nick@10.0.0.13 hostname
+nick@10.0.0.13: Permission denied (publickey,password).
 $ ssh -vv … | grep -iE 'offering|can continue'
 debug1: Offering public key: /home/user/.ssh/id_ed25519 ED25519 SHA256:WB/Gtn+…
 debug1: Authentications that can continue: publickey,password
@@ -213,9 +213,9 @@ non-interactive); the raw artifacts are committed next to this file.
 
 ```bash
 # (1) node universe + keyless reachability
-for i in $(seq 1 254); do (ping -c1 -W1 192.168.7.$i >/dev/null 2>&1 && echo 192.168.7.$i) & done; wait
+for i in $(seq 1 254); do (ping -c1 -W1 10.0.0.$i >/dev/null 2>&1 && echo 10.0.0.$i) & done; wait
 for ip in 1 3 5 6 7 8 9 10 11 12 13 15; do timeout 6 ssh -o BatchMode=yes -o ConnectTimeout=3 \
-    nick@192.168.7.$ip 'hostname; uname -m'; done
+    nick@10.0.0.$ip 'hostname; uname -m'; done
 
 # (2) the probe, per node (exit 0 whenever the probe ran)
 scp scripts/voice-mic-probe.sh nick@<host>:/tmp/vmp.sh
@@ -229,11 +229,11 @@ scp /tmp/gopi-master nick@<host>:/tmp/ && ssh -o BatchMode=yes nick@<host> \
 diff <(sort run1.tsv) <(sort run2.tsv)      # empty  → set-equal
 
 # (5) the human-free end-to-end (HP capture → peerbox engine → text)
-ssh nick@192.168.7.5 'PULSE_SOURCE=gopi_e2e.monitor /tmp/gopi-master voice_input --client \
+ssh nick@10.0.0.5 'PULSE_SOURCE=gopi_e2e.monitor /tmp/gopi-master voice_input --client \
   --device pulse --seconds 3 --out /tmp/hp-e2e.pcm' &
-ssh nick@192.168.7.5 'sleep 1.2; paplay --device=gopi_e2e /usr/share/sounds/alsa/Front_Center.wav'
+ssh nick@10.0.0.5 'sleep 1.2; paplay --device=gopi_e2e /usr/share/sounds/alsa/Front_Center.wav'
 #   → [voice-capture] device="pulse" mode=ok bytes=96000 want=96000   peak 15183
-curl -F audio=@/tmp/hp-e2e.wav http://192.168.7.6:7788/transcribe
+curl -F audio=@/tmp/hp-e2e.wav http://10.0.0.6:7788/transcribe
 #   → {"chunk":15,"elapsed_ms":59610,"engine":"funasr-nano","text":"Front, center."}
 python3 scripts/asr_score.py hyp.txt ref.txt   # → CER 0.00%, accuracy 100.00%
 ```

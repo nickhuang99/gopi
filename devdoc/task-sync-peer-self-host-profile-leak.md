@@ -34,7 +34,7 @@ probe fixture, and this run is standing in the worktree it was given for it.
 ## The mechanism — two halves, both measured
 
 **Half 1: the alias resolves to this host.** `~/.ssh/config` on peerbox carries
-`Host peerbox → 192.168.7.6`, which *is* peerbox's own `wlo1` address. So
+`Host peerbox → 10.0.0.6`, which *is* peerbox's own `wlo1` address. So
 `--peer peerbox` is not a remote machine: it is an `ssh` to self.
 
 ```

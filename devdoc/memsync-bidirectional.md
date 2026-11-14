@@ -93,7 +93,7 @@ payload）会被静默吸收成 tags-union —— 违反"冲突不静默"；④d
 
 - **真机 ssh 通道修复（peerbox→hp 反向）**：peerbox 首次 `task sync --peer hp` 发现
   peerbox 的 ssh config 没有 hp 条目（只有 brew patch 时代的完整 argv 转发假设）。
-  补 `Host hp` 段（192.168.7.5 + 专属 key）。HP→peerbox 方向 HP 侧 config 用
+  补 `Host hp` 段（10.0.0.5 + 专属 key）。HP→peerbox 方向 HP 侧 config 用
   `/home/user/.ssh/id_ed25519`（user 热邮箱 key）即可认证 peerbox。
 - **双向 session 实测（真账 267 行）**：`task sync --peer hp` pushed=31 → 二轮
   pushed=2/pull already=N → 三轮 pushed=2 → 幂等 echo 稳定。`--status` 两 peer

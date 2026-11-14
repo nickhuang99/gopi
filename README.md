@@ -186,7 +186,7 @@ needed, and neither Node nor Python is needed.
 | **The full usage of every CLI verb** | [`COMMANDS.md`](COMMANDS.md) — 421 lines, listed by verb, each line giving the source location |
 | **Every configuration key's default / precedence / who reads it** | [`CONFIG.md`](CONFIG.md) — 1649 lines, one line per knob, with the source line that reads it |
 | **The official description of some subsystem** | [`man/`](man/) — 14 pages, `gopi-chat.md`, `gopi-task.md`, `gopi-memory.md` and so on |
-| **The engineering constraints (why the code looks this way)** | [`PROJECT.md`](PROJECT.md) — 37 rules, each paired with the test that catches a violation |
+| **The engineering constraints (why the code looks this way)** | [`PROJECT.md`](PROJECT.md) — 36 rules, each paired with the test that catches a violation |
 | **The history and measurements behind design decisions** | [`devdoc/`](devdoc/) — every document declares its doc-class on its own first line |
 | **What changed** | [`CHANGELOG.md`](CHANGELOG.md) |
 

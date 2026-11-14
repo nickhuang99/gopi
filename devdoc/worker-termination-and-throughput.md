@@ -16,7 +16,7 @@ pasted next to it or in §6.
 > 23:35 workers were alive when I first probed them (~05:25) and **all four were SIGTERM'd again at
 > `2026-09-17T05:43:25`** — under the *same four unrelated `bash` parents*
 > (`ppid` 2008248 / 2829404 / 1785518 / 2034244), i.e. the identical signature as 22:23:13, at a
-> 7h20m interval. Simultaneously an ssh session `19957` from `192.168.7.5` closed
+> 7h20m interval. Simultaneously an ssh session `19957` from `10.0.0.5` closed
 > (`systemd-logind: Session 19957 logged out. Waiting for processes to exit.` at 05:43:21).
 > This is a **second instance of the same event, captured live** (§2.1).
 
@@ -125,7 +125,7 @@ Four victims, one second, **four different shell parents, 0 `kind=intent` record
 the 22:23:13 signature, at a 7 h 20 min interval. Corroborating journal lines:
 
 ```
-Sep 17 05:43:21.159326 peerbox sshd[1261685]: Received disconnect from 192.168.7.5 port 32802:11: disconnected by user
+Sep 17 05:43:21.159326 peerbox sshd[1261685]: Received disconnect from 10.0.0.5 port 32802:11: disconnected by user
 Sep 17 05:43:21.165744 peerbox systemd-logind[1535401]: Session 19957 logged out. Waiting for processes to exit.
 Sep 17 05:43:21.167598 peerbox systemd[1]: session-19957.scope: Deactivated successfully.
 Sep 17 05:43:24.359117 peerbox systemd[316390]: gopi-daemon-merger-001-99b4024570a8.scope: Consumed 2.604s CPU time.

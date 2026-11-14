@@ -2,7 +2,7 @@
 # whisper.cpp as the local STT engine for gopi's voice-input channel — evidence-based evaluation
 
 - **Date**: 2026-09-10
-- **Evaluator machine (build + benchmarks)**: `peerbox` (192.168.7.6), Intel i7-5500U (Broadwell, 2 cores / 4 threads), 16 GB RAM, CPU-only (no GPU present: `nvidia-smi` / `rocminfo` / `clinfo` all ABSENT)
+- **Evaluator machine (build + benchmarks)**: `peerbox` (10.0.0.6), Intel i7-5500U (Broadwell, 2 cores / 4 threads), 16 GB RAM, CPU-only (no GPU present: `nvidia-smi` / `rocminfo` / `clinfo` all ABSENT)
 - **Subject under study (read-only)**: `/home/user/work/whisper.cpp` @ **e60fdb25** ("examples: add whisper-mic example with docs and unix-only gating"), ggml 0.9.7
 - **Deliverable repo**: GoPi, branch `feat/voice-input-whispercpp-evaluation`
 - **Framing**: this is **evidence collection, not a verdict**. Every claim below is paired with the command that produced it and the real output. Where something was *not* determined, it is listed in §H rather than guessed.
@@ -698,14 +698,14 @@ There is **no mature pure-Go Whisper** (an AI-answer survey listed only cgo wrap
 **Measured network facts** (not assumptions):
 
 ```
-$ ping -c 3 -W 2 192.168.7.13
+$ ping -c 3 -W 2 10.0.0.13
 3 packets transmitted, 3 received, 0% packet loss, time 2019ms
 rtt min/avg/max/mdev = 0.717/0.844/0.986/0.110 ms
 
-$ ssh -o BatchMode=yes -o ConnectTimeout=5 nick@192.168.7.13 'hostname'
-nick@192.168.7.13: Permission denied (publickey,password).
-$ ssh ... root@192.168.7.13 'hostname'
-root@192.168.7.13: Permission denied (publickey,password).
+$ ssh -o BatchMode=yes -o ConnectTimeout=5 nick@10.0.0.13 'hostname'
+nick@10.0.0.13: Permission denied (publickey,password).
+$ ssh ... root@10.0.0.13 'hostname'
+root@10.0.0.13: Permission denied (publickey,password).
 ```
 
 → The link is a **wired-LAN-quality 0.84 ms RTT**, i.e. **the network is not the bottleneck — any of these designs is feasible on latency grounds**. Audio upload ignores the network entirely: 16 kHz mono PCM16 = 32 kB/s (≈0.26 Mbit/s) raw, and a 10 s utterance is 320 kB uncompressed. But note: **hosta .13 currently refuses key-based SSH from peerbox** (ping works, auth does not). Any architecture that assumes "push audio to .13" or "run an agent on .13" must first solve that — it is a *measured blocker*, not a hypothesis.

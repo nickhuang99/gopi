@@ -42,7 +42,7 @@ git push 'peerbox:/home/user/work/GoPi' feat/sync-conflict-completed:feat/sync-c
 **Why the resolved directory is the real repo, on this host (peerbox):**
 
 1. `peerbox` is the host's OWN ssh alias — `/home/user/.ssh/config` `Host peerbox` →
-   `HostName 192.168.7.6`, i.e. loopback-adjacent. `hostname` is `peerbox`.
+   `HostName 10.0.0.6`, i.e. loopback-adjacent. `hostname` is `peerbox`.
 2. `~` in `/home/user/work/GoPi` is expanded by the receiving `git-receive-pack` on
    `peerbox`, i.e. to `/home/user/work/GoPi` — the real repo.
 3. The fixture's temp client repo is the SENDER: it has the branch object, so

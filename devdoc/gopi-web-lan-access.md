@@ -8,7 +8,7 @@ Branch: `feat/web-lan-access` (worktree `~/workspace/gopi-web-ip`).
 
 The operator's complaint (verbatim, from the briefing attachment): `gopi web`
 only listens on `127.0.0.1`, "but this … is a kind of inconvenient, as using
-current IP like 192.168.7.6 is just one step away, why don't do it?"
+current IP like 10.0.0.6 is just one step away, why don't do it?"
 
 Just one step away — that was true and false at the same time:
 
@@ -112,7 +112,7 @@ updates in `cli_web_test.go` and `cli_web_p1_test.go`):
 
 Live proof against the real binary (see the task report for the exact
 transcript): `ss -ltn` shows `*:8097` for the LAN bind and
-`127.0.0.1:8090` for the default; `curl http://192.168.7.6:8097/` → 401,
+`127.0.0.1:8090` for the default; `curl http://10.0.0.6:8097/` → 401,
 `…/?t=<token>` → 200, `…/api/chat` unauthenticated → 401, Bearer → 200; with
 the loopback default the LAN IP is refused entirely.
 

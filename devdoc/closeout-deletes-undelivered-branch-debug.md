@@ -3,8 +3,8 @@
 
 **Mode: DEBUG, proposal only. No fix implemented in this run; nothing on HP or peerbox was
 touched.** Victim row `01a0dd4f-b253-7361-8fd0-0e94cc80c5e2`, branch
-`task/01a0dd4fb25373618fd00e94cc80c5e2`. Host: `hostb-Laptop` (192.168.7.5) = **client**;
-peer `peerbox` = `192.168.7.6:/home/user/work/GoPi`. HP's own settings: `role="client"`,
+`task/01a0dd4fb25373618fd00e94cc80c5e2`. Host: `hostb-Laptop` (10.0.0.5) = **client**;
+peer `peerbox` = `10.0.0.6:/home/user/work/GoPi`. HP's own settings: `role="client"`,
 `sync_peers=["peerbox"]` (`/home/user/.gopi/settings.json`).
 
 **Headline, and it corrects the briefing's premise twice:**
@@ -375,7 +375,7 @@ another host's refs.
 
 The sentence is a **report-level convention**, not a gate. PROJECT.md Rule 6a/6c says the
 commit is already on the branch in the shared repo, which is TRUE for a worktree — but the
-peer is **`192.168.7.6`**, a *different machine*: local refs say nothing about delivery.
+peer is **`10.0.0.6`**, a *different machine*: local refs say nothing about delivery.
 
 The gate that *would* answer it is `finishCleanupBranchForceDeleteReason(delivered bool)`
 (`:4114`) — and its input is `finishCleanupStepSucceeded(rep, finishCleanupPushVerb)`

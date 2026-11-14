@@ -3,8 +3,8 @@
 
 - **Date**: 2026-09-11
 - **Status**: DESIGN ONLY. No implementation, no new tools, no gopi source changed.
-- **Input device**: `hosta` (192.168.7.13) — microphone only, must stay dumb.
-- **Agent + STT host**: `peerbox` (192.168.7.6) — runs gopi today (`~/work/GoPi`, `bin/gopi`).
+- **Input device**: `hosta` (10.0.0.13) — microphone only, must stay dumb.
+- **Agent + STT host**: `peerbox` (10.0.0.6) — runs gopi today (`~/work/GoPi`, `bin/gopi`).
 - **Sibling evidence doc**: [`devdoc/voice-input-whispercpp-evaluation.md`](voice-input-whispercpp-evaluation.md) (branch `feat/voice-input-whispercpp-evaluation`, tip `ce1e8d8`) — cited below as **(sibling §X)**. This document does **not** re-derive its measurements; it builds on them.
 - **Deliverable repo**: GoPi, branch `feat/voice-input-design-space` (worktree `~/workspace/gopi-voice-design`).
 
@@ -40,7 +40,7 @@ Three candidates. All three move the same bytes; they differ in what the device 
 
 | | Device requirement | Framing / end-of-utterance | Auth | peerbox side | Verdict |
 |---|---|---|---|---|---|
-| **(T1) ffmpeg \| ssh** | `ffmpeg` + a working SSH identity, `ssh` | SSH channel; **EOF = end of utterance** (channel close) | SSH key | **none** — `ssh peerbox 'cat > /tmp/u.raw'` | **Blocked today.** Measured: `ssh nick@192.168.7.13` → `Permission denied (publickey,password)` (sibling §F), and peerbox itself refuses the operator's key from localhost with `-i ~/.ssh/id_ed25519 -o IdentitiesOnly=yes` (verified for this doc). Shortest path *if* keys are ever fixed — keep as the zero-server-code fallback. |
+| **(T1) ffmpeg \| ssh** | `ffmpeg` + a working SSH identity, `ssh` | SSH channel; **EOF = end of utterance** (channel close) | SSH key | **none** — `ssh peerbox 'cat > /tmp/u.raw'` | **Blocked today.** Measured: `ssh nick@10.0.0.13` → `Permission denied (publickey,password)` (sibling §F), and peerbox itself refuses the operator's key from localhost with `-i ~/.ssh/id_ed25519 -o IdentitiesOnly=yes` (verified for this doc). Shortest path *if* keys are ever fixed — keep as the zero-server-code fallback. |
 | **(T2) raw TCP** (`nc` / `/dev/tcp`) | `ffmpeg` + `nc` or bash | None of its own; half-close semantics are ambiguous, no error channel, no status code | none | a bespoke TCP listener + its own framing + its own failure reporting (all hand-rolled) | **Rejected for v1.** It re-implements HTTP's framing and gives up the status/error path — strictly more peerbox code for strictly less signal. |
 | **(T3) HTTP chunked POST** (`curl -T -`) | `ffmpeg` + `curl` (or `arecord` + `curl`) | HTTP/1.1 chunked transfer; **body end = end of utterance**; the response carries a status code | none (LAN trust) | a small peerbox-local HTTP handler (`net/http`, stdlib — matches gopi's zero-dep posture) | **RECOMMENDED.** EOF framing, status codes, works with the most universally present binary, and the same HTTP+streaming carrier gopi already runs (§5). |
 
@@ -51,12 +51,12 @@ Three candidates. All three move the same bytes; they differ in what the device 
 A device may be considered supported **iff** it can execute this line (given `ffmpeg` and `curl`, both already present on hosta and on every mainstream Linux/BSD/macOS box):
 
 ```bash
-ffmpeg -f alsa -i default -ac 1 -ar 16000 -f s16le - | curl -sS -T - http://192.168.7.6:8088/v1/audio
+ffmpeg -f alsa -i default -ac 1 -ar 16000 -f s16le - | curl -sS -T - http://10.0.0.6:8088/v1/audio
 ```
 
 - **Push-to-talk semantics**: run it when the key goes down; the operator stops it (Ctrl+C) to close the chunked body = **end of utterance**. Nothing on the device decides what an utterance is.
 - **Audio contract (pinned, non-negotiable): 16 000 Hz, mono, signed-16-bit little-endian, headerless.** Whisper's front end is 16 kHz; a device that streams 44.1 kHz stereo "successfully" produces garbage text, not an error (§7 F6).
-- **Fallback line** (no `ffmpeg`, ALSA only): `arecord -f S16_LE -r 16000 -c 1 -t raw - | curl -sS -T - http://192.168.7.6:8088/v1/audio`
+- **Fallback line** (no `ffmpeg`, ALSA only): `arecord -f S16_LE -r 16000 -c 1 -t raw - | curl -sS -T - http://10.0.0.6:8088/v1/audio`
 - **What the device does NOT need**: a model, a Python, a venv, a key, a config file, a port, a daemon, an upgrade path.
 
 **The whole point of this contract**: the device's entire voice capability is 2 binaries that were already installed. Everything tunable (sample-rate validation, VAD, model choice, threads, language) is on the peerbox side of the pipe.
@@ -79,7 +79,7 @@ ffmpeg -f alsa -i default -ac 1 -ar 16000 -f s16le - | curl -sS -T - http://192.
 Measured for this document at the moment of writing:
 
 ```
-$ ping -c 5 -W 1 192.168.7.13
+$ ping -c 5 -W 1 10.0.0.13
 5 packets transmitted, 5 received, 0% packet loss, time 4051ms
 rtt min/avg/max/mdev = 0.738/0.825/0.968/0.089 ms
 ```
@@ -312,7 +312,7 @@ Every GoPi citation in this document was read at commit `e6336f9` (branch `feat/
 | `whisper.cpp examples/server/server.cpp:55-70` | `hostname = "127.0.0.1"`, `inference_path = "/inference"`, `port = 8080`, `read/write_timeout = 600` |
 | `whisper.cpp examples/server/README.md:46-47` | `--host HOST [127.0.0.1]`, `--port PORT [8080]` |
 
-Environment facts measured for this document: `ping 192.168.7.13` → 0.738/0.825/0.968 ms (min/avg/max, 0 % loss); peerbox = 192.168.7.6; `ffmpeg 4.4.2`, `arecord`, `curl`, `nc`, `jq`, `python3` present on peerbox; `socat` **missing**; `whisper.cpp/build/bin/{whisper-cli,whisper-server,whisper-mic,whisper-quantize,whisper-bench}` present; models present: `ggml-{tiny,tiny-q5_0,tiny.en,base,base.en,small}.bin` + `ggml-silero-v6.2.0.bin`; no listener on peerbox:8080; `ssh` from peerbox to its own key → `Permission denied (publickey,password)`; `ssh nick@192.168.7.13` → key auth refused (host reachable, SSH-2.0-OpenSSH_8.9p1).
+Environment facts measured for this document: `ping 10.0.0.13` → 0.738/0.825/0.968 ms (min/avg/max, 0 % loss); peerbox = 10.0.0.6; `ffmpeg 4.4.2`, `arecord`, `curl`, `nc`, `jq`, `python3` present on peerbox; `socat` **missing**; `whisper.cpp/build/bin/{whisper-cli,whisper-server,whisper-mic,whisper-quantize,whisper-bench}` present; models present: `ggml-{tiny,tiny-q5_0,tiny.en,base,base.en,small}.bin` + `ggml-silero-v6.2.0.bin`; no listener on peerbox:8080; `ssh` from peerbox to its own key → `Permission denied (publickey,password)`; `ssh nick@10.0.0.13` → key auth refused (host reachable, SSH-2.0-OpenSSH_8.9p1).
 
 **Sibling doc reused, not duplicated**: transcription quality, model sizes, RTF/latency, Silero VAD cost, `whisper-server` route surface, faster-whisper comparison and the Volcengine protocol notes all live in `devdoc/voice-input-whispercpp-evaluation.md` and are cited by section above.
 
@@ -342,7 +342,7 @@ Environment facts measured for this document: `ping 192.168.7.13` → 0.738/0.82
 - Tests: `go test ./internal/agent/ -run TestGOPIRule3_MatchesClaudeToolDefs -count=1` → **`ok github.com/nick/gopi/internal/agent 0.005s`** (the Rule-3 tool-count contract still holds — no 17th tool was introduced, even in design).
 - Citations: 24 distinct GoPi `file:line` citations + 5 whisper.cpp citations, each re-read at the cited line (Appendix A table). All cited files exist; every quoted line matched its claim.
 - Isolation (Rule 6): work done in worktree `~/workspace/gopi-voice-design`; `git status` in the main checkout `/home/user/work/GoPi` does **not** list the doc, and `devdoc/voice-input-design-space.md` does not exist there.
-- Measurements made for this document: `ping 192.168.7.13` (0.738/0.825/0.968 ms, 0 % loss); ssh key-auth probes (refused in both directions); tool presence sweep on peerbox; `whisper.cpp/build/bin` + model inventory; no listener on `:8080`.
+- Measurements made for this document: `ping 10.0.0.13` (0.738/0.825/0.968 ms, 0 % loss); ssh key-auth probes (refused in both directions); tool presence sweep on peerbox; `whisper.cpp/build/bin` + model inventory; no listener on `:8080`.
 
 ### Commit
 

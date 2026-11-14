@@ -7,8 +7,8 @@ epic used (which silently mis-decode PCM16 as f32, devdoc/voice-e2e-hp.md §6.1)
 
 | | |
 |---|---|
-| Capture node | `hp` = `hostb-Laptop` (192.168.7.5 / nickname `hp`), mic `alsa_input.pci-0000_05_00.6.analog-stereo` |
-| Engine node | `peerbox` = 192.168.7.6, Fun-ASR-Nano at `~/work/funasr-models` |
+| Capture node | `hp` = `hostb-Laptop` (10.0.0.5 / nickname `hp`), mic `alsa_input.pci-0000_05_00.6.analog-stereo` |
+| Engine node | `peerbox` = 10.0.0.6, Fun-ASR-Nano at `~/work/funasr-models` |
 | Repo / branch | GoPi `feat/voice-client-e2e` (worktree `~/workspace/gopi-voice-client-e2e`) |
 | Client binary | built on peerbox from this branch, `scp`ed to HP (`~/workspace/gopi-vce2e/bin/gopi`, `CGO_ENABLED=0`) |
 | Evidence | `devdoc/assets/voice-client-e2e-hp/*.log` (raw, unedited) + this file |
@@ -108,10 +108,10 @@ evidence; the misalignment is recorded because it is a rig property (§5.2).
 ```bash
 ssh peerbox 'setsid nohup gopi voice_input --server --listen :7799 …'
 # gopi voice_input: HTTP server on :7799 (engine=funasr-nano chunk=15s)
-curl -s http://192.168.7.6:7799/health   # from HP: {"chunk":15,"engine":"funasr-nano","ok":true}
+curl -s http://10.0.0.6:7799/health   # from HP: {"chunk":15,"engine":"funasr-nano","ok":true}
 
 $ gopi voice_input --client --device pulse:gopi_mic --seconds 16 \
-      --server-url http://192.168.7.6:7799
+      --server-url http://10.0.0.6:7799
 [voice] recording 16s from pulse:gopi_mic (gopi_mic) [explicit --device]
 [voice] captured 512000 bytes (16.0s of 16000Hz mono PCM16)
 [voice] transcribed in 5.1s
@@ -128,7 +128,7 @@ evidence rather than a hopeful assertion:
    after freeing the port the LAN bind was confirmed (`ss -ltn` → `*:7799`,
    `/health` 200 from HP) and A3 succeeded. **Honest note:** the client's error
    message for this case is correct and actionable
-   (`dial tcp 192.168.7.6:7799: connect: connection refused (start it with
+   (`dial tcp 10.0.0.6:7799: connect: connection refused (start it with
    gopi voice_input --server --listen :7788)`), but it names the *default* port
    while the user passed `--server-url …:7799`; a reader could be sent to the
    wrong port. Cosmetic, reported not fixed.
@@ -446,7 +446,7 @@ reported as a dead mic — the requirement is met.
 dependencies.**
 
 *Reachability measured now:* `ssh hosta` → *could not resolve hostname*;
-`ssh rpi5` → `192.168.7.14 … No route to host`. **Neither is reachable from
+`ssh rpi5` → `10.0.0.14 … No route to host`. **Neither is reachable from
 peerbox at this moment**, so nothing here was run on them — the answer is a
 requirements analysis from the measured HP leg, not a claim of having executed on
 those hosts.
@@ -464,7 +464,7 @@ busy and the working ids are `pulse:…`; on a pure-ALSA host the ids are
 | Transport | HP→peerbox measured | Ports | Needs |
 |---|---|---|---|
 | `--client --stdio \| ssh peerbox 'gopi voice_input --server --stdio'` | engine 5.3 s for 16 s audio; client 36.6 s | **none** (ssh only) | ssh reachability + host key trusted |
-| `--client --server-url http://192.168.7.6:7799` | client 42.2 s, server `transcribed in 5.1s` | one TCP port, must be `--listen :PORT` (not loopback) | LAN reachability; the endpoint is unauthenticated and accepts up to 512 MiB/request |
+| `--client --server-url http://10.0.0.6:7799` | client 42.2 s, server `transcribed in 5.1s` | one TCP port, must be `--listen :PORT` (not loopback) | LAN reachability; the endpoint is unauthenticated and accepts up to 512 MiB/request |
 
 *Latency budget* (HP measured): `--seconds N` costs ≈ N + 13 s wall (1 s liveness
 probe + 10 s `voiceCaptureGraceSec` + startup), the engine ≈ 0.33–0.7× realtime
@@ -475,11 +475,11 @@ A hosta/RPi5 client would add only its own mic-open time plus the network.
 *ssh precondition (this bit me, so it is called out):* on a **fresh** client node
 the first `ssh peerbox …` fails with `Host key verification failed`
 (measured with `StrictHostKeyChecking=yes`: *No ED25519 host key is known for
-192.168.7.6*), and — measured — **`ssh-keyscan` cannot be used before that**,
+10.0.0.6*), and — measured — **`ssh-keyscan` cannot be used before that**,
 because `peerbox` is not in DNS/`/etc/hosts` on HP (`getaddrinfo peerbox: Name or
-service not known`); scan the **address** (`ssh-keyscan -t ed25519 192.168.7.6 >
+service not known`); scan the **address** (`ssh-keyscan -t ed25519 10.0.0.6 >
 ~/.ssh/known_hosts`), which then also satisfies the alias defined by
-`~/.ssh/config`'s `Host peerbox → HostName 192.168.7.6` (verified: strict-mode ssh
+`~/.ssh/config`'s `Host peerbox → HostName 10.0.0.6` (verified: strict-mode ssh
 by IP **and** by alias both succeed afterwards).
 
 **E.2 Can RPi5's USB mic be attached (a pure-ALSA host)?**
@@ -493,7 +493,7 @@ prerequisites and one honest caveat:
    and falls back to the first enumerated `alsa:plughw:CARD=…,DEV=0`.
 2. **`ssh-keyscan` is the prerequisite** in the sense above: the *hosta/RPi5 →
    peerbox* hop is a client-side ssh, so the RPi5 needs peerbox's host key trusted
-   (`ssh-keyscan -t ed25519 192.168.7.6 >> ~/.ssh/known_hosts`) and a key-based
+   (`ssh-keyscan -t ed25519 10.0.0.6 >> ~/.ssh/known_hosts`) and a key-based
    login (BatchMode must succeed — no password prompt: the client has nowhere to
    prompt).
 3. **Caveat found here:** a *named monitor* is not resolvable by `--device` on a

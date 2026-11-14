@@ -73,7 +73,7 @@ listed as blocked rather than faked.
 | 45 | `voice_input` | `gopi tool voice_input --client --seconds 8 --out nick.wav` | no — needs a real capture device (pulse/alsa) |
 | 46 | `voice_input` | `gopi tool voice_input --client --self --seconds 8` | yes — typed by `TestToolsMaintenanceHelpSurfaceFormsAreTyped` |
 | 47 | `voice_input` | `gopi tool voice_input --client --self --seconds 8 --display :57` | yes — typed by `TestToolsMaintenanceHelpSurfaceFormsAreTyped` |
-| 48 | `voice_input` | `gopi tool voice_input --client --server-url http://192.168.7.6:7788 --seconds 8` | no — needs a peer voice server on the LAN |
+| 48 | `voice_input` | `gopi tool voice_input --client --server-url http://10.0.0.6:7788 --seconds 8` | no — needs a peer voice server on the LAN |
 | 49 | `voice_input` | `gopi tool voice_input clip.ogg` | yes — typed by `TestToolsMaintenanceHelpSurfaceFormsAreTyped` |
 | 50 | `voice_input` | `gopi tool voice_input clip.pcm` | yes — typed by `TestToolsMaintenanceHelpSurfaceFormsAreTyped` |
 | 51 | `voice_input` | `gopi tool voice_input --server --stdio < clip.pcm` | no — needs the speech engine model on disk |

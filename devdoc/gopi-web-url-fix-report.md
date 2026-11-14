@@ -53,8 +53,8 @@ ready" even though it was actually reachable via `http://localhost:8090` and
   ```
   gopi web: listening (Ctrl+C to stop)
     open: http://localhost:8090
-    open: http://192.168.7.6:8090
-    open: http://192.168.7.11:8090
+    open: http://10.0.0.6:8090
+    open: http://10.0.0.11:8090
   ```
   All three printed URLs verified reachable via curl (`200` each); `GET /api/chat`
   → `405` method guard intact; the broken `http://:8090` form no longer appears.

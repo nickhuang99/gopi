@@ -40,16 +40,16 @@ STATUS=200 TIME=1.433592s SIZE=66267
 `vision_analyze` 读这张图，确认它就是 gopi web 页（标题 `gopi web`、三个按钮、
 输入框 placeholder `Ask gopi anything… (/ for commands, Enter to send, Shift+Enter for newline)`、`SEND`，中间大片空白 = 无消息的空会话）。
 
-### B) `--addr 192.168.7.12:8092`（`gopi web -h` 明确宣传的写法之一）→ **500，确定失败**
+### B) `--addr 10.0.0.12:8092`（`gopi web -h` 明确宣传的写法之一）→ **500，确定失败**
 
 ```
-$ gopi web --addr 192.168.7.12:8092
+$ gopi web --addr 10.0.0.12:8092
 gopi web: listening (Ctrl+C to stop)
-  open: http://192.168.7.12:8092?t=<per-run token>
+  open: http://10.0.0.12:8092?t=<per-run token>
 
-$ curl -sS -m 30 -X POST http://192.168.7.12:8092/api/shot --noproxy '*'
+$ curl -sS -m 30 -X POST http://10.0.0.12:8092/api/shot --noproxy '*'
 STATUS=500 TIME=0.000525
-{"error":"/api/shot: refusing to capture 192.168.7.12:8092 — only a loopback address can be this instance's own page"}
+{"error":"/api/shot: refusing to capture 10.0.0.12:8092 — only a loopback address can be this instance's own page"}
 
 $ curl -sS -m 5 http://127.0.0.1:8092/
 curl: (7) Failed to connect to 127.0.0.1 port 8092: Connection refused
@@ -59,7 +59,7 @@ curl: (7) Failed to connect to 127.0.0.1 port 8092: Connection refused
 loopback 上没有监听，`webShotIsOwnListener` 直接按「非 loopback」拒绝，
 `capturePage()` 把这句话渲染进 `#imgstrip` 的 `.shoterr`
 （`cli_web.go:3486-3487`），所以页面上看到的是
-`capture failed: HTTP 500 — /api/shot: refusing to capture 192.168.7.12:8092 — only a loopback address can be this instance's own page`。
+`capture failed: HTTP 500 — /api/shot: refusing to capture 10.0.0.12:8092 — only a loopback address can be this instance's own page`。
 而那个 bind 形态恰恰是 `gopi web -h` 教用户从别的设备打开页面的写法
 （`cli_web.go:40-41`、`:181`）。**推断**（未实测）：操作员当时若用 LAN 地址打开页面，
 📷 必然 500 —— 这与「按钮不工作」的描述吻合，但**他当时的具体 bind 未取证**，
@@ -72,7 +72,7 @@ $ curl -sS -m 60 -w 'STATUS=%{http_code} TIME=%{time_total}s SIZE=%{size_downloa
     -X POST http://127.0.0.1:8093/api/shot --noproxy '*'
 STATUS=200 TIME=1.483289s SIZE=68147
 $ curl -sS -m 60 -o /dev/null -w 'LAN-IP STATUS=%{http_code}\n' \
-    -X POST http://192.168.7.12:8093/api/shot --noproxy '*'
+    -X POST http://10.0.0.12:8093/api/shot --noproxy '*'
 LAN-IP STATUS=200
 ```
 

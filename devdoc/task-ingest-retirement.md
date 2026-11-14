@@ -14,7 +14,7 @@
 ## 处置记录（三件，全部完成）
 
 1. **HP 侧拔线**：`~/.bashrc` L135 `export GOPI_TASK_NOTIFY_WEBHOOK=
-   http://192.168.7.6:8923/task-ingest` 已删除（防 HP 侧 task-notify 向
+   http://10.0.0.6:8923/task-ingest` 已删除（防 HP 侧 task-notify 向
    已死端口打 400 误报）。备份存 HP `~/.bashrc.bak-ingest-retire`。
    排查 `.profile`/`.bash_profile`/`.bashrc.d` 无其他引用。
 2. **peerbox 停 ingest 进程**：`./bin/gopi task ingest --listen :8923`

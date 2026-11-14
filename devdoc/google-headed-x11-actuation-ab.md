@@ -2,7 +2,7 @@
 # Task Report: X11-input actuation vs CDP-driven Chrome against Google's anti-crawler wall
 
 **Branch:** `feat/google-headed-x11-ab` (worktree `~/workspace/gopi-google-x11-ab`)
-**Host:** remotebox VPS (Ubuntu 22.04, 957MB RAM / 1 vCPU) + residential-side host `rpi5` (192.168.7.15)
+**Host:** remotebox VPS (Ubuntu 22.04, 957MB RAM / 1 vCPU) + residential-side host `rpi5` (10.0.0.15)
 **Date:** 2026-09-16
 **Evidence dir:** `devdoc/evidence/google-x11-ab/` (41 PNGs + 5 amendment PNGs, 15 logs + 3 amendment logs, harness scripts, raw curl HTML)
 

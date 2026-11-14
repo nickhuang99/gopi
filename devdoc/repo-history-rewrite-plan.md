@@ -423,7 +423,7 @@ fast-forward onto the other. A rewrite on peerbox produces a history HP cannot
 `push --force` from HP would resurrect the removed blobs. Measured detail:
 `hp` has 2 worktrees (`/home/user/work/GoPi` at `b01ce0f4` and
 `/home/user/workspace/gopi-m2-landed-wt` detached at `79807932`), and its
-`peerbox` remote is `DISABLED-no-push` (only `nick@192.168.7.6/work/GoPi` fetch),
+`peerbox` remote is `DISABLED-no-push` (only `nick@10.0.0.6/work/GoPi` fetch),
 so **HP cannot push into peerbox by accident** — but peerbox's `hp` remote can push
 into HP, and `receive.denyCurrentBranch` is **unset** (`git config --get-all` →
 rc 1) on peerbox's side.
@@ -478,7 +478,7 @@ git bundle create /home/user/hp-unmerged-$(date +%Y%m%d).bundle 8374e6af..master
 git worktree list                                  # 2 worktrees: the detatched one is released first
 # then re-clone from peerbox's post-rewrite repo (NOT a pull, NOT a force-push):
 mv ~/work/GoPi ~/work/GoPi.pre-rewrite
-git clone nick@192.168.7.6:/home/user/work/GoPi ~/work/GoPi
+git clone nick@10.0.0.6:/home/user/work/GoPi ~/work/GoPi
 git -C ~/work/GoPi fetch ~/work/GoPi.pre-rewrite <the bundle>   # or: git am / cherry-pick the 31 commits onto the new base
 ```
 

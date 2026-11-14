@@ -80,7 +80,7 @@ Named constants (Rule 1): `voiceMaxUploadBytes = voiceMaxAudioBytes + voiceMulti
 |---|---|
 | `TestVoiceHTTPListenDefaultShape` (restructured, `fixVoiceListenDefault = true`) | Port pin, concrete **loopback** host, "not loopback ⇒ regression", the sibling convention. |
 | `TestVoiceDefaultListenBindsLoopbackOnly` (new) | **Real bind** of the default: bound IP `IsLoopback()`; a wildcard `:<port>` bind is refused (EADDRINUSE ⇒ the loopback socket owns the wildcard space); every non-loopback IPv4 on this host refuses a connection. |
-| `TestVoiceListenIsWildcard` (new) | The predicate: `:7788`, `0.0.0.0:7788`, `[::]:7788`, `::7788`, unparseable ⇒ unsafe; `127.0.0.1:7788`, `[::1]:7788`, `192.168.7.6:7788`, `localhost:7788` ⇒ safe. |
+| `TestVoiceListenIsWildcard` (new) | The predicate: `:7788`, `0.0.0.0:7788`, `[::]:7788`, `::7788`, unparseable ⇒ unsafe; `127.0.0.1:7788`, `[::1]:7788`, `10.0.0.6:7788`, `localhost:7788` ⇒ safe. |
 | `TestVoiceListenBannerWarnsOnWildcard` (new) | Loopback default is quiet; the LAN opt-in warns, names "EVERY interface", the missing authentication, and the way back to loopback. |
 | `TestVoiceTranscribeRejectsOverLimitUpload` (new) | Declared over-limit ⇒ 413 with **zero bytes read** from the body (a counting `io.Reader` proves the guard decided from the declaration) and nothing spooled; an undeclared-length over-limit body is stopped by the reader cap (`voiceSpoolAudioPart` at a 4 KiB limit — minimal sample) and classified as over-limit; an under-cap body still transcribes end to end. |
 | `TestVoiceMaxUploadBytesIsTheDocumentedBudget` (new) | The cap arithmetic cannot drift from the two constants it is built from. |
@@ -131,8 +131,8 @@ and disabling the wildcard warning produced a banner with no WARNING — each re
 ```
 LISTEN 0  4096  127.0.0.1:7788  0.0.0.0:*
 curl http://127.0.0.1:7788/health → {"chunk":15,"engine":"funasr-nano","ok":true}
-curl http://192.168.7.6:7788/health  → connection refused
-curl http://192.168.7.11:7788/health → connection refused
+curl http://10.0.0.6:7788/health  → connection refused
+curl http://10.0.0.11:7788/health → connection refused
 ```
 
 and the banner for each mode: the default prints the three plain lines; `--listen :7788` prints
@@ -144,8 +144,8 @@ the WARNING ("binds EVERY interface … NO authentication … Drop --listen (def
 ```
 ss -ltn | grep 7788                       → LISTEN 0 4096 127.0.0.1:7788 0.0.0.0:*
 curl http://127.0.0.1:7788/health         → {"chunk":15,"engine":"funasr-nano","ok":true}
-curl http://192.168.7.6:7788/health       → 000 (refused)
-curl http://192.168.7.11:7788/health      → 000 (refused)
+curl http://10.0.0.6:7788/health       → 000 (refused)
+curl http://10.0.0.11:7788/health      → 000 (refused)
 curl "http://[240e:…acd6]:7788/health"    → 000 (refused; both host IPv6 addrs probed)
 # declared over-limit POST /transcribe, raw socket, Content-Length 600000000 (> 545259520 cap):
 HTTP/1.1 413 Request Entity Too Large

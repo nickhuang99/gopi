@@ -103,8 +103,8 @@ func readSSHConfig(path string) (nodes []Node, missing string, err error) {
 // alias; any pattern that looks like an IPv4 literal is recorded as the
 // stanza's inline address, which is how a line like
 //
-//	Host rpi5 192.168.7.4
-//	        HostName 192.168.7.14
+//	Host peer 10.0.0.4
+//	        HostName 10.0.0.14
 //
 // states two different addresses for one node. A stanza whose only pattern is
 // a wildcard is not a node.

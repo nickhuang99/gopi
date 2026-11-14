@@ -1,15 +1,15 @@
 <!-- doc-class: historical -->
-# Task Report: hosta (192.168.7.13) is not keyless-reachable — deliberate decision
+# Task Report: hosta (10.0.0.13) is not keyless-reachable — deliberate decision
 
-**Task**: `bug(infra): hosta (192.168.7.13) is keyless-unreachable from peerbox`
+**Task**: `bug(infra): hosta (10.0.0.13) is keyless-unreachable from peerbox`
 **Branch**: `docs/hosta-unreachable-decision` (worktree `~/workspace/gopi-hosta-access`)
-**Date**: 2026-09-13 · **Host of record**: peerbox (`nick`) · **Second vantage**: HP (`nick@192.168.7.5`, keyless)
+**Date**: 2026-09-13 · **Host of record**: peerbox (`nick`) · **Second vantage**: HP (`nick@10.0.0.5`, keyless)
 
 ---
 
 ## Decision (acceptance branch 2)
 
-> **hosta (192.168.7.13) is NOT a managed node.** It is deliberately excluded from
+> **hosta (10.0.0.13) is NOT a managed node.** It is deliberately excluded from
 > keyless cross-node automation, and no further agent effort is spent on it.
 > Re-entry requires one operator action (§ Unblock), which is outside a
 > non-interactive task's reach: it needs either (a) a credential peerbox does not
@@ -23,7 +23,7 @@ record, with the evidence that makes the decision **provable rather than lazy**.
 
 ## Root cause (mechanism, not symptom)
 
-**Symptom**: `ssh -o BatchMode=yes nick@192.168.7.13 hostname` → `Permission denied (publickey,password)` (exit 255).
+**Symptom**: `ssh -o BatchMode=yes nick@10.0.0.13 hostname` → `Permission denied (publickey,password)` (exit 255).
 
 **Mechanism**: hosta's sshd offers `publickey,password`, i.e. key auth is *enabled*
 but the offered key is not in `authorized_keys` for that account, and BatchMode
@@ -57,18 +57,18 @@ not an agent task.**
 
 | # | Check | Result |
 |---|---|---|
-| 1 | `ping -c4 192.168.7.13` | 4/4 received, **0% loss, rtt 0.875 ms** — host is UP |
-| 2 | `ssh -o BatchMode=yes nick@192.168.7.13 hostname` | `Permission denied (publickey,password)`, **exit 255** |
+| 1 | `ping -c4 10.0.0.13` | 4/4 received, **0% loss, rtt 0.875 ms** — host is UP |
+| 2 | `ssh -o BatchMode=yes nick@10.0.0.13 hostname` | `Permission denied (publickey,password)`, **exit 255** |
 | 3 | 15 combos: `{id_ed25519, hp_to_peerbox, do_id_ed25519}` × `{nick,root,pi,admin,ubuntu}` | **15/15 refused** |
-| 4 | HP's **own** keys, from HP (`ssh hp '… ssh nick@192.168.7.13'`) | 6/6 refused — not a peerbox-only quirk |
-| 5 | `ssh -o BatchMode=yes -J hp nick@192.168.7.13` (jump host) | refused — no forwarding/agent path |
+| 4 | HP's **own** keys, from HP (`ssh hp '… ssh nick@10.0.0.13'`) | 6/6 refused — not a peerbox-only quirk |
+| 5 | `ssh -o BatchMode=yes -J hp nick@10.0.0.13` (jump host) | refused — no forwarding/agent path |
 | 6 | `ssh-add -l` | no agent → a forwarded identity cannot exist |
 | 7 | ports `22,80,111,11434` open; `443,139,445,3389,631,5900,2222,8080,9000` closed | no other shell surface |
 | 8 | `rpcinfo -p` → `nfs 2049`, `mountd`, `portmapper` | NFS **v3** present |
-| 9 | `showmount -e 192.168.7.13` | **empty export list — no NFS shares**, so no write path |
-| 10 | `curl -X OPTIONS http://192.168.7.13/` → `405`; `PUT /gopi-probe.txt` → `404` | nginx/1.18.0 **static only**, no upload |
-| 11 | `curl http://192.168.7.13:11434/api/version` → `{"version":"0.17.7"}` | unauthenticated **Ollama** API (see note) |
-| 12 | `~/.ssh/config` | **no `Host 192.168.7.13` stanza** → falls through `Host *`; no `IdentityFile` trick applies |
+| 9 | `showmount -e 10.0.0.13` | **empty export list — no NFS shares**, so no write path |
+| 10 | `curl -X OPTIONS http://10.0.0.13/` → `405`; `PUT /gopi-probe.txt` → `404` | nginx/1.18.0 **static only**, no upload |
+| 11 | `curl http://10.0.0.13:11434/api/version` → `{"version":"0.17.7"}` | unauthenticated **Ollama** API (see note) |
+| 12 | `~/.ssh/config` | **no `Host 10.0.0.13` stanza** → falls through `Host *`; no `IdentityFile` trick applies |
 | 13 | stored credentials: `~/.ssh/*`, `settings.json`, `memory.db` (`distilled_qa`), shell rc | **no hosta password anywhere** (`sshpass` exists, has nothing to feed) |
 
 **Note on #11 (honest scope)**: the unauthenticated Ollama API on `:11434` is a
@@ -84,14 +84,14 @@ admin surface.
 
 | Node | IP | keyless from peerbox? | Evidence |
 |---|---|---|---|
-| **hp** | 192.168.7.5 | ✅ **YES** — `ssh hp hostname` → `hostb-Laptop` | used as second vantage in this task |
-| **hosta** | 192.168.7.13 | ❌ **NO** (this document) | 15/15 + 6/6 refused, exit 255 |
-| rpi5 | 192.168.7.4 / .14 | ⛔ **down** — `No route to host` | `ssh` exit ≠ 0 |
-| rpi5-lite | 192.168.7.17 | ⛔ **down** — `No route to host` | `ssh` exit ≠ 0 |
-| ollama | 192.168.7.8 | ⛔ **ssh connection refused** (service host, no sshd) | `ssh` exit ≠ 0 |
-| nas | 192.168.7.5 | = hp (same IP, alias in `~/.ssh/config`) | config |
+| **hp** | 10.0.0.5 | ✅ **YES** — `ssh hp hostname` → `hostb-Laptop` | used as second vantage in this task |
+| **hosta** | 10.0.0.13 | ❌ **NO** (this document) | 15/15 + 6/6 refused, exit 255 |
+| rpi5 | 10.0.0.4 / .14 | ⛔ **down** — `No route to host` | `ssh` exit ≠ 0 |
+| rpi5-lite | 10.0.0.17 | ⛔ **down** — `No route to host` | `ssh` exit ≠ 0 |
+| ollama | 10.0.0.8 | ⛔ **ssh connection refused** (service host, no sshd) | `ssh` exit ≠ 0 |
+| nas | 10.0.0.5 | = hp (same IP, alias in `~/.ssh/config`) | config |
 
-**Managed keyless nodes today: `peerbox` (local) + `hp` (192.168.7.5). Only these
+**Managed keyless nodes today: `peerbox` (local) + `hp` (10.0.0.5). Only these
 two may be assumed by cross-node automation.** This supersedes the note in
 `devdoc/night-report-20260910.md` ("hosta … measured blocker") and closes the
 open question recorded in `devdoc/voice-input-design-space.md` §F4 (T1 SSH
@@ -116,7 +116,7 @@ fingerprint appears in the epic's `-vvv` output: `SHA256:WB/Gtn+llw7t4MVUHVFLts9
 Then verify **from peerbox**:
 
 ```bash
-ssh -o BatchMode=yes nick@192.168.7.13 hostname    # expect a hostname, exit 0
+ssh -o BatchMode=yes nick@10.0.0.13 hostname    # expect a hostname, exit 0
 ```
 
 Alternative (b) — hosta's own key: install a private key that hosta already
@@ -135,8 +135,8 @@ The follow-up is blocked by the same login, so it is **declared ready, not faked
   section to *stdout*). The correct post-unblock command is therefore:
 
 ```bash
-scp ~/work/GoPi/scripts/voice-mic-probe.sh 192.168.7.13:/tmp/ && \
-  ssh 192.168.7.13 'bash /tmp/voice-mic-probe.sh' | tee /tmp/probe-hosta.txt
+scp ~/work/GoPi/scripts/voice-mic-probe.sh 10.0.0.13:/tmp/ && \
+  ssh 10.0.0.13 'bash /tmp/voice-mic-probe.sh' | tee /tmp/probe-hosta.txt
 ```
 
 ---
@@ -173,7 +173,7 @@ scp ~/work/GoPi/scripts/voice-mic-probe.sh 192.168.7.13:/tmp/ && \
 - Tests: n/a for the same reason; the acceptance test is *behavioural* and is the
   refusal reproduction below.
 - **Acceptance re-run (branch 2 check, executed from peerbox via this worktree's
-  evidence script)**: `ssh -o BatchMode=yes nick@192.168.7.13 hostname` →
+  evidence script)**: `ssh -o BatchMode=yes nick@10.0.0.13 hostname` →
   `Permission denied (publickey,password)`, exit 255; raw transcript
   `devdoc/hosta-unreachable-evidence-20260913.txt` (74 lines) contains every
   command above with its real output.

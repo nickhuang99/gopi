@@ -570,7 +570,7 @@ Examples:
   gopi tool voice_input --client --self --seconds 8 --display :57   …on another X11
                                                     display (same as act)
   gopi tool act key --key return --self                  send the reviewed text
-  gopi tool voice_input --client --server-url http://192.168.7.6:7788 --seconds 8
+  gopi tool voice_input --client --server-url http://voice-host:7788 --seconds 8
   ssh host gopi tool voice_input --server --stdio < a.pcm   pipe over an ssh hop
   gopi tool voice_input clip.ogg                 refused: ogg is not in {formats}
   gopi tool voice_input clip.pcm                         refused; pipe it instead:

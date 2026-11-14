@@ -34,15 +34,15 @@ import (
 // claiming one address, a stanza whose Host line contradicts its HostName, a
 // wildcard default stanza that must NOT become a node, and an address used as
 // its own alias.
-const fixtureSSHConfig = `Host alpha 192.168.7.50
-        HostName 192.168.7.50
+const fixtureSSHConfig = `Host alpha 10.0.0.50
+        HostName 10.0.0.50
         User alpha
 
-Host beta 192.168.7.60
-        HostName 192.168.7.61
+Host beta 10.0.0.60
+        HostName 10.0.0.61
 
-Host shared 192.168.7.50
-        HostName 192.168.7.50
+Host shared 10.0.0.50
+        HostName 10.0.0.50
 
 Host *
     ForwardX11 yes
@@ -202,12 +202,12 @@ func TestSharedAddressIsRecordedNotResolved(t *testing.T) {
 	}
 	shared := 0
 	for _, n := range f.Nodes {
-		if n.Address == "192.168.7.50" {
+		if n.Address == "10.0.0.50" {
 			shared++
 		}
 	}
 	if shared < 2 {
-		t.Fatalf("expected >=2 aliases on 192.168.7.50 (the conflict source), got %d", shared)
+		t.Fatalf("expected >=2 aliases on 10.0.0.50 (the conflict source), got %d", shared)
 	}
 	if !strings.Contains(text, conflictAddressShared) {
 		t.Errorf("the artifact does not record the shared-address conflict (%s)", conflictAddressShared)
@@ -216,10 +216,10 @@ func TestSharedAddressIsRecordedNotResolved(t *testing.T) {
 		t.Errorf("the conflict sentence does not name the aliases that share the address:\n%s", text)
 	}
 	if !strings.Contains(text, conflictAliasInline) {
-		t.Errorf("the artifact does not record the %s conflict (beta: Host=192.168.7.60, HostName=192.168.7.61)", conflictAliasInline)
+		t.Errorf("the artifact does not record the %s conflict (beta: Host=10.0.0.60, HostName=10.0.0.61)", conflictAliasInline)
 	}
 	// Both spellings survive: the inline address AND the HostName.
-	if !strings.Contains(text, "192.168.7.60") || !strings.Contains(text, "192.168.7.61") {
+	if !strings.Contains(text, "10.0.0.60") || !strings.Contains(text, "10.0.0.61") {
 		t.Errorf("one of the two contradictory addresses was dropped from the file:\n%s", text)
 	}
 }

@@ -835,11 +835,11 @@ this may be exactly what he wanted.]`
 **G10 — one peer declaration, two different addresses, and no validation.**
 This is a finding produced by trying to test G4 and getting a surprise.
 `memory_peers = ["hp"]` on the client, and the alias `hp` in
-`~/.ssh/config` on the client points at **192.168.7.12** — a third address that is
-neither the centre nor the client (the client is 192.168.7.5, the centre
-192.168.7.6), and which from the centre is **unreachable** (`ping -c1 -W2
-192.168.7.12` → 100% packet loss, whereas 192.168.7.5 answers in 1.1 ms). On the
-**centre**, the same alias `hp` points at 192.168.7.5 — i.e. the client. So the
+`~/.ssh/config` on the client points at **10.0.0.12** — a third address that is
+neither the centre nor the client (the client is 10.0.0.5, the centre
+10.0.0.6), and which from the centre is **unreachable** (`ping -c1 -W2
+10.0.0.12` → 100% packet loss, whereas 10.0.0.5 answers in 1.1 ms). On the
+**centre**, the same alias `hp` points at 10.0.0.5 — i.e. the client. So the
 string `hp` means "the client" on one machine and "some other host" on the other,
 and the asset channel's only check is membership of a list of strings
 (`syncAssetsPeerWhitelisted` `internal/tools/memory_sync_assets.go:524` over
@@ -1111,8 +1111,8 @@ framing of this premise was that it is *common sense*
 One machine already appears under two names in the data (`from-hp` 73 rows vs
 `from-hostb-Laptop` 217 rows on the centre, zero overlap; both names persist in
 the centre's anchor table — G5), **and one name denotes two machines**: the alias
-`hp` points at 192.168.7.12 from the client (a third address, unreachable from the
-centre) and at 192.168.7.5 — the client — from the centre (G10). The asset channel's
+`hp` points at 10.0.0.12 from the client (a third address, unreachable from the
+centre) and at 10.0.0.5 — the client — from the centre (G10). The asset channel's
 entire validation of that declaration is membership of a list of strings
 (`syncAssetsPeerWhitelisted` `internal/tools/memory_sync_assets.go:524`), and it accepts
 the machine's own whitelisted name
@@ -1206,7 +1206,7 @@ on R4's acceptance (A3).
 `task diff --peer` flag's refusal) + `HasSyncPeers` read + the shared-funnel doc comment
 naming all three callers. **`[inferred]` for the frequency**: the two hosts work different layers by Rule 28, so I have not observed a duplicated run — the claim is that the protection is off, not that it has already failed |
 | G4 (asset channel accepts a self/ambiguous peer) | **high** | executed live, accepted, with the row count printed |
-| **G10 (alias `hp` = 192.168.7.12 here, 192.168.7.5 there)** | **high** | `ssh -G hp` on both machines + `ping` from the centre (100% loss to .12, 1.1 ms to .5) + `hostname -I` on both. **`[inferred]` for the consequence only**: I did not run a full asset session to see it fail, and the anchor table shows a recent `hp` entry, so something did answer at some point |
+| **G10 (alias `hp` = 10.0.0.12 here, 10.0.0.5 there)** | **high** | `ssh -G hp` on both machines + `ping` from the centre (100% loss to .12, 1.1 ms to .5) + `hostname -I` on both. **`[inferred]` for the consequence only**: I did not run a full asset session to see it fail, and the anchor table shows a recent `hp` entry, so something did answer at some point |
 | G5 (two provenance names for one machine) | **high** | counted on both machines, zero overlap, plus the override's install date |
 | G7 (one hard-coded peer repo path) | **high** for the fact; **low** that it is a requirement gap | three constants read; `[opinion]` filed as such |
 | G8 (`sync_to` is decorative) | **high** | single consumer found by exhaustive search |

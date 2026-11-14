@@ -5,7 +5,7 @@
 为何 realize 不出 toplevel，能修则修并用 `docs/archive/demo/replay` 管线采 7 帧）；
 前单 `01a0f67a`（同一目标）结论是「HP 上起不出真窗口」，本单证明**是起法错，不是 HP 不行**。
 
-> 运行环境说明：本单运行在 peerbox，HP 经 `ssh hp`（192.168.7.5）驱动；HP 上的 gnome-terminal
+> 运行环境说明：本单运行在 peerbox，HP 经 `ssh hp`（10.0.0.5）驱动；HP 上的 gnome-terminal
 > 3.44 / VTE 0.68 是真的那一个，HP 仓库一个字节未动（Rule 29），所有中间件与产物都在
 > `~/.gopi/sessions/01a0f763-…/hp/`。
 

@@ -5,7 +5,7 @@
 
 - Read the batch-08 id list out of
   `~/.gopi/legacy-audit-batches/batch-08.tsv` on HP (reached as `ssh hp` =
-  192.168.7.5; the briefing's `nick@192.168.7.6` is peerbox itself): 162 raw
+  10.0.0.5; the briefing's `nick@10.0.0.6` is peerbox itself): 162 raw
   lines = 1 header + 161 non-blank lines = **160 data rows / 160 unique ids**
   (multiline payloads — the raw line count is not the id count; the id set was
   taken as the first TSV field matching `^t-[0-9]`).

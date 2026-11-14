@@ -22,7 +22,7 @@ peerbox: hostname=peerbox              uname=Linux 5.15.0-163-generic x86_64
 hp:    hostname=hostb-Laptop     uname=Linux 5.15.0-185-generic x86_64
 ```
 
-`hostb-Laptop` is the node the epic calls **HP** (`ssh hp` → 192.168.7.5); the
+`hostb-Laptop` is the node the epic calls **HP** (`ssh hp` → 10.0.0.5); the
 probe's `node` column carries the real hostname, so the table is self-describing.
 
 ---

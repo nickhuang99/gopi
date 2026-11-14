@@ -38,7 +38,7 @@ const webTokenTestAddr = "127.0.0.1:0"
 // listener stays on loopback so the test can dial it. That is exactly the
 // posture under test — a gated server reached by a client that is not the host
 // itself (localTrust is off in every harness here).
-const webTokenTestBind = "192.168.7.6:8090"
+const webTokenTestBind = "10.0.0.6:8090"
 
 // jsonContentType is the turn body's media type, set so the request is exactly
 // what the page's fetch sends (handleChat parses the body either way).
@@ -511,7 +511,7 @@ func TestWebTokenPairIsTheSingleSpelling(t *testing.T) {
 	if got := webTokenPair("abc"); got != want {
 		t.Fatalf("webTokenPair = %q, want %q", got, want)
 	}
-	if u := webTokenURL("http://192.168.7.6:8090", "abc", false); u != "http://192.168.7.6:8090?"+want {
+	if u := webTokenURL("http://10.0.0.6:8090", "abc", false); u != "http://10.0.0.6:8090?"+want {
 		t.Fatalf("webTokenURL = %q, want the pair built by webTokenPair", u)
 	}
 	if webTokenQuerySep != "&" {

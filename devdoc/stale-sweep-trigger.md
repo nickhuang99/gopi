@@ -33,7 +33,7 @@
 - 新增测试 11 个，全过：`go test ./internal/tools/ -run 'TestPidAlive|TestZombieVerdict|TestSessionIdleSeconds|TestDetectStaleTasks_LivePidSuppressed|TestDetectStaleTasks_RearmDedup|TestStalePayloadZombieEvidence'` ok；`go test ./cmd/agent/`（含 TestServeTick_StaleSweepFiresWithoutTaskRun / TestRunTaskServe_OnceSweepsZombieFirst / TestServeStaleThrottle / TestResumeSweepsStaleRows / TestResumeHookDoesNotDisturbResolution）ok。
 - 实测对照 Epic 验收：a) kill -9 复现行（in_progress+死 pid+超时心跳）在 serve tick 内落 stale 事件、零 task run（TestServeTick…）；b) pid 存活检查逻辑单测（真实 spawn/kill/wait，TestPidAlive）；c) resumed 路径 sweep 生效（TestResumeSweepsStaleRows）。
 - 全量回归（job 日志整轮）：`go test ./cmd/... ./internal/...` 全绿零 FAIL。注：TestEnsureTagsRegeneratesForNewerTS / TestMemorySearchNonBlocking 孤立复跑时在**干净 master 上同样失败**（git stash 对照验证）——master 既有 flaky，非本次引入。
-- 测试 hermetic 化：GOPI_TASK_NOTIFY_WEBHOOK 显式置空——开发 shell 导出的真实 webhook 否则会向 192.168.7.6:8923 发包。
+- 测试 hermetic 化：GOPI_TASK_NOTIFY_WEBHOOK 显式置空——开发 shell 导出的真实 webhook 否则会向 10.0.0.6:8923 发包。
 - Commit: `941b40c`（实现+测试）
 
 ## 记忆要点（已存 hippocampus）

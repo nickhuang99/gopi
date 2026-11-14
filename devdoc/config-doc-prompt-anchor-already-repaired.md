@@ -56,7 +56,7 @@ $ git fetch --dry-run origin
    2e5b4b942..afbf9b572  master     -> origin/master
 ```
 
-对端 `192.168.7.6:/home/user/work/GoPi` 的 master **已经推进到 `afbf9b572`** ——
+对端 `10.0.0.6:/home/user/work/GoPi` 的 master **已经推进到 `afbf9b572`** ——
 也就是**本 run 自己的分支 base**。于是：
 
 - 在 `64b8a316a` 上量 → **BLANK=1，红**（reporter 的观察，真实）

@@ -63,7 +63,7 @@ GLM 账户需要充值才能继续用。在充值之前，**HP 无法作为算�
 
 **最小设备契约 = 一行命令**（设备零安装）：
 ```bash
-ffmpeg -f alsa -i default -ac 1 -ar 16000 -f s16le - | curl -sS -T - http://192.168.7.6:8088/v1/audio
+ffmpeg -f alsa -i default -ac 1 -ar 16000 -f s16le - | curl -sS -T - http://10.0.0.6:8088/v1/audio
 ```
 
 **推荐注入点 = `POST /api/chat`**（`cli_web.go:818`）——唯一能注入**运行中** agent 且有**返回通道**（SSE）的点，且无需改 gopi 源码。

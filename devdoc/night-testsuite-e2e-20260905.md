@@ -69,4 +69,4 @@ structural (missing test), not token/egress related.
 
 - Branch: `feat/night-testsuite-e2e` (worktree `~/workspace/night-e2e-20260905`)
 - Recovery: `git show feat/night-testsuite-e2e:devdoc/night-testsuite-e2e-20260905.md`
-- Pushed: `git push peerbox feat/night-testsuite-e2e` → nick@192.168.7.6:/home/user/work/GoPi
+- Pushed: `git push peerbox feat/night-testsuite-e2e` → nick@10.0.0.6:/home/user/work/GoPi

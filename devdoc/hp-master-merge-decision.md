@@ -17,7 +17,7 @@
 
 ## 幻影根因（为什么台账攒了 75 行）
 
-1. 本仓历史上存在第二个 remote `peerboxx`（同一台 192.168.7.6，2026-08-31 09:30 最后 fetch，
+1. 本仓历史上存在第二个 remote `peerboxx`（同一台 10.0.0.6，2026-08-31 09:30 最后 fetch，
    之后 remote 从 config 移除但 **refs/remotes/peerboxx/* 残留**）。
 2. 其中 `peerboxx/hp-unique-maxtokens-work`（tip f9a319a）恰好名字带 `hp` 且 unmerged。
 3. serve branch-scan (`listUnmergedBranches`, `git branch -r --no-merged master`) 把它扫进来，

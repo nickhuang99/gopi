@@ -66,7 +66,7 @@ repo-wide. A single push drains the whole backlog posture.
 
 ### 5. Local worktree vs remote branch-push difference
 - **post-receive fires on ANY ref update arriving via git transport** — ssh remote
-  (`nick@192.168.7.6:/home/user/work/GoPi`, as hp pushes) or file-path push from a
+  (`nick@10.0.0.6:/home/user/work/GoPi`, as hp pushes) or file-path push from a
   client clone behave identically. Both are "receive-pack" events.
 - **A worktree checkout inside the same repo does NOT fire anything**: worktree
   branches are just local refs; creating/committing/deleting them never enters

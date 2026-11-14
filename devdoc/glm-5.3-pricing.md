@@ -59,7 +59,7 @@
 
 | 项 | 值 |
 |---|---|
-| 主机 / 路径 | HP `hostb-Laptop` (192.168.7.5) `:/tmp/bmshot/bm-shot.js` |
+| 主机 / 路径 | HP `hostb-Laptop` (10.0.0.5) `:/tmp/bmshot/bm-shot.js` |
 | 文件 mtime | 2026-08-30 06:18（与截图证据 `bm-pricing-20260830.png` 06:28 同批） |
 | 大小 / sha256 | 2216 B / `f65283009f18d9eadb03c4e5185772f03e3d73689d24eb5be5ff981460bfc6bb` |
 | 依赖 | `playwright-core ^1.62.1`（`/tmp/bmshot/package.json`，node_modules 就地安装，不下载浏览器） |
@@ -67,7 +67,7 @@
 | 产出 | `/tmp/bm-pricing.png`（1440×10171，1062960 B） |
 | 所属采集会话 | HP `~/.gopi/sessions/6d57ea58-aea6-47c0-8f3d-9dc30465ac7b.jsonl`（42018 B，2026-08-30 06:24） |
 
-> 本附录是**原件全文**，不是事后重建。取回方式：`scp 192.168.7.5:/tmp/bmshot/bm-shot.js`（HP 的 `/tmp` 这次没被清掉——这正是当初要求留底的原因：`/tmp` 易失，脚本随时可能消失，所以正文必须有全文）。校验：附录代码块抽取后 `sha256sum` = `f6528300…fc6bb`，与 HP 侧原件逐字节一致。
+> 本附录是**原件全文**，不是事后重建。取回方式：`scp 10.0.0.5:/tmp/bmshot/bm-shot.js`（HP 的 `/tmp` 这次没被清掉——这正是当初要求留底的原因：`/tmp` 易失，脚本随时可能消失，所以正文必须有全文）。校验：附录代码块抽取后 `sha256sum` = `f6528300…fc6bb`，与 HP 侧原件逐字节一致。
 
 ```javascript
 // bigmodel.cn/pricing screenshot — playwright-core + HP cached chromium (no browser download)

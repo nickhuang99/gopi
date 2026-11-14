@@ -119,7 +119,7 @@ func TestVoiceParseClientListDevices(t *testing.T) {
 func TestVoiceParseClientSecondsAndDevice(t *testing.T) {
 	opts, err := parseVoiceArgs([]string{
 		"--client", "--seconds", "8", "--device", "pulse:@DEFAULT_SOURCE@",
-		"--server-url", "http://192.168.7.6:7788",
+		"--server-url", "http://10.0.0.6:7788",
 	})
 	if err != nil {
 		t.Fatalf("unexpected error: %v", err)
@@ -130,7 +130,7 @@ func TestVoiceParseClientSecondsAndDevice(t *testing.T) {
 	if opts.device != "pulse:@DEFAULT_SOURCE@" {
 		t.Errorf("device = %q", opts.device)
 	}
-	if opts.target != "http://192.168.7.6:7788" {
+	if opts.target != "http://10.0.0.6:7788" {
 		t.Errorf("target = %q", opts.target)
 	}
 }
@@ -523,11 +523,11 @@ func TestVoicePCM16ToFloat32DropsPartialSample(t *testing.T) {
 }
 
 func TestVoiceTranscribeURL(t *testing.T) {
-	got, err := voiceTranscribeURL("http://192.168.7.6:7788")
+	got, err := voiceTranscribeURL("http://10.0.0.6:7788")
 	if err != nil {
 		t.Fatalf("unexpected error: %v", err)
 	}
-	if got != "http://192.168.7.6:7788"+voiceTranscribePath {
+	if got != "http://10.0.0.6:7788"+voiceTranscribePath {
 		t.Errorf("url = %q", got)
 	}
 	// A trailing slash must not produce a double slash — the server's mux
@@ -547,7 +547,7 @@ func TestVoiceTranscribeURL(t *testing.T) {
 	}
 	// A schemeless target must be named as such, not fail later as
 	// "unsupported protocol scheme".
-	for _, bad := range []string{"", "192.168.7.6:7788", "127.0.0.1"} {
+	for _, bad := range []string{"", "10.0.0.6:7788", "127.0.0.1"} {
 		if _, err := voiceTranscribeURL(bad); err == nil {
 			t.Errorf("target %q should be rejected", bad)
 		}

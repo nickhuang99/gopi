@@ -159,7 +159,7 @@ $ ssh -o BatchMode=yes hp 'cd /home/user/work/GoPi && gopi task sync-pass --once
 gopi task sync-pass: pass starting (task-row exchange OFF (default — the delta tick is a no-op; task_sync / GOPI_TASK_SYNC enables it))
 gopi task sync-pass: code delivery ON — role client (pushes finished local branches to the peer); task rows stay governed by the switch above
 [serve] [git-client] pull:skipped (Not possible to fast-forward, aborting.)
-[serve] [git-client] pull-master: git pull --ff-only: exit status 128: From 192.168.7.6:/home/user/work/GoPi
+[serve] [git-client] pull-master: git pull --ff-only: exit status 128: From 10.0.0.6:/home/user/work/GoPi
    bea529e3..49855b5f  task/01a0d98b551d792e9b2c4f991bbd558e -> peerbox/task/01a0d98b551d792e9b2c4f991bbd558e
 fatal: Not possible to fast-forward, aborting.
 [serve] [adopt] skipped: worktree dirty (adoption refuses a dirty tree)
@@ -169,7 +169,7 @@ rc=0
 → `rc=0`; the run's **banner and its report agree** (`task-row exchange OFF`, code
 delivery `ON`), and the code-delivery leg actually **reached the peer over ssh** —
 the `[git-client]` lines are a real `git pull --ff-only` against
-`192.168.7.6:/home/user/work/GoPi` (peerbox), which is exactly the transport the
+`10.0.0.6:/home/user/work/GoPi` (peerbox), which is exactly the transport the
 `sync_peers` alias feeds. The two `skipped` lines are the run's own honest
 refusals (`--ff-only` cannot fast-forward a diverged master; adoption refuses the
 pre-existing dirty file named in `## Not Done`) and both are printed rather than
@@ -232,7 +232,7 @@ $ ssh -o BatchMode=yes hp 'diff /home/user/.gopi/.ds_hp_standalone_settings.json
   `2026-09-26 01:13:09` — the measured reason A2's instrument must be `stat -L`.
 - `gopi task sync-pass --once` on HP (both from `~` and from inside the checkout)
   → `rc=0`, banner "task-row exchange OFF", and a `[git-client]` line showing a real
-  fetch against `192.168.7.6:/home/user/work/GoPi`.
+  fetch against `10.0.0.6:/home/user/work/GoPi`.
 - HP trail `~/.gopi/logs/hp-live-profile-changes.log` — `stat` → `1881 bytes
   2026-09-26 01:15:41.658589874 +0800`; it carries both before→after deltas, the
   settings sha256 before/after (`b3bfc28c…` → `40f93c9b…`), the backup path, the

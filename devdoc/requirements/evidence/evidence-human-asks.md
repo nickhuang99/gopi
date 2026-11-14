@@ -238,7 +238,7 @@ gopi run completed — run: elapsed=35m43s
 [BIG-GOAL][M4.5] task 状态跨节点镜像（ingest 接收端）+ 失败墓碑归档语义（nick 同意：failed 保留供审计，archive/resolved 标记让 --status failed 只显示未处置失败）
 
 - spec/payload:
-问题（nick 指出）：HP 跑的任务状态只回写 HP 本地 memory.db，peerbox 台账永远 pending（--db 不支持跨节点连接，SQLite 远程锁也不该做）。方案 A 实现：①peerbox 侧新增 gopi task ingest 轻量子命令（或 --listen 模式的 ingest server）：接收 POST JSON（复用 M3 通知钩子的 payload 格式：event/task_id/status/summary/elapsed/tokens/claimed_by）→ upsert 本地台账。安全约束：只允许前向迁移（pending/claimed→completed/failed/cancelled）+ 本地行不存在则拒绝（防伪造）+ upsert 标记 source 不变但加 remote_node 备注列或 tags 后缀 ②HP 侧配置：GOPI_TASK_NOTIFY_WEBHOOK=http://192.168.7.6:PORT/task-ingest + GOPI_TASK_NOTIFY_EVENTS=completed,failed ③幂等：重复投递不炸（upsert 语义天然幂等）④实测：HP submit 一个小任务→run→peerbox task list 看到终态自动落账 ⑤devdoc。参考：internal/tools/tasknotify.go（payload 格式）、cmd/agent/cli_tasks.go（TaskUpdate 前向迁移校验已有 taskAllowedTransitions）。工作流 GOPI.md Rule 6 worktree feat/task-ingest（peerbox 开发即可——接收端跑在 peerbox，HP 只是配置方）
+问题（nick 指出）：HP 跑的任务状态只回写 HP 本地 memory.db，peerbox 台账永远 pending（--db 不支持跨节点连接，SQLite 远程锁也不该做）。方案 A 实现：①peerbox 侧新增 gopi task ingest 轻量子命令（或 --listen 模式的 ingest server）：接收 POST JSON（复用 M3 通知钩子的 payload 格式：event/task_id/status/summary/elapsed/tokens/claimed_by）→ upsert 本地台账。安全约束：只允许前向迁移（pending/claimed→completed/failed/cancelled）+ 本地行不存在则拒绝（防伪造）+ upsert 标记 source 不变但加 remote_node 备注列或 tags 后缀 ②HP 侧配置：GOPI_TASK_NOTIFY_WEBHOOK=http://10.0.0.6:PORT/task-ingest + GOPI_TASK_NOTIFY_EVENTS=completed,failed ③幂等：重复投递不炸（upsert 语义天然幂等）④实测：HP submit 一个小任务→run→peerbox task list 看到终态自动落账 ⑤devdoc。参考：internal/tools/tasknotify.go（payload 格式）、cmd/agent/cli_tasks.go（TaskUpdate 前向迁移校验已有 taskAllowedTransitions）。工作流 GOPI.md Rule 6 worktree feat/task-ingest（peerbox 开发即可——接收端跑在 peerbox，HP 只是配置方）
 
 
 
@@ -444,7 +444,7 @@ test: echo done then exit
 gopi run completed — run: elapsed=17m22s
 
 - spec/payload:
-对 t-1788046668 的增补（dispatch 命令的上下文完整性问题）：peerbox serve 派任务给 HP 时，remote 执行的 gopi 需要知道三件它自己不知道的事——①report node（回报到哪：ssh peerbox 而不是别的机器）②git repo path（push back 到哪个主仓）③task_id 本身。设计：remote 执行命令由 peerbox dispatch 器拼装，三件作为 CLI 参数显式传递（不靠 remote settings——它无状态）：ssh hp 'gopi task run <id> --report-to peerbox --repo peerbox:~/work/GoPi'——或更简：--report-to 就是一个 ssh host 别名+repo 路径，dispatch 器从 settings compute_nodes 条目带出（compute_nodes 条目扩字段：{name, max_concurrent, report_to: peerbox, repo: nick@192.168.7.6:/home/user/work/GoPi}）。注意区分：task_id 本身已在命令行；--report-to 的语义=task update 与 git push 的目标（ssh 别名+路径），remote 执行结束包装器用它拼两条命令：ssh <report-to> 'gopi task update <id> --status X' + git push <repo> HEAD。settings 白名单条目扩字段后 compute_nodes=[{name,max_concurrent,report_to,repo}]——每节点一行完整描述（拓扑+容量+回程）。实测增补：HP 端到端验证 report_to/repo 参数传递正确+remote 结束后 peerbox 台账终态+feat 分支到达。
+对 t-1788046668 的增补（dispatch 命令的上下文完整性问题）：peerbox serve 派任务给 HP 时，remote 执行的 gopi 需要知道三件它自己不知道的事——①report node（回报到哪：ssh peerbox 而不是别的机器）②git repo path（push back 到哪个主仓）③task_id 本身。设计：remote 执行命令由 peerbox dispatch 器拼装，三件作为 CLI 参数显式传递（不靠 remote settings——它无状态）：ssh hp 'gopi task run <id> --report-to peerbox --repo peerbox:~/work/GoPi'——或更简：--report-to 就是一个 ssh host 别名+repo 路径，dispatch 器从 settings compute_nodes 条目带出（compute_nodes 条目扩字段：{name, max_concurrent, report_to: peerbox, repo: nick@10.0.0.6:/home/user/work/GoPi}）。注意区分：task_id 本身已在命令行；--report-to 的语义=task update 与 git push 的目标（ssh 别名+路径），remote 执行结束包装器用它拼两条命令：ssh <report-to> 'gopi task update <id> --status X' + git push <repo> HEAD。settings 白名单条目扩字段后 compute_nodes=[{name,max_concurrent,report_to,repo}]——每节点一行完整描述（拓扑+容量+回程）。实测增补：HP 端到端验证 report_to/repo 参数传递正确+remote 结束后 peerbox 台账终态+feat 分支到达。
 
 
 
@@ -672,7 +672,7 @@ gopi run completed — run: elapsed=19m17s
 gopi run failed: signal: broken pipe — run: elapsed=0s
 
 - spec/payload:
-RPi5 节点两件标准化（nick 指出）：①make 构建失败=proxy.golang.org 被墙 i/o timeout——配置 GOPROXY=https://goproxy.cn,direct（与 HP 相同），写入 ~/.bashrc 持久化（export GOPROXY=...；ARM64 构建本机 native go build 无需交叉编译）②gopi 必须是 symlink 非 binary copy——ln -sf ~/work/GoPi/bin/gopi /usr/local/bin/gopi（sudo），与 peerbox/HP 拓扑一致（which gopi → /usr/local/bin/gopi）。此后 RPi5 更新流程=git fetch origin && git merge --ff-only origin/master && make（本机构建 arm64 native）——不再 binary scp。③验证：which gopi 指向 /usr/local/bin/gopi symlink；~/bin/gopi 旧 binary 删除；gopi --version 或 -h 正常；GOPI_TASK_NOTIFY_WEBHOOK=http://192.168.7.6:8923/task-ingest 写入环境（peerbox 台账镜像——远端执行回报）④ssh 分发面：peerbox serve 的 dispatch 查询 'ssh rpi5 gopi task list' 依赖 /usr/local/bin/gopi 在非交互 PATH——symlink 落 /usr/local/bin 正好解决 127 command not found。工作流：RPi5 本机执行（node:rpi5），不改代码只改环境，完成 echo RPI5-SETUP-OK。
+RPi5 节点两件标准化（nick 指出）：①make 构建失败=proxy.golang.org 被墙 i/o timeout——配置 GOPROXY=https://goproxy.cn,direct（与 HP 相同），写入 ~/.bashrc 持久化（export GOPROXY=...；ARM64 构建本机 native go build 无需交叉编译）②gopi 必须是 symlink 非 binary copy——ln -sf ~/work/GoPi/bin/gopi /usr/local/bin/gopi（sudo），与 peerbox/HP 拓扑一致（which gopi → /usr/local/bin/gopi）。此后 RPi5 更新流程=git fetch origin && git merge --ff-only origin/master && make（本机构建 arm64 native）——不再 binary scp。③验证：which gopi 指向 /usr/local/bin/gopi symlink；~/bin/gopi 旧 binary 删除；gopi --version 或 -h 正常；GOPI_TASK_NOTIFY_WEBHOOK=http://10.0.0.6:8923/task-ingest 写入环境（peerbox 台账镜像——远端执行回报）④ssh 分发面：peerbox serve 的 dispatch 查询 'ssh rpi5 gopi task list' 依赖 /usr/local/bin/gopi 在非交互 PATH——symlink 落 /usr/local/bin 正好解决 127 command not found。工作流：RPi5 本机执行（node:rpi5），不改代码只改环境，完成 echo RPI5-SETUP-OK。
 
 
 
@@ -784,7 +784,7 @@ gopi run completed — run: elapsed=36m29s
 gopi run completed — run: elapsed=6m33s
 
 - spec/payload:
-nick 终判 ingest toyish/useless——架构转向 db-sync 后设计前提全消失（联邦镜像→memsync 替代）。处置三件：①HP 侧拔线：~/.bashrc 移除 GOPI_TASK_NOTIFY_WEBHOOK=http://192.168.7.6:8923/task-ingest（防 400 误报）②peerbox 停 ingest 进程（task ingest --listen :8923——常驻进程 kill；启动脚本/文档如有引用一并清）③bug031 工单 cancelled（不修将废件）。代码留档不删（联邦历史遗产）。验收：HP bashrc 无 webhook 行；ps 无 ingest 进程；memsync 单通道确认（export/import-tasks 实测通过即语义单一化完成）。devdoc 一段记录退役决策。node:hp（拔线在 HP）。
+nick 终判 ingest toyish/useless——架构转向 db-sync 后设计前提全消失（联邦镜像→memsync 替代）。处置三件：①HP 侧拔线：~/.bashrc 移除 GOPI_TASK_NOTIFY_WEBHOOK=http://10.0.0.6:8923/task-ingest（防 400 误报）②peerbox 停 ingest 进程（task ingest --listen :8923——常驻进程 kill；启动脚本/文档如有引用一并清）③bug031 工单 cancelled（不修将废件）。代码留档不删（联邦历史遗产）。验收：HP bashrc 无 webhook 行；ps 无 ingest 进程；memsync 单通道确认（export/import-tasks 实测通过即语义单一化完成）。devdoc 一段记录退役决策。node:hp（拔线在 HP）。
 
 
 
@@ -4028,7 +4028,7 @@ Role: nightly CI on the current master (acbf958+). Verify the master built today
 A test report committed in the gopi repo (devdoc/night-testsuite-tools-{date}.md): build status, per-package pass/fail summary, failure details with hypotheses. DO NOT fix anything — report only. If everything is green, say so plainly.
 
 ## Report route
-This task runs on HP. When done, push the report branch back to peerbox (remote 'peerbox' → nick@192.168.7.6:/home/user/work/GoPi) per the client delivery chain; the PA merges it next morning.
+This task runs on HP. When done, push the report branch back to peerbox (remote 'peerbox' → nick@10.0.0.6:/home/user/work/GoPi) per the client delivery chain; the PA merges it next morning.
 
 ## Constraints
 - Work in a worktree per GOPI.md Rule 6 (branch feat/night-testsuite-tools).
@@ -4062,7 +4062,7 @@ Role: nightly CI on the current master (acbf958+). Verify the master built today
 A test report committed in the gopi repo (devdoc/night-testsuite-agent-{date}.md): build status, per-package pass/fail summary, failure details with hypotheses. DO NOT fix anything — report only. If everything is green, say so plainly.
 
 ## Report route
-This task runs on HP. When done, push the report branch back to peerbox (remote 'peerbox' → nick@192.168.7.6:/home/user/work/GoPi) per the client delivery chain; the PA merges it next morning.
+This task runs on HP. When done, push the report branch back to peerbox (remote 'peerbox' → nick@10.0.0.6:/home/user/work/GoPi) per the client delivery chain; the PA merges it next morning.
 
 ## Constraints
 - Work in a worktree per GOPI.md Rule 6 (branch feat/night-testsuite-agent).
@@ -4096,7 +4096,7 @@ Role: nightly CI on the current master (acbf958+). Verify the master built today
 A test report committed in the gopi repo (devdoc/night-testsuite-cmd-{date}.md): build status, per-package pass/fail summary, failure details with hypotheses. DO NOT fix anything — report only. If everything is green, say so plainly.
 
 ## Report route
-This task runs on HP. When done, push the report branch back to peerbox (remote 'peerbox' → nick@192.168.7.6:/home/user/work/GoPi) per the client delivery chain; the PA merges it next morning.
+This task runs on HP. When done, push the report branch back to peerbox (remote 'peerbox' → nick@10.0.0.6:/home/user/work/GoPi) per the client delivery chain; the PA merges it next morning.
 
 ## Constraints
 - Work in a worktree per GOPI.md Rule 6 (branch feat/night-testsuite-cmd).
@@ -4130,7 +4130,7 @@ Role: nightly CI on the current master (acbf958+). Verify the master built today
 A test report committed in the gopi repo (devdoc/night-testsuite-small-{date}.md): build status, per-package pass/fail summary, failure details with hypotheses. DO NOT fix anything — report only. If everything is green, say so plainly.
 
 ## Report route
-This task runs on HP. When done, push the report branch back to peerbox (remote 'peerbox' → nick@192.168.7.6:/home/user/work/GoPi) per the client delivery chain; the PA merges it next morning.
+This task runs on HP. When done, push the report branch back to peerbox (remote 'peerbox' → nick@10.0.0.6:/home/user/work/GoPi) per the client delivery chain; the PA merges it next morning.
 
 ## Constraints
 - Work in a worktree per GOPI.md Rule 6 (branch feat/night-testsuite-small).
@@ -4176,7 +4176,7 @@ Role: nightly CI on the current master (acbf958+). Verify the master built today
 A test report committed in the gopi repo (devdoc/night-testsuite-e2e-{date}.md): build status, per-package pass/fail summary, failure details with hypotheses. DO NOT fix anything — report only. If everything is green, say so plainly.
 
 ## Report route
-This task runs on HP. When done, push the report branch back to peerbox (remote 'peerbox' → nick@192.168.7.6:/home/user/work/GoPi) per the client delivery chain; the PA merges it next morning.
+This task runs on HP. When done, push the report branch back to peerbox (remote 'peerbox' → nick@10.0.0.6:/home/user/work/GoPi) per the client delivery chain; the PA merges it next morning.
 
 ## Constraints
 - Work in a worktree per GOPI.md Rule 6 (branch feat/night-testsuite-e2e).
@@ -4634,7 +4634,7 @@ remote: Counting objects: 100% (37/37), done.
 remote: Compressing objects: 100% (35/35), done.
 remote: Total 35 (delta 19), reused 0 (delta 0), pack-reused 0
 展开对象中: 100% (35/35), 42.07 KiB | 1.17 MiB/s, 完成.
-来自 192.168.7.6:/home/user/work/GoPi
+来自 10.0.0.6:/home/user/work/GoPi
    f74aa7f..d8c4472  master                             -> peerbox/master
  * [新分支]          feat/review-memory-aware-db        -> peerbox/feat/review-memory-aware-db
  * [新分支]          feat/review-memory-aware-docs      -> peerbox/feat/review-memory-aware-docs
@@ -8123,7 +8123,7 @@ legacy-audit-v2 batch-01: 审查 batch-01.tsv 并操作 memory-glm-audit.db（�
 审查判断"是否已被后续任务完成/有 git 证据"时，必须用 **peerbox 完整镜像**（不是 HP 自身数据）：
 - 镜像 DB: ~/.gopi/peerbox-mirror/memory.db（peerbox 最新快照——查后继任务/状态/关联）
 - 镜像 sessions: ~/.gopi/peerbox-mirror/sessions/（peerbox 完整 session——查任务实际做了什么/是否有产出）
-判断 superseded/已完成未关账时用镜像查证。git commit 证据可 ssh nick@192.168.7.6 查 peerbox 仓库。
+判断 superseded/已完成未关账时用镜像查证。git commit 证据可 ssh nick@10.0.0.6 查 peerbox 仓库。
 
 
 
@@ -8144,7 +8144,7 @@ legacy-audit-v2 batch-02: 审查 batch-02.tsv 并操作 memory-glm-audit.db（�
 审查判断"是否已被后续任务完成/有 git 证据"时，必须用 **peerbox 完整镜像**（不是 HP 自身数据）：
 - 镜像 DB: ~/.gopi/peerbox-mirror/memory.db（peerbox 最新快照——查后继任务/状态/关联）
 - 镜像 sessions: ~/.gopi/peerbox-mirror/sessions/（peerbox 完整 session——查任务实际做了什么/是否有产出）
-判断 superseded/已完成未关账时用镜像查证。git commit 证据可 ssh nick@192.168.7.6 查 peerbox 仓库。
+判断 superseded/已完成未关账时用镜像查证。git commit 证据可 ssh nick@10.0.0.6 查 peerbox 仓库。
 
 
 
@@ -8165,7 +8165,7 @@ legacy-audit-v2 batch-03: 审查 batch-03.tsv 并操作 memory-glm-audit.db（�
 审查判断"是否已被后续任务完成/有 git 证据"时，必须用 **peerbox 完整镜像**（不是 HP 自身数据）：
 - 镜像 DB: ~/.gopi/peerbox-mirror/memory.db（peerbox 最新快照——查后继任务/状态/关联）
 - 镜像 sessions: ~/.gopi/peerbox-mirror/sessions/（peerbox 完整 session——查任务实际做了什么/是否有产出）
-判断 superseded/已完成未关账时用镜像查证。git commit 证据可 ssh nick@192.168.7.6 查 peerbox 仓库。
+判断 superseded/已完成未关账时用镜像查证。git commit 证据可 ssh nick@10.0.0.6 查 peerbox 仓库。
 
 
 
@@ -8186,7 +8186,7 @@ legacy-audit-v2 batch-04: 审查 batch-04.tsv 并操作 memory-glm-audit.db（�
 审查判断"是否已被后续任务完成/有 git 证据"时，必须用 **peerbox 完整镜像**（不是 HP 自身数据）：
 - 镜像 DB: ~/.gopi/peerbox-mirror/memory.db（peerbox 最新快照——查后继任务/状态/关联）
 - 镜像 sessions: ~/.gopi/peerbox-mirror/sessions/（peerbox 完整 session——查任务实际做了什么/是否有产出）
-判断 superseded/已完成未关账时用镜像查证。git commit 证据可 ssh nick@192.168.7.6 查 peerbox 仓库。
+判断 superseded/已完成未关账时用镜像查证。git commit 证据可 ssh nick@10.0.0.6 查 peerbox 仓库。
 
 
 
@@ -8207,7 +8207,7 @@ legacy-audit-v2 batch-05: 审查 batch-05.tsv 并操作 memory-glm-audit.db（�
 审查判断"是否已被后续任务完成/有 git 证据"时，必须用 **peerbox 完整镜像**（不是 HP 自身数据）：
 - 镜像 DB: ~/.gopi/peerbox-mirror/memory.db（peerbox 最新快照——查后继任务/状态/关联）
 - 镜像 sessions: ~/.gopi/peerbox-mirror/sessions/（peerbox 完整 session——查任务实际做了什么/是否有产出）
-判断 superseded/已完成未关账时用镜像查证。git commit 证据可 ssh nick@192.168.7.6 查 peerbox 仓库。
+判断 superseded/已完成未关账时用镜像查证。git commit 证据可 ssh nick@10.0.0.6 查 peerbox 仓库。
 
 
 
@@ -8228,7 +8228,7 @@ legacy-audit-v2 batch-06: 审查 batch-06.tsv 并操作 memory-glm-audit.db（�
 审查判断"是否已被后续任务完成/有 git 证据"时，必须用 **peerbox 完整镜像**（不是 HP 自身数据）：
 - 镜像 DB: ~/.gopi/peerbox-mirror/memory.db（peerbox 最新快照——查后继任务/状态/关联）
 - 镜像 sessions: ~/.gopi/peerbox-mirror/sessions/（peerbox 完整 session——查任务实际做了什么/是否有产出）
-判断 superseded/已完成未关账时用镜像查证。git commit 证据可 ssh nick@192.168.7.6 查 peerbox 仓库。
+判断 superseded/已完成未关账时用镜像查证。git commit 证据可 ssh nick@10.0.0.6 查 peerbox 仓库。
 
 
 
@@ -8249,7 +8249,7 @@ legacy-audit-v2 batch-07: 审查 batch-07.tsv 并操作 memory-glm-audit.db（�
 审查判断"是否已被后续任务完成/有 git 证据"时，必须用 **peerbox 完整镜像**（不是 HP 自身数据）：
 - 镜像 DB: ~/.gopi/peerbox-mirror/memory.db（peerbox 最新快照——查后继任务/状态/关联）
 - 镜像 sessions: ~/.gopi/peerbox-mirror/sessions/（peerbox 完整 session——查任务实际做了什么/是否有产出）
-判断 superseded/已完成未关账时用镜像查证。git commit 证据可 ssh nick@192.168.7.6 查 peerbox 仓库。
+判断 superseded/已完成未关账时用镜像查证。git commit 证据可 ssh nick@10.0.0.6 查 peerbox 仓库。
 
 
 
@@ -8270,7 +8270,7 @@ legacy-audit-v2 batch-08: 审查 batch-08.tsv 并操作 memory-glm-audit.db（�
 审查判断"是否已被后续任务完成/有 git 证据"时，必须用 **peerbox 完整镜像**（不是 HP 自身数据）：
 - 镜像 DB: ~/.gopi/peerbox-mirror/memory.db（peerbox 最新快照——查后继任务/状态/关联）
 - 镜像 sessions: ~/.gopi/peerbox-mirror/sessions/（peerbox 完整 session——查任务实际做了什么/是否有产出）
-判断 superseded/已完成未关账时用镜像查证。git commit 证据可 ssh nick@192.168.7.6 查 peerbox 仓库。
+判断 superseded/已完成未关账时用镜像查证。git commit 证据可 ssh nick@10.0.0.6 查 peerbox 仓库。
 
 
 
@@ -8924,8 +8924,8 @@ wants voice input because typing is physically tiring. Voice is *another human I
 channel* — conceptually the same family as Capture (see webcam/display) in a
 Computer-Use architecture. Design constraints:
 
-1. **The user operates from a laptop (hosta, 192.168.7.13) via SSH to peerbox
-   (192.168.7.6).** Audio originates at the laptop but the agent lives on peerbox.
+1. **The user operates from a laptop (hosta, 10.0.0.13) via SSH to peerbox
+   (10.0.0.6).** Audio originates at the laptop but the agent lives on peerbox.
    Where transcription happens (laptop vs peerbox vs cloud) is an OPEN design
    question — collect evidence for each option.
 2. There is an alternative already in use: ByteDance Volcengine
@@ -9037,8 +9037,8 @@ voice input, where the human speaks on one machine and the agent runs on another
 
 ## The concrete situation (this is the real constraint — design for it)
 
-- **Human side**: nick works from a laptop, `hosta`, at 192.168.7.13, usually via
-  **SSH into peerbox** (192.168.7.6). So the microphone is physically on hosta, but
+- **Human side**: nick works from a laptop, `hosta`, at 10.0.0.13, usually via
+  **SSH into peerbox** (10.0.0.6). So the microphone is physically on hosta, but
   the agent process, its memory DB, and its task queue all live on peerbox.
 - **Why voice**: typing is physically tiring for the user. This is a real,
   recurring pain point — it should feel effortless, not like a new chore.
@@ -18936,7 +18936,7 @@ You are working on GoPi (`/home/user/work/GoPi`).
 （operator launcher contract：`--dry-run` / `--count` / `--install` + `GOPI_*` knobs）。
 它的 install seam 在运行的机器上写 `~/bin/gopi-worker-up.sh`。
 
-**HP 的问题**（`ssh hp`，~192.168.7.x）：
+**HP 的问题**（`ssh hp`，~10.0.0.x）：
 
 1. **HP 上没装 launcher**——`~/bin/gopi-worker-up.sh` 不存在；
 2. **取而代之有两个无人监管的内联启动器**：
@@ -20873,7 +20873,7 @@ test(voice): bring up RPi5 + its USB mic as the third capture testbed — end-to
 
 | 项 | 实测结果 |
 |---|---|
-| **可达性** | ⚠️ **用 `192.168.7.15`（eth0），不是 `.14`**（`.14` ping 100% 丢包；`.15` 通，0.6ms） |
+| **可达性** | ⚠️ **用 `10.0.0.15`（eth0），不是 `.14`**（`.14` ping 100% 丢包；`.15` 通，0.6ms） |
 | **USB mic** | ✅ `arecord -l` 看到：`card 2: Device [USB PnP Sound Device], device 0: USB Audio` |
 | **录音实测** | ✅ **成功**：`arecord -D plughw:CARD=Device,DEV=0 -f S16_LE -r 16000 -c 1 -d 1 /tmp/mictest.wav` → **32044 字节**（= 1 秒 @16k mono S16，32000 + 44 字节头，**完全符合 voice_input 契约**） |
 | **arecord** | ✅ 有（`/usr/bin/arecord`） |
@@ -20912,7 +20912,7 @@ test(voice): bring up RPi5 + its USB mic as the third capture testbed — end-to
 ### A. 在 RPi5 上跑探测脚本（第一个动作，最便宜）
 
 ```
-ssh 192.168.7.15   # 注意是 .15
+ssh 10.0.0.15   # 注意是 .15
 bash scripts/voice-mic-probe.sh    # 或按脚本本身用法
 ```
 把产物按现有命名规范 commit（`devdoc/assets/voice-hw-probe/rpi5/` + `rpi5-stdout.txt`）。
@@ -21003,12 +21003,12 @@ make build     # 确认二进制不旧
 gopi worker    # 或手动 gopi task run <id>
 ```
 
-**注意**：本单要 ssh 到 RPi5 做实测（RPi5 用 `192.168.7.15`）。
+**注意**：本单要 ssh 到 RPi5 做实测（RPi5 用 `10.0.0.15`）。
 **已实测的连通性（直接用）**：
-- ✅ **peerbox → RPi5：免密已通**（`ssh 192.168.7.15` 直接成功）
+- ✅ **peerbox → RPi5：免密已通**（`ssh 10.0.0.15` 直接成功）
 - ✅ **HP → RPi5：网络通**（ping 0% 丢包 / 1ms），但 **ssh 首次连接会被
   `Host key verification failed` 挡住** —— 这是 host key 未登记，**不是网络问题**。
-  解法（二选一）：`ssh-keyscan -H 192.168.7.15 >> ~/.ssh/known_hosts`
+  解法（二选一）：`ssh-keyscan -H 10.0.0.15 >> ~/.ssh/known_hosts`
   （或第一次用 `-o StrictHostKeyChecking=accept-new`）。
   另外 HP 到 RPi5 的**免密登录是否配好需确认**（可能还需要 key 分发）。
 - 如果 HP→RPi5 的 ssh 一时打不通，**改为从 peerbox 执行**（接受高峰计费或 `GOPI_IGNORE_PEAK_HOURS=1`）。
@@ -21020,7 +21020,7 @@ gopi worker    # 或手动 gopi task run <id>
 - **不要跑 `make fmt`**。
 - 临时文件：**RPi5 上不要写 `/tmp`**（那是树莓派的 SD 卡，慎用）——用 `~/workspace/`；
   peerbox 上同样不得写 `/tmp` 或 `/` 分区（本仓有门禁）。
-- **跨节点用 `192.168.7.15`**（`.14` 不通）——把它写进任何脚本/文档里。
+- **跨节点用 `10.0.0.15`**（`.14` 不通）——把它写进任何脚本/文档里。
 - **rpi5 上的 gopi 二进制**：先确认存在与版本（`ls -la ~/work/GoPi/bin/gopi` 或
   `which gopi`）——**如果版本旧，先 rebuild 再测**（否则测的是旧行为）。
 - 不要 sudo 改系统音频配置（除非你判断必须——**先报告再动**）。
@@ -21063,7 +21063,7 @@ test(voice): bring up RPi5 + its USB mic as the third capture testbed — end-to
 
 | 项 | 实测结果 |
 |---|---|
-| **可达性** | ⚠️ **用 `192.168.7.15`（eth0），不是 `.14`**（`.14` ping 100% 丢包；`.15` 通，0.6ms） |
+| **可达性** | ⚠️ **用 `10.0.0.15`（eth0），不是 `.14`**（`.14` ping 100% 丢包；`.15` 通，0.6ms） |
 | **USB mic** | ✅ `arecord -l` 看到：`card 2: Device [USB PnP Sound Device], device 0: USB Audio` |
 | **录音实测** | ✅ **成功**：`arecord -D plughw:CARD=Device,DEV=0 -f S16_LE -r 16000 -c 1 -d 1 /tmp/mictest.wav` → **32044 字节**（= 1 秒 @16k mono S16，32000 + 44 字节头，**完全符合 voice_input 契约**） |
 | **arecord** | ✅ 有（`/usr/bin/arecord`） |
@@ -21116,7 +21116,7 @@ test(voice): bring up RPi5 + its USB mic as the third capture testbed — end-to
 ### A. 在 RPi5 上跑探测脚本（第一个动作，最便宜）
 
 ```
-ssh 192.168.7.15   # 注意是 .15
+ssh 10.0.0.15   # 注意是 .15
 bash scripts/voice-mic-probe.sh    # 或按脚本本身用法
 ```
 把产物按现有命名规范 commit（`devdoc/assets/voice-hw-probe/rpi5/` + `rpi5-stdout.txt`）。
@@ -21213,7 +21213,7 @@ client 的 4 层 tier 策略（`cli_voice_device_policy.go`）需要在**三种�
 - **不要跑 `make fmt`**。
 - 临时文件：**RPi5 上不要写 `/tmp`**（那是树莓派的 SD 卡，慎用）——用 `~/workspace/`；
   peerbox 上同样不得写 `/tmp` 或 `/` 分区（本仓有门禁）。
-- **跨节点用 `192.168.7.15`**（`.14` 不通）——把它写进任何脚本/文档里。
+- **跨节点用 `10.0.0.15`**（`.14` 不通）——把它写进任何脚本/文档里。
 - **rpi5 上的 gopi 二进制**：先确认存在与版本（`ls -la ~/work/GoPi/bin/gopi` 或
   `which gopi`）——**如果版本旧，先 rebuild 再测**（否则测的是旧行为）。
 - 不要 sudo 改系统音频配置（除非你判断必须——**先报告再动**）。
@@ -21256,7 +21256,7 @@ test(voice): RPi5 USB-mic + peerbox capture testbeds — end-to-end client/serve
 
 | 项 | 实测结果 |
 |---|---|
-| **可达性** | ⚠️ **用 `192.168.7.15`（eth0），不是 `.14`**（`.14` ping 100% 丢包；`.15` 通，0.6ms） |
+| **可达性** | ⚠️ **用 `10.0.0.15`（eth0），不是 `.14`**（`.14` ping 100% 丢包；`.15` 通，0.6ms） |
 | **USB mic** | ✅ `arecord -l` 看到：`card 2: Device [USB PnP Sound Device], device 0: USB Audio` |
 | **录音实测** | ✅ **成功**：`arecord -D plughw:CARD=Device,DEV=0 -f S16_LE -r 16000 -c 1 -d 1 /tmp/mictest.wav` → **32044 字节**（= 1 秒 @16k mono S16，32000 + 44 字节头，**完全符合 voice_input 契约**） |
 | **arecord** | ✅ 有（`/usr/bin/arecord`） |
@@ -21321,7 +21321,7 @@ test(voice): RPi5 USB-mic + peerbox capture testbeds — end-to-end client/serve
 ### A. 在 RPi5 上跑探测脚本（第一个动作，最便宜）
 
 ```
-ssh 192.168.7.15   # 注意是 .15
+ssh 10.0.0.15   # 注意是 .15
 bash scripts/voice-mic-probe.sh    # 或按脚本本身用法
 ```
 把产物按现有命名规范 commit（`devdoc/assets/voice-hw-probe/rpi5/` + `rpi5-stdout.txt`）。
@@ -21418,7 +21418,7 @@ client 的 4 层 tier 策略（`cli_voice_device_policy.go`）需要在**三种�
 - **不要跑 `make fmt`**。
 - 临时文件：**RPi5 上不要写 `/tmp`**（那是树莓派的 SD 卡，慎用）——用 `~/workspace/`；
   peerbox 上同样不得写 `/tmp` 或 `/` 分区（本仓有门禁）。
-- **跨节点用 `192.168.7.15`**（`.14` 不通）——把它写进任何脚本/文档里。
+- **跨节点用 `10.0.0.15`**（`.14` 不通）——把它写进任何脚本/文档里。
 - **rpi5 上的 gopi 二进制**：先确认存在与版本（`ls -la ~/work/GoPi/bin/gopi` 或
   `which gopi`）——**如果版本旧，先 rebuild 再测**（否则测的是旧行为）。
 - 不要 sudo 改系统音频配置（除非你判断必须——**先报告再动**）。
@@ -21595,13 +21595,13 @@ client 侧已处理（`voicePCM16ToFloat32`，`cli_voice_client.go:489`，`:662`
    **可行性、延迟、依赖**（包括：hosta/RPi5 上要装什么？
    现在是 SSH 还是 HTTP？网络要求？）
 2. **RPi5 的 USB mic 能不能接上**（作为第二个物理设备，补 §7 第 1 条的缺口）
-   - RPi5：`192.168.7.15`（**`.14` 不通**），USB mic 是
+   - RPi5：`10.0.0.15`（**`.14` 不通**），USB mic 是
      `card 2: Device [USB PnP Sound Device]`，实测 `plughw:CARD=Device,DEV=0`
      能录（32044 字节 = 1 秒 @16k mono）
    - **RPi5 是纯 ALSA**（无 PulseAudio）——**与 HP 相反的设备环境**，
      正好验证策略的另一条分支
    - peerbox → RPi5 的 ssh **免密已通**；HP → RPi5 需要先
-     `ssh-keyscan -H 192.168.7.15 >> ~/.ssh/known_hosts`
+     `ssh-keyscan -H 10.0.0.15 >> ~/.ssh/known_hosts`
 
 ## 验收标准
 
@@ -23852,7 +23852,7 @@ Candidate axes — argue for one, with measurements, rather than listing them ba
 gopi web should allow access from IP
 
 - spec/payload:
-gopi web only allow access from local, meaning using 127.0.0.1, but this is a kind of inconvenient, as using current IP like 192.168.7.6 is just one step away, why don't do it?
+gopi web only allow access from local, meaning using 127.0.0.1, but this is a kind of inconvenient, as using current IP like 10.0.0.6 is just one step away, why don't do it?
 
 
 
@@ -28305,7 +28305,7 @@ HP's configuration is **correct**:
 }
 ```
 
-`hp:~/work/GoPi` has `remote peerbox = nick@192.168.7.6:/home/user/work/GoPi` and
+`hp:~/work/GoPi` has `remote peerbox = nick@10.0.0.6:/home/user/work/GoPi` and
 the SSH path works (PA pushed by hand through it, twice, with no error).
 
 The **designed** per-task push path is `TaskFinishCleanupSessionID`

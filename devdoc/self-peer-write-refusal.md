@@ -32,15 +32,15 @@ declared, the verb was the documented one. The defect is entirely in the leg.
 **Two halves, both measured:**
 
 1. **The alias names this machine.** `~/.ssh/config` carries `Host peerbox` →
-   `192.168.7.6`, and `192.168.7.6` *is* this host's own address. So
+   `10.0.0.6`, and `10.0.0.6` *is* this host's own address. So
    `--peer peerbox` on peerbox is not a remote machine at all: it is an `ssh` to
    self, and the peer-side argv runs *here*.
 
    ```
    $ ssh -G peerbox | grep -i hostname
-   hostname 192.168.7.6
+   hostname 10.0.0.6
    $ hostname -I
-   192.168.7.9 192.168.7.6 …
+   10.0.0.9 10.0.0.6 …
    ```
 
 2. **Nothing binds the profile.** `syncRowSSHExchange` / `syncTransferSignOver`
@@ -67,7 +67,7 @@ by the legs rather than re-stated (Rule 14):
 |---|---|
 | `selfPeerLocalAddrs` | every address this host answers to (interfaces **and** what its own name resolves to) |
 | `selfPeerResolvedHost` | the `HostName` the ssh client's own config gives the alias — read as **text** from `$HOME/.ssh/config`, `GOPI_HOME/.ssh/config` and the operator's `~/.ssh/config`, first `HostName` wins |
-| `selfPeerAliasIsLocal` | the verdict, + the sentence naming the evidence (`resolves to 192.168.7.6, and it is one of THIS host's addresses`) |
+| `selfPeerAliasIsLocal` | the verdict, + the sentence naming the evidence (`resolves to 10.0.0.6, and it is one of THIS host's addresses`) |
 | `selfPeerWriteRefusal` | **the gate**: called by every about-to-write leg before any contact |
 
 **Gated (write) surfaces:**
@@ -198,7 +198,7 @@ Task queued: 01a117e6-8028-7275-b731-8b6226a7aa6c (status=pending, source=agent)
 $ GOPI_HOME=$SB GOPI_SYNC_PEERS=peerbox $gopi task send --task-id 01a117e6-… --peer peerbox
 gopi task sync: row send: peer names this host: refusing a WRITE leg against a peer
 that names THIS host: row send for peer peerbox: it names THIS host (the alias "peerbox"
-resolves to 192.168.7.6, and it is one of THIS host's addresses (192.168.7.6)), and no
+resolves to 10.0.0.6, and it is one of THIS host's addresses (10.0.0.6)), and no
 --remote-home was given — … Pass --remote-home DIR to BIND it: …
 EXIT=1                                    ← the named refusal, non-zero
 

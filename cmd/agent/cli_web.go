@@ -1639,7 +1639,7 @@ func webPeerIP(remoteAddr string) string {
 }
 
 // webDisplayURLs returns the browser-reachable URLs for a listen host+port.
-//   - host is concrete ("127.0.0.1", "localhost", "192.168.7.10") → exactly
+//   - host is concrete ("127.0.0.1", "localhost", "10.0.0.10") → exactly
 //     that one URL.
 //   - host is empty or "0.0.0.0"/"::" (all interfaces) → the loopback URL plus
 //     each non-loopback IPv4 address on the machine (so a browser on another

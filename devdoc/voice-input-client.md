@@ -218,7 +218,7 @@ stack trace:
 | Device held by the sound server | the recorder's own error **plus** `(the device is held by another process … pick a pulse: device from --list-devices)` |
 | Device reachable but silent (muted) | `produced no audio from <id> (1.9s) — the device is reachable but silent: check the capture level is not muted` |
 | Transcriber not running | `cannot reach transcriber at <url> … (start it with \`gopi voice_input --server --listen :7788\`)` |
-| URL with no scheme | `server URL must start with http:// or https://, got "192.168.7.6:7788"` |
+| URL with no scheme | `server URL must start with http:// or https://, got "10.0.0.6:7788"` |
 | Body is not JSON (an HTML proxy error) | `transcriber at <url> returned no JSON (HTTP 502): <first 200 chars>` |
 
 The "reachable but silent" and "held by another process" cases are separated on

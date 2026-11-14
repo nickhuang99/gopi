@@ -316,7 +316,7 @@ if [ "$MODE" = selfcheck ]; then
 	mkdir -p "$fix/internal/x" "$fix/devdoc" || exit 2
 	printf '%s\n' 'package x' '' 'const p = "/home/someone/.cfg"' >"$fix/internal/x/a.go"
 	printf '%s\n' 'package x' '' '// see /home/someone/.cfg' >"$fix/internal/x/b.go"
-	printf '%s\n' 'package x' '' 'const a = "127.0.0.1:80"' '' 'const b = "192.168.7.9"' >"$fix/internal/x/c.go"
+	printf '%s\n' 'package x' '' 'const a = "127.0.0.1:80"' '' 'const b = "10.0.0.9"' >"$fix/internal/x/c.go"
 	printf '%s\n' 'package x' '' '/* /home/someone */' >"$fix/internal/x/d.go"
 	printf '%s\n' 'package x' '' 'var q = "/home/runner/.cfg"' >"$fix/internal/x/e.go"
 	printf '%s\n' 'package x' '' 'const u = "v"' '' 'const w = 1 // tail: /home/someone/x' >"$fix/internal/x/f.go"

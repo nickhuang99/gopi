@@ -137,7 +137,7 @@ settings task_pull:true, env 0     → task-pull: off (GOPI_TASK_PULL: false —
 
 ## Not done / honest limits
 
-- **The run happened on peerbox, not on hosta.** hosta (192.168.7.13) answers
+- **The run happened on peerbox, not on hosta.** hosta (10.0.0.13) answers
   ping but refuses ssh on 22, has no `Host` entry in peerbox's `~/.ssh/config`,
   and its 11434 is closed too — so no configuration could be driven on it from
   here. The verification uses a real sandbox profile on peerbox with hosta's exact
