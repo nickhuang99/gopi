@@ -1,4 +1,0 @@
-# exported-test-symbol baseline (PROJECT.md Rule 43) — frozen exports of `_test.go` declarations that have no CODE reader in their own package.
-# columns: path<TAB>symbol<TAB>reason. Ratchet DOWN only: a row whose declaration is gone, or has a reader now,
-# is an ERROR. The gate is internal/standards/exported_test_symbol_gate.go; run it with
-#   go test ./internal/standards/ -run ExportedTestSymbol

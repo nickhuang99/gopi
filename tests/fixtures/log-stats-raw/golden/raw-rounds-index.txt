@@ -1,9 +1,0 @@
-═══════════════════════════════════════════════════════════════
-RAW ROUNDS (raw log: gopi-raw-20260904-204046.log)
-═══════════════════════════════════════════════════════════════
-   RND      START        END      BYTES  KIND
-     1          1        286    45.1 KB  request + stream (71 chunks)
-     2        287        800    60.6 KB  request + stream (128 chunks)
-     3        801       1634    70.7 KB  request + stream (208 chunks)
-     4       1635       2424    60.5 KB  request + stream (197 chunks)
-     5       2425       3138    58.2 KB  request + stream (178 chunks)

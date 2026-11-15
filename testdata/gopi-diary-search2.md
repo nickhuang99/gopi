@@ -1,1 +1,0 @@
-I have a diary at ~/diabloforum/2021.htm. I remember writing about GCC bug submissions and how I submitted 20+ patches to GCC's bugzilla. Can you find those sections and summarize what happened with my GCC contributions?

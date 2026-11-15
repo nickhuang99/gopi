@@ -1,1 +1,0 @@
-ok  	github.com/the operator/gopi/internal/tools	8.864s

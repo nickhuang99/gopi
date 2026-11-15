@@ -1,7 +1,0 @@
-═══════════════════════════════════════════════════════════════
-Session: fc426fed-e3df-4e30-b73a-3dfdb2a8ccd4
-Grep:    "zzz-no-such-content-zzz" (all content)
-Started: 2026-09-04 20:40:46
-═══════════════════════════════════════════════════════════════
-
-No entries in this session contain "zzz-no-such-content-zzz".

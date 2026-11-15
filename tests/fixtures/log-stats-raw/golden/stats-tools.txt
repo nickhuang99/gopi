@@ -1,6 +1,0 @@
-═══════════════════════════════════════════════════════════════
-TOOL CALLS — Session fc426fed-e3df-4e30-b73a-3dfdb2a8ccd4 · 8 calls / 3 kinds
-═══════════════════════════════════════════════════════════════
-     5   62.5%  write_task_area
-     1   12.5%  memory_feedback
-     1   12.5%  memory_search
