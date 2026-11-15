@@ -36,9 +36,9 @@ Most coding agents (claude code, codex, cline, crush, and the like) take the sha
 $ CGO_ENABLED=0 go build -o bin/gopi ./cmd/agent/
 ```
 
-`cmd/agent/` is the **only** main package in the whole tree — that is not a convention, it is a
-rule pinned down by tests (the comment at the head of the `Makefile`, the gates in
-`internal/standards`).
+`cmd/agent/` is the **only** main package in the whole tree — that is not a convention but a rule,
+enforced by `make test` succeeding with exactly one artifact in `bin/`. (This public export ships no
+test suite; see [§ Dependencies](#dependencies) for what that means.)
 **No Node version manager, no Python virtualenv, no `node_modules` tree.**
 Copy one binary onto the target machine and it runs; its configuration is a single JSON file.
 
@@ -200,6 +200,17 @@ channel that won (flag / env var / settings.json / default).
 The `require` block of `go.mod` is the complete list; no CGO is pulled in, no C compiler is
 needed, and neither Node nor Python is needed.
 
+**This public export ships no test suite.** `make test` runs `go build ./...` and `go vet ./...` —
+the compiler over every package, and the vet pass — because those are the two checks that mean
+something on a tree of product code only. The `_test.go` files, `internal/standards/` and the
+suite targets stayed in the private working tree: several hundred files reference task ids,
+hostnames and internal ledgers that are not part of this release. The consequence you should know
+about, stated plainly: a `go test` command quoted anywhere in these documents (including in
+`PROJECT.md` and `CONFIG.md`) names a test that **is not in this repository** — it will print
+`no tests to run` and exit 0. That is a vacuous green, not a passing check. Every such sentence in
+`PROJECT.md` describes what a gate enforced *upstream*; treat it as documentation of intent, and
+verify behaviour by running the binary, not by trusting a quoted gate.
+
 ---
 
 ## Documentation map
@@ -210,7 +221,7 @@ needed, and neither Node nor Python is needed.
 | **The full usage of every CLI verb** | [`COMMANDS.md`](COMMANDS.md) — 421 lines, listed by verb, each line giving the source location |
 | **Every configuration key's default / precedence / who reads it** | [`CONFIG.md`](CONFIG.md) — 1649 lines, one line per knob, with the source line that reads it |
 | **The official description of some subsystem** | [`man/`](man/) — 14 pages, `gopi-chat.md`, `gopi-task.md`, `gopi-memory.md` and so on |
-| **The engineering constraints (why the code looks this way)** | [`PROJECT.md`](PROJECT.md) — 37 rules, each paired with the test that catches a violation |
+| **The engineering constraints (why the code looks this way)** | [`PROJECT.md`](PROJECT.md) — 37 rules, each naming the gate that once caught a violation (the gates are not part of this export) |
 | **The history and measurements behind design decisions** | [`devdoc/`](devdoc/) — every document declares its doc-class on its own first line |
 | **What changed** | [`CHANGELOG.md`](CHANGELOG.md) |
 
@@ -224,9 +235,9 @@ needed, and neither Node nor Python is needed.
 > section (`## Rule 30a`) and a `## Rule 41 的下半` section belong to the rule they extend, and
 > Rules 16–21 share the single `## Machine-Checkable Gates` heading — so the highest number a
 > briefing may cite runs past the number of sections, and the TABLE's rule count is the count.
-> These figures are guarded by `go test ./internal/standards/ -run TestDocMap`, which turns red
-> when a document moves and its row does not, and again when a number is written into this
-> paragraph instead of the row.
+> **Re-run any figure above with the command printed beside it.** In the private working tree a
+> standards gate turned a moved document red; this export ships no test suite, so the commands in
+> this list are the whole of the machinery — run them yourself if you change a page.
 
 > This README answers only "what is it, and what can it do".
 > For a specific argument, a specific default, the boundary of a specific behaviour — **look it
