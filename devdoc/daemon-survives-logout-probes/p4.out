@@ -1,0 +1,75 @@
+### probe script: p4-forensics.sh
+
+=== unlinked-socket ownership recap (fd -> socket inode) ===
+pid 2321 fd19 -> socket:[39144]
+pid 2321 fd27 -> socket:[40136]
+pid 2342 fd3  -> socket:[40136]
+0000000000000000: 00000002 00000000 00010000 0001 01 39144 /run/user/1000/systemd/private
+0000000000000000: 00000002 00000000 00010000 0001 01 40136 /run/user/1000/bus
+
+=== is the path visible in any sampled process's mount view? ===
+visible_in_any_process=0
+
+=== entry mtimes: runtime dir vs its children vs the sockets ===
+/run/user/1000 mtime=2026-09-14 22:39:10.643058632 +0800
+/run/user/1000/dbus-1 mtime=2026-08-27 07:18:30.515523913 +0800
+/run/user/1000/pulse mtime=2026-08-27 07:18:34.027492409 +0800
+/run/user/1000/systemd mtime=2026-09-15 07:26:18.870262117 +0800
+/run/user/1000/systemd/inaccessible mtime=2026-09-13 12:12:41.215414030 +0800
+
+=== user-level tmpfiles rules (can they touch %t = XDG_RUNTIME_DIR?) ===
+ls: cannot access '/usr/lib/user-tmpfiles.d/': No such file or directory
+ls: cannot access '/etc/user-tmpfiles.d/': No such file or directory
+ls: cannot access '/home/user/.config/user-tmpfiles.d/': No such file or directory
+ls: cannot access '/home/user/.config/tmpfiles.d/': No such file or directory
+
+=== operator scripts mentioning the runtime dir (search only, no execution) ===
+/home/user/.local/bin/gopi-home-gc.sh:98:  if [[ -S "${XDG_RUNTIME_DIR:-/run/user/$(id -u)}/bus" ]] && command -v systemctl >/dev/null 2>&1; then
+
+=== root crontab / cron.d ===
+total 28
+drwxr-xr-x   2 root root  4096 Aug 28  2024 .
+drwxr-xr-x 176 root root 12288 Sep 14 09:13 ..
+-rw-r--r--   1 root root   102 Mar 23  2022 .placeholder
+-rw-r--r--   1 root root   219 Oct 10  2021 anacron
+-rw-r--r--   1 root root   201 Jan  9  2022 e2scrub_all
+
+=== journal: logind/user-manager messages about the runtime dir or bus this boot ===
+Sep 06 06:15:34 peer1 org.gtk.vfs.Daemon[1868040]: fusermount3: failed to access mountpoint /run/user/1000/gvfs: Permission denied
+Sep 06 06:20:16 peer1 org.gtk.vfs.Daemon[1868891]: fusermount3: failed to access mountpoint /run/user/1000/gvfs: Permission denied
+Sep 06 06:43:38 peer1 org.gtk.vfs.Daemon[1871854]: fusermount3: failed to access mountpoint /run/user/1000/gvfs: Permission denied
+Sep 13 00:59:57 peer1 systemd[1]: Stopping User Runtime Directory /run/user/117...
+Sep 13 00:59:57 peer1 systemd[1]: Stopped User Runtime Directory /run/user/117.
+Sep 13 01:01:19 peer1 systemd[1]: Starting User Runtime Directory /run/user/117...
+Sep 13 01:01:19 peer1 systemd[1]: Finished User Runtime Directory /run/user/117.
+Sep 13 01:01:42 peer1 systemd[309629]: Starting D-Bus User Message Bus Socket...
+Sep 13 01:01:42 peer1 systemd[309629]: Listening on D-Bus User Message Bus Socket.
+Sep 13 01:01:51 peer1 systemd[309629]: Started D-Bus User Message Bus.
+
+=== journal: any message at all in the 2026-09-13 12:12:40 +-2s window ===
+-- No entries --
+
+=== live gopi processes and their cgroups (read-only) ===
+pid=2712346 cgroup=0::/user.slice/user-1000.slice/session-18200.scope
+pid=2859749 cgroup=0::/user.slice/user-1000.slice/session-18257.scope
+pid=2859775 cgroup=0::/user.slice/user-1000.slice/session-18257.scope
+pid=2859802 cgroup=0::/user.slice/user-1000.slice/session-18855.scope
+pid=2859828 cgroup=0::/user.slice/user-1000.slice/session-18855.scope
+pid=2859882 cgroup=0::/user.slice/user-1000.slice/session-18205.scope
+pid=2859937 cgroup=0::/user.slice/user-1000.slice/session-18205.scope
+pid=2860220 cgroup=0::/user.slice/user-1000.slice/session-18252.scope
+pid=2860258 cgroup=0::/user.slice/user-1000.slice/session-18252.scope
+pid=2864597 cgroup=0::/user.slice/user-1000.slice/session-18200.scope
+pid=2869923 cgroup=0::/user.slice/user-1000.slice/session-18855.scope
+
+=== gopi scratch GC: which roots has it swept (home= lines, unique) ===
+home=/dev/shm/gopi-scratch-watchdog-proof
+home=/dev/shm/gopi-test-scratch
+home=/tmp/tmp.4I1IVtwJ6V/workspace/gopi-test-scratch
+home=/tmp/tmp.Brrqknn0ES/workspace/gopi-test-scratch
+
+=== gopi scratch GC: any line mentioning /run/user ===
+
+=== TMPDIR / settings tmpdir ===
+TMPDIR=[<unset>]
+shell env from the journal of this agent session:

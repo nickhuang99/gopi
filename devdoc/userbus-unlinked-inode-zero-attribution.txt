@@ -1,0 +1,86 @@
+Evidence transcript for devdoc/userbus-unlinked-inode-zero-diagnosis.md
+(task 01a12cd9-cf2b-7174-9016-3edff10748b6, 2026-10-12). Verbatim command output.
+
+=== 0f9840c68's own stat (what the fix touched) ===
+0f9840c68 fix(daemon): fold every /proc/net/unix row for a path — one connect() puts a client row first
+ cmd/agent/cli_tasks_sync_peers_bare_test.go |  12 ++
+ cmd/agent/daemon_userbus_probe.go           | 174 +++++++++++++++++++--
+ cmd/agent/daemon_userbus_probe_test.go      | 224 ++++++++++++++++++++++++++--
+ devdoc/DOC-INDEX.tsv                        |   1 +
+ devdoc/userbus-probe-unlinked-row-fold.md   | 124 +++++++++++++++
+ 5 files changed, 510 insertions(+), 25 deletions(-)
+
+=== did the TEST file change between baseline 71543117d and HEAD? ===
+71543117d blob: b846aef87a2b70a78c95d19a5f41a0c3e0b4d5d8
+HEAD      blob: 138d75b5fdf81af325512668a26b2c5537d3acb7
+--- diffstat of the test file baseline..HEAD ---
+ cmd/agent/daemon_userbus_probe_test.go | 224 +++++++++++++++++++++++++++++++--
+ 1 file changed, 214 insertions(+), 10 deletions(-)
+NOTE (measured, not inferred): the test file ALSO changed between the baseline and HEAD
+(=-count both probe and test changed), so this diffstat alone does NOT say which of the two
+flipped the verdict. The isolation experiment below (probe-only revert) answers that.
+
+=== diffstat of the PROBE file baseline..HEAD ===
+ cmd/agent/daemon_userbus_probe.go | 174 ++++++++++++++++++++++++++++++++++----
+ 1 file changed, 159 insertions(+), 15 deletions(-)
+
+=== the fix's own body (first 40 lines of the diff) ===
+commit 0f9840c685f691b8bccb6bd1cd11f4afb262e5b9
+Author: user <user@example.com>
+Date:   Mon Oct 12 05:10:57 2026 +0800
+
+    fix(daemon): fold every /proc/net/unix row for a path — one connect() puts a client row first
+    
+    The unlinked-yet-bound positive control (TestUserBusProbe_RealUnlinkedSocketIsDetected)
+    failed on this host: observeUserBusPath reported listen=false, inode=0 for a socket
+    that was bound and listening at an unlinked path.
+    
+    Neither candidate cause held. A raw /proc/net/unix dump around the unlink
+    (session dir, tmpfs and block device) shows the row SURVIVES the unlink with its
+    inode unchanged, and the field indices (St=5, Inode=6, Path=7) are right for the
+    row shape this kernel emits — field[0] is the row's address LABEL, so the columns
+    sit one position right of proc(5)'s header, and the path landing at [7] is how you
+    tell. The defect was the LOOKUP, not the table:
+    
+      the kernel copies the bound path into EVERY AF_UNIX socket's address
+      (unix_mkname), so ONE client connect() renders a SECOND row for the same path —
+      St=02, Inode=0, the client's socket object — and emits it FIRST. A scan that
+      returned at the first matching row described the CLIENT. observeUserBusPath
+      dials, so the client row existed before the unlink.
+    
+    userBusKernelBinding now scans the whole table and folds it (userBusFoldUnixRows,
+    pure): bound is set by the LISTENing row wherever it sits, that row's inode is
+    reported, and the row count is kept as evidence. Two adjacent repairs: an
+    unreadable table is an error classified unknown instead of reading as 'nothing is
+    bound' (Rule 15), and the fixture's socket path is checked against sun_path (108)
+    with bind's EINVAL distinguished from the filesystem's — on a suite root under
+    /run/user the nested names reached exactly 108 bytes and bind answered EINVAL.
+    
+    Tests: the live control now connects a client and holds it across the unlink,
+    proving >1 row carries the path; the fold's order-independence is a pure test over
+    verbatim rows (the kernel picks the order, so the dangerous one is exercised as
+    values); an unreadable table classifies unknown, not fault.
+    
+    Verified on both roots (tmpfs suite root and /run/user/1000): PASS. The same
+    invocation on the unmodified baseline FAILS, so the pass is attributable.
+
+diff --git a/cmd/agent/daemon_userbus_probe.go b/cmd/agent/daemon_userbus_probe.go
+index 40ee1d337..c753c5859 100644
+--- a/cmd/agent/daemon_userbus_probe.go
++++ b/cmd/agent/daemon_userbus_probe.go
+@@ -157,6 +157,24 @@ const (
+ 	// /proc/net/unix row. Zero-based and named, so the parser cannot drift from
+
+=== F. isolation attempt (probe-only revert) and why it cannot isolate ===
+HEAD tree, cmd/agent/daemon_userbus_probe.go replaced by 71543117d's blob (40ee1d337...),
+test file left at HEAD's blob (138d75b5...).
+result: BUILD FAILED (12 errors) — the fix changed BOTH the struct (found/bound/rows)
+and the signature (userBusKernelBinding: (binding,bool) -> (binding,error)), so neither half reverts alone.
+log: evidence/isolation-probe-reverted.log
+
+=== G. what the A/B rests on (measured) ===
+same host, same invocation, two trees, opposite verdicts:
+  HEAD d3cdb619a  : 30/30 PASS  (evidence/head-count30-verbose.log)
+  base 71543117d  : 10/10 FAIL  (evidence/prefix-71543117d-count10.log)
+0f9840c68 is the only commit between them that touches cmd/agent/daemon_userbus_probe.go:
+0f9840c68 fix(daemon): fold every /proc/net/unix row for a path — one connect() puts a client row first

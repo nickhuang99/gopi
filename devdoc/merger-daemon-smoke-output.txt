@@ -1,0 +1,48 @@
+### 1. gopi merger -h (zero side effects)
+GoPi merger — the branch-merge DAEMON (a resident server-side service).
+
+TOP-LEVEL BECAUSE IT IS A SERVICE: the merger is an independent resident
+process, the peer of 'gopi worker'. It claims no tasks and runs no tasks —
+it merges branches. 'gopi worker' (which claims and runs tasks) is top-level
+exit=0
+lock exists after -h? NO
+
+### 2. foreground --once (unchanged semantics)
+[serve] [adopt] skipped: worktree dirty (adoption refuses a dirty tree)
+[merger] [repos] no configured repos in settings repos table — nothing to sweep
+[merger] --once: single pass done
+once-exit=0
+
+### 3. --daemon returns promptly
+out: gopi merger: starting a detached merger daemon (--every 5m)
+merger daemon started: pid 965014, log /home/user/e2e-mergerdaemon/.gopi/logs/merger.log
+daemon-exit=0 wall=.344123672s
+parsed pid=965014
+ps:  965014       1  965014  965014 Ssl  gopi-merger merger --every 5m
+
+### 4. second --once refused (foreground face)
+gopi merger: another merge daemon is already running (lock /home/user/e2e-mergerdaemon/.gopi/serve.lock held by pid 965014) — refusing double-serve: two mergers (or a legacy `task serve`) never double-merge
+second-once-exit=1
+
+### 5. second --daemon refused, non-silent
+gopi merger: daemon start failed: another merge daemon is already running (lock /home/user/e2e-mergerdaemon/.gopi/serve.lock held by pid 965014) — refusing double-serve: two mergers (or a legacy `task serve`) never double-merge
+second-daemon-exit=1
+
+### 6. deprecated alias still works + says so
+gopi task merger: deprecated alias — the merge daemon is now the top-level `gopi merger` (see `gopi merger -h`)
+gopi task merger: another merge daemon is already running (lock /home/user/e2e-mergerdaemon/.gopi/serve.lock held by pid 965014) — refusing double-serve: two mergers (or a legacy `task serve`) never double-merge
+alias-once-exit=1
+               a failed verify verdict reissues rework as a NEW task (the
+               judged row stays terminal — reopened is retired, M4.20-B).
+alias-daemon-exit=1
+
+### 7. daemon log (last 12 lines)
+[serve] [adopt] skipped: worktree dirty (adoption refuses a dirty tree)
+[merger] [repos] no configured repos in settings repos table — nothing to sweep
+[merger] pass start 06:52:50
+[merger] [repos] no configured repos in settings repos table — nothing to sweep
+[merger] sleeping 5m0s
+log lines: 5
+
+### 8. stop the daemon by EXPLICIT pid (never pkill)
+alive after TERM? NO

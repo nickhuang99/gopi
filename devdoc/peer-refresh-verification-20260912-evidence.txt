@@ -1,0 +1,95 @@
+# Raw evidence appendix — hp-refresh verification 01a0957a-a135-7eff-b6e0-fefe4f6c60df
+
+Verifier session, 2026-09-12. Captured files live under /tmp/vh-verify/.
+
+## A. worktree + build + fmt + tests (job.log)
+```
+=== worktree add ===
+Preparing worktree (new branch 'verify/hp-refresh-01a0957a')
+Updating files:  98% (1751/1779)Updating files:  99% (1762/1779)Updating files: 100% (1779/1779)Updating files: 100% (1779/1779), done.
+HEAD is now at 0244f3d1 Merge branch 'feat/hp-refresh-master-20260912'
+WT_RC=0
+=== HEAD ===
+0244f3d1 Merge branch 'feat/hp-refresh-master-20260912'
+go version go1.24.5 linux/amd64
+=== gofmt on touched files ===
+GOFMT_RC=0
+=== build ./... ===
+BUILD_RC=0
+=== build bin/gopi ===
+BINBUILD_RC=0
+=== marker strings in locally built binary ===
+guardmsg=1  epicliteral=0  logroot=2
+=== tests: internal/config internal/tools cmd/agent ===
+TEST_RC=0
+1601
+0
+8
+=== testutil (hp launchers) ===
+TESTUTIL_RC=0
+    --- PASS: TestHpWorkerLaunchersDryRunStartsNothing/scripts/hp/hp-worker-nightsafe.sh (0.03s)
+PASS
+ok  	github.com/the operator/gopi/internal/testutil	0.388s
+=== DONE ===
+```
+
+## B. test package results + tail (tests.log)
+```
+ok  	github.com/the operator/gopi/internal/config	0.353s
+ok  	github.com/the operator/gopi/internal/tools	428.657s
+ok  	github.com/the operator/gopi/cmd/agent	244.899s
+PASS
+ok  	github.com/the operator/gopi/cmd/agent	244.899s
+PASS=1601 FAIL=0 SKIP=8
+```
+
+## C. skipped tests (pre-existing, not de-skipped)
+```
+--- SKIP: TestM421RollbackProbe (0.00s)
+--- SKIP: TestM421AcquireProbe (0.00s)
+--- SKIP: TestM421CollisionProbe (0.00s)
+--- SKIP: TestHelperWorktreeCwdHolder (0.00s)
+--- SKIP: TestMergeBacklogDedupe_LegacyLedgerReplay (0.00s)
+--- SKIP: TestZZWorktreeRecycleLiveDiag (0.00s)
+--- SKIP: TestServeLockHolderHelperProcess (0.00s)
+--- SKIP: TestHelperRecycleCwdHolder (0.00s)
+```
+
+## D. pre-fix worktree (0f66d175) build + markers (prefix.log)
+```
+Preparing worktree (detached HEAD 0f66d175)
+HEAD is now at 0f66d175 docs(night): overnight update — computer-use closure verified + worker setsid root-cause fix
+WT_RC=0
+=== pre-fix HEAD ===
+0f66d175 docs(night): overnight update — computer-use closure verified + worker setsid root-cause fix
+=== do the two fix files exist pre-fix? ===
+ls: cannot access 'internal/config/agentguard.go': No such file or directory
+ls: cannot access 'internal/tools/worker_output.go': No such file or directory
+=== build pre-fix binary ===
+PREFIX_BUILD_RC=0
+=== pre-fix binary markers ===
+guardmsg=0  epicLiteral=0  logroot=0
+PREFIX_JOB_DONE
+```
+
+## E. standards gate
+```
+ok  	github.com/the operator/gopi/internal/standards	5.615s
+STANDARDS_RC=0
+--- SKIP: TestHelperRecycleCwdHolder (0.00s)
+--- SKIP: TestHelperWorktreeCwdHolder (0.00s)
+--- SKIP: TestM421AcquireProbe (0.00s)
+--- SKIP: TestM421CollisionProbe (0.00s)
+--- SKIP: TestM421RollbackProbe (0.00s)
+--- SKIP: TestMergeBacklogDedupe_LegacyLedgerReplay (0.00s)
+--- SKIP: TestServeLockHolderHelperProcess (0.00s)
+--- SKIP: TestZZWorktreeRecycleLiveDiag (0.00s)
+```
+
+## F. marker strings in the locally built binaries
+```
+/tmp/vh-verify/local-bin.strings:
+  epicLiteral(0) guardmsg(1) logroot(2)
+/tmp/vh-verify/prefix.strings:
+  epicLiteral(0) guardmsg(0) logroot(0)
+```

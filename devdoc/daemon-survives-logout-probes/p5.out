@@ -1,0 +1,365 @@
+### probe script: p5-namespace-rootcause.sh
+=== manager pid 2321: root link + mount namespace ===
+/
+mnt:[4026531841]
+mnt:[4026531841]
+mnt:[4026531841]
+=== stat: /run/user/1000 in OUR ns vs via the MANAGER's root ===
+59:1 /run/user/1000
+59:1 /proc/2321/root/run/user/1000
+=== the MANAGER's own view of /run/user/1000 ===
+total 16
+drwx------ 53 the operator the operator 1140 Sep 14 22:39 .
+drwxr-xr-x  4 root root   80 Sep 13 01:01 ..
+drwx------  2 the operator the operator   60 Sep 11 06:03 at-spi
+drwx------  2 the operator the operator   60 Sep 10 23:03 at-spi2-KBUQV3
+drwxrwxr-x  2 the operator the operator   40 Sep 13 05:38 ccache-tmp
+drwxr-xr-x  2 the operator the operator   40 Sep 14 22:38 daemoncwd-holder-fixtures
+drwx------  3 the operator the operator   60 Aug 27 07:18 dbus-1
+drwx------  2 the operator the operator   40 Sep 14 06:48 dconf
+dr-x------  2 the operator the operator    0 Jan  1  1970 doc
+drwxrwxr-x  3 the operator the operator   80 Sep 12 22:45 gopi-scratch-verify
+dr-x------  2 the operator the operator    0 Jul 15 21:44 gvfs
+drwx------  2 the operator the operator   40 Aug 27 07:18 gvfsd
+drwxrwxr-x  2 the operator the operator   40 Sep 14 22:32 mv-c
+drwxrwxr-x  6 the operator the operator  120 Sep 14 22:38 mv-d1
+drwxrwxr-x  6 the operator the operator  120 Sep 14 22:38 mv-d2
+drwxrwxr-x  8 the operator the operator  160 Sep 14 22:39 mv-di1
+drwxrwxr-x  8 the operator the operator  160 Sep 14 22:39 mv-di2
+drwxrwxr-x  8 the operator the operator  160 Sep 14 22:39 mv-di3
+drwxrwxr-x  8 the operator the operator  160 Sep 14 22:39 mv-di4
+drwxrwxr-x  2 the operator the operator   60 Sep 14 22:37 mv-h11
+drwxrwxr-x  2 the operator the operator   60 Sep 14 22:37 mv-h12
+drwxrwxr-x  2 the operator the operator   60 Sep 14 22:37 mv-h13
+drwxrwxr-x  2 the operator the operator   60 Sep 14 22:37 mv-h14
+drwxrwxr-x  2 the operator the operator   60 Sep 14 22:37 mv-h21
+drwxrwxr-x  2 the operator the operator   60 Sep 14 22:37 mv-h22
+drwxrwxr-x  2 the operator the operator   60 Sep 14 22:37 mv-h23
+drwxrwxr-x  2 the operator the operator   60 Sep 14 22:37 mv-h24
+drwxrwxr-x  2 the operator the operator   60 Sep 14 22:37 mv-h31
+drwxrwxr-x  2 the operator the operator   60 Sep 14 22:37 mv-h32
+drwxrwxr-x  2 the operator the operator   60 Sep 14 22:37 mv-h33
+drwxrwxr-x  2 the operator the operator   60 Sep 14 22:37 mv-h34
+drwxrwxr-x  3 the operator the operator   60 Sep 14 22:13 mv-home
+drwxrwxr-x  8 the operator the operator  180 Sep 14 22:38 mv-i11
+drwxrwxr-x  8 the operator the operator  180 Sep 14 22:38 mv-i12
+drwxrwxr-x  8 the operator the operator  180 Sep 14 22:38 mv-i13
+drwxrwxr-x  8 the operator the operator  180 Sep 14 22:38 mv-i14
+drwxrwxr-x  8 the operator the operator  180 Sep 14 22:38 mv-i21
+drwxrwxr-x  8 the operator the operator  180 Sep 14 22:38 mv-i22
+drwxrwxr-x  8 the operator the operator  180 Sep 14 22:38 mv-i23
+drwxrwxr-x  8 the operator the operator  180 Sep 14 22:38 mv-i24
+drwxrwxr-x  8 the operator the operator  180 Sep 14 22:38 mv-i31
+drwxrwxr-x  8 the operator the operator  180 Sep 14 22:38 mv-i32
+drwxrwxr-x  8 the operator the operator  180 Sep 14 22:38 mv-i33
+drwxrwxr-x  8 the operator the operator  180 Sep 14 22:38 mv-i34
+drwxrwxr-x  2 the operator the operator  120 Sep 14 22:35 mv-p
+-rw-r--r--  1 the operator the operator  853 Sep 14 22:37 mv-run.sh
+-rw-r--r--  1 the operator the operator  881 Sep 14 22:38 mv-run2.sh
+-rw-r--r--  1 the operator the operator 1046 Sep 14 22:38 mv-run3.sh
+-rw-r--r--  1 the operator the operator  988 Sep 14 22:39 mv-run4.sh
+drwxrwxr-x  6 the operator the operator  120 Sep 14 22:38 mv-s
+drwxrwxr-x  3 the operator the operator   60 Sep 14 22:21 mv-scratch
+drwxrwxr-x  8 the operator the operator  160 Sep 14 22:39 mv-sh
+drwx------  2 the operator the operator   40 Aug 27 07:18 pulse
+drwx------  2 the operator the operator   40 Aug 29 13:53 snap.chromium
+drwx------  2 the operator the operator   40 Sep 10 23:11 snap.firefox
+drwx------  2 the operator the operator   40 Aug 23 13:00 snap.ollama
+drwxr-xr-x  3 the operator the operator   60 Sep 15 07:26 systemd
+=== the MANAGER's own view of /run/user/1000/systemd ===
+total 0
+drwxr-xr-x  3 the operator the operator   60 Sep 15 07:26 .
+drwx------ 53 the operator the operator 1140 Sep 14 22:39 ..
+drwxr-xr-x  3 the operator the operator  140 Sep 13 12:12 inaccessible
+=== dbus-daemon 2342's own view ===
+/
+total 16
+drwx------ 53 the operator the operator 1140 Sep 14 22:39 .
+drwxr-xr-x  4 root root   80 Sep 13 01:01 ..
+drwx------  2 the operator the operator   60 Sep 11 06:03 at-spi
+drwx------  2 the operator the operator   60 Sep 10 23:03 at-spi2-KBUQV3
+drwxrwxr-x  2 the operator the operator   40 Sep 13 05:38 ccache-tmp
+drwxr-xr-x  2 the operator the operator   40 Sep 14 22:38 daemoncwd-holder-fixtures
+drwx------  3 the operator the operator   60 Aug 27 07:18 dbus-1
+drwx------  2 the operator the operator   40 Sep 14 06:48 dconf
+dr-x------  2 the operator the operator    0 Jan  1  1970 doc
+drwxrwxr-x  3 the operator the operator   80 Sep 12 22:45 gopi-scratch-verify
+dr-x------  2 the operator the operator    0 Jul 15 21:44 gvfs
+drwx------  2 the operator the operator   40 Aug 27 07:18 gvfsd
+drwxrwxr-x  2 the operator the operator   40 Sep 14 22:32 mv-c
+drwxrwxr-x  6 the operator the operator  120 Sep 14 22:38 mv-d1
+drwxrwxr-x  6 the operator the operator  120 Sep 14 22:38 mv-d2
+drwxrwxr-x  8 the operator the operator  160 Sep 14 22:39 mv-di1
+drwxrwxr-x  8 the operator the operator  160 Sep 14 22:39 mv-di2
+drwxrwxr-x  8 the operator the operator  160 Sep 14 22:39 mv-di3
+drwxrwxr-x  8 the operator the operator  160 Sep 14 22:39 mv-di4
+drwxrwxr-x  2 the operator the operator   60 Sep 14 22:37 mv-h11
+drwxrwxr-x  2 the operator the operator   60 Sep 14 22:37 mv-h12
+drwxrwxr-x  2 the operator the operator   60 Sep 14 22:37 mv-h13
+drwxrwxr-x  2 the operator the operator   60 Sep 14 22:37 mv-h14
+drwxrwxr-x  2 the operator the operator   60 Sep 14 22:37 mv-h21
+drwxrwxr-x  2 the operator the operator   60 Sep 14 22:37 mv-h22
+drwxrwxr-x  2 the operator the operator   60 Sep 14 22:37 mv-h23
+drwxrwxr-x  2 the operator the operator   60 Sep 14 22:37 mv-h24
+drwxrwxr-x  2 the operator the operator   60 Sep 14 22:37 mv-h31
+drwxrwxr-x  2 the operator the operator   60 Sep 14 22:37 mv-h32
+drwxrwxr-x  2 the operator the operator   60 Sep 14 22:37 mv-h33
+drwxrwxr-x  2 the operator the operator   60 Sep 14 22:37 mv-h34
+drwxrwxr-x  3 the operator the operator   60 Sep 14 22:13 mv-home
+drwxrwxr-x  8 the operator the operator  180 Sep 14 22:38 mv-i11
+drwxrwxr-x  8 the operator the operator  180 Sep 14 22:38 mv-i12
+drwxrwxr-x  8 the operator the operator  180 Sep 14 22:38 mv-i13
+drwxrwxr-x  8 the operator the operator  180 Sep 14 22:38 mv-i14
+drwxrwxr-x  8 the operator the operator  180 Sep 14 22:38 mv-i21
+drwxrwxr-x  8 the operator the operator  180 Sep 14 22:38 mv-i22
+drwxrwxr-x  8 the operator the operator  180 Sep 14 22:38 mv-i23
+drwxrwxr-x  8 the operator the operator  180 Sep 14 22:38 mv-i24
+drwxrwxr-x  8 the operator the operator  180 Sep 14 22:38 mv-i31
+drwxrwxr-x  8 the operator the operator  180 Sep 14 22:38 mv-i32
+drwxrwxr-x  8 the operator the operator  180 Sep 14 22:38 mv-i33
+drwxrwxr-x  8 the operator the operator  180 Sep 14 22:38 mv-i34
+drwxrwxr-x  2 the operator the operator  120 Sep 14 22:35 mv-p
+-rw-r--r--  1 the operator the operator  853 Sep 14 22:37 mv-run.sh
+-rw-r--r--  1 the operator the operator  881 Sep 14 22:38 mv-run2.sh
+-rw-r--r--  1 the operator the operator 1046 Sep 14 22:38 mv-run3.sh
+-rw-r--r--  1 the operator the operator  988 Sep 14 22:39 mv-run4.sh
+drwxrwxr-x  6 the operator the operator  120 Sep 14 22:38 mv-s
+drwxrwxr-x  3 the operator the operator   60 Sep 14 22:21 mv-scratch
+drwxrwxr-x  8 the operator the operator  160 Sep 14 22:39 mv-sh
+drwx------  2 the operator the operator   40 Aug 27 07:18 pulse
+drwx------  2 the operator the operator   40 Aug 29 13:53 snap.chromium
+drwx------  2 the operator the operator   40 Sep 10 23:11 snap.firefox
+drwx------  2 the operator the operator   40 Aug 23 13:00 snap.ollama
+drwxr-xr-x  3 the operator the operator   60 Sep 15 07:26 systemd
+=== OUR view (comparison) ===
+total 16
+drwx------ 53 the operator the operator 1140 Sep 14 22:39 .
+drwxr-xr-x  4 root root   80 Sep 13 01:01 ..
+drwx------  2 the operator the operator   60 Sep 11 06:03 at-spi
+drwx------  2 the operator the operator   60 Sep 10 23:03 at-spi2-KBUQV3
+drwxrwxr-x  2 the operator the operator   40 Sep 13 05:38 ccache-tmp
+drwxr-xr-x  2 the operator the operator   40 Sep 14 22:38 daemoncwd-holder-fixtures
+drwx------  3 the operator the operator   60 Aug 27 07:18 dbus-1
+drwx------  2 the operator the operator   40 Sep 14 06:48 dconf
+dr-x------  2 the operator the operator    0 Jan  1  1970 doc
+drwxrwxr-x  3 the operator the operator   80 Sep 12 22:45 gopi-scratch-verify
+dr-x------  2 the operator the operator    0 Jul 15 21:44 gvfs
+drwx------  2 the operator the operator   40 Aug 27 07:18 gvfsd
+drwxrwxr-x  2 the operator the operator   40 Sep 14 22:32 mv-c
+drwxrwxr-x  6 the operator the operator  120 Sep 14 22:38 mv-d1
+drwxrwxr-x  6 the operator the operator  120 Sep 14 22:38 mv-d2
+drwxrwxr-x  8 the operator the operator  160 Sep 14 22:39 mv-di1
+drwxrwxr-x  8 the operator the operator  160 Sep 14 22:39 mv-di2
+drwxrwxr-x  8 the operator the operator  160 Sep 14 22:39 mv-di3
+drwxrwxr-x  8 the operator the operator  160 Sep 14 22:39 mv-di4
+drwxrwxr-x  2 the operator the operator   60 Sep 14 22:37 mv-h11
+drwxrwxr-x  2 the operator the operator   60 Sep 14 22:37 mv-h12
+drwxrwxr-x  2 the operator the operator   60 Sep 14 22:37 mv-h13
+drwxrwxr-x  2 the operator the operator   60 Sep 14 22:37 mv-h14
+drwxrwxr-x  2 the operator the operator   60 Sep 14 22:37 mv-h21
+drwxrwxr-x  2 the operator the operator   60 Sep 14 22:37 mv-h22
+drwxrwxr-x  2 the operator the operator   60 Sep 14 22:37 mv-h23
+drwxrwxr-x  2 the operator the operator   60 Sep 14 22:37 mv-h24
+drwxrwxr-x  2 the operator the operator   60 Sep 14 22:37 mv-h31
+drwxrwxr-x  2 the operator the operator   60 Sep 14 22:37 mv-h32
+drwxrwxr-x  2 the operator the operator   60 Sep 14 22:37 mv-h33
+drwxrwxr-x  2 the operator the operator   60 Sep 14 22:37 mv-h34
+drwxrwxr-x  3 the operator the operator   60 Sep 14 22:13 mv-home
+drwxrwxr-x  8 the operator the operator  180 Sep 14 22:38 mv-i11
+drwxrwxr-x  8 the operator the operator  180 Sep 14 22:38 mv-i12
+drwxrwxr-x  8 the operator the operator  180 Sep 14 22:38 mv-i13
+drwxrwxr-x  8 the operator the operator  180 Sep 14 22:38 mv-i14
+drwxrwxr-x  8 the operator the operator  180 Sep 14 22:38 mv-i21
+drwxrwxr-x  8 the operator the operator  180 Sep 14 22:38 mv-i22
+drwxrwxr-x  8 the operator the operator  180 Sep 14 22:38 mv-i23
+drwxrwxr-x  8 the operator the operator  180 Sep 14 22:38 mv-i24
+drwxrwxr-x  8 the operator the operator  180 Sep 14 22:38 mv-i31
+drwxrwxr-x  8 the operator the operator  180 Sep 14 22:38 mv-i32
+drwxrwxr-x  8 the operator the operator  180 Sep 14 22:38 mv-i33
+drwxrwxr-x  8 the operator the operator  180 Sep 14 22:38 mv-i34
+drwxrwxr-x  2 the operator the operator  120 Sep 14 22:35 mv-p
+-rw-r--r--  1 the operator the operator  853 Sep 14 22:37 mv-run.sh
+-rw-r--r--  1 the operator the operator  881 Sep 14 22:38 mv-run2.sh
+-rw-r--r--  1 the operator the operator 1046 Sep 14 22:38 mv-run3.sh
+-rw-r--r--  1 the operator the operator  988 Sep 14 22:39 mv-run4.sh
+drwxrwxr-x  6 the operator the operator  120 Sep 14 22:38 mv-s
+drwxrwxr-x  3 the operator the operator   60 Sep 14 22:21 mv-scratch
+drwxrwxr-x  8 the operator the operator  160 Sep 14 22:39 mv-sh
+drwx------  2 the operator the operator   40 Aug 27 07:18 pulse
+drwx------  2 the operator the operator   40 Aug 29 13:53 snap.chromium
+drwx------  2 the operator the operator   40 Sep 10 23:11 snap.firefox
+drwx------  2 the operator the operator   40 Aug 23 13:00 snap.ollama
+drwxr-xr-x  3 the operator the operator   60 Sep 15 07:26 systemd
+=== systemd's unit files for the runtime dir + user manager ===
+--- /usr/lib/systemd/system/user-runtime-dir@.service ---
+#  SPDX-License-Identifier: LGPL-2.1-or-later
+#
+#  This file is part of systemd.
+#
+#  systemd is free software; you can redistribute it and/or modify it
+#  under the terms of the GNU Lesser General Public License as published by
+#  the Free Software Foundation; either version 2.1 of the License, or
+#  (at your option) any later version.
+
+[Unit]
+Description=User Runtime Directory /run/user/%i
+Documentation=man:user@.service(5)
+After=systemd-user-sessions.service dbus.service
+StopWhenUnneeded=yes
+IgnoreOnIsolate=yes
+
+[Service]
+ExecStart=/lib/systemd/systemd-user-runtime-dir start %i
+ExecStop=/lib/systemd/systemd-user-runtime-dir stop %i
+Type=oneshot
+RemainAfterExit=yes
+Slice=user-%i.slice
+--- /usr/lib/systemd/system/user@.service ---
+#  SPDX-License-Identifier: LGPL-2.1-or-later
+#
+#  This file is part of systemd.
+#
+#  systemd is free software; you can redistribute it and/or modify it
+#  under the terms of the GNU Lesser General Public License as published by
+#  the Free Software Foundation; either version 2.1 of the License, or
+#  (at your option) any later version.
+
+[Unit]
+Description=User Manager for UID %i
+Documentation=man:user@.service(5)
+After=systemd-user-sessions.service user-runtime-dir@%i.service dbus.service
+Requires=user-runtime-dir@%i.service
+IgnoreOnIsolate=yes
+
+[Service]
+User=%i
+PAMName=systemd-user
+Type=notify
+ExecStart=/lib/systemd/systemd --user
+Slice=user-%i.slice
+KillMode=mixed
+Delegate=pids memory
+TasksMax=infinity
+TimeoutStopSec=120s
+KeyringMode=inherit
+=== drop-ins ===
+ls: cannot access '/etc/systemd/system/user@.service.d/': No such file or directory
+/usr/lib/systemd/system/user@.service.d/:
+total 48
+drwxr-xr-x  2 root root  4096 Jun 11  2025 .
+drwxr-xr-x 28 root root 36864 Sep 14 06:46 ..
+-rw-r--r--  1 root root   125 Feb 19  2025 timeout.conf
+=== dbus user units present on this host ===
+ls: cannot access '/usr/lib/systemd/user/dbus-broker.socket': No such file or directory
+-rw-r--r-- 1 root root 360 Oct 25  2022 /usr/lib/systemd/user/dbus.service
+-rw-r--r-- 1 root root 174 Oct 25  2022 /usr/lib/systemd/user/dbus.socket
+=== systemctl status user-runtime-dir@1000.service (system bus) ===
+* user-runtime-dir@1000.service - User Runtime Directory /run/user/1000
+     Loaded: loaded (/lib/systemd/system/user-runtime-dir@.service; static)
+     Active: active (exited) since Wed 2026-07-15 21:44:21 CST; 2 months 0 days ago
+       Docs: man:user@.service(5)
+   Main PID: 2320 (code=exited, status=0/SUCCESS)
+        CPU: 5ms
+
+Notice: journal has been rotated since unit was started, output may be incomplete.
+-----
+=== systemctl status user@1000.service ===
+* user@1000.service - User Manager for UID 1000
+     Loaded: loaded (/lib/systemd/system/user@.service; static)
+    Drop-In: /usr/lib/systemd/system/user@.service.d
+             `-timeout.conf
+     Active: active (running) since Wed 2026-07-15 21:44:22 CST; 2 months 0 days ago
+       Docs: man:user@.service(5)
+   Main PID: 2321 (systemd)
+     Status: "Startup finished in 19.319s."
+      Tasks: 216
+     Memory: 366.1M
+        CPU: 2d 20h 54min 3.910s
+     CGroup: /user.slice/user-1000.slice/user@1000.service
+             |-app.slice
+             | |-app-tigervncserver.slice
+             | | `-tigervncserver@:1.service
+             | |   |-  2401 /usr/bin/perl /usr/bin/tigervncserver :1 -geometry 1600x900 -depth 24 -localhost no -rfbport 5900
+             | |   |-  2402 /usr/bin/Xtigervnc :1 -NeverShared=0 -AlwaysShared=1 -localhost=0 -desktop "peer1:1 (the operator)" -rfbport 5900 -PasswordFile /home/user/.vnc/passwd -SecurityTypes VncAuth,TLSVnc -auth /home/user/.Xauthority -geometry 1600x900 -depth 24
+             | |   |-  2407 xfce4-session
+             | |   |-  2417 dbus-launch --exit-with-session startxfce4
+             | |   |-  2418 /usr/bin/dbus-daemon --syslog --fork --print-pid 5 --print-address 7 --session
+=== logind record ===
+Timestamp=Wed 2026-07-15 21:44:21 CST
+RuntimePath=/run/user/1000
+Service=user@1000.service
+Slice=user-1000.slice
+State=active
+Linger=yes
+=== journal (this boot): user-runtime-dir@1000 / user@1000 ===
+Sep 12 16:00:26 peer1 kernel: cgroup: fork rejected by pids controller in /user.slice/user-1000.slice/user@1000.service/init.scope
+Sep 12 16:05:03 peer1 kernel: cgroup: fork rejected by pids controller in /user.slice/user-1000.slice/user@1000.service/app.slice/global-scheduler.service
+Sep 12 16:05:18 peer1 kernel: cgroup: fork rejected by pids controller in /user.slice/user-1000.slice/user@1000.service/app.slice/app-tigervncserver.slice/tigervncserver@:1.service
+Sep 12 16:24:31 peer1 kernel: cgroup: fork rejected by pids controller in /user.slice/user-1000.slice/user@1000.service/app.slice/memory-global-scheduler.service
+=== journal: the Sep 14 22:39:10 window (the /run/user/1000 mtime) ===
+Sep 14 22:39:27 peer1 global-scheduler[1339266]:   ⚠ task_type_defaults.implementation.min_interval_min: DEFAULT_CONFIG=20 but scheduler.json=1 — fallback would use 20
+Sep 14 22:39:27 peer1 global-scheduler[1339266]:   ⚠ task_type_defaults.implementation.cooldown_after_run: DEFAULT_CONFIG=5 but scheduler.json=0 — fallback would use 5
+Sep 14 22:39:27 peer1 global-scheduler[1339266]:   ⚠ task_type_defaults.implementation.min_interval_min: scheduler.json=1 but opc_task_utils.py=20 — agents submit with 20, scheduler enforces 1
+Sep 14 22:39:27 peer1 global-scheduler[1339266]:   ⚠ task_type_defaults.implementation.cooldown_after_run: scheduler.json=0 but opc_task_utils.py=5 — agents submit with 5, scheduler enforces 0
+Sep 14 22:39:27 peer1 global-scheduler[1339266]:   ⚠ task_type_defaults.reflection.min_interval_min: DEFAULT_CONFIG=60 but scheduler.json=1 — fallback would use 60
+Sep 14 22:39:27 peer1 systemd[2321]: memory-global-scheduler.service: Unit process 1339302 (bash) remains running after unit stopped.
+Sep 14 22:39:27 peer1 global-scheduler[1339266]:   ⚠ task_type_defaults.reflection.cooldown_after_run: DEFAULT_CONFIG=60 but scheduler.json=0 — fallback would use 60
+Sep 14 22:39:27 peer1 global-scheduler[1339266]:   ⚠ task_type_defaults.reflection.max_runtime_min: DEFAULT_CONFIG=20 but scheduler.json=15 — fallback would use 20
+Sep 14 22:39:27 peer1 global-scheduler[1339266]:   ⚠ task_type_defaults.reflection.min_interval_min: scheduler.json=1 but opc_task_utils.py=60 — agents submit with 60, scheduler enforces 1
+Sep 14 22:39:27 peer1 global-scheduler[1339266]:   ⚠ task_type_defaults.reflection.cooldown_after_run: scheduler.json=0 but opc_task_utils.py=60 — agents submit with 60, scheduler enforces 0
+Sep 14 22:39:27 peer1 global-scheduler[1339266]:   ⚠ task_type_defaults.reflection.max_runtime_min: scheduler.json=15 but opc_task_utils.py=20 — agents submit with 20, scheduler enforces 15
+Sep 14 22:39:27 peer1 global-scheduler[1339266]:   ⚠ task_type_defaults.research.min_interval_min: DEFAULT_CONFIG=30 but scheduler.json=1 — fallback would use 30
+Sep 14 22:39:27 peer1 global-scheduler[1339266]:   ⚠ task_type_defaults.research.max_concurrent: DEFAULT_CONFIG=3 but scheduler.json=1 — fallback would use 3
+Sep 14 22:39:27 peer1 global-scheduler[1339266]:   ⚠ task_type_defaults.research.cooldown_after_run: DEFAULT_CONFIG=10 but scheduler.json=0 — fallback would use 10
+Sep 14 22:39:27 peer1 global-scheduler[1339266]:   ⚠ task_type_defaults.research.exclusive_mode: DEFAULT_CONFIG=False but scheduler.json=True — fallback would use False
+Sep 14 22:39:27 peer1 global-scheduler[1339266]:   ⚠ task_type_defaults.research.min_interval_min: scheduler.json=1 but opc_task_utils.py=30 — agents submit with 30, scheduler enforces 1
+Sep 14 22:39:27 peer1 global-scheduler[1339266]:   ⚠ task_type_defaults.research.max_concurrent: scheduler.json=1 but opc_task_utils.py=3 — agents submit with 3, scheduler enforces 1
+Sep 14 22:39:27 peer1 global-scheduler[1339266]:   ⚠ task_type_defaults.research.cooldown_after_run: scheduler.json=0 but opc_task_utils.py=10 — agents submit with 10, scheduler enforces 0
+Sep 14 22:39:27 peer1 global-scheduler[1339266]:   ⚠ task_type_defaults.research.exclusive_mode: scheduler.json=True but opc_task_utils.py=False — agents submit with False, scheduler enforces True
+Sep 14 22:39:27 peer1 global-scheduler[1339266]: [CONFIG-CHECK] scheduler.json takes priority; no runtime change. Consider syncing DEFAULT_CONFIG in global-scheduler to match.
+Sep 14 22:39:27 peer1 global-scheduler[1339266]: [OPC SCHEDULER] Tick 2026-09-14T14:39:25.196098+00:00 (dry_run=False)
+Sep 14 22:39:27 peer1 global-scheduler[1339266]: [LINT] ✅ Agent scripts clean — no quoting violations
+Sep 14 22:39:27 peer1 global-scheduler[1339266]: [ZOMBIE] Drain resolved — effective_pending=1
+Sep 14 22:39:27 peer1 systemd[2321]: memory-global-scheduler.service: Unit process 1339304 (python3) remains running after unit stopped.
+Sep 14 22:39:27 peer1 global-scheduler[1339266]: [DRAIN] Drain resolved — effective_pending=1, pending=1, in_progress=0
+Sep 14 22:39:27 peer1 global-scheduler[1339266]: [ELIGIBLE] 1 tasks
+Sep 14 22:39:27 peer1 global-scheduler[1339266]:   1. opc-e001 [epic] P3: System Health Maintenance Epic (Living Epic)
+Sep 14 22:39:27 peer1 global-scheduler[1339266]: [DISPATCH] opc-e001 [epic] P3: System Health Maintenance Epic (Living Epic)
+Sep 14 22:39:27 peer1 global-scheduler[1339266]: [DOMAIN] Warning: profile 'data/domain_profile.json' for prefix 'opc' not found, falling back to default
+Sep 14 22:39:27 peer1 global-scheduler[1339266]: [STARTED] opc-e001 PID=1339283 start=527436625 (async)
+Sep 14 22:39:27 peer1 global-scheduler[1339266]: [LIVING_EPIC] 🔄 opc-e001: dispatch complete, reset to pending (min_interval=120min enforced via last_run=2026-09-14T14:39:25)
+Sep 14 22:39:27 peer1 global-scheduler[1339266]: [WATCHDOG] ⛔ Blocked by RegenerationCoordinator: Cannot skip from Tier 0 to Tier 2; must escalate through Tier 1 first
+Sep 14 22:39:27 peer1 global-scheduler[1339266]: [HEAT_RISK] 🟡 Risk=0.3000 Level=YELLOW Trend=— (pending:0.300, deficit:0.000, idle:0.000, fuses:0.000)
+Sep 14 22:39:27 peer1 global-scheduler[1339266]: [INELIGIBILITY] Task opc-e001 recovered — was stuck for 81 ticks, now dispatched/eligible
+Sep 14 22:39:27 peer1 global-scheduler[1339266]: [COMPLETE] Dispatched 1, pool: {'pending': 1, 'in_progress': 0, 'completed': 261, 'blocked': 9}
+Sep 14 22:39:27 peer1 systemd[2321]: Finished Memory Self-Loop: 智能体自主记忆体系.
+Sep 14 22:39:27 peer1 systemd[2321]: Starting Ollama live runner replay shift (zero paid token)...
+Sep 14 22:39:27 peer1 systemd[2321]: Finished Ollama live runner replay shift (zero paid token).
+Sep 14 22:39:35 peer1 org.xfce.ScreenSaver[2586]: Xlib:  extension "DPMS" missing on display ":1".
+Sep 14 22:39:50 peer1 org.xfce.ScreenSaver[2586]: Xlib:  extension "DPMS" missing on display ":1".
+=== boot time vs now ===
+2026-07-15 21:33:20
+=== tmpfs mount entries for the runtime dir ===
+1760 28 0:59 / /run/user/1000 rw,nosuid,nodev,relatime shared:859 - tmpfs tmpfs rw,size=1621380k,nr_inodes=405345,mode=700,uid=1000,gid=1000,inode64
+1760 28 0:59 / /run/user/1000 rw,nosuid,nodev,relatime shared:859 - tmpfs tmpfs rw,size=1621380k,nr_inodes=405345,mode=700,uid=1000,gid=1000,inode64
+1797 1760 0:60 / /run/user/1000/gvfs rw,nosuid,nodev,relatime shared:954 - fuse.gvfsd-fuse gvfsd-fuse rw,user_id=1000,group_id=1000
+968 1760 0:57 / /run/user/1000/doc rw,nosuid,nodev,relatime shared:451 - fuse.portal portal rw,user_id=1000,group_id=1000
+799 28 0:48 / /run/user/117 rw,nosuid,nodev,relatime shared:154 - tmpfs tmpfs rw,size=1621380k,nr_inodes=405345,mode=700,uid=117,gid=123,inode64
+839 799 0:50 / /run/user/117/gvfs rw,nosuid,nodev,relatime shared:459 - fuse.gvfsd-fuse gvfsd-fuse rw,user_id=117,group_id=123
+=== notify socket / systemd dir present? ===
+total 0
+drwxr-xr-x  3 the operator the operator   60 Sep 15 07:26 .
+drwx------ 53 the operator the operator 1140 Sep 14 22:39 ..
+drwxr-xr-x  3 the operator the operator  140 Sep 13 12:12 inaccessible
+=== XDG_RUNTIME_DIR / DBUS_SESSION_BUS_ADDRESS as the MANAGER sees them ===
+XDG_RUNTIME_DIR=/run/user/1000
+=== /proc/net/unix entries for the two unlinked sockets ===
+0000000000000000: 00000002 00000000 00010000 0001 01 39144 /run/user/1000/systemd/private
+0000000000000000: 00000002 00000000 00010000 0001 01 40136 /run/user/1000/bus
+=== open fds of manager + dbus-daemon pointing at those inodes ===
+lrwx------ 1 the operator the operator 64 Sep 15 07:29 19 -> socket:[39144]
+lrwx------ 1 the operator the operator 64 Sep 15 07:29 27 -> socket:[40136]
+lrwx------ 1 the operator the operator 64 Sep 12 04:15 3 -> socket:[40136]
+=== sanity: does ANY process's filesystem view carry the path? (bounded sample) ===
+visible_in_any_process=0
+=== end p5 ===

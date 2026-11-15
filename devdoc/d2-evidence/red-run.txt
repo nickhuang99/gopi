@@ -1,0 +1,15 @@
+testutil: scratch GC removed 1 stale entry older than 6h0m0s
+--- FAIL: TestMergeBacklogTerminalGuard_RefusesUnmergedBranch (0.08s)
+    --- FAIL: TestMergeBacklogTerminalGuard_RefusesUnmergedBranch/completed (0.03s)
+        task_merge_backlog_terminal_guard_test.go:190: row d2-unmerged-completed reached completed with branch d2/unmerged provably ahead of master — the D2 guard is not refusing (reverted?)
+    --- FAIL: TestMergeBacklogTerminalGuard_RefusesUnmergedBranch/verified (0.01s)
+        task_merge_backlog_terminal_guard_test.go:190: row d2-unmerged-verified reached verified with branch d2/unmerged provably ahead of master — the D2 guard is not refusing (reverted?)
+--- FAIL: TestMergeBacklogTerminalGuard_RefusalIsRecorded (0.09s)
+    task_merge_backlog_terminal_guard_test.go:212: expected the guard to refuse completed on an unmerged branch
+--- FAIL: TestMergeBacklogTerminalGuard_D2ExactShape (0.11s)
+    task_merge_backlog_terminal_guard_test.go:375: row d2-exact-shape closed completed while archive/fix-memsync-import-atomic-20260901 is 1 commit ahead of master — the D2 defect verbatim (t-1788218295)
+--- FAIL: TestMergeBacklogTerminalGuard_SyncDoorRecordsInsteadOfRefusing (0.08s)
+    task_merge_backlog_terminal_guard_test.go:485: the sync door adopted a verified row for an unmerged branch with no merge-backlog-terminal-refused trail entry — this is exactly the silent write that produced t-1788218295
+FAIL
+FAIL	github.com/the operator/gopi/internal/tools	1.246s
+FAIL

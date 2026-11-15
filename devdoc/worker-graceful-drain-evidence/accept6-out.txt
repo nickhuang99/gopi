@@ -1,0 +1,47 @@
+<!-- WORKER-OWNERSHIP: OPERATOR-ONLY — devdoc/worker-ownership.md -->
+
+
+=== 2026-09-13T16:16:12+08:00 C) foreign (master) binary worker, task in flight, --restart from the NEW binary ===
+worker daemon started: pid 3253748, log /home/user/scratch/drain-accept/home6/.gopi/logs/worker.log
+grep: /home/user/scratch/drain-accept/home6/.gopi/worker/worker-state-3253748.json: No such file or directory
+old worker pid=3253748 version=  this CLI version=
+Task queued: drain-long-10 (status=pending, source=human, tags=—)
+round in flight: 
+gopi worker: asking pid 3253748 to finish the in-flight round and exit (stop request file, bound 10m0s)
+gopi worker: pid 3253748 runs a DIFFERENT binary than this command (worker 7c24ea065580, this dev) — requesting by FILE ONLY, no signal: a worker whose signal contract we cannot verify may forward the stop into the in-flight run child and kill the round this request exists to protect
+gopi worker: current state — pid 3253748, started 2026-09-13T08:16:12+00:00, rounds 0, binary 7c24ea065580, IN-FLIGHT round (started 2026-09-13T08:16:44+00:00), note: running drain-long-10
+gopi worker: nothing is signalled — the worker reads the request at its next loop tick, so the in-flight round finishes first
+gopi worker: pid 3253748 exited 11.021s after the graceful stop request
+gopi worker: WARNING: could not leave the login session scope (Failed to connect to bus: No such file or directory; in-process escape: cgroup scope escape unavailable: read /sys/fs/cgroup/user.slice/user-1000.slice/user@1000.service: open /sys/fs/cgroup/user.slice/user-1000.slice/user@1000.service: is a directory); starting with setsid only — this daemon WILL die when the session scope is torn down
+gopi worker: starting a detached worker daemon (idle wait 30s between rounds, self-exits after 3 idle round(s))
+gopi worker: cgroup escape: setsid-only (Failed to connect to bus: No such file or directory; in-process escape: cgroup scope escape unavailable: read /sys/fs/cgroup/user.slice/user-1000.slice/user@1000.service: open /sys/fs/cgroup/user.slice/user-1000.slice/user@1000.service: is a directory)
+worker daemon started: pid 3254285, log /home/user/scratch/drain-accept/home6/.gopi/logs/worker.log
+gopi worker: new daemon pid 3254285, binary dev (replaced pid 3253748, binary 7c24ea065580)
+C exit=0
+C: task drain-long-10 must be COMPLETED:
+status:         completed
+session_id:     4c0f70e2-bd7c-43a2-a11f-16d3e6ace190
+result:         gopi run completed — run: elapsed=1m12s — task-report: /home/user/scratch/drain-accept/home6/.gopi/sessions/drain-long-10/task-report.md (1822 bytes)
+worker daemon: alive
+lock file:   /home/user/scratch/drain-accept/home6/.gopi/worker.lock
+lock holder: pid 3254285
+state:       pid 3254285, started 2026-09-13T16:17:57+08:00, rounds 0, binary dev, idle since 2026-09-13T16:17:57+08:00, note: queue drained
+log:         /home/user/scratch/drain-accept/home6/.gopi/logs/worker.log
+state files: 1
+
+=== 2026-09-13T16:17:57+08:00 D) SAME-binary worker: the signal fast path must still be taken ===
+gopi worker: daemon start failed: another worker daemon is already running (lock /home/user/scratch/drain-accept/home6/.gopi/worker.lock held by pid 3254285) — refusing a second resident worker: run `gopi worker --status`, or `gopi worker --restart` to replace it (a FOREGROUND `gopi worker` is unaffected and needs no lock)
+grep: /home/user/scratch/drain-accept/home6/.gopi/worker/worker-state-3254285.json: No such file or directory
+worker pid=3254285 version=
+gopi worker: asking pid 3254285 to finish the in-flight round and exit (SIGTERM, bound 5m0s)
+gopi worker: current state — pid 3254285, started 2026-09-13T16:17:57+08:00, rounds 0, binary dev, idle since 2026-09-13T16:17:58+08:00, note: queue drained (1/3 idle rounds)
+gopi worker: could not record kill intent for pid 3254285: signalrec: session dir "/home/user/scratch/drain-accept/home6/.gopi/sessions/01a097bb-c937-7c3e-be68-4145388f68ae" for task 01a097bb-c937-7c3e-be68-4145388f68ae is missing or unusable — refusing to write (no public-dir fallback)
+gopi worker: pid 3254285 exited 1.001s after the graceful stop request
+D: SIGTERM arm lines = 1
+
+=== 2026-09-13T16:18:01+08:00 D) VERDICT: no daemon left ===
+worker daemon: not running
+lock file:   /home/user/scratch/drain-accept/home6/.gopi/worker.lock
+lock holder: pid 3254285  (stale: the process is gone; the lock is FREE)
+SCRIPT_EXIT=0
+SCRIPT_EXIT=0

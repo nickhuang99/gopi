@@ -1,0 +1,73 @@
+### probe script: p3-mechanisms.sh
+
+=== systemd-run --user --scope (the declarative escape) ===
+Failed to connect to bus: No such file or directory
+exit=1
+
+=== systemd-run --user --scope with explicit DBUS_SESSION_BUS_ADDRESS ===
+Failed to connect to bus: No such file or directory
+exit=1
+
+=== systemctl --user status ===
+Failed to connect to bus: No such file or directory
+exit=0
+
+=== busctl --user list ===
+Failed to connect to bus: No such file or directory
+exit=0
+
+=== systemd-run --scope (SYSTEM bus, no --user) — transient system scope ===
+Failed to start transient scope unit: Interactive authentication required.
+exit=1
+
+=== systemctl start of a transient unit (system bus, polkit path) — SKIPPED: a polkit-gated start can raise an interactive auth dialog on the operator's desktop; the systemd-run --scope probe above exercises the same privileged path ===
+
+=== loginctl enable-linger (already set?) and terminate-user (NOT run) ===
+linger state above; 'loginctl terminate-user the operator' deliberately NOT run (kills every session)
+
+=== cgroupfs: per-uid slice writability ===
+drwxr-xr-x 17 root root 0 Sep 15 05:30 /sys/fs/cgroup/user.slice/user-1000.slice
+test -w /sys/fs/cgroup/user.slice/user-1000.slice: NO
+
+=== access(2) W_OK on the common ancestor (what the kernel gates on) ===
+os.access(/sys/fs/cgroup/user.slice/user-1000.slice, W_OK) = False  exists=True
+os.access(/sys/fs/cgroup/user.slice/user-1000.slice/user@1000.service, W_OK) = True  exists=True
+os.access(/sys/fs/cgroup/user.slice/user-1000.slice/user@1000.service/cgroup.procs, W_OK) = True  exists=True
+os.access(/sys/fs/cgroup/user.slice/user-1000.slice/cgroup.procs, W_OK) = False  exists=True
+os.access(/sys/fs/cgroup/cgroup.procs, W_OK) = False  exists=True
+
+=== cgroupfs: the REAL migration attempt (mkdir + write own pid + fresh read) — transient, removed after ===
+mkdir /sys/fs/cgroup/user.slice/user-1000.slice/user@1000.service/gopi-probe-2863223
+mkdir exit=0
+drwxrwxr-x 2 the operator the operator 0 Sep 15 07:24 /sys/fs/cgroup/user.slice/user-1000.slice/user@1000.service/gopi-probe-2863223
+mkdir dir cgroup.procs mode:
+-rw-r--r-- 1 the operator the operator 0 Sep 15 07:24 /sys/fs/cgroup/user.slice/user-1000.slice/user@1000.service/gopi-probe-2863223/cgroup.procs
+echo $$ > /sys/fs/cgroup/user.slice/user-1000.slice/user@1000.service/gopi-probe-2863223/cgroup.procs
+sh: 1: echo: echo: I/O error
+write exit=1
+FRESH read /proc/self/cgroup (the only verdict):
+0::/user.slice/user-1000.slice/session-18257.scope
+rmdir /sys/fs/cgroup/user.slice/user-1000.slice/user@1000.service/gopi-probe-2863223
+rmdir exit=0
+
+=== cgroupfs: write own pid into the per-uid slice cgroup.procs (transient, must fail) ===
+sh: 1: cannot create /sys/fs/cgroup/user.slice/user-1000.slice/cgroup.procs: Permission denied
+write exit=2
+0::/user.slice/user-1000.slice/session-18257.scope
+
+=== unshare(CLONE_NEWCGROUP) ===
+unshare: unshare failed: Operation not permitted
+unshare -C exit=1
+
+=== sudo availability ===
+sudo present: /usr/bin/sudo
+sudo -n true exit=0
+
+=== setsid only (baseline: session leader, cgroup unchanged) ===
+setsid child: sid=2863247 cgroup=0::/user.slice/user-1000.slice/session-18257.scope
+
+=== nohup/disown are shell builtins with no cgroup effect (no probe possible: they only change SIGHUP/hupone) ===
+
+=== systemd-detect-virt / container? ===
+none
+exit=1

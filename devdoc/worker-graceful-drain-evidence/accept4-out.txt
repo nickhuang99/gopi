@@ -1,0 +1,43 @@
+<!-- WORKER-OWNERSHIP: OPERATOR-ONLY — devdoc/worker-ownership.md -->
+
+
+=== 2026-09-13T16:06:10+08:00 versions: OLD=7c24ea065580  NEW=dev ===
+
+=== 2026-09-13T16:06:10+08:00 start the worker daemon from the MASTER binary (the worker being replaced) ===
+worker daemon started: pid 3244029, log /home/user/scratch/drain-accept/home4/.gopi/logs/worker.log
+worker daemon: alive
+lock file:   /home/user/scratch/drain-accept/home4/.gopi/worker.lock
+lock holder: pid 3244029
+
+=== 2026-09-13T16:06:12+08:00 enqueue the long task and wait for its round to be in flight ===
+Task queued: drain-long-7 (status=pending, source=human, tags=—)
+round in flight: {"pid":3244029,"started":"2026-09-13T08:06:10+00:00","version":"7c24ea065580","rounds":0,"state":"busy","task_id":"drain-long-7","last_round_start":"2026-09-13T08:06:41+00:00","updated":"2026-09-13T08:06:41+00:00","note"
+
+=== 2026-09-13T16:06:42+08:00 RESTART with the branch binary (drains the master worker, spawns the new one) ===
+gopi worker: asking pid 3244029 to finish the in-flight round and exit (SIGTERM, bound 10m0s)
+gopi worker: current state — pid 3244029, started 2026-09-13T08:06:10+00:00, rounds 0, binary 7c24ea065580, IN-FLIGHT round (started 2026-09-13T08:06:41+00:00), note: running drain-long-7
+gopi worker: could not record kill intent for pid 3244029: signalrec: session dir "/home/user/scratch/drain-accept/home4/.gopi/sessions/01a097bb-c937-7c3e-be68-4145388f68ae" for task 01a097bb-c937-7c3e-be68-4145388f68ae is missing or unusable — refusing to write (no public-dir fallback)
+gopi worker: pid 3244029 exited 1.002s after the graceful stop request
+gopi worker: WARNING: could not leave the login session scope (Failed to connect to bus: No such file or directory; in-process escape: cgroup scope escape unavailable: read /sys/fs/cgroup/user.slice/user-1000.slice/user@1000.service: open /sys/fs/cgroup/user.slice/user-1000.slice/user@1000.service: is a directory); starting with setsid only — this daemon WILL die when the session scope is torn down
+gopi worker: starting a detached worker daemon (idle wait 30s between rounds, self-exits after 3 idle round(s))
+gopi worker: cgroup escape: setsid-only (Failed to connect to bus: No such file or directory; in-process escape: cgroup scope escape unavailable: read /sys/fs/cgroup/user.slice/user-1000.slice/user@1000.service: open /sys/fs/cgroup/user.slice/user-1000.slice/user@1000.service: is a directory)
+worker daemon started: pid 3245108, log /home/user/scratch/drain-accept/home4/.gopi/logs/worker.log
+gopi worker: new daemon pid 3245108, binary dev (replaced pid 3244029, binary 7c24ea065580)
+A exit=0
+
+=== 2026-09-13T16:06:43+08:00 VERDICT: exactly ONE daemon, running the CURRENT (branch) binary ===
+worker daemon: alive
+lock file:   /home/user/scratch/drain-accept/home4/.gopi/worker.lock
+lock holder: pid 3245108
+state:       pid 3245108, started 2026-09-13T16:06:43+08:00, rounds 0, binary dev, idle since 2026-09-13T16:06:43+08:00, note: queue drained
+log:         /home/user/scratch/drain-accept/home4/.gopi/logs/worker.log
+note:        a FOREGROUND `gopi worker` holds no lock and is not reported here (run one in the front to watch it)
+state files: 1
+old binary pid (should be gone): 
+
+=== 2026-09-13T16:06:43+08:00 task drain-long-7 must be completed (NOT failed by the restart) ===
+status:         failed
+session_id:     113f942b-b8ff-4383-9c94-7bc2454dd586
+result:         gopi run failed: exit status 1 — run: elapsed=0s — task-report: /home/user/scratch/drain-accept/home4/.gopi/sessions/drain-long-7/task-report.md (610 bytes)
+SCRIPT_EXIT=0
+SCRIPT_EXIT=0

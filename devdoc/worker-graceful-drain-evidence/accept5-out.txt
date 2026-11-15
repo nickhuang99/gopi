@@ -1,0 +1,52 @@
+<!-- WORKER-OWNERSHIP: OPERATOR-ONLY — devdoc/worker-ownership.md -->
+
+
+=== 2026-09-13T16:10:08+08:00 A) does the OLD binary consume the request file at all (idle worker)? ===
+worker daemon started: pid 3251002, log /home/user/scratch/drain-accept/home5/.gopi/logs/worker.log
+old worker pid=3251002  state=
+wrote /home/user/scratch/drain-accept/home5/.gopi/worker/TERM_3251002 (NO signal)
+A: the old binary consumed the FILE at its own tick and exited (no signal sent)
+
+=== 2026-09-13T16:10:13+08:00 B) restart the old binary; drain it MID-ROUND by file only, task must complete ===
+worker daemon started: pid 3251422, log /home/user/scratch/drain-accept/home5/.gopi/logs/worker.log
+old worker pid=3251422
+Task queued: drain-long-8 (status=pending, source=human, tags=—)
+round in flight: 
+wrote /home/user/scratch/drain-accept/home5/.gopi/worker/TERM_3251422 (NO signal, mid-round)
+B: old worker exited AFTER its round boundary
+B: task row:
+status:         completed
+session_id:     6730ba9e-66f5-43df-9595-5c0b7a41d64a
+result:         gopi run completed — run: elapsed=55s — task-report: /home/user/scratch/drain-accept/home5/.gopi/sessions/drain-long-8/task-report.md (1275 bytes)
+
+=== 2026-09-13T16:11:49+08:00 C) --restart from the NEW binary against a busier old-binary worker ===
+worker daemon started: pid 3252630, log /home/user/scratch/drain-accept/home5/.gopi/logs/worker.log
+grep: /home/user/scratch/drain-accept/home5/.gopi/worker/worker-state-3252630.json: No such file or directory
+old worker pid=3252630  version=
+Task queued: drain-long-9 (status=pending, source=human, tags=—)
+round in flight: 
+gopi worker: asking pid 3252630 to finish the in-flight round and exit (SIGTERM, bound 10m0s)
+gopi worker: current state — pid 3252630, started 2026-09-13T08:11:49+00:00, rounds 1, binary 7c24ea065580, idle since 2026-09-13T08:12:58+00:00, note: queue drained (1/3 idle rounds)
+gopi worker: could not record kill intent for pid 3252630: signalrec: session dir "/home/user/scratch/drain-accept/home5/.gopi/sessions/01a097bb-c937-7c3e-be68-4145388f68ae" for task 01a097bb-c937-7c3e-be68-4145388f68ae is missing or unusable — refusing to write (no public-dir fallback)
+gopi worker: pid 3252630 exited 1.001s after the graceful stop request
+gopi worker: WARNING: could not leave the login session scope (Failed to connect to bus: No such file or directory; in-process escape: cgroup scope escape unavailable: read /sys/fs/cgroup/user.slice/user-1000.slice/user@1000.service: open /sys/fs/cgroup/user.slice/user-1000.slice/user@1000.service: is a directory); starting with setsid only — this daemon WILL die when the session scope is torn down
+gopi worker: starting a detached worker daemon (idle wait 30s between rounds, self-exits after 3 idle round(s))
+gopi worker: cgroup escape: setsid-only (Failed to connect to bus: No such file or directory; in-process escape: cgroup scope escape unavailable: read /sys/fs/cgroup/user.slice/user-1000.slice/user@1000.service: open /sys/fs/cgroup/user.slice/user-1000.slice/user@1000.service: is a directory)
+worker daemon started: pid 3253033, log /home/user/scratch/drain-accept/home5/.gopi/logs/worker.log
+gopi worker: new daemon pid 3253033, binary dev (replaced pid 3252630, binary 7c24ea065580)
+C exit=0
+C: task drain-long-9 must be completed:
+status:         completed
+session_id:     9bffb8c0-e789-44d9-adc1-93ea66088c79
+result:         gopi run completed — run: elapsed=36s — task-report: /home/user/scratch/drain-accept/home5/.gopi/sessions/drain-long-9/task-report.md (610 bytes)
+
+=== 2026-09-13T16:13:24+08:00 C) VERDICT: exactly ONE daemon, on the NEW binary ===
+worker daemon: alive
+lock file:   /home/user/scratch/drain-accept/home5/.gopi/worker.lock
+lock holder: pid 3253033
+state:       pid 3253033, started 2026-09-13T16:13:24+08:00, rounds 0, binary dev, idle since 2026-09-13T16:13:24+08:00, note: queue drained
+log:         /home/user/scratch/drain-accept/home5/.gopi/logs/worker.log
+note:        a FOREGROUND `gopi worker` holds no lock and is not reported here (run one in the front to watch it)
+state files: 1
+SCRIPT_EXIT=0
+SCRIPT_EXIT=0

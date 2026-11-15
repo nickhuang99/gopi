@@ -1,0 +1,8 @@
+<!-- WORKER-OWNERSHIP: OPERATOR-ONLY — devdoc/worker-ownership.md -->
+
+gopi worker: asking pid 3201948 to finish the in-flight round and exit (SIGTERM, bound 10m0s)
+gopi worker: current state — pid 3201948, started 2026-09-13T15:50:52+08:00, rounds 0, binary dev, IN-FLIGHT round (started 2026-09-13T15:50:52+08:00), note: running drain-long-3
+gopi worker: could not record kill intent for pid 3201948: signalrec: session dir "/home/user/scratch/drain-accept/home/.gopi/sessions/01a097bb-c937-7c3e-be68-4145388f68ae" for task 01a097bb-c937-7c3e-be68-4145388f68ae is missing or unusable — refusing to write (no public-dir fallback)
+gopi worker: still working — pid 3201948, started 2026-09-13T15:50:52+08:00, rounds 0, binary dev, draining since 2026-09-13T15:50:54+08:00, IN-FLIGHT round (started 2026-09-13T15:50:52+08:00), note: stop request file /home/user/scratch/drain-accept/home/.gopi/worker/TERM_3201948
+gopi worker: a graceful stop never interrupts a round; to interrupt it, run `gopi worker --stop --force`
+gopi worker: pid 3201948 exited 52.58s after the graceful stop request

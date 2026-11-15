@@ -1,0 +1,259 @@
+### probe script: p2-userbus.sh
+
+=== stat $XDG_RUNTIME_DIR/bus ===
+stat: cannot statx '/run/user/1000/bus': No such file or directory
+
+=== stat $XDG_RUNTIME_DIR/systemd/private ===
+stat: cannot statx '/run/user/1000/systemd/private': No such file or directory
+
+=== ls -la $XDG_RUNTIME_DIR/systemd/ ===
+total 0
+drwxr-xr-x  3 the operator the operator   60 Sep 13 12:12 .
+drwx------ 53 the operator the operator 1140 Sep 14 22:39 ..
+drwxr-xr-x  3 the operator the operator  140 Sep 13 12:12 inaccessible
+
+=== ls -la $XDG_RUNTIME_DIR/ (full, alphabetical) ===
+total 16
+drwx------ 53 the operator the operator 1140 Sep 14 22:39 .
+drwxr-xr-x  4 root root   80 Sep 13 01:01 ..
+drwx------  2 the operator the operator   60 Sep 11 06:03 at-spi
+drwx------  2 the operator the operator   60 Sep 10 23:03 at-spi2-KBUQV3
+drwxrwxr-x  2 the operator the operator   40 Sep 13 05:38 ccache-tmp
+drwxr-xr-x  2 the operator the operator   40 Sep 14 22:38 daemoncwd-holder-fixtures
+drwx------  3 the operator the operator   60 Aug 27 07:18 dbus-1
+drwx------  2 the operator the operator   40 Sep 14 06:48 dconf
+dr-x------  2 the operator the operator    0 Jan  1  1970 doc
+drwxrwxr-x  3 the operator the operator   80 Sep 12 22:45 gopi-scratch-verify
+dr-x------  2 the operator the operator    0 Jul 15 21:44 gvfs
+drwx------  2 the operator the operator   40 Aug 27 07:18 gvfsd
+drwxrwxr-x  2 the operator the operator   40 Sep 14 22:32 mv-c
+drwxrwxr-x  6 the operator the operator  120 Sep 14 22:38 mv-d1
+drwxrwxr-x  6 the operator the operator  120 Sep 14 22:38 mv-d2
+drwxrwxr-x  8 the operator the operator  160 Sep 14 22:39 mv-di1
+drwxrwxr-x  8 the operator the operator  160 Sep 14 22:39 mv-di2
+drwxrwxr-x  8 the operator the operator  160 Sep 14 22:39 mv-di3
+drwxrwxr-x  8 the operator the operator  160 Sep 14 22:39 mv-di4
+drwxrwxr-x  2 the operator the operator   60 Sep 14 22:37 mv-h11
+drwxrwxr-x  2 the operator the operator   60 Sep 14 22:37 mv-h12
+drwxrwxr-x  2 the operator the operator   60 Sep 14 22:37 mv-h13
+drwxrwxr-x  2 the operator the operator   60 Sep 14 22:37 mv-h14
+drwxrwxr-x  2 the operator the operator   60 Sep 14 22:37 mv-h21
+drwxrwxr-x  2 the operator the operator   60 Sep 14 22:37 mv-h22
+drwxrwxr-x  2 the operator the operator   60 Sep 14 22:37 mv-h23
+drwxrwxr-x  2 the operator the operator   60 Sep 14 22:37 mv-h24
+drwxrwxr-x  2 the operator the operator   60 Sep 14 22:37 mv-h31
+drwxrwxr-x  2 the operator the operator   60 Sep 14 22:37 mv-h32
+drwxrwxr-x  2 the operator the operator   60 Sep 14 22:37 mv-h33
+drwxrwxr-x  2 the operator the operator   60 Sep 14 22:37 mv-h34
+drwxrwxr-x  3 the operator the operator   60 Sep 14 22:13 mv-home
+drwxrwxr-x  8 the operator the operator  180 Sep 14 22:38 mv-i11
+drwxrwxr-x  8 the operator the operator  180 Sep 14 22:38 mv-i12
+drwxrwxr-x  8 the operator the operator  180 Sep 14 22:38 mv-i13
+drwxrwxr-x  8 the operator the operator  180 Sep 14 22:38 mv-i14
+drwxrwxr-x  8 the operator the operator  180 Sep 14 22:38 mv-i21
+drwxrwxr-x  8 the operator the operator  180 Sep 14 22:38 mv-i22
+drwxrwxr-x  8 the operator the operator  180 Sep 14 22:38 mv-i23
+drwxrwxr-x  8 the operator the operator  180 Sep 14 22:38 mv-i24
+drwxrwxr-x  8 the operator the operator  180 Sep 14 22:38 mv-i31
+drwxrwxr-x  8 the operator the operator  180 Sep 14 22:38 mv-i32
+drwxrwxr-x  8 the operator the operator  180 Sep 14 22:38 mv-i33
+drwxrwxr-x  8 the operator the operator  180 Sep 14 22:38 mv-i34
+drwxrwxr-x  2 the operator the operator  120 Sep 14 22:35 mv-p
+-rw-r--r--  1 the operator the operator  853 Sep 14 22:37 mv-run.sh
+-rw-r--r--  1 the operator the operator  881 Sep 14 22:38 mv-run2.sh
+-rw-r--r--  1 the operator the operator 1046 Sep 14 22:38 mv-run3.sh
+-rw-r--r--  1 the operator the operator  988 Sep 14 22:39 mv-run4.sh
+drwxrwxr-x  6 the operator the operator  120 Sep 14 22:38 mv-s
+drwxrwxr-x  3 the operator the operator   60 Sep 14 22:21 mv-scratch
+drwxrwxr-x  8 the operator the operator  160 Sep 14 22:39 mv-sh
+drwx------  2 the operator the operator   40 Aug 27 07:18 pulse
+drwx------  2 the operator the operator   40 Aug 29 13:53 snap.chromium
+drwx------  2 the operator the operator   40 Sep 10 23:11 snap.firefox
+drwx------  2 the operator the operator   40 Aug 23 13:00 snap.ollama
+drwxr-xr-x  3 the operator the operator   60 Sep 13 12:12 systemd
+
+=== grep for bus/systemd entries in that listing ===
+dbus-1
+systemd
+
+=== ss -xlp  (HOST-WIDE unix listeners, filtered to this runtime dir) ===
+u_str LISTEN 0      4096            /run/user/1000/at-spi2-KBUQV3/socket 29884373            * 0    users:(("xfwm4",pid=1859258,fd=11))                             
+u_str LISTEN 0      4096                  /run/user/1000/systemd/private 39144               * 0    users:(("systemd",pid=2321,fd=19))                              
+u_str LISTEN 0      4096                              /run/user/1000/bus 40136               * 0    users:(("dbus-daemon",pid=2342,fd=3),("systemd",pid=2321,fd=27))
+u_str LISTEN 0      4096                  /run/user/1000/gnupg/S.dirmngr 40138               * 0    users:(("systemd",pid=2321,fd=24))                              
+u_str LISTEN 0      4096        /run/user/1000/gnupg/S.gpg-agent.browser 40140               * 0    users:(("systemd",pid=2321,fd=36))                              
+u_str LISTEN 0      4096          /run/user/1000/gnupg/S.gpg-agent.extra 40142               * 0    users:(("systemd",pid=2321,fd=33))                              
+u_str LISTEN 0      4096            /run/user/1000/gnupg/S.gpg-agent.ssh 40144               * 0    users:(("systemd",pid=2321,fd=29))                              
+u_str LISTEN 0      4096                /run/user/1000/gnupg/S.gpg-agent 40146               * 0    users:(("systemd",pid=2321,fd=32))                              
+u_str LISTEN 0      4096                       /run/user/1000/pipewire-0 40148               * 0    users:(("pipewire",pid=2334,fd=3),("systemd",pid=2321,fd=30))   
+u_str LISTEN 0      4096                /run/user/1000/pk-debconf-socket 40150               * 0    users:(("systemd",pid=2321,fd=35))                              
+u_str LISTEN 0      5                        /run/user/1000/pulse/native 40152               * 0    users:(("pulseaudio",pid=2338,fd=3),("systemd",pid=2321,fd=34)) 
+u_str LISTEN 0      4096       /run/user/1000/snapd-session-agent.socket 40154               * 0    users:(("systemd",pid=2321,fd=31))                              
+u_str LISTEN 0      4096   /run/user/1000/speech-dispatcher/speechd.sock 40156               * 0    users:(("systemd",pid=2321,fd=28))                              
+u_str LISTEN 0      4096                     /run/user/1000/at-spi/bus_1 41158               * 0    users:(("dbus-daemon",pid=2527,fd=4))                           
+u_str LISTEN 0      4096                    /run/user/1000/at-spi/bus_99 24286693            * 0    users:(("dbus-daemon",pid=1859267,fd=4))                        
+u_str LISTEN 0      128                   /run/user/1000/keyring/control 90788               * 0    users:(("gnome-keyring-d",pid=7051,fd=10))                      
+u_str LISTEN 0      4096                    /run/user/1000/at-spi/bus_95 25902106            * 0    users:(("dbus-daemon",pid=2083228,fd=4))                        
+
+=== /proc/net/unix (bound path strings, filtered) ===
+0000000000000000: 00000002 00000000 00010000 0001 01 29884373 /run/user/1000/at-spi2-KBUQV3/socket
+0000000000000000: 00000002 00000000 00000000 0002 03 39141 /run/user/1000/systemd/notify
+0000000000000000: 00000002 00000000 00010000 0001 01 39144 /run/user/1000/systemd/private
+0000000000000000: 00000002 00000000 00010000 0001 01 40136 /run/user/1000/bus
+0000000000000000: 00000002 00000000 00010000 0001 01 40138 /run/user/1000/gnupg/S.dirmngr
+0000000000000000: 00000002 00000000 00010000 0001 01 40140 /run/user/1000/gnupg/S.gpg-agent.browser
+0000000000000000: 00000002 00000000 00010000 0001 01 40142 /run/user/1000/gnupg/S.gpg-agent.extra
+0000000000000000: 00000002 00000000 00010000 0001 01 40144 /run/user/1000/gnupg/S.gpg-agent.ssh
+0000000000000000: 00000002 00000000 00010000 0001 01 40146 /run/user/1000/gnupg/S.gpg-agent
+0000000000000000: 00000002 00000000 00010000 0001 01 40148 /run/user/1000/pipewire-0
+0000000000000000: 00000002 00000000 00010000 0001 01 40150 /run/user/1000/pk-debconf-socket
+0000000000000000: 00000002 00000000 00010000 0001 01 40152 /run/user/1000/pulse/native
+0000000000000000: 00000002 00000000 00010000 0001 01 40154 /run/user/1000/snapd-session-agent.socket
+0000000000000000: 00000002 00000000 00010000 0001 01 40156 /run/user/1000/speech-dispatcher/speechd.sock
+0000000000000000: 00000002 00000000 00010000 0001 01 41158 /run/user/1000/at-spi/bus_1
+0000000000000000: 00000002 00000000 00010000 0001 01 24286693 /run/user/1000/at-spi/bus_99
+0000000000000000: 00000002 00000000 00010000 0001 01 90788 /run/user/1000/keyring/control
+0000000000000000: 00000002 00000000 00010000 0001 01 25902106 /run/user/1000/at-spi/bus_95
+0000000000000000: 00000003 00000000 00000000 0001 03 40555 /run/user/1000/bus
+0000000000000000: 00000003 00000000 00000000 0001 03 39806 /run/user/1000/at-spi/bus_1
+0000000000000000: 00000003 00000000 00000000 0001 03 43011 /run/user/1000/at-spi/bus_1
+0000000000000000: 00000003 00000000 00000000 0001 03 42076 /run/user/1000/at-spi/bus_1
+0000000000000000: 00000003 00000000 00000000 0001 03 3299001 /run/user/1000/bus
+0000000000000000: 00000003 00000000 00000000 0001 03 3134566 /run/user/1000/at-spi/bus_1
+0000000000000000: 00000003 00000000 00000000 0001 03 40190 /run/user/1000/bus
+0000000000000000: 00000003 00000000 00000000 0001 03 41289 /run/user/1000/at-spi/bus_1
+0000000000000000: 00000003 00000000 00000000 0001 03 3134602 /run/user/1000/at-spi/bus_1
+0000000000000000: 00000003 00000000 00000000 0001 03 39809 /run/user/1000/pulse/native
+0000000000000000: 00000003 00000000 00000000 0001 03 41281 /run/user/1000/at-spi/bus_1
+0000000000000000: 00000003 00000000 00000000 0001 03 40194 /run/user/1000/pipewire-0
+0000000000000000: 00000003 00000000 00000000 0001 03 41256 /run/user/1000/at-spi/bus_1
+0000000000000000: 00000003 00000000 00000000 0001 03 38823 /run/user/1000/at-spi/bus_1
+0000000000000000: 00000003 00000000 00000000 0001 03 39484 /run/user/1000/at-spi/bus_1
+0000000000000000: 00000003 00000000 00000000 0001 03 39654 /run/user/1000/at-spi/bus_1
+0000000000000000: 00000003 00000000 00000000 0001 03 40191 /run/user/1000/bus
+0000000000000000: 00000003 00000000 00000000 0001 03 39672 /run/user/1000/at-spi/bus_1
+0000000000000000: 00000003 00000000 00000000 0001 03 3128452 /run/user/1000/pipewire-0
+0000000000000000: 00000003 00000000 00000000 0001 03 40811 /run/user/1000/at-spi/bus_1
+0000000000000000: 00000003 00000000 00000000 0001 03 41283 /run/user/1000/at-spi/bus_1
+0000000000000000: 00000003 00000000 00000000 0001 03 42067 /run/user/1000/gvfsd/socket-PVFAEUAy
+0000000000000000: 00000003 00000000 00000000 0001 03 40859 /run/user/1000/at-spi/bus_1
+0000000000000000: 00000003 00000000 00000000 0001 03 1749596 /run/user/1000/bus
+0000000000000000: 00000003 00000000 00000000 0001 03 38790 /run/user/1000/at-spi/bus_1
+0000000000000000: 00000003 00000000 00000000 0001 03 38736 /run/user/1000/at-spi/bus_1
+0000000000000000: 00000003 00000000 00000000 0001 03 1749597 /run/user/1000/bus
+0000000000000000: 00000003 00000000 00000000 0001 03 24285847 /run/user/1000/at-spi/bus_99
+0000000000000000: 00000003 00000000 00000000 0001 03 41315 /run/user/1000/at-spi/bus_1
+0000000000000000: 00000003 00000000 00000000 0001 03 24286720 /run/user/1000/at-spi/bus_99
+0000000000000000: 00000003 00000000 00000000 0001 03 40193 /run/user/1000/pipewire-0
+0000000000000000: 00000003 00000000 00000000 0001 03 40802 /run/user/1000/at-spi/bus_1
+0000000000000000: 00000003 00000000 00000000 0001 03 40805 /run/user/1000/at-spi/bus_1
+0000000000000000: 00000003 00000000 00000000 0001 03 40189 /run/user/1000/bus
+0000000000000000: 00000003 00000000 00000000 0001 03 40831 /run/user/1000/at-spi/bus_1
+0000000000000000: 00000003 00000000 00000000 0001 03 43020 /run/user/1000/at-spi/bus_1
+0000000000000000: 00000003 00000000 00000000 0001 03 41294 /run/user/1000/at-spi/bus_1
+0000000000000000: 00000003 00000000 00000000 0001 03 38654 /run/user/1000/at-spi/bus_1
+0000000000000000: 00000003 00000000 00000000 0001 03 40705 /run/user/1000/at-spi/bus_1
+
+=== which pids own the runtime-dir sockets ===
+(inode resolution below)
+
+=== manager pid + its socket fds ===
+user@1000 MainPID=2321
+total 0
+lr-x------ 1 the operator the operator 64 Sep 14 21:50 0 -> /dev/null
+lrwx------ 1 the operator the operator 64 Sep 14 21:50 1 -> socket:[39102]
+lr-x------ 1 the operator the operator 64 Sep 14 21:50 10 -> /proc/2321/mountinfo
+lr-x------ 1 the operator the operator 64 Sep 14 21:50 11 -> anon_inode:inotify
+lrwx------ 1 the operator the operator 64 Sep 14 21:50 12 -> anon_inode:[timerfd]
+lr-x------ 1 the operator the operator 64 Sep 14 21:50 13 -> anon_inode:inotify
+lr-x------ 1 the operator the operator 64 Sep 14 21:50 14 -> /proc/swaps
+lrwx------ 1 the operator the operator 64 Sep 14 21:50 15 -> socket:[39138]
+lrwx------ 1 the operator the operator 64 Sep 14 21:50 18 -> socket:[39141]
+lrwx------ 1 the operator the operator 64 Sep 14 21:50 19 -> socket:[39144]
+lrwx------ 1 the operator the operator 64 Sep 14 21:50 2 -> socket:[39102]
+lrwx------ 1 the operator the operator 64 Sep 14 21:50 20 -> socket:[39146]
+lrwx------ 1 the operator the operator 64 Sep 14 21:50 21 -> anon_inode:[timerfd]
+lrwx------ 1 the operator the operator 64 Sep 14 21:50 22 -> socket:[39142]
+lrwx------ 1 the operator the operator 64 Sep 14 21:50 23 -> socket:[39143]
+lrwx------ 1 the operator the operator 64 Sep 14 21:50 24 -> socket:[40138]
+lrwx------ 1 the operator the operator 64 Sep 14 21:50 27 -> socket:[40136]
+lrwx------ 1 the operator the operator 64 Sep 14 21:50 28 -> socket:[40156]
+lrwx------ 1 the operator the operator 64 Sep 14 21:50 29 -> socket:[40144]
+lrwx------ 1 the operator the operator 64 Sep 14 21:50 3 -> socket:[39122]
+lrwx------ 1 the operator the operator 64 Sep 14 21:50 30 -> socket:[40148]
+lrwx------ 1 the operator the operator 64 Sep 14 21:50 31 -> socket:[40154]
+lrwx------ 1 the operator the operator 64 Sep 14 21:50 32 -> socket:[40146]
+lrwx------ 1 the operator the operator 64 Sep 14 21:50 33 -> socket:[40142]
+lrwx------ 1 the operator the operator 64 Sep 14 21:50 34 -> socket:[40152]
+lrwx------ 1 the operator the operator 64 Sep 14 21:50 35 -> socket:[40150]
+lrwx------ 1 the operator the operator 64 Sep 14 21:50 36 -> socket:[40140]
+lrwx------ 1 the operator the operator 64 Sep 14 21:50 37 -> socket:[38388]
+lrwx------ 1 the operator the operator 64 Sep 14 21:50 4 -> anon_inode:[eventpoll]
+lrwx------ 1 the operator the operator 64 Sep 14 21:50 5 -> anon_inode:[signalfd]
+lr-x------ 1 the operator the operator 64 Sep 14 21:50 6 -> anon_inode:inotify
+lr-x------ 1 the operator the operator 64 Sep 14 21:50 7 -> /sys/fs/cgroup/user.slice/user-1000.slice/user@1000.service
+lrwx------ 1 the operator the operator 64 Sep 14 21:50 8 -> anon_inode:[timerfd]
+lrwx------ 1 the operator the operator 64 Sep 14 21:50 9 -> anon_inode:[eventpoll]
+
+=== manager mount namespace view of the paths ===
+total 0
+drwxr-xr-x  3 the operator the operator   60 Sep 13 12:12 .
+drwx------ 53 the operator the operator 1140 Sep 14 22:39 ..
+drwxr-xr-x  3 the operator the operator  140 Sep 13 12:12 inaccessible
+stat: cannot statx '/proc/2321/root/run/user/1000/bus': No such file or directory
+
+=== namespace identity (self vs manager) ===
+mnt   self=mnt:[4026531841] manager=mnt:[4026531841]
+net   self=net:[4026531840] manager=net:[4026531840]
+user  self=user:[4026531837] manager=user:[4026531837]
+ipc   self=ipc:[4026531839] manager=ipc:[4026531839]
+pid   self=pid:[4026531836] manager=pid:[4026531836]
+
+=== mountinfo rows for /run/user (self) ===
+1760 28 0:59 / /run/user/1000 rw,nosuid,nodev,relatime shared:859 - tmpfs tmpfs rw,size=1621380k,nr_inodes=405345,mode=700,uid=1000,gid=1000,inode64
+1797 1760 0:60 / /run/user/1000/gvfs rw,nosuid,nodev,relatime shared:954 - fuse.gvfsd-fuse gvfsd-fuse rw,user_id=1000,group_id=1000
+968 1760 0:57 / /run/user/1000/doc rw,nosuid,nodev,relatime shared:451 - fuse.portal portal rw,user_id=1000,group_id=1000
+799 28 0:48 / /run/user/117 rw,nosuid,nodev,relatime shared:154 - tmpfs tmpfs rw,size=1621380k,nr_inodes=405345,mode=700,uid=117,gid=123,inode64
+839 799 0:50 / /run/user/117/gvfs rw,nosuid,nodev,relatime shared:459 - fuse.gvfsd-fuse gvfsd-fuse rw,user_id=117,group_id=123
+
+=== mountinfo rows for /run/user (manager) ===
+1760 28 0:59 / /run/user/1000 rw,nosuid,nodev,relatime shared:859 - tmpfs tmpfs rw,size=1621380k,nr_inodes=405345,mode=700,uid=1000,gid=1000,inode64
+1797 1760 0:60 / /run/user/1000/gvfs rw,nosuid,nodev,relatime shared:954 - fuse.gvfsd-fuse gvfsd-fuse rw,user_id=1000,group_id=1000
+968 1760 0:57 / /run/user/1000/doc rw,nosuid,nodev,relatime shared:451 - fuse.portal portal rw,user_id=1000,group_id=1000
+799 28 0:48 / /run/user/117 rw,nosuid,nodev,relatime shared:154 - tmpfs tmpfs rw,size=1621380k,nr_inodes=405345,mode=700,uid=117,gid=123,inode64
+839 799 0:50 / /run/user/117/gvfs rw,nosuid,nodev,relatime shared:459 - fuse.gvfsd-fuse gvfsd-fuse rw,user_id=117,group_id=123
+
+=== mtimes ===
+/run/user/1000 mtime=2026-09-14 22:39:10.643058632 +0800 ctime=2026-09-14 22:39:10.643058632 +0800
+/run/user/1000/systemd mtime=2026-09-13 12:12:41.215414030 +0800 ctime=2026-09-13 12:12:41.215414030 +0800
+/run/user/1000/systemd/inaccessible mtime=2026-09-13 12:12:41.215414030 +0800 ctime=2026-09-13 12:12:41.215414030 +0800
+
+=== tmpfiles rules touching /run/user ===
+/usr/lib/tmpfiles.d/gvfsd-fuse-tmpfiles.conf:# tmpfiles.d defaults are set to clean /run/user every now and then
+/usr/lib/tmpfiles.d/gvfsd-fuse-tmpfiles.conf:# which includes our gvfs-fuse mount being mounted in /run/user/<id>/gvfs
+/usr/lib/tmpfiles.d/gvfsd-fuse-tmpfiles.conf:x /run/user/*/gvfs
+/usr/lib/tmpfiles.d/systemd.conf:d /run/user 0755 root root -
+
+=== systemd user units shipped (dbus.socket / systemd/private) ===
+-rw-r--r-- 1 root root 174 Oct 25  2022 /usr/lib/systemd/user/dbus.socket
+-rw-r--r-- 1 root root 598 Mar 11  2022 /usr/lib/systemd/user/systemd-exit.service
+
+=== dbus.socket (systemd user unit) content ===
+[Unit]
+Description=D-Bus User Message Bus Socket
+
+[Socket]
+ListenStream=%t/bus
+ExecStartPost=-/bin/systemctl --user set-environment DBUS_SESSION_BUS_ADDRESS=unix:path=%t/bus
+
+=== connect() attempts ===
+python3: /usr/bin/python3
+connect(/run/user/1000/bus) -> ENOENT: No such file or directory
+connect(/run/user/1000/systemd/private) -> ENOENT: No such file or directory
+
+=== dbus clients ===
+DBUS_SESSION_BUS_ADDRESS=[<unset>]
+method return time=1789428253.271778 sender=org.freedesktop.DBus -> destination=:1.2 serial=3 reply_serial=2
+   array [
+      string "org.freedesktop.DBus"
+dbus-send exit=0

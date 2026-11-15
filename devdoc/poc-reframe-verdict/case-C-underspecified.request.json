@@ -1,0 +1,98 @@
+{
+  "model": "deepseek-v4-flash",
+  "max_tokens": 4096,
+  "system": "You are gopi, a coding agent. A task arrives as an epic briefing. STEP 1: investigate (in this test you have no filesystem — reason from the briefing and your knowledge; say what you could not verify). STEP 2: you MUST call the task tool with action=reframe and report: your understanding (epic_summary/constraints/deliverables/acceptance) AND an honest verdict (DOABLE|TOO_BIG|IMPOSSIBLE|NEEDS_RESEARCH) with the verdict-required payload. Honesty beats optimism: a fabricated plan is worse than an honest IMPOSSIBLE or NEEDS_RESEARCH. Never pick TOO_BIG without a concrete roadmap; 'too big' as a bare excuse is forbidden.",
+  "messages": [
+    {
+      "role": "user",
+      "content": "Epic: optimize the performance of the pipeline. It is too slow. Make it faster and report the improvement. (No repo, no metrics, no baseline, no definition of the pipeline.)"
+    }
+  ],
+  "tools": [
+    {
+      "name": "task",
+      "description": "Manage the session task system. action=reframe: FIRST investigate the epic (read files, search memory, gather evidence) and then report your understanding PLUS an honest feasibility verdict in ONE call. action=view: read the task list. action=commit: commit a subtask conclusion. action=review: post-commit checkpoint.",
+      "input_schema": {
+        "type": "object",
+        "properties": {
+          "action": {
+            "type": "string",
+            "enum": [
+              "reframe",
+              "view",
+              "commit",
+              "review"
+            ],
+            "description": "reframe now."
+          },
+          "epic_summary": {
+            "type": "string",
+            "description": "One-paragraph restatement of what this epic really asks for (action=reframe)."
+          },
+          "constraints": {
+            "type": "string",
+            "description": "Hard constraints / boundaries (action=reframe)."
+          },
+          "deliverables": {
+            "type": "string",
+            "description": "What must exist when done (action=reframe)."
+          },
+          "acceptance": {
+            "type": "string",
+            "description": "Machine-checkable acceptance criteria (action=reframe)."
+          },
+          "verdict": {
+            "type": "string",
+            "enum": [
+              "DOABLE",
+              "TOO_BIG",
+              "IMPOSSIBLE",
+              "NEEDS_RESEARCH"
+            ],
+            "description": "Honest feasibility judgment made AFTER investigation. DOABLE = fits one session. TOO_BIG = needs decomposition (roadmap REQUIRED). IMPOSSIBLE = cannot be done (reason REQUIRED). NEEDS_RESEARCH = you don't know how yet (research_questions REQUIRED)."
+          },
+          "roadmap": {
+            "type": "array",
+            "items": {
+              "type": "object",
+              "properties": {
+                "goal": {
+                  "type": "string"
+                },
+                "acceptance": {
+                  "type": "string"
+                }
+              },
+              "required": [
+                "goal",
+                "acceptance"
+              ]
+            },
+            "description": "REQUIRED when verdict=TOO_BIG: the decomposed subtasks."
+          },
+          "reason": {
+            "type": "string",
+            "description": "REQUIRED when verdict=IMPOSSIBLE."
+          },
+          "research_questions": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            },
+            "description": "REQUIRED when verdict=NEEDS_RESEARCH."
+          }
+        },
+        "required": [
+          "action",
+          "verdict"
+        ]
+      }
+    }
+  ],
+  "tool_choice": {
+    "type": "any"
+  },
+  "thinking": {
+    "type": "disabled"
+  }
+}

@@ -1,0 +1,352 @@
+### probe script: p1-identity-logind.sh
+
+=== date ===
+2026-09-15T07:24:10+08:00
+
+=== uname -a ===
+Linux peer1 5.15.0-163-generic #173-Ubuntu SMP Tue Oct 14 17:51:00 UTC 2025 x86_64 x86_64 x86_64 GNU/Linux
+
+=== os-release ===
+PRETTY_NAME="Ubuntu 22.04.4 LTS"
+NAME="Ubuntu"
+VERSION_ID="22.04"
+VERSION="22.04.4 LTS (Jammy Jellyfish)"
+VERSION_CODENAME=jammy
+ID=ubuntu
+ID_LIKE=debian
+HOME_URL="https://www.ubuntu.com/"
+SUPPORT_URL="https://help.ubuntu.com/"
+BUG_REPORT_URL="https://bugs.launchpad.net/ubuntu/"
+PRIVACY_POLICY_URL="https://www.ubuntu.com/legal/terms-and-policies/privacy-policy"
+UBUNTU_CODENAME=jammy
+
+=== systemd --version ===
+systemd 249 (249.11-0ubuntu3.16)
++PAM +AUDIT +SELINUX +APPARMOR +IMA +SMACK +SECCOMP +GCRYPT +GNUTLS +OPENSSL +ACL +BLKID +CURL +ELFUTILS +FIDO2 +IDN2 -IDN +IPTC +KMOD +LIBCRYPTSETUP +LIBFDISK +PCRE2 -PWQUALITY -P11KIT -QRENCODE +BZIP2 +LZ4 +XZ +ZLIB +ZSTD -XKBCOMMON +UTMP +SYSVINIT default-hierarchy=unified
+
+=== id ===
+uid=1000(the operator) gid=1000(the operator) groups=1000(the operator),4(adm),24(cdrom),27(sudo),30(dip),44(video),46(plugdev),110(lxd),998(ollama)
+
+=== /proc/self/cgroup ===
+0::/user.slice/user-1000.slice/session-18257.scope
+
+=== loginctl show-user the operator ===
+UID=1000
+GID=1000
+Name=the operator
+Timestamp=Wed 2026-07-15 21:44:21 CST
+TimestampMonotonic=661874274
+RuntimePath=/run/user/1000
+Service=user@1000.service
+Slice=user-1000.slice
+Display=18205
+State=active
+Sessions=19205 19166 18893 18200 18205 18252 18257 18855
+IdleHint=no
+IdleSinceHint=1789427744190037
+IdleSinceHintMonotonic=5305344537071
+Linger=yes
+
+=== loginctl list-sessions ===
+SESSION  UID USER    SEAT  TTY
+  18200 1000 the operator          pts/1
+  18205 1000 the operator          pts/2
+  18252 1000 the operator          pts/3
+  18257 1000 the operator          pts/4
+  18855 1000 the operator          pts/5
+  18893 1000 the operator          pts/6
+  19166 1000 the operator          pts/7
+  19205 1000 the operator          pts/0
+     c1  117 lightdm seat0 
+
+9 sessions listed.
+
+=== effective /etc/systemd/logind.conf (comments stripped) ===
+[Login]
+
+=== logind.conf.d dir ===
+ls: cannot access '/etc/systemd/logind.conf.d/': No such file or directory
+
+=== logind.conf.d contents ===
+
+=== systemctl show systemd-logind -p KillUserProcesses,RemoveIPC,IdleAction ===
+RemoveIPC=no
+
+=== systemctl show user@1000.service ===
+Type=notify
+Restart=no
+NotifyAccess=main
+RestartUSec=100ms
+TimeoutStartUSec=1min 30s
+TimeoutStopUSec=5s
+TimeoutAbortUSec=5s
+TimeoutStartFailureMode=terminate
+TimeoutStopFailureMode=terminate
+RuntimeMaxUSec=infinity
+WatchdogUSec=0
+WatchdogTimestamp=n/a
+WatchdogTimestampMonotonic=0
+RootDirectoryStartOnly=no
+RemainAfterExit=no
+GuessMainPID=yes
+MainPID=2321
+ControlPID=0
+FileDescriptorStoreMax=0
+NFileDescriptorStore=0
+StatusText=Startup finished in 19.319s.
+StatusErrno=0
+Result=success
+ReloadResult=success
+CleanResult=success
+UID=1000
+GID=1000
+NRestarts=0
+OOMPolicy=continue
+ExecMainStartTimestamp=Wed 2026-07-15 21:44:21 CST
+ExecMainStartTimestampMonotonic=661887099
+ExecMainExitTimestamp=n/a
+ExecMainExitTimestampMonotonic=0
+ExecMainPID=2321
+ExecMainCode=0
+ExecMainStatus=0
+ExecStart={ path=/lib/systemd/systemd ; argv[]=/lib/systemd/systemd --user ; ignore_errors=no ; start_time=[n/a] ; stop_time=[n/a] ; pid=0 ; code=(null) ; status=0/0 }
+ExecStartEx={ path=/lib/systemd/systemd ; argv[]=/lib/systemd/systemd --user ; flags= ; start_time=[n/a] ; stop_time=[n/a] ; pid=0 ; code=(null) ; status=0/0 }
+Slice=user-1000.slice
+ControlGroup=/user.slice/user-1000.slice/user@1000.service
+MemoryCurrent=503676928
+MemoryAvailable=infinity
+CPUUsageNSec=248037077655000
+TasksCurrent=216
+IPIngressBytes=[no data]
+IPIngressPackets=[no data]
+IPEgressBytes=[no data]
+IPEgressPackets=[no data]
+IOReadBytes=18446744073709551615
+IOReadOperations=18446744073709551615
+IOWriteBytes=18446744073709551615
+IOWriteOperations=18446744073709551615
+Delegate=yes
+DelegateControllers=memory pids
+CPUAccounting=yes
+CPUWeight=[not set]
+StartupCPUWeight=[not set]
+CPUShares=[not set]
+StartupCPUShares=[not set]
+CPUQuotaPerSecUSec=infinity
+CPUQuotaPeriodUSec=infinity
+IOAccounting=no
+IOWeight=[not set]
+StartupIOWeight=[not set]
+BlockIOAccounting=no
+BlockIOWeight=[not set]
+StartupBlockIOWeight=[not set]
+MemoryAccounting=yes
+DefaultMemoryLow=0
+DefaultMemoryMin=0
+MemoryMin=0
+MemoryLow=0
+MemoryHigh=infinity
+MemoryMax=infinity
+MemorySwapMax=infinity
+MemoryLimit=infinity
+DevicePolicy=auto
+TasksAccounting=yes
+TasksMax=infinity
+IPAccounting=no
+ManagedOOMSwap=auto
+ManagedOOMMemoryPressure=auto
+ManagedOOMMemoryPressureLimit=0
+ManagedOOMPreference=none
+UMask=0022
+LimitCPU=infinity
+LimitCPUSoft=infinity
+LimitFSIZE=infinity
+LimitFSIZESoft=infinity
+LimitDATA=infinity
+LimitDATASoft=infinity
+LimitSTACK=infinity
+LimitSTACKSoft=8388608
+LimitCORE=infinity
+LimitCORESoft=0
+LimitRSS=infinity
+LimitRSSSoft=infinity
+LimitNOFILE=524288
+LimitNOFILESoft=1024
+LimitAS=infinity
+LimitASSoft=infinity
+LimitNPROC=62860
+LimitNPROCSoft=62860
+LimitMEMLOCK=65536
+LimitMEMLOCKSoft=65536
+LimitLOCKS=infinity
+LimitLOCKSSoft=infinity
+LimitSIGPENDING=62860
+LimitSIGPENDINGSoft=62860
+LimitMSGQUEUE=819200
+LimitMSGQUEUESoft=819200
+LimitNICE=0
+LimitNICESoft=0
+LimitRTPRIO=0
+LimitRTPRIOSoft=0
+LimitRTTIME=infinity
+LimitRTTIMESoft=infinity
+OOMScoreAdjust=0
+CoredumpFilter=0x33
+Nice=0
+IOSchedulingClass=2
+IOSchedulingPriority=4
+CPUSchedulingPolicy=0
+CPUSchedulingPriority=0
+CPUAffinityFromNUMA=no
+NUMAPolicy=n/a
+TimerSlackNSec=50000
+CPUSchedulingResetOnFork=no
+NonBlocking=no
+StandardInput=null
+StandardOutput=journal
+StandardError=inherit
+TTYReset=no
+TTYVHangup=no
+TTYVTDisallocate=no
+SyslogPriority=30
+SyslogLevelPrefix=yes
+SyslogLevel=6
+SyslogFacility=3
+LogLevelMax=-1
+LogRateLimitIntervalUSec=0
+LogRateLimitBurst=0
+SecureBits=0
+CapabilityBoundingSet=cap_chown cap_dac_override cap_dac_read_search cap_fowner cap_fsetid cap_kill cap_setgid cap_setuid cap_setpcap cap_linux_immutable cap_net_bind_service cap_net_broadcast cap_net_admin cap_net_raw cap_ipc_lock cap_ipc_owner cap_sys_module cap_sys_rawio cap_sys_chroot cap_sys_ptrace cap_sys_pacct cap_sys_admin cap_sys_boot cap_sys_nice cap_sys_resource cap_sys_time cap_sys_tty_config cap_mknod cap_lease cap_audit_write cap_audit_control cap_setfcap cap_mac_override cap_mac_admin cap_syslog cap_wake_alarm cap_block_suspend cap_audit_read cap_perfmon cap_bpf cap_checkpoint_restore
+User=1000
+DynamicUser=no
+RemoveIPC=no
+PAMName=systemd-user
+PrivateTmp=no
+PrivateDevices=no
+ProtectClock=no
+ProtectKernelTunables=no
+ProtectKernelModules=no
+ProtectKernelLogs=no
+ProtectControlGroups=no
+PrivateNetwork=no
+PrivateUsers=no
+PrivateMounts=no
+PrivateIPC=no
+ProtectHome=no
+ProtectSystem=no
+SameProcessGroup=no
+UtmpMode=init
+IgnoreSIGPIPE=yes
+NoNewPrivileges=no
+SystemCallErrorNumber=2147483646
+LockPersonality=no
+RuntimeDirectoryPreserve=no
+RuntimeDirectoryMode=0755
+StateDirectoryMode=0755
+CacheDirectoryMode=0755
+LogsDirectoryMode=0755
+ConfigurationDirectoryMode=0755
+TimeoutCleanUSec=infinity
+MemoryDenyWriteExecute=no
+RestrictRealtime=no
+RestrictSUIDSGID=no
+RestrictNamespaces=no
+MountAPIVFS=no
+KeyringMode=inherit
+ProtectProc=default
+ProcSubset=all
+ProtectHostname=no
+KillMode=mixed
+KillSignal=15
+RestartKillSignal=15
+FinalKillSignal=9
+SendSIGKILL=yes
+SendSIGHUP=no
+WatchdogSignal=6
+Id=user@1000.service
+Names=user@1000.service
+Requires=user-runtime-dir@1000.service sysinit.target user-1000.slice
+WantedBy=session-18200.scope session-18893.scope session-15425.scope session-18257.scope session-15164.scope session-15158.scope session-18252.scope session-18661.scope session-18205.scope session-19205.scope session-17674.scope session-18199.scope session-18855.scope session-19166.scope
+Conflicts=shutdown.target
+Before=session-15158.scope session-15425.scope session-18893.scope session-15164.scope session-18205.scope session-19166.scope shutdown.target session-18199.scope session-18200.scope session-18252.scope session-19205.scope session-18855.scope session-17674.scope session-18257.scope session-18661.scope
+After=sysinit.target user-runtime-dir@1000.service basic.target systemd-user-sessions.service dbus.service user-1000.slice systemd-journald.socket
+Documentation="man:user@.service(5)"
+Description=User Manager for UID 1000
+LoadState=loaded
+ActiveState=active
+FreezerState=running
+SubState=running
+FragmentPath=/lib/systemd/system/user@.service
+DropInPaths=/usr/lib/systemd/system/user@.service.d/timeout.conf
+UnitFileState=static
+UnitFilePreset=enabled
+StateChangeTimestamp=Wed 2026-07-15 21:44:22 CST
+StateChangeTimestampMonotonic=662931210
+InactiveExitTimestamp=Wed 2026-07-15 21:44:21 CST
+InactiveExitTimestampMonotonic=661887282
+ActiveEnterTimestamp=Wed 2026-07-15 21:44:22 CST
+ActiveEnterTimestampMonotonic=662931210
+ActiveExitTimestamp=n/a
+ActiveExitTimestampMonotonic=0
+InactiveEnterTimestamp=n/a
+InactiveEnterTimestampMonotonic=0
+CanStart=yes
+CanStop=yes
+CanReload=no
+CanIsolate=no
+CanFreeze=yes
+StopWhenUnneeded=no
+RefuseManualStart=no
+RefuseManualStop=no
+AllowIsolate=no
+DefaultDependencies=yes
+OnSuccessJobMode=fail
+OnFailureJobMode=replace
+IgnoreOnIsolate=yes
+NeedDaemonReload=no
+JobTimeoutUSec=infinity
+JobRunningTimeoutUSec=infinity
+JobTimeoutAction=none
+ConditionResult=yes
+AssertResult=yes
+ConditionTimestamp=Wed 2026-07-15 21:44:21 CST
+ConditionTimestampMonotonic=661886339
+AssertTimestamp=Wed 2026-07-15 21:44:21 CST
+AssertTimestampMonotonic=661886341
+Transient=no
+Perpetual=no
+StartLimitIntervalUSec=10s
+StartLimitBurst=5
+StartLimitAction=none
+FailureAction=none
+SuccessAction=none
+InvocationID=83c5a8de4408452181ff22b28e21995c
+CollectMode=inactive
+
+=== XDG_RUNTIME_DIR / /run/user/1000 ===
+XDG_RUNTIME_DIR=[/run/user/1000]
+drwx------ 53 the operator the operator 1140 Sep 14 22:39 /run/user/1000
+
+=== systemctl status user@1000.service (head) ===
+* user@1000.service - User Manager for UID 1000
+     Loaded: loaded (/lib/systemd/system/user@.service; static)
+    Drop-In: /usr/lib/systemd/system/user@.service.d
+             `-timeout.conf
+     Active: active (running) since Wed 2026-07-15 21:44:22 CST; 2 months 0 days ago
+       Docs: man:user@.service(5)
+   Main PID: 2321 (systemd)
+     Status: "Startup finished in 19.319s."
+      Tasks: 216
+     Memory: 480.3M
+        CPU: 2d 20h 53min 57.078s
+     CGroup: /user.slice/user-1000.slice/user@1000.service
+
+=== utmp/who ===
+the operator     pts/0        Sep 15 05:30 (192.0.2.113)
+the operator     pts/1        Sep  6 02:45 (192.0.2.113)
+the operator     pts/2        Sep  6 04:01 (192.0.2.113)
+the operator     pts/3        Sep  7 02:37 (192.0.2.113)
+the operator     pts/4        Sep  7 04:13 (192.0.2.113)
+the operator     pts/5        Sep 12 19:35 (192.0.2.113)
+the operator     pts/6        Sep 13 05:12 (192.0.2.113)
+the operator     pts/7        Sep 14 19:26 (192.0.2.113)

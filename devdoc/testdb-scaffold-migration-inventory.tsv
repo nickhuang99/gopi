@@ -1,0 +1,16 @@
+# Test-DB scaffold migration inventory (generated 2026-09-21 by the gate's own
+# counting recipe: a *_test.go file counts as a DB-path site when it carries a
+# "*.db" literal, a path join/temp-dir call AND a DB opener — that triple is the
+# hand-rolled shape GOPI.md Rule 32 retires). Regenerate with the recipe in
+# devdoc/testdb-scaffold-contract.md §6. NOT authoritative per-file work list:
+# the sibling migration ticket 01a0c2e7 owns that (writer/reader/needs-rows).
+package	DB_path_sites	per_file_db_helpers	helper_names
+internal/tools	303	28	TestCovOpenMergeBacklogPendingDB,TestEnsureTasksSchemaMigratesLegacyFourStatusDB,TestMemorySearchCJKOnLegacyLikeDB,TestMemorySearchEmptyFreshDB,TestTasksRejectForeignDB,TestWriteTaskArea_DoesNotTouchRealDB,claimTestDB,dedupTestDB,ftsVerifySeedLegacyDB,harvestTestDB,ledgerBackupTestDB,m2SeedDB,mbgTestDB,mergeBacklogTestDB,newDeltaTestDB,newSearchTestDB,newTestTasksDB,newVerifyTestDB,openDeltaDB,openRawDB,openTestTasksDB,procTestDB,setMemoryDB,syncTestDB,taskSyncTestDB,tempMemoryDB,testOpenDB,withTasksDB
+cmd/agent	16	2	TestSlashMemoryEnginesRealDB,ledgerDB
+internal/standards	5	2	claimTestDB,claimTestDB
+internal/agent	5	1	tempAgentMemoryDB
+archive	3	0	
+internal/agencyscan	2	0	
+internal/hippocampus	0	2	covHippDB,setMemoryDB
+internal/ledgerwindow	0	1	openFixtureDB
+internal/testutil	0	1	TestGopiHomeGcNeverTouchesTheLiveDB
