@@ -1,7 +1,7 @@
 # GoPi build configuration
 # Static linking is required: CGO_ENABLED=0 produces a zero-dependency binary.
 
-.PHONY: all build test test-budget test-heavy flake-catch fmt vet clean
+.PHONY: all build test verify fmt vet clean
 
 all: build
 
@@ -43,54 +43,26 @@ build:
 # time + load average and reports a budget trip AS a timeout (exit 3), never as
 # a bare FAIL.
 #
-# SMOKE-ONLY BY DEFAULT (2026-09-16): this is the MERGE/VERIFY path, so it runs
-# the smoke set. Tests classified heavy (minutes of real device work, wide
-# parallelism, host-condition-dependent) declare that with heavytest.Require and
-# SKIP themselves unless GOPI_HEAVY_TESTS is truthy, so this target never runs
-# them. The skipped set is enumerated in testdata/heavy-tests.tsv (kept in step
-# with the code by TestHeavyTestInventoryMatchesItsCallSites), and it is written
-# to a ledger here so a run leaves the list behind. Heavy runs are deliberate and
-# off-peak: `make test-heavy`. Rationale + inventory:
-# devdoc/heavy-tests-rule27-gate.md (GOPI.md Rule 27).
-test:
-	GOPI_HEAVY_SKIP_LEDGER=$(CURDIR)/.heavy-skipped.tsv scripts/test-budget.sh $(PKGS)
-
-# The NAMED whole-tree opt-in. The bare `make test` above means "test what I
-# touched" (the operator's 2026-11-06 ruling): the whole module costs 688 s on
-# cmd/agent alone against a 2-minute foreground budget, so a caller who did not
-# ASK for it must never get it. This target is how you ask.
-test-all:
-	GOPI_HEAVY_SKIP_LEDGER=$(CURDIR)/.heavy-skipped.tsv scripts/test-budget.sh ./...
-
-# The ONE named opt-in for the heavy set (the operator's convention: heavy cases
-# run deliberately, off-peak, never on the merge path). Same budget, same
-# script — only the classification switch differs, so a heavy run reports load
-# and wall time exactly like a smoke one.
+# THIS EXPORT SHIPS NO TEST SUITE, AND THIS TARGET SAYS SO INSTEAD OF PRINTING
+# A GREEN. The internal repository carries ~2500 test files against a live
+# ledger, a real device scratch tree and host-bound fixtures; none of that
+# survives a portable export, so `test` here runs the two checks that ARE
+# meaningful on a tree of product code only: the compiler over every package,
+# and `go vet`. It is named `test` because that is the button a reader presses —
+# a button that silently ran nothing would be the worst answer of all.
 #
-# PKGS narrows the scope, exactly as it does on test-budget below: an empty
-# PKGS passes no argument, and scripts/test-budget.sh then takes its own `./...`
-# default (the declared one, in that script) — so the documented whole-tree
-# opt-in reads the same as it always did, and `make test-heavy PKGS='-run <Test>
-# ./<pkg>/'` runs ONE heavy case under the same budget and stamping instead of
-# the whole tree.
-test-heavy:
-	GOPI_HEAVY_TESTS=1 GOPI_HUMAN_TERMINAL=1 scripts/test-budget.sh $(PKGS)
+# `verify` is the alias with the honest name; `make test` and `make verify` are
+# the same two lines.
+test verify:
+	CGO_ENABLED=0 go build ./...
+	go vet ./...
 
-# Same budget, narrower scope: make test-budget PKGS=./internal/tools/
-# (extra flags pass through: make test-budget PKGS='-run TestTask ./internal/tools/')
-test-budget:
-	scripts/test-budget.sh $(PKGS)
-
-# The ONE named opt-in for the ORDER/DETERMINISM flake class (GOPI.md Rule 27:
-# measure the test, never the host — repetition, never device load). It re-runs a
-# scope with `go test -count=N` and NAMES every test whose verdict moves across
-# repetitions; the known rows live in testdata/flakes.tsv. Like test-heavy it is
-# deliberately NOT on the smoke/merge path — `make test` above never runs it.
-#   make flake-catch                              # default scope, 10 repetitions
-#   make flake-catch PKGS='./internal/tools/'      # a suspect package
-#   make flake-catch PKGS='-reps 20 ./cmd/agent/'  # raise the repetitions
-flake-catch:
-	scripts/flake-catch.sh $(PKGS)
+# THE FOUR SUITE TARGETS ARE GONE WITH THE SUITE (test-all / test-heavy /
+# test-budget / flake-catch). Each of them dispatched into
+# scripts/test-budget.sh, which needs packages that actually carry _test.go
+# files; on this tree it would scan, find none and stamp `outcome=pass` over
+# zero arms — a green that measured nothing. They are DELETED rather than
+# redefined, because a target that exists is a promise that it does something.
 
 fmt:
 	gofmt -l -w .
