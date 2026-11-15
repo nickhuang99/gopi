@@ -17,6 +17,17 @@
 > Host-local material — this machine's addresses, ssh aliases, task-sync pins,
 > the operator's `chat-policy` fence — belongs in `GOPI.md`, never in this file.
 
+> **READ THIS FIRST: THE GATES NAMED BELOW ARE NOT SHIPPED WITH THIS EXPORT.**
+> Nearly every rule ends with a `Check:` line, a test file name or a `go test`
+> command. Those name the machinery that enforced the rule in the **private
+> working tree this code came from**. This public export carries no `_test.go`
+> files and no `internal/standards/`, so **every such command here prints
+> `no tests to run` and exits 0** — a vacuous green, never a passing check. The
+> sentences are kept because a rule without the name of what caught it is a rule
+> nobody can re-derive; read them as "this is what a violation was measured by",
+> and verify behaviour by running `bin/gopi`, not by trusting a quoted gate.
+> `make test` in this tree runs `go build ./...` + `go vet ./...`; that is all.
+
 **Configuration lives in `CONFIG.md`** (repo root): every env var, settings key,
 CLI flag, its default and its precedence, each with the source line that reads
 it. Read it before changing a knob — **and before EXPLAINING one** ("which setting
