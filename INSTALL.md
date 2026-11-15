@@ -238,6 +238,12 @@ Honesty is cheaper than a retraction later:
   Anthropic wire protocol, so another compatible endpoint *may* work — but only DeepSeek has
   been run, and any other choice is untested.
 - **No hosted install path.** You build from source or you do not run it.
+- **No test suite.** This export ships product code only: `make test` runs `go build ./...` and
+  `go vet ./...`, and any `go test` command quoted in `PROJECT.md`, `CONFIG.md` or `COMMANDS.md`
+  names a test that is **not in this repository** — it prints `no tests to run` and exits 0, which
+  looks like a pass and is not one. Do not treat a quoted gate as evidence about this tree; run the
+  binary. What this buys you is an honest install path: nothing here can go green over code nobody
+  exercised.
 
 If you hit a failure on an untested platform, that is a genuine gap and worth an issue —
 please include the output of `gopi --version` and `gopi config show`.
