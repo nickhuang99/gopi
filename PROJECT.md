@@ -171,9 +171,8 @@ Minimum report content, for a run that chooses to write one:
 
 ## Verification
 - Build: <output>   (e.g. "go build: OK")
-- Tests:  <output>   (e.g. "make test-budget PKGS='./internal/tools ./cmd/agent': 12/12 PASS")
-          smoke, branch-scoped to what the diff touched — never the whole tree
-          (`internal/smokegate`; a whole-tree run belongs to the off-peak heavy path)
+- Tests:  <output>   (e.g. "make test: go build OK, go vet OK") — smoke and
+          branch-scoped to what the diff touched, never the whole tree
 - Ran:    <the exact invocation of the surface you changed, verbatim, with real
           arguments — the CLI verb+flags, the entry point, the payload you sent.
           `-h` is not a run. See Rule 31: a surface you did not execute is not
