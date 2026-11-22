@@ -209,6 +209,55 @@ $EDITOR ~/.gopi/settings.json       # replace "PUT-YOUR-OWN-DEEPSEEK-KEY-HERE"
 Without a key gopi still starts, and every command that does not call a model still
 works — it tells you which key is missing instead of failing silently.
 
+### Voice input (optional, and it is NOT DeepSeek)
+
+Dictation is a **separate subsystem with its own account and its own bill**. Two
+engines, and neither is the LLM provider:
+
+| Engine | Weights on disk | Audio leaves the machine | What you need |
+|---|---|---|---|
+| `--engine doubao` (default) | **0 B** — nothing to download | **yes**, uploaded | a Volcengine (ByteDance) SAUC account: app id + access token |
+| `--engine local` | **1.7 GB on disk** (910 MB loaded per run) | **no** | those files, plus a ~6 MB runtime you build |
+
+**Cloud engine.** Speech-to-text is Volcengine SAUC (the 豆包 / Doubao large-model
+ASR service), not DeepSeek. Different vendor, different console, different invoice.
+The commented `_voice_optional` block in `settings.example.json` carries the shapes —
+endpoint `wss://openspeech.bytedance.com/api/v3/sauc/bigmodel_async`, resource id
+`vol.seedasr.sauc.duration`. **Leave those keys out and nothing breaks**: the voice
+path reports "not configured" when you call it, and every other command is
+unaffected.
+
+**Local engine.** Fun-ASR-Nano (SAN-M encoder + Qwen3-0.6B) running on your own CPU
+through the official FunASR **llama.cpp** runtime — 1.7 GB of weights on disk
+(910 MB loaded per run) that never leave disk, and no audio leaves the machine. Same clip, same scorer, measured:
+
+```
+Fun-ASR-Nano (local)   CER 1.58%   at 0.32x realtime
+whisper-small          CER 5.14%   at 0.95x realtime
+whisper-medium         CER 2.77%   at 3.4x  realtime
+```
+
+That is better accuracy than whisper-medium at a tenth of its compute cost. The
+catch is honest and it is deployment, not quality: **you have to obtain the
+weights — 1.7 GB on disk — and compile a C++ runtime.** gopi does not ship either, and does not download
+them for you.
+
+Where gopi looks for a local deployment, in order:
+
+```
+<gopi profile>/voice           i.e. ~/.gopi/voice   ← what it prefers
+$HOME/work/funasr-models                            ← legacy, read-only
+```
+
+When neither is there it loads nothing, names the missing file, and prints the
+directory to put it in — plus the way to need none of it (`--engine doubao`).
+close to 2 GB of weights plus a foreign runtime is a normal thing *not* to have installed,
+and gopi treats it that way rather than as a broken install.
+
+**If you do not want dictation at all, ignore this section entirely.** Nothing else
+in gopi touches it. Background: `devdoc/doubao-audio-endpoint-credential-config.md`
+and `devdoc/audio-engine-config-surface.md`.
+
 ### Verify the install
 
 ```bash

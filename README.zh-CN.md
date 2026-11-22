@@ -202,6 +202,51 @@ $EDITOR ~/.gopi/settings.json       # 替换 "PUT-YOUR-OWN-DEEPSEEK-KEY-HERE"
 没有 key gopi 照样能启动，所有不调用模型的命令照样能用 —— 它会告诉你缺哪个 key，
 而不是静默失败。
 
+### 语音输入（可选，而且它**不是** DeepSeek）
+
+听写是一套**独立子系统，有自己的账号、自己的账单**。两个引擎，都不是 LLM 供应商：
+
+| 引擎 | 磁盘上的权重 | 音频是否离开本机 | 你需要什么 |
+|---|---|---|---|
+| `--engine doubao`（默认） | **0 B** —— 什么都不用下载 | **是**，会上传 | 火山引擎（字节）SAUC 账号：app id + access token |
+| `--engine local` | **磁盘 1.7 GB**（每次运行加载 910 MB） | **否** | 那些权重文件，外加一个约 6 MB 的运行时，得自己编译 |
+
+**云端引擎。** 语音转文字走的是火山引擎 SAUC（豆包大模型 ASR），**不是 DeepSeek**。
+不同厂商、不同控制台、不同发票。`settings.example.json` 里注释掉的 `_voice_optional`
+段落写了形状 —— endpoint `wss://openspeech.bytedance.com/api/v3/sauc/bigmodel_async`，
+resource id `vol.seedasr.sauc.duration`。**不填那两个 key 什么都不会坏**：调用语音路径时
+它报「未配置」，其余命令一律不受影响。
+
+**本地引擎。** Fun-ASR-Nano（SAN-M 编码器 + Qwen3-0.6B），通过官方 FunASR 的
+**llama.cpp** 运行时跑在你自己的 CPU 上 —— 磁盘上 1.7 GB 权重（每次运行加载 910 MB）
+永不出磁盘，音频永不出本机。
+同一段音频、同一个打分器，实测：
+
+```
+Fun-ASR-Nano（本地）   CER 1.58%   0.32x 实时
+whisper-small          CER 5.14%   0.95x 实时
+whisper-medium         CER 2.77%   3.4x  实时
+```
+
+精度比 whisper-medium 还好，算力只要它的十分之一。代价是诚实的，而且**是部署代价，
+不是质量代价**：你得自己弄到权重（磁盘 1.7 GB）、自己编译一个 C++ 运行时。gopi 既不分发、
+也不替你下载。
+
+gopi 按顺序找本地部署：
+
+```
+<gopi 配置目录>/voice          即 ~/.gopi/voice   ← 优先
+$HOME/work/funasr-models                        ← 旧位置，只读
+```
+
+两处都没有时它**不加载任何东西**，而是点名缺哪个文件、告诉你该放进哪个目录，
+并告诉你怎样完全不需要它（`--engine doubao`）。接近 2 GB 的权重加一个外来的运行时，
+**没装是正常的**，gopi 就是这么对待它的 —— 而不是当成装坏了。
+
+**如果你根本不需要听写，这一整节可以跳过。** gopi 里没有别的东西碰它。
+细节见 `devdoc/doubao-audio-endpoint-credential-config.md` 与
+`devdoc/audio-engine-config-surface.md`。
+
 ### 验证安装
 
 ```bash
