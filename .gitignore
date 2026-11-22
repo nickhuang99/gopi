@@ -156,6 +156,7 @@ ledgerpin-device-*/
 !/INSTALL.md
 !/PROJECT.md
 !/README.md
+!/README.zh-CN.md
 .heavy-skipped.tsv
 
 # --- docs/archive/demo: run output of a tracked generator (see devdoc/demo-artifacts-untracked.md) ---
