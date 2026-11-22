@@ -1,281 +1,319 @@
 <!-- doc-class: normative -->
 
+<div align="center">
+
 # gopi
 
-**A single Go binary with zero runtime dependencies, built for the one-person software company, the very small shop, and any digital developer who has to be a swiss-army-knife generalist — its job is to dispatch work, keep the books and answer questions later, not only to chat.**
+**An agent that keeps the books.**
 
-```
-$ gopi --version
-v0.5.0
-go: go1.24.0
-```
+Your coding agent forgets the job the moment the context is compacted.
+gopi files it as a **row in a ledger**, hands it to a worker that runs in its
+own clone, and remembers the lesson afterward — in one static Go binary
+with zero runtime dependencies.
 
-> This file is gopi's **front door**: someone who has just heard of it should finish
-> this page knowing what it is, what it can do, how to install it, and where to look
-> up the details.
-> If you already use it and want the arguments of some verb — that manual is
-> [`COMMANDS.md`](COMMANDS.md), not this page.
+[![License: MIT](https://img.shields.io/badge/license-MIT-blue.svg)](LICENSE)
+[![Go 1.24+](https://img.shields.io/badge/go-1.24%2B-00ADD8.svg)](https://go.dev/dl/)
+[![No CGO](https://img.shields.io/badge/cgo-disabled-success.svg)](#why-one-binary)
 
-![what gopi does, in four frames: build it, read the ledger, file a task, let a worker run it in its own clone](docs/quickstart.gif)
+[English](README.md) · [简体中文](README.zh-CN.md) · [Install](INSTALL.md) · [Commands](COMMANDS.md) · [Config](CONFIG.md)
 
-That animation is not a mock-up: every frame is a real command's real output, rendered by
-`gopi tool text2img` and assembled by `gopi tool gif` — both of them this binary, with no
-ffmpeg and no ImageMagick anywhere in the chain (the recipe is
-[`docs/quickstart.md`](docs/quickstart.md)).
+</div>
+
+![four frames: build it, read the ledger, file a task, let a worker run it in its own clone](docs/quickstart.gif)
+
+*Every frame above is a real command's real output — rendered to PNG by `gopi tool text2img`
+and assembled by `gopi tool gif`. Both are this binary. No ffmpeg, no ImageMagick in the
+chain ([recipe](docs/quickstart.md)).*
 
 ---
 
-## Three ways it differs from the mainstream agents
+## The 30-second version
 
-Most coding agents (claude code, codex, cline, crush, and the like) take the shape
-"a REPL + a dependency tree + a `--verbose`". gopi took a different road on these three things:
-
-### 1. One binary, zero runtime dependencies
-
-```
-$ CGO_ENABLED=0 go build -o bin/gopi ./cmd/agent/
+```bash
+git clone https://github.com/nickhuang99/gopi.git && cd gopi
+make build
+./bin/gopi --version
 ```
 
-`cmd/agent/` is the **only** main package in the whole tree — that is not a convention but a rule,
-enforced by `make test` succeeding with exactly one artifact in `bin/`. (This public export ships no
-test suite; see [§ Dependencies](#dependencies) for what that means.)
-**No Node version manager, no Python virtualenv, no `node_modules` tree.**
-Copy one binary onto the target machine and it runs; its configuration is a single JSON file.
+Then:
 
-### 2. A task is a row in a ledger, not a stretch of conversation in a context window
+```bash
+./bin/gopi config setup      # idempotent: fills in what is missing, touches nothing that exists
+./bin/gopi chat              # start talking
+```
 
-The unit of work in a mainstream agent is the **conversation**: you finish talking, the
-context is compacted, and that thing leaves no trace. The unit of work in gopi is the
-**task row**:
+You need **Go 1.24+** to build, and **one API key** to talk to a model.
+Nothing else — no Node, no Python, no Docker, no `node_modules`.
+
+---
+
+## What makes it different
+
+Most agent harnesses answer *"how do I chat with a model that edits files?"*
+gopi answers a different question: **"how does one person run a software company
+without hiring anyone?"** That changes what the core object is.
+
+### 1. The unit of work is a ledger row, not a conversation
+
+In a mainstream agent you finish talking, the context is compacted, and the work
+leaves no trace. In gopi a piece of work is a **row** with an id, a state machine,
+a claimer, a delivery branch, and a session directory you can re-read months later.
 
 ```bash
 $ gopi task submit "把 config 加载路径从相对改成绝对" --tags refactor
-Task queued: 01a1ad83-33d1-76a3-b4be-15704b366409 (status=pending)
+Task queued: 01a201ec-3cbc-7af2-ace5-e554fbb102dc (status=pending, source=agent, tags=refactor)
 ```
 
-Each row has its own **id, state machine, claimer, delivery branch, and re-readable
-session directory**. It can be tracked through `pending` → `claimed` → `in_progress` →
-`completed`; a failure can be `--resume`d (the same id, the same directory, the checkpoint
-appended), or `clone`d into a clean-room copy that redoes the work from scratch.
+That row survives crashes, reboots and `rm -rf ~/.gopi`. Ask it anything later:
 
-**This means**: "is this thing done" is a fact you can query (`gopi task show <id>`),
-not a summary you have to take on faith.
+```bash
+gopi task show 01a201ec-3cbc-7af2-ace5-e554fbb102dc   # status, holder, parent, payload revisions, delivery proof
+gopi task list --status pending                        # what is claimable, and why a row is parked
+```
 
-### 3. Three layers of transcript, not one switch
+**A failure is not a dead end.** `gopi worker --resume <id>` continues the same
+row in the same directory with the checkpoint appended; `gopi task clone <id>`
+gives a clean-room copy that redoes the work from scratch. Which one is right is
+decided by `gopi task status <id>`'s exit code, not by your memory of what happened.
 
-A mainstream agent's audit surface is one `--verbose` or one jsonl file. gopi splits the
-same history into four tiers:
+### 2. A worker runs in its own clone and merges itself
 
-| What you want to see | Command | Granularity |
+The whole system exists so that **you are not the one holding the context.**
+`gopi worker` claims a row, clones the repo to a private directory, does the work,
+builds it, pulls the integration branch, **resolves the conflicts itself**, and
+pushes. Then the row carries the proof.
+
+```bash
+$ gopi worker 01a201ec-3cbc-7af2-ace5-e554fbb102dc
+# ... runs in isolation, then ...
+clone-channel: attempt 1/M: push accepted
+```
+
+A run that cannot deliver says so, by name, in its own log — never silence.
+
+### 3. Memory is a subsystem, not a vector store bolted on
+
+Three tiers, all queryable, all searchable, all voted on:
+
+| Tier | What it holds | How you ask |
 |---|---|---|
-| Which sessions ran, and what they cost | `gopi session list` / `gopi session stats` | session level |
-| What happened in every round | `gopi session log <id>` | round level |
-| The complete request the model saw | `gopi session raw --file <id>.raw.log` | request-body level |
-| The actual bytes on the wire | the same `.raw.log` | raw-wire level |
+| Distilled | one reusable lesson per row: topic / question / answer / keywords | `gopi memory search "为什么 build 会红"` |
+| Procedural | reusable workflows, as ordered steps | ``gopi memory search "<task>"`` |
+| Session index | every round of every past run, one searchable note each | `gopi session notes "<query>"` |
 
-**When "it said it did it" and "what it actually sent" disagree, the fourth tier is the only
-layer that can adjudicate.**
+Retrieval is **automatic** — the right lessons are prefetched into the prompt
+before you ask. Feedback moves confidence, so bad entries sink and good ones rise.
+
+### 4. It can see the screen and act on it
+
+Not a screenshot tool bolted on: a hand-rolled X11 protocol client, pure Go,
+zero CGO. Capture → read → act → verify, with the pixel hashes to prove it changed.
+
+```bash
+gopi tool capture --self                    # the terminal gopi itself runs in, resolved by pid
+gopi tool vision_analyze --image shot.png   # what does this screen say?
+gopi tool act move 640 400                  # drive the real desktop
+```
 
 ---
 
-## What it can do
+## gopi vs. the mainstream harnesses
 
-17 capability surfaces. Each one gives a command that **really runs** (not an illustration):
+| | gopi | Crush | Claude Code | Pi | Codex CLI |
+|---|---|---|---|---|---|
+| **Runtime deps** | none (static binary) | Go binary | Node.js 18+ | Node.js 22.19+ | see its README |
+| **Unit of work** | ledger row, survives the session | session | session | session | session |
+| **Work survives context compaction** | yes — it is a database row | no | no | no | no |
+| **Unattended dispatch** | `gopi worker` claims and runs rows | not in README | not in README | print/JSON mode | not in README |
+| **Isolation per task** | its own git clone, auto-reclaimed | not in README | not in README | not in README | sandbox |
+| **Long-term memory** | 3 tiers + FTS + feedback + auto-prefetch | not in README | not in README | not in README | not in README |
+| **Desktop control** | pure-Go X11 (no deps) | not in README | not in README | not in README | not in README |
+| **Multi-provider** | DeepSeek (BYOK), Anthropic/OpenAI-compatible via proxy | many | Anthropic | many | OpenAI |
 
-### Conversation and execution
+<sub>`not in README` means exactly that: the string did not appear in that project's own
+README when this table was written. It is **not** a claim that the capability is absent —
+most of these tools can do more through plugins. Read every row as "what each project
+chose to advertise", never as a feature audit. Counts and quotes are from each project's own README;
+re-check before relying on this table.</sub>
 
-| I want to | Command |
-|---|---|
-| Talk to it | `gopi chat` |
-| Have it finish one small job in one shot, without entering the loop | `gopi chat --once -p "把这个函数的错误分支补上"` |
-| Dispatch a self-contained piece of work and collect the result later | `gopi task submit "<这件事>"` |
-| See which step a piece of work is at right now | `gopi task show <id>` |
-| Find work nobody has claimed yet | `gopi task list --status pending` |
-
-### Memory and retrieval
-
-| I want to | Command |
-|---|---|
-| Make it remember one reusable lesson | `gopi memory store --topic "..." --question "..." --answer "..."` |
-| Ask whether it has hit this problem before | `gopi memory search "为什么 build 会红"` |
-| Find a symbol definition in the code | `gopi tool code-search <Symbol>` |
-| Full-text search | `gopi tool keyword_search "<pattern>"` |
-| Find out who wrote a line and why | the `git_blame` tool inside a session; `git blame` on the command line |
-
-### Seeing and acting
-
-| I want to | Command |
-|---|---|
-| Capture the current screen | `gopi tool capture --screen --out s.png` |
-| Capture the terminal window it is itself running in | `gopi tool capture --self` |
-| Drive the desktop (move the mouse, click, type) | `gopi tool act move 100 100` |
-| Read what is inside an image | `gopi tool vision_analyze --image p.png` |
-| Render a piece of text into an image | `gopi tool text2img --src notes.txt` |
-| Screenshot a web page (headless, never touching the real screen) | `gopi tool shot --url https://example.com` |
-
-### Configuration and introspection
-
-| I want to | Command |
-|---|---|
-| See the configuration currently **in effect** (not the file's contents — the parsed result) | `gopi config show` |
-| See which environment variables exist | `gopi config show --help-env` |
-| Bring the machine to a runnable state with one command | `gopi config setup` |
-| Look up the full usage of some verb | `gopi <verb> -h` |
-
-### Isolation and cleanup
-
-| I want to | Command |
-|---|---|
-| Run once inside a private profile without polluting the main ledger | `gopi tool sandbox run --label probe -- <cmd>` |
-| See what can be reclaimed in the temporary directories | `gopi tool scratch-gc --dry-run` |
-| Clean up the working directories of finished tasks | `gopi task sweep-worktrees` |
-
-### Service surface
-
-| I want to | Command |
-|---|---|
-| Start a local web UI | `gopi web --addr 127.0.0.1:8080` |
-| Deliver a message to another gopi session | `gopi notify --session <id> --message "..."` |
-| Stay resident in the background and keep consuming the task queue | `gopi worker` (long-running; start it in the background with `job`) |
+**Where gopi is weaker, honestly:** no MCP, no ARM/macOS/Windows build, one
+model family out of the box, no npm/brew package. See [§ Boundaries](#boundaries).
 
 ---
 
 ## Installation
 
-**Read [`INSTALL.md`](INSTALL.md) — it is the page that gets you from a fresh Ubuntu
-22.04 box to a working `gopi` in about five minutes, and it names the exact version each
-piece requires.**
+Pick the one that matches you.
 
-The short version, so you know what you are in for:
+### From source (works today)
 
 ```bash
-go version          # must be go1.24.0 or newer — this is a hard requirement
+go version                         # must be 1.24.0 or newer — hard requirement
 git clone https://github.com/nickhuang99/gopi.git
 cd gopi
-make build          # → ./bin/gopi
+make build                         # → ./bin/gopi
 ./bin/gopi --version
 ```
 
-Then either run `./bin/gopi` in place, or put it on your `PATH`:
+Put it on your `PATH`:
 
 ```bash
-make install                       # → $(go env GOPATH)/bin/gopi
-make install PREFIX=/usr/local/bin # or somewhere already on PATH
+make install                        # → $(go env GOPATH)/bin/gopi
+make install PREFIX=/usr/local/bin  # or somewhere already on PATH
 ```
 
-**Platform: Ubuntu 22.04 LTS, x86-64, Go 1.24.x — the only combination that has been run.**
-No macOS, no Windows, no ARM, no other distribution has been tested; see
-[`INSTALL.md` §6](INSTALL.md) for the full honest list.
+### Bring your own key
 
-### You bring your own API key
-
-gopi ships **no credentials**. It is built around **DeepSeek**, and the model name in
+gopi ships **no credentials**. It is built around **DeepSeek**; the model name in
 `settings.example.json` is a placeholder you replace with your own key from
-<https://platform.deepseek.com/>. Voice input is a **separate** service (Volcengine /
-ByteDance SAUC) with its own account and its own key, and it is entirely optional.
+<https://platform.deepseek.com/>.
 
 ```bash
 cp settings.example.json ~/.gopi/settings.json
 $EDITOR ~/.gopi/settings.json       # replace "PUT-YOUR-OWN-DEEPSEEK-KEY-HERE"
 ```
 
-Without a key gopi still starts, and every command that does not call a model still works;
-it tells you which key is missing rather than failing silently.
+Without a key gopi still starts, and every command that does not call a model still
+works — it tells you which key is missing instead of failing silently.
 
-### The first run
+### Verify the install
 
 ```bash
-gopi config setup     # idempotent provisioning: fills in what is missing, changes nothing that exists
-gopi config show      # the configuration IN FORCE, and the channel that decided each value
+gopi config setup     # idempotent provisioning
+gopi config show      # the config IN FORCE, and which channel decided each value
 gopi chat             # start talking
 ```
 
-`gopi config show` is the first thing to run when anything behaves differently from what
-you wrote in the file: it prints the parsed result, not the file, and beside each value the
-channel that won (flag / env var / settings.json / default).
+`gopi config show` prints the **parsed result**, not the file, and beside each value
+the channel that won (flag / env / settings.json / default). When behaviour disagrees
+with what you wrote, that is the page to read.
 
-### Dependencies
-
-**Zero runtime dependencies.** The only build-time dependency is the Go toolchain itself.
-The `require` block of `go.mod` is the complete list; no CGO is pulled in, no C compiler is
-needed, and neither Node nor Python is needed.
-
-**This public export ships no test suite.** `make test` runs `go build ./...` and `go vet ./...` —
-the compiler over every package, and the vet pass — because those are the two checks that mean
-something on a tree of product code only. The `_test.go` files, `internal/standards/` and the
-suite targets stayed in the private working tree: several hundred files reference task ids,
-hostnames and internal ledgers that are not part of this release. The consequence you should know
-about, stated plainly: a `go test` command quoted anywhere in these documents (including in
-`PROJECT.md` and `CONFIG.md`) names a test that **is not in this repository** — it will print
-`no tests to run` and exit 0. That is a vacuous green, not a passing check. Every such sentence in
-`PROJECT.md` describes what a gate enforced *upstream*; treat it as documentation of intent, and
-verify behaviour by running the binary, not by trusting a quoted gate.
+**Platform: Ubuntu 22.04 LTS, x86-64, Go 1.24.x** — the only combination that has been
+run. No macOS, no Windows, no ARM, no other distribution is tested; the honest list
+is [`INSTALL.md` §6](INSTALL.md).
 
 ---
 
-## Documentation map
+## What it can do
 
-| What you want to know | Where to look |
+Every command below **really runs** — none is an illustration.
+
+### Conversation and execution
+
+| I want to | Command |
 |---|---|
-| **How to install it on a fresh machine, and what exactly is required** | [`INSTALL.md`](INSTALL.md) — Ubuntu 22.04 + Go 1.24, BYOK, and a disposable local sandbox |
-| **The full usage of every CLI verb** | [`COMMANDS.md`](COMMANDS.md) — 421 lines, listed by verb, each line giving the source location |
-| **Every configuration key's default / precedence / who reads it** | [`CONFIG.md`](CONFIG.md) — 1649 lines, one line per knob, with the source line that reads it |
-| **The official description of some subsystem** | [`man/`](man/) — 14 pages, `gopi-chat.md`, `gopi-task.md`, `gopi-memory.md` and so on |
-| **The engineering constraints (why the code looks this way)** | [`PROJECT.md`](PROJECT.md) — 37 rules, each naming the gate that once caught a violation (the gates are not part of this export) |
-| **The history and measurements behind design decisions** | [`devdoc/`](devdoc/) — every document declares its doc-class on its own first line |
+| Talk to it | `gopi chat` |
+| Finish one small job in one shot, no loop | `gopi chat --once -p "把这个函数的错误分支补上"` |
+| Dispatch work and collect it later | `gopi task submit "<这件事>"` |
+| See where a piece of work is right now | `gopi task show <id>` |
+| Find work nobody has claimed | `gopi task list --status pending` |
+| Run the queue unattended | `gopi worker` |
+
+### Memory and retrieval
+
+| I want to | Command |
+|---|---|
+| Make it remember one reusable lesson | `gopi memory store --topic "..." --question "..." --answer "..."` |
+| Ask whether it has hit this before | `gopi memory search "为什么 build 会红"` |
+| Find a symbol definition | `gopi tool code-search <Symbol>` |
+| Full-text search the tree | `gopi tool keyword_search "<pattern>"` |
+| Find who wrote a line and why | `git_blame` inside a session; `git blame` on the CLI |
+
+### Seeing and acting
+
+| I want to | Command |
+|---|---|
+| Capture the live desktop | `gopi tool capture --screen --out s.png` |
+| Capture the terminal gopi itself runs in | `gopi tool capture --self` |
+| Drive the desktop | `gopi tool act move 100 100` |
+| Read what is in an image | `gopi tool vision_analyze --image p.png` |
+| Render text to an image (CJK-capable) | `gopi tool text2img --src notes.txt` |
+| Screenshot a web page, headless | `gopi tool shot --url https://example.com` |
+
+### Configuration and introspection
+
+| I want to | Command |
+|---|---|
+| See the config **in effect** | `gopi config show` |
+| List every environment variable | `gopi config show --help-env` |
+| Provision a fresh machine | `gopi config setup` |
+| Look up any verb | `gopi <verb> -h` |
+
+### Isolation and cleanup
+
+| I want to | Command |
+|---|---|
+| Run once in a private profile | `gopi tool sandbox run --label probe -- <cmd>` |
+| See what temp dirs can be reclaimed | `gopi tool scratch-gc --dry-run` |
+| Clean finished tasks' working dirs | `gopi task sweep-worktrees` |
+
+### Service surface
+
+| I want to | Command |
+|---|---|
+| Local web UI | `gopi web --addr 127.0.0.1:8080` |
+| Deliver a message to another session | `gopi notify --session <id> --message "..."` |
+
+---
+
+## Boundaries
+
+gopi is **not** "does everything". These are deliberate trade-offs, not a to-do list:
+
+- **No MCP.** There is a plugin tree, but no Model Context Protocol client. Adding MCP
+  means a new protocol plus a resident connection, which trades against "zero
+  dependencies, one binary". **Awaiting a ruling, not awaiting implementation.**
+- **No hosted install script.** No `curl … | sh`. A script that comes off the network
+  and runs with your privileges is a dependency not pulled in lightly.
+- **It will not install software on someone else's machine for you.** Gathering
+  evidence, probing and verifying are allowed; "install a third-party agent so a test
+  can run once" is forbidden.
+- **No latency promise under device load.** gopi does not generate load to measure
+  anything, so it makes no claim about performance under contention.
+- **One platform.** Ubuntu 22.04 x86-64 is what has been run. Cross-compilation
+  probably works; "probably" is not "tested".
+- **This public export ships no test suite.** `make test` runs `go build ./...` plus
+  `go vet ./...` — the two checks that mean something on product code alone. `_test.go`
+  files and `internal/standards/` stayed in the private tree. **A `go test` command
+  quoted anywhere in these docs names a test that is not in this repository: it prints
+  `no tests to run` and exits 0. That is a vacuous green, not a passing check.**
+  Verify behaviour by running the binary.
+
+---
+
+## Documentation
+
+| What you want | Where |
+|---|---|
+| **Install on a fresh machine, and exactly what is required** | [`INSTALL.md`](INSTALL.md) |
+| **Every CLI verb in full** | [`COMMANDS.md`](COMMANDS.md) — 421 lines, by verb |
+| **Every config key's default, precedence, and the line that reads it** | [`CONFIG.md`](CONFIG.md) — 1649 lines |
+| **The official description of a subsystem** | [`man/`](man/) — 14 pages |
+| **Why the code looks this way** | [`PROJECT.md`](PROJECT.md) — 37 engineering rules |
+| **The measurements behind design decisions** | [`devdoc/`](devdoc/) — each declares its doc-class on line 1 |
 | **What changed** | [`CHANGELOG.md`](CHANGELOG.md) |
 
-> **Every figure in these tables is measured, and each row names the command that re-derives it:**
-> The row is the ONLY place a measured number is written down — no figure is repeated here, so this
-> paragraph cannot drift away from the table above it. Line counts come from `wc -l <file>`, the page
-> count from `ls man/*.md | wc -l`, and the rule count counts the DISTINCT rule NUMBERS that carry a
-> `## Rule N` heading
-> (`grep -oE '^## Rule [0-9]+' PROJECT.md | sed 's/.* //' | sort -un | wc -l`).
-> A heading that merely STARTS with `## Rule ` is not necessarily a rule of its own: a lettered
-> section (`## Rule 30a`) and a `## Rule 41 的下半` section belong to the rule they extend, and
-> Rules 16–21 share the single `## Machine-Checkable Gates` heading — so the highest number a
-> briefing may cite runs past the number of sections, and the TABLE's rule count is the count.
-> **Re-run any figure above with the command printed beside it.** In the private working tree a
-> standards gate turned a moved document red; this export ships no test suite, so the commands in
-> this list are the whole of the machinery — run them yourself if you change a page.
-
-> This README answers only "what is it, and what can it do".
-> For a specific argument, a specific default, the boundary of a specific behaviour — **look it
-> up in the tables above**; they are derived from the source, not written from memory.
-
----
-
-## Its boundaries (an honest section)
-
-**gopi is not "does everything".** The following are deliberate design trade-offs, not a to-do list:
-
-- **No MCP.** There is a plugin tree, but no Model Context Protocol client.
-  Adding MCP would mean a new protocol plus a resident connection — which trades against
-  "zero dependencies, one binary". This trade-off is **awaiting a ruling**, not **awaiting
-  implementation**.
-- **No hosted install script.** There is no `curl ... | sh`. Installing is a `make` target plus
-  a source tree, because a script that comes off the network and executes with your
-  privileges is a dependency that should not be pulled in lightly.
-- **It will not install software on someone else's machine for you.** Gathering evidence,
-  probing and verifying are all allowed, but "install a third-party agent so that a test can
-  run once" is explicitly forbidden.
-- **It makes no promise to stay fast under heavy device load.** gopi has no latency promise,
-  and it does not generate load in order to measure latency.
+> Figures in that table come from `wc -l <file>` and `ls man/*.md | wc -l`. Re-run them
+> yourself; this export ships no gate that would catch a stale one.
 
 ---
 
 ## Status
 
-`v0.5.0` — the first public tree. Under active development: the interfaces will change, but
-every change is recorded in `CHANGELOG.md`.
+`v0.5.0` — the first public tree. Under active development: interfaces will change,
+but every change is recorded in `CHANGELOG.md`.
 
 ```bash
 $ ./bin/gopi --version
 v0.5.0
+go: go1.24.0
+platform: linux/amd64
+revision: <the commit you built from>
 ```
 
-The specific revision it was built from:
+`revision` is baked in at build time, so it names the commit *your* binary came from —
+which is why it is not written down here.
 
-```bash
-$ ./bin/gopi --version | grep revision
-```
+## License
+
+MIT — see [`LICENSE`](LICENSE).
