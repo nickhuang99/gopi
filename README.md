@@ -300,12 +300,12 @@ gopi is **not** "does everything". These are deliberate trade-offs, not a to-do 
 
 ## Status
 
-`v0.5.0` — the first public tree. Under active development: interfaces will change,
+`v0.5.2` — the first public tree. Under active development: interfaces will change,
 but every change is recorded in `CHANGELOG.md`.
 
 ```bash
 $ ./bin/gopi --version
-v0.5.0
+v0.5.2
 go: go1.24.0
 platform: linux/amd64
 revision: <the commit you built from>
