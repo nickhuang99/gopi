@@ -136,11 +136,18 @@ jobs:
       - name: Publish to the release
         uses: softprops/action-gh-release@v2
         with:
+          # WHICH RELEASE, and it must be stated rather than inferred. On a tag
+          # push `github.ref_name` IS the tag. On workflow_dispatch it is the
+          # BRANCH (master), and the action would then look for a release named
+          # "master" — which is exactly how the first run of this workflow failed
+          # (both build jobs green, publish job red). The manual trigger therefore
+          # names the tag in its `version` input, and that is the operand here.
+          tag_name: ${{ github.event_name == 'push' && github.ref_name || inputs.version }}
+          name: ${{ github.event_name == 'push' && github.ref_name || inputs.version }}
           files: dist/*
           fail_on_unmatched_files: true
-          # Only set a name for a tag-triggered run; a manual dispatch publishes
-          # into an existing release rather than renaming it.
-          name: ${{ github.event_name == 'push' && format('{0}', github.ref_name) || '' }}
+          # A manual dispatch re-uploads into an existing release rather than
+          # overwriting its body with generated notes.
           generate_release_notes: ${{ github.event_name == 'push' }}
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
