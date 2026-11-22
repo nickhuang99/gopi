@@ -1,5 +1,6 @@
 # build output
 bin/
+dist/
 
 # test binaries (anchored to repo root — unanchored "agent"/"gopi"
 # accidentally ignored cmd/agent/* and internal/agent/*)

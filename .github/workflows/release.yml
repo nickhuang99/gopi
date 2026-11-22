@@ -1,0 +1,146 @@
+name: release
+
+# WHAT THIS BUILDS, AND WHY IT IS ONLY TWO TARGETS
+#
+# linux/amd64 and linux/arm64 are the targets that were MEASURED to cross-compile
+# on this tree (2026-11-23, Go 1.24.0, CGO_ENABLED=0, `go build ./cmd/agent/`):
+#
+#   OK   linux/amd64  63 MB
+#   OK   linux/arm64  61 MB
+#   FAIL darwin/amd64
+#   FAIL darwin/arm64   syscall.Fsid has no field X__val on darwin,
+#                       syscall.Statfs_t.Type is uint32 there, not int64
+#   FAIL windows/amd64  syscall.Access / syscall.Kill / syscall.Stat_t /
+#                       syscall.O_NOFOLLOW do not exist on windows
+#
+# Those are POSIX-only call sites in internal/scratch, internal/procstat,
+# internal/borrowedfd and internal/cgroupscope with no build-tag split yet. The
+# failure is real and reproducible, so the matrix carries only what works: a
+# workflow whose darwin job is red on every run teaches a visitor that the
+# project is broken, which is a worse lie than "linux only for now".
+#
+# WHEN THE BUILD-TAG SPLIT LANDS, add the target here AND to README's Boundaries
+# section in the same change — the two must not disagree.
+
+on:
+  push:
+    tags: ['v*']
+  workflow_dispatch:
+    inputs:
+      version:
+        description: 'Version string to stamp (e.g. v0.5.3)'
+        required: true
+
+permissions:
+  contents: write
+
+jobs:
+  build:
+    name: ${{ matrix.goos }}/${{ matrix.goarch }}
+    runs-on: ubuntu-latest
+    strategy:
+      fail-fast: false
+      matrix:
+        include:
+          - goos: linux
+            goarch: amd64
+          - goos: linux
+            goarch: arm64
+
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - uses: actions/setup-go@v5
+        with:
+          go-version: '1.24.0'
+
+      # The revision the binary reports is set by the LINKER, not derived at run
+      # time — internal/version/self.go carries the command in full. Without this
+      # ldflag `--version` prints "revision: unavailable", because the Go
+      # toolchain only writes its own vcs.revision stamp when the build directory
+      # is a repository root recognized by a .git DIRECTORY.
+      - name: Resolve version and revision
+        id: v
+        run: |
+          if [ "${{ github.event_name }}" = "workflow_dispatch" ]; then
+            echo "version=${{ github.event.inputs.version }}" >> "$GITHUB_OUTPUT"
+          else
+            echo "version=${GITHUB_REF_NAME}" >> "$GITHUB_OUTPUT"
+          fi
+          echo "revision=$(git rev-parse HEAD)" >> "$GITHUB_OUTPUT"
+
+      - name: Build
+        env:
+          CGO_ENABLED: '0'
+          GOOS: ${{ matrix.goos }}
+          GOARCH: ${{ matrix.goarch }}
+        run: |
+          set -eu
+          VER='${{ steps.v.outputs.version }}'
+          REV='${{ steps.v.outputs.revision }}'
+          OUT="gopi_${VER}_${{ matrix.goos }}_${{ matrix.goarch }}"
+          go build \
+            -trimpath \
+            -ldflags "-s -w \
+              -X github.com/nickhuang99/gopi/internal/version.Version=${VER} \
+              -X github.com/nickhuang99/gopi/internal/version.Revision=${REV}" \
+            -o "dist/${OUT}" ./cmd/agent/
+          ( cd dist && sha256sum "${OUT}" > "${OUT}.sha256" )
+          ls -lh dist/
+
+      # A binary that does not run is not a release artifact. The runner is
+      # linux/amd64, so only that target can be executed here; the arm64 build is
+      # proved to COMPILE and to carry the version stamp (read out of the binary
+      # with strings, which needs no emulator), and NOT proved to execute.
+      - name: Prove the artifact runs (linux/amd64 only)
+        if: matrix.goos == 'linux' && matrix.goarch == 'amd64'
+        run: |
+          set -eu
+          BIN=$(ls dist/gopi_*_linux_amd64)
+          chmod +x "$BIN"
+          "$BIN" --version
+
+      - name: Prove the version stamp is in the arm64 binary
+        if: matrix.goarch == 'arm64'
+        run: |
+          set -eu
+          BIN=$(ls dist/gopi_*_linux_arm64)
+          REV='${{ steps.v.outputs.revision }}'
+          if strings "$BIN" | grep -qF "$REV"; then
+            echo "the arm64 artifact carries revision $REV"
+          else
+            echo "the arm64 artifact does NOT carry revision $REV — the ldflag did not land" >&2
+            exit 1
+          fi
+
+      - uses: actions/upload-artifact@v4
+        with:
+          name: gopi-${{ matrix.goos }}-${{ matrix.goarch }}
+          path: dist/*
+          if-no-files-found: error
+
+  release:
+    needs: build
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/download-artifact@v4
+        with:
+          path: dist
+          merge-multiple: true
+
+      - name: List what will be published
+        run: ls -lh dist/
+
+      - name: Publish to the release
+        uses: softprops/action-gh-release@v2
+        with:
+          files: dist/*
+          fail_on_unmatched_files: true
+          # Only set a name for a tag-triggered run; a manual dispatch publishes
+          # into an existing release rather than renaming it.
+          name: ${{ github.event_name == 'push' && format('{0}', github.ref_name) || '' }}
+          generate_release_notes: ${{ github.event_name == 'push' }}
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
