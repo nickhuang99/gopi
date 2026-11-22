@@ -140,7 +140,39 @@ gopi tool act move 640 400                  # 操作真实桌面
 
 挑适合你的一种。
 
-### 从源码（今天就能用）
+### 下载预编译二进制（不需要工具链）
+
+每个 release 都带一个可直接运行的二进制，由 GitHub Actions 构建：
+
+**[→ 最新 release](https://github.com/nickhuang99/gopi/releases/latest)**
+
+| 平台 | 文件 |
+|---|---|
+| Linux x86-64 | `gopi_<version>_linux_amd64` |
+| Linux ARM64 | `gopi_<version>_linux_arm64` |
+
+```bash
+VER=v0.5.2
+curl -fLO "https://github.com/nickhuang99/gopi/releases/download/${VER}/gopi_${VER}_linux_amd64"
+curl -fLO "https://github.com/nickhuang99/gopi/releases/download/${VER}/gopi_${VER}_linux_amd64.sha256"
+sha256sum -c "gopi_${VER}_linux_amd64.sha256"
+chmod +x "gopi_${VER}_linux_amd64"
+./gopi_${VER}_linux_amd64 --version
+```
+
+然后放进 `PATH`：
+
+```bash
+mv gopi_${VER}_linux_amd64 ~/.local/bin/gopi
+```
+
+**只构建 Linux。** macOS 与 Windows 在这棵树上交叉编译失败 —— darwin 的
+`syscall.Fsid` 没有 `X__val`，windows 没有 `syscall.Access` / `syscall.Kill` /
+`syscall.O_NOFOLLOW`；两者都是尚未做 build-tag 拆分的 POSIX-only 调用点。
+工作流只带你实测能构建的两个目标，而不是三个里面有一个永远红。
+见[§ 边界](#边界)。
+
+### 从源码
 
 ```bash
 go version                         # 必须 1.24.0 或更新 —— 硬性要求
@@ -260,8 +292,11 @@ gopi **不是**「什么都能」。下面这些是刻意的取舍，不是待�
 - **它不会替你在别人的机器上装软件。** 取证、探测、验证都允许；
   「装一个第三方 agent 好让某个测试能跑一次」是明确禁止的。
 - **不承诺在设备压力下的延迟。** gopi 不为测量什么而制造负载，所以对争用下的性能不作任何声称。
-- **只有一个平台。** 跑过的是 Ubuntu 22.04 x86-64。交叉编译大概能行，
-  但「大概」不等于「测过」。
+- **只有一个平台、两种架构。** 唯一**跑过**的组合是 Linux x86-64。Linux ARM64 会构建并发布
+  —— 已实测能编译、能带上版本戳，但**没有**实测能执行，因为 CI runner 是 amd64 且没配模拟器。
+  macOS 与 Windows 在这棵树上**编译不过**：darwin 的 `syscall.Fsid` 没有 `X__val`，
+  windows 没有 `syscall.Access` / `syscall.Kill` / `syscall.O_NOFOLLOW`。
+  那是 POSIX-only 调用点的问题，不是「没测过的猜测」。
 - **这个公开导出仓不带测试套件。** `make test` 跑的是 `go build ./...` 加 `go vet ./...` ——
   在纯产品代码上唯一有意义的两项检查。`_test.go` 与 `internal/standards/` 留在了私有树里。
   **这些文档里引用的任何 `go test` 命令，点名的测试都不在本仓库中：它会打印

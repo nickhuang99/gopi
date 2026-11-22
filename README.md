@@ -145,7 +145,40 @@ model family out of the box, no npm/brew package. See [§ Boundaries](#boundarie
 
 Pick the one that matches you.
 
-### From source (works today)
+### Download a prebuilt binary (no toolchain needed)
+
+Every release carries a ready-to-run binary, built by GitHub Actions:
+
+**[→ Latest release](https://github.com/nickhuang99/gopi/releases/latest)**
+
+| Platform | File |
+|---|---|
+| Linux x86-64 | `gopi_<version>_linux_amd64` |
+| Linux ARM64 | `gopi_<version>_linux_arm64` |
+
+```bash
+VER=v0.5.2
+curl -fLO "https://github.com/nickhuang99/gopi/releases/download/${VER}/gopi_${VER}_linux_amd64"
+curl -fLO "https://github.com/nickhuang99/gopi/releases/download/${VER}/gopi_${VER}_linux_amd64.sha256"
+sha256sum -c "gopi_${VER}_linux_amd64.sha256"
+chmod +x "gopi_${VER}_linux_amd64"
+./gopi_${VER}_linux_amd64 --version
+```
+
+Then put it somewhere on your `PATH`:
+
+```bash
+mv gopi_${VER}_linux_amd64 ~/.local/bin/gopi
+```
+
+**Only Linux is built.** macOS and Windows fail to cross-compile against this
+tree — `syscall.Fsid` has no `X__val` on darwin, and `syscall.Access` /
+`syscall.Kill` / `syscall.O_NOFOLLOW` do not exist on windows; both are POSIX-only
+call sites with no build-tag split yet. The workflow carries the two targets that
+were measured to build, rather than three where one is permanently red. See
+[§ Boundaries](#boundaries).
+
+### From source
 
 ```bash
 go version                         # must be 1.24.0 or newer — hard requirement
@@ -270,8 +303,13 @@ gopi is **not** "does everything". These are deliberate trade-offs, not a to-do 
   can run once" is forbidden.
 - **No latency promise under device load.** gopi does not generate load to measure
   anything, so it makes no claim about performance under contention.
-- **One platform.** Ubuntu 22.04 x86-64 is what has been run. Cross-compilation
-  probably works; "probably" is not "tested".
+- **One platform, two architectures.** Linux x86-64 is the only combination that has
+  been **run**. Linux ARM64 is built and published — measured to compile and to carry
+  the version stamp, **not** measured to execute, because the CI runner is amd64 and
+  no emulator is set up. macOS and Windows **do not compile** against this tree:
+  `syscall.Fsid` has no `X__val` on darwin, and `syscall.Access` / `syscall.Kill` /
+  `syscall.O_NOFOLLOW` do not exist on windows. That is a POSIX-only call-site
+  problem, not an untested guess.
 - **This public export ships no test suite.** `make test` runs `go build ./...` plus
   `go vet ./...` — the two checks that mean something on product code alone. `_test.go`
   files and `internal/standards/` stayed in the private tree. **A `go test` command
