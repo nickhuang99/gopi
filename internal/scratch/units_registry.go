@@ -230,7 +230,7 @@ func RegisterShotUnit(dir, unit string, creatorPid int) (string, error) {
 	if creatorPid <= 0 {
 		return "", fmt.Errorf("register %s: creator pid %d is not a process id", unit, creatorPid)
 	}
-	if err := os.MkdirAll(recordDir, shotUnitDirPerm); err != nil {
+	if err := MkdirAllWithSuiteRunOwnerPerm(recordDir, shotUnitDirPerm); err != nil {
 		return "", fmt.Errorf("register %s: %w", unit, err)
 	}
 	rec := ShotUnitRecord{

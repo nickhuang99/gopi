@@ -233,7 +233,7 @@ func PasteRefInfoFor(s string) (PasteRefInfo, bool) {
 // keyword budget (Config.MaxKeywords) is EIGHT. The budget was therefore spent on
 // the pointer, and the payload's words (read separately, from the file the
 // reference names) were cut off before they entered the key: the live run
-// recorded `"query":"paste turn 5411 home the operator workspace gopi sandbox"` for a turn
+// recorded `"query":"paste turn 5411 home nick workspace gopi sandbox"` for a turn
 // whose pasted text was entirely about the retrieval seam. A consumer that has
 // ALREADY read the payload must strip the pointer, or the pointer wins.
 //

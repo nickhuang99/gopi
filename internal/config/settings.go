@@ -543,6 +543,43 @@ func FromSettingsFile(path string) (*Config, error) {
 	return cfg, nil
 }
 
+// SettingsCarriesKeyInDecoded reports whether the settings document this Config
+// was decoded from carries key at the top level — answered from the decode
+// FromSettingsFile already did, so a caller that HOLDS a Config pays no second
+// file read.
+//
+// WHY IT IS A DIFFERENT QUESTION FROM FROM-A-VALUE. `cfg.HideThinking == false`
+// and `"hide_thinking": false` are different facts: encoding/json leaves the Go
+// zero value in place for a key the document does not carry, so a value-based
+// report can only ever say "false", never "the file never said". Measured
+// 2026-11-22: `/config` printed `hide_thinking (unset)` for a document that
+// stated `false`, and for one that stated nothing — the same cell for two
+// different documents (bug row 01a1ffdd).
+//
+// It answers about the DOCUMENT the Config came from, which is the only thing
+// this Config knows. A Config assembled without a file (a test fixture, a
+// caller's own struct literal) carries no raw top level and therefore answers
+// false: "this document states nothing", which is the honest reading of a
+// document that does not exist.
+func (c *Config) SettingsCarriesKeyInDecoded(key string) bool {
+	if c == nil || key == "" {
+		return false
+	}
+	return c.settingsCarriesRawKey(key)
+}
+
+// IsBoolSettingsKey reports whether key is a BOOLEAN settings key, i.e. one
+// whose declared `false` is a value a reader may need to tell apart from
+// "absent".
+//
+// It is the exported face of the ONE list isBoolKey already owns (the flag
+// parser and the docs renderer read it), so a report can ask the question
+// without re-spelling the set (Rules 1/13/14). Un-exporting is not an option:
+// the membership is what decides whether a knob has three states or two.
+func IsBoolSettingsKey(key string) bool {
+	return isBoolKey(key)
+}
+
 // SettingsCarriesKey reports whether the settings file this Config was loaded
 // from LITERALLY carries key as a top-level JSON key.
 //
@@ -752,23 +789,26 @@ var EnvVars = []envKey{
 	{ChatOpAutoEnv, ChatOpAutoSettingsKey, "", "Chat console's standing posture for the ONE class it must ask about — a LONG operation — judged by the CATEGORY of the action, never by a clock: absent or false = ALL-ASK (default; an unauthorised whole-tree suite / full build / package install / merge|worker|serve sweep is asked about), true = the console may also start an unauthorised long operation itself. The other two classes are NOT this knob's business: OPERATOR WORK (ops, DevOps, network, script, document, query, diagnosis, bug row, housekeeping, short job) always runs with no permission question, and a REPOSITORY WRITE (source edit, the gate run over that change, a stage/commit) is always refused and routed to `task submit` — no posture opens it. Classified by tools.ChatOpClassify, decided by tools.ChatOpAdmit; both vocabularies are exported so the prompt renders the same words. Resolved by tools.ChatOpChannel — one reader, and the refusal names which channel decided"},
 
 	// Thinking / reasoning
-	{"GOPI_THINKING", "thinking", "thinking", "Thinking mode: disabled (default) or enabled"},
-	{"GOPI_REASONING_EFFORT", "reasoning_effort", "reasoning-effort", "Reasoning depth, validated against the settings.json effort_values list (default minimal|low|medium|high|max)"},
+	{"GOPI_THINKING", "thinking", "thinking", "Thinking mode: enabled or disabled; unset DISABLES it — and that is the answer ONLY when reasoning_effort is unset too. An explicit non-off reasoning_effort implies enabled (one derivation, EffortImpliesThinking); reasoning_effort=off forces disabled; an explicit thinking value wins"},
+	{"GOPI_REASONING_EFFORT", "reasoning_effort", "reasoning-effort", "Reasoning depth, validated against the settings.json effort_values list (default minimal|low|medium|high|max); off is harness-only and forces thinking disabled"},
 	{"GOPI_EFFORT_VALUES", "effort_values", "", "Comma-separated legal effort list (settings key effort_values; overrides the baseline minimal|low|medium|high|max)"},
 	{"GOPI_THINKING_BUDGET", "thinking_budget", "thinking-budget", "Thinking budget in tokens per round (default 1024)"},
 	{"GOPI_HIDE_THINKING", "hide_thinking", "hide-thinking", "Set to 1 to hide live reasoning display"},
 	{"GOPI_KEEP_THINKING", "keep_thinking", "keep-thinking", "Set to 1 to replay reasoning in assistant history (A/B control; default strips it)"},
 	{"GOPI_MAX_TOKENS", "max_tokens", "max-tokens", "Per-response output cap (default 16384)"},
 	{"GOPI_CONTEXT_WINDOW", "context_window", "context-window", "Context window (default 200000)"},
+	// THE SEND-TIME CEILING (internal/agent/request_tokens_cap.go). No settings
+	// key and no CLI flag on purpose: it is a SEND decision (a request counted
+	// above it is never sent), and the reader is ONE function (requestTokensCap),
+	// so the knob is a per-run environment override rather than project
+	// configuration. It carried no catalog row until CONFIG.md's anchor/catalog
+	// gate (internal/standards/config_anchor_gate.go) reported the document
+	// tabulating a name `gopi --help-env` did not carry — a documented knob is a
+	// promise, and an operator grepping the env table for it found nothing.
+	{"GOPI_REQUEST_TOKEN_CAP", "", "", "Send-time prompt-token ceiling: a request counted above it is NOT sent (default 200000; a non-positive value is IGNORED, never read as 'no ceiling')"},
 
 	// Runtime
 	{"GOPI_TIMEOUT_SEC", "timeout", "timeout", "Overall agent timeout in seconds (0 = unlimited)"},
-	{"GOPI_COMPACT", "compact", "compact", "Memory compaction: \"off\" disables (default on)"},
-	// THE OPT-IN for the whole automatic reduction path (fold → compact → trim).
-	// It has no settings.json key and no CLI flag on purpose: a run that wants a
-	// filled window SHORTENED says so in its own environment, once
-	// (internal/agent/context_pressure.go). Unset = warn, remove nothing.
-	{"GOPI_CONTEXT_AUTOREDUCE", "", "", "Set to 1 to re-enable automatic context reduction (default off: a full window WARNS and removes nothing)"},
 	{"GOPI_DEBUG", "debug", "debug", "Set to 1 to enable debug logging"},
 	// THE RUN-LOG CONFIGURATION DUMP (GOPI_DEBUG_CONFIG). No settings key and no
 	// CLI flag on purpose: the thing gated is "THIS run's log", not "this
@@ -779,15 +819,6 @@ var EnvVars = []envKey{
 	// in internal/config owns the switch, cmd/agent's start-up seam owns the
 	// write site).
 	{DebugConfigDumpEnv, "", "", "Set to 1 to write this run's configuration in force (the same table `gopi /config` shows) into its own task output log, before the first model request"},
-
-	// Compaction parameters
-	{"GOPI_COMPACT_TRIGGER", "compact_trigger", "compact-trigger", "Compaction trigger ratio (default 0.75 — internal/agent/context.go's DefaultCompactTriggerRatio)"},
-	{"GOPI_COMPACT_TARGET", "compact_target", "compact-target", "Compaction target ratio (default 0.35 — internal/agent/compact.go's DefaultCompactTargetRatio)"},
-	{"GOPI_COMPACT_KEEP_RECENT", "compact_keep_recent", "compact-keep-recent", "Recent messages never compacted (default 8)"},
-	{"GOPI_TURN_FOLD_KEEP_TURNS", "", "", "Completed turns the turn fold keeps VERBATIM as an operator escape hatch (default 0 — internal/agent/turnfold.go's turnFoldRecentTurnsDefault, i.e. no window: every completed turn is replaced by its [IMPORTANT] note); a value above 0 keeps that many newest turns raw"},
-	{"GOPI_COMPACT_MAX_SUMMARY_TOKENS", "compact_max_summary_tokens", "compact-max-summary-tokens", "Summarizer output budget"},
-	{"GOPI_COMPACT_COOLDOWN", "compact_cooldown", "compact-cooldown", "Pause after summarizer failure (seconds, default 600)"},
-	{"GOPI_COMPACT_REFERENCE_ONLY", "compact_reference_only", "compact-reference-only", "Wrap memory in REFERENCE ONLY (default on)"},
 
 	// Logging
 	{"GOPI_RAW_LOG", "raw_log", "raw-log", "Raw HTTP log: on (default) or off"},

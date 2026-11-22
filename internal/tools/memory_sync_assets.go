@@ -35,7 +35,7 @@
 // channel validates its peer against settings.json "memory_peers" /
 // GOPI_MEMORY_PEERS — a deliberately DECOUPLED key from the task ledger's
 // sync_peers. Single-node task mode (sync_peers=[]) must not disable asset
-// sync; the operator explicitly keeps this cross-node feature. A deployment declares
+// sync; nick explicitly keeps this cross-node feature. A deployment declares
 // both: sync_peers=[] (no task sync) + memory_peers=["hp"] (asset sync up).
 //
 // SEMANTICS — unique-only superset merge (deliberately conservative):
@@ -248,6 +248,15 @@ type MemoryAssetSyncStats struct {
 	// round-under-test reads; the one-shot path additionally decodes the
 	// envelope into PullSkippedRows.
 	PeerReplyRows int
+	// PeerKnownSkipped is the peer's count of rows it WITHHELD from the reply
+	// because this node's identity digest already covered them.
+	//
+	// It replaces what the pre-increment channel reported as the import's
+	// `existing` count: rows both sides hold no longer travel, so "we both have
+	// this" is now observable HERE, and only here. Reporting it keeps a
+	// converged pair distinguishable from a peer that holds a DIFFERENT body
+	// under the same question.
+	PeerKnownSkipped int
 	// PeerImport is the PEER's own tally of what it imported from the patch
 	// WE sent — the answer to "did this push move any knowledge?", which
 	// nothing on this side can compute (the peer's store is the one that
@@ -255,6 +264,23 @@ type MemoryAssetSyncStats struct {
 	// (SyncPatch.ImportStats); nil means the peer did not report one
 	// (an older binary), and nil is NOT zero.
 	PeerImport *SyncImportTally
+	// ExportedRows = rows the export actually put on the wire. Together with
+	// SkippedIdentical and the export's own Scanned count it reconciles: on a
+	// full export ExportedRows == PushedRows and SkippedIdentical == 0.
+	ExportedRows int
+	// SkippedIdentical = rows the peer's identity digest already covered —
+	// the increment's measured effect, so a dry run reports what it actually
+	// saved rather than a bare total.
+	SkippedIdentical int
+	// PeerIdentities = how many identities the peer reported (0 when the
+	// probe did not run).
+	PeerIdentities int
+	// IncrementDegraded is TRUE when the identity probe could not answer and
+	// the run therefore exported the WHOLE store. Reason names why, so a
+	// caller can print the one-line explanation instead of a silent full
+	// transfer (Rule 15).
+	IncrementDegraded bool
+	IncrementReason   string
 }
 
 // SyncImportTally is the peer-side import outcome a serve handler reports
@@ -267,6 +293,12 @@ type SyncImportTally struct {
 	Existing int `json:"existing"`
 	Deduped  int `json:"deduped"`
 	Refused  int `json:"refused"`
+	// SkippedByLease / LeaseOwner carry the concurrent-import refusal to the
+	// INITIATOR: a peer whose import was skipped because another process held
+	// the lease says so in the reply, so the caller's one-line report names the
+	// skip and its owner instead of printing a silent zero (Rule 15).
+	SkippedByLease int    `json:"skipped_by_lease,omitempty"`
+	LeaseOwner     string `json:"lease_owner,omitempty"`
 }
 
 // syncImportTallyOf renders an import's stats as the reply tally.
@@ -275,10 +307,12 @@ func syncImportTallyOf(stats *MemoryAssetImportStats) *SyncImportTally {
 		return nil
 	}
 	return &SyncImportTally{
-		Imported: stats.Imported,
-		Existing: stats.Existing,
-		Deduped:  stats.Deduped,
-		Refused:  stats.Refused,
+		Imported:       stats.Imported,
+		Existing:       stats.Existing,
+		Deduped:        stats.Deduped,
+		Refused:        stats.Refused,
+		SkippedByLease: stats.SkippedByLease,
+		LeaseOwner:     stats.LeaseOwner,
 	}
 }
 
@@ -303,6 +337,18 @@ type MemoryAssetImportStats struct {
 	Deduped       int
 	BodyDiffering int
 	Refused       int
+	// SkippedByLease is how many rows this run did NOT probe or write because a
+	// concurrent import of the SAME (peer, database) pair already held the
+	// import lease (memory_sync_assets_lease.go). A lease skip does no work at
+	// all — not one existence probe — which is the point: re-probing an
+	// already-imported corpus is what cost 1.18 TB of reads and an hour of
+	// wall clock. A non-zero value is ALWAYS accompanied by a sentence in
+	// Errors, so a run that wrote 0 rows can never look like a run that
+	// found nothing to do (Rule 15).
+	SkippedByLease int
+	// LeaseOwner names the lease holder in human terms ("pid 42 on peer1 since
+	// <stamp>") when SkippedByLease > 0, and is empty otherwise.
+	LeaseOwner string
 	// Errors are the per-row diagnostics of rows processed but not stored
 	// (refusals, and rows the store skipped). They are reported, never
 	// swallowed (Rule 15).
@@ -384,13 +430,26 @@ func MemoryAssetsPeerSessionMode(peer string, cliPeers []string, dbPath, mode st
 	}
 
 	// Push side: export OUR local knowledge rows (any source except
-	// node:* — anti-reflow). The peer's import probes each question and
-	// keeps only what it lacks.
-	patch, _, err := SyncExport(SyncExportOptions{DBPath: dbPath})
+	// node:* — anti-reflow). The peer's identity digest turns this from "ship
+	// the whole store and let the peer probe each row" into "ship what the
+	// peer does not already hold". A probe that cannot answer degrades the
+	// export to FULL and says so in one line (Rule 15) — never a silent
+	// asymmetry, and never a run that reports a saving it did not achieve.
+	identities, degraded, cause := syncAssetsPeerIdentitiesOrDegrade(peer, cliPeers, dbPath)
+	patch, exportStats, err := SyncExport(SyncExportOptions{DBPath: dbPath, ExcludeIdentities: identities})
 	if err != nil {
 		return nil, fmt.Errorf("memsync assets: export: %w", err)
 	}
 	patch.Node = syncAssetsNodeName()
+	stopAtDegradedLine(degraded, cause, peer)
+	// Tell the peer WHICH identities we already hold, so its reply is sized to
+	// the difference too — otherwise the increment is one-way (we stop shipping
+	// what it has, while it still ships everything it has). Only a run that will
+	// APPLY the reply needs this: a --push run discards the reply and would pay
+	// for a digest it never reads.
+	if !push || pull {
+		patch.KnownIdentities = syncAssetsLocalWireIdentities(peer, dbPath)
+	}
 	if !push {
 		// --pull: send an EMPTY patch, not merely an ignored one. The peer
 		// imports whatever stdin carries — it has no "do not import stdin"
@@ -411,6 +470,18 @@ func MemoryAssetsPeerSessionMode(peer string, cliPeers []string, dbPath, mode st
 	// (measured defect: a bound stamped on the caller's stats and never
 	// printed — `bound=0s`).
 	caller := MemoryAssetSyncStats{Peer: peer, Mode: assetSyncModeName(mode)}
+	if exportStats != nil && push {
+		// On a --pull run patch.Rows was emptied above, so nothing of ours is
+		// pushed: reporting the export's size there would claim a push that
+		// the peer never received (the 5734→5735 defect this mode fixes).
+		caller.ExportedRows = exportStats.RowsExported
+		caller.SkippedIdentical = exportStats.SkippedIdentical
+	}
+	caller.PeerIdentities = identities.Count()
+	caller.IncrementDegraded = degraded
+	if cause != nil {
+		caller.IncrementReason = cause.Error()
+	}
 	pushRows := len(patch.Rows)
 	if !push {
 		pushRows = 0
@@ -484,6 +555,16 @@ func MemoryAssetsSessionApplyReport(legStats *MemoryAssetSyncStats, caller Memor
 	if caller.DurationSec > 0 {
 		stats.DurationSec = caller.DurationSec
 	}
+	// The increment's own numbers ride from the CALLER (they are properties of
+	// the export this side ran, not of the ssh leg) — copy them unconditionally
+	// so a leg that reports zeros cannot hide a saving the caller achieved.
+	stats.ExportedRows = caller.ExportedRows
+	if caller.SkippedIdentical > 0 || caller.ExportedRows > 0 {
+		stats.SkippedIdentical = caller.SkippedIdentical
+	}
+	stats.PeerIdentities = caller.PeerIdentities
+	stats.IncrementDegraded = caller.IncrementDegraded
+	stats.IncrementReason = caller.IncrementReason
 	if !push {
 		// A pull-only leg ships an EMPTY patch (see the session's own note),
 		// so the peer imported nothing from us.
@@ -503,6 +584,9 @@ func MemoryAssetsSessionApplyReport(legStats *MemoryAssetSyncStats, caller Memor
 		if err := json.Unmarshal(bytes.TrimSpace(reply), &peerPatch); err == nil {
 			stats.PullSkippedRows = len(peerPatch.Rows)
 			stats.PeerReplyRows = len(peerPatch.Rows)
+			// The peer withheld these because our digest covered them — the increment's
+			// counterpart of the old import `existing` count.
+			stats.PeerKnownSkipped = peerPatch.KnownSkipped
 			stats.PeerImport = peerPatch.ImportStats
 		}
 		return stats, nil
@@ -515,6 +599,9 @@ func MemoryAssetsSessionApplyReport(legStats *MemoryAssetSyncStats, caller Memor
 		return nil, err
 	}
 	stats.PeerReplyRows = len(peerPatch.Rows)
+	// The peer withheld these because our digest covered them — the increment's
+	// counterpart of the old import `existing` count.
+	stats.PeerKnownSkipped = peerPatch.KnownSkipped
 
 	// Pull side: apply the peer's rows through OUR MemoryStore path.
 	applied, err := MemoryAssetsImportPatch(&peerPatch, dbPath)
@@ -596,19 +683,74 @@ func selectAssetsDirection(mode string) (push, pull bool, err error) {
 }
 
 // MemoryAssetsDryRun reports what a real session toward peer WOULD push,
-// without the ssh leg (no peer contact): the memory_peers whitelist check
-// runs, then the export is sized and returned. The pull side is unknowable
-// without the peer, so a dry run only sizes the push.
-func MemoryAssetsDryRun(peer string, cliPeers []string, dbPath string) (*SyncPatch, error) {
+// without opening a session leg: the memory_peers whitelist check runs, the
+// peer's identity digest is PROBED (a read-only one-ssh question — without it
+// the report would always be the full store and could never show the
+// increment the operator is asking about), and the export is sized. The pull
+// side is unknowable without applying, so a dry run only sizes the push.
+func MemoryAssetsDryRun(peer string, cliPeers []string, dbPath string) (*SyncPatch, *SyncExportStats, *MemoryAssetSyncStats, error) {
 	if err := syncAssetsPeerWhitelisted(peer, cliPeers); err != nil {
-		return nil, err
+		return nil, nil, nil, err
 	}
-	patch, _, err := SyncExport(SyncExportOptions{DBPath: dbPath})
+	identities, degraded, cause := syncAssetsPeerIdentitiesOrDegrade(peer, cliPeers, dbPath)
+	patch, exportStats, err := SyncExport(SyncExportOptions{DBPath: dbPath, ExcludeIdentities: identities})
 	if err != nil {
-		return nil, fmt.Errorf("memsync assets: export: %w", err)
+		return nil, nil, nil, fmt.Errorf("memsync assets: export: %w", err)
 	}
 	patch.Node = syncAssetsNodeName()
-	return patch, nil
+	report := &MemoryAssetSyncStats{Peer: peer}
+	if exportStats != nil {
+		report.ExportedRows = exportStats.RowsExported
+		report.SkippedIdentical = exportStats.SkippedIdentical
+	}
+	report.PeerIdentities = identities.Count()
+	report.IncrementDegraded = degraded
+	if cause != nil {
+		report.IncrementReason = cause.Error()
+	}
+	return patch, exportStats, report, nil
+}
+
+// syncAssetsPeerIdentitiesOrDegrade asks the peer for its identity digest and
+// converts EVERY failure into the degraded-but-usable answer: (nil set, true,
+// cause). Callers must print the cause — the whole point of returning it is
+// that a degraded run never looks like an incremental one (Rule 15).
+//
+// The failure is not an error return because it never stops the session: a
+// full export is always CORRECT (unique-only merge), just more expensive.
+func syncAssetsPeerIdentitiesOrDegrade(peer string, cliPeers []string, dbPath string) (*AssetIdentitySet, bool, error) {
+	set, err := MemoryAssetsPeerIdentities(peer, cliPeers, dbPath)
+	if err != nil {
+		return nil, true, err
+	}
+	return set, false, nil
+}
+
+// stopAtDegradedLine prints the ONE line that says the increment did not run
+// and why. Silence here would make a full transfer indistinguishable from an
+// incremental one in the operator's output, which is the exact shape Rule 15
+// forbids.
+func stopAtDegradedLine(degraded bool, cause error, peer string) {
+	if !degraded || cause == nil {
+		return
+	}
+	fmt.Fprintln(os.Stderr, AssetIdentitiesDegradedLine(peer, cause))
+}
+
+// syncAssetsLocalWireIdentities renders OUR digest as the patch's carried
+// list. A nil result (an unreadable local DB) is NOT fatal: the peer then
+// replies with its full store, which is correct — only the saving is lost, and
+// the reason is printed rather than swallowed.
+func syncAssetsLocalWireIdentities(peer, dbPath string) []string {
+	digest, count, err := LocalAssetIdentityDigest(dbPath)
+	if err != nil {
+		fmt.Fprintf(os.Stderr, "memsync assets: local identity digest unavailable (%v) — %q will reply with its full store\n", err, peer)
+		return nil
+	}
+	if count == 0 || digest == "" {
+		return nil
+	}
+	return strings.Split(strings.TrimSuffix(digest, "\n"), "\n")
 }
 
 // syncAssetsPeerWhitelisted enforces the declared-topology rule: peer must
@@ -801,6 +943,22 @@ func syncAssetsStalePeerHint(stderr string) bool {
 // NOTHING else on stdout — the stdin/stdout pair IS the protocol; human
 // chatter goes to stderr.
 func MemoryAssetsServeRemote(stdin []byte, dbPath string) ([]byte, error) {
+	return MemoryAssetsServeRemoteCtx(context.Background(), stdin, dbPath)
+}
+
+// MemoryAssetsServeRemoteCtx is MemoryAssetsServeRemote with a cancellation
+// channel the CALLER owns — the fix for a measured defect, not a tidy-up.
+//
+// MEASURED (2026-11-15, this epic's own row): an initiator's process was killed
+// mid-leg (bash timeout at 120s). `io.ReadAll(os.Stdin)` had ALREADY returned —
+// the whole patch arrives before the import starts — so nothing was reading the
+// connection any more, the ctx this function received was never consulted
+// inside the batch loop, and the peer's `--serve-assets` kept running for
+// 12m33s / 8m24s CPU with PPid=1, holding the ledger's WAL WRITE lock, writing
+// ZERO rows. The caller now supplies a ctx that fires on the session's death
+// (cmd/agent/cli_memory_sync.go: SIGHUP/TERM/INT plus the orphan watcher), and
+// the loop checks it at every batch boundary.
+func MemoryAssetsServeRemoteCtx(ctx context.Context, stdin []byte, dbPath string) ([]byte, error) {
 	var patch SyncPatch
 	if err := json.Unmarshal(bytes.TrimSpace(stdin), &patch); err != nil {
 		return nil, fmt.Errorf("memsync serve-assets: parse stdin: %w", err)
@@ -808,7 +966,7 @@ func MemoryAssetsServeRemote(stdin []byte, dbPath string) ([]byte, error) {
 	if err := syncCheckPatchVersion("serve-assets", patch.Version, syncPatchVersion); err != nil {
 		return nil, err
 	}
-	stats, err := MemoryAssetsImportPatch(&patch, dbPath)
+	stats, err := MemoryAssetsImportPatchCtx(ctx, &patch, dbPath)
 	if err != nil {
 		return nil, err
 	}
@@ -817,11 +975,23 @@ func MemoryAssetsServeRemote(stdin []byte, dbPath string) ([]byte, error) {
 	}
 	// Our reply: our own local rows (anti-reflow gate excludes everything
 	// we just imported — those carry node:<initiator> and never re-export).
-	out, _, err := SyncExport(SyncExportOptions{DBPath: dbPath})
+	// The initiator rides ITS known-identity digest along, so we reply with
+	// the difference instead of our whole store. An absent list (an older
+	// initiator) means no filtering — the full reply, which is always correct.
+	exclude := AssetIdentitySetFromWire(patch.KnownIdentities)
+	out, replyStats, err := SyncExport(SyncExportOptions{DBPath: dbPath, ExcludeIdentities: exclude})
 	if err != nil {
 		return nil, fmt.Errorf("memsync serve-assets: export: %w", err)
 	}
 	out.Node = syncAssetsNodeName()
+	// Tell the initiator how many rows we withheld because it already had
+	// them. The assets channel's whole point includes surfacing a SAME-question
+	// DIFFERENT-body divergence; before the increment that appeared as the
+	// initiator's import `existing` count, and the increment would otherwise
+	// make a converged pair and a diverged pair look identical.
+	if replyStats != nil {
+		out.KnownSkipped = replyStats.SkippedIdentical
+	}
 	// The tally of what WE just imported from the initiator rides back on
 	// the reply: it is the only place the answer to "did this push move any
 	// knowledge?" exists (the initiator's own store cannot know what the
@@ -881,20 +1051,70 @@ func MemoryAssetsServeRemote(stdin []byte, dbPath string) ([]byte, error) {
 // BatchesFailed, and the error names them — "what landed" is answered, not
 // inferred. A non-nil error with stats != nil is a PARTIAL apply.
 func MemoryAssetsImportPatch(patch *SyncPatch, dbPath string) (*MemoryAssetImportStats, error) {
+	return MemoryAssetsImportPatchCtx(context.Background(), patch, dbPath)
+}
+
+// MemoryAssetsImportPatchCtx is the same import with a caller-owned context.
+// Every batch boundary reads it (see the gate in the loop body): the batch is
+// the only place a long import can be interrupted without leaving a half-open
+// transaction, so that is where the check lives.
+func MemoryAssetsImportPatchCtx(ctx context.Context, patch *SyncPatch, dbPath string) (*MemoryAssetImportStats, error) {
 	nodeTag := SyncNodeTagPrefix + patch.Node
 	if patch.Node == "" {
 		nodeTag = SyncNodeTagPrefix + syncTaskUnknownNode
 	}
-	ctx := context.Background()
-	db, err := openStoreDB(ctx, memoryDBPathOr(dbPath))
+	resolvedDB := memoryDBPathOr(dbPath)
+	stats := &MemoryAssetImportStats{TotalRows: len(patch.Rows)}
+	// ONE importer per (peer, database): the lease is taken BEFORE the ledger is
+	// even opened, so a second process for the same pair never touches a row,
+	// never probes an existing one, and never waits on the WAL write lock. It
+	// reports the skip (rows + owner) and returns — silence here would look
+	// exactly like "this corpus had nothing to import" (Rule 15).
+	lease, leaseErr := memoryAssetTryLease(resolvedDB, patch.Node)
+	if leaseErr != nil {
+		owner := memoryAssetLeaseOwner(leaseErr)
+		if owner == "" {
+			// Not a "busy" refusal: the lock directory itself could not be
+			// taken. That is an I/O failure and must not be reported as a
+			// lease skip with an invented owner.
+			return nil, fmt.Errorf("memsync assets import: %w", leaseErr)
+		}
+		stats.SkippedByLease = len(patch.Rows)
+		stats.LeaseOwner = owner
+		stats.Errors = append(stats.Errors, memoryAssetLeaseSkipReason(len(patch.Rows), owner))
+		return stats, nil
+	}
+	// Released on EVERY exit path, including a mid-corpus failure: an error
+	// return that kept the lease would park the next import behind a lock
+	// nobody holds any more. A release that fails is APPENDED to the returned
+	// stats (which the caller still holds the pointer to), so it reaches the
+	// operator instead of dying with the process (Rule 15).
+	defer func() {
+		if relErr := lease.release(); relErr != nil {
+			stats.Errors = append(stats.Errors, relErr.Error())
+		}
+	}()
+	db, err := openStoreDB(ctx, resolvedDB)
 	if err != nil {
 		return nil, fmt.Errorf("memsync assets import: %w", err)
 	}
 	defer db.Close()
 
-	stats := &MemoryAssetImportStats{TotalRows: len(patch.Rows)}
 	batches := (stats.TotalRows + memoryAssetImportBatchRows - 1) / memoryAssetImportBatchRows
 	for b := 0; b < batches; b++ {
+		// The cancellation gate: checked BEFORE each batch's transaction is
+		// opened, so a dead initiator is noticed at a batch boundary (one
+		// batch of memoryAssetImportBatchRows rows) instead of after the whole
+		// loop. Measured before this existed: the initiator's ssh leg was
+		// killed (its process gone, PPid=1 at the far end left behind), and the
+		// peer's `--serve-assets` ran on for 12m33s / 8m24s CPU, still holding
+		// the ledger's WAL write lock, producing ZERO rows — because the ctx it
+		// was given was never read inside this loop. Rolled-back-on-entry is
+		// the safe shape: no transaction is open when the check fires.
+		if err := ctx.Err(); err != nil {
+			return stats, stats.fail(b+1, batches, batchFailedPreCommit,
+				fmt.Errorf("import cancelled before batch %d/%d (initiator gone?): %w", b+1, batches, err))
+		}
 		start := b * memoryAssetImportBatchRows
 		end := start + memoryAssetImportBatchRows
 		if end > stats.TotalRows {
@@ -935,6 +1155,14 @@ func MemoryAssetsImportPatch(patch *SyncPatch, dbPath string) (*MemoryAssetImpor
 		if !memoryImportBatchBoundary(b+1, memoryImportAfterCommit) {
 			return stats, stats.fail(b+1, batches, batchFailedPostCommit, fmt.Errorf("the run was stopped at batch %d's post-commit boundary (memoryImportBatchBoundary)", b+1))
 		}
+		// Progress on STDERR, one line per batch: the leg's own liveness signal.
+		// Without it a stalled or half-dead import is indistinguishable from a
+		// working one from the outside (measured: an initiator that had already
+		// died produced 12m33s of silence, which read as "still going").
+		// stdout carries the reply protocol, so this never pollutes it.
+		fmt.Fprintf(os.Stderr, "%s: batch %d/%d rows %d/%d (existing %d new %d)\n",
+			MemorySyncServeAssetsFlag, b+1, batches, end, stats.TotalRows,
+			stats.Existing, stats.RowsCommitted-stats.Existing)
 	}
 	return stats, nil
 }
@@ -1036,11 +1264,14 @@ func syncAssetsImportRows(ctx context.Context, tx *sql.Tx, rows []SyncRow, rowOf
 			stats.Errors = append(stats.Errors, fmt.Sprintf("row %d: empty topic/question/answer", rowIdx))
 			continue
 		}
-		// ① Identity probe — exact question (the conservative unique gate).
-		// A hit means the row exists on BOTH sides → never touched. Any
-		// ownership (brew, human, node:* — same or different sources) skips
-		// equally: the conflict zone is out of scope by design.
-		exists, err := syncAssetsQuestionExistsQ(ctx, tx, question)
+		// ① Identity probe — the SAME key MemoryStore dedups on
+		// (question[:200] + topic). A hit means the row exists on BOTH sides
+		// → never touched. Any ownership (brew, human, node:* — same or
+		// different sources) skips equally: the conflict zone is out of scope
+		// by design. The topic half is not optional: without it a peer row
+		// with the same 200-rune question prefix under a different topic is
+		// reported Existing and silently never imported.
+		exists, err := syncAssetsQuestionExistsQ(ctx, tx, question, topic)
 		if err != nil {
 			return nil, fmt.Errorf("row %d: existing probe: %w", rowIdx, err)
 		}
@@ -1086,15 +1317,27 @@ func syncAssetsImportRows(ctx context.Context, tx *sql.Tx, rows []SyncRow, rowOf
 }
 
 // syncAssetsQuestionExistsQ probes whether ANY distilled_qa row already
-// holds the question — the identity gate of the unique-only channel. Mirrors
-// the MemoryStore exact-dedup key width (question[:200]) so the probe and
-// the store agree on identity for long questions.
-func syncAssetsQuestionExistsQ(ctx context.Context, q QueryExecer, question string) (bool, error) {
+// holds this row's identity — the gate of the unique-only channel. It asks
+// EXACTLY the MemoryStore exact-dedup question (memory.go's exactKeyQuery):
+// `question[:200] AND topic`. The two halves must agree or the channel
+// loses rows silently: with a question-only probe a peer row that shares
+// the 200-rune question prefix but carries a DIFFERENT topic is refused
+// here as Existing, while MemoryStore would have treated it as a new row —
+// so the row is never imported and nothing reports it. Narrowing the probe
+// (never widening the store key) keeps identity unchanged for every row
+// that already agreed.
+func syncAssetsQuestionExistsQ(ctx context.Context, q QueryExecer, question, topic string) (bool, error) {
 	probe := truncateRunes(question, dedupQuestionRunes)
 	var one int
+	// The filter is the PERSISTED key column, never `substr(question,1,?)=?`:
+	// a function of a column compared against a BOUND parameter cannot be
+	// answered by an index (EXPLAIN QUERY PLAN says SCAN even with an
+	// expression index — both shapes were measured on the real corpus), while
+	// `qkey=?` is a SEARCH on idx_distilled_qa_qkey_topic. The import probe is
+	// the hot one: one call per incoming row against the whole local table.
 	err := q.QueryRowContext(ctx,
-		`SELECT 1 FROM distilled_qa WHERE substr(question,1,?) = ? LIMIT 1`,
-		dedupQuestionRunes, probe).Scan(&one)
+		`SELECT 1 FROM distilled_qa WHERE `+dedupKeyColumn+` = ? AND topic = ? LIMIT 1`,
+		probe, topic).Scan(&one)
 	if err == nil {
 		return true, nil
 	}

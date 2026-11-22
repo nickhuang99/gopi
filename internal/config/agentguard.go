@@ -274,7 +274,8 @@ func AgentSpawnSignatureNow() AgentSpawnSignature {
 }
 
 // parentIsWorkerGopi reports whether our IMMEDIATE parent runs the gopi PROGRAM
-// with argv[1] == procname.VerbWorker — the shared process vocabulary, Rule 14:
+// with the worker verb at its top-level position (via procname.WorkerVerbIndex,
+// after any leading global flags) — the shared process vocabulary, Rule 14:
 // never a mirrored literal.
 //
 // WHY procfs and not the environment: the worker→`task run` chain is the
@@ -309,7 +310,7 @@ func parentIsWorkerGopi() bool {
 	}
 	pid := strconv.Itoa(ppid)
 	argv, ok := procname.Cmdline(procFSRoot, pid)
-	if !ok || len(argv) < 2 || argv[1] != procname.VerbWorker {
+	if !ok || procname.WorkerVerbIndex(argv) < 0 {
 		return false
 	}
 	// The parent's comm is the THIRD channel and the weakest one: it is handed

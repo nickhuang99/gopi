@@ -28,24 +28,24 @@
 //
 // THE THREE QUESTIONS, each of which defaults to KEEP:
 //
-//  1. EMPTY?        readdir must succeed and yield nothing. An unreadable
-//     directory is kept (Rule 15: never guess about a tree you
-//     cannot inspect).
-//  2. THE SAME DEVICE AS ITS PARENT? A directory that is a MOUNT ROOT holds
-//     bytes on another filesystem: its "emptiness" describes the
-//     mount point, not the mounted tree, and removing it would
-//     either be refused or would hide a whole filesystem. The
-//     test is the repo's own device-id criterion (Rule 22): a
-//     comparison of st_dev, never a spelling.
-//  3. WRITABLE, AND PROVABLY ABLE TO LOSE A FILE? The probe creates one
-//     empty-byte regular file inside the candidate and removes
-//     it; the remove must SUCCEED and the path must then be GONE
-//     (checked with O_NOFOLLOW, so nothing can stand in for it).
-//     A directory that cannot take and lose a file is not one
-//     this sweep may collect — and a probe left behind by a
-//     KILLED earlier pass is recognised by its own fixed name and
-//     cleaned, while a probe that is still FRESH means another
-//     pass is inside the candidate right now (KEEP).
+//	1. EMPTY?        readdir must succeed and yield nothing. An unreadable
+//	                 directory is kept (Rule 15: never guess about a tree you
+//	                 cannot inspect).
+//	2. THE SAME DEVICE AS ITS PARENT? A directory that is a MOUNT ROOT holds
+//	                 bytes on another filesystem: its "emptiness" describes the
+//	                 mount point, not the mounted tree, and removing it would
+//	                 either be refused or would hide a whole filesystem. The
+//	                 test is the repo's own device-id criterion (Rule 22): a
+//	                 comparison of st_dev, never a spelling.
+//	3. WRITABLE, AND PROVABLY ABLE TO LOSE A FILE? The probe creates one
+//	                 empty-byte regular file inside the candidate and removes
+//	                 it; the remove must SUCCEED and the path must then be GONE
+//	                 (checked with O_NOFOLLOW, so nothing can stand in for it).
+//	                 A directory that cannot take and lose a file is not one
+//	                 this sweep may collect — and a probe left behind by a
+//	                 KILLED earlier pass is recognised by its own fixed name and
+//	                 cleaned, while a probe that is still FRESH means another
+//	                 pass is inside the candidate right now (KEEP).
 //
 // Every unknown is KEEP, which is what makes applying the bound safe at all: the
 // worst case of this predicate being wrong is that a directory stays.
@@ -269,13 +269,13 @@ var attachmentsArchiveHeldIndex = func(root string) map[string]struct{} {
 // The order is the contract — cheapest and most decisive first, and EVERY refusal
 // is a KEEP:
 //
-//  1. it is not a directory            → KEEP (this tree takes directories only)
-//  2. it is not the archive's own name → KEEP (the namespace predicate)
-//  3. it is a declared tree root       → KEEP at any age (the universal invariant)
-//  4. it is held by a live process     → KEEP (the .holder registration AND the
-//     indexed /proc verdict — the sweep's own)
-//  5. it is younger than the window    → KEEP (age is the LAST and weakest lever)
-//  6. its evidence verdict is no       → KEEP (empty, same device, writable)
+//	 1. it is not a directory            → KEEP (this tree takes directories only)
+//	 2. it is not the archive's own name → KEEP (the namespace predicate)
+//	 3. it is a declared tree root       → KEEP at any age (the universal invariant)
+//	 4. it is held by a live process     → KEEP (the .holder registration AND the
+//	                                       indexed /proc verdict — the sweep's own)
+//	 5. it is younger than the window    → KEEP (age is the LAST and weakest lever)
+//	 6. its evidence verdict is no       → KEEP (empty, same device, writable)
 //
 // A candidate that survives all six is an ordinary empty directory of this
 // repository's own archive family: it holds no evidence and no bytes, and it is

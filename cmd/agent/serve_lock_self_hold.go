@@ -4,7 +4,7 @@ package main
 // funnel (acquireServeLock), and the "this process is not another holder"
 // rendering the refusal needs.
 //
-// THE DEFECT, measured on host-a 2026-10-17 (task 01a149e8's predecessor):
+// THE DEFECT, measured on the host 2026-10-17 (task 01a149e8's predecessor):
 //
 //	gopi task finish-cleanup --apply
 //	→ gopi task finish-cleanup: serve lock held by a live daemon: another merge

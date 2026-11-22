@@ -487,9 +487,11 @@ func sandboxMaterialise(opts sandbox.Options, dirFlag, verb string) *sandbox.San
 // reportMaterialised prints the human-readable creation line to STDERR, keeping
 // stdout to the path alone so `SB=$(gopi tool sandbox … | tail -1)` stays honest.
 func reportMaterialised(sb *sandbox.Sandbox) {
-	fmt.Fprintf(os.Stderr, "sandbox %s created=%t reused=%t root=%s source=%s ledger=%s owner=%s%s%s%s\n",
+	fmt.Fprintf(os.Stderr, "sandbox %s created=%t reused=%t root=%s source=%s ledger=%s owner=%s%s%s%s%s\n",
 		sb.Path, sb.Created, sb.Reused, sb.Root, sb.RootSource, sb.LedgerPath,
-		ownerField(sb.Owner.TaskID), ownerPID(sb.Owner.PID), settingsField(sb), pluginsField(sb))
+		ownerField(sb.Owner.TaskID), ownerPID(sb.Owner.PID), settingsField(sb),
+		settingsDocAbsentField(sb), pluginsField(sb))
+	warnSettingsDocAbsent(sb)
 }
 
 // pluginsField renders the plugin-tree outcome for the report line, so an
@@ -515,6 +517,42 @@ func settingsField(sb *sandbox.Sandbox) string {
 		return ""
 	}
 	return " settings=" + sb.SettingsDocSource + "(absent-not-linked)"
+}
+
+// settingsDocAbsentToken is the STRUCTURED half of the absence report: one
+// machine-greppable token that says "this profile carries no settings.json",
+// so the fact survives a reader that parses the line instead of reading the
+// human sentence beside it.
+const settingsDocAbsentToken = " settings_doc=MISSING"
+
+// settingsDocAbsentField renders the structured token alone — empty for a
+// materialised copy, which keeps the ordinary case a short line.
+func settingsDocAbsentField(sb *sandbox.Sandbox) string {
+	if !sb.SettingsDocAbsent {
+		return ""
+	}
+	return settingsDocAbsentToken
+}
+
+// warnSettingsDocAbsent says out loud WHAT the absence costs, on its own stderr
+// line rather than buried at the end of a long creation line. Absence is a
+// LEGAL host (testutil/suiteenv.go points GOPI_SETTINGS at a deliberately absent
+// path for every suite run — Rule 34 keeps it legal, so refusing here would
+// break the whole test tree), which is exactly why the degradation must be
+// audible: a sandbox that silently ran on built-in defaults would look
+// complete while answering no api_key and no repos table. A DANGLING symlink is
+// the separate MISCONFIGURATION shape and is REFUSED by the initializer, so it
+// never reaches this warning.
+func warnSettingsDocAbsent(sb *sandbox.Sandbox) {
+	if !sb.SettingsDocAbsent {
+		return
+	}
+	fmt.Fprintf(os.Stderr,
+		"sandbox: WARNING — the sandbox profile carries NO settings.json: %s does not exist, so this "+
+			"sandbox runs on gopi's BUILT-IN DEFAULTS (no api_key, no repos table, no notify config). "+
+			"The sandbox is usable, but it is NOT a copy of your profile — point GOPI_SETTINGS at a real "+
+			"document (or write %s) and re-create it if you need your own settings inside.\n",
+		sb.SettingsDocSource, sb.SettingsDocSource)
 }
 
 // ownerField / ownerPID render the marker's identifying fields for the log

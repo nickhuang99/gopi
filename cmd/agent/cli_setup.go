@@ -6,6 +6,7 @@ import (
 	"path/filepath"
 
 	"github.com/nickhuang99/gopi/internal/config"
+	"github.com/nickhuang99/gopi/internal/scratch"
 	"github.com/nickhuang99/gopi/internal/tools"
 )
 
@@ -217,7 +218,7 @@ func ensureSetupDir(dir string, perm os.FileMode) (bool, error) {
 		}
 		return false, nil
 	}
-	if err := os.MkdirAll(dir, perm); err != nil {
+	if err := scratch.MkdirAllWithSuiteRunOwnerPerm(dir, perm); err != nil {
 		return false, fmt.Errorf("create %s: %w", dir, err)
 	}
 	return true, nil

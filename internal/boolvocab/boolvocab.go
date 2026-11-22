@@ -74,3 +74,24 @@ func IsTrue(raw string) bool {
 func IsFalse(raw string) bool {
 	return FalseSet[Normalize(raw)]
 }
+
+// Canonical reports the canonical SPELLING of a boolean value: the first token of
+// the list it belongs to ("1" for true, "0" for false).
+//
+// WHY A SPELLING AND NOT A WORD. A report that has to show a DECLARED bool
+// (settings.json states `"hide_thinking": false`) needs a value cell, and the
+// truthful one is the spelling the configuration channel itself uses — the same
+// token ApplyEnv publishes, so a reader comparing the report with the
+// environment sees one vocabulary, not two. It is derived from the lists above
+// rather than typed again (Rule 13), so adding a spelling to the list can never
+// leave this reader behind.
+func Canonical(b bool) string {
+	list := FalseValues
+	if b {
+		list = TrueValues
+	}
+	if i := strings.IndexByte(list, ','); i > 0 {
+		return strings.TrimSpace(list[:i])
+	}
+	return strings.TrimSpace(list)
+}

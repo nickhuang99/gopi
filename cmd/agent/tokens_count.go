@@ -563,18 +563,28 @@ func sscanfInt(s string, out *int) error {
 	return nil
 }
 
-// tokensUsage is the tool's own page. It states ALL FOUR input shapes, in the
-// order a reader meets them: the two a PERSON holds (a text file, a session id)
-// first, then the two this repo uses to verify its own template against the
-// server — which is what the tool was built for and is now one shape among
-// four, not the only door.
+// tokensUsage is the tool's own page. It states ALL FIVE input shapes, in the
+// order a reader meets them: the three a PERSON holds (a text file, a short text
+// typed on the command line, a session id) first, then the two this repo uses to
+// verify its own template against the server — which is what the tool was built
+// for and is now one shape among five, not the only door.
 var tokensUsage = `GoPi tool tokens — count tokens, and put our count beside the server's
 
 Usage:
   gopi tool tokens --file <path>
         Count ANY text file with the embedded DeepSeek-V4.1 BPE tokenizer — the
         same encoder and the same vocabulary the model is billed on. Prints the
-        count with the file's bytes and lines, and names the path it read.
+        count with the file's bytes and lines, and names the path it read. The
+        line count is ` + "`wc -l`" + ` semantics: a trailing newline ends the last line,
+        so a one-line file reports 1.
+
+  gopi tool tokens --prompt '<text>'
+        The same count for a few words typed on the command line, with no file
+        to write first — the shape to reach for when the question is "is this
+        sentence long enough?" (the bare-prompt surface refuses a prompt under
+        its token floor, counted by this same encoder). Prints the text back,
+        quoted, so the number is never an orphan. ` + "`--prompt ''`" + ` is a real
+        measurement (0 tokens); a missing argument is a usage error.
 
   gopi tool tokens --session <session-id>
         That session's verification results, from the raw HTTP log it already

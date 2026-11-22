@@ -57,6 +57,7 @@ import (
 	"strings"
 
 	"github.com/nickhuang99/gopi/internal/deepseek"
+	"github.com/nickhuang99/gopi/internal/scratch"
 )
 
 // The artifact's name and modes. The name is ALWAYS an ordinal on the axis the
@@ -66,8 +67,9 @@ import (
 // holding turn 59's screen was).
 //
 // TWO AXES, TWO NAMES (address.go states why): a turn-scoped export is
-// `context-turn<N>.md` where N is the TURN (the number `gopi session show <id>`
-// prints on its `turns` row), and a request-scoped one is `context-round<N>.md`
+// `context-turn<N>.md` where N is the TURN (the number `gopi session stats <id>`
+// prints on its `turns` row — `stats`, not `show`: a `kind=run` session prints
+// no turns row at all), and a request-scoped one is `context-round<N>.md`
 // where N is the ROUND (`--round N`, `gopi session log <id> N`). The old scheme
 // wrote the ROUND number under the word "turn"; these two constants are what
 // makes that impossible to repeat.
@@ -292,7 +294,7 @@ func WriteSection(dir string, req *deepseek.ClaudeRequest, a Address, sec Sectio
 	if dir == "" {
 		return Summary{}, fmt.Errorf("ctxdump: no session directory to write %s into", sec.FileName(a))
 	}
-	if err := os.MkdirAll(dir, DirPerm); err != nil {
+	if err := scratch.MkdirAllWithSuiteRunOwnerPerm(dir, DirPerm); err != nil {
 		return Summary{}, fmt.Errorf("ctxdump: cannot create %s: %w", dir, err)
 	}
 	return writeFile(sec.Path(dir, a), req, a, sec)
@@ -331,7 +333,7 @@ func WriteToSection(out, dir string, req *deepseek.ClaudeRequest, a Address, sec
 	if err := a.Validate(); err != nil {
 		return Summary{}, err
 	}
-	if err := os.MkdirAll(filepath.Dir(out), DirPerm); err != nil {
+	if err := scratch.MkdirAllWithSuiteRunOwnerPerm(filepath.Dir(out), DirPerm); err != nil {
 		return Summary{}, fmt.Errorf("ctxdump: cannot create %s: %w", filepath.Dir(out), err)
 	}
 	return writeFile(out, req, a, sec)

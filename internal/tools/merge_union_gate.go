@@ -683,7 +683,7 @@ func mergeUnionGateGit(repo string, args ...string) (string, error) {
 // IS CREATED, so the repo gains no registration and the cleanup has nothing of
 // this gate's to repair.
 func mergeUnionGateExtract(repo, tree, dir string) error {
-	if err := os.MkdirAll(dir, scratch.DirPerm); err != nil {
+	if err := scratch.MkdirAllWithSuiteRunOwnerPerm(dir, scratch.DirPerm); err != nil {
 		return fmt.Errorf("mkdir checkout: %w", err)
 	}
 	ctx, cancel := context.WithTimeout(context.Background(), mergeUnionGateGitTimeout)

@@ -407,6 +407,24 @@ func (d Dims) rowCeiling() int {
 	return roundRowsMax
 }
 
+// uncapped is the same lay-out with NO row ceiling — the spelling a caller uses
+// when IT will do the cutting, so the cut happens in exactly one place.
+//
+// THE CALLER THAT NEEDS IT (turnbody.go, turnBodyRows): a turn's body applies the
+// per-round ceiling itself, because the pass that cuts there must also know which
+// rows can never be dropped (the tool rows). Asking roundRows to cap the same
+// segment on the way in produced TWO truncation notes on one segment, and the
+// second one's count was wrong — it spent its quota on the first note and reported
+// "1 row(s) not laid out" for a round 500 rows over the ceiling (measured
+// 2026-11-22). One cut, one honest count.
+//
+// Only the CEILING is lifted: FullToolInput is untouched, so a bounded lay-out
+// still spells a tool call in its bounded form.
+func (d Dims) uncapped() Dims {
+	d.FullLayout = true
+	return d
+}
+
 // A TURN COUNT IS len(Turns), A ROUND COUNT IS len(Rounds)/RoundCount, AND A
 // SCREEN-FRAME COUNT IS DumpFrameCount — three quantities, three names (the
 // operator's ruling, 2026-10-25). The method this file used to carry

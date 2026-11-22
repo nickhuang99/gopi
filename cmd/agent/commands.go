@@ -453,9 +453,11 @@ const slashTaskFlagSet = "true"
 const taskCommandUsage = `Usage: /task <subcommand> [args]
   /task list [--status STATUS] [--all]
                                       list ledger tasks (optionally filtered);
-                                      archived rows (tags contain "resolved")
-                                      are hidden — the view reports how many
-                                      it hid, and --all includes them (same
+                                      archived rows (a tag EQUALS "` + tools.TaskTagResolved + `"
+                                      exactly — a tag like "` + tools.SyncTagSyncResolved + `" is
+                                      NOT hidden; never a substring match) are hidden —
+                                      the view reports how many it hid, and --all
+                                      includes them (same
                                       rule, same flag as ` + "`gopi task list`" + `)
   /task show <task_id>                show one task's full row
   /task update <task_id> [--status STATUS] [--reason WHY]
@@ -994,6 +996,27 @@ var slashCommands = map[string]*Command{
 		Name:  chatConfigCommandName,
 		Usage: chatConfigUsage,
 		Run:   slashConfigCommand,
+	},
+	chatThinkingCommandName: {
+		// /THINKING is the table's DISCOVERABILITY half (chat_thinking.go): the
+		// switch it flips is `Agent.HideThinking`, a field of the LIVE agent that
+		// Run(args, CommandContext) does not carry — so the REPL answers the word
+		// in its own switch arm and this entry documents it, answers its help
+		// request, and REFUSES by name on a carrier that holds no agent (Rule 15)
+		// instead of printing a state it never read.
+		Name:  chatThinkingCommandName,
+		Usage: chatThinkingUsage,
+		Run:   slashThinkingCommand,
+	},
+	// /VERSION is the ARTIFACT's own question, and it is deliberately a table
+	// word rather than a REPL arm: every value it prints is embedded in this
+	// executable by `go build`, so a web carrier holds exactly the same answer
+	// and there is nothing a carrier could supply (see chat_version.go, which
+	// also records why this differs from /info's session facts).
+	chatVersionCommandName: {
+		Name:  chatVersionCommandName,
+		Usage: chatVersionUsage,
+		Run:   runSlashVersion,
 	},
 	// NO `/code-search` AND NO `/memory` ENTRY, BY DECISION (operator,
 	// 2026-11-07): gopi's chat surface is an AGENT ENTRY, not an IDE or a

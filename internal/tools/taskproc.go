@@ -1222,7 +1222,7 @@ const taskProcessStateNotApplicable = "n/a"
 // no verdict this build reports is weaker than what the ledger said before.
 //
 // THE HOST IS PART OF THE IDENTITY (and this is the arm that was missing). A
-// pid is a number in ONE kernel's namespace: `hostb:4242` and this host's
+// pid is a number in ONE kernel's namespace: `nick-HP:4242` and this host's
 // 4242 are unrelated processes, so every /proc reading of a foreign stamp is a
 // reading of a STRANGER — it can say "running" about a pid that happens to be
 // alive here (a false double-run refusal) or "dead" about a run that is very

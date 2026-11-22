@@ -102,6 +102,32 @@ func layerForLine(ls LineStyle) AnswerLayer {
 	return LayerResponse
 }
 
+// bodyLayer is THE decision about which layer a BODY line of a turn belongs to,
+// and it is the ONE place the two halves of the renderer ask it: the GUTTER
+// (answer.go's lineGutter, which reads it for the marker column) and the STYLE
+// (rowFor, which reads it for the emphasis). Both readers hand it the renderer's
+// reasoning state and the composer's verdict on the line.
+//
+// IT EXISTS BECAUSE THEY USED TO DISAGREE. The gutter asked "is the reasoning
+// block open" and answered the reasoning layer; the style asked layerForLine —
+// LineStyle alone — which cannot see the reasoning state at all, so it answered
+// the response layer for every line of a turn. layerStyleFor's `case
+// LayerThinking` was therefore unreachable code and a reasoning row was drawn in
+// pal.Answer: the same colour as the answer it exists to be told apart from. The
+// cure is this ONE function (a single source of truth, Rule 14), not a second
+// switch that has to be kept in step with the first.
+//
+// The reasoning state WINS over the composer's verdict: a line streamed inside a
+// reasoning block is reasoning however it is spelled (a ```` ``` ```` fence inside
+// an unfinished reasoning block is not the answer's code layer), which is the
+// same precedence the copied-row rule already gives it (answer.go's rowFor).
+func bodyLayer(thinking bool, ls LineStyle) AnswerLayer {
+	if thinking {
+		return LayerThinking
+	}
+	return layerForLine(ls)
+}
+
 // layerStyleFor returns the palette field a layer draws in, as a function of the
 // layer and — for the two layers whose rows carry a body — the body line's own
 // style (the composer's verdict).
@@ -111,12 +137,26 @@ func layerForLine(ls LineStyle) AnswerLayer {
 // there and the layer distinction survives as TEXT (the gutters above) — which
 // is the monochrome rule palette.go states: colour is emphasis on top of the
 // text, never the text's meaning.
+//
+// A COMMITTED REASONING ROW DRAWS pal.Reasoning, NOT pal.Thinking. The two
+// fields answer different questions and a row of this layer is the first one:
+// pal.Reasoning is the LOW-BRIGHTNESS CONTENT role Palette.Reasoning documents
+// ("the model's aside, drawn under the answer in importance"), while
+// pal.Thinking is the STATUS row's live hint — the "the agent is working"
+// emphasis, which is deliberately loud (bold+italic+underline on every table)
+// because it competes for the eye with nothing else on the band. Reading the
+// hint's field here painted a landed reasoning line as if the live hint's
+// emphasis belonged to it: the row looked marked-up rather than quiet, and the
+// low-brightness role the palette declares went unread on this path (its only
+// other consumer was internal/uiclient's live transcript). The status row
+// keeps pal.Thinking — that half is asserted by palette_test.go's
+// TestStatusThinkingUsesItsOwnEmphasisAndIsAFlagNotAWording.
 func layerStyleFor(pal Palette, layer AnswerLayer, ls LineStyle) Style {
 	switch layer {
 	case LayerRequest:
 		return pal.Prompt
 	case LayerThinking:
-		return pal.Thinking
+		return pal.Reasoning
 	case LayerCodeTool:
 		if ls == LineCode || ls == LineDiffAdd || ls == LineDiffDel {
 			// A fenced/diff line is code: the body's own code style, which the

@@ -7,7 +7,14 @@ import (
 	"path/filepath"
 
 	"github.com/nickhuang99/gopi/internal/config"
+	"github.com/nickhuang99/gopi/internal/configreport"
 )
+
+// Compile-time proof that this struct tag's key spelling matches the ONE
+// declaration in configreport. If either side drifts, the build fails — so a
+// reader of `gopi config show` can never call this live knob IGNORED because
+// two spellings quietly diverged (epic 01a1eaec, Rules 1b/13).
+const _ = "messages_path" == configreport.SettingsKeyMessagesPath
 
 // Config holds settings loaded from the GoPi settings file.
 type Config struct {
@@ -21,6 +28,7 @@ type Config struct {
 	// not follow the "/anthropic" prefix conventions, such as Tencent hy4
 	// (https://tokenhub.tencentmaas.com/v1/messages). When empty, the legacy
 	// {base}/anthropic/messages vs {base}/v1/messages suffix logic applies.
+	//
 	MessagesPath string `json:"messages_path"`
 
 	// Vision endpoint (multimodal image understanding): separate model + base

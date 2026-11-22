@@ -24,7 +24,7 @@ package tools
 // WHY THE FIX IS HERE AND NOT A RESTART SCRIPT (Rule 35): a cron line, a
 // watcher or a `restart-on-rebuild` unit file would be a new persistent
 // dependency wrapped around gopi, and it would COVER the problem the same way
-// the retired peer-launcher-autostart cron line covered dying workers — the machine
+// the retired hp-worker-autostart cron line covered dying workers — the machine
 // would look healthy while nothing explained why. The decider itself can see
 // this state with two facts it already has, so the check belongs in the
 // decider: no new artifact, no daemon, no state file.

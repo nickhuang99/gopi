@@ -11,6 +11,7 @@ import (
 	"time"
 	"unicode/utf8"
 
+	"github.com/nickhuang99/gopi/internal/scratch"
 	"github.com/nickhuang99/gopi/internal/sgr"
 )
 
@@ -349,7 +350,7 @@ func (s *PasteStore) Spill(data []byte) (PasteRef, error) {
 	if len(data) == 0 {
 		return PasteRef{}, fmt.Errorf("paste store: nothing to spill")
 	}
-	if err := os.MkdirAll(s.dir, pasteDirPerm); err != nil {
+	if err := scratch.MkdirAllWithSuiteRunOwnerPerm(s.dir, pasteDirPerm); err != nil {
 		return PasteRef{}, fmt.Errorf("paste store: cannot create %s: %w", s.dir, err)
 	}
 	path, err := s.write(data)

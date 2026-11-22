@@ -242,7 +242,7 @@ func RuntimeScratchDir(class string) string {
 		class = defaultRuntimeClass
 	}
 	dir := filepath.Join(QueueDir(), fmt.Sprintf("%s%s-%d", runtimeEntryPrefix, class, os.Getpid()))
-	if err := os.MkdirAll(dir, DirPerm); err != nil {
+	if err := MkdirAllWithSuiteRunOwnerPerm(dir, DirPerm); err != nil {
 		// Falling back to the ambient temp root is the ONE case this function
 		// cannot avoid — so it must not be silent about WHERE that lands
 		// (Rule 15: 23.5G of /tmp residue came from exactly this fallback
@@ -317,7 +317,7 @@ func DumpDir(class string) string {
 		class = defaultDumpClass
 	}
 	dir := filepath.Join(HomeDir(), DumpsDirName, class)
-	if err := os.MkdirAll(dir, DirPerm); err != nil {
+	if err := MkdirAllWithSuiteRunOwnerPerm(dir, DirPerm); err != nil {
 		// Best effort: the caller's own MkdirAll reports a real failure, and
 		// a dump directory is a diagnostic aid, not a correctness gate.
 		return dir

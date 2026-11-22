@@ -1143,7 +1143,7 @@ func x11CredentialLabel(c x11Credential, number int) string {
 // carries SEVERAL entries for one display number — the same number is forwarded
 // to this host under different client-side address spellings (a per-session
 // `localhost:N` entry injected by sshd's xauth, plus whatever spelling a real
-// client host used: on this host `host-b:N`, `peer1:N`, `localhost:N`
+// client host used: on this host `nick-HP-Laptop:N`, `peer1:N`, `localhost:N`
 // and an empty Internet-name entry all coexist). Only the SERVER knows which
 // cookie its forward demon holds, so the client must offer them in the most
 // likely order:
@@ -1159,7 +1159,7 @@ func x11CredentialLabel(c x11Credential, number int) string {
 //
 // Reading the first matching entry instead of trying them is what shipped the
 // "X11 connection rejected because of wrong authentication" defect: the file
-// happened to list a foreign `host-b:11` entry first, so a live,
+// happened to list a foreign `nick-HP-Laptop:11` entry first, so a live,
 // answerable forward on localhost:11 was refused on a correct display. Every
 // candidate is cheap (one setup exchange), so the search is bounded by
 // x11AuthMaxCandidates and the connection still fails loudly when none is

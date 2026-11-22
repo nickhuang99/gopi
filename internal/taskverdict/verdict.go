@@ -12,7 +12,7 @@
 //	            (its value already delivered = due diligence + decomposition)
 //	IMPOSSIBLE— reason REQUIRED; the task row is marked failed with it
 //
-// THREE verdicts, no fourth (the operator 2026-09-10, SPEC §3 — the zero-loophole
+// THREE verdicts, no fourth (nick 2026-09-10, SPEC §3 — the zero-loophole
 // design): NEEDS_RESEARCH was a POC artifact of a filesystem-less prompt.
 // Research IS part of reframing (the model has read/code_search/memory_search
 // — investigating is its job), so "I need more research" is a failure to

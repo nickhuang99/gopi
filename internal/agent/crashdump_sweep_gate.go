@@ -118,6 +118,7 @@ import (
 	"time"
 
 	"github.com/nickhuang99/gopi/internal/config"
+	"github.com/nickhuang99/gopi/internal/scratch"
 )
 
 const (
@@ -415,7 +416,7 @@ func readCrashDumpSweepMarker(path string) (crashDumpSweepMarker, error) {
 // failure mode is benign (the next start walks again) but never silent.
 func writeCrashDumpSweepMarker(path string, m crashDumpSweepMarker) error {
 	dir := filepath.Dir(path)
-	if err := os.MkdirAll(dir, crashDumpSweepDirPerm); err != nil {
+	if err := scratch.MkdirAllWithSuiteRunOwnerPerm(dir, crashDumpSweepDirPerm); err != nil {
 		return fmt.Errorf("create gopi data root %s: %w", dir, err)
 	}
 	tmp, err := os.CreateTemp(dir, crashDumpSweepMarkerName+".tmp-*")

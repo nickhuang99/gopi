@@ -30,7 +30,7 @@ import "github.com/nickhuang99/gopi/internal/gitargv"
 
 // gitCommandHeadIdx reports the index of the `git` command word in words when
 // every word before it is a wrapper from wrappers, one of the wrapper's own
-// OPERANDS (gitargv.OperandWords — `sudo -u the operator git …`), one of the wrapper's
+// OPERANDS (gitargv.OperandWords — `sudo -u nick git …`), one of the wrapper's
 // own option words, or a shell assignment (`FOO=1`). ok=false means the git
 // token is an argument to some other command (`echo git push`).
 func gitCommandHeadIdx(words []string, wrappers map[string]bool) (int, bool) {
@@ -40,7 +40,7 @@ func gitCommandHeadIdx(words []string, wrappers map[string]bool) (int, bool) {
 // commandHeadIdx is the walk with the HEAD PREDICATE supplied, because the chat
 // shell guards ask the same question about a different head (`bash`, `sh`, …).
 // Two callers, one walk: the wrapper→operand rule is then identical for `sudo -u
-// the operator git push` and for `sudo -u the operator sh -c '…'`, and cannot be repaired in one
+// nick git push` and for `sudo -u nick sh -c '…'`, and cannot be repaired in one
 // and forgotten in the other (task 01a19d8a).
 func commandHeadIdx(words []string, wrappers map[string]bool, isHead func(string) bool) (int, bool) {
 	for i := 0; i < len(words); {

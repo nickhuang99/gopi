@@ -71,7 +71,7 @@ const (
 	// WHY IT EXISTS (measured 2026-10-27, row 01a17aba): `gopi task status
 	// --worktree <ground>` printed
 	//
-	//	holder:      host-a:1698361 (claim stamp is fresh for this run)
+	//	holder:      the host:1698361 (claim stamp is fresh for this run)
 	//
 	// while /proc/1698361 did not exist, and the very next two lines said
 	// `verdict: dead` / `live: pid 1698361 alive=no`. The suffix was rendered

@@ -4,10 +4,11 @@ package agent
 // round's VISIBLE RESPONSE BODY instead of to its [IMPORTANT] note.
 //
 // WHY THIS FILE EXISTS (measured, 2026-10-10). The note gate
-// (selfnotecapture.go) classifies the round's [IMPORTANT] block, and the block
-// is capped at maxSelfRecordNoteChars = 500 characters by contract — so a
-// response whose value IS a table or a diagram can never carry one through the
-// note: the shape does not fit. The measured case is the operator's own billing
+// (selfnotecapture.go) classifies the round's [IMPORTANT] block, and the block is
+// MEANT to be a one-line summary (the contract tells the model to keep it under
+// maxSelfRecordNoteChars = 500 characters; the harness RENDERS it within that
+// budget) — so a response whose value IS a table or a diagram cannot carry one
+// through the note: the shape does not fit a line, whatever the storage limit is. The measured case is the operator's own billing
 // round: a four-column markdown table (`| 产品 | 计费单元 | 单价 | 用量 |`) in
 // the body, and a note about it written as `；`-joined prose with ONE pipe. The
 // note gate answered `no-structure` and the table died with the round — the

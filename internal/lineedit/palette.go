@@ -254,10 +254,20 @@ type Palette struct {
 	DiffDel Style
 	// Hint is secondary chrome (the tools-ON hint, key reminders).
 	Hint Style
-	// Reasoning is the LIVE REASONING a transcript row draws when a carrier
-	// receives the engine's reasoning stream on the wire instead of as bytes
+	// Reasoning is THE REASONING ROW's style, in both places the transcript
+	// draws one: a turned-in chat's landed body row (LayerThinking —
+	// internal/lineedit's layers.go layerStyleFor) and a carrier's live
+	// transcript row fed by the engine's reasoning stream on the wire
 	// (`event: thinking` — see internal/uiclient's EventThinking and
 	// Agent.StreamThinkingDeltas).
+	//
+	// IT IS NOT Thinking. Thinking is the STATUS row's live hint ("the agent is
+	// working"): chrome, deliberately loud, and it competes with nothing. A
+	// reasoning row is CONTENT — the model's own aside — and it is read beside
+	// the answer it belongs to, so it must be QUIETER than that answer rather
+	// than shouting over it. The two therefore take different attributes on
+	// every table and the reasoning row reads pal.Reasoning for that reason; a
+	// column that wants the live hint reads Thinking.
 	//
 	// WHY IT IS A FIELD OF ITS OWN RATHER THAN A REUSE OF Hint. The role is
 	// different even where the colour coincides: Hint is CHROME (a reminder the
@@ -396,7 +406,7 @@ var BasicPalette = Palette{
 // The Hermes-derived gold tables
 // ---------------------------------------------------------------------------
 //
-// WHERE THESE COME FROM. They are the DESIGN of a sibling agent project's
+// WHERE THESE COME FROM. They are the DESIGN of /home/user/work/hermes-agent's
 // terminal theme (ui-tui/src/theme.ts: DARK_THEME / LIGHT_THEME), ported — not
 // imported: that project is TypeScript with a node_modules tree, this is a
 // zero-dependency Go renderer, and what crosses the language boundary is the
@@ -443,7 +453,7 @@ const (
 	hermesDarkText    = 0xFFF8DC // "cornsilk" — DARK_THEME.text, the answer body
 	hermesDarkPrimary = 0xFFD700 // "gold" — DARK_THEME.primary
 	hermesDarkLabel   = 0xDAA520 // "goldenrod" — DARK_THEME.label, the status row's label
-	hermesDarkMuted   = 0xCC9B1F // DARK_THEME.muted — used here for the THINKING row state
+	hermesDarkMuted   = 0xCC9B1F // DARK_THEME.muted — the quiet end: Reasoning (the live reasoning row), Draft, Code, Hint, and the Thinking status hint's colour
 	hermesDarkOk      = 0x4CAF50 // DARK_THEME.ok — a diff addition
 	hermesDarkError   = 0xEF5350 // DARK_THEME.error — a diff removal / an error
 	hermesDarkWarn    = 0xFFA726 // DARK_THEME.warn

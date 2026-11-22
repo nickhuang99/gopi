@@ -48,7 +48,7 @@
 // point: a reader greps the directory for the run's tag and finds the record,
 // the stream and the built-binary directory together.
 //
-// WHAT THIS ROW BOUNDS — AND WHAT IT DOES NOT (measured 2026-10-27, host-a;
+// WHAT THIS ROW BOUNDS — AND WHAT IT DOES NOT (measured 2026-10-27, the host;
 // this paragraph used to claim the age-GC'd half was "what bounds the tree's
 // bytes" and that the records were "noise beside that", and BOTH HALVES OF THAT
 // CLAIM ARE FALSE on the live tree): the flat evidence is NOT noise and the tree
@@ -72,16 +72,18 @@
 // kept=<n>` on this tree as "nothing here needs attention" is right about the
 // DIRECTORIES and wrong about most of the BYTES.
 //
-// That is a deliberate trade, NOT a defect this row can fix by widening its
-// predicate: a stream older than the window is still the EVIDENCE a reader
-// reaches for when a run is missing its completion line, so collecting it by age
-// would delete exactly what makes a killed run diagnosable. The bound belongs to
-// the WRITER (`scripts/test-budget.sh`: keep the newest N streams, or drop the
-// ones whose verdict is already summarized in `stamps.log`), which is a change
-// on the producing side and is recorded as its own task rather than smuggled in
-// here as a wider sweep. Until then this comment is the honest statement of the
-// tree's real ceiling, and the figure an operator acts on (Rule 41) is the pair
-// above — not the collectable count alone.
+// NOT A DEFECT THIS ROW CAN FIX BY WIDENING ITS PREDICATE: a stream older than
+// the window is still the EVIDENCE a reader reaches for when a run is missing its
+// completion line, so collecting it by this row's 6h window would delete exactly
+// what makes a killed run diagnosable. That half is bounded by a SECOND ROW over
+// the same root — `budget-evidence` (declared_budget_evidence.go), EntryKindFileMatch
+// over `run-<tag>.json`, its own 14-day window plus a newest-N floor — and the
+// figure an operator acts on (Rule 41) is the TWO lines together: this one can
+// honestly read `collectable=0` while the row beside it plans gigabytes. What
+// still has no bound at any age is the per-run INDEX (the START RECORD, the
+// package lists, `stamps.log`, the `last.json` symlink), and that is deliberate:
+// it is the record that names a run when the run was killed, kept forever for
+// ~5 MiB.
 //
 // BOTH HALVES ARE THEREFORE THE TREE'S OWN NAME RULES, nothing more:
 //

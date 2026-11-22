@@ -50,6 +50,7 @@ import (
 
 	"github.com/nickhuang99/gopi/internal/agent"
 	"github.com/nickhuang99/gopi/internal/deepseek"
+	"github.com/nickhuang99/gopi/internal/lineedit"
 	"github.com/nickhuang99/gopi/internal/signalrec"
 )
 
@@ -191,6 +192,20 @@ func runTermChat(args []string) int {
 	if code := resolveTermRunConfig(args); code != serviceConfigExitOK {
 		return code
 	}
+
+	// THE SAME DEFAULT `gopi chat` AND `gopi web` ALREADY PUBLISH, for the same
+	// reason: this is a conversational surface, and internal/agent's 60-minute
+	// planning ceiling is the TASK default. Without this call every turn of this
+	// face taught the model "session budget … of 1h0m0s" beside the prompt's own
+	// [CHAT SURFACE] paragraph saying it is not a task run — the two halves
+	// disagreed and the budget half won. PLACED HERE, not at the engine
+	// construction below, because that is where the ONE environment resolution
+	// for this face happens (Rule 2): a value the operator exported, or the
+	// settings.json contribution, is already in the environment, so the
+	// never-override test is asked of the FINAL environment rather than a
+	// half-resolved one. termToolStylesFor(ColourOff) is the monochrome table the
+	// other startup notices use; this line is a start-up remark, not transcript.
+	publishCliSessionBudgetDefault(termToolStylesFor(lineedit.ColourOff))
 
 	// Resolve the browser BEFORE binding anything: a missing text browser is
 	// the one failure the operator can act on, and it must not leave a server

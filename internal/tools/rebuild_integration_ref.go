@@ -9,7 +9,7 @@ package tools
 // integration mirror the task grounds are cut from, an artifact whose attested
 // revision EQUALS local HEAD read as "already current" and the rebuild SKIPPED
 // while the machine ran code ~97 commits stale (measured 2026-10-14 on
-// host-b: artifact attested c3a3f4eae74c = refs/heads/master, while
+// nick-HP-Laptop: artifact attested c3a3f4eae74c = refs/heads/master, while
 // refs/remotes/gitPushcheck/master read 7d0f7848b9e8 and was 97 commits ahead).
 // The mechanism that already ticks could never repair that class: by its own
 // definition the artifact WAS current.

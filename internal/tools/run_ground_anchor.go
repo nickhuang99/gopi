@@ -642,6 +642,13 @@ const (
 	runGroundSweepCollectableLabel = "collectable"
 	runGroundSweepGoneLabel        = "gone       "
 	runGroundSweepKeepLabel        = "keep       "
+	// runGroundHolderRowEndedFmt is the audit sentence for the OWNERSHIP
+	// dimension of occupancy (see the rung in RunGroundCollectableGrounds): a
+	// process still stands in the ground, but the row it belongs to has ended,
+	// so the ground is collectable and the reason NAMES the ledger fact that
+	// allowed it. A free with no stated reason is indistinguishable from a free
+	// that guessed (Rule 15).
+	runGroundHolderRowEndedFmt = "a live process still stands in the ground (cwd/fd/exe) but the row that owns it has ended (%s) — an orphaned holder keeps nothing"
 )
 
 // RunGroundCollectableGrounds partitions the anchors: collectable ones (their
@@ -733,11 +740,20 @@ func RunGroundCollectableGrounds(now time.Time, minAge time.Duration) (collectab
 			kept = append(kept, v)
 			continue
 		}
-		if runGroundOccupied(a.Worktree) {
+		// THE OCCUPANCY RUNG, now TWO dimensions (see runGroundHolderVerdict):
+		// a process standing in the ground keeps it only while the row that
+		// OWNS the ground is still alive. A holder whose row already ended is
+		// an orphan — it keeps nothing — and the free carries the ledger fact
+		// that allowed it, so the record explains itself (Rule 15).
+		keep, holderWhy := runGroundHolderVerdict(a.Worktree, lookup, a.TaskID)
+		if keep {
 			v.Live = true
-			v.Reason = "kept: a live process still stands in the ground (cwd/fd/exe)"
+			v.Reason = holderWhy
 			kept = append(kept, v)
 			continue
+		}
+		if holderWhy != "" {
+			v.Reason = holderWhy
 		}
 		collectable = append(collectable, v)
 	}
@@ -755,6 +771,63 @@ func runGroundOccupied(dir string) bool {
 	_, reason := TaskGroundInUse(dir)
 	return reason != ""
 }
+
+// runGroundHolderVerdict answers the OCCUPANCY dimension of the anchor axis in
+// TWO parts, because "a process stands there" was never the whole question.
+//
+// THE DEFECT IT CLOSES (measured on this host, task 01a1aaea-3135-…): a
+// `./bin/gopi submit` process that had been orphaned for 9d23h kept its ground
+// forever. The row it belonged to was `cancelled`; the occupancy rung asked
+// only "is a live process standing in the ground (cwd/fd/exe)" and answered
+// yes, so `gopi task sweep-worktrees --dry-run` printed
+//
+//	keep  /home/user/workspace/01a1aaea-…  kept: a live process still stands in the ground (cwd/fd/exe)
+//
+// and the ground was unreclaimable while nothing at all was being worked on.
+//
+// The ledger question WAS already implemented — groundRowLookup.rowLifeEnded,
+// the same read the plan leg asks (Rule 13/14: no second liveness probe, no
+// second ledger reader). It was just asked on ONE branch only: inside
+// runGroundAnchorLiveness, and there only when the LAUNCH ladder had already
+// decided a taker was present. When the ladder said "the taker is gone", the
+// ledger was never consulted, and the occupancy rung then re-kept the ground on
+// the strength of an anonymous process. So the fix is not a new measurement —
+// it is asking the measurement that already exists on the branch that skipped
+// it.
+//
+// THREE OUTCOMES, and the third is the one Rule 15 requires:
+//
+//	keep=false, why=""   nobody stands there — occupancy contributes nothing and
+//	                     the caller's other rungs decide, exactly as before;
+//	keep=true,  why=…    a process stands there AND the row that owns the ground
+//	                     has NOT ended (or the ledger could not be read, or the
+//	                     anchor names no row) — kept, as before;
+//	keep=false, why=…    a process stands there but its row has ended — an
+//	                     ORPHANED holder keeps nothing, and the reason NAMES the
+//	                     ledger fact instead of silently dropping the process.
+//
+// Unmeasurable is ALWAYS keep: rowLifeEnded answers "not over" for an absent
+// row and for an unreadable ledger, so a ledger that cannot be read can never
+// free a ground (Rule 15 — a free must rest on a fact that was actually read).
+// The undelivered-commits rung is not asked here: it already ran inside
+// runGroundAnchorLiveness on BOTH ways of reaching a collectable answer, and
+// the removal leg asks it again, so a ground carrying unpushed work is still
+// refused downstream.
+func runGroundHolderVerdict(dir string, lookup *groundRowLookup, taskID string) (keep bool, why string) {
+	if !runGroundOccupied(dir) {
+		return false, ""
+	}
+	over, ledgerWhy := lookup.rowLifeEnded(taskID)
+	if !over {
+		return true, runGroundOccupiedReason
+	}
+	return false, fmt.Sprintf(runGroundHolderRowEndedFmt, ledgerWhy)
+}
+
+// runGroundOccupiedReason is the keep sentence for a ground a live process
+// still stands in, unchanged from the rung that always produced it — one
+// wording, one place (Rule 14).
+const runGroundOccupiedReason = "kept: a live process still stands in the ground (cwd/fd/exe)"
 
 // RunGroundSweepReport renders the operator's read-out for one scan: every
 // collectable ground with the evidence that cleared it, then every GONE ground,
@@ -963,6 +1036,8 @@ const runGroundCollectCloneLabel = "clone ground: "
 // Returns the directories removed, the ones skipped on the re-check (with the
 // reason), and a transport error only for a failure to reach the sink.
 func RunGroundCollect(collectable []RunGroundLiveness) (removed, skipped []string, err error) {
+	lookup := newGroundRowLookup()
+	defer lookup.Close()
 	for _, v := range collectable {
 		dir := strings.TrimSpace(v.Anchor.Worktree)
 		if dir == "" {
@@ -992,8 +1067,13 @@ func RunGroundCollect(collectable []RunGroundLiveness) (removed, skipped []strin
 			skipped = append(skipped, dir+" ("+fmt.Sprintf(runGroundMeasureUnmeasurableFmt, why)+")")
 			continue
 		}
-		if runGroundOccupied(dir) {
-			skipped = append(skipped, dir+" (a live process appeared after the scan)")
+		// The occupancy rung, asked through the SAME two-dimension verdict the
+		// plan leg asks (Rule 14): a process still standing there refuses the
+		// removal ONLY while the row that owns the ground is still alive. The
+		// re-check exists because a live process can appear between the scan and
+		// the act — and the row's ending is re-read here for the same reason.
+		if keep, holderWhy := runGroundHolderVerdict(dir, lookup, v.Anchor.TaskID); keep {
+			skipped = append(skipped, dir+" (a live process appeared after the scan: "+holderWhy+")")
 			continue
 		}
 		if again := RunGroundAnchorLiveness(v.Anchor); again.Live {

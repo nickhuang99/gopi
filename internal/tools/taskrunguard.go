@@ -37,6 +37,8 @@ import (
 	"os"
 	"strings"
 	"time"
+
+	"github.com/nickhuang99/gopi/internal/runlock"
 )
 
 // taskRunHolder* are the verdicts of the pre-spawn singleton guard. Each name
@@ -294,7 +296,25 @@ func taskRunRefusalText(t *Task, verdict string) string {
 			fmt.Fprintf(&b, "; PROGRESS: %s — %s", p.State, p.Why)
 		}
 	}
-	fmt.Fprintf(&b, "; inspect it with `gopi task status %s`, wait for the holder to finish, or pass --takeover to run it deliberately", t.TaskID)
+	// The ways forward, and they are DIFFERENT for the two statuses this text is
+	// rendered for — so the sentence is conditioned on the status, not written
+	// once and hoped over.
+	//
+	//   claimed      --takeover DOES work: the claim CAS admits `claimed`, so a
+	//                forced claim re-stamps the row. The flag is the real escape
+	//                and is named.
+	//   in_progress  --takeover does NOT work and used to be named anyway, which
+	//                is epic 01a1df52: the CAS pinned `status = claimed`, so no
+	//                flag could ever re-stamp an in_progress row, and an operator
+	//                who followed the printed instruction was refused. The road
+	//                out is a MEASUREMENT now (taskRunReviveStrandedClaim: holder
+	//                provably gone AND run.lock free ⇒ the row is claimable
+	//                again), so the text names the measurements.
+	if t.Status == taskStatusInProgress {
+		fmt.Fprintf(&b, "; inspect it with `gopi task status %s` and wait for the holder to finish — a row whose holder is provably gone AND whose run.lock is free is claimable again, so re-running the worker picks it up once that process has stopped", t.TaskID)
+	} else {
+		fmt.Fprintf(&b, "; inspect it with `gopi task status %s`, wait for the holder to finish, or pass --takeover to run it deliberately", t.TaskID)
+	}
 	return b.String()
 }
 
@@ -368,14 +388,182 @@ func taskRunClaimIdentitySet(holder string) (string, []any) {
 // column is NULL on a row with no recorded identity, and the observed value is
 // then 0.
 func taskRunHolderPin(taskID string, observed *Task) (string, []any) {
+	return taskRunHolderPinStatuses(taskID, observed, []string{taskStatusClaimed})
+}
+
+// taskRunHolderPinStatuses is taskRunHolderPin with the CLAIMABLE STATUS SET
+// given by the caller, so the same three-factor pin can arbitrate a revival
+// (taskRunReviveStrandedClaim) as well as a claimed-window re-stamp. The
+// status list stays a BIND VALUE rather than a literal in the SQL, and the pin
+// is on the SAME facts either way: the row's id, one of the admit-able
+// statuses, and the exact (claimed_by, proc pid) pair the caller JUDGED — so a
+// concurrent writer that moves any of the three makes the CAS lose, which is
+// what keeps the revival single-winner (Rule 15: no silent double-run).
+func taskRunHolderPinStatuses(taskID string, observed *Task, statuses []string) (string, []any) {
 	pinnedPid := 0
 	observedBy := ""
 	if observed != nil {
 		pinnedPid = observed.ProcPid
 		observedBy = strings.TrimSpace(observed.ClaimedBy)
 	}
-	return "task_id = ? AND status = ? AND claimed_by = ? AND IFNULL(" + tasksProcPidColumnName + ", 0) = ?",
-		[]any{taskID, taskStatusClaimed, observedBy, pinnedPid}
+	where := "task_id = ? AND status IN (" + taskPlaceholders(len(statuses)) + ") AND claimed_by = ? AND IFNULL(" +
+		tasksProcPidColumnName + ", 0) = ?"
+	args := make([]any, 0, len(statuses)+3)
+	args = append(args, taskID)
+	for _, s := range statuses {
+		args = append(args, s)
+	}
+	args = append(args, observedBy, pinnedPid)
+	return where, args
+}
+
+// taskReviveRefusal* name WHY a stranded in_progress row was NOT revived. They
+// are values, not sentences, so the claim refusal can name the blocker it
+// actually measured (Rule 15: never collapse several causes into one line).
+const (
+	// taskReviveRefusalHolderLive: the recorded holder is a live OTHER
+	// process. The row is genuinely running; reviving it would double-run the
+	// briefing (P0). Reported by name rather than folded into "not claimable".
+	taskReviveRefusalHolderLive = "the recorded holder is still alive"
+	// taskReviveRefusalHolderUnjudged: the verdict ladder could not measure
+	// the holder at all. An unmeasured holder is NOT evidence of a dead one,
+	// so the revival declines (the claim then refuses as before).
+	taskReviveRefusalHolderUnjudged = "the recorded holder could not be judged from this host"
+	// taskReviveRefusalLockHeld: the run directory's kernel flock is held — a
+	// live round OWNS the ground even when the stamp looks stale. The lock is
+	// the verdict; the stamp is only the previous holder's diagnosis.
+	taskReviveRefusalLockHeld = "the row's run.lock is still held"
+	// taskReviveRefusalLockUnmeasured: the lock could not be measured, so it
+	// is never taken as free (Rule 15: no fabricated "free").
+	taskReviveRefusalLockUnmeasured = "the row's run.lock could not be measured"
+)
+
+// taskRunReviveStrandedClaim is the REVIVAL of a stranded in_progress row —
+// the crash-recovery shape `gopi task status` prints a recipe for but that no
+// claim path used to honour: the claim CAS pinned `status = claimed`, so an
+// in_progress row could never be re-stamped by ANY command line, and a row
+// whose holder was killed by SIGKILL or a power loss was stranded forever.
+//
+// THE PREDICATE IS TWO MEASUREMENTS, and both must say "gone":
+//
+//  1. THE HOLDER — the same three-factor identity (pid + /proc start ticks +
+//     cmdline) the singleton guard and `task status` use, via the SAME
+//     function (taskRunHolderVerdict). A live OTHER process refuses.
+//
+//     A stamp that DISAGREES with the recorded identity is judged on the
+//     RECORD instead of being refused as unjudgeable: that disagreement is
+//     what an aborted attempt leaves behind, because `gopi worker` re-stamps
+//     claimed_by with its own pid ([own-release]) before it claims and never
+//     rewrites proc_pid. Refusing on the disagreement alone is what kept real
+//     rows stranded (measured end to end, sandbox row 01a1df7e).
+//
+//  2. THE RUN LOCK — the kernel flock on the row's own run directory
+//     (runlock.LiveHolderOf), the VERDICT the stamp cannot give: a flock is
+//     released by the kernel when its holder dies, so a HELD lock means a LIVE
+//     process owns the work even under a stale stamp. It refuses for anyone
+//     else — and proceeds when the holder is THIS process, because `gopi
+//     worker` takes the row's lock BEFORE it claims (cmd/agent/run_lock_seam.go),
+//     so the claimant always presents a held lock (measured: pid 2524166 was
+//     refused for "still held" while holding it itself).
+//
+// `--takeover` does NOT relax any of this: it defeats the singleton guard,
+// never the claim predicate. Force therefore cannot revive a row whose holder
+// is alive or whose lock another process holds — that would be the double-run
+// the guard exists to stop.
+//
+// The re-stamp is one conditional UPDATE carrying BOTH the identity write and
+// the status move back to claimed, pinned on (task_id, status ∈ {claimed,
+// in_progress}, claimed_by, proc pid) exactly as the claimed-window re-stamp is
+// — so a concurrent writer that moves any of those makes the CAS lose and
+// exactly ONE racer revives the row.
+//
+// The re-stamp is one conditional UPDATE carrying BOTH the identity write and
+// the status move back to claimed, pinned on (task_id, status ∈ {claimed,
+// in_progress}, claimed_by, proc pid) exactly as the claimed-window re-stamp is
+// — so a concurrent writer that moves any of those makes the CAS lose and
+// exactly ONE racer revives the row.
+func taskRunReviveStrandedClaim(ctx context.Context, db *sql.DB, observed *Task, holder string, now float64) (bool, string, error) {
+	if observed == nil || observed.Status != taskStatusInProgress {
+		return false, "", nil
+	}
+	verdict := taskRunHolderVerdict(observed)
+	switch {
+	case !taskRunGuardAdmits(verdict):
+		return false, taskReviveRefusalHolderLive, nil
+	case verdict == taskRunHolderUnknown:
+		// The stamp and the recorded identity DISAGREE — which is exactly the
+		// shape an aborted attempt leaves behind: a worker re-stamps
+		// claimed_by with its OWN pid before claiming ([own-release]) and
+		// never rewrites proc_pid, so the faithful stamp-vs-identity check in
+		// taskRunHolderVerdict answers "the record cannot judge this pid" even
+		// though the process that ACTUALLY ran the row is recorded right there
+		// and may be long dead. Refusing on that answer alone is what kept the
+		// row stranded (measured: row 01a1df78 in the sandbox, two dead pids,
+		// `live: pid … alive=no`, `run_lock: free`, and BOTH the old and the
+		// new binary refused).
+		//
+		// So judge the RECORDED IDENTITY ITSELF — the same three-factor ladder
+		// the guard uses when the two agree — and let a provably gone process
+		// through. The run lock measured below is still the second, independent
+		// gate, so a live round that holds the ground refuses regardless.
+		if taskRunProcessStateVerdict(taskRowProcessLiveness(observed).State) != taskRunHolderFree {
+			return false, taskReviveRefusalHolderUnjudged, nil
+		}
+	}
+	dir := taskRunDir(observed.TaskID)
+	if dir == "" {
+		return false, taskReviveRefusalLockUnmeasured, nil
+	}
+	live := runlock.LiveHolderOf(runlock.PathIn(dir))
+	switch live.State {
+	case runlock.LockStateFree:
+		// the ground is provably nobody's — the revival may proceed.
+	case runlock.LockStateHeld:
+		// THE CALLER'S OWN LOCK IS NOT A BLOCKER, and getting this wrong made
+		// the revival unreachable in practice: `gopi worker` takes the row's
+		// run.lock BEFORE it claims (cmd/agent/run_lock_seam.go), so by the
+		// time this predicate runs the lock is ALWAYS held — by the very
+		// process asking to run the row. Measured end-to-end (sandbox row
+		// 01a1df78): the claim refused with "the row's run.lock is still held"
+		// while the lock was held by the claimant itself, pid 2524166.
+		//
+		// A flock is released by the kernel when its holder dies, so a held
+		// lock means a LIVE process owns the ground: refuse for anyone else,
+		// proceed for ourselves.
+		if live.Pid != os.Getpid() {
+			return false, taskReviveRefusalLockHeld, nil
+		}
+	default:
+		return false, taskReviveRefusalLockUnmeasured, nil
+	}
+	identSet, identArgs := taskRunClaimIdentitySet(holder)
+	pinWhere, pinArgs := taskRunHolderPinStatuses(observed.TaskID, observed,
+		[]string{taskStatusClaimed, taskStatusInProgress})
+	args := append([]any{taskStatusClaimed, holder, now, now}, identArgs...)
+	args = append(args, pinArgs...)
+	res, err := db.ExecContext(ctx,
+		`UPDATE tasks SET status = ?, claimed_by = ?, claimed_at = ?, updated_at = ?, `+identSet+`
+		 WHERE `+pinWhere,
+		args...)
+	if err != nil {
+		return false, "", fmt.Errorf("task: claim revive: %w", err)
+	}
+	//stylegate:ignore n==0 is the meaningful branch; a driver error yields the same 0 and is reported above
+	if n, _ := res.RowsAffected(); n != 1 {
+		return false, "", nil
+	}
+	taskNotifyFlushStatusMove(observed.TaskID, taskStatusInProgress, taskStatusClaimed)
+	return true, "", nil
+}
+
+// taskPlaceholders renders n "?" bind slots, comma-joined — the ONE spelling
+// of a variable-length IN list in this file (Rule 1b: never string-concatenate
+// a slot count at a call site that could disagree with its argument list).
+func taskPlaceholders(n int) string {
+	if n <= 0 {
+		return ""
+	}
+	return strings.Repeat("?,", n-1) + "?"
 }
 
 // taskRunRestampClaim re-stamps a CLAIMED row's holder stamp and its

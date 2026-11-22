@@ -129,7 +129,7 @@ const (
 	// The step reports its own outcome; these three constants make the ONE
 	// fact the step cannot read — "how far behind is this host, really?" —
 	// a line of its own, because a per-step verdict is not a LEADING
-	// INDICATOR. Measured 2026-10-13 on host-a: `refs/heads/master` was
+	// INDICATOR. Measured 2026-10-13 on the host: `refs/heads/master` was
 	// 141 commits behind the peer and a purely-ancestor of it, while every
 	// step of every pass had reported success — the freeze was invisible in
 	// the log for exactly as long as it lasted.

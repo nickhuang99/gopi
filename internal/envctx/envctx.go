@@ -21,7 +21,7 @@
 //	               told is exactly what a human reading the file is told.
 //
 // CONFLICTS ARE RECORDED, NOT RESOLVED (Rule 15). The one measured here: the
-// ssh config maps BOTH `alpha` and `nas` to 192.0.2.5, and the alias lines
+// ssh config maps BOTH `hp` and `nas` to 10.0.0.5, and the alias lines
 // themselves spell addresses that differ from their own HostName (rpi5 = .4 on
 // the Host line, .14 on HostName). A generator that picked one silently would
 // be manufacturing a fact it never measured; this one prints both, names the

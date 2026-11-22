@@ -30,9 +30,9 @@ import (
 // itself at its max_chars; both are the tool CHOOSING what to show and stay
 // untouched. The cap is deliberately loose enough that a full 50 KiB read page
 // passes through it untouched — ToolResultTokenCap's comment does that
-// arithmetic. Nor is it the compaction path: summarizeOldToolResults
-// (context.go:687) collapses OLD results to one-line stubs once the context is
-// over budget. This one fires at INGESTION, per result, always.
+// arithmetic. Nor is it the compaction path (context_compress.go), which deletes
+// the oldest RUN of messages when the window fills. This one fires at
+// INGESTION, per result, always.
 const (
 	// ToolResultTokenCap is the hard upper bound, in tokens, on ONE tool result
 	// as it is appended to the conversation.
@@ -144,20 +144,18 @@ const (
 // head and tail and splicing an explicit note about what was dropped.
 //
 // REUSE, NOT A SECOND TRUNCATOR. The middle-elision SHAPE is the repository's
-// existing one — `truncateMiddle` (internal/agent/compact.go:419, written for the
-// summarizer's input): keep `head` runes, keep `tail` runes, splice a marker
-// between them. This function therefore calls `elideRunes` — the very body
-// `truncateMiddle` now delegates to, with the marker as a parameter — instead of
-// growing a second string-cutting routine with its own off-by-one behaviour.
-// What is genuinely NEW here is only the policy around that shape: a TOKEN
-// budget (not a rune count), a real tokenizer count rather than chars/4, a
-// two-tier free/sample gate in front of that count, and a note that names the
-// omission and its recovery route.
+// existing one — `elideAtBytes` / `runeOffsets` (internal/agent/elide.go): keep
+// `head` runes, keep `tail` runes, splice a marker between them. What is
+// genuinely NEW here is only the policy around that shape: a TOKEN budget (not
+// a rune count), a real tokenizer count rather than chars/4, a two-tier
+// free/sample gate in front of that count, and a note that names the omission
+// and its recovery route.
 //
-// `summarizeOldToolResults` (context.go:687) is NOT reusable here: it collapses a
-// result to a ONE-LINE stub (everything but the first line is dropped), and it
-// applies only to OLD results once the context is over budget. Different job —
-// it must not touch the result the model is about to read.
+// THIS CAP IS NOT COMPACTION, and it does not become a second reduction path:
+// it bounds ONE result as it enters the context, so the model reads an excerpt
+// with a pointer to the full text instead of a 4K-token dump. The round's own
+// history is untouched (the message the model is about to read is never
+// rewritten) and nothing here depends on the window's fill level.
 func (c *Context) capToolResult(toolCallID, result string) string {
 	if result == "" {
 		return result

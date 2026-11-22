@@ -1,6 +1,6 @@
 // Package agent — epic reframe + evaluate as ONE structured tool call.
 //
-// SPEC: briefings/SPEC-reframe-evaluate-merge.md (the operator 2026-09-10, the
+// SPEC: briefings/SPEC-reframe-evaluate-merge.md (nick 2026-09-10, the
 // 3-verdict zero-loophole revision).
 //
 // A task run starts with a raw [EPIC GOAL] briefing that may be huge (long
@@ -92,17 +92,24 @@ var epicGoalFramingFormat = epicGoalHeader + "%s\n\nBased on this Epic, %s; re-e
 // work BEFORE the swap keeps the raw giant in per-round context for nothing
 // (the early-trigger evidence in
 // devdoc/reframe-e2e-test-findings-20260908.md).
-var reframeDirective = "\n\n[EPIC REFRAME] Before any other work: read the briefing (and any [attachmentN:] files), " +
-	"then call task(action=" + toolnames.ToolTaskReframe + ") with (a) the epic restated compactly — epic_summary / constraints / " +
-	"deliverables / acceptance — and (b) an honest verdict ∈ {" + reframeVerdictList + "}, investigated enough to judge, no more. " +
-	taskverdict.TooBig + " requires a roadmap (one entry per child: goal + acceptance) — the harness enqueues it and this run ends there; " +
-	taskverdict.Impossible + " requires a reason and means PROVABLY unattainable in principle (hard/risky/unknown is " + taskverdict.TooBig +
-	", with the investigation as a roadmap item). THE BUDGET IS PART OF THE CRITERION: a roadmap whose items cannot each fit " +
-	"inside ONE session budget means the epic is " + taskverdict.TooBig + ", never " + taskverdict.Doable + " — and past the " +
-	"escalation mark a " + taskverdict.Doable + " verdict is refused outright while tracked items are still open. The harness acts on your verdict and REJECTS the call without the required payload. " +
-	"That restatement REPLACES the raw briefing as the referenced goal for every later review (task(action=review), drift checks), " +
-	"so work from it. An honest " + taskverdict.Impossible + " beats a fabricated result. " +
-	"One-line Epic: skip the payload, still give the verdict."
+//
+// A FUNCTION, not a package-level value: it quotes the session budget
+// (sessionBudgetCeilingClause), which is env-backed and published at RUNTIME
+// by `gopi chat` — a value frozen at init would state a ceiling this run does
+// not have. Resolved at assembly time, when the message is built.
+func reframeDirective() string {
+	return "\n\n[EPIC REFRAME] Before any other work: read the briefing (and any [attachmentN:] files), " +
+		"then call task(action=" + toolnames.ToolTaskReframe + ") with (a) the epic restated compactly — epic_summary / constraints / " +
+		"deliverables / acceptance — and (b) an honest verdict ∈ {" + reframeVerdictList + "}, investigated enough to judge, no more. " +
+		taskverdict.TooBig + " requires a roadmap (one entry per child: goal + acceptance) — the harness enqueues it and this run ends there; " +
+		taskverdict.Impossible + " requires a reason and means PROVABLY unattainable in principle (hard/risky/unknown is " + taskverdict.TooBig +
+		", with the investigation as a roadmap item). THE BUDGET IS PART OF THE CRITERION: a roadmap whose items cannot each fit " +
+		"inside ONE session budget means the epic is " + taskverdict.TooBig + ", never " + taskverdict.Doable + " — and past the " +
+		"escalation mark a " + taskverdict.Doable + " verdict is refused outright while tracked items are still open. The harness acts on your verdict and REJECTS the call without the required payload. " +
+		"That restatement REPLACES the raw briefing as the referenced goal for every later review (task(action=review), drift checks), " +
+		"so work from it. An honest " + taskverdict.Impossible + " beats a fabricated result. " +
+		"One-line Epic: skip the payload, still give the verdict."
+}
 
 // reframeDirectiveCharsBudget is the multiplier over the directive's own cost
 // used to derive the swap threshold (Rule 1/2: the derivation lives here).
@@ -114,7 +121,12 @@ const reframeDirectiveCharsBudget = 4
 // when the model reframed. Derived from the directive's own cost (the
 // directive is appended to the briefing, so the swap must save more than it
 // costs to be worth doing).
-var reframeMinRawLength = reframeDirectiveCharsBudget * len(reframeDirective)
+//
+// A function only because it MEASURES reframeDirective(), which is itself
+// resolved per call (the directive quotes the runtime budget). Its answer is
+// stable within a process — it is the DERIVATION that cannot be frozen, not
+// the threshold that moves.
+func reframeMinRawLength() int { return reframeDirectiveCharsBudget * len(reframeDirective()) }
 
 // reframedBriefingNote is the tail of the swapped [EPIC GOAL] message: a
 // one-line pointer that the raw briefing is archived in the session log
@@ -143,15 +155,18 @@ const (
 
 // reframeNudgeMessage is the injected reminder. It names the toolcall (the
 // formal action) and its conditional payload, from the same constants as the
-// directive (Rule 14). Built once at init because the constants it reads are
-// themselves built from package-level vars.
-var reframeNudgeMessage = "\n\n" + harnessMessagePrefix + "This run's briefing is large and no task(action=" + toolnames.ToolTaskReframe + ") call has arrived yet. " +
-	"Reframe NOW: read the briefing (+ any [attachmentN:] files), then call task(action=" + toolnames.ToolTaskReframe + ") with epic_summary/constraints/" +
-	"deliverables/acceptance and a verdict ∈ {" + reframeVerdictList + "} (roadmap for " + taskverdict.TooBig + ", reason for " +
-	taskverdict.Impossible + "). THE BUDGET IS PART OF THE CRITERION: a roadmap whose items cannot each fit inside ONE " +
-	"session budget means " + taskverdict.TooBig + ", not " + taskverdict.Doable + " — " + sessionBudgetCeilingClause() + " per session. " +
-	"The restatement replaces the raw briefing; work from it afterwards. " +
-	"If the task is genuinely small, ignore this note."
+// directive (Rule 14). A FUNCTION, not a package-level value: it quotes the
+// session budget (sessionBudgetCeilingClause), and the budget is env-backed, so
+// freezing it at init would describe a ceiling this run does not have.
+func reframeNudgeMessage() string {
+	return "\n\n" + harnessMessagePrefix + "This run's briefing is large and no task(action=" + toolnames.ToolTaskReframe + ") call has arrived yet. " +
+		"Reframe NOW: read the briefing (+ any [attachmentN:] files), then call task(action=" + toolnames.ToolTaskReframe + ") with epic_summary/constraints/" +
+		"deliverables/acceptance and a verdict ∈ {" + reframeVerdictList + "} (roadmap for " + taskverdict.TooBig + ", reason for " +
+		taskverdict.Impossible + "). THE BUDGET IS PART OF THE CRITERION: a roadmap whose items cannot each fit inside ONE " +
+		"session budget means " + taskverdict.TooBig + ", not " + taskverdict.Doable + " — " + sessionBudgetCeilingClause() + " per session. " +
+		"The restatement replaces the raw briefing; work from it afterwards. " +
+		"If the task is genuinely small, ignore this note."
+}
 
 // reframeRoadmapItem is one child task of a TOO_BIG decomposition.
 type reframeRoadmapItem struct {
@@ -345,7 +360,7 @@ func (a *Agent) applyReframe(in reframeInput) {
 		if m.Role != "user" || !strings.HasPrefix(m.Content, "[EPIC GOAL]") {
 			continue
 		}
-		if len(m.Content) < reframeMinRawLength {
+		if len(m.Content) < reframeMinRawLength() {
 			return // small briefing: refuse the swap (no positive-value reduction)
 		}
 		rawLen := len(m.Content)
@@ -381,7 +396,7 @@ func (a *Agent) reframeBigBriefingInContext() bool {
 		if m.Role != "user" || !strings.HasPrefix(m.Content, "[EPIC GOAL]") {
 			continue
 		}
-		return len(m.Content) >= reframeMinRawLength
+		return len(m.Content) >= reframeMinRawLength()
 	}
 	return false
 }
@@ -416,14 +431,14 @@ func (a *Agent) maybeNudgeReframe(roundIdx, freeTextChars int) bool {
 	// resets on resume, so an identical re-injection is prevented by scanning
 	// for the message rather than relying on the latch alone.
 	for i := range a.Ctx.Messages {
-		if a.Ctx.Messages[i].Role == "user" && strings.Contains(a.Ctx.Messages[i].Content, reframeNudgeMessage) {
+		if a.Ctx.Messages[i].Role == "user" && strings.Contains(a.Ctx.Messages[i].Content, reframeNudgeMessage()) {
 			a.reframeNudged = true // latch: never nudge again
 			return false
 		}
 	}
-	a.Ctx.AddUserMessage(reframeNudgeMessage)
+	a.Ctx.AddUserMessage(reframeNudgeMessage())
 	if a.SessionLog != nil {
-		a.SessionLog.LogUser(newUUIDv4(), reframeNudgeMessage)
+		a.SessionLog.LogUser(newUUIDv4(), reframeNudgeMessage())
 	}
 	a.reframeNudged = true
 	if a.Logger != nil {

@@ -156,7 +156,7 @@ const (
 	// an EXPRESSION does.
 	syncRemoteCoalescedProjection = `COALESCE(deliverable,'')` + syncColumnAliasKeyword + `deliverable,
 		COALESCE(run_method,'')` + syncColumnAliasKeyword + `run_method, COALESCE(run_cmd,'')` + syncColumnAliasKeyword + `run_cmd,
-		COALESCE(reason,'')` + syncColumnAliasKeyword + `reason, ` + syncParentColumnNamed + `, ` + syncParentIDsColumnNamed
+		COALESCE(reason,'')` + syncColumnAliasKeyword + `reason, ` + syncParentColumnNamed + `, ` + syncParentIDsColumnNamed + `, ` + syncSessionColumnNamed
 
 	// --- the STATUS GATE (this leg's one precondition) -------------------
 	//
@@ -1229,5 +1229,10 @@ func syncRowFromHarvest(r harvestRemoteRow) SyncTaskRow {
 		// still waits for its parent instead of one that claims to be free
 		// work (Rule 33).
 		ParentTaskID: r.ParentTaskID, ParentTaskIDs: r.ParentTaskIDs,
+		// The RUN SESSION, for the same reason the edge rides: the row's own
+		// memory rows are resolved by it (syncSessionColumnExpr's doc), and a
+		// receive that dropped it would hand back a row whose provenance is
+		// gone — the receive leg is a transported copy, not a fresh one.
+		SessionID: r.SessionID,
 	}
 }

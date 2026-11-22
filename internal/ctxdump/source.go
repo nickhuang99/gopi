@@ -133,7 +133,10 @@ func countRequestsExact(path string) (int, error) {
 			}
 			return 0, herr
 		}
-		if h.Tag == rawlogfmt.TagRequest || h.Tag == rawlogfmt.TagProbeRequest {
+		// TagRequest ONLY, so the total this returns and the walk in `requestAt`
+		// index the SAME sequence — otherwise "holds N request(s)" names a range
+		// the addressing cannot reach.
+		if h.Tag == rawlogfmt.TagRequest {
 			count++
 		}
 		if serr := r.Skip(); serr != nil {
@@ -172,7 +175,16 @@ func requestAt(path string, round int) (*deepseek.ClaudeRequest, int, error) {
 			}
 			return nil, 0, fmt.Errorf("ctxdump: %s: %w", path, rerr)
 		}
-		if rec.Tag != rawlogfmt.TagRequest && rec.Tag != rawlogfmt.TagProbeRequest {
+		// TagRequest ONLY — the ordinal handed to this walk is a SESSION ordinal
+		// (a turn's RequestOrdinal, which numbers the session.jsonl `request`
+		// rows, one per real provider call). A probe record IS a real send but it
+		// writes no `request` row, so counting it here shifted every later
+		// ordinal by one and the export rendered another turn's body — measured
+		// on session 6b01dd46: record 1 is a `P`, so session ordinal 1 resolved
+		// to raw record 2 and `--turn 1` died parsing a multipart probe body.
+		// Pairing against gopilog.SessionRoundRawOrdinals confirms the identity:
+		// session ordinals 1..8 pair to TagRequest-only ordinals 1..8, exact.
+		if rec.Tag != rawlogfmt.TagRequest {
 			continue
 		}
 		seen++

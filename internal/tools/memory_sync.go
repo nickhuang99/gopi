@@ -101,6 +101,23 @@ type SyncPatch struct {
 	// as zero (the periodic leg's ImportKnown does exactly that).
 	ImportStats *SyncImportTally `json:"import_stats,omitempty"`
 	Rows        []SyncRow        `json:"rows"`
+	// KnownIdentities carries the INITIATOR's identity digest for the rows it
+	// already holds, so the peer's reply can be sized to the difference
+	// instead of shipping its whole store back. Optional and additive: an
+	// older peer drops the unknown field silently and replies with a FULL
+	// export, which is exactly the pre-existing behaviour and always correct
+	// (unique-only merge) — the increment is what is lost, never a row.
+	KnownIdentities []string `json:"known_identities,omitempty"`
+	// KnownSkipped is the PEER's reply-side count of rows it did NOT send
+	// back because this initiator's KnownIdentities already covered them.
+	//
+	// It exists because the increment MOVED where "we both hold this row" is
+	// observed: before it, the peer replied with everything and the initiator's
+	// import reported those rows as `existing`; now the peer never sends them.
+	// Leaving that number unrecorded would make a converged pair and a peer
+	// with a DIFFERENT body for the same question indistinguishable — the
+	// body-divergence signal the assets channel exists to surface.
+	KnownSkipped int `json:"known_skipped,omitempty"`
 }
 
 // syncPatchVersion is the current patch format version.
@@ -174,6 +191,18 @@ type SyncExportOptions struct {
 	// local non-node rows — the wide default: brew + hermes-import +
 	// empty-source early-dev rows all travel, node:* never).
 	Source string
+	// ExcludeIdentities is the PEER's known-identity set (fetched live by
+	// MemoryAssetsPeerIdentities). When non-nil, a row whose identity the peer
+	// already holds is skipped: that is the increment. nil = no filtering
+	// (every call site's pre-existing behaviour, and the degraded path when
+	// the probe cannot answer).
+	//
+	// It is an IDENTITY set, not a time watermark, because the peer stamps
+	// `distilled_at` with its own import instant AND writes rows of its own —
+	// measured on a live pair, filtering by the peer's max(distilled_at) would
+	// have dropped 72 of 94 genuinely-missing rows. An identity the peer does
+	// not hold cannot be filtered out, so this form cannot lose work.
+	ExcludeIdentities *AssetIdentitySet
 }
 
 // SyncExportStats reports what the export produced.
@@ -182,6 +211,9 @@ type SyncExportStats struct {
 	Scanned      int
 	SkippedTag   int
 	SkippedSince int
+	// SkippedIdentical = rows the peer's identity digest already covers —
+	// the increment's visible effect. 0 on a full export.
+	SkippedIdentical int
 }
 
 // SyncExport this node's knowledge rows into a PR-style patch file. The
@@ -272,6 +304,14 @@ func SyncExport(opts SyncExportOptions) (*SyncPatch, *SyncExportStats, error) {
 			stats.SkippedSince++
 			continue
 		}
+		// The increment: a row whose identity the peer already holds is not
+		// sent. Safe by construction — an identity the peer does NOT hold can
+		// never match, so this filter can only remove rows that would have
+		// been rejected by the peer's own probe anyway.
+		if opts.ExcludeIdentities.Has(r.Question) {
+			stats.SkippedIdentical++
+			continue
+		}
 		patch.Rows = append(patch.Rows, r)
 	}
 	if err := rows.Err(); err != nil {
@@ -280,6 +320,10 @@ func SyncExport(opts SyncExportOptions) (*SyncPatch, *SyncExportStats, error) {
 	if patch.Rows == nil {
 		patch.Rows = []SyncRow{} // JSON: [] not null — empty export stays valid
 	}
+	// RowsExported is the count that actually travels; Scanned is what the
+	// query returned before any filter. The two differ by exactly the skipped
+	// classes, which is how a caller checks the increment against the total.
+	stats.RowsExported = len(patch.Rows)
 	return patch, stats, nil
 }
 

@@ -7,6 +7,8 @@ import (
 	"path/filepath"
 	"strings"
 	"sync"
+
+	"github.com/nickhuang99/gopi/internal/scratch"
 )
 
 // History bounds and on-disk shape. Every value is named (Rule 1) because each
@@ -203,7 +205,7 @@ func (h *History) saveLocked() error {
 		return nil
 	}
 	dir := filepath.Dir(h.path)
-	if err := os.MkdirAll(dir, historyFileMode|os.ModePerm); err != nil {
+	if err := scratch.MkdirAllWithSuiteRunOwnerPerm(dir, historyFileMode|os.ModePerm); err != nil {
 		return fmt.Errorf("lineedit: create history dir %s: %w", dir, err)
 	}
 	tmp, err := os.CreateTemp(dir, filepath.Base(h.path)+historyTempPattern)

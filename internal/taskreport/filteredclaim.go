@@ -440,7 +440,7 @@ func sentenceNarrowingFilters(sentence string) []string {
 }
 
 // namesFilterFlag reports whether the lowered sentence names flag f as a FLAG:
-// its own token (`-run 'X|Y'`, `-run=X|Y`, or the fenced “ `-run` “ a report
+// its own token (`-run 'X|Y'`, `-run=X|Y`, or the fenced `` `-run` `` a report
 // quotes), never a substring of a longer word or a path (`-run-not-this`, a
 // directory named `-benchmarks`, `run:` inside prose).
 func namesFilterFlag(low, flag string) bool {

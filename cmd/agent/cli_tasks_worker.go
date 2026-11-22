@@ -1,7 +1,7 @@
 package main
 
 // cli_tasks_worker.go — the WORKER LOOP (`gopi worker`): the general
-// task-management service (epic serve/worker-split 2026-09-03, the operator's final
+// task-management service (epic serve/worker-split 2026-09-03, nick's final
 // design). The worker is the ONLY task-execution process — it runs
 // identically on BOTH the client (HP) and the server (peer1), while
 // `task serve`/`task merger` were the SERVER-ONLY merge pass — the retired
@@ -42,7 +42,7 @@ package main
 //	⑥ claim the next task. When nothing claimable remains the worker
 //	   re-checks after workerIdleInterval; after workerIdleExits
 //	   CONSECUTIVE empty rounds (no task executed in between) it exits 0
-//	   on its own — a worker is a task-DRAIN tool, not a daemon (the operator 9/1
+//	   on its own — a worker is a task-DRAIN tool, not a daemon (nick 9/1
 //	   design: it runs and self-dies). The M4.20-D drain-exit is preserved
 //	   as the `--once` flag (a drained queue then exits 0 immediately,
 //	   SUCCESS not error); GOPI_WORKER_IDLE_EXITS=0 opts back into the old
@@ -65,7 +65,6 @@ import (
 	"github.com/nickhuang99/gopi/internal/config"
 	"github.com/nickhuang99/gopi/internal/daemonlifetime"
 	"github.com/nickhuang99/gopi/internal/procname"
-	"github.com/nickhuang99/gopi/internal/shot"
 	"github.com/nickhuang99/gopi/internal/signalrec"
 	"github.com/nickhuang99/gopi/internal/tools"
 	"github.com/nickhuang99/gopi/internal/worktreerelease"
@@ -108,7 +107,7 @@ const (
 	// workerDefaultIdleExits bounds an idle worker's life: after this many
 	// CONSECUTIVE drained rounds (queue empty, no task executed between
 	// them — a busy round always resets the count) the worker exits 0 on
-	// its own. A worker is a task-DRAIN tool, not a daemon (the operator 9/1: it
+	// its own. A worker is a task-DRAIN tool, not a daemon (nick 9/1: it
 	// runs and self-dies); default 3 × the drained-queue wait = ~90s of
 	// quiet before a drained worker stops waiting for a Ctrl+C that should
 	// not be needed. 0 = never exit on idle (the pre-fix daemon wait).
@@ -182,12 +181,6 @@ const workerRoundOwnReleaseFmt = "worker: own-worktree-release: %s\n"
 // chdir spelling here.
 func workerRoundOwnWorktrees() {
 	workerRoundAnnounce("[worker] [own-release] claimed by this worker: %s\n", tools.TaskClaimOwner(""))
-	for _, line := range tools.ReclaimOwnWorktreesAtCloseoutWithin() {
-		workerRoundAnnounce(workerRoundOwnReleaseFmt, line)
-	}
-	// (The ownership-independent half runs INSIDE the call above, under the same
-	// close-out mark — see tools.ReclaimOwnWorktreesAtCloseout for why the two
-	// halves must not be two calls.)
 	// ReleaseReporting writes the release lines to the given sink: the round's
 	// own stdout, i.e. the stream the worker was launched with (the same sink
 	// workerRoundAnnounce above writes to). One destination for the round's
@@ -277,6 +270,57 @@ func runTaskWorker(once bool, explicit string, opts *tasksOptions) {
 	// descriptor this process actually holds), so an operator running `gopi
 	// worker` in a terminal is unaffected — no pipe, no watchdog, exactly the
 	// behaviour before this call existed.
+	// ADOPT BEFORE WATCH — the half that was missing, and the reason an
+	// inherited death pipe was inert for 14 days.
+	//
+	// WatchFromEnv reads EnvName ONLY: it answers "was I handed a number to
+	// watch", never "did I inherit a pipe". A fixture child of the test suite
+	// is spawned with HoldEnvName (the SPAWN-side name of the same read end,
+	// exported by daemonlifetime.ArmThisProcess) and inherits the descriptor
+	// unchanged — so before this call every face of `gopi worker` looked at
+	// EnvName, found nothing, and ran UNBOUND while physically holding the
+	// pipe. MEASURED: pid 3134573, `/proc/<pid>/fd/200 -> pipe:[434909186]`
+	// present and no death-signal variable in `environ`, alive 14 days after
+	// its test binary died. And once before under the other spelling: pid
+	// 3634507, 2 days 4 hours, carrying the hold variable and never watching.
+	//
+	// AdoptInheritedHoldFD is the PRODUCTION conversion (daemonlifetime/binding.go,
+	// the same call the daemon handshake uses) — no new mechanism, and it is
+	// opt-in by construction: with no HoldEnvName in the environment it returns
+	// (false, nil) and this process behaves exactly as before. It sets EnvName
+	// in THIS process, so every child this worker spawns inherits the same
+	// binding without the strip that motivated the fix being repeated.
+	//
+	// A binding that was inherited but is UNUSABLE is reported, never shrugged
+	// (Rule 15): the message names the variable, the number and the kernel's
+	// own reading, because "the worker outlived its harness" has no other
+	// symptom until it is 14 days old.
+	if daemonlifetime.ArmedForThisProcess() {
+		// THIS PROCESS IS THE HOLDER, so there is nothing to adopt and nothing
+		// to watch. It owns the WRITE end of the pipe the variable names, so a
+		// watchdog reading the read end could never see EOF — it would park a
+		// goroutine for the life of the process and report the repository's own
+		// lifecycle arm as a leak at close-out. MEASURED (this change's first
+		// run, `go test ./cmd/agent/`): green tests, and
+		//
+		//	suite goroutine sweep: parked repository goroutines: 1
+		//	  daemonlifetime.Watch.func1()  daemonlifetime.go:279
+		//	FAIL github.com/nickhuang99/gopi/cmd/agent 180.674s
+		//
+		// — the same green-tests/red-run shape suiterootsignal.go documents for
+		// its own arm. The in-process worker cases (runTaskWorker called directly
+		// by the suite that armed the binding) are exactly this shape; a bound
+		// CHILD never is, because a child cannot have armed the suite's pipe.
+		//
+		// This is the pre-existing behaviour for those callers (before the
+		// adoption call existed, WatchFromEnv read EnvName — which the holder
+		// never sets — and returned false), kept deliberately rather than
+		// reintroduced by accident.
+	} else if adopted, err := daemonlifetime.AdoptInheritedHoldFD(); err != nil {
+		fmt.Fprintf(os.Stderr, "worker: an inherited lifetime binding could NOT be adopted — this worker runs UNBOUND and will outlive the process that started it: %v\n", err)
+	} else if !adopted && os.Getenv(daemonlifetime.HoldEnvName) != "" {
+		fmt.Fprintf(os.Stderr, "worker: %s names a descriptor but the binding was not adopted — this worker runs UNBOUND\n", daemonlifetime.HoldEnvName)
+	}
 	daemonlifetime.WatchFromEnv()
 	// RESIDENT DAEMON CHILD (cli_worker_daemon.go): the caller is a `gopi worker
 	// --daemon` parent that handed this process an inherited single-instance
@@ -389,6 +433,18 @@ func runTaskWorkerExplicit(taskID string, opts *tasksOptions) {
 	stopFileWatcher := workerCtx.installFileWatcher()
 	defer stopFileWatcher()
 	ran, runErr := workerRoundNamed(taskID, opts)
+	// THE ROUND'S CHILD RECORD IS DROPPED HERE, ON THE ONE PATH THAT CANNOT
+	// SKIP IT. The round's own registration is deferred to its return, and a
+	// round that returned normally has already run that defer — so the
+	// reclamation below costs a registry read. What it catches is the shape
+	// measured on this host as specimen pid 1680158: a registration whose
+	// owner exited through a path that skipped its defer leaves an entry naming
+	// a process that no longer exists, and from then on every stop path reads
+	// "a child is in flight" and waits for it (the bare arm for its grace, the
+	// drain arm forever). Dropping it also lets the round's OWN failure reap
+	// the child — before this line, a non-zero runErr left the child unreaped
+	// by the caller that was about to `os.Exit`.
+	reclaimVanishedPassChildren(workerStopVanishedFailNote)
 	// CLOSE-OUT UNDER A STOP (the loop's own boundary, Rule 14): the forwarder
 	// above tells an in-flight child to wind down, but the bare-signal contract
 	// is also BOUNDED — the supervisor that sent the signal is about to escalate
@@ -406,6 +462,15 @@ func runTaskWorkerExplicit(taskID string, opts *tasksOptions) {
 			awaitWorkerStopChild(false)
 		}
 	}
+	// THE SIGNAL IS THE EXIT STATUS WHEN A SIGNAL IS WHAT STOPPED US (defect
+	// 01a1e661): a supervisor that sent SIGTERM and then read a `0` from the
+	// waitpid it had just interrupted is being told the round succeeded, which
+	// is a different fact. workerStopExitStatus answers 128+N for a recorded
+	// signal spelling and the documented clean-stop 0 for a file-only stop.
+	exitCode := workerExplicitExitOK
+	if workerStopRequested() {
+		exitCode = workerStopExitStatus()
+	}
 	if !ran {
 		if workerStopRequested() {
 			fmt.Fprintln(os.Stderr, workerStopLine(workerStopReason()))
@@ -414,13 +479,13 @@ func runTaskWorkerExplicit(taskID string, opts *tasksOptions) {
 		// terminal status, a live holder, a yielded claim) or a stop landed at
 		// the boundary. workerRound/runTaskRunOnce already printed the reason
 		// (Rule 15) — this exit code is its machine-readable half.
-		os.Exit(workerExplicitExitFailed)
+		os.Exit(workerStopExitStatusOn(workerExplicitExitFailed))
 	}
 	if runErr != nil {
 		fmt.Fprintf(os.Stderr, "%v\n", runErr)
-		os.Exit(workerExplicitExitFailed)
+		os.Exit(workerStopExitStatusOn(workerExplicitExitFailed))
 	}
-	os.Exit(workerExplicitExitOK)
+	os.Exit(exitCode)
 }
 
 // runTaskWorkerLoop is the worker loop itself, shared by the foreground face
@@ -530,98 +595,6 @@ func runTaskWorkerLoop(once bool) {
 	// Attached BEFORE the banner, so the banner is the file's first round line.
 	attachHostLifecycleLog(workerProgTopLevel, workerDaemonLogBaseName, once)
 	defer closeHostLifecycleLog()
-	// ⓪′ SHOT-UNIT RECLAMATION AT START-UP (epic shot-reclaim-trigger). The
-	// epic's second new trigger, and the one that covers the host shape that
-	// produced the measured leak: a worker is started whenever work is
-	// dispatched, so this fires on every host that ever runs a task — unlike the
-	// tick below, which only fires while a round is IN FLIGHT (a worker self-exits
-	// after a drained queue, so the tick was not running when six units
-	// accumulated on a quiet host).
-	//
-	// IT SITS BEFORE THE FIRST CLAIM, and that is deliberate: the reclamation is
-	// what an operator wants to have happened before a new task starts, and a
-	// start-up pass cannot delay or obstruct a claim (it is one ReadDir plus one
-	// liveness read per registration, and it never fails this loop — see
-	// shot.RenewNotice's fail-open contract).
-	//
-	// ON THE LOOP ONLY, not the --once face or the named-row face: --once is the
-	// unit/E2E seam (Rule 6 — a test worker must not sweep real state), exactly
-	// as the sibling ticks are guarded (`if !once` below), and a named row is
-	// ADDRESSED work that must not spend its budget on host hygiene. A host that
-	// runs tasks uses the loop (`gopi worker`, foreground or --daemon, both of
-	// which enter here).
-	if !once {
-		shot.RenewNotice(shot.RenewRoleWorkerStartup)
-	}
-
-	// ⓪‴ THE SCRATCH SWEEP AT START-UP — the same placement, the same `!once`
-	// guard and the same fail-open contract as the shot reclamation immediately
-	// above, and for the same measured reason: it must fire on every host that
-	// ever runs a task, NOT only while a round is in flight.
-	//
-	// THE DEFECT THIS CLOSES (measured 2026-10-31, task 01a18f45): the sweep had
-	// NO production caller at all. `grep -rn "scratchGCSweepBody\|scratchGCSweep(\|scratchGCTick("
-	// --include=*.go cmd/agent/ | grep -v _test` returns only the three
-	// definitions plus the operator's `--tick` CLI arm — the worker round's call
-	// went in 187d05c (the 2026-10-26 ruling that a round is claim → run →
-	// report) and the merger's tick was deleted 2026-09-19, so the orphaned
-	// `scratchGCSweepAsync` (written for that merger tick) has had no caller —
-	// scratch_gc_tick.go's own doc comment still opens by explaining it "LIVES
-	// IN THE WORKER/MERGER TICK", which is exactly the arrangement 187d05c
-	// removed. (CORRECTION, same run: an earlier draft of this comment quoted
-	// that header as saying "NOTHING resident fires this sweep" — a string that
-	// exists NOWHERE in the tree (`grep -rn "NOTHING resident" --include=*.go .`
-	// returns only the comment line it was typed into). The claim was inferred
-	// from the code's shape and written as if quoted; the arrangement it names
-	// is real, the quotation was not.)
-	//
-	// THE CONSEQUENCE, measured on this host the same day: /home/user/workspace
-	// held 119 `go-build*` directories / 9.0 GB (+2 more appearing per hour at
-	// ~1.4 GB/h), every one of them abandoned by a killed build, and the tree's
-	// OWN window was not the problem — `gopi tool scratch-gc trees --dry-run`
-	// printed `tree=go-tmp present=true entries=119 ... collectable=1`, i.e. the
-	// predicate WORKS and only 1 entry had aged past GoTmpStaleAge (24h) while
-	// 118 sat inside it. Nothing collected any of them because nothing ran the
-	// tick.
-	//
-	// WHY START-UP AND NOT THE ROUND: the 2026-10-26 ruling is that a worker
-	// CLAIMS, RUNS and REPORTS — a round boundary must never wait on a /proc
-	// scan (measured 2026-10-03: 12-18s per firing, 1.4 cores, which ate an
-	// operator's `--restart --wait 20s`). Start-up is before the first claim, so
-	// it can obstruct nothing, and it is the exact argument the shot arm above
-	// records. The sweep is ASYNC (scratchGCSweepAsync: off the caller's
-	// goroutine, single-flight, joinable) so even a slow first pass cannot delay
-	// the first claim either.
-	//
-	// IT IS NOT A NEW MECHANISM (Rule 35): the tick, its cadence
-	// (GOPI_TEST_SCRATCH_GC_MIN, default 60min), its off switch
-	// (settings.json `scratch_gc`), its age window and its whole predicate live
-	// in internal/scratch and are unchanged. This line is the CALLER that
-	// scratch_gc_tick.go's header says is missing, and adding a caller to an
-	// existing bounded mechanism is the opposite of adding a dependency.
-	//
-	// ON THE LOOP ONLY, never `--once` and never a named row: --once is the
-	// unit/E2E seam (Rule 6 — a test worker must not sweep real state) and a
-	// named row is ADDRESSED work whose budget must not be spent on host
-	// hygiene.
-	//
-	// THE JOIN IS NOT TAKEN, deliberately. scratchGCSweepAsync returns the
-	// flight's join so a caller CAN wait, and the sibling boundary test
-	// (worker_scratch_sweep_offboundary_test.go ③) asserts precisely that this
-	// loop does NOT: a loop whose exit waits on a /proc scan is a loop whose
-	// stop budget waits on it too — the same defect, moved from the round top to
-	// the round never-ending. Measured here 2026-10-31: a `defer join...()`
-	// spelling made the loop return only after the sweep finished, and the
-	// positive test failed by name ("did not return while the sweep was still in
-	// flight"). Fire-and-forget is the contract the shot arm above also keeps:
-	// the flight's own fail-open reporting is its whole result.
-	if !once {
-		scratchGCSweepAsync(workerRoleLabel)
-	}
-
-	// idleStreak counts CONSECUTIVE drained rounds (no task executed
-	// between them). A claimed-and-run round resets it to 0 — only quiet
-	// rounds accumulate toward the self-exit.
 	idleStreak := 0
 	if once {
 		hostLifecyclePrintln(procname.WorkerLoopStartLine + " --once (claim → run → must-succeed push → next; exit on drained queue)")
@@ -809,7 +782,7 @@ func runTaskWorkerLoop(once bool) {
 		// advances this host's integration ref (refs/heads/master) to the peer's
 		// tip, and until now it was reached only from the serve tick and the
 		// merger pass — on a CLIENT host that keeps a worker and no serve and no
-		// merger, nobody advanced it at all. Measured 2026-10-13 on host-a:
+		// merger, nobody advanced it at all. Measured 2026-10-13 on the host:
 		// the local ref was 141 commits behind the peer's tip and a purely
 		// ancestor of it, so every statement of the form "gate X is red on
 		// master" was unrecheckable and already-fixed defects read as still red
@@ -928,7 +901,7 @@ func runTaskWorkerLoop(once bool) {
 		// count this drained round toward the idle self-exit.
 		idleStreak++
 		if idleExits > 0 && idleStreak >= idleExits {
-			// Run-and-self-die (the operator 9/1): a worker is a drain tool, not a
+			// Run-and-self-die (nick 9/1): a worker is a drain tool, not a
 			// daemon. N consecutive empty rounds ≈ no new work is coming —
 			// exit 0 (drained is SUCCESS, never an error).
 			if n := tools.LiveRowsOwnedByOthers(); n > 0 {

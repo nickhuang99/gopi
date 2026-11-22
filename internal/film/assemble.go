@@ -11,6 +11,7 @@ import (
 	"strings"
 
 	"github.com/nickhuang99/gopi/internal/gifgen"
+	"github.com/nickhuang99/gopi/internal/scratch"
 )
 
 // The assembler: a frame sequence in, a film directory out. It replaces
@@ -148,7 +149,7 @@ func Assemble(o AssembleOptions) (*AssembleResult, error) {
 		return nil, fmt.Errorf("assemble: no frames — a film with no frames is not an animation")
 	}
 	framesDir := filepath.Join(o.Out, FramesDirName)
-	if err := os.MkdirAll(framesDir, 0o755); err != nil {
+	if err := scratch.MkdirAllWithSuiteRunOwnerPerm(framesDir, 0o755); err != nil {
 		return nil, fmt.Errorf("assemble: create the frames directory %s: %w", framesDir, err)
 	}
 

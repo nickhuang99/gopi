@@ -69,8 +69,11 @@ FILE, and print one line. Nothing is clipped and there is no ` + "`--full`" + ` 
 file's body is the request's own bytes.
 
   N            the TURN to export, written as a bare number — the SAME number
-               ` + "`gopi session show <id>`" + ` prints on its ` + "`turns`" + ` row (NOT
+               ` + "`gopi session stats <id>`" + ` prints on its ` + "`turns`" + ` row (NOT
                ` + "`session log --turns`" + `, which prints the human-turn subset).
+               ` + "`stats`" + ` is named rather than ` + "`session show`" + ` because ` + "`show`" + `
+               prints NO turns row for a ` + "`kind=run`" + ` session — every
+               dispatched task — while ` + "`stats`" + ` answers for both species.
                With no N, the last TURN is exported: the context the model is
                running with now
   --round N    DEBUG AXIS, not the ordinary address: export ROUND N instead —
@@ -113,6 +116,8 @@ THE FULL PAGE IS THE EVIDENCE and its name and bytes are unchanged:
 ` + ctxdump.FileNamePattern + ` still holds the request's own bytes, so it can be
 diffed against the raw HTTP log. A section export is a DERIVED VIEW under a
 DIFFERENT name — the two never share a file.
+
+` + sessionContextInFlightNotice + `
 
 Nothing is injected into the next turn (this is a file for YOU to read), and no
 model turn is spent: the export is local and immediate. The same export is

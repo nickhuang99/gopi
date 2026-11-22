@@ -58,6 +58,7 @@ import (
 	"time"
 
 	"github.com/nickhuang99/gopi/internal/config"
+	"github.com/nickhuang99/gopi/internal/removalaudit"
 	"github.com/nickhuang99/gopi/internal/scratch"
 	"github.com/nickhuang99/gopi/internal/shot"
 )
@@ -284,7 +285,7 @@ func scratchGCTick(role string, now time.Time) int {
 	}
 	// The DECLARED-TREES arm rides the same tick, the same cadence and the same
 	// off switch — and its ABSENCE is the defect this call site closes.
-	// MEASURED (host-b, 2026-10-17): `/home` at 100%, a `git worktree
+	// MEASURED (nick-HP-Laptop, 2026-10-17): `/home` at 100%, a `git worktree
 	// add` inside cmd/agent's own suite dying with ENOSPC, while `gopi tool
 	// scratch-gc trees --dry-run` reported 45.7 GB collectable in the shared
 	// build cache, 5.4 GB of aged `*.raw.log`, 1.27 GB of abandoned `go-build*`
@@ -356,12 +357,21 @@ func scratchGCTick(role string, now time.Time) int {
 			role, scratchGCRoleLabel, sErr)
 		return removed + baseRemoved + declaredRemoved
 	}
-	sandboxRemoved, sandboxBytes, sandboxLock, sErr := scratch.SweepSandboxesDetailed(sandboxRoot, scratch.SandboxStaleAge)
+	sandboxRes, sErr := scratch.SweepSandboxesReport(sandboxRoot, scratch.SandboxStaleAge)
+	sandboxRemoved, sandboxBytes, sandboxLock := sandboxRes.Removed, sandboxRes.Bytes, sandboxRes.Lock
 	if sErr != nil {
 		fmt.Fprintf(os.Stderr, "[%s] [%s] sandbox sweep of %s failed (host task unaffected): %v\n",
 			role, scratchGCRoleLabel, sandboxRoot, sErr)
 		return removed + baseRemoved + declaredRemoved
 	}
+	// The AUDIT half rides the same tick, for the same reason the sweep does:
+	// a sandbox reclaimed by a resident process nobody watched is exactly the
+	// case where "who deleted this?" must still be answerable afterwards. The
+	// arm names THIS channel (the tick), which is the only thing that tells a
+	// tick reclaim apart from an operator's explicit one in the sink.
+	// Best-effort by contract (Rule 15): the directories are already gone by
+	// the time this runs, and a sink it cannot write is reported, never fatal.
+	emitSandboxReclaimAudit(removalaudit.ArmSandboxReclaimTick, sandboxRoot, sandboxRes)
 	reportResidentScratchGCLock(role, sandboxRoot, sandboxLock)
 	if sandboxRemoved > 0 {
 		fmt.Printf("[%s] [%s] removed %d abandoned sandbox(es) older than %s from %s (bytes=%d, root %s)\n",

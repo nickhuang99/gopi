@@ -55,6 +55,7 @@ import (
 
 	"github.com/nickhuang99/gopi/internal/procname"
 	"github.com/nickhuang99/gopi/internal/runcmd"
+	"github.com/nickhuang99/gopi/internal/scratch"
 )
 
 const (
@@ -686,7 +687,7 @@ func claimHolderOfPid(pid int) string {
 // task's own session dir when it is reachable, else the process-wide temp tree.
 func deadHolderResumeLogPath(taskID string) string {
 	if dir, err := taskSessionDir(taskID); err == nil && strings.TrimSpace(dir) != "" {
-		if mkErr := os.MkdirAll(dir, 0o755); mkErr == nil {
+		if mkErr := scratch.MkdirAllWithSuiteRunOwner(dir); mkErr == nil {
 			return filepath.Join(dir, deadHolderResumeLogName)
 		}
 	}

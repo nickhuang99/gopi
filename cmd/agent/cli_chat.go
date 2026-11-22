@@ -129,7 +129,7 @@ const chatStatusRowLiveLegend = `    ` + statusCompactionGlyph + `2` + lineedit.
 // constant (agent.CompactionAnnouncement), asserting the two are equal — so
 // rewording the record without updating the help fails the test, and the sample
 // cannot become a description of a line no run prints.
-const chatStatusRowCompactionSample = agentPrefix + "memory compaction: summarized 3 oldest message(s) into a memory block"
+const chatStatusRowCompactionSample = agentPrefix + "memory compaction: removed 3 oldest message(s) — the notes this run recorded are carried at the head"
 
 // agentPrefix is the tag the agent's own logger writes each line with
 // (internal/agent/loop.go: log.New(os.Stderr, "[gopi] ", 0)). The legend quotes
@@ -158,7 +158,7 @@ const agentPrefix = "[gopi] "
 // switch — so both survive; dropping either would delete a neighbouring run's
 // advertised surface. The OFF switch is spelled from its constant (Rule 13), and
 // the replay word from its own, so neither can drift from the parser.
-var chatUsage = `Usage: gopi chat [--tools] [--no-editor] [--no-color] [-v|--verbose] [--dump-screen[=PATH]|--no-dump-screen] [` + chatSgrStreamFlag + `[=PATH]|` + chatNoSgrStreamFlag + `] [` + chatSgrReplayFlag + ` SESSION|FILE] [--voice-audio FILE] [--resume SESSION] [--replay SESSION [` + chatFlagFromTurn + ` N]] [--policy POSTURE] [--film DIR [` + chatFlagOut + ` FILE.gif]] [` + config.ChatIdealGeometryFlagName + ` COLS` + config.ChatIdealGeometryDimSep + `ROWS] [` + config.AmbiguousWidthFlagName + ` ` + config.AmbiguousWidthWide + `|` + config.AmbiguousWidthNarrow + `] [` + config.ChatSurfaceTurnsFlagName + ` N] [raw-log-path|session-id]
+var chatUsage = `Usage: gopi chat [--tools] [--no-editor] [` + chatFlagNoNotify + `|` + chatFlagNoEvents + `] [--no-color] [-v|--verbose] [--dump-screen[=PATH]|--no-dump-screen] [` + chatSgrStreamFlag + `[=PATH]|` + chatNoSgrStreamFlag + `] [` + chatSgrReplayFlag + ` SESSION|FILE] [--voice-audio FILE] [--resume SESSION] [--replay SESSION [` + chatFlagFromTurn + ` N]] [--policy POSTURE] [--film DIR [` + chatFlagOut + ` FILE.gif]] [` + config.ChatIdealGeometryFlagName + ` COLS` + config.ChatIdealGeometryDimSep + `ROWS] [` + config.AmbiguousWidthFlagName + ` ` + config.AmbiguousWidthWide + `|` + config.AmbiguousWidthNarrow + `] [` + config.ChatSurfaceTurnsFlagName + ` N] [raw-log-path|session-id]
        gopi chat --once [-p|--prompt PROMPT] [--tools] [--max-turns N]
                         [--max-seconds S] [--stop-on TEXT]
 
@@ -281,6 +281,15 @@ WHO READS IT — gopi itself, from inside, with no human in the loop:
                    to it, editor or not: the editor is only ever entered on
                    a real terminal, and falls back with a notice if the
                    terminal refuses raw mode.
+--no-notify        decline the chat event slot this run files by DEFAULT, so no
+                   notify.cmd delivery (task events: failed, build-failed,
+                   cancelled, ...) reaches this chat. --no-events is the same
+                   switch under the name the capability has in the operator's
+                   own vocabulary; both write no chat_session_id_*.txt and both
+                   PRINT that they declined and into which directory, so
+                   "this chat receives nothing" is never mistaken for "the
+                   write went somewhere I did not look" (Rule 15). Default is
+                   SUBSCRIBE: the slot is written, and the run says where.
 
 -v, --verbose      print the startup plumbing (session paths, the loaded
                    GOPI.md size, the live editor path, the status-row wake
@@ -411,6 +420,18 @@ const (
 	chatFlagTools = "--tools"
 	// chatFlagNoEditor drops the raw-mode line editor for cooked lines.
 	chatFlagNoEditor = "--no-editor"
+	// chatFlagNoNotify is the chat event slot's OFF SWITCH: `gopi chat
+	// --no-notify` declines the subscription this run files by default, so a
+	// `notify.cmd` delivery has no slot of this run's to address. It is the
+	// documented way out of a default (Rule 13: the off spelling is compared on,
+	// so it is a constant and never a typed literal) — the capability is ON by
+	// default and stays that way.
+	chatFlagNoNotify = "--no-notify"
+	// chatFlagNoEvents is the SECOND spelling of the same switch. The capability
+	// is named "events" in the operator's own vocabulary and "notify" in the
+	// wiring's, and a caller should not have to guess which noun this verb
+	// chose; ONE switch, two words, and the ARM POINT cannot tell them apart.
+	chatFlagNoEvents = "--no-events"
 	// chatFlagNoColor is the colour switch, taken from the package that owns the
 	// colour decision (never re-typed here — the export IS the definition, so a
 	// rename follows the compiler).
@@ -513,7 +534,7 @@ const (
 	// including the three this repair added to the vocabulary: a one-line usage
 	// that omits a flag the verb accepts is the same defect as a refusal list
 	// that omits it, one level up.
-	chatUsageLine = "usage: gopi chat [--tools] [--no-editor] [--no-color] [-v|--verbose] " +
+	chatUsageLine = "usage: gopi chat [--tools] [--no-editor] [" + chatFlagNoNotify + "|" + chatFlagNoEvents + "] [--no-color] [-v|--verbose] " +
 		"[--dump-screen[=PATH]|--no-dump-screen] [--resume SESSION] [--replay SESSION] " +
 		"[" + chatSgrStreamFlag + "[=PATH]|" + chatNoSgrStreamFlag + "] [" + chatSgrReplayFlag + " SESSION|FILE] [--film DIR [" + chatFlagOut + " FILE.gif]] " +
 		"[" + chatGeometryFlag + " COLS" + config.ChatIdealGeometryDimSep + "ROWS] " +
@@ -592,6 +613,8 @@ func chatREPLFlags() []string {
 		HelpFlagLong,
 		chatFlagTools,
 		chatFlagNoEditor,
+		chatFlagNoNotify,
+		chatFlagNoEvents,
 		chatFlagNoColor,
 		chatFlagVerbose,
 		chatFlagVerboseShort,
@@ -785,6 +808,8 @@ func chatResumeOptions() []string {
 	return []string{
 		chatFlagTools,
 		chatFlagNoEditor,
+		chatFlagNoNotify,
+		chatFlagNoEvents,
 		chatFlagNoColor,
 		chatFlagVerbose,
 		chatFlagVerboseShort,
@@ -1039,6 +1064,8 @@ func chatREPLSwitch(a string, sess *chatSession, noEditor, noColor, verbose *boo
 		sess.toolsEnabled = true
 	case chatFlagNoEditor:
 		*noEditor = true
+	case chatFlagNoNotify, chatFlagNoEvents:
+		sess.noEventSlotWord = a
 	case chatFlagNoColor:
 		*noColor = true
 	case chatFlagVerbose, chatFlagVerboseShort:
@@ -1421,7 +1448,7 @@ type chatSession struct {
 	// whose record was refused (nil logger) leaves it nil, and the numbering
 	// then falls back to the REPL's own count — the pre-existing behaviour,
 	// stated here rather than inherited by accident. See chatTurnDisplay.
-	turnWriter interface{ TurnsSoFar() int }
+	turnWriter interface{ TurnsRecorded() int }
 
 	// costBase is the cache pair the CONTINUED session had already accumulated
 	// when this run started, folded once from its session record (Rule 14: the
@@ -1448,6 +1475,20 @@ type chatSession struct {
 	// Agent.Chat (lightweight Q&A, no tools). Flipped by the --tools flag
 	// and the /tools slash command.
 	toolsEnabled bool
+
+	// noEventSlotWord records `--no-notify` / `--no-events`: the WORD this run
+	// was started with, or "" when it subscribes (the default). The word itself
+	// is kept rather than a bool because the ARM POINT's refusal NAMES what was
+	// typed — "declines the chat event slot" without saying which spelling took
+	// effect is the silent form of the switch this epic exists to make
+	// observable (Rule 15).
+	//
+	// THE ZERO VALUE IS "SUBSCRIBE" ON PURPOSE: the default is the capability,
+	// and the flag is the documented way out of it. It is read at the ARM POINT
+	// (chat_session_slots.go), which is the one call that performs the write —
+	// so a run that declines is not a run whose slot was written and then
+	// deleted, it is a run that never wrote one.
+	noEventSlotWord string
 
 	// unattended is whether this run carries the UNATTENDED context — the
 	// sentence telling the model that no human will ever answer it, so it must
@@ -1641,9 +1682,28 @@ type chatSession struct {
 // offset ran with the SCREEN HIGH (band 169 for the prompt the record calls
 // 168), so a max() would have preserved the defect instead of removing it. The
 // writer's count is the record's own axis, so no mix of writers can move it.
-// `SessionLogger.TurnsSoFar` counts the turn-opening rows THIS run has written
-// under the SAME predicate the reader uses, so a foreign row is inside the
-// number by construction rather than missing from it.
+// `SessionLogger.TurnsRecorded` counts the turn-opening rows THIS run has
+// written under the SAME predicate AND THE SAME FACE the reader uses, so a
+// foreign row is inside the number by construction rather than missing from it.
+//
+// THE FACE IS THE WHOLE FIX (measured 2026-11-17, session
+// 3965695b-6f70-4067-8b61-68628d7a6dfc, 358 user rows): this called
+// `TurnsSoFar`, which judges every row by its TEXT (`TurnCounterFace`) because
+// that is the clock the CONTEXT FOLD needs — the fold reads this session's
+// message array, which carries no provenance. The reader judges by the recorded
+// FACE. The two answers were 9 and 13, and the gap was exactly the 4 rows
+// recorded `source=notify`: each is a delivery the record counts as one complete
+// input, and a text-face judge cannot see it (its sentence starts `[system] `).
+// So the screen was one turn behind from the first delivery onward and four
+// behind by the end — `--turn N` with the number copied off the screen exported
+// a turn that had already finished.
+//
+// SO THERE ARE TWO NAMED COUNTS AND NO ARITHMETIC BETWEEN THEM: `TurnsSoFar`
+// feeds the note anchor (noteTurnNumber, selfrecord_noteindex.go — where counting
+// rows the anchor has no window for is task 01a1db5b's measured "turn 46 does not
+// exist" defect), and `TurnsRecorded` feeds every surface whose number a reader will
+// copy into `--turn N`. A caller never adds, subtracts or guesses which one it
+// holds.
 //
 // `local` therefore survives only for a run whose record was refused (a nil
 // logger under replaymode); it is never consulted when a writer exists.
@@ -1688,7 +1748,7 @@ func (s *chatSession) chatTurnsSinceBaseline(local int) int {
 	if s.turnWriter == nil {
 		return local
 	}
-	return s.turnWriter.TurnsSoFar()
+	return s.turnWriter.TurnsRecorded()
 }
 
 // chatOpensSessionTurn answers the ONE question the turn counter poses, with the
@@ -3825,7 +3885,7 @@ func runChatWithInput(args []string, provided *chatInput) int {
 	// belongs on the startup screen's side panel, not in the answer band
 	// (chat_panel_notice.go carries the report and the design, and the notices
 	// block below is what consumes it).
-	uninstallChatSurface, surfaceIdentity := installChatSurface(ag, input, dumper, chatToolStyles)
+	uninstallChatSurface, surfaceIdentity := installChatSurface(ag, input, dumper, chatToolStyles, sess.noEventSlotWord)
 
 	// THE RUN'S OWN START-UP NOTICES, GATHERED BEFORE THE SCREEN IS DRAWN. Every
 	// line gathered here used to be committed into the ANSWER BAND — the area the
@@ -4812,6 +4872,18 @@ func runChatWithInput(args []string, provided *chatInput) int {
 				}
 				chatConfigHandleLine(input, ag)
 				continue
+			case "/" + chatThinkingCommandName:
+				// /THINKING: show or hide the model's LIVE reasoning display for
+				// the rest of this session (chat_thinking.go). Answered HERE and
+				// never dispatched — the switch is `Agent.HideThinking`, a field of
+				// the LIVE agent that the shared table's Run(args, CommandContext)
+				// signature cannot reach; the table entry exists for /help and the
+				// completion menu, and its Run refuses by name on a carrier with no
+				// agent. It costs no model turn and injects nothing into the next
+				// one: the field is read at each emit point, so the NEXT reasoning
+				// fragment already obeys the new value.
+				chatThinkingHandleLine(input, ag, msg)
+				continue
 			case "/" + chatScreenCommandName:
 				// /SCREEN: copy ONE TURN's recorded render bytes — the turn named
 				// by the argument, or the newest one — into a file and park a
@@ -5204,8 +5276,8 @@ func runChatWithInput(args []string, provided *chatInput) int {
 			input.PublishStatus()
 		}
 		// A statement addressed to the OPERATOR rather than to the model — today
-		// that is context pressure (a filled window is ANNOUNCED and nothing is
-		// removed: internal/agent/context_pressure.go). It goes through
+		// that is the ONE context compression (internal/agent/context_compress.go:
+		// what it removed, or that it could not shorten anything). It goes through
 		// WriteNotice, the ONE seam every console notice takes, because stderr is
 		// erased by the editor's repaint on the reserved layout (lineedit_wire.go
 		// records the measurement: `/new` vanished from the screen).
@@ -5549,7 +5621,7 @@ const statusLiveIdleTurn = 0
 //	ctxMax              ← Agent.ContextWindow            (internal/agent/loop.go)
 //	cacheRead/cacheWrite← deepseek.CostTracker.TotalCacheHitTokens /
 //	                      TotalCacheMissTokens           (internal/deepseek/types.go)
-//	compressions        ← Agent.CompactCount             (internal/agent/compact.go)
+//	compressions        ← Agent.CompactCount             (internal/agent/context_compress.go)
 //
 // A money read-out was the FIFTH counter here and it is GONE (task 01a0dcd1):
 // pricing.CostOf is no longer called on this path, because the row does not show

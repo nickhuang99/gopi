@@ -198,8 +198,10 @@ func chatWriteBoundaryRules(toolsOn bool) string {
 		"`" + toolnames.ToolWrite + "` the document to `" + chatAllowedWritePath() + "`, then `" + chatGitCommandWord +
 		" " + chatGitStageVerbWord + " " + chatAllowedWritePath() + "` naming THAT FILE (no option, no `-A`, no `.`, " +
 		"no directory), then `" + chatGitCommandWord + " " + chatGitCommitVerbWord + " " + tools.ChatGitMessageFlag +
-		" \"<message>\"`. Staging is per-file, so this cannot carry another run's work; a branch, a ref move or a " +
-		"push from here is still the operator's decision (see (1)). ")
+		" \"<message>\"`. Staging is per-file, so this cannot carry another run's work; a DESTRUCTIVE ref move " +
+		"(`" + chatGitCommandWord + " branch -f/-D/-B`, `" + chatGitCommandWord + " update-ref`, `" + chatGitCommandWord +
+		" reset --hard`) is still the operator's decision (see (1)), while `" + chatGitCommandWord + " push` is the " +
+		"ordinary end of THIS commit path — " + tools.ChatOpPushIsTheCommitPathSentence() + " ")
 	b.WriteString("(3) write NO artifact into any OTHER git-tracked path (any file `" + chatGitCommandWord +
 		" ls-files` lists outside `" + chatAllowedWriteRoot() + "/`): a note, an evidence file or a source edit is " +
 		"not a chat's to author in the repo, and it lands there untracked, unattributed and unstoppable by any " +

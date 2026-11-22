@@ -102,6 +102,11 @@ const (
 // the ONE function below, so a changed bound cannot leave the help text lying.
 const voiceSecondsPlaceholder = "{seconds}"
 
+// voiceRealtimePlaceholder is the `--realtime` row's flag spelling. It is a
+// placeholder for the same reason voiceSecondsPlaceholder is one: the value a
+// reader sees comes from the constant the parser matches on.
+const voiceRealtimePlaceholder = "{realtime}"
+
 // voiceAcceptedFormatSuffixes is the accepted set as file suffixes — the
 // spelling an operator sees on disk. Derived from the constants above, never
 // re-typed.
@@ -260,5 +265,9 @@ func voiceUsageText() string {
 		// constant, rendered by the ONE function every caller prints through), so
 		// changing voiceLocalDefaultSeconds cannot leave the -h page lying.
 		voiceSecondsPlaceholder, strconv.Itoa(voiceLocalDefaultSeconds),
+		// The realtime flag's spelling is rendered from its constant, like every
+		// other flag on the page: the help and the parser cannot drift about what
+		// the flag is called (Rule 1b/13).
+		voiceRealtimePlaceholder, voiceFlagRealtime,
 	).Replace(voiceInputUsage)
 }

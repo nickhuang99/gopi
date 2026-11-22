@@ -70,6 +70,7 @@ import (
 	"github.com/nickhuang99/gopi/internal/chatpolicy"
 	"github.com/nickhuang99/gopi/internal/cliverbs"
 	"github.com/nickhuang99/gopi/internal/config"
+	"github.com/nickhuang99/gopi/internal/gitargv"
 	"github.com/nickhuang99/gopi/internal/runcmd"
 	"github.com/nickhuang99/gopi/internal/taskverbs"
 )
@@ -489,7 +490,7 @@ func chatOpNestedClauses(words []string, depth int) [][]string {
 // never a demotion: it is "nothing more to add".
 func chatOpScriptClauses(words []string) [][]string {
 	// THE HEAD IS FOUND BY THE ONE SHARED WALK, so the wrapper→operand rule
-	// (`sudo -u the operator sh -c …`) cannot be right in one reader and missing here
+	// (`sudo -u nick sh -c …`) cannot be right in one reader and missing here
 	// (task 01a19d8a).
 	i, ok := commandHeadIdx(words, gitCommandPreambleWords, func(w string) bool {
 		return chatShellInterpreterWords[w]
@@ -676,7 +677,33 @@ func ChatOpRepoWriteRefusalSentence() string {
 		"(" + chatOpVocabularyRendered(ChatOpClassRepoWrite) + "), or staging/committing — is YOURS to " +
 		"perform in this turn: there is no permission question for it. Keep the commit path's discipline — " +
 		"`git add` ONE file at a time (never `-A` or `.`), `git status --porcelain` empty before you report " +
-		"done, and no ref move (branch reset, force spellings, push) over work this run does not own."
+		"done, and no DESTRUCTIVE ref move (`git branch -f/-D/-B`, `git update-ref`, `git reset --hard`) over " +
+		"work this run does not own. " + ChatOpPushIsTheCommitPathSentence()
+}
+
+// ChatOpPushIsTheCommitPathSentence names `git push` for what the CATEGORY table
+// made it on 2026-11-03 (operator: "push 都可以", row 01a1a786): the ordinary END
+// of the commit path, not a ref move and not a question.
+//
+// WHY IT EXISTS AS ITS OWN SENTENCE (measured 2026-11-17). Two renderings of the
+// same boundary — this file's admission sentence and chat_write_boundary.go's
+// clause (2) — each carried the RETIRED wording ("no ref move (branch reset,
+// force spellings, push)", "a push from here is still the operator's decision").
+// The classifier had already moved the whole push family to repo-write, and the
+// operator's own fence carries `allow git push`, so BOTH statements were false
+// and BOTH were in the console's own prompt: a console that had just committed
+// read its own boundary, concluded "push is the operator's call", and handed the
+// commit back for no reason. The cost is structural rather than cosmetic — the
+// ground is a clone of peer1's master, so an unpublished console commit is a
+// divergence that every later worker's delivery loop has to rebase over.
+//
+// Rule 13/14: ONE rendering, two readers (the admission sentence above and the
+// write boundary), so neither can drift back alone.
+func ChatOpPushIsTheCommitPathSentence() string {
+	return "A `" + gitargv.BinaryName + " push` is NOT a ref move and NOT a question: the operator's " +
+		"2026-11-03 ruling (\"push 都可以\", row 01a1a786) made every push spelling a REPOSITORY WRITE, i.e. the " +
+		"ordinary END of the commit path this run already owns — publishing it is part of finishing, and a " +
+		"console commit left unpublished diverges from the clone source that every later worker rebases over."
 }
 
 // ChatOpLongRefusalSentence is the long class's half: the question to ask, and the

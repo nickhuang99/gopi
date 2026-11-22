@@ -78,7 +78,7 @@ func runText2imgVerifySubcommand(args []string) int {
 	if dir == "" {
 		dir = scratch.DumpDir(scratch.RuntimeClassText2Img)
 	}
-	if err := os.MkdirAll(dir, 0o755); err != nil {
+	if err := scratch.MkdirAllWithSuiteRunOwnerPerm(dir, 0o755); err != nil {
 		fmt.Fprintln(os.Stderr, "scratch dir:", err)
 		return text2imgVerifyExitError
 	}

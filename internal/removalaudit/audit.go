@@ -73,6 +73,7 @@ import (
 	"time"
 
 	"github.com/nickhuang99/gopi/internal/config"
+	"github.com/nickhuang99/gopi/internal/scratch"
 )
 
 // The sink's spelling. LogDirName mirrors the gopi data root's component-log
@@ -120,6 +121,19 @@ const (
 	// ground released as two entries of one history.
 	KindWorktreeGround = "worktree-ground"
 	KindBranchDelete   = "branch-delete"
+	// KindSandboxRemoval is the SANDBOX RECLAIM record kind: a sandbox
+	// directory under the configured sandbox root was DELETED by the sweep.
+	//
+	// It is a kind of its own rather than a reuse of KindWorktreeRemoval
+	// because the two answer different questions about different lifecycles:
+	// a worktree is a git ground with a branch and a row behind it, while a
+	// sandbox is a private profile directory whose ONLY evidence of ever
+	// having existed is this line. Before it existed the sink held 12,305
+	// records and not one mentioned a sandbox (measured 2026-11-15,
+	// `grep -c sandbox ~/.gopi/logs/removal-audit.log` = 0), so a reclaimed
+	// sandbox could not answer "who deleted this, and on what grounds" —
+	// the exact question this sink exists to answer.
+	KindSandboxRemoval = "sandbox-removal"
 )
 
 // Op values: the git operation the arm is about to run. Kept apart from Kind so
@@ -131,6 +145,12 @@ const (
 	// (never a mutation of git state — the anchor writes one line and no more).
 	OpWorktreeGround = "worktree:ground"
 	OpBranchDelete   = "branch:delete"
+	// OpSandboxRemove is the sandbox sweep's op: a private profile directory
+	// under the configured sandbox root was DELETED, bytes and all. Kept a
+	// distinct spelling from OpWorktreeRemove because the two remove different
+	// KINDS of directory — a git ground versus a sandbox — and a reader who
+	// greps the op should not have to disambiguate by kind as well.
+	OpSandboxRemove = "sandbox:remove"
 )
 
 // Record field names. They are constants so the record's shape has ONE
@@ -156,6 +176,12 @@ const (
 	// a fix that never landed, because the delivery state was in no ledger).
 	FieldSha           = "sha"
 	FieldDeliveryPoint = "delivery_point"
+	// FieldBytes / FieldReason are the sandbox-reclaim record's payload: the
+	// measured size of the directory that was removed and the criterion that
+	// authorised it, verbatim. They are constants for the same reason as every
+	// field above (Rule 14) — a reader that greps for one must not retype it.
+	FieldBytes  = "bytes"
+	FieldReason = "reason"
 )
 
 // Arm names the CALLING ARM — the code path that decided to delete. It is the
@@ -328,6 +354,14 @@ const (
 	// nothing. The arm name is the answer to "which path did it?" — without it
 	// the record would say only that SOMETHING deleted a ref.
 	ArmArchiveReclaimBranch Arm = "archive-reclaim-branch"
+
+	// The SANDBOX RECLAIM arms: which CHANNEL drove the sweep that removed the
+	// directory. The sweep itself is one function (SweepSandboxesReport), so
+	// the arm is the only thing that distinguishes an operator's explicit
+	// `gopi tool scratch-gc sandboxes` from the resident tick that nobody
+	// watched — and "who deleted this?" is unanswerable without it.
+	ArmSandboxReclaimCLI  Arm = "sandbox-reclaim-cli-sandboxes"
+	ArmSandboxReclaimTick Arm = "sandbox-reclaim-tick"
 )
 
 // The ref-mutation spelling the SEQUEL arm above performs with, declared once
@@ -405,6 +439,18 @@ type Record struct {
 	HolderPID   string `json:"holder_pid,omitempty"`
 	HolderStart string `json:"holder_start,omitempty"`
 	HolderSID   string `json:"holder_sid,omitempty"`
+	// Bytes and Reason are what a SANDBOX RECLAIM record (
+	// KindSandboxRemoval) carries about the directory it removed: the size
+	// measured in the delete loop, and the plan's collect criterion VERBATIM.
+	//
+	// They are their own fields rather than prose folded into Evidence because
+	// a reader must be able to SUM the reclaimed bytes and MATCH the reason
+	// against the sweep's own constants by VALUE (Rule 13) — neither is
+	// possible on a sentence. Both are OPTIONAL: only a kind that measured a
+	// directory has a size, and a record that invented one would report a
+	// reclaim that never happened.
+	Bytes  int64  `json:"bytes,omitempty"`
+	Reason string `json:"reason,omitempty"`
 }
 
 // emitDisabled is the RED/GREEN proof hook: with it set, Emit writes nothing,
@@ -522,8 +568,35 @@ func WorktreeGround(arm Arm, repo, worktree, branch, taskID, pid, startTicks, se
 	})
 }
 
-// BranchDelete records an imminent branch deletion (any of -d / -D / -r -D).
-// Call it IMMEDIATELY BEFORE the `git branch` delete runs. See WorktreeRemove
+// SandboxRemove records a sandbox directory the sweep has just DELETED.
+//
+// Call it IMMEDIATELY AFTER the removal succeeds, never before: a record for a
+// directory that survived the sweep would claim a reclaim that did not happen,
+// which is the mirror of the gap this record closes. A --dry-run pass writes
+// nothing at all, because it deletes nothing.
+//
+// The record answers the two questions the sink exists for. WHO: `arm` names the
+// CHANNEL that drove the sweep (an operator's `gopi tool scratch-gc sandboxes`,
+// or the resident tick nobody was watching), plus the emitting pid. WHAT AND ON
+// WHAT GROUNDS: `root` is the configured sandbox root, `dir` the removed
+// directory, `bytes` its measured size, `reason` the plan's collect criterion
+// VERBATIM, and `evidence` the ownership facts it was judged on (marker
+// presence, pid, incarnation, liveness outcome, age). `reason` is never
+// re-worded here — a summary would let the record disagree with the decision.
+func SandboxRemove(arm Arm, root, dir string, bytes int64, reason, evidence string) {
+	emit(Record{
+		Kind:     KindSandboxRemoval,
+		Arm:      string(arm),
+		Op:       OpSandboxRemove,
+		Repo:     root,
+		Target:   dir,
+		Bytes:    bytes,
+		Reason:   reason,
+		Evidence: evidence,
+	})
+}
+
+// BranchDelete records an imminent branch deletion (any of -d / -D / -r -D).// Call it IMMEDIATELY BEFORE the `git branch` delete runs. See WorktreeRemove
 // for the field meanings; branch is the ref about to be deleted and target
 // repeats it, so a grep for the branch name finds the record whichever field a
 // reader looks at.
@@ -636,7 +709,7 @@ func emit(rec Record) {
 	// here is NOT a separate error path: the open below reports the same
 	// condition in the caller's own words, and the record is lost either way.
 	if dir != "" && !sinkDirEnsureIsDisabled() {
-		if err := os.MkdirAll(dir, sinkDirMode); err != nil {
+		if err := scratch.MkdirAllWithSuiteRunOwnerPerm(dir, sinkDirMode); err != nil {
 			refusef("%s record for %s not written: create %s: %v", rec.Kind, rec.Target, dir, err)
 			return
 		}

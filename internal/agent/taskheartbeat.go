@@ -1,6 +1,6 @@
 package agent
 
-// Task liveness tracking (M4.5 ⑦ 存活追踪 — the operator 两轮简化后定案):
+// Task liveness tracking (M4.5 ⑦ 存活追踪 — nick 两轮简化后定案):
 // two RAW FACTS written into the ledger row of the current session-task,
 // no daemon, no computed heuristics:
 //

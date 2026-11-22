@@ -340,6 +340,24 @@ type Config struct {
 	// declared the workspace root it is refusing to build in (Rule 1b: the
 	// resolution and its narration must not disagree).
 	RootSource string
+	// RowRepo is the repository the ROW itself declares as its deliverable
+	// (`deliverable.repo`), as written in the row — NOT the resolved clone
+	// source, which is DevRepo.
+	//
+	// WHY BOTH EXIST (epic measured 2026-11-22, row 01a200a0-6062): DevRepo is
+	// what this ground was CLONED FROM, and on the ordinary shape that IS the
+	// row's repository. But the channel falls back to the host's `dev_repo` when
+	// the row's repository is unusable (ResolveCloneSource), and then the two
+	// differ — the ground holds one repository while the row names another. Every
+	// count this package takes is about the GROUND, so a sentence composed from
+	// those counts must say so when the two disagree; without that, "carries no
+	// commit to deliver" reads as a verdict on the ROW, and a reader concludes
+	// there is nothing to fetch back.
+	//
+	// EMPTY means the caller did not read the row (or the row names none): the
+	// sentence then carries no scope clause at all, which is the pre-existing
+	// wording for every caller with no row to compare against.
+	RowRepo string
 	// Log receives one line per step; nil = no narration.
 	Log io.Writer
 }

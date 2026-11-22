@@ -5,6 +5,7 @@ import (
 	"flag"
 	"fmt"
 	"os"
+	"time"
 
 	"github.com/nickhuang99/gopi/internal/tools"
 )
@@ -58,6 +59,20 @@ func runMemoryBackfillTokens(args []string) {
 	ctx := context.Background()
 
 	path := memoryLedgerEffectivePath(*dbFlag)
+	// Progress goes to STDERR as PLAIN UNBUFFERED writes so the one-line summary
+	// on stdout stays a single parseable record AND — the point of this whole
+	// file — a pipe or a redirect sees every line as it happens. There is no
+	// bufio wrapper and no isatty check anywhere on this path: os.Stderr is
+	// unbuffered at the syscall level, and a line destined for `tee` or a log
+	// file must appear at the same instant it would on a terminal.
+	//
+	// THE LINES ARE TIME-DRIVEN, NOT BATCH-DRIVEN (measured 2026-11-21, task
+	// 01a1fc80). Emitting on a batch stride put the first line 62 s into a 99 s
+	// run and made the gap grow with every slower page. The heartbeat owns its
+	// own ticker, so it speaks during a slow page and before the first one
+	// returns; the callback below only RECORDS the newest measurement.
+	beat := newMemoryBackfillHeartbeat(memoryBackfillVerb, os.Stderr,
+		memoryBackfillHeartbeatEvery, time.Now)
 	// THE LEDGER GUARD (cli_memory_ledger_guard.go): --dry-run READS, so an
 	// explicitly named --db that is not there is a refusal naming the path (the
 	// read-only opener would fail anyway, but with a lower-level sentence that
@@ -86,21 +101,34 @@ func runMemoryBackfillTokens(args []string) {
 	}
 	defer db.Close() //stylegate:ignore process-lifetime ledger handle closed on return
 
+	// t=0: announce BEFORE any page is read, so the first thing the command says
+	// is what it is about to traverse — the whole point of the fix is that a
+	// 99-second run is never silent for its first minute.
+	span, spanErr := tools.JiebaBackfillPageExtent(ctx, db)
+	beat.announce(memoryBackfillVerb, span, spanErr)
+	beat.start()
+	// A FAILED RUN STILL STOPS THE BEAT. Every exit path below halts it, so an
+	// error sentence can never race a tick that outlived the scan.
+
 	if *dry {
-		scanned, would, err := tools.ScanJiebaTokens(ctx, db)
+		scanned, would, err := tools.ScanJiebaTokensWithProgress(ctx, db, beat.observe)
 		if err != nil {
+			beat.halt()
 			fmt.Fprintf(os.Stderr, "memory %s: %v\n", memoryBackfillVerb, err)
 			os.Exit(1)
 		}
+		beat.closeout()
 		fmt.Printf("memory %s: dry-run — %d row(s) scanned, %d would be re-derived (db=%s)\n",
 			memoryBackfillVerb, scanned, would, path)
 		return
 	}
-	scanned, changed, err := tools.BackfillJiebaTokens(ctx, db)
+	scanned, changed, err := tools.BackfillJiebaTokensWithProgress(ctx, db, beat.observe)
 	if err != nil {
+		beat.halt()
 		fmt.Fprintf(os.Stderr, "memory %s: %v\n", memoryBackfillVerb, err)
 		os.Exit(1)
 	}
+	beat.closeout()
 	fmt.Printf("memory %s: %d row(s) scanned, %d jieba_token value(s) re-derived (db=%s)\n",
 		memoryBackfillVerb, scanned, changed, path)
 }

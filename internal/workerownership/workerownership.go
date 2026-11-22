@@ -157,18 +157,24 @@ func Audited(suffix string) bool {
 	return false
 }
 
-// devdoc-ref-ok: the paths below illustrate the three SPELLINGS this function
-// normalises (relative, dot-relative, absolute); they are not citations.
-//
 // InAuditedTree reports whether a destination path lies inside one of the
 // audited trees. It asks about the DIRECTORY COMPONENTS, not a string prefix,
-// because the gate's walk recurses: devdoc/report.md and
-// devdoc/worker-daemon-acceptance/closing-run-1806.txt are both in scope, and
-// the path a tool receives may be relative ("devdoc/x.md"), cleaned
-// ("./devdoc/x.md") or absolute ("/home/…/devdoc/x.md") — all three must
-// answer yes, and a same-named directory in an unrelated tree
-// ("other/devdoc/x.md") is the only shape this cannot tell apart, where an
-// extra comment line is harmless.
+// because the gate's walk recurses: two levels down and one are both in scope,
+// and the path a tool receives may be relative, cleaned or absolute — all
+// three must answer yes, and a same-named directory in an unrelated tree
+// ("other/" in front of the corpus root) is the only shape this cannot tell
+// apart, where an extra comment line is harmless.
+//
+// The three spellings, shown on paths that exist in this tree so a reader can
+// check each one with `ls` rather than trust the prose:
+//
+//	relative       devdoc/worker-ownership.md
+//	cleaned        ./devdoc/worker-ownership.md
+//	absolute       <this checkout>/devdoc/worker-ownership.md
+//
+// and the nested shape (CanonicalRel's own corpus has subdirectories) is
+// devdoc/competitor/codex.md — in scope by the same component test, which a
+// string-prefix test would also pass, which is why the test is components.
 func InAuditedTree(path string) bool {
 	parts := strings.Split(filepath.ToSlash(filepath.Clean(path)), "/")
 	if len(parts) < 2 {

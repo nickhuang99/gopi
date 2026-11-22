@@ -69,6 +69,8 @@ import (
 	"io"
 	"os"
 	"path/filepath"
+
+	"github.com/nickhuang99/gopi/internal/scratch"
 )
 
 // --- named constants (PROJECT.md Rule 1: one place to find and change) ---
@@ -174,7 +176,7 @@ func attachHostLifecycleLog(prog, baseName string, oneShot bool) {
 		fmt.Fprintf(os.Stderr, hostLifecycleLogUnavailableFmt, prog, err)
 		return
 	}
-	if err := os.MkdirAll(filepath.Dir(path), daemonLogDirMode); err != nil {
+	if err := scratch.MkdirAllWithSuiteRunOwnerPerm(filepath.Dir(path), daemonLogDirMode); err != nil {
 		fmt.Fprintf(os.Stderr, hostLifecycleLogUnavailableFmt, prog, err)
 		return
 	}

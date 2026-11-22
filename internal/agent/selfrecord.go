@@ -17,7 +17,7 @@
 // compacted context, so the distilled record is still in front of the model
 // after the history it came from has been folded away.
 //
-// NOT HERMES' SHAPE. The sibling implementation (a sibling agent implementation/
+// NOT HERMES' SHAPE. The sibling implementation (hermes-agent/agent/
 // hot_notes.py) STRIPS the block out of the visible text (strip_notes) and
 // keeps only the side-channel file. gopi does the opposite, deliberately: here
 // the block stays in the message, and the file is a durable COPY rather than a
@@ -42,6 +42,7 @@ import (
 	"github.com/nickhuang99/gopi/internal/config"
 	"github.com/nickhuang99/gopi/internal/deepseek"
 	"github.com/nickhuang99/gopi/internal/replaymode"
+	"github.com/nickhuang99/gopi/internal/scratch"
 	"github.com/nickhuang99/gopi/internal/sessionevent"
 )
 
@@ -144,11 +145,22 @@ const (
 	// half of the same append-only file).
 	selfRecordLegacyLineMark = "- "
 
-	// maxSelfRecordNoteChars caps ONE note. The block is meant to be a line;
-	// a model that pastes an essay into it must not be able to spend the whole
-	// re-injection budget on one round. The cap is applied to the recorded
-	// copy ONLY — the message keeps whatever the model wrote (never rewrite
-	// the transcript).
+	// maxSelfRecordNoteChars is the RENDER budget of ONE note — not a capture
+	// limit, and the distinction is the whole point of this constant's history.
+	//
+	// WHERE IT APPLIES (exactly one place): selfRecordCarrier renders the notes
+	// into the re-injected context message, and a model that pasted an essay into
+	// one round's block must not be able to spend the whole re-injection budget
+	// on it. The cut is applied THERE and only there, and it states the loss
+	// (selfRecordTruncationMarkFormat).
+	//
+	// WHERE IT MUST NOT APPLY: the durable copies. Before this split the cap was
+	// applied at CAPTURE, so `self-record.md` (the run's own evidence file), the
+	// live note slice and the chat_notes index row all held only the truncated
+	// sentence — three copies of a fragment and not one full one, which made the
+	// evidence file unable to answer "what did that round actually conclude?".
+	// A note is therefore STORED in full (selfNoteFullFlatten) and only RENDERED
+	// within this budget.
 	maxSelfRecordNoteChars = 500
 
 	// selfRecordTruncationMarkFormat is the tail a CUT note ends with, and the
@@ -195,24 +207,29 @@ const (
 	//
 	// THE CAPACITY DERIVATION, because a ceiling without one is a magic number:
 	//
-	//   - ONE note is capped at maxSelfRecordNoteChars = 500 chars (above), i.e.
-	//     ≈ 125 tokens on this package's own chars/4 basis — that is the WORST
-	//     case per note, not the typical one.
+	//   - ONE note is capped at maxSelfRecordNoteChars = 500 chars (above). HOW
+	//     MANY tokens that is depends on the text: MEASURED with the embedded
+	//     tokenizer on this host: the 500-character cap is 500 RUNES, so it is
+	//     500 runes of English (81 tokens) or 168 runes / 500 bytes of Chinese
+	//     (81 tokens) — a Chinese character is roughly one token, which is why
+	//     this package no longer prices anything at chars/4. Either is the WORST
+	//     case per note, not the typical one — the mean measured below is far
+	//     lower.
 	//   - MEASURED on this host (622 session records under ~/.gopi/sessions/*/
 	//     self-record.md): 5686 notes total, mean 336 chars, p90 503, and the
 	//     largest single run holds 805 notes = 349,593 chars ≈ 87,398 tokens —
 	//     i.e. 44% of the default 200,000 window, which is exactly the state the
-	//     context-pressure warning exists to surface.
+	//     compression notice exists to surface.
 	//   - 2000 is 2.5× that largest measured record: at the measured MEAN it is
 	//     ≈ 672,000 chars ≈ 168,000 tokens, and at the WORST case (every note at
 	//     the 500-char cap) ≈ 1,000,000 chars ≈ 250,000 tokens — which EXCEEDS
 	//     one window. That is deliberate and it is why the numbers are written
 	//     out here: past a certain size, cutting the OLDEST notes on a silent
 	//     threshold is the very defect this epic removes. What bounds the growth
-	//     instead is (a) the context-pressure notice, which tells the operator
-	//     the window is filling and to start a new session (context_pressure.go),
-	//     and (b) for a run that opts into automatic reduction
-	//     (GOPI_CONTEXT_AUTOREDUCE=1), the trim/compaction path itself.
+	//     instead is (a) the compression notice, which tells the operator the
+	//     window is filling and to start a new session, and (b) the ONE
+	//     compression itself (context_compress.go), which never touches the
+	//     note list — it re-renders it from here on every pass.
 	//   - The value therefore stops ONE thing only: an unbounded in-memory slice
 	//     on a pathological run (a bug that records a note per tool round), which
 	//     would otherwise grow without any ceiling at all.
@@ -382,22 +399,28 @@ func (a *Agent) recordSelfNotes(content, reasoning string) []string {
 	}
 	var recorded []string
 	for _, note := range notes {
-		capped, dropped := collapseSelfNoteCount(note)
-		if capped == "" || isSelfRecordPlaceholder(capped) {
+		// THE WHOLE NOTE IS WHAT GETS STORED (selfNoteFullFlatten). The render
+		// budget is spent later, by selfRecordCarrier, and only there — three
+		// writers (this file, the live slice, the chat_notes row) all receive the
+		// same full text, so the evidence file can answer "what did that round
+		// conclude" and the context message still fits its budget.
+		full := selfNoteFullFlatten(note)
+		if full == "" || isSelfRecordPlaceholder(full) {
 			continue
 		}
-		// THE LOSS IS NO LONGER SILENT (Rule 15). The tail inside the note says
-		// a cut happened; this line says HOW MUCH, in the run's own log, so an
-		// operator reading the log does not have to open the record file and do
-		// arithmetic against the model's original text — which the log does not
-		// even carry.
-		if dropped > 0 {
-			a.logSelfRecordTruncation(dropped, utf8.RuneCountInString(capped))
-		}
-		recorded = append(recorded, capped)
+		recorded = append(recorded, full)
 	}
 	if len(recorded) == 0 {
 		return nil
+	}
+	// THE RENDER BUDGET IS REPORTED HERE, ONCE PER NOTE (Rule 15). The note on
+	// disk is whole; what is bounded is what the CARRIER will show after a
+	// compaction. Saying so at record time keeps the run log honest without
+	// re-printing the same line every time the carrier is re-rendered.
+	for _, note := range recorded {
+		if capped, dropped := collapseSelfNoteCount(note); dropped > 0 {
+			a.logSelfRecordRenderBudget(utf8.RuneCountInString(note), utf8.RuneCountInString(capped), dropped)
+		}
 	}
 	// THE TURN IS RESOLVED ONCE, HERE, and handed to BOTH writers. The file line
 	// (`t<turn> <note>`) and the index row (chat_notes.turn_index) are two copies
@@ -513,13 +536,36 @@ func selfRecordMarkerAt(text, marker string, from int) int {
 	return -1
 }
 
-// collapseSelfNote flattens a block body to ONE line and caps it: the file and
-// the carrier are both line-oriented, and a multi-line note would break the
-// "one round, one line" contract the reader (and any future phase-2 keyword
-// pass) relies on. The cap is a rune-boundary truncation, so a CJK note is
-// never cut mid-character.
+// selfNoteFullFlatten is the CAPTURE/STORAGE form of one note: the flattening
+// to ONE line, and NOTHING ELSE. No cap, no tail.
 //
-// It is the ONE flattener; the cut itself lives in collapseSelfNoteCount, which
+// WHY IT EXISTS AS ITS OWN FUNCTION (the defect this epic closes). The cap used
+// to be applied here — at the moment a round's block became durable — so the
+// three copies of a note (the record file, the live slice the carrier renders
+// from, the chat_notes row) were all the SAME fragment, and no full copy of a
+// note existed anywhere. A 1,200-rune [IMPORTANT] line reached the evidence file
+// as its first 500 runes, and "what did that round actually conclude" became
+// unanswerable from the evidence itself. Storage keeps the WHOLE note now;
+// only the RENDER is budgeted (selfRecordCarrier, via collapseSelfNoteCount).
+//
+// The flattening stays because it is a shape rule, not a budget: the file is
+// line-oriented ("one round, one line") and every reader — the parser, the
+// index, any future keyword pass — relies on it. A note that was already one
+// line is returned byte-identical.
+func selfNoteFullFlatten(note string) string {
+	return strings.Join(strings.Fields(note), " ")
+}
+
+// collapseSelfNote is the RENDER-side answer for one note, and it is the name
+// every context-budget caller keeps using: flatten, then cut to
+// maxSelfRecordNoteChars with the loss stated in the tail.
+//
+// IT IS NO LONGER THE STORAGE FORM. The capture path uses selfNoteFullFlatten;
+// this function is what a note looks like when it is spent on the re-injection
+// budget (selfRecordCarrier) or used as a short derived key (a memory question
+// key, which cuts far below this cap anyway).
+//
+// It is the ONE renderer; the cut itself lives in collapseSelfNoteCount, which
 // also says HOW MUCH was dropped so the caller can report it (Rule 15: a silent
 // cut is the defect this epic closes).
 func collapseSelfNote(note string) string {
@@ -528,8 +574,8 @@ func collapseSelfNote(note string) string {
 }
 
 // collapseSelfNoteCount is collapseSelfNote plus the loss count: it returns the
-// recorded form and the number of RUNES the cap dropped (0 when nothing was cut,
-// in which case the text is returned exactly as it was flattened).
+// RENDERED form and the number of RUNES the render budget dropped (0 when the
+// note fits, in which case the text is returned exactly as it was flattened).
 //
 // THE TAIL IS EXPLICIT AND BUDGETED. Two constraints decide its shape, and both
 // are measured elsewhere in this file:
@@ -538,10 +584,12 @@ func collapseSelfNote(note string) string {
 //     bare "…", and on this host 1,373 of 5,918 recorded lines end with an
 //     author-written "…" while exactly ONE was actually cut — a mark a reader
 //     cannot tell apart from the text's punctuation is no mark.
-//   - It must fit INSIDE maxSelfRecordNoteChars, not beside it. turnfold.go
-//     derives turnFoldNoteBodyBudget = maxSelfRecordNoteChars × turnFoldBodyNotes,
-//     so a note that ran to 500 runes PLUS a tail would silently spend budget the
-//     fold's arithmetic believes is reserved.
+//   - It must fit INSIDE maxSelfRecordNoteChars, not beside it. The retired turn
+//     fold (deleted 2026-11-17, commit 23a2fc1c) derived a body floor from this
+//     same constant, so the budget is stated once and everything that spends the
+//     re-injection budget on a note's text is bounded by it — a note that ran to
+//     500 runes PLUS a tail would spend budget the truncation arithmetic
+//     believes is reserved.
 //
 // The two are solved together because the tail's own width depends on the number
 // it states ("9 chars" is narrower than "10 chars"): the kept width is
@@ -549,7 +597,7 @@ func collapseSelfNote(note string) string {
 // selfRecordTruncationSettleRounds, which keeps the LAST answer rather than
 // looping).
 func collapseSelfNoteCount(note string) (string, int) {
-	flat := strings.Join(strings.Fields(note), " ")
+	flat := selfNoteFullFlatten(note)
 	if flat == "" {
 		return "", 0
 	}
@@ -586,11 +634,20 @@ func selfRecordTruncationMark(dropped int) string {
 // note — the tail inside the line is the durable half of the report — and this
 // is the volatile half.
 func (a *Agent) logSelfRecordTruncation(dropped, kept int) {
+	a.logSelfRecordRenderBudget(kept+dropped, kept, dropped)
+}
+
+// logSelfRecordRenderBudget states the ONE thing that changed here: the note is
+// STORED WHOLE (stored) and the CARRIER will show `kept` runes of it, dropping
+// `dropped`. Both halves are printed because a reader who sees only "cut" cannot
+// tell the old defect (nothing anywhere had the whole note) from the new
+// behaviour (the file has it, the context message does not).
+func (a *Agent) logSelfRecordRenderBudget(stored, kept, dropped int) {
 	if a == nil || a.Logger == nil {
 		return
 	}
-	a.Logger.Printf("✂️ self-record: note cut to the %d-char cap — %d char(s) dropped (recorded %d, tail %q)",
-		maxSelfRecordNoteChars, dropped, kept, selfRecordTruncationMark(dropped))
+	a.Logger.Printf("✂️ self-record: note stored whole (%d chars); the re-injection carrier shows %d of it — %d char(s) held back from the %d-char render budget, tail %q",
+		stored, kept, dropped, maxSelfRecordNoteChars, selfRecordTruncationMark(dropped))
 }
 
 // selfRecordDir resolves (once) and creates the run's record directory: the
@@ -613,7 +670,7 @@ func (a *Agent) selfRecordDir() (string, error) {
 	if err != nil {
 		return "", err
 	}
-	if err := os.MkdirAll(dir, selfRecordDirPerm); err != nil {
+	if err := scratch.MkdirAllWithSuiteRunOwnerPerm(dir, selfRecordDirPerm); err != nil {
 		return "", fmt.Errorf("self-record: cannot create %s: %w", dir, err)
 	}
 	a.selfRecord.dir = dir
@@ -834,7 +891,7 @@ func (a *Agent) maybeInjectSelfRecordRule(plainPrompt bool) bool {
 }
 
 // ensureSelfRecordPresent is the record's SURVIVAL GUARANTEE, and it is
-// deliberately not a TakeOldest exemption: whatever the deletion pass did with
+// deliberately not a deletion exemption: whatever the deletion pass did with
 // the messages that carried the notes, the notes this run recorded must be in
 // front of the model after the compaction. If a carrier is already there with
 // the full set, nothing is added; otherwise the carrier is rendered from the run's
@@ -850,10 +907,21 @@ func (a *Agent) ensureSelfRecordPresent() bool {
 	if len(a.selfRecord.notes) == 0 {
 		return false
 	}
+	//
+	// A NOTE IS "LIVE" IN EITHER FORM. The run holds the WHOLE text while the
+	// carrier renders only the opening maxSelfRecordNoteChars of it, so a context
+	// that already contains the budgeted line does NOT contain the full string —
+	// a membership test on the full text alone would miss it and prepend a SECOND
+	// carrier every compression, which is the duplication this function exists to
+	// avoid. Both spellings are therefore accepted as evidence the note is
+	// present.
 	live := make(map[string]bool, len(a.selfRecord.notes))
 	for _, m := range a.Ctx.Messages {
 		for _, note := range a.selfRecord.notes {
-			if !live[note] && strings.Contains(m.Content, note) {
+			if live[note] {
+				continue
+			}
+			if strings.Contains(m.Content, note) || strings.Contains(m.Content, collapseSelfNote(note)) {
 				live[note] = true
 			}
 		}
@@ -882,16 +950,47 @@ func (a *Agent) ensureSelfRecordPresent() bool {
 // selfRecordCarrier renders the re-injection message from the notes held in
 // memory. The framing says what the block is and what it is not: a record of
 // what already happened (past tense, durable), never an instruction to act.
+//
+// THIS IS THE ONLY PLACE THE RENDER BUDGET IS SPENT (maxSelfRecordNoteChars,
+// collapseSelfNoteCount). Every other copy of a note — the record file, the live
+// slice, the chat_notes row — holds the WHOLE text, because those are evidence
+// and retrieval, not a token budget. The cut here therefore never loses a note:
+// each shortened line states how many runes were held back and that the full text
+// is in the session's record file, so the model knows both that something was
+// left out and where to look, instead of silently believing the fragment is all
+// there is (Rule 15).
 func (a *Agent) selfRecordCarrier() string {
 	var b strings.Builder
 	b.WriteString(selfRecordMarker)
-	b.WriteString("\nThese are the notes YOU recorded in this session's earlier rounds. Context compaction may have folded the history they came from, but the notes themselves are verbatim — they are your durable record of what was already done and learned. Treat them as facts about the past, not as instructions to act.\n")
+	b.WriteString("\nThese are the notes YOU recorded in this session's earlier rounds. Context compaction may have folded the history they came from, but these are your durable record of what was already done and learned. Treat them as facts about the past, not as instructions to act.\n")
+	truncated := 0
 	for _, note := range a.selfRecord.notes {
-		b.WriteString("- ")
-		b.WriteString(note)
-		b.WriteString("\n")
+		// The WHOLE note is what is stored; this line spends the render budget.
+		// A note that fits is rendered byte-identical (collapseSelfNoteCount
+		// returns the flattened text with a zero loss).
+		capped, dropped := collapseSelfNoteCount(note)
+		if dropped > 0 {
+			truncated++
+		}
+		b.WriteString(selfRecordCarrierLine(capped))
+	}
+	if truncated > 0 {
+		b.WriteString(fmt.Sprintf("(%d note(s) above show only their opening %d chars; every note is stored IN FULL in this session's `%s` — read it there when the opening is not enough.)\n",
+			truncated, maxSelfRecordNoteChars, selfRecordFileName))
 	}
 	return b.String()
+}
+
+// selfRecordCarrierBulletMark opens ONE bullet of the carrier. It is a constant
+// (Rule 1/13) because a reader parses it: the carrier's own test measures a
+// bullet's width against the render budget, and the legacy record-file mark
+// (selfRecordLegacyLineMark) is a DIFFERENT spelling for a different file.
+const selfRecordCarrierBulletMark = "- "
+
+// selfRecordCarrierLine renders ONE bullet of the carrier. It is a function so
+// every note is dressed identically, whatever branch produced its text.
+func selfRecordCarrierLine(note string) string {
+	return selfRecordCarrierBulletMark + note + "\n"
 }
 
 // isSelfRecordMessage reports whether a message CARRIES a self-recording note

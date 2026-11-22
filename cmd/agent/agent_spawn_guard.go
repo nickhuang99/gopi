@@ -5,6 +5,7 @@ import (
 	"os"
 
 	"github.com/nickhuang99/gopi/internal/config"
+	"github.com/nickhuang99/gopi/internal/tokenizer"
 )
 
 // agent_spawn_guard.go — the two CMD-AGENT call sites of the agent-spawn guard
@@ -106,5 +107,49 @@ func guardBarePromptOrExit(word string) {
 func exportAgentSessionAnchor() {
 	if err := os.Setenv(config.AgentSessionAncestorEnv, fmt.Sprint(os.Getpid())); err != nil {
 		fmt.Fprintf(os.Stderr, "[gopi] agent session anchor export: %v\n", err)
+	}
+}
+
+// barePromptTokenCounter is the measurement the length floor consumes: the
+// model's OWN vocabulary, through the same encoder `gopi tool tokens --file`
+// reports and the context readouts use (internal/tokenizer.CountDefault).
+//
+// WHY IT IS INJECTED RATHER THAN IMPORTED BY internal/config: that package is
+// on the path of every command on this host (`gopi -h`, a worker tick, a
+// merger sweep), and internal/tokenizer embeds a 6.3 MB vocabulary image. A
+// policy package must not drag the payload of its MEASUREMENT into every
+// process that merely needs the policy. The wiring belongs here, in the one
+// binary that both decides and pays.
+func barePromptTokenCounter(text string) (int, error) {
+	return tokenizer.CountDefault(text)
+}
+
+// guardShortBarePromptOrExit is the FOURTH guarded surface: a bare prompt too
+// short to be a prompt.
+//
+// THE DEFECT (operator's ruling, 2026-11-17). §1c refuses a bare word only
+// when an agent signature is present; on the operator's own terminal it is
+// deliberately a no-op, so `gopi submit` — a leaf verb written without its
+// family word — was spent as a prompt: a session directory, an `[auto] submit`
+// ledger row and a clone ground. The command line cannot tell a mistyped
+// command from a prompt (quotes never reach argv), so the second axis is
+// LENGTH: one token cannot carry a request, and every complete question
+// measured costs two or more (`你好吗` = 2, `who are you?` = 4).
+//
+// WHERE IT SITS: after readInput — it must judge the RESOLVED text, not argv,
+// because the prompt it counts is the one the model would be charged for — and
+// BEFORE newAgent, so a refusal has created nothing and spent nothing.
+//
+// AN UNMEASURABLE LENGTH IS NOT A REFUSAL: a broken counter reports its reason
+// and the run proceeds. A guard that turned "I could not count" into "everyone
+// is blocked" would make a bad vocabulary file look like strictness.
+func guardShortBarePromptOrExit(prompt string) {
+	d, err := config.GuardShortBarePrompt(prompt, barePromptTokenCounter)
+	if err != nil {
+		fmt.Fprintf(os.Stderr, "[gopi] %v — the run proceeds\n", err)
+		return
+	}
+	if !d.Allowed {
+		config.RefuseShortBarePrompt(d)
 	}
 }

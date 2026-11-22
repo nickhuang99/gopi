@@ -1,4 +1,5 @@
-// The two USER-facing input shapes of `gopi tool tokens`: --file and --session.
+// The USER-facing input shapes of `gopi tool tokens`: --file, --prompt and
+// --session.
 //
 // Both exist because the tool's first two shapes were its own verification
 // inputs. `--raw <raw.log>` and `--body <request.json>` answer "did OUR template
@@ -21,6 +22,65 @@ import (
 // input it is about), and carries the byte/line size beside the count because
 // tokens-per-byte is what makes a surprising number checkable.
 const tokensFileReportFmt = "%s: %d tokens (%d bytes, %d lines, %s)\n"
+
+// tokensPromptReportFmt is the one line `--prompt` prints. It echoes the text
+// it counted, QUOTED, because on this shape the input is not a path a reader can
+// go and look at — the number is only checkable if the answer says what it was
+// about. The size fields are the same triple `--file` prints, so the two shapes
+// agree for the same bytes.
+const tokensPromptReportFmt = "%q: %d tokens (%d bytes, %d lines, %s)\n"
+
+// tokensLineCount is the file's line count, and it is a FUNCTION because the
+// semantics are the whole point: a trailing newline TERMINATES the last line
+// rather than opening an empty one.
+//
+// Measured defect this replaces (2026-11-17): `printf '你好\n' | … --file` printed
+// "7 bytes, 2 lines" for a one-line file, because the old code counted
+// `1 + <number of '\n'>` — that formula reports every newline-terminated file
+// one line too high, and `wc -l` (the instrument a reader will reach for) says
+// 1. So: count the newlines, and add a line only for a final segment that no
+// newline terminated ("你好" without the newline is still one line; an empty file
+// is zero).
+func tokensLineCount(raw []byte) int {
+	if len(raw) == 0 {
+		return 0
+	}
+	n := 0
+	for _, b := range raw {
+		if b == '\n' {
+			n++
+		}
+	}
+	if raw[len(raw)-1] != '\n' {
+		n++
+	}
+	return n
+}
+
+// runPrompt counts a SHORT TEXT given on the command line — the fifth input
+// shape, and the one with no file to write first.
+//
+// Why it exists: the bare-prompt surface grows a length floor measured in
+// tokens (a one-token sentence is refused), so "is this sentence long enough?"
+// needs an answer a person can get by typing it. This shape answers it with the
+// SAME encoder the floor uses (internal/tokenizer), which is why it is a thin
+// wrapper over the count `--file` already performs: `--prompt X` must equal
+// `--file` on a file holding exactly X, and TestTokensPromptMatchesFile pins
+// that equality rather than trusting the shared call site.
+//
+// An empty string is a legal input and counts 0 — it is a MEASUREMENT of empty
+// text, not a missing argument; the parser distinguishes the two (`--prompt`
+// with nothing after it is the usage error, an empty TEXT argument is a count).
+func runPrompt(text string) int {
+	n, err := tokenizer.CountDefault(text)
+	if err != nil {
+		fmt.Fprintln(os.Stderr, "gopi tool tokens: tokenizer: "+err.Error())
+		return tokensExitError
+	}
+	raw := []byte(text)
+	fmt.Printf(tokensPromptReportFmt, text, n, len(raw), tokensLineCount(raw), tokenizerName())
+	return 0
+}
 
 // tokensSessionHeadFmt names the session a verification report is about, and
 // the raw log the numbers were read from — the two paths a reader needs to
@@ -49,15 +109,7 @@ func runFile(path string) int {
 		fmt.Fprintln(os.Stderr, "gopi tool tokens: tokenizer: "+err.Error())
 		return tokensExitError
 	}
-	lines := 0
-	if len(raw) > 0 {
-		lines = 1
-		for _, b := range raw {
-			if b == '\n' {
-				lines++
-			}
-		}
-	}
+	lines := tokensLineCount(raw)
 	fmt.Printf(tokensFileReportFmt, path, n, len(raw), lines, tokenizerName())
 	return 0
 }

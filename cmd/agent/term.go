@@ -362,8 +362,8 @@ func (s *webServer) handleTermChat(w http.ResponseWriter, r *http.Request) {
 	ag.OnToolEvents = func(ev agent.ToolEvent) {
 		paint(html.EscapeString(termToolLine(ev)))
 	}
-	// A statement addressed to the OPERATOR (context pressure — a filled window
-	// is announced, never silently emptied): it rides the same page the answer
+	// A statement addressed to the OPERATOR (context compression — what the pass
+	// removed, or that it could not shorten anything): it rides the same page the answer
 	// streams into, because that is the surface this carrier draws. Nil-ing it
 	// below with OnText/OnToolEvents keeps the pattern identical: no turn can
 	// inherit a previous turn's writer.

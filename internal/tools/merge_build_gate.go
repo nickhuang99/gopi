@@ -633,7 +633,7 @@ func mergeBuildGateScratchModCache() (modCacheDir string, ok bool) {
 		return "", false
 	}
 	modCacheDir = filepath.Join(classDir, mergeBuildGateModCacheDirName)
-	if err := os.MkdirAll(modCacheDir, scratch.DirPerm); err != nil {
+	if err := scratch.MkdirAllWithSuiteRunOwnerPerm(modCacheDir, scratch.DirPerm); err != nil {
 		taskNotifyLog("merger: BUILD gate scratch gomodcache %s unusable: %v", modCacheDir, err)
 		return "", false
 	}

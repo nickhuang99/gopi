@@ -91,6 +91,43 @@ const syncColumnAliasKeyword = ` AS `
 // transport cannot take the expression without its name.
 const syncParentColumnNamed = syncParentColumnExpr + syncColumnAliasKeyword + syncParentColumnAlias
 
+// syncSessionColumnExpr is the ONE spelling of "read a task row's run session
+// into the wire row" (Rule 14): the delta export, the v1 file channel's
+// projection, the harvest window and the one-row transport all carry the same
+// column under the same COALESCE, so four transports cannot disagree about
+// which session ran a row.
+//
+// WHY THE COLUMN RIDES THE WIRE AT ALL (measured 2026-11-21, task
+// 01a1fb23-0491): `distilled_qa.session_id` names the session a memory row was
+// distilled from, and the recall routes resolve that session against the
+// ledger's `tasks` rows. Every task row a PEER had sent was imported with
+// `session_id` written as an EMPTY string (the INSERT below had a literal empty
+// string in that position, and the export projection named no such column), so
+// a peer-born memory row's session matched nothing here: measured on this host,
+// HP had 1073 task rows carrying a session id, 1049 of them were present in
+// this ledger, and 966 of those carried an empty value or a different one. The
+// rows were never missing — the identifier was.
+//
+// THE COALESCE IS THE COMPAT CHANNEL, exactly as it is for the parent edge: a
+// peer running a build from before this column existed answers an empty string
+// for a row it has no value for, and an ABSENT json key decodes into the same
+// zero value, so
+// an old peer's payload imports unchanged instead of failing the whole batch.
+const syncSessionColumnExpr = `COALESCE(` + originSessionCol + `,'')`
+
+// syncSessionColumnAlias is the WIRE FIELD the expression above must arrive
+// under — the json tag both wire structs bind to. It is the ledger column's own
+// name (originSessionCol), because a wire key and the column it projects are
+// one identifier read through two channels (Rule 1b/14).
+const syncSessionColumnAlias = originSessionCol
+
+// syncSessionColumnNamed is the expression AS the wire field — the spelling
+// every `sqlite3 -json` transport must send, for the reason syncColumnAliasKeyword
+// states: that channel names an output column by its SOURCE TEXT, so an
+// unaliased COALESCE arrives under a key encoding/json cannot bind to a struct
+// tag (punctuation is not skipped), and the field lands EMPTY with no error.
+const syncSessionColumnNamed = syncSessionColumnExpr + syncColumnAliasKeyword + syncSessionColumnAlias
+
 // syncParentState names the FOUR arms of one judgement — can this ledger
 // honour the dependency edge the row carries? It is ONE function because the
 // claim funnel, the two import lanes and the sender's own read all ask the
@@ -242,7 +279,7 @@ func syncRowParentStatusOn(ctx context.Context, tx *sql.Tx) func(string) (string
 const syncDeltaSelectColumns = `task_id, summary, COALESCE(payload,''), COALESCE(tags,''),
 	COALESCE(source,''), created_at, updated_at, status, ended_at, COALESCE(deliverable,''),
 	COALESCE(run_method,''), COALESCE(run_cmd,''), COALESCE(reason,''),
-	` + syncParentColumnExpr + `,` + syncParentIDsColumnExpr
+	` + syncParentColumnExpr + `,` + syncParentIDsColumnExpr + `,` + syncSessionColumnExpr
 
 // SyncTaskDeltaOptions controls the v2 delta export.
 type SyncTaskDeltaOptions struct {
@@ -309,12 +346,12 @@ func syncTagTokenPattern(token string) string {
 // EVERY Go consumer of these tokens is case-sensitive — hasTag
 // (t == want), syncDeltaMergeTags (strings.HasPrefix(t, SyncTaskTagPrefix)),
 // syncGateTag's own from-<node> comparison, and the task-tag predicates in
-// tasks.go. Under LIKE a row tagged "BUG" (or "FROM-PEERBOX") passed the sync
+// tasks.go. Under LIKE a row tagged "BUG" (or "FROM-ZBOOK") passed the sync
 // gate yet was invisible to the token readers, and — the mirror direction,
 // the dangerous one — a wrong-case from-<peer> tag ESCAPED the anti-reflow
 // exclusion and reflowed the peer's row back at it. The persisted ledger
 // agrees with the readers: the only mixed-case tokens in ~/.gopi/memory.db
-// are real node NAMES (from-host-b, worker:host-b) — the
+// are real node NAMES (from-nick-HP-Laptop, worker:nick-HP-Laptop) — the
 // hostname of the machine, not a keyword — so folding case would silently
 // rewrite a row's provenance (from-hp ≠ from-HP: different nodes).
 //
@@ -441,7 +478,7 @@ func SyncTaskExportDelta(opts SyncTaskDeltaOptions) (*SyncTaskPatch, *SyncTaskEx
 		var deliverable string
 		if err := rows.Scan(&r.TaskID, &r.Summary, &r.Payload, &tags, &source,
 			&createdAt, &updatedAt, &status, &endedAt, &deliverable, &r.RunMethod, &r.RunCmd, &r.Reason,
-			&r.ParentTaskID, &r.ParentTaskIDs); err != nil {
+			&r.ParentTaskID, &r.ParentTaskIDs, &r.SessionID); err != nil {
 			return nil, nil, fmt.Errorf("memsync export-since: scan: %w", err)
 		}
 		if strings.TrimSpace(deliverable) != "" {
@@ -615,6 +652,12 @@ const syncConflictTag = "conflict"
 // both-sides-wrote conflict resolves as completed (枚举不值得费思量 — the
 // deliverable lives in the git branch, not the status marker).
 const syncTagSyncResolved = "sync-resolved"
+
+// SyncTagSyncResolved is the EXPORTED spelling of syncTagSyncResolved, for the
+// operator-facing text that must name the NEAR-MISS tag the archive filter
+// deliberately does NOT hide (Rule 1/13/14: one definition, referenced by every
+// writer). A substring rule would hide these rows and be wrong.
+const SyncTagSyncResolved = syncTagSyncResolved
 
 // syncUnknownSummary is the placeholder a mirrored terminal row carries when
 // the wire's summary is empty (the row is history either way, and the ledger
@@ -808,13 +851,21 @@ func syncDeltaInsertRow(ctx context.Context, db *sql.DB, r SyncTaskRow, fromTag 
 	}
 	// M4.11: delta inserts derive the priority from tags too (a bug row
 	// arriving from a peer must not queue behind feature rows on this node).
+	// THE RUN SESSION the peer recorded (syncSessionColumnExpr's doc carries the
+	// measurement). Written verbatim, and "" when the peer's copy carries none —
+	// which is the same value this arm always wrote, so an old peer's row and a
+	// row whose session is genuinely unknown land identically. It is NOT the
+	// submitter column: that is the anti-self-reference key, a different fact
+	// this channel does not transport (neither does the local submit path put
+	// it here).
+	runSession := strings.TrimSpace(r.SessionID)
 	_, err := db.ExecContext(ctx,
 		`INSERT INTO tasks (task_id, summary, status, session_id, model,
 		    parent_task_id, `+taskParentIDsColumnName+`, tags, payload, source, claimed_by, claimed_at,
 		    verify_evidence, deliverable, priority, run_method, run_cmd, reason,
 		    created_at, updated_at, ended_at)
-		 VALUES (?, ?, ?, '', '', ?, ?, ?, ?, ?, '', NULL, '', ?, ?, ?, ?, ?, ?, ?, ?)`,
-		r.TaskID, r.Summary, status, strings.TrimSpace(r.ParentTaskID), strings.TrimSpace(r.ParentTaskIDs), tags, r.Payload, r.Source,
+		 VALUES (?, ?, ?, ?, '', ?, ?, ?, ?, ?, '', NULL, '', ?, ?, ?, ?, ?, ?, ?, ?)`,
+		r.TaskID, r.Summary, status, runSession, strings.TrimSpace(r.ParentTaskID), strings.TrimSpace(r.ParentTaskIDs), tags, r.Payload, r.Source,
 		deliverable, taskTagPriority(tags), r.RunMethod, r.RunCmd, r.Reason, createdAt, updatedAt, endedAt)
 	if err != nil {
 		return fmt.Errorf("delta insert: %w", err)
@@ -823,7 +874,7 @@ func syncDeltaInsertRow(ctx context.Context, db *sql.DB, r SyncTaskRow, fromTag 
 }
 
 // syncDeltaMergeRow applies the newer-wins forward-only rules onto a known
-// row. Content (summary/payload) is NEVER rewritten (the the operator rule) — the
+// row. Content (summary/payload) is NEVER rewritten (the nick rule) — the
 // merge moves STATUS and unions TAGS, nothing else.
 func syncDeltaMergeRow(ctx context.Context, db *sql.DB, bus *taskNotifyBus, existing *Task, r SyncTaskRow, peer string, stats *SyncTaskImportStats) error {
 	// M4.20-B: the merge is RANK-first. syncDeltaApplyNewer owns every
@@ -849,6 +900,18 @@ func syncDeltaMergeRow(ctx context.Context, db *sql.DB, bus *taskNotifyBus, exis
 		return nil
 	}
 
+	// THE RUN SESSION, same shape and same reason as the edge above. A row this
+	// ledger already holds almost always arrived before this column travelled,
+	// so its cell is EMPTY while the peer's copy names the session — the insert
+	// arm below never runs for those rows, and repairing only new rows would
+	// leave the measured population (966 of 1049 shared rows) unrepaired.
+	// It sits BEFORE the rank ladder for the same reason the edge does: an
+	// equal-status echo returns early as RowsAlready, so an arm placed after
+	// the ladder would never see the rows that need it.
+	// It reports through the stats counter; the rank ladder below still owns the
+	// row's STATUS, so its answer does not short-circuit anything.
+	syncDeltaAdoptSession(ctx, db, existing.TaskID, r.SessionID, stats)
+
 	remote := float64(r.UpdatedAt)
 	if remote > existing.UpdatedAt ||
 		(remote <= existing.UpdatedAt && statusRankOf(strings.TrimSpace(r.Status)) > statusRankOf(existing.Status)) ||
@@ -865,7 +928,7 @@ func syncDeltaMergeRow(ctx context.Context, db *sql.DB, bus *taskNotifyBus, exis
 	// peer's OWN tags (its local tag edits) propagate. Identical STATUS +
 	// tags = the pure no-op every re-sync depends on. Differing STATUS at
 	// the same anchor = two nodes each advanced the row differently.
-	// RULING (the operator, 冲突语义定稿): the task status is a mere enum — the
+	// RULING (nick, 冲突语义定稿): the task status is a mere enum — the
 	// real deliverable lives in the git branch (the merge conflict is LLM
 	// work, nothing the task marker should agonize over). So the SERVER
 	// side simply writes completed (ended_at=now, tags += sync-resolved)
@@ -914,7 +977,7 @@ func syncDeltaMergeRow(ctx context.Context, db *sql.DB, bus *taskNotifyBus, exis
 		return syncDeltaServerResolve(ctx, db, bus, existing, merged, stats)
 	}
 	if existing.Status == r.Status {
-		// 内容分歧 = WARNING (the operator, 内容冲突降级): same status but DIFFERING
+		// 内容分歧 = WARNING (nick, 内容冲突降级): same status but DIFFERING
 		// summary/payload is two nodes' free-text restatements of the same
 		// task_id — the row's IDENTITY is its task_id (UUID), and payload is
 		// a briefing's prose, which differs across nodes by NATURE (the same
@@ -923,7 +986,7 @@ func syncDeltaMergeRow(ctx context.Context, db *sql.DB, bus *taskNotifyBus, exis
 		// tag is the MUST-ARBITRATE-BY-A-HUMAN marker, reserved for the
 		// status divergence below (and for the server ruling the bug053/M4.16
 		// guard blocks). The merge still NEVER overwrites either side's
-		// content (the operator rule) — it unions the peer's OWN tags and, when that
+		// content (nick rule) — it unions the peer's OWN tags and, when that
 		// union changes the row, records one RowsTagged; an unchanged union
 		// is the idempotent no-op (RowsAlready). The divergence itself is
 		// recorded (warn log + RowsDiverged) and surfaced on the report line,
@@ -1083,7 +1146,7 @@ func notifyLedgerConflictHumanTask(taskID, detail string) {
 	deliverTaskNotify(cfg, payload)
 }
 
-// syncDeltaServerResolve is the SERVER's conflict ruling (the operator 定稿): a
+// syncDeltaServerResolve is the SERVER's conflict ruling (nick 定稿): a
 // both-sides-wrote-the-same-row collision (equal updated_at, differing
 // status) resolves as completed right here — status=completed, ended_at=now,
 // tags += sync-resolved (union with BOTH sides' own tags), updated_at=now.
@@ -1171,7 +1234,7 @@ func syncDeltaApplyNewer(ctx context.Context, db *sql.DB, bus *taskNotifyBus, ex
 	// WHY THIS IS A DEFECT AND NOT A TASTE QUESTION (measured 2026-10-29, rows
 	// 01a16f98/01a17866/01a17a10/01a17a6a/01a17a8a/01a17c53/01a17d07/01a17e23):
 	// a PA cancelled those rows on ONE node to de-duplicate two ledgers, with a
-	// reason that said "keep the host-b side, cancel the HP side" — and the
+	// reason that said "keep the sager side, cancel the HP side" — and the
 	// ladder wrote `cancelled` onto the KEPT side within the same second, with
 	// the peer's reason verbatim, the peer's updated_at verbatim, the peer's
 	// `from-<node>` tag filtered out by syncDeltaMergeTags, and ZERO
@@ -1443,6 +1506,45 @@ func syncParentSetContains(set []string, id string) bool {
 		if candidate == id {
 			return true
 		}
+	}
+	return false
+}
+
+// syncDeltaAdoptSession lands the peer's RUN SESSION onto an existing local row
+// whose own cell is empty — the repair arm of the 2026-11-21 measurement
+// (syncSessionColumnExpr's doc). Shape, guard and reason are the parent-edge
+// adopt arm's, one column over:
+//
+//	[empty local] adopt the peer's value      → RowsSessionAdopted
+//	[non-empty local] write NOTHING           → the local cell is a fact too
+//
+// The guard is in the WHERE clause (a concurrent writer's value is never
+// clobbered) rather than in a read-then-write pair, and it deliberately does NOT
+// touch updated_at: the session is provenance, not a state transition, and
+// advancing the anchor here would make this ledger look NEWER than the peer for
+// a row nothing happened to (the rank ladder's whole input).
+//
+// It reports only; the caller's rank ladder still owns the status.
+func syncDeltaAdoptSession(ctx context.Context, db *sql.DB, taskID, remoteSession string, stats *SyncTaskImportStats) bool {
+	session := strings.TrimSpace(remoteSession)
+	if session == "" {
+		return false // nothing to adopt; an absent value is what the local cell already is
+	}
+	res, err := db.ExecContext(ctx,
+		`UPDATE tasks SET `+originSessionCol+` = ? `+
+			`WHERE task_id = ? AND IFNULL(`+originSessionCol+`,'') = ''`,
+		session, taskID)
+	if err != nil {
+		// Counted, never swallowed and never fatal: the row's other facts still
+		// import, and an unrepaired cell is exactly the state the next sync
+		// re-attempts (Rule 15b).
+		stats.Errors = append(stats.Errors, fmt.Sprintf(
+			"row %s: the peer's run session (%s) was NOT adopted — %v", taskID, session, err))
+		return false
+	}
+	if n, rerr := res.RowsAffected(); rerr == nil && n > 0 {
+		stats.RowsSessionAdopted++
+		return true
 	}
 	return false
 }

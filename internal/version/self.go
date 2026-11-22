@@ -54,13 +54,42 @@ import (
 // and a test pins that this default satisfies it — a malformed default is the
 // one failure nobody would notice until a release.
 //
-// CURRENT VALUE — why v0.5.0 (MINOR bump, 2026-11-14): the OPEN-SOURCE
-// READINESS bump. No verb changed shape and no output format a consumer parses
-// moved; what earned the MINOR is that the tree can now be published as it
-// stands — the module path is the public one, and the fleet-specific material a
-// stranger cannot use is gone. A reader comparing v0.4.0 and v0.5.0 sees one
-// history: v0.4.0 was the last version of the private working tree, v0.5.0 is
-// the first of the public one.
+// CURRENT VALUE — why v0.5.0 (MINOR bump, 2026-11-22): the CHAT CONSOLE became
+// a diagnosable surface. v0.4.0 was about tools and tables; this one is about
+// the operator's own window onto a running process, and every change below is
+// something a person types or reads on that window.
+//
+//  1. `/config` exists and answers from the RUNNING process (21a8f7b34), and it
+//     gained a THIRD source position — `ChannelRunning`, "this process (run
+//     time)" — so a switch flipped mid-session (`/thinking off`) is no longer
+//     reported as `(unset)` under a title promising the opposite (7f95769ae).
+//     A consumer that parses the channel column sees a value word it did not
+//     have before.
+//
+//  2. `/thinking [on|off]` (b09505fc2) — the live reasoning display flips
+//     WITHOUT writing any configuration, which is what makes entry 1 necessary.
+//     A landed reasoning row now draws `pal.Reasoning` (dim, quiet) rather than
+//     the status hint's `pal.Thinking` (bold+italic+underline, deliberately
+//     loud) — 50998b31c — so the transcript's own shape changed on screen.
+//
+//  3. `/screen [N]` (0ae5da62f) — one turn's painted SGR bytes land in a file
+//     and the NEXT turn's message carries that file's PATH, never the bytes.
+//     It is the terminal carrier's answer to the web UI's screenshot, and it is
+//     how the two defects above were diagnosed.
+//
+//  4. The self-drive route (`chat_surface type`) and the per-period turn budget
+//     are rendered on this window (f7ed97ca6), and the console can own a task
+//     CHECKLIST again (3dfdd619a) — two shifts in what a chat turn is FOR, both
+//     visible to the operator rather than to a script.
+//
+//  5. `gopi chat` now resolves settings.json through `run_config_resolution`
+//     (6fd8b134d): before it, the file did not reach the chat process's
+//     environment at all, so a knob set there silently did not apply.
+//
+// WHY MINOR AND NOT MAJOR: no verb and no flag was REMOVED, every pre-existing
+// alias still runs, and `gopi version`'s own report shape is untouched. What
+// changed is what a chat surface OFFERS and what a report column can say —
+// additive and backwards compatible on the surfaces that matter.
 //
 // PREVIOUS — why v0.4.0 (MINOR bump, 2026-11-01): THREE user-visible
 // surfaces changed shape in the two weeks since v0.3.0, and each one is read by
@@ -140,7 +169,7 @@ const DefaultVersion = "v0.5.0"
 // FORMAT: RFC3339 in UTC, e.g. "2026-10-25T06:20:00Z". A test pins the shape
 // (versionMilestoneShape), because a malformed date is the one failure nobody
 // notices until a release page renders garbage.
-const MilestoneDate = "2026-11-01T19:10:00Z"
+const MilestoneDate = "2026-11-22T05:24:00+08:00"
 
 // Version is the version this binary reports. It is a VARIABLE, not a
 // constant, for exactly one reason: a release build may stamp an artifact

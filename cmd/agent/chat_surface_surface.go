@@ -483,7 +483,7 @@ func chatSurfaceSiblingSession(dumpPath string) (string, bool) {
 // transcript (chat_panel_notice.go carries the report and the fix). The fact now
 // rides the returned value: the caller puts it on the startup screen's side
 // panel, which is the one carrier already built for this run's facts.
-func installChatSurface(ag *agent.Agent, input *chatInput, dumper *uiclient.ScreenDumper, st termToolStyles) (func(), string) {
+func installChatSurface(ag *agent.Agent, input *chatInput, dumper *uiclient.ScreenDumper, st termToolStyles, noEventSlotWord string) (func(), string) {
 	if ag == nil {
 		return func() {}, ""
 	}
@@ -519,7 +519,14 @@ func installChatSurface(ag *agent.Agent, input *chatInput, dumper *uiclient.Scre
 	// resolution in runChat: this seam registers a slot during start-up, i.e.
 	// before any editor exists, so it cannot read a table off the input — and it
 	// must not resolve one of its own (a second capability decision).
-	chatSessionSlotRegister(s.sessionPath, st)
+	//
+	// noEventSlotWord is the operator's OFF SWITCH for that registration
+	// (`--no-notify` / `--no-events`, or "" for the default). It rides down from
+	// the parser through this seam because the ARM POINT is where the write
+	// happens: the decision has ONE reader, and it is the call that performs the
+	// effect (Rule 15 — a switch whose only consumer is a comment is a switch
+	// that does nothing).
+	chatSessionSlotRegisterUnless(s.sessionPath, st, noEventSlotWord)
 	if value := chatPublishSurfaceIdentity(s.sessionPath); value != "" {
 		return func() { ag.SetChatSurface(nil) }, value
 	}

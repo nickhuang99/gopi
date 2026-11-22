@@ -68,6 +68,31 @@ const (
 	// same thing (Rule 15).
 	taskDeliveryOwedUnreadableFmt = "unreadable in %s (%s)"
 
+	// THE VANISHED-TIP FACE (epic 01a1e58d). `ahead of every remote at <sha>`
+	// reads as an ACTION INSTRUCTION — go and push that commit — and it is
+	// executable only while <sha> resolves SOMEWHERE. When the tip no longer
+	// exists even in the row's OWN ground there is nothing to push and no
+	// recovery to perform, so the same label carries a DIFFERENT sentence: the
+	// cause by name, and the decision the row now needs (a fresh dispatch, or an
+	// explicit void). Slots: short sha, ground directory.
+	//
+	// Measured shape this faces: `git rev-parse HEAD` still answers (it reads the
+	// ref, not the object) while `git cat-file -e <sha>^{commit}` fails — the torn
+	// store a collected or interrupted clone leaves behind.
+	taskDeliveryOwedGoneFmt = "gone — the tip %s no longer resolves in %s: nothing can be pushed from it, " +
+		"so this row's owed work must be %s, or the row explicitly %s"
+
+	// The three words that sentence is built from, named so the render, the
+	// sibling face and the regression arms cannot drift apart (Rule 1/14).
+	taskDeliveryOwedGoneWord       = "gone"
+	taskDeliveryOwedRedispatchWord = "re-dispatched"
+	taskDeliveryOwedVoidWord       = "voided"
+
+	// taskDeliveryOwedCommitishSuffix peels a sha to the COMMIT it names, so a
+	// tag or a tree of the same id cannot stand in for the object a push would
+	// carry.
+	taskDeliveryOwedCommitishSuffix = "^{commit}"
+
 	// taskDeliveryOwedShortShaLen is how much of the sha the LIST row prints —
 	// the row is one line and its tail must not push the summary off screen.
 	// `task show` prints the full sha, which is what an operator pastes.
@@ -97,6 +122,61 @@ const (
 	TaskDeliveryOwedRescueLabel  = "delivery.rescue:"
 	TaskDeliveryOwedPeerLabel    = "delivery.peer:"
 )
+
+// taskDeliveryOwedShortSha is how much of a sha a render prints. The LIST row is
+// one line and its tail must not push the summary off screen; `task show` prints
+// the full sha, which is what an operator pastes.
+func taskDeliveryOwedShortSha(sha string) string {
+	if len(sha) > taskDeliveryOwedShortShaLen {
+		return sha[:taskDeliveryOwedShortShaLen]
+	}
+	return sha
+}
+
+// taskDeliveryOwedGoneBody is the ONE sentence both faces print for a tip whose
+// object is no longer in the ground's store.
+func taskDeliveryOwedGoneBody(tip, dir string) string {
+	return fmt.Sprintf(taskDeliveryOwedGoneFmt, taskDeliveryOwedShortSha(tip), dir,
+		taskDeliveryOwedRedispatchWord, taskDeliveryOwedVoidWord)
+}
+
+// taskDeliveryOwedTipGone answers the question the counted tail silently assumed:
+// does the commit the row would push STILL EXIST in the ground's own store?
+//
+// `git rev-parse HEAD` is not an answer to it — it reads the REF, so it happily
+// prints a sha whose object is gone (measured: the torn state this file faces).
+// Only `git cat-file -e <sha>^{commit}` asks the object store itself, which is
+// why this probe uses that and nothing else.
+//
+// Three outcomes, and the third is not "gone":
+//
+//	tip != "", gone=true   — the store is TORN: the ref names a commit that is not there
+//	tip != "", gone=false  — the tip resolves; the counted reading can speak for it
+//	tip == "", gone=false  — no HEAD to name at all (an empty or headless ground),
+//	                         which is the ordinary collected shape and NOT a loss
+//
+// It never reports "gone" for a directory it could not read: an unreadable
+// ground is the existing unreadable axis's business (Rule 15 — "I could not
+// measure" and "the object is gone" are different findings with different
+// repairs, and one sentence must not stand for both).
+func taskDeliveryOwedTipGone(dir string) (tip string, gone bool) {
+	if strings.TrimSpace(dir) == "" || liveDir(dir) == "" {
+		return "", false
+	}
+	out, err := gitProbeOutput(dir, unpublishedRevParseVerb, unpublishedHeadArg)
+	if err != nil {
+		return "", false
+	}
+	tip = strings.TrimSpace(out)
+	if tip == "" {
+		return "", false
+	}
+	if _, err := gitProbeOutput(dir, gitCatFileVerb, archiveLandExistsFlag,
+		tip+taskDeliveryOwedCommitishSuffix); err != nil {
+		return tip, true
+	}
+	return tip, false
+}
 
 // taskDeliveryOwedProbe is THE ONE predicate behind every face in this file: how
 // many commits does dir's HEAD carry that no refs/remotes/ ref reaches, and what
@@ -214,6 +294,16 @@ func taskDeliveryOwedListSuffix(t *Task) string {
 		return ""
 	}
 	branch := TaskDeliverableBranch(t.Deliverable)
+	// THE VANISHED-TIP FACE runs BEFORE the counted probe, because the counted
+	// probe's own precondition (`rev-list --count HEAD --not --remotes`) FAILS on
+	// this shape and would otherwise fall through to the generic unreadable
+	// sentence — which names no cause and asks for no decision. The row owes
+	// work that cannot be pushed from anywhere: that is a fact about the store,
+	// not a measurement this host failed to take, so it gets its own sentence.
+	if tip, gone := taskDeliveryOwedTipGone(dir); gone {
+		return taskDeliveryOwedOpen + TaskDeliveryOwedSuffixLabel + " " +
+			taskDeliveryOwedGoneBody(tip, dir) + taskDeliveryOwedClose
+	}
 	ahead, head, ok, why := taskDeliveryOwedProbe(dir)
 	if !ok {
 		// A ground that is GONE is the ordinary state of a terminal row whose
@@ -231,10 +321,7 @@ func taskDeliveryOwedListSuffix(t *Task) string {
 	if ahead <= 0 {
 		return ""
 	}
-	short := head
-	if len(short) > taskDeliveryOwedShortShaLen {
-		short = short[:taskDeliveryOwedShortShaLen]
-	}
+	short := taskDeliveryOwedShortSha(head)
 	body := fmt.Sprintf(taskDeliveryOwedAheadBodyFmt, ahead, short)
 	if branch != "" {
 		body += fmt.Sprintf(taskDeliveryOwedBranchFmt, branch)
@@ -259,6 +346,13 @@ func taskShowDeliveryOwedReading(t *Task) string {
 	dir := DeliverableWorktreePath(t.Deliverable)
 	if strings.TrimSpace(dir) == "" {
 		return ""
+	}
+	// THE SAME VANISHED-TIP FACE as the list marker, on the same label: a tip
+	// whose object is gone is stated with its cause and the decision the row now
+	// needs, never as a count a reader would try to push. The two faces share ONE
+	// sentence (taskDeliveryOwedGoneBody), so they cannot disagree.
+	if tip, gone := taskDeliveryOwedTipGone(dir); gone {
+		return padTaskShowLabel(TaskShowDeliveryOwedLabel) + taskDeliveryOwedGoneBody(tip, dir) + "\n"
 	}
 	ahead, head, ok, why := taskDeliveryOwedProbe(dir)
 	if ok && ahead <= 0 {
@@ -369,7 +463,17 @@ func TaskDeliveryOwedRowIDs() (owed []string, unreadable []string, err error) {
 			continue
 		}
 		ahead, _, ok, why := taskDeliveryOwedProbe(dir)
+		// THE VANISHED-TIP ROW IS NOT A RE-DRIVE CANDIDATE, and it must not be
+		// reported as one: the leg's whole action is "push this ground's
+		// commits to the peer", which needs the commit to exist. A row whose tip
+		// object is gone is therefore skipped BY CAUSE — the same sentence the
+		// two render faces print — instead of falling through to the counted
+		// probe's generic "did not answer", which would hide a loss behind a
+		// measurement failure (Rule 15).
+		tip, gone := taskDeliveryOwedTipGone(dir)
 		switch {
+		case gone:
+			unreadable = append(unreadable, id+" ("+taskDeliveryOwedGoneBody(tip, dir)+")")
 		case !ok:
 			if liveDir(dir) != "" {
 				unreadable = append(unreadable, id+" ("+why+")")

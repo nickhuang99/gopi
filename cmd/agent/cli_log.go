@@ -283,8 +283,8 @@ type logOptions struct {
 	// reader really asks — "show me that command's complete output again" —
 	// where the whole block IS the answer.
 	grepFull bool
-	all      bool
-	summary  bool
+	all     bool
+	summary bool
 	// lastN > 0 means --last [N] was given (1 when no explicit N).
 	lastN int
 	// filterNames are the tool names collected from --filter (repeatable).

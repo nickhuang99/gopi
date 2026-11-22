@@ -678,16 +678,20 @@ func (a *Agent) warnExitingWithProgressing(tasks []TaskItem) {
 // context; tool_result and system-injected user messages are skipped.
 func lastSubstantiveText(a *Agent) string {
 	if a.Ctx != nil {
-		// ONE BACKWARD WALK OVER BOTH SHAPES, not two walks. Since the fold
-		// (turnfold.go) a completed turn's own last word is no longer an
-		// assistant message — it is the conclusion line of the note that
-		// replaced it — so a run whose newest turn is folded has TWO kinds of
-		// candidate in the array that mean the same thing. Walking newest-first
-		// and taking whichever shape appears first keeps "the most recent
-		// non-trivial text" true; scanning for assistant text first and falling
-		// back to the notes only afterwards would answer with the OLDEST
-		// unfolded turn's word (measured: a 4-turn fixture answered "understood"
-		// — turn 1's — while turn 3's conclusion was the real last word).
+		// ONE BACKWARD WALK OVER BOTH SHAPES, not two walks. A `[IMPORTANT]`
+		// note and an assistant message are two shapes that can both carry "the
+		// most recent non-trivial text", and the history holds both (the
+		// self-record writes a note per turn; the assistant text stays beside
+		// it). Walking newest-first and taking whichever shape appears first
+		// keeps that answer true; scanning for assistant text first and falling
+		// back to the notes only afterwards would answer with the OLDEST turn's
+		// word (measured: a 4-turn fixture answered "understood" — turn 1's —
+		// while turn 3's conclusion was the real last word).
+		//
+		// (A third shape existed once: a completed turn's raw traffic was
+		// REPLACED by its note, so a turn's last word could be a note line.
+		// Nothing is substituted now — the history is append-only below the
+		// compression threshold and the walk itself is unchanged.)
 		for k := len(a.Ctx.Messages) - 1; k >= 0; k-- {
 			m := a.Ctx.Messages[k]
 			if m.Role == roleAssistantMessage {
@@ -695,9 +699,6 @@ func lastSubstantiveText(a *Agent) string {
 					return t
 				}
 				continue
-			}
-			if t := turnFoldConclusionClaim(m); t != "" {
-				return t
 			}
 		}
 	}
@@ -1237,9 +1238,6 @@ func chatSystemPromptServed(a *Agent) string {
 	return assembleChatSystemPrompt(a)
 }
 
-// claudeToolDefs are the tools in Claude Messages API format
-// (input_schema instead of parameters). The Claude interface is the only
-// API path.
 // bashJobTestEntryPointNote is the ONE sentence that carries this repo's
 // DECLARED test entry point into the two tool descriptions that actually launch
 // a test suite (Rule 14: a value spoken by several parties gets one spelling;
@@ -1274,7 +1272,7 @@ var bashJobTestEntryPointNote = " Run the repo's declared test entry point — "
 // mechanism, so the description and the gate can never disagree about which
 // tools carry it (the constant above is their single source).
 func bashJobToolDef(name string) (deepseek.ClaudeToolDef, bool) {
-	for _, td := range claudeToolDefs {
+	for _, td := range claudeToolDefs() {
 		if td.Name == name {
 			td.Description += bashJobTestEntryPointNote
 			return td, true
@@ -1283,587 +1281,602 @@ func bashJobToolDef(name string) (deepseek.ClaudeToolDef, bool) {
 	return deepseek.ClaudeToolDef{}, false
 }
 
-var claudeToolDefs = []deepseek.ClaudeToolDef{
-	{
-		Name:        toolnames.ToolRead,
-		Description: "Read a file's contents as text. Use read — not shell cat/head/sed — to see any file before analyzing or editing it. Every page is capped at ~50KB; a truncated page ends with a footer naming the total line count and the next offset. Large file? Page with offset/limit — a full read burns tokens. NOTE offset semantics: offset=N skips the first N lines (continue after line K with offset=K) — NOT the 'start at line N' convention. If the path is a symlink, the read result notes the link target.",
-		InputSchema: map[string]interface{}{
-			"type": "object",
-			"properties": map[string]interface{}{
-				"path": map[string]interface{}{
-					"type":        "string",
-					"description": "Path to the file to read. Supports ~/ expansion.",
-				},
-				"offset": map[string]interface{}{
-					"type":        "integer",
-					"description": "Number of lines to skip from the beginning (1-indexed: offset=N skips the first N lines — continue after line K with offset=K). Default 0 reads from the start.",
-					"default":     0,
-				},
-				"limit": map[string]interface{}{
-					"type":        "integer",
-					"description": "Maximum number of lines to read (page still capped at ~50KB). Default 0 reads the entire file.",
-					"default":     0,
-				},
-			},
-			"required": []string{"path"},
-		},
-	},
-	{
-		Name:        toolnames.ToolGitBlame,
-		Description: "Call git_blame for ANY git line-history question — who wrote line N, which commit introduced a bug, WHY the code is this way, and whether your change should DEFER to it. ALWAYS use git_blame over `bash git blame`: it returns structured JSON (no raw-git token waste), guards wrong line numbers / oversized windows, and attributes each line to the gopi TASK that produced it. NEVER run `git blame` via bash when git_blame answers the question. Returns {file_path, task_enrichment (none|partial|full), task_enrichment_note, ledger_access, line_items:[{line_no, commit_hash, author, timestamp, commit_message, code_line, task_id, task_summary, task_status, task_host}]}. In a gopi repo the author field is USELESS (every run commits as gopi <gopi@gopi>) — the information is task_summary/task_status: MEASURED example, git_blame(internal/tools/clone_ground_branch_create_guard_test.go, 1, 6) returns commit 11d5513d with task_id 01a195bb-4287-7ad5-a764-b6df563895dc, task_status completed and task_summary 「run 01a1957a 在自己的 clone 之外还进入了共享主目录 /home/user/work/gopi 并建 task/<id> 分支写入半成品，导致所有人 pull 被挡、make build 报 undefined: scratchGCConsentGiven（/usr/local/bin/gopi 停在旧版）」 — i.e. that work exists to close a real escape path, so a change that re-opens it should DEFER, while a change that serves the same intent may proceed. The tool only REPORTS; the judgement is yours. task_enrichment=none with a note saying no task trailer means the repo was never touched by a gopi run — real information, not a tool failure; it also cannot happen at all outside a gopi repo. file_path is repo-root-relative (e.g. internal/memory/store.go). Omit start_line/end_line for a small default window (50 lines); ranges wider than 200 lines are refused. Only works on files tracked by git. Optional tool: no git in the environment → structured 'unavailable' error, everything else keeps working.",
-		InputSchema: map[string]interface{}{
-			"type": "object",
-			"properties": map[string]interface{}{
-				"file_path": map[string]interface{}{
-					"type":        "string",
-					"description": "Repo-root-relative path, e.g. internal/memory/store.go",
-				},
-				"start_line": map[string]interface{}{
-					"type":        "integer",
-					"description": "First line number (1-based). Omitted = a small default window starting at line 1.",
-				},
-				"end_line": map[string]interface{}{
-					"type":        "integer",
-					"description": "Last line number; must be >= start_line. Clipped to the file's line count.",
-				},
-			},
-			"required": []string{"file_path"},
-		},
-	},
-	{
-		Name:        toolnames.ToolWrite,
-		Description: "Create or fully REPLACE a file's content — existing content is overwritten entirely (no merge). Use for new files and whole-file rewrites. For a targeted change use edit: it sends only the changed lines, so it is cheaper and leaves the rest untouched. Paths support ~/ expansion. If the file exists, its old content is gone after this call. Paths that are symlinks are refused by default to protect the link; pass follow_symlink=true to write through to the target.",
-		InputSchema: map[string]interface{}{
-			"type": "object",
-			"properties": map[string]interface{}{
-				"path": map[string]interface{}{
-					"type":        "string",
-					"description": "Path to the file to write.",
-				},
-				"content": map[string]interface{}{
-					"type":        "string",
-					"description": "Content to write to the file.",
-				},
-				"follow_symlink": map[string]interface{}{
-					"type":        "boolean",
-					"description": "When path is a symlink: false (default) refuses the write (renaming onto a symlink replaces the link node and leaves the target unchanged); true resolves the link and writes the target file in place, keeping the symlink intact.",
-					"default":     false,
-				},
-			},
-			"required": []string{"path", "content"},
-		},
-	},
-	{
-		Name:        toolnames.ToolEdit,
-		Description: "Surgically replace one unique string in a file: finds oldStr and swaps it for newStr. Use edit — NOT write — for targeted changes: only the affected lines are sent (cheaper) and everything else stays intact (safer). oldStr must be unique unless replace_all=true; a non-unique or missing match is refused with the mismatch shown — re-read the file and copy the exact text. Paths that are symlinks are refused by default to protect the link; pass follow_symlink=true to edit through to the target.",
-		InputSchema: map[string]interface{}{
-			"type": "object",
-			"properties": map[string]interface{}{
-				"path": map[string]interface{}{
-					"type":        "string",
-					"description": "Path to the file to edit.",
-				},
-				"oldStr": map[string]interface{}{
-					"type":        "string",
-					"description": "Exact string to find and replace. Must be unique in the file unless replace_all=true.",
-				},
-				"newStr": map[string]interface{}{
-					"type":        "string",
-					"description": "Replacement string.",
-				},
-				"replace_all": map[string]interface{}{
-					"type":        "boolean",
-					"description": "Replace ALL occurrences of oldStr. Default false: oldStr must be unique and a non-unique match is refused.",
-					"default":     false,
-				},
-				"follow_symlink": map[string]interface{}{
-					"type":        "boolean",
-					"description": "When path is a symlink: false (default) refuses the edit (renaming onto a symlink replaces the link node and leaves the target unchanged); true resolves the link and edits the target file in place, keeping the symlink intact.",
-					"default":     false,
-				},
-			},
-			"required": []string{"path", "oldStr", "newStr"},
-		},
-	},
-	{
-		Name: toolnames.ToolBash,
-		Description: "Execute a shell command via bash -c for build, test, run, git and file operations — NOT for searching code (definitions → code_search, full-text → keyword_search) and NOT for reading files (use read, not cat/head/sed). NEVER invoke grep/rg for a symbol definition — ALWAYS use code_search (one structured call vs a grep round-trip). Reading a file (cat/head/sed -n FILE) when read exists = a logged violation. Returns 'exit=N\\n' + stdout, stderr prefixed '[stderr] '. 120s timeout by default; set timeout_sec only for slightly-long commands. Command may outlive a call? Use job(action=start) — bash kills its WHOLE process group on timeout. Dangerous cmds (rm -rf etc.) blocked unless GOPI_ALLOW_DANGEROUS=1." +
-			bashJobTestEntryPointNote,
-		InputSchema: map[string]interface{}{
-			"type": "object",
-			"properties": map[string]interface{}{
-				"command": map[string]interface{}{
-					"type":        "string",
-					"description": "Shell command to execute.",
-				},
-				// timeout_sec default (120) mirrors bashDefaultTimeoutSec in
-				// internal/tools/bash.go — informational for the LLM; the real
-				// default is enforced in code (BashWithTimeout).
-				"timeout_sec": map[string]interface{}{
-					"type":        "integer",
-					"description": "Max seconds to wait. Default 120. 0 = unlimited absolute time (still subject to the 120s no-output safety net).",
-					"default":     120,
-				},
-				// workdir mirrors bash.go's BashInDir: validated (must be an
-				// existing directory) before the command starts.
-				"workdir": map[string]interface{}{
-					"type":        "string",
-					"description": "Working directory for the command (must exist). Omitted = current directory.",
-				},
-			},
-			"required": []string{"command"},
-		},
-	},
-	{
-		Name:        toolnames.ToolCodeSearch,
-		Description: "Locate where a symbol (function, struct, interface, var, const, type, class, macro) is DEFINED. ALWAYS use this for a definition lookup — NEVER run `bash grep <symbol>` for it. ONE call returns every definition as structured hits (file:line, kind, signature) from a pre-indexed ctags database (Go, Python, shell, C/C++ incl. .h headers, Rust, JavaScript, TypeScript), auto-falling back to ripgrep. When reviewing or reading unfamiliar code, resolve EVERY unknown identifier here FIRST — before grep, before guessing from includes. Faster and cleaner than bash grep: one structured call vs a 2-call grep round-trip of noisy lines you must re-read+filter. Takes a symbol NAME (an identifier like 'NewClient') — never a sentence, description or tool name. 'No symbol found' means the identifier exists nowhere in the codebase: do not grep for it; use keyword_search for related text or files outside the indexed languages.",
-		InputSchema: map[string]interface{}{
-			"type": "object",
-			"properties": map[string]interface{}{
-				"symbol": map[string]interface{}{
-					"type":        "string",
-					"description": "Symbol name to look up (e.g. 'NewClient', 'Thing').",
-				},
-			},
-			"required": []string{"symbol"},
-		},
-	},
-	{
-		Name: toolnames.ToolKeywordSearch,
-		Description: "Full-text search with TWO SCOPES, and the SCOPE decides what you are searching: (1) scope=\"tree\" (the default) = the project tree on disk; (2) scope=\"session\" = THIS CONVERSATION'S OWN on-disk record — the full-length log of every row this run wrote, including the rounds that COMPACTION REMOVED. " +
-			"CHOOSE scope=\"session\" THE MOMENT THE THING YOU WANT CAME OUT OF THIS CONVERSATION RATHER THAN OUT OF THE REPO — the recall triggers are literal: the user asks 「你还记得…」「我们之前讨论过…」「上次那个…」「之前不是说好的…」 / \"do you remember …\", \"we discussed this before\"; or YOU need a detail from earlier in this run that is no longer in your context — a command's complete output, an exact error string, a task id, a file path you saw 500 rounds ago, the number a tool printed before a compaction. Searching the TREE for a sentence that only ever existed in the conversation is the wrong scope and returns nothing: the conversation is NOT in the repo. " +
-			"Session hits come back STRUCTURED — round number, row type, timestamp, a bounded snippet and the `gopi session log <id> <round>` command that opens the whole round — never a raw JSON line. Do NOT search [IMPORTANT] notes with it: those are already in your context. `raw.log` (the same history re-sent, ~58x the bytes) is EXCLUDED unless include_raw_log=true, and its hits are labelled with their source. " +
-			"scope=\"tree\" is the ordinary meaning: code, docs, comments, config, scripts; Query may be a plain string or a regex; hits are (file:line, snippet). Use it for USAGES/references of an identifier (where is X called?), error messages, comments, docs, config — and as the follow-up when code_search reports a symbol is not found. For locating a symbol DEFINITION use code_search, not grep. Too-broad results? Narrow the query — noisy output wastes a round.",
-		InputSchema: map[string]interface{}{
-			"type": "object",
-			"properties": map[string]interface{}{
-				"query": map[string]interface{}{
-					"type":        "string",
-					"description": "Text or regex to search for.",
-				},
-				"scope": map[string]interface{}{
-					"type":        "string",
-					"description": "Where to search — THIS ARGUMENT DECIDES WHAT YOU GET, so read it as a question: did the thing you want come from THIS CONVERSATION or from the REPO? \"session\" = this conversation's own on-disk record (session.jsonl), rendered as round/type/timestamp/snippet/locator hits — use it for 「你还记得…」「之前不是说好的…」, \"we discussed this before\", and for any detail from earlier in this run that compaction removed (a command's full output, an exact error string, a task id, a path). \"tree\" (or omit / \"\") = the project tree on disk — the ordinary meaning, and the WRONG scope for a sentence that only ever existed in the conversation, because the conversation is not in the repo.",
-					"enum":        []string{"tree", tools.SessionSearchScopeSession},
-				},
-				"session": map[string]interface{}{
-					"type":        "string",
-					"description": "scope=\"session\" only: which session. Empty = the CURRENT session (the normal case). A session id or an absolute path searches another/older session.",
-				},
-				"limit": map[string]interface{}{
-					"type":        "integer",
-					"description": "scope=\"session\" only: how many hits to return. Default 5, max 50; anything dropped is reported, never silent.",
-				},
-				"include_raw_log": map[string]interface{}{
-					"type":        "boolean",
-					"description": "scope=\"session\" only: also search the raw HTTP log (the same history re-sent on every turn, ~58x the bytes). Off by default; hits from it are labelled source=raw.log and carry a line number instead of a round.",
-				},
-			},
-			"required": []string{"query"},
-		},
-	},
-	{
-		Name:        toolnames.ToolWebSearch,
-		Description: "Search the web or ask an AI; returns unified JSON ({status,count,results}). Methods: bing (CN direct, fastest), google (overseas/EN), arxiv (papers), deepseek (AI answer), github (repos/issues; code needs a token), wiki (Wikipedia). No method arg = bing+google+arxiv merged (dedup + relevance sort + source attribution). count caps results (default 5, max 20); ignored for the AI-ask methods. Snippets only — follow up with web_fetch for the full page. Use web_search — NOT bash curl of a search engine page or shelling out to the plugin scripts.",
-		InputSchema: map[string]interface{}{
-			"type": "object",
-			"properties": map[string]interface{}{
-				"query": map[string]interface{}{
-					"type":        "string",
-					"description": "Search phrase or question.",
-				},
-				"method": map[string]interface{}{
-					"type":        "string",
-					"description": "bing|google|arxiv|deepseek|github|wiki. Empty = merged multi-method default.",
-					"enum":        []string{"bing", "google", "arxiv", "deepseek", "github", "wiki"},
-				},
-				"count": map[string]interface{}{
-					"type":        "integer",
-					"description": "Max results to return (default 5, max 20).",
-					"default":     5,
-				},
-			},
-			"required": []string{"query"},
-		},
-	},
-	{
-		Name:        toolnames.ToolWebFetch,
-		Description: "Fetch a URL and return its cleaned full text as JSON ({status,url,chars,truncated,content}). Search ≠ Read: web_search returns snippets — use web_fetch to actually read a page (deep research, verifying a source, reading a README/abstract in full). Takes ONE http(s) URL (e.g. a web_search result URL); boilerplate HTML (nav/header/footer/scripts) is stripped and the text is tail-truncated to max_chars (default 8000) to keep tokens low. Use web_fetch — NOT bash curl of a webpage. Workflow: web_search to discover URLs → web_fetch to read the promising ones.",
-		InputSchema: map[string]interface{}{
-			"type": "object",
-			"properties": map[string]interface{}{
-				"url": map[string]interface{}{
-					"type":        "string",
-					"description": "http(s) URL to fetch (e.g. a web_search result URL, GitHub README, arxiv abstract page).",
-				},
-				"max_chars": map[string]interface{}{
-					"type":        "integer",
-					"description": "Max chars of cleaned text to return (default 8000).",
-					"default":     8000,
-				},
-			},
-			"required": []string{"url"},
-		},
-	},
-	{
-		Name: toolnames.ToolMemory,
-		Description: "One tool for gopi's knowledge base (hippocampus) — the memory family merged memory search + store + update + feedback (the former memory_search/memory_store/memory_update/memory_feedback tools) into ONE tool with an action parameter. Pick exactly ONE action (the only required arg):\n" +
-			"- action=" + toolnames.ToolMemoryActionSearch + " — " + memorySearchBullet + "\n" +
-			"- action=" + toolnames.ToolMemoryActionStore + " — may run serial only. Save a DISTILLED lesson into the knowledge base so future tasks can find it. USE after a task with a reusable lesson: a success path that worked, a pitfall, a pattern worth repeating. USE MID-TASK too — store is EVENT-DRIVEN, not end-of-task-driven: " + eventDrivenStoreTriggers + ". Store only DISTILLED experience — repeatable pattern / reproducible loop / measurable value. NEVER store raw conversation transcripts or step-by-step logs (流水账). Structure: topic (the subject), question (what a future agent might search for), answer (how to succeed / what NOT to do). YOUR JOB = leave retrieval breadcrumbs (检索面包屑): 2-3 mixed 中英 keywords per 5W1H dimension (WHAT 主题 / WHY 问题 / WHEN 场景 / WHERE 环境 / WHO 实体 / HOW 方法), with synonyms / translations / variant phrasings / Unicode normalization (agent‑loop → agent-loop) — these ARE the breadcrumbs action=search will match; think one step further when storing. Returns the stored record id; deduped means it merged into an existing entry.\n" +
-			"- action=" + toolnames.ToolMemoryActionFeedback + " — may run serial only. Vote on a search hit RIGHT NOW — 投票=质量裁判, judge each result the moment it arrives (搜索结果的当下就投), never defer to task end. Record an explicit useful/useless vote on a search hit so the knowledge base evolves (LLM 是唯一用户 = 唯一质量裁判 — you are already judging each hit while reading it; this tool just lands that judgment). useful = you actually used it. useless ONLY when the hit CONTRADICTS your operation results / is provably stale or wrong (bug-report culture: a merely-meh hit still gets useful or no vote). Then memory(action=update) to correct the wrong memory — feedback says WHAT is wrong, update does the FIX (右转: call memory(action=update) with id + the corrected field RIGHT NOW, not later). One vote per session per hit moves the hit's stored confidence 0.05 (a useless vote -0.10) and re-ranks search; NO tier is ever auto-demoted — the machine only SUGGESTS (3 decayed useless votes and zero useful ⇒ --suggest-cold lists a candidate), and setting tier=cold is yours via action=update. When rating, id=#N is REQUIRED (the hit line's record number — not a call id; the engine reads this one alone). A search pair survives slimming iff one of its records was voted useful by #N; every other pair is dropped.\n" +
-			"- action=" + toolnames.ToolMemoryActionUpdate + " — may run serial only. Directly correct or re-tier an existing memory record (hard edit — the soft signal is feedback). USE at the CONTRADICTION moment: a search hit contradicted by your VERIFIED evidence (operation output), or a record you know is stale (API / behavior changed) — fix it NOW, don't let the wrong record sit (误导=给未来的自己挖坑). Prefer action=feedback when unsure — feedback is reversible and cheap; update is for certainty. A corrected record stays hot/warm; a wrong record left warm poisons every later task. Do NOT use update to delete history — the knowledge base keeps versions for audit. Input: id (the #N) + the CORRECTED field(s): rewrite the wrong field's value (topic/question/answer/tier/keywords/confidence), not a patch-note stuffed into keywords.",
-		InputSchema: map[string]interface{}{
-			"type": "object",
-			"properties": map[string]interface{}{
-				"action": map[string]interface{}{
-					"type": "string",
-					"enum": []string{toolnames.ToolMemoryActionSearch, toolnames.ToolMemoryActionStore, toolnames.ToolMemoryActionUpdate, toolnames.ToolMemoryActionFeedback},
-				},
-				"query": map[string]interface{}{
-					"type":        "string",
-					"description": "action=search only. What you want to know: a task, problem or situation you suspect happened before. Searched against BOTH the distilled knowledge base and the round-note index of past runs (see the [distilled] / [session] sections in the result).",
-				},
-				"limit": map[string]interface{}{
-					"type":        "integer",
-					"description": "action=search only. Max records to return (default 5).",
-					"default":     5,
-				},
-				"intent": map[string]interface{}{
-					"type":        "string",
-					"description": "action=search only. Optional routing hint for the backend (e.g. 'debug', 'build', 'search').",
-				},
-				"topic": map[string]interface{}{
-					"type":        "string",
-					"description": "action=store/update: subject of the lesson / new subject.",
-				},
-				"question": map[string]interface{}{
-					"type":        "string",
-					"description": "action=store/update: a question a future agent might ask when it needs this lesson / new question.",
-				},
-				"answer": map[string]interface{}{
-					"type":        "string",
-					"description": "action=store/update: the distilled experience (how to succeed / what NOT to do) / new distilled body.",
-				},
-				"source": map[string]interface{}{
-					"type":        "string",
-					"description": "action=store/update: optional provenance (repo, file, task) / new provenance.",
-				},
-				"keywords": map[string]interface{}{
-					"type":        "array",
-					"items":       map[string]interface{}{"type": "string"},
-					"description": "5W1H 检索面包屑：中英混合关键词（主题/问题/场景/环境/实体/方法六维度），含同义/翻译/变体问法/Unicode 归一化. action=store: set them; action=update: replace (rewrites search_kw AND the answer's keywords tail).",
-				},
-				"type": map[string]interface{}{
-					"type":        "string",
-					"enum":        []string{"declarative", "procedural"},
-					"description": "action=store only. Row type: declarative (default) = distilled lesson QA; procedural = reusable workflow stored in the procedural table. With type=procedural, pass name/trigger/steps (and optionally preconditions/tools_used) — topic/question/answer are ignored except as fallbacks (topic→name, question→trigger, answer→single step).",
-				},
-				"name": map[string]interface{}{
-					"type":        "string",
-					"description": "action=store, type=procedural only: workflow name (unique identity, e.g. '读错误日志→定位→修复→验证').",
-				},
-				"trigger": map[string]interface{}{
-					"type":        "string",
-					"description": "action=store, type=procedural only: 何时启用 — the condition/situation that should activate this workflow.",
-				},
-				"preconditions": map[string]interface{}{
-					"type":        "string",
-					"description": "action=store, type=procedural only: preconditions that must hold before running the workflow.",
-				},
-				"steps": map[string]interface{}{
-					"type":        "array",
-					"items":       map[string]interface{}{"type": "string"},
-					"description": "action=store, type=procedural only: ordered step list (each a command or instruction). Structured JSON is persisted; prefer 3-8 actionable steps.",
-				},
-				"tools_used": map[string]interface{}{
-					"type":        "array",
-					"items":       map[string]interface{}{"type": "string"},
-					"description": "action=store, type=procedural only: tools the workflow exercises (e.g. bash, code_search).",
-				},
-				"id": map[string]interface{}{
-					"type":        "integer",
-					"description": "action=feedback: REQUIRED — the record number #N printed on the hit line of a search result you retrieved. action=update: REQUIRED — same id. This is the only id the engine reads (never a call id / tool_use id).",
-				},
-				"rating": map[string]interface{}{
-					"type":        "string",
-					"enum":        []string{"useful", "useless", "unused"},
-					"description": "action=feedback: REQUIRED. useful = adopted/helped; useless = contradicted/failed/misleading; unused = seen but not used (neutral).",
-				},
-				"reason": map[string]interface{}{
-					"type":        "string",
-					"description": "action=feedback only. Optional short reason (recommended for useless votes).",
-				},
-				// NOTE: the retired call-id parameter is deliberately absent here.
-				// It named the originating search pair for a vote, but the feedback
-				// path never read it and that mechanism was retired with WHITELIST
-				// slimming — see the sync gate in memory_feedback_contract_test.go.
-				"tier": map[string]interface{}{
-					"type":        "string",
-					"enum":        []string{"hot", "warm", "cold"},
-					"description": "action=update only. cold = demote (no longer 1st-tier to return). Prefer demotion over content edits for low-quality records.",
-				},
-				"confidence": map[string]interface{}{
-					"type":        "number",
-					"description": "action=update only. New confidence in [0,1].",
-				},
-			},
-			"required": []string{"action"},
-		},
-	},
-	{
-		Name:        toolnames.ToolContextTrim,
-		Description: "TRIM DEAD-ENDS NOW — 干净仪表盘: the moment a tool result is a dead end, trim it immediately. A dead end is an errored/failed/no-value output — bash command on a missing file or wrong args, a read of a nonexistent path, a tool result with no useful signal. Every untrimmed dead end is re-sent to the model every round — trimming is how you stop paying for it. ALWAYS trim before moving on; NEVER leave an untrimmed dead-end result in context. Call with the dead end call's id; optionally pass replace_with to leave a one-line conclusion (e.g. 'X failed because Y — don't retry'): with replace_with the pair is KEPT, the bulky result swapped for your conclusion; without it the pair is removed entirely. The id is the call_… string stamped in that tool result's header ('tool_use id: …') — copy it verbatim, NOT the record number #N. Each id is trimmed at most once; unknown ids no-op silently.",
-		InputSchema: map[string]interface{}{
-			"type": "object",
-			"properties": map[string]interface{}{
-				"call_id": map[string]interface{}{
-					"type":        "string",
-					"description": "The tool_use id of the dead-end call to trim (the call_… string stamped in that tool result's header — copy it verbatim).",
-				},
-				"replace_with": map[string]interface{}{
-					"type":        "string",
-					"description": "Optional one-line conclusion that REPLACES the original tool result (keeps the pair, drops the bulky output — 'X failed because Y — don't retry'). Omit to delete the pair entirely.",
-				},
-			},
-			"required": []string{"call_id"},
-		},
-	},
-	{
-		Name: toolnames.ToolTaskSubmit,
-		Description: "Submit a work item to the persistent task queue (status=pending) instead of doing it in this session. USE WHEN: 1) you discover a bug you cannot fix without derailing the current task — submit it with tags=['bug'] and payload=reproduction steps + log paths, then CONTINUE your current work (the queue/another instance picks it up); " +
-			"2) the current task is too large — split it: submit the subtasks ONE AFTER ANOTHER, IN THE ORDER THEY MUST RUN. The harness links each submission to the one submitted just before it (a SERIAL CHAIN: item i's parent = item i-1), so the dispatcher releases them one at a time and the ORDER YOU SUBMIT IN IS THE DEPENDENCY — a model cannot express a dependency graph, so its order is the only signal there is, and the harness makes it real. Do not count on parallelism, and do not send several submissions expecting them to run at once. " +
-			taskSubmitIndependentToolClause() +
-			"Each subtask needs a self-contained payload briefing. " +
-			"3) work that only makes sense asynchronously/for others. " +
-			"Repo closure: work targeting ANOTHER repo (a foreign project) must carry that repo — the repo parameter stamps deliverable.repo and a runner picking the task up without one only gets a cross-project warning at claim time (verify-before-execute is on you). " +
-			"Every bug-tagged submit prints a running [bug-flow] tally (bug tasks total / verified / reopened) — the adoption loop's measurable heartbeat. " +
-			"ROUTE FIRST: trivially-doable work should just be done — task_submit is the 'separate work item' exit (bug report / well-scoped subtask), never a way to dodge work you can do. " +
-			"Anti-self-reference: this session never executes its own submissions (claims exclude the submitting session) — expect the task_id in the result and reference it via bash `gopi task show <task_id>`.",
-		InputSchema: map[string]interface{}{
-			"type": "object",
-			"properties": map[string]interface{}{
-				"summary": map[string]interface{}{
-					"type":        "string",
-					"description": "One-line ledger headline (what a human scanning `gopi task list` should read).",
-				},
-				"payload": map[string]interface{}{
-					"type":        "string",
-					"description": "FULL request text — the briefing the executing gopi will run with as its only input. Write it self-contained: context, goal, constraints, acceptance. Omit only when the summary says it all. A value beginning with '@' followed by an EXISTING file path (`@/abs/briefing.md`) is READ, exactly as `gopi task submit --payload @FILE` reads it — the engine expands the reference through the same reader, stores the file's CONTENT, and reports the byte count; a reference naming an unreadable file is REFUSED (never stored as the '@path' spelling). Escape a payload that genuinely starts with '@' as '@@'. An oversized payload (>16 KiB) is NOT truncated: it is preserved verbatim as a task attachment and the row keeps a one-line pointer to it, so keep the payload concise and ship bulk evidence (logs, diffs, file dumps) as attachments instead.",
-				},
-				"tags": map[string]interface{}{
-					"type":        "array",
-					"items":       map[string]interface{}{"type": "string"},
-					"description": "Optional classification tags; 'bug' is the reserved bug-flow tag (payload = repro steps + log paths).",
-				},
-				"parent_task_id": map[string]interface{}{
-					"type":        "string",
-					"description": taskSubmitParentParamDescription(),
-				},
-				"repo": map[string]interface{}{
-					"type":        "string",
-					"description": "Optional git repo path/URL the work happens in. DEFAULT: your current working directory — the normal case, do NOT invent a repo path. The path is verified (git rev-parse) BEFORE the task row is written: a non-git directory aborts the whole submit with an error. Verified repo lands in the task's deliverable block (deliverable.repo) so verify/merge run with zero memory.",
-				},
-				"priority": map[string]interface{}{
-					"type":        "integer",
-					"description": "Optional queue weight, lower runs first (M4.11). Omit to derive from tags: bug→1 (highest — LLM-reported bugs are bugs), docs/doc-only→8, else 5. An explicit value ALWAYS overrides the tags derivation.",
-				},
-				"attachments": map[string]interface{}{
-					"type":        "array",
-					"items":       map[string]interface{}{"type": "string"},
-					"description": "Optional ABSOLUTE paths of files to archive for the task (epic-task-reframe Phase 1): each is copied at submit time into the task's session-dir attachments area under its original path structure (/tmp/log.txt → .../attachments/tmp/log.txt — same-name files in different dirs never collide). The executing instance sees each replica's path as an [attachmentN:] entry in its EPIC briefing and reads it with the normal read/file tools. Files only — directories and missing paths abort the submit. Use for evidence the task needs (screenshots, logs, docs) that is too big to inline in the payload.",
-				},
-			},
-			"required": []string{"summary"},
-		},
-	},
-	{
-		Name: toolnames.ToolJob,
-		Description: "Manage a background shell job — the action parameter selects the operation (start | output | kill). action=start runs a command in the BACKGROUND, detached in its own session — immune to bash timeouts (bash kills its whole process group on timeout, which would take a shared background process down with it). Returns a job id + stdout/stderr file paths. Use for long-running commands (builds, tests, servers, scripts). Do NOT poll: continue other work — the harness injects a notice when the job finishes; collect the output once with action=output. action=output fetches a background job's status and output: status=running | exited code=N | killed, plus the captured output (stderr included). Call ONCE — never busy-poll or sleep-wait; work on other things while the job runs (you are notified on completion). Every fetch re-sends the full output: read once, don't re-fetch. action=kill kills a background job's WHOLE process group, child processes included — use when the job is no longer needed or must be stopped; prefer killing over leaving zombie jobs holding resources." +
-			bashJobTestEntryPointNote,
-		InputSchema: map[string]interface{}{
-			"type": "object",
-			"properties": map[string]interface{}{
-				"action": map[string]interface{}{
-					"type":        "string",
-					"enum":        []string{toolnames.ToolJobActionStart, toolnames.ToolJobActionOutput, toolnames.ToolJobActionKill},
-					"description": "Which job operation to run: start (run a command in the background), output (fetch a job's status/output), kill (terminate a job).",
-				},
-				"command": map[string]interface{}{
-					"type":        "string",
-					"description": "Shell command to run in the background (required for action=start).",
-				},
-				"job_id": map[string]interface{}{
-					"type":        "string",
-					"description": "Job id returned by action=start (required for action=output and action=kill).",
-				},
-			},
-			"required": []string{"action"},
-		},
-	},
-	{
-		Name: toolnames.ToolTask,
-		Description: "One tool for the harness-tracked task list and the in-session working area (task family merged todo + write_task_area). Pick exactly ONE action (the only required arg):\n" +
-			"- action=" + toolnames.ToolTaskView + " — READ-ONLY task-list view, parallel-safe. Show the current task-list state as tracked by the harness. You update tasks by emitting a [TASK_LIST_BEGIN]...[TASK_LIST_END] block in your response (full array each time, never a diff; an unclosed block auto-recovers with a warning). Shape: [{\"task_id\":\"1\",\"summary\":\"Read source\",\"status\":\"pending\"}]. Statuses: pending (not started) → progressing (exactly ONE at a time) → completed (verified: project's own checks green); a decomposed parent stays progressing until every child completes; never drop a task_id (obsolete → completed with summary \"(dropped: why)\"). Check before reporting progress, choosing the next step, and at status checkpoints.\n" +
-			"- action=" + toolnames.ToolTaskCommit + " — SESSION-internal, may run serial only. Commit the CURRENT subtask/item's stable conclusion into the session working area: task_id (which item), status=\"completed\" only, conclusion REQUIRED (compact final result/decision/key facts — what a later step must know), compressed_analysis OPTIONAL (only when a later item must reuse the reasoning). CALL ONCE PER ITEM at convergence — never batch, never free-text 'all done'. Afterwards the item's working region is COMMITTED (append-only, queryable; may be trimmed next round; conclusion carried forward as authoritative context). Does NOT touch the cross-session ledger (task_submit is separate).\n" +
-			"- action=" + toolnames.ToolTaskReframe + " — evaluate the epic AFTER investigating it (read the briefing + any [attachmentN:] files FIRST, never before) and return BOTH the reframe (epic_summary/constraints/deliverables/acceptance) and a verdict ∈ {" + toolnamesVerdictEnum() + "}. THE BUDGET IS PART OF THE CRITERION: " + sessionBudgetTimeDimension() + " The conditional payload is HARNESS-ENFORCED, so every exit carries NEW work: " + taskverdict.TooBig + " requires roadmap[{goal,acceptance}] (the harness auto-enqueues ONE child task per item and this run ends there — your deliverable is the diligence + the decomposition), " + taskverdict.Impossible + " requires reason. " + taskverdict.Impossible + " means PROVABLY unattainable in principle — merely hard, risky, or unknown is " + taskverdict.TooBig + " with the investigation as a roadmap item (there is NO research verdict: research is part of reframing). \"'Too big' without a concrete roadmap is REJECTED — that is what stops the queue bouncing the same summary. An honest " + taskverdict.Impossible + " beats a fabricated result.\n" +
-			"- action=" + toolnames.ToolTaskReview + " — SESSION-internal, may run serial only. RUN IMMEDIATELY AFTER action=commit of each subtask (the post-commit checkpoint; when the committed item is the LAST one this doubles as the whole-epic closing review). Review the WHOLE problem against the ORIGINAL goal (the epic/spec at the top of context) and the committed-conclusion chain. Arguments: verdict = ONE code (A = ON-TRACK, continue; B = RE-ALIGN — goal re-scoped, re-emit the roadmap; C = AMEND-ITEM <task_id> — commit a CORRECTION; D = REDO-ITEM <task_id> — supersede + redo; E = PATH-DEAD — record finding, re-plan), plus optional task_id (C/D) and reason. Every exit verdict is honorable and no-punishment (misdirection happens; recording beats patching).",
-		InputSchema: map[string]interface{}{
-			"type": "object",
-			"properties": map[string]interface{}{
-				"action": map[string]interface{}{
-					"type": "string",
-					"enum": []string{toolnames.ToolTaskView, toolnames.ToolTaskCommit, toolnames.ToolTaskReview, toolnames.ToolTaskReframe},
-				},
-				"task_id": map[string]interface{}{
-					"type":        "string",
-					"description": "Which subtask/item id (commit + review C/D). E.g. \"1\", \"2\" … matching your task list.",
-				},
-				"status": map[string]interface{}{
-					"type":        "string",
-					"description": "Fixed value \"completed\" (only status accepted; commit).",
-				},
-				"verdict": map[string]interface{}{
-					"type":        "string",
-					"description": "action=review: the review code A|B|C|D|E. action=reframe: ONE of " + toolnamesVerdictEnum() + " — never empty.",
-				},
-				"epic_summary": map[string]interface{}{
-					"type":        "string",
-					"description": "REQUIRED (reframe): the epic restated in one compact paragraph — the authoritative goal every later review anchors on.",
-				},
-				"constraints": map[string]interface{}{
-					"type":        "string",
-					"description": "REQUIRED (reframe): the binding constraints (project rules, environment limits, acceptance gates) you must work within.",
-				},
-				"deliverables": map[string]interface{}{
-					"type":        "string",
-					"description": "REQUIRED (reframe): the concrete artifacts the epic must produce.",
-				},
-				"acceptance": map[string]interface{}{
-					"type":        "string",
-					"description": "REQUIRED (reframe): how completion is verified (the checks you will actually run).",
-				},
-				"roadmap": map[string]interface{}{
-					"type": "array",
-					"items": map[string]interface{}{
-						"type": "object",
-						"properties": map[string]interface{}{
-							"goal":       map[string]interface{}{"type": "string", "description": "What this child task accomplishes."},
-							"acceptance": map[string]interface{}{"type": "string", "description": "How that child is verified — each item must stand alone as a self-contained briefing."},
-						},
+// claudeToolDefs are the tools in Claude Messages API format
+// (input_schema instead of parameters). The Claude interface is the only
+// API path.
+//
+// IT IS A FUNCTION, NOT A PACKAGE-LEVEL VAR, because its descriptions quote the
+// session budget (sessionBudgetCeilingClause / sessionBudgetTimeDimension) and the
+// budget is an ENV-BACKED value read at RUNTIME. A package-level var is evaluated
+// at INIT, which ran before `gopi chat` published GOPI_SESSION_BUDGET=0
+// (publishChatSessionBudgetDefault) — so one request body carried a system prompt
+// saying "BUDGET: unlimited" beside a task-tool description saying "ONE session
+// budget (60 minutes)". Resolving at ASSEMBLY time (this call, per request) is what
+// makes the two halves agree; the cost is rebuilding the slice per round, which is
+// what the tool-token fingerprint in Context.SetTools already absorbs.
+func claudeToolDefs() []deepseek.ClaudeToolDef {
+	return []deepseek.ClaudeToolDef{
+		{
+			Name:        toolnames.ToolRead,
+			Description: "Read a file's contents as text. Use read — not shell cat/head/sed — to see any file before analyzing or editing it. Every page is capped at ~50KB; a truncated page ends with a footer naming the total line count and the next offset. Large file? Page with offset/limit — a full read burns tokens. NOTE offset semantics: offset=N skips the first N lines (continue after line K with offset=K) — NOT the 'start at line N' convention. If the path is a symlink, the read result notes the link target.",
+			InputSchema: map[string]interface{}{
+				"type": "object",
+				"properties": map[string]interface{}{
+					"path": map[string]interface{}{
+						"type":        "string",
+						"description": "Path to the file to read. Supports ~/ expansion.",
 					},
-					"description": "REQUIRED (reframe) when verdict=" + taskverdict.TooBig + ": the decomposition, one entry per child task. Non-empty, each with goal+acceptance; the harness enqueues each entry as its own child task. Each item must be completable inside ONE session budget (" + sessionBudgetCeilingClause() + "). An empty or goal-less roadmap is rejected. A genuine unknown belongs here as a research ITEM (read/compare/write the conclusion doc) — not as a verdict.",
+					"offset": map[string]interface{}{
+						"type":        "integer",
+						"description": "Number of lines to skip from the beginning (1-indexed: offset=N skips the first N lines — continue after line K with offset=K). Default 0 reads from the start.",
+						"default":     0,
+					},
+					"limit": map[string]interface{}{
+						"type":        "integer",
+						"description": "Maximum number of lines to read (page still capped at ~50KB). Default 0 reads the entire file.",
+						"default":     0,
+					},
 				},
-				"reason": map[string]interface{}{
-					"type":        "string",
-					"description": "Short reason for a review verdict (any non-A verdict). REQUIRED for action=reframe with verdict=" + taskverdict.Impossible + " — the provable blocker, recorded as the task row's failure reason.",
-				},
-				"conclusion": map[string]interface{}{
-					"type":        "string",
-					"description": "REQUIRED (commit only): compact final result / decision / key facts — what a later step must know without re-reading this item's analysis.",
-				},
-				"compressed_analysis": map[string]interface{}{
-					"type":        "string",
-					"description": "Optional (commit): omit = the analysis is DISCARDED after commit; include only when a later item must reuse the reasoning.",
-				},
+				"required": []string{"path"},
 			},
-			"required": []string{"action"},
 		},
-	},
+		{
+			Name:        toolnames.ToolGitBlame,
+			Description: "Call git_blame for ANY git line-history question — who wrote line N, which commit introduced a bug, WHY the code is this way, and whether your change should DEFER to it. ALWAYS use git_blame over `bash git blame`: it returns structured JSON (no raw-git token waste), guards wrong line numbers / oversized windows, and attributes each line to the gopi TASK that produced it. NEVER run `git blame` via bash when git_blame answers the question. Returns {file_path, task_enrichment (none|partial|full), task_enrichment_note, ledger_access, line_items:[{line_no, commit_hash, author, timestamp, commit_message, code_line, task_id, task_summary, task_status, task_host}]}. In a gopi repo the author field is USELESS (every run commits as gopi <gopi@gopi>) — the information is task_summary/task_status: MEASURED example, git_blame(internal/tools/clone_ground_branch_create_guard_test.go, 1, 6) returns commit 11d5513d with task_id 01a195bb-4287-7ad5-a764-b6df563895dc, task_status completed and task_summary 「run 01a1957a 在自己的 clone 之外还进入了共享主目录 /home/user/work/gopi 并建 task/<id> 分支写入半成品，导致所有人 pull 被挡、make build 报 undefined: scratchGCConsentGiven（/usr/local/bin/gopi 停在旧版）」 — i.e. that work exists to close a real escape path, so a change that re-opens it should DEFER, while a change that serves the same intent may proceed. The tool only REPORTS; the judgement is yours. task_enrichment=none with a note saying no task trailer means the repo was never touched by a gopi run — real information, not a tool failure; it also cannot happen at all outside a gopi repo. file_path is repo-root-relative (e.g. internal/memory/store.go). Omit start_line/end_line for a small default window (50 lines); ranges wider than 200 lines are refused. Only works on files tracked by git. Optional tool: no git in the environment → structured 'unavailable' error, everything else keeps working.",
+			InputSchema: map[string]interface{}{
+				"type": "object",
+				"properties": map[string]interface{}{
+					"file_path": map[string]interface{}{
+						"type":        "string",
+						"description": "Repo-root-relative path, e.g. internal/memory/store.go",
+					},
+					"start_line": map[string]interface{}{
+						"type":        "integer",
+						"description": "First line number (1-based). Omitted = a small default window starting at line 1.",
+					},
+					"end_line": map[string]interface{}{
+						"type":        "integer",
+						"description": "Last line number; must be >= start_line. Clipped to the file's line count.",
+					},
+				},
+				"required": []string{"file_path"},
+			},
+		},
+		{
+			Name:        toolnames.ToolWrite,
+			Description: "Create or fully REPLACE a file's content — existing content is overwritten entirely (no merge). Use for new files and whole-file rewrites. For a targeted change use edit: it sends only the changed lines, so it is cheaper and leaves the rest untouched. Paths support ~/ expansion. If the file exists, its old content is gone after this call. Paths that are symlinks are refused by default to protect the link; pass follow_symlink=true to write through to the target.",
+			InputSchema: map[string]interface{}{
+				"type": "object",
+				"properties": map[string]interface{}{
+					"path": map[string]interface{}{
+						"type":        "string",
+						"description": "Path to the file to write.",
+					},
+					"content": map[string]interface{}{
+						"type":        "string",
+						"description": "Content to write to the file.",
+					},
+					"follow_symlink": map[string]interface{}{
+						"type":        "boolean",
+						"description": "When path is a symlink: false (default) refuses the write (renaming onto a symlink replaces the link node and leaves the target unchanged); true resolves the link and writes the target file in place, keeping the symlink intact.",
+						"default":     false,
+					},
+				},
+				"required": []string{"path", "content"},
+			},
+		},
+		{
+			Name:        toolnames.ToolEdit,
+			Description: "Surgically replace one unique string in a file: finds oldStr and swaps it for newStr. Use edit — NOT write — for targeted changes: only the affected lines are sent (cheaper) and everything else stays intact (safer). oldStr must be unique unless replace_all=true; a non-unique or missing match is refused with the mismatch shown — re-read the file and copy the exact text. Paths that are symlinks are refused by default to protect the link; pass follow_symlink=true to edit through to the target.",
+			InputSchema: map[string]interface{}{
+				"type": "object",
+				"properties": map[string]interface{}{
+					"path": map[string]interface{}{
+						"type":        "string",
+						"description": "Path to the file to edit.",
+					},
+					"oldStr": map[string]interface{}{
+						"type":        "string",
+						"description": "Exact string to find and replace. Must be unique in the file unless replace_all=true.",
+					},
+					"newStr": map[string]interface{}{
+						"type":        "string",
+						"description": "Replacement string.",
+					},
+					"replace_all": map[string]interface{}{
+						"type":        "boolean",
+						"description": "Replace ALL occurrences of oldStr. Default false: oldStr must be unique and a non-unique match is refused.",
+						"default":     false,
+					},
+					"follow_symlink": map[string]interface{}{
+						"type":        "boolean",
+						"description": "When path is a symlink: false (default) refuses the edit (renaming onto a symlink replaces the link node and leaves the target unchanged); true resolves the link and edits the target file in place, keeping the symlink intact.",
+						"default":     false,
+					},
+				},
+				"required": []string{"path", "oldStr", "newStr"},
+			},
+		},
+		{
+			Name: toolnames.ToolBash,
+			Description: "Execute a shell command via bash -c for build, test, run, git and file operations — NOT for searching code (definitions → code_search, full-text → keyword_search) and NOT for reading files (use read, not cat/head/sed). NEVER invoke grep/rg for a symbol definition — ALWAYS use code_search (one structured call vs a grep round-trip). Reading a file (cat/head/sed -n FILE) when read exists = a logged violation. Returns 'exit=N\\n' + stdout, stderr prefixed '[stderr] '. 120s timeout by default; set timeout_sec only for slightly-long commands. Command may outlive a call? Use job(action=start) — bash kills its WHOLE process group on timeout. Dangerous cmds (rm -rf etc.) blocked unless GOPI_ALLOW_DANGEROUS=1." +
+				bashJobTestEntryPointNote,
+			InputSchema: map[string]interface{}{
+				"type": "object",
+				"properties": map[string]interface{}{
+					"command": map[string]interface{}{
+						"type":        "string",
+						"description": "Shell command to execute.",
+					},
+					// timeout_sec default (120) mirrors bashDefaultTimeoutSec in
+					// internal/tools/bash.go — informational for the LLM; the real
+					// default is enforced in code (BashWithTimeout).
+					"timeout_sec": map[string]interface{}{
+						"type":        "integer",
+						"description": "Max seconds to wait. Default 120. 0 = unlimited absolute time (still subject to the 120s no-output safety net).",
+						"default":     120,
+					},
+					// workdir mirrors bash.go's BashInDir: validated (must be an
+					// existing directory) before the command starts.
+					"workdir": map[string]interface{}{
+						"type":        "string",
+						"description": "Working directory for the command (must exist). Omitted = current directory.",
+					},
+				},
+				"required": []string{"command"},
+			},
+		},
+		{
+			Name:        toolnames.ToolCodeSearch,
+			Description: "Locate where a symbol (function, struct, interface, var, const, type, class, macro) is DEFINED. ALWAYS use this for a definition lookup — NEVER run `bash grep <symbol>` for it. ONE call returns every definition as structured hits (file:line, kind, signature) from a pre-indexed ctags database (Go, Python, shell, C/C++ incl. .h headers, Rust, JavaScript, TypeScript), auto-falling back to ripgrep. When reviewing or reading unfamiliar code, resolve EVERY unknown identifier here FIRST — before grep, before guessing from includes. Faster and cleaner than bash grep: one structured call vs a 2-call grep round-trip of noisy lines you must re-read+filter. Takes a symbol NAME (an identifier like 'NewClient') — never a sentence, description or tool name. 'No symbol found' means the identifier exists nowhere in the codebase: do not grep for it; use keyword_search for related text or files outside the indexed languages.",
+			InputSchema: map[string]interface{}{
+				"type": "object",
+				"properties": map[string]interface{}{
+					"symbol": map[string]interface{}{
+						"type":        "string",
+						"description": "Symbol name to look up (e.g. 'NewClient', 'Thing').",
+					},
+				},
+				"required": []string{"symbol"},
+			},
+		},
+		{
+			Name: toolnames.ToolKeywordSearch,
+			Description: "Full-text search with TWO SCOPES, and the SCOPE decides what you are searching: (1) scope=\"tree\" (the default) = the project tree on disk; (2) scope=\"session\" = THIS CONVERSATION'S OWN on-disk record — the full-length log of every row this run wrote, including the rounds that COMPACTION REMOVED. " +
+				"CHOOSE scope=\"session\" THE MOMENT THE THING YOU WANT CAME OUT OF THIS CONVERSATION RATHER THAN OUT OF THE REPO — the recall triggers are literal: the user asks 「你还记得…」「我们之前讨论过…」「上次那个…」「之前不是说好的…」 / \"do you remember …\", \"we discussed this before\"; or YOU need a detail from earlier in this run that is no longer in your context — a command's complete output, an exact error string, a task id, a file path you saw 500 rounds ago, the number a tool printed before a compaction. Searching the TREE for a sentence that only ever existed in the conversation is the wrong scope and returns nothing: the conversation is NOT in the repo. " +
+				"Session hits come back STRUCTURED — round number, row type, timestamp, a bounded snippet and the `gopi session log <id> <round>` command that opens the whole round — never a raw JSON line. Do NOT search [IMPORTANT] notes with it: those are already in your context. `raw.log` (the same history re-sent, ~58x the bytes) is EXCLUDED unless include_raw_log=true, and its hits are labelled with their source. " +
+				"scope=\"tree\" is the ordinary meaning: code, docs, comments, config, scripts; Query may be a plain string or a regex; hits are (file:line, snippet). Use it for USAGES/references of an identifier (where is X called?), error messages, comments, docs, config — and as the follow-up when code_search reports a symbol is not found. For locating a symbol DEFINITION use code_search, not grep. Too-broad results? Narrow the query — noisy output wastes a round.",
+			InputSchema: map[string]interface{}{
+				"type": "object",
+				"properties": map[string]interface{}{
+					"query": map[string]interface{}{
+						"type":        "string",
+						"description": "Text or regex to search for.",
+					},
+					"scope": map[string]interface{}{
+						"type":        "string",
+						"description": "Where to search — THIS ARGUMENT DECIDES WHAT YOU GET, so read it as a question: did the thing you want come from THIS CONVERSATION or from the REPO? \"session\" = this conversation's own on-disk record (session.jsonl), rendered as round/type/timestamp/snippet/locator hits — use it for 「你还记得…」「之前不是说好的…」, \"we discussed this before\", and for any detail from earlier in this run that compaction removed (a command's full output, an exact error string, a task id, a path). \"tree\" (or omit / \"\") = the project tree on disk — the ordinary meaning, and the WRONG scope for a sentence that only ever existed in the conversation, because the conversation is not in the repo.",
+						"enum":        []string{"tree", tools.SessionSearchScopeSession},
+					},
+					"session": map[string]interface{}{
+						"type":        "string",
+						"description": "scope=\"session\" only: which session. Empty = the CURRENT session (the normal case). A session id or an absolute path searches another/older session.",
+					},
+					"limit": map[string]interface{}{
+						"type":        "integer",
+						"description": "scope=\"session\" only: how many hits to return. Default 5, max 50; anything dropped is reported, never silent.",
+					},
+					"include_raw_log": map[string]interface{}{
+						"type":        "boolean",
+						"description": "scope=\"session\" only: also search the raw HTTP log (the same history re-sent on every turn, ~58x the bytes). Off by default; hits from it are labelled source=raw.log and carry a line number instead of a round.",
+					},
+				},
+				"required": []string{"query"},
+			},
+		},
+		{
+			Name:        toolnames.ToolWebSearch,
+			Description: "Search the web or ask an AI; returns unified JSON ({status,count,results}). Methods: bing (CN direct, fastest), google (overseas/EN), arxiv (papers), deepseek (AI answer), github (repos/issues; code needs a token), wiki (Wikipedia). No method arg = bing+google+arxiv merged (dedup + relevance sort + source attribution). count caps results (default 5, max 20); ignored for the AI-ask methods. Snippets only — follow up with web_fetch for the full page. Use web_search — NOT bash curl of a search engine page or shelling out to the plugin scripts.",
+			InputSchema: map[string]interface{}{
+				"type": "object",
+				"properties": map[string]interface{}{
+					"query": map[string]interface{}{
+						"type":        "string",
+						"description": "Search phrase or question.",
+					},
+					"method": map[string]interface{}{
+						"type":        "string",
+						"description": "bing|google|arxiv|deepseek|github|wiki. Empty = merged multi-method default.",
+						"enum":        []string{"bing", "google", "arxiv", "deepseek", "github", "wiki"},
+					},
+					"count": map[string]interface{}{
+						"type":        "integer",
+						"description": "Max results to return (default 5, max 20).",
+						"default":     5,
+					},
+				},
+				"required": []string{"query"},
+			},
+		},
+		{
+			Name:        toolnames.ToolWebFetch,
+			Description: "Fetch a URL and return its cleaned full text as JSON ({status,url,chars,truncated,content}). Search ≠ Read: web_search returns snippets — use web_fetch to actually read a page (deep research, verifying a source, reading a README/abstract in full). Takes ONE http(s) URL (e.g. a web_search result URL); boilerplate HTML (nav/header/footer/scripts) is stripped and the text is tail-truncated to max_chars (default 8000) to keep tokens low. Use web_fetch — NOT bash curl of a webpage. Workflow: web_search to discover URLs → web_fetch to read the promising ones.",
+			InputSchema: map[string]interface{}{
+				"type": "object",
+				"properties": map[string]interface{}{
+					"url": map[string]interface{}{
+						"type":        "string",
+						"description": "http(s) URL to fetch (e.g. a web_search result URL, GitHub README, arxiv abstract page).",
+					},
+					"max_chars": map[string]interface{}{
+						"type":        "integer",
+						"description": "Max chars of cleaned text to return (default 8000).",
+						"default":     8000,
+					},
+				},
+				"required": []string{"url"},
+			},
+		},
+		{
+			Name: toolnames.ToolMemory,
+			Description: "One tool for gopi's knowledge base (hippocampus) — the memory family merged memory search + store + update + feedback (the former memory_search/memory_store/memory_update/memory_feedback tools) into ONE tool with an action parameter. Pick exactly ONE action (the only required arg):\n" +
+				"- action=" + toolnames.ToolMemoryActionSearch + " — " + memorySearchBullet + "\n" +
+				"- action=" + toolnames.ToolMemoryActionStore + " — may run serial only. Save a DISTILLED lesson into the knowledge base so future tasks can find it. USE after a task with a reusable lesson: a success path that worked, a pitfall, a pattern worth repeating. USE MID-TASK too — store is EVENT-DRIVEN, not end-of-task-driven: " + eventDrivenStoreTriggers + ". Store only DISTILLED experience — repeatable pattern / reproducible loop / measurable value. NEVER store raw conversation transcripts or step-by-step logs (流水账). Structure: topic (the subject), question (what a future agent might search for), answer (how to succeed / what NOT to do). YOUR JOB = leave retrieval breadcrumbs (检索面包屑): 2-3 mixed 中英 keywords per 5W1H dimension (WHAT 主题 / WHY 问题 / WHEN 场景 / WHERE 环境 / WHO 实体 / HOW 方法), with synonyms / translations / variant phrasings / Unicode normalization (agent‑loop → agent-loop) — these ARE the breadcrumbs action=search will match; think one step further when storing. Returns the stored record id; deduped means it merged into an existing entry.\n" +
+				"- action=" + toolnames.ToolMemoryActionFeedback + " — may run serial only. Vote on a search hit RIGHT NOW — 投票=质量裁判, judge each result the moment it arrives (搜索结果的当下就投), never defer to task end. Record an explicit useful/useless vote on a search hit so the knowledge base evolves (LLM 是唯一用户 = 唯一质量裁判 — you are already judging each hit while reading it; this tool just lands that judgment). useful = you actually used it. useless ONLY when the hit CONTRADICTS your operation results / is provably stale or wrong (bug-report culture: a merely-meh hit still gets useful or no vote). Then memory(action=update) to correct the wrong memory — feedback says WHAT is wrong, update does the FIX (右转: call memory(action=update) with id + the corrected field RIGHT NOW, not later). One vote per session per hit moves the hit's stored confidence 0.05 (a useless vote -0.10) and re-ranks search; NO tier is ever auto-demoted — the machine only SUGGESTS (3 decayed useless votes and zero useful ⇒ --suggest-cold lists a candidate), and setting tier=cold is yours via action=update. When rating, id=#N is REQUIRED (the hit line's record number — not a call id; the engine reads this one alone). A search pair survives slimming iff one of its records was voted useful by #N; every other pair is dropped.\n" +
+				"- action=" + toolnames.ToolMemoryActionUpdate + " — may run serial only. Directly correct or re-tier an existing memory record (hard edit — the soft signal is feedback). USE at the CONTRADICTION moment: a search hit contradicted by your VERIFIED evidence (operation output), or a record you know is stale (API / behavior changed) — fix it NOW, don't let the wrong record sit (误导=给未来的自己挖坑). Prefer action=feedback when unsure — feedback is reversible and cheap; update is for certainty. A corrected record stays hot/warm; a wrong record left warm poisons every later task. Do NOT use update to delete history — the knowledge base keeps versions for audit. Input: id (the #N) + the CORRECTED field(s): rewrite the wrong field's value (topic/question/answer/tier/keywords/confidence), not a patch-note stuffed into keywords.",
+			InputSchema: map[string]interface{}{
+				"type": "object",
+				"properties": map[string]interface{}{
+					"action": map[string]interface{}{
+						"type": "string",
+						"enum": []string{toolnames.ToolMemoryActionSearch, toolnames.ToolMemoryActionStore, toolnames.ToolMemoryActionUpdate, toolnames.ToolMemoryActionFeedback},
+					},
+					"query": map[string]interface{}{
+						"type":        "string",
+						"description": "action=search only. What you want to know: a task, problem or situation you suspect happened before. Searched against BOTH the distilled knowledge base and the round-note index of past runs (see the [distilled] / [session] sections in the result).",
+					},
+					"limit": map[string]interface{}{
+						"type":        "integer",
+						"description": "action=search only. Max records to return (default 5).",
+						"default":     5,
+					},
+					"intent": map[string]interface{}{
+						"type":        "string",
+						"description": "action=search only. Optional routing hint for the backend (e.g. 'debug', 'build', 'search').",
+					},
+					"topic": map[string]interface{}{
+						"type":        "string",
+						"description": "action=store/update: subject of the lesson / new subject.",
+					},
+					"question": map[string]interface{}{
+						"type":        "string",
+						"description": "action=store/update: a question a future agent might ask when it needs this lesson / new question.",
+					},
+					"answer": map[string]interface{}{
+						"type":        "string",
+						"description": "action=store/update: the distilled experience (how to succeed / what NOT to do) / new distilled body.",
+					},
+					"source": map[string]interface{}{
+						"type":        "string",
+						"description": "action=store/update: optional provenance (repo, file, task) / new provenance.",
+					},
+					"keywords": map[string]interface{}{
+						"type":        "array",
+						"items":       map[string]interface{}{"type": "string"},
+						"description": "5W1H 检索面包屑：中英混合关键词（主题/问题/场景/环境/实体/方法六维度），含同义/翻译/变体问法/Unicode 归一化. action=store: set them; action=update: replace (rewrites search_kw AND the answer's keywords tail).",
+					},
+					"type": map[string]interface{}{
+						"type":        "string",
+						"enum":        []string{"declarative", "procedural"},
+						"description": "action=store only. Row type: declarative (default) = distilled lesson QA; procedural = reusable workflow stored in the procedural table. With type=procedural, pass name/trigger/steps (and optionally preconditions/tools_used) — topic/question/answer are ignored except as fallbacks (topic→name, question→trigger, answer→single step).",
+					},
+					"name": map[string]interface{}{
+						"type":        "string",
+						"description": "action=store, type=procedural only: workflow name (unique identity, e.g. '读错误日志→定位→修复→验证').",
+					},
+					"trigger": map[string]interface{}{
+						"type":        "string",
+						"description": "action=store, type=procedural only: 何时启用 — the condition/situation that should activate this workflow.",
+					},
+					"preconditions": map[string]interface{}{
+						"type":        "string",
+						"description": "action=store, type=procedural only: preconditions that must hold before running the workflow.",
+					},
+					"steps": map[string]interface{}{
+						"type":        "array",
+						"items":       map[string]interface{}{"type": "string"},
+						"description": "action=store, type=procedural only: ordered step list (each a command or instruction). Structured JSON is persisted; prefer 3-8 actionable steps.",
+					},
+					"tools_used": map[string]interface{}{
+						"type":        "array",
+						"items":       map[string]interface{}{"type": "string"},
+						"description": "action=store, type=procedural only: tools the workflow exercises (e.g. bash, code_search).",
+					},
+					"id": map[string]interface{}{
+						"type":        "integer",
+						"description": "action=feedback: REQUIRED — the record number #N printed on the hit line of a search result you retrieved. action=update: REQUIRED — same id. This is the only id the engine reads (never a call id / tool_use id).",
+					},
+					"rating": map[string]interface{}{
+						"type":        "string",
+						"enum":        []string{"useful", "useless", "unused"},
+						"description": "action=feedback: REQUIRED. useful = adopted/helped; useless = contradicted/failed/misleading; unused = seen but not used (neutral).",
+					},
+					"reason": map[string]interface{}{
+						"type":        "string",
+						"description": "action=feedback only. Optional short reason (recommended for useless votes).",
+					},
+					// NOTE: the retired call-id parameter is deliberately absent here.
+					// It named the originating search pair for a vote, but the feedback
+					// path never read it and that mechanism was retired with WHITELIST
+					// slimming — see the sync gate in memory_feedback_contract_test.go.
+					"tier": map[string]interface{}{
+						"type":        "string",
+						"enum":        []string{"hot", "warm", "cold"},
+						"description": "action=update only. cold = demote (no longer 1st-tier to return). Prefer demotion over content edits for low-quality records.",
+					},
+					"confidence": map[string]interface{}{
+						"type":        "number",
+						"description": "action=update only. New confidence in [0,1].",
+					},
+				},
+				"required": []string{"action"},
+			},
+		},
+		{
+			Name:        toolnames.ToolContextTrim,
+			Description: "TRIM DEAD-ENDS NOW — 干净仪表盘: the moment a tool result is a dead end, trim it immediately. A dead end is an errored/failed/no-value output — bash command on a missing file or wrong args, a read of a nonexistent path, a tool result with no useful signal. Every untrimmed dead end is re-sent to the model every round — trimming is how you stop paying for it. ALWAYS trim before moving on; NEVER leave an untrimmed dead-end result in context. Call with the dead end call's id; optionally pass replace_with to leave a one-line conclusion (e.g. 'X failed because Y — don't retry'): with replace_with the pair is KEPT, the bulky result swapped for your conclusion; without it the pair is removed entirely. The id is the call_… string stamped in that tool result's header ('tool_use id: …') — copy it verbatim, NOT the record number #N. Each id is trimmed at most once; unknown ids no-op silently.",
+			InputSchema: map[string]interface{}{
+				"type": "object",
+				"properties": map[string]interface{}{
+					"call_id": map[string]interface{}{
+						"type":        "string",
+						"description": "The tool_use id of the dead-end call to trim (the call_… string stamped in that tool result's header — copy it verbatim).",
+					},
+					"replace_with": map[string]interface{}{
+						"type":        "string",
+						"description": "Optional one-line conclusion that REPLACES the original tool result (keeps the pair, drops the bulky output — 'X failed because Y — don't retry'). Omit to delete the pair entirely.",
+					},
+				},
+				"required": []string{"call_id"},
+			},
+		},
+		{
+			Name: toolnames.ToolTaskSubmit,
+			Description: "Submit a work item to the persistent task queue (status=pending) instead of doing it in this session. USE WHEN: 1) you discover a bug you cannot fix without derailing the current task — submit it with tags=['bug'] and payload=reproduction steps + log paths, then CONTINUE your current work (the queue/another instance picks it up); " +
+				"2) the current task is too large — split it: submit the subtasks ONE AFTER ANOTHER, IN THE ORDER THEY MUST RUN. The harness links each submission to the one submitted just before it (a SERIAL CHAIN: item i's parent = item i-1), so the dispatcher releases them one at a time and the ORDER YOU SUBMIT IN IS THE DEPENDENCY — a model cannot express a dependency graph, so its order is the only signal there is, and the harness makes it real. Do not count on parallelism, and do not send several submissions expecting them to run at once. " +
+				taskSubmitIndependentToolClause() +
+				"Each subtask needs a self-contained payload briefing. " +
+				"3) work that only makes sense asynchronously/for others. " +
+				"Repo closure: work targeting ANOTHER repo (a foreign project) must carry that repo — the repo parameter stamps deliverable.repo and a runner picking the task up without one only gets a cross-project warning at claim time (verify-before-execute is on you). " +
+				"Every bug-tagged submit prints a running [bug-flow] tally (bug tasks total / verified / reopened) — the adoption loop's measurable heartbeat. " +
+				"ROUTE FIRST: trivially-doable work should just be done — task_submit is the 'separate work item' exit (bug report / well-scoped subtask), never a way to dodge work you can do. " +
+				"Anti-self-reference: this session never executes its own submissions (claims exclude the submitting session) — expect the task_id in the result and reference it via bash `gopi task show <task_id>`.",
+			InputSchema: map[string]interface{}{
+				"type": "object",
+				"properties": map[string]interface{}{
+					"summary": map[string]interface{}{
+						"type":        "string",
+						"description": "One-line ledger headline (what a human scanning `gopi task list` should read).",
+					},
+					"payload": map[string]interface{}{
+						"type":        "string",
+						"description": "FULL request text — the briefing the executing gopi will run with as its only input. Write it self-contained: context, goal, constraints, acceptance. Omit only when the summary says it all. A value beginning with '@' followed by an EXISTING file path (`@/abs/briefing.md`) is READ, exactly as `gopi task submit --payload @FILE` reads it — the engine expands the reference through the same reader, stores the file's CONTENT, and reports the byte count; a reference naming an unreadable file is REFUSED (never stored as the '@path' spelling). Escape a payload that genuinely starts with '@' as '@@'. An oversized payload (>16 KiB) is NOT truncated: it is preserved verbatim as a task attachment and the row keeps a one-line pointer to it, so keep the payload concise and ship bulk evidence (logs, diffs, file dumps) as attachments instead.",
+					},
+					"tags": map[string]interface{}{
+						"type":        "array",
+						"items":       map[string]interface{}{"type": "string"},
+						"description": "Optional classification tags; 'bug' is the reserved bug-flow tag (payload = repro steps + log paths).",
+					},
+					"parent_task_id": map[string]interface{}{
+						"type":        "string",
+						"description": taskSubmitParentParamDescription(),
+					},
+					"repo": map[string]interface{}{
+						"type":        "string",
+						"description": "Optional git repo path/URL the work happens in. DEFAULT: your current working directory — the normal case, do NOT invent a repo path. The path is verified (git rev-parse) BEFORE the task row is written: a non-git directory aborts the whole submit with an error. Verified repo lands in the task's deliverable block (deliverable.repo) so verify/merge run with zero memory.",
+					},
+					"priority": map[string]interface{}{
+						"type":        "integer",
+						"description": "Optional queue weight, lower runs first (M4.11). Omit to derive from tags: bug→1 (highest — LLM-reported bugs are bugs), docs/doc-only→8, else 5. An explicit value ALWAYS overrides the tags derivation.",
+					},
+					"attachments": map[string]interface{}{
+						"type":        "array",
+						"items":       map[string]interface{}{"type": "string"},
+						"description": "Optional ABSOLUTE paths of files to archive for the task (epic-task-reframe Phase 1): each is copied at submit time into the task's session-dir attachments area under its original path structure (/tmp/log.txt → .../attachments/tmp/log.txt — same-name files in different dirs never collide). The executing instance sees each replica's path as an [attachmentN:] entry in its EPIC briefing and reads it with the normal read/file tools. Files only — directories and missing paths abort the submit. Use for evidence the task needs (screenshots, logs, docs) that is too big to inline in the payload.",
+					},
+				},
+				"required": []string{"summary"},
+			},
+		},
+		{
+			Name: toolnames.ToolJob,
+			Description: "Manage a background shell job — the action parameter selects the operation (start | output | kill). action=start runs a command in the BACKGROUND, detached in its own session — immune to bash timeouts (bash kills its whole process group on timeout, which would take a shared background process down with it). Returns a job id + stdout/stderr file paths. Use for long-running commands (builds, tests, servers, scripts). Do NOT poll: continue other work — the harness injects a notice when the job finishes; collect the output once with action=output. action=output fetches a background job's status and output: status=running | exited code=N | killed, plus the captured output (stderr included). Call ONCE — never busy-poll or sleep-wait; work on other things while the job runs (you are notified on completion). Every fetch re-sends the full output: read once, don't re-fetch. action=kill kills a background job's WHOLE process group, child processes included — use when the job is no longer needed or must be stopped; prefer killing over leaving zombie jobs holding resources." +
+				bashJobTestEntryPointNote,
+			InputSchema: map[string]interface{}{
+				"type": "object",
+				"properties": map[string]interface{}{
+					"action": map[string]interface{}{
+						"type":        "string",
+						"enum":        []string{toolnames.ToolJobActionStart, toolnames.ToolJobActionOutput, toolnames.ToolJobActionKill},
+						"description": "Which job operation to run: start (run a command in the background), output (fetch a job's status/output), kill (terminate a job).",
+					},
+					"command": map[string]interface{}{
+						"type":        "string",
+						"description": "Shell command to run in the background (required for action=start).",
+					},
+					"job_id": map[string]interface{}{
+						"type":        "string",
+						"description": "Job id returned by action=start (required for action=output and action=kill).",
+					},
+				},
+				"required": []string{"action"},
+			},
+		},
+		{
+			Name: toolnames.ToolTask,
+			Description: "One tool for the harness-tracked task list and the in-session working area (task family merged todo + write_task_area). Pick exactly ONE action (the only required arg):\n" +
+				"- action=" + toolnames.ToolTaskView + " — READ-ONLY task-list view, parallel-safe. Show the current task-list state as tracked by the harness. You update tasks by emitting a [TASK_LIST_BEGIN]...[TASK_LIST_END] block in your response (full array each time, never a diff; an unclosed block auto-recovers with a warning). Shape: [{\"task_id\":\"1\",\"summary\":\"Read source\",\"status\":\"pending\"}]. Statuses: pending (not started) → progressing (exactly ONE at a time) → completed (verified: project's own checks green); a decomposed parent stays progressing until every child completes; never drop a task_id (obsolete → completed with summary \"(dropped: why)\"). Check before reporting progress, choosing the next step, and at status checkpoints.\n" +
+				"- action=" + toolnames.ToolTaskCommit + " — SESSION-internal, may run serial only. Commit the CURRENT subtask/item's stable conclusion into the session working area: task_id (which item), status=\"completed\" only, conclusion REQUIRED (compact final result/decision/key facts — what a later step must know), compressed_analysis OPTIONAL (only when a later item must reuse the reasoning). CALL ONCE PER ITEM at convergence — never batch, never free-text 'all done'. Afterwards the item's working region is COMMITTED (append-only, queryable; may be trimmed next round; conclusion carried forward as authoritative context). Does NOT touch the cross-session ledger (task_submit is separate).\n" +
+				"- action=" + toolnames.ToolTaskReframe + " — evaluate the epic AFTER investigating it (read the briefing + any [attachmentN:] files FIRST, never before) and return BOTH the reframe (epic_summary/constraints/deliverables/acceptance) and a verdict ∈ {" + toolnamesVerdictEnum() + "}. THE BUDGET IS PART OF THE CRITERION: " + sessionBudgetTimeDimension() + " The conditional payload is HARNESS-ENFORCED, so every exit carries NEW work: " + taskverdict.TooBig + " requires roadmap[{goal,acceptance}] (the harness auto-enqueues ONE child task per item and this run ends there — your deliverable is the diligence + the decomposition), " + taskverdict.Impossible + " requires reason. " + taskverdict.Impossible + " means PROVABLY unattainable in principle — merely hard, risky, or unknown is " + taskverdict.TooBig + " with the investigation as a roadmap item (there is NO research verdict: research is part of reframing). \"'Too big' without a concrete roadmap is REJECTED — that is what stops the queue bouncing the same summary. An honest " + taskverdict.Impossible + " beats a fabricated result.\n" +
+				"- action=" + toolnames.ToolTaskReview + " — SESSION-internal, may run serial only. RUN IMMEDIATELY AFTER action=commit of each subtask (the post-commit checkpoint; when the committed item is the LAST one this doubles as the whole-epic closing review). Review the WHOLE problem against the ORIGINAL goal (the epic/spec at the top of context) and the committed-conclusion chain. Arguments: verdict = ONE code (A = ON-TRACK, continue; B = RE-ALIGN — goal re-scoped, re-emit the roadmap; C = AMEND-ITEM <task_id> — commit a CORRECTION; D = REDO-ITEM <task_id> — supersede + redo; E = PATH-DEAD — record finding, re-plan), plus optional task_id (C/D) and reason. Every exit verdict is honorable and no-punishment (misdirection happens; recording beats patching).",
+			InputSchema: map[string]interface{}{
+				"type": "object",
+				"properties": map[string]interface{}{
+					"action": map[string]interface{}{
+						"type": "string",
+						"enum": []string{toolnames.ToolTaskView, toolnames.ToolTaskCommit, toolnames.ToolTaskReview, toolnames.ToolTaskReframe},
+					},
+					"task_id": map[string]interface{}{
+						"type":        "string",
+						"description": "Which subtask/item id (commit + review C/D). E.g. \"1\", \"2\" … matching your task list.",
+					},
+					"status": map[string]interface{}{
+						"type":        "string",
+						"description": "Fixed value \"completed\" (only status accepted; commit).",
+					},
+					"verdict": map[string]interface{}{
+						"type":        "string",
+						"description": "action=review: the review code A|B|C|D|E. action=reframe: ONE of " + toolnamesVerdictEnum() + " — never empty.",
+					},
+					"epic_summary": map[string]interface{}{
+						"type":        "string",
+						"description": "REQUIRED (reframe): the epic restated in one compact paragraph — the authoritative goal every later review anchors on.",
+					},
+					"constraints": map[string]interface{}{
+						"type":        "string",
+						"description": "REQUIRED (reframe): the binding constraints (project rules, environment limits, acceptance gates) you must work within.",
+					},
+					"deliverables": map[string]interface{}{
+						"type":        "string",
+						"description": "REQUIRED (reframe): the concrete artifacts the epic must produce.",
+					},
+					"acceptance": map[string]interface{}{
+						"type":        "string",
+						"description": "REQUIRED (reframe): how completion is verified (the checks you will actually run).",
+					},
+					"roadmap": map[string]interface{}{
+						"type": "array",
+						"items": map[string]interface{}{
+							"type": "object",
+							"properties": map[string]interface{}{
+								"goal":       map[string]interface{}{"type": "string", "description": "What this child task accomplishes."},
+								"acceptance": map[string]interface{}{"type": "string", "description": "How that child is verified — each item must stand alone as a self-contained briefing."},
+							},
+						},
+						"description": "REQUIRED (reframe) when verdict=" + taskverdict.TooBig + ": the decomposition, one entry per child task. Non-empty, each with goal+acceptance; the harness enqueues each entry as its own child task. Each item must be completable inside ONE session budget (" + sessionBudgetCeilingClause() + "). An empty or goal-less roadmap is rejected. A genuine unknown belongs here as a research ITEM (read/compare/write the conclusion doc) — not as a verdict.",
+					},
+					"reason": map[string]interface{}{
+						"type":        "string",
+						"description": "Short reason for a review verdict (any non-A verdict). REQUIRED for action=reframe with verdict=" + taskverdict.Impossible + " — the provable blocker, recorded as the task row's failure reason.",
+					},
+					"conclusion": map[string]interface{}{
+						"type":        "string",
+						"description": "REQUIRED (commit only): compact final result / decision / key facts — what a later step must know without re-reading this item's analysis.",
+					},
+					"compressed_analysis": map[string]interface{}{
+						"type":        "string",
+						"description": "Optional (commit): omit = the analysis is DISCARDED after commit; include only when a later item must reuse the reasoning.",
+					},
+				},
+				"required": []string{"action"},
+			},
+		},
 
-	{
-		Name:        toolnames.ToolVisionAnalyze,
-		Description: "Understand an image via the vision model (deepseek-v4-flash-vision-exp — 图片理解/OCR/图表分析). When to use: 图片理解 / 截图文字识别 / 图表分析 — 截图文字识别直接调 vision，不需要 OCR 脚本 (replaces external OCR). For RENDER verification (font/glyph quality) use pixel-level comparison (IoU), not vision — a vision model can't quantify quality loss. Input: image_path (local file, required) + prompt (optional, default 描述这张图片并识别文字). The image is read, base64-encoded and sent to the vision model in one lightweight standalone request — 图片不进主上下文，只有分析结果文本返回 (context protection). Supports jpg/jpeg/png/gif/webp, max 32 MiB. Images are only valid in user messages — this tool always sends them as a user message.",
-		InputSchema: map[string]interface{}{
-			"type": "object",
-			"properties": map[string]interface{}{
-				"image_path": map[string]interface{}{
-					"type":        "string",
-					"description": "Path to the local image file to analyze (required). Supported formats: jpg/jpeg, png, gif, webp; max 32 MiB.",
+		{
+			Name:        toolnames.ToolVisionAnalyze,
+			Description: "Understand an image via the vision model (deepseek-v4-flash-vision-exp — 图片理解/OCR/图表分析). When to use: 图片理解 / 截图文字识别 / 图表分析 — 截图文字识别直接调 vision，不需要 OCR 脚本 (replaces external OCR). For RENDER verification (font/glyph quality) use pixel-level comparison (IoU), not vision — a vision model can't quantify quality loss. Input: image_path (local file, required) + prompt (optional, default 描述这张图片并识别文字). The image is read, base64-encoded and sent to the vision model in one lightweight standalone request — 图片不进主上下文，只有分析结果文本返回 (context protection). Supports jpg/jpeg/png/gif/webp, max 32 MiB. Images are only valid in user messages — this tool always sends them as a user message.",
+			InputSchema: map[string]interface{}{
+				"type": "object",
+				"properties": map[string]interface{}{
+					"image_path": map[string]interface{}{
+						"type":        "string",
+						"description": "Path to the local image file to analyze (required). Supported formats: jpg/jpeg, png, gif, webp; max 32 MiB.",
+					},
+					"prompt": map[string]interface{}{
+						"type":        "string",
+						"description": "Optional instruction for the vision model (e.g. '识别图片中的所有中文文字', '描述图表数据'). Default: 描述这张图片，并识别其中的文字（如有）.",
+					},
 				},
-				"prompt": map[string]interface{}{
-					"type":        "string",
-					"description": "Optional instruction for the vision model (e.g. '识别图片中的所有中文文字', '描述图表数据'). Default: 描述这张图片，并识别其中的文字（如有）.",
-				},
+				"required": []string{"image_path"},
 			},
-			"required": []string{"image_path"},
 		},
-	},
-	{
-		Name:        toolnames.ToolText2img,
-		Description: "Render a text file to PNG images (纯 GO 零依赖 TrueType 渲染 — text→PNG for screenshots / reports / OCR-friendly images; CJK via autodetected system font). When to use: 把文本变成图片 / 生成截图素材 / 渲染含中文的图文 — internal/text2img 自研 SFNT/TrueType 解析 + 4x 超采样栅格化, 无 CGO 无 x/image. Verify render quality with PIXEL-level comparison (IoU), not OCR — OCR can't see quality loss. Input: src (text file path, required) + out (PNG path, optional — default lands in the gopi-text2img scratch class tree, NEVER beside src) + optional size/cols/lh/lines/margin/font overrides (defaults: 20px 字号, 50 列折行, 32 行高, 90 行/页, 12 边距). Text longer than one page auto-paginates: an explicit out becomes out-1.png, out-2.png …; the default names pages <stem>-1.dump.png, <stem>-2.dump.png … Returns the page/chars/lines summary and output paths.",
-		InputSchema: map[string]interface{}{
-			"type": "object",
-			"properties": map[string]interface{}{
-				"src": map[string]interface{}{
-					"type":        "string",
-					"description": "Path to the input text file to render (required).",
+		{
+			Name:        toolnames.ToolText2img,
+			Description: "Render a text file to PNG images (纯 GO 零依赖 TrueType 渲染 — text→PNG for screenshots / reports / OCR-friendly images; CJK via autodetected system font). When to use: 把文本变成图片 / 生成截图素材 / 渲染含中文的图文 — internal/text2img 自研 SFNT/TrueType 解析 + 4x 超采样栅格化, 无 CGO 无 x/image. Verify render quality with PIXEL-level comparison (IoU), not OCR — OCR can't see quality loss. Input: src (text file path, required) + out (PNG path, optional — default lands in the gopi-text2img scratch class tree, NEVER beside src) + optional size/cols/lh/lines/margin/font overrides (defaults: 20px 字号, 50 列折行, 32 行高, 90 行/页, 12 边距). Text longer than one page auto-paginates: an explicit out becomes out-1.png, out-2.png …; the default names pages <stem>-1.dump.png, <stem>-2.dump.png … Returns the page/chars/lines summary and output paths.",
+			InputSchema: map[string]interface{}{
+				"type": "object",
+				"properties": map[string]interface{}{
+					"src": map[string]interface{}{
+						"type":        "string",
+						"description": "Path to the input text file to render (required).",
+					},
+					"out": map[string]interface{}{
+						"type":        "string",
+						"description": "Output PNG path (optional). Default: an absolute path in the gopi-text2img scratch class tree (NOT beside src — a default render must never leave a file in your working tree); multi-page output appends -1, -2, … before the class suffix.",
+					},
+					"size": map[string]interface{}{
+						"type":        "integer",
+						"description": "Font size in px (default 20).",
+					},
+					"cols": map[string]interface{}{
+						"type":        "integer",
+						"description": "Wrap width in characters for over-long lines (default 50).",
+					},
+					"lh": map[string]interface{}{
+						"type":        "integer",
+						"description": "Line height in px, ~font-size×1.6 (default 32).",
+					},
+					"lines": map[string]interface{}{
+						"type":        "integer",
+						"description": "Max lines per page (~2800 chars/page; default 90).",
+					},
+					"margin": map[string]interface{}{
+						"type":        "integer",
+						"description": "Page margin in px (default 12).",
+					},
+					"font": map[string]interface{}{
+						"type":        "string",
+						"description": "Font path override (default: autodetect system CJK TrueType font).",
+					},
 				},
-				"out": map[string]interface{}{
-					"type":        "string",
-					"description": "Output PNG path (optional). Default: an absolute path in the gopi-text2img scratch class tree (NOT beside src — a default render must never leave a file in your working tree); multi-page output appends -1, -2, … before the class suffix.",
-				},
-				"size": map[string]interface{}{
-					"type":        "integer",
-					"description": "Font size in px (default 20).",
-				},
-				"cols": map[string]interface{}{
-					"type":        "integer",
-					"description": "Wrap width in characters for over-long lines (default 50).",
-				},
-				"lh": map[string]interface{}{
-					"type":        "integer",
-					"description": "Line height in px, ~font-size×1.6 (default 32).",
-				},
-				"lines": map[string]interface{}{
-					"type":        "integer",
-					"description": "Max lines per page (~2800 chars/page; default 90).",
-				},
-				"margin": map[string]interface{}{
-					"type":        "integer",
-					"description": "Page margin in px (default 12).",
-				},
-				"font": map[string]interface{}{
-					"type":        "string",
-					"description": "Font path override (default: autodetect system CJK TrueType font).",
-				},
+				"required": []string{"src"},
 			},
-			"required": []string{"src"},
 		},
-	},
 
-	{
-		Name:        toolnames.ToolScreenCapture,
-		Description: "Capture the LIVE X11 desktop (the real screen) into a PNG file, and return machine-readable ground truth (saved path, pixel width×height, position x/y, depth, display, PNG byte count, content sha256_16). Four shapes — pick the narrowest that answers the question: the WHOLE SCREEN (default; every window on the display), the window that HOSTS this process (`self: true` — the terminal gopi is running in, resolved by pid), the ACTIVE WINDOW (`window: true` — whatever the user last clicked, a fraction of the pixels and therefore a fraction of the context), or an ARBITRARY RECTANGLE (`area: \"WxH+X+Y\"`, e.g. \"800x600+100+50\"; offsets optional). When to use: 看屏幕 / 截图当前桌面 / 截图当前窗口 / 电脑操作 (computer use) 的第一步 — 'what is on screen right now', before and after driving the GUI. For 'where am I running' prefer `self: true` — `window: true` answers a different question and can return another application. This is the EYE of the capture→act→verify loop: call it, pass the returned path to vision_analyze to READ the screen, then act (`bash`: `gopi tool act …`), then call it again and compare sha256_16 to prove the screen changed. NOT for a web page you want rendered headlessly (use `gopi tool shot --url` via bash — that drives headless Chromium and never touches the real screen), and NOT an image-file reader (vision_analyze). Pure Go, zero-CGO, zero-dependency, no external binary: a hand-rolled X11 protocol client issues a GetImage request, so any X11 display works, local or forwarded (Xvfb included). X11 ONLY — on a Wayland session this fails loudly by design (no portal implementation). Returns JSON.",
-		InputSchema: map[string]interface{}{
-			"type": "object",
-			"properties": map[string]interface{}{
-				"display": map[string]interface{}{
-					"type":        "string",
-					"description": "X11 display to capture, e.g. ':99' or 'localhost:10.0' (optional). Default: $DISPLAY, i.e. the display of the desktop the agent runs on.",
-				},
-				"out": map[string]interface{}{
-					"type":        "string",
-					"description": "Output PNG path (optional). Default: an ABSOLUTE path inside gopi's capture class directory (<scratch home>/dumps/gopi-captures/screen-<unix>.dump.png) — NEVER the current directory, because a run's cwd is its own git ground and an untracked PNG there breaks Rule 30. Always use the `path` field the result returns; it is absolute and it is the only correct argument for vision_analyze.",
-				},
-				"window": map[string]interface{}{
-					"type":        "boolean",
-					"description": "Capture the ACTIVE WINDOW instead of the whole screen (optional; the CLI spelling is `gopi tool capture --window`). It means whatever window the user last clicked — for 'the window I am running in' use `self` instead, which resolves by pid and cannot be a different application. The result's x/y/window fields say WHICH window was grabbed (`window_route` names how it was resolved: _NET_ACTIVE_WINDOW, GetInputFocus, or QueryPointer). Fails loudly when the display has no active window to resolve.",
-				},
-				"self": map[string]interface{}{
-					"type":        "boolean",
-					"description": "Capture the window that HOSTS this gopi process — the terminal you are running in (optional; the CLI spelling is `gopi tool capture --self`). Use it when the question is about WHERE YOU ARE RUNNING rather than what the user is looking at: it reads /proc/self/fd/0 for the controlling tty, finds the terminal emulator that owns that pty's master side, and matches that pid against each window's _NET_WM_PID. It is an identity, not a guess, so it cannot return a different application. Fails loudly (naming the ancestry walked and the pids the display reports) when this process and the display's clients do not share one pid namespace — e.g. an X-forwarded display.",
-				},
-				"decorations": map[string]interface{}{
-					"type":        "boolean",
-					"description": "With `self`: include the window-manager frame (title bar and borders) by expanding the window's rectangle by _NET_FRAME_EXTENTS (optional). Without it the client area — the pixels the application drew — is captured, which for a client-side-decorated window (GNOME Terminal) already contains the title bar; the result's `window_route` says which rectangle was taken.",
-				},
-				"area": map[string]interface{}{
-					"type":        "string",
-					"description": "Capture an arbitrary rectangle of the screen, spelled WxH+X+Y in pixels (optional; the CLI spelling is `gopi tool capture --area WxH+X+Y`). The offsets are optional, so \"800x600\" means the top-left 800x600. The rectangle must fit the display — one that runs off the screen is refused, never clipped. Takes precedence over `window` and `self`.",
+		{
+			Name:        toolnames.ToolScreenCapture,
+			Description: "Capture the LIVE X11 desktop (the real screen) into a PNG file, and return machine-readable ground truth (saved path, pixel width×height, position x/y, depth, display, PNG byte count, content sha256_16). Four shapes — pick the narrowest that answers the question: the WHOLE SCREEN (default; every window on the display), the window that HOSTS this process (`self: true` — the terminal gopi is running in, resolved by pid), the ACTIVE WINDOW (`window: true` — whatever the user last clicked, a fraction of the pixels and therefore a fraction of the context), or an ARBITRARY RECTANGLE (`area: \"WxH+X+Y\"`, e.g. \"800x600+100+50\"; offsets optional). When to use: 看屏幕 / 截图当前桌面 / 截图当前窗口 / 电脑操作 (computer use) 的第一步 — 'what is on screen right now', before and after driving the GUI. For 'where am I running' prefer `self: true` — `window: true` answers a different question and can return another application. This is the EYE of the capture→act→verify loop: call it, pass the returned path to vision_analyze to READ the screen, then act (`bash`: `gopi tool act …`), then call it again and compare sha256_16 to prove the screen changed. NOT for a web page you want rendered headlessly (use `gopi tool shot --url` via bash — that drives headless Chromium and never touches the real screen), and NOT an image-file reader (vision_analyze). Pure Go, zero-CGO, zero-dependency, no external binary: a hand-rolled X11 protocol client issues a GetImage request, so any X11 display works, local or forwarded (Xvfb included). X11 ONLY — on a Wayland session this fails loudly by design (no portal implementation). Returns JSON.",
+			InputSchema: map[string]interface{}{
+				"type": "object",
+				"properties": map[string]interface{}{
+					"display": map[string]interface{}{
+						"type":        "string",
+						"description": "X11 display to capture, e.g. ':99' or 'localhost:10.0' (optional). Default: $DISPLAY, i.e. the display of the desktop the agent runs on.",
+					},
+					"out": map[string]interface{}{
+						"type":        "string",
+						"description": "Output PNG path (optional). Default: an ABSOLUTE path inside gopi's capture class directory (<scratch home>/dumps/gopi-captures/screen-<unix>.dump.png) — NEVER the current directory, because a run's cwd is its own git ground and an untracked PNG there breaks Rule 30. Always use the `path` field the result returns; it is absolute and it is the only correct argument for vision_analyze.",
+					},
+					"window": map[string]interface{}{
+						"type":        "boolean",
+						"description": "Capture the ACTIVE WINDOW instead of the whole screen (optional; the CLI spelling is `gopi tool capture --window`). It means whatever window the user last clicked — for 'the window I am running in' use `self` instead, which resolves by pid and cannot be a different application. The result's x/y/window fields say WHICH window was grabbed (`window_route` names how it was resolved: _NET_ACTIVE_WINDOW, GetInputFocus, or QueryPointer). Fails loudly when the display has no active window to resolve.",
+					},
+					"self": map[string]interface{}{
+						"type":        "boolean",
+						"description": "Capture the window that HOSTS this gopi process — the terminal you are running in (optional; the CLI spelling is `gopi tool capture --self`). Use it when the question is about WHERE YOU ARE RUNNING rather than what the user is looking at: it reads /proc/self/fd/0 for the controlling tty, finds the terminal emulator that owns that pty's master side, and matches that pid against each window's _NET_WM_PID. It is an identity, not a guess, so it cannot return a different application. Fails loudly (naming the ancestry walked and the pids the display reports) when this process and the display's clients do not share one pid namespace — e.g. an X-forwarded display.",
+					},
+					"decorations": map[string]interface{}{
+						"type":        "boolean",
+						"description": "With `self`: include the window-manager frame (title bar and borders) by expanding the window's rectangle by _NET_FRAME_EXTENTS (optional). Without it the client area — the pixels the application drew — is captured, which for a client-side-decorated window (GNOME Terminal) already contains the title bar; the result's `window_route` says which rectangle was taken.",
+					},
+					"area": map[string]interface{}{
+						"type":        "string",
+						"description": "Capture an arbitrary rectangle of the screen, spelled WxH+X+Y in pixels (optional; the CLI spelling is `gopi tool capture --area WxH+X+Y`). The offsets are optional, so \"800x600\" means the top-left 800x600. The rectangle must fit the display — one that runs off the screen is refused, never clipped. Takes precedence over `window` and `self`.",
+					},
 				},
 			},
 		},
-	},
+	}
 }
 
 // Agent holds the state for the ReAct loop.
@@ -2005,12 +2018,12 @@ type Agent struct {
 	// Set via GOPI_REASONING_EFFORT env var. Empty = model default.
 	ReasoningEffort string
 
-	// Thinking controls DeepSeek thinking mode (enabled/disabled).
-	// Default: ENABLED at reasoning_effort=minimal (set in NewAgent — DeepSeek's
-	// model default is thinking OFF). Data-backed sweet spot (thinking-sweep):
-	// light thinking cuts round-trips ~35% (23→15) and wall time (289s→216s)
-	// versus disabled at 1.4x per-round cost; medium/max multiply latency with
-	// no quality gain. GOPI_THINKING=disabled opts out.
+	// Thinking controls DeepSeek thinking mode (enabled/disabled). RESOLVED, not
+	// statically defaulted (NewAgentResuming): explicit GOPI_THINKING wins; else
+	// explicit schema-valid non-"off" effort IMPLIES enabled
+	// (EffortImpliesThinking); else disabled. Sweet spot (thinking-sweep): light
+	// thinking cuts round-trips ~35% (23→15) and wall time (289s→216s) vs
+	// disabled at 1.4x per-round cost; medium/max add latency, no quality gain.
 	Thinking *deepseek.Thinking
 
 	// HideThinking suppresses the live stderr display of reasoning content.
@@ -2190,8 +2203,9 @@ type Agent struct {
 	// channel: on `gopi chat` stderr is off-screen under the reserved layout or
 	// erased by the editor's next repaint (cmd/agent/lineedit_wire.go's
 	// WriteNotice records the measurement). The first (and currently only) user
-	// is context pressure (context_pressure.go): a filled window is announced
-	// here and nowhere else, and the carrier decides where the operator sees it.
+	// is the ONE context compression (context_compress.go): a filled window is
+	// reported here and nowhere else, and the carrier decides where the operator
+	// sees it.
 	//
 	// Optional and nil by default; a run with no carrier installed keeps the
 	// statement on the Logger and SAYS SO (Rule 15), never silently dropping it.
@@ -2492,116 +2506,14 @@ type Agent struct {
 	// deepseek.DefaultClaudeMaxTokens. Override via GOPI_MAX_TOKENS.
 	MaxTokens int
 
-	// CompactionEnabled enables LLM-assisted memory compaction (GOPI_COMPACT=off
-	// to disable). When the estimated context exceeds the trigger ratio of
-	// the window, the oldest messages are summarized into a memory block
-	// instead of dropped.
-	//
-	// IT ONLY DECIDES WHICH REDUCTION RUNS, NEVER WHETHER ONE RUNS: the automatic
-	// path as a whole is gated by AutoReduceEnabled (context_pressure.go). With
-	// that switch off — the default — this field is read by nobody, because
-	// trimContext reduces nothing.
-	CompactionEnabled bool
-
-	// AutoReduceEnabled re-enables the automatic context reduction path
-	// (fold → compact → trim) that used to be unconditional
-	// (GOPI_CONTEXT_AUTOREDUCE=1, truthy-only; see AutoReduceEnv). Default FALSE:
-	// a filled window is WARNED about, never emptied — the operator is told the
-	// numbers and decides whether to start a new session.
-	AutoReduceEnabled bool
-
-	// contextPressureBucket is the last percentage bucket announced to the
-	// operator (0 = nothing announced). It makes the warning ONCE PER LEVEL
-	// instead of once per round — see context_pressure.go.
-	contextPressureBucket int
-
-	// CompactCount is how many context compactions this agent has PERFORMED —
-	// the sessions's compression count, the read-out Hermes shows only when it is
-	// non-zero. It counts successful compactions (a compaction attempt that a
-	// guard refused, or whose window was structurally empty, is not a
-	// compression), and it is incremented at the one success return of
-	// compactContext. Single-threaded loop access, like every other loop field.
+	// CompactCount is how many context compressions this agent has PERFORMED —
+	// the session's compression count, the read-out the chat status row shows
+	// only when it is non-zero. It counts compressions that actually removed
+	// something (a window that already fitted is not a compression), and it is
+	// incremented at the one place the history is shortened
+	// (context_compress.go's compressContext). Single-threaded loop access, like
+	// every other loop field.
 	CompactCount int
-
-	// CompactTriggerRatio is the fraction of the context window at which
-	// trimming kicks in (GOPI_COMPACT_TRIGGER, default
-	// DefaultCompactTriggerRatio). fold/compact/trim all share this single
-	// limit. <= 0 falls back to the default (Agent{} literals in tests).
-	CompactTriggerRatio float64
-
-	// TurnFoldRecentTurns is the size of the turn fold's RAW WINDOW: how many of
-	// the newest COMPLETE turns stay in the request verbatim. It is an operator
-	// ESCALATION and its default is ZERO — no window, so every completed turn is
-	// replaced by its note (the substitute contract, turnfold.go's
-	// foldCompletedTurns). A NEGATIVE field falls back to that default; zero is a
-	// real value and means the same thing it means in the shipped configuration.
-	TurnFoldRecentTurns int
-
-	// turnFoldRangeAnnounced latches the once-per-session line for the fold's
-	// FIRST early exit: the conversation cut into fewer than two turn ranges, so
-	// there is no completed turn to fold at all (turnfold.go's
-	// foldCompletedTurns). The state is sticky for the run, so it is reported
-	// once — the boundary the fold runs from is per ROUND, and a line repeated
-	// every round is noise an operator learns to skip (task 01a1d723: the same
-	// argument compactPinnedAnchorWarned carries).
-	turnFoldRangeAnnounced bool
-
-	// turnFoldWindowAnnounced is the same latch for the SECOND early exit: every
-	// complete turn sits inside the operator's raw window
-	// (TurnFoldRecentTurns), so the fold has nothing old enough to replace. It
-	// is a SEPARATE flag rather than a shared one because a session can reach
-	// both, in either order, and each reason is the operator's own fact to act
-	// on.
-	turnFoldWindowAnnounced bool
-
-	// CompactTargetRatio is the fraction of the window the history is
-	// compacted down to (GOPI_COMPACT_TARGET, default
-	// DefaultCompactTargetRatio).
-	CompactTargetRatio float64
-
-	// CompactKeepRecent is how many of the most recent messages are never
-	// removed by compaction (GOPI_COMPACT_KEEP_RECENT, default 8).
-	CompactKeepRecent int
-
-	// CompactMaxSummaryTokens caps the summarizer's output budget
-	// (GOPI_COMPACT_MAX_SUMMARY_TOKENS, default min(5% of the window, 12000)).
-	CompactMaxSummaryTokens int
-
-	// CompactCooldown pauses summarizer attempts for this long after a
-	// summarizer failure (GOPI_COMPACT_COOLDOWN, default 600s).
-	CompactCooldown time.Duration
-
-	// CompactReferenceOnly wraps the memory block in REFERENCE ONLY semantics
-	// (GOPI_COMPACT_REFERENCE_ONLY, default on).
-	CompactReferenceOnly bool
-
-	// compactFailureCooldownUntil is when summarizer attempts resume after a
-	// failure (zero = not in cooldown). compactIneffectiveCount counts
-	// consecutive compressions that saved <10% (only genuinely-attempted
-	// compressions — a compression with no window is a structural no-op, see
-	// compactStructuralNoOpUntil, and never strikes the breaker); at 2 the
-	// loop skips compaction and trims directly. lastCompactSavingsPct
-	// is the most recent compression's savings (100.0 before any compaction).
-	compactFailureCooldownUntil time.Time
-	compactIneffectiveCount     int
-	lastCompactSavingsPct       float64
-	// compactRecoveryProbeAt is when the anti-thrash recovery probe is armed
-	// after the ineffective breaker trips (count≥2). Once it fires, one probe
-	// compaction is allowed (counter drops to 1) so a session that has since
-	// grown real compressible material recovers; a fresh probe that is again
-	// ineffective re-trips immediately (bounded, not thrash). Zero = not armed.
-	compactRecoveryProbeAt time.Time
-	// compactStructuralNoOpUntil backs off summarizer attempts after a
-	// structural no-op (no window to compress, too few messages) WITHOUT
-	// striking the anti-thrash breaker — a short session must not be
-	// permanently disarmed when it later grows compressible material
-	// (Hermes #93022). Zero = not in backoff.
-	compactStructuralNoOpUntil time.Time
-	// compactPinnedAnchorWarned latches the once-per-session pinned-anchor
-	// warning (an anchor floor that keeps the context above the compaction
-	// target). The pinned state is sticky, so it is reported once — an
-	// operator cannot act on the same line every round.
-	compactPinnedAnchorWarned bool
 	// Timeout is the global deadline for the entire agent loop (Run).
 
 	// Set via GOPI_TIMEOUT_SEC env var. Default: 300 (5 minutes).
@@ -3863,25 +3775,10 @@ func NewAgentResuming(model string, id RunIdentity) (*Agent, error) {
 		}
 	}
 
-	// Memory compaction (GOPI_COMPACT=off disables; default on): LLM-assisted
-	// summary of the oldest messages when the context approaches the window.
-	compactionEnabled := true
-	if v := os.Getenv("GOPI_COMPACT"); v != "" {
-		if strings.EqualFold(v, "off") || v == "0" || strings.EqualFold(v, "false") {
-			compactionEnabled = false
-		}
-	}
-
-	// THE AUTOMATIC REDUCTION PATH IS OPT-IN (context_pressure.go): off unless
-	// GOPI_CONTEXT_AUTOREDUCE says otherwise, in which case a filled window is
-	// WARNED about and nothing is removed. `compactionEnabled` above survives as
-	// "which reduction to run", never as "whether".
-	autoReduceEnabled := boolEnvTrue(AutoReduceEnv)
-
-	// Compaction parameters (P0): trigger/target/keep-recent/budget/cooldown/
-	// reference-only — all GOPI_COMPACT_* overridable, invalid values warn
-	// and fall back to defaults (compactConfigFromEnv).
-	cc := compactConfigFromEnv(window)
+	// CONTEXT MANAGEMENT IS TWO RULES AND NO SWITCHES: the history is
+	// append-only until the estimate crosses DefaultCompactTriggerRatio of the
+	// window, at which point ONE compression runs (context_compress.go). There is
+	// nothing to configure here — the window is the configuration.
 
 	// Interrupt root (chat-once/bare-prompt SIGTERM zombie fix): a
 	// cancellable base the run-engine contexts derive from, so an external
@@ -3893,42 +3790,32 @@ func NewAgentResuming(model string, id RunIdentity) (*Agent, error) {
 	interruptBase, interruptCancel := context.WithCancel(context.Background())
 
 	ag := &Agent{
-		Client:                  client,
-		Ctx:                     &Context{ProjectContext: projectCtx},
-		Model:                   model,
-		MaxIterations:           0, // 0 = unlimited, like Pi-mono — model decides when to stop
-		SystemPrompt:            systemPrompt,
-		ReasoningEffort:         internalEffort,
-		Thinking:                thinking,
-		HideThinking:            hideThinking,
-		KeepThinking:            keepThinking,
-		Logger:                  log.New(os.Stderr, "[gopi] ", 0),
-		Debug:                   boolEnvTrue("GOPI_DEBUG"),
-		NoEnforceMemory:         boolEnvTrue("GOPI_NO_ENFORCE_MEMORY"),
-		NoEnforceMemoryConsult:  boolEnvTrue("GOPI_NO_ENFORCE_MEMORY_CONSULT"),
-		Clock:                   NewSessionClock(),
-		Cost:                    &deepseek.CostTracker{},
-		RawLog:                  rawLog,
-		SessionLog:              sessionLog,
-		TaskState:               newTodoState(),
-		ContextWindow:           window,
-		CompactionEnabled:       compactionEnabled,
-		AutoReduceEnabled:       autoReduceEnabled,
-		CompactTriggerRatio:     cc.TriggerRatio,
-		TurnFoldRecentTurns:     turnFoldRecentTurnsFromEnv(),
-		CompactTargetRatio:      cc.TargetRatio,
-		CompactKeepRecent:       cc.KeepRecent,
-		CompactMaxSummaryTokens: cc.MaxSummaryTokens,
-		CompactCooldown:         cc.Cooldown,
-		CompactReferenceOnly:    cc.ReferenceOnly,
-		lastCompactSavingsPct:   100.0,
-		MaxTokens:               maxTokens,
-		Timeout:                 timeout,
-		NudgeRounds:             nudgeRounds,
-		NudgeToolRounds:         nudgeToolRounds,
-		interruptBase:           interruptBase,
-		interruptCancel:         interruptCancel,
-		Hippocampus:             newHippocampusHost(loadHippocampusConfig(), nil),
+		Client:                 client,
+		Ctx:                    &Context{ProjectContext: projectCtx},
+		Model:                  model,
+		MaxIterations:          0, // 0 = unlimited, like Pi-mono — model decides when to stop
+		SystemPrompt:           systemPrompt,
+		ReasoningEffort:        internalEffort,
+		Thinking:               thinking,
+		HideThinking:           hideThinking,
+		KeepThinking:           keepThinking,
+		Logger:                 log.New(os.Stderr, "[gopi] ", 0),
+		Debug:                  boolEnvTrue("GOPI_DEBUG"),
+		NoEnforceMemory:        boolEnvTrue("GOPI_NO_ENFORCE_MEMORY"),
+		NoEnforceMemoryConsult: boolEnvTrue("GOPI_NO_ENFORCE_MEMORY_CONSULT"),
+		Clock:                  NewSessionClock(),
+		Cost:                   &deepseek.CostTracker{},
+		RawLog:                 rawLog,
+		SessionLog:             sessionLog,
+		TaskState:              newTodoState(),
+		ContextWindow:          window,
+		MaxTokens:              maxTokens,
+		Timeout:                timeout,
+		NudgeRounds:            nudgeRounds,
+		NudgeToolRounds:        nudgeToolRounds,
+		interruptBase:          interruptBase,
+		interruptCancel:        interruptCancel,
+		Hippocampus:            newHippocampusHost(loadHippocampusConfig(), nil),
 		// The SAME read that selected the session-dir layout above: a
 		// non-empty value means this process IS a `task run` child (its stdin
 		// is a briefing), which RunPrompt consults to keep the Epic framing.
@@ -3951,6 +3838,23 @@ func NewAgentResuming(model string, id RunIdentity) (*Agent, error) {
 	if sessionLog != nil {
 		ag.Ctx.ToolResultSessionPath = sessionLog.Path()
 	}
+	// THE RECORD FILE IS THE TRUTH SOURCE OF THE NOTES (epic 01a1fae1-2aab).
+	// The in-memory note list used to be appended to by the recording process
+	// and by nothing else, so a run that CONTINUED an existing session started
+	// with an empty list while self-record.md beside the transcript still held
+	// every earlier note — and the first compaction after that resume re-rendered
+	// the carrier from the near-empty list, dropping the record from the context
+	// while it sat on disk (measured: 49 notes in the file, 2 in the carrier).
+	//
+	// SO THE LIST IS REBUILT FROM THE FILE, ONCE, HERE — after the session logger
+	// exists (that logger names the directory the record lives in) and before the
+	// run's first round. It is conditional because a bare NEW session mints a
+	// fresh uuid directory that holds no record: only a continued identity or a
+	// `task run` child (whose directory is keyed by the ROW and therefore
+	// outlives one run of it) can find anything to restore. Nothing is written
+	// and nothing is repaired; an unreadable record is reported on the run's own
+	// log by restoreSelfRecordNotes and never swallowed (Rule 15).
+	ag.restoreSelfRecordNotes(id.resuming() || id.SessionLogPath != "", taskID)
 	return ag, nil
 }
 
@@ -4634,7 +4538,7 @@ func (a *Agent) runEngine(userInput string, resume bool, history []deepseek.Mess
 		// `"<prompt>"  The task text` true at the request boundary.
 		epicMessage := userInput
 		if !a.plainPrompt {
-			epicMessage = fmt.Sprintf(epicGoalFramingFormat, userInput, emissionContract, reframeDirective)
+			epicMessage = fmt.Sprintf(epicGoalFramingFormat, userInput, emissionContract, reframeDirective())
 		}
 		// Native image input: attach the turn's image content blocks to the
 		// ONE user message. The vision model sees the pixels directly (image
@@ -4996,18 +4900,18 @@ func (a *Agent) runEngine(userInput string, resume bool, history []deepseek.Mess
 			a.RawLog.Sync()
 		}
 
-		// THE NOTE AS A SUBSTITUTE (turnfold.go) — the task loop's round
-		// boundary. Every COMPLETED turn's raw messages leave the request here and
-		// ONE note takes their place; there is no size threshold (the one commit
-		// 4c8c44df added was measured inert) and no raw window unless an operator
-		// sets GOPI_TURN_FOLD_KEEP_TURNS. What still stops a fold is only what
-		// would lose information (foldableTurnRanges). The turn in flight is never
-		// touched, and the fold is idempotent.
+		// NOTHING IS REWRITTEN HERE. This is the task loop's round boundary: it
+		// durably flushes what the round produced, and the history stays
+		// append-only. The ONE reduction gopi has is threshold compression
+		// (context_compress.go): it fires when the estimate crosses
+		// DefaultCompactTriggerRatio (0.75) of the window, deletes the oldest run
+		// of messages down to DefaultCompactTargetRatio, and carries this run's
+		// [IMPORTANT] notes back to the head — no LLM, no folding, no per-round
+		// rewrite of the request.
 		//
-		// It runs BEFORE the injections on purpose: an injected notice belongs to
-		// the turn that is about to run, and folding after would either move it
-		// into a note or leave it stranded outside one.
-		a.foldCompletedTurns()
+		// It still runs BEFORE the injections on purpose: an injected notice
+		// belongs to the turn that is about to run, and it must survive into the
+		// request this round builds.
 
 		// P0-3: inject job-completion notices as user messages BEFORE the
 		// request is built — the model never polls (dsh onJobDone: notice
@@ -5116,7 +5020,7 @@ func (a *Agent) runEngine(userInput string, resume bool, history []deepseek.Mess
 
 		// The task wire carries claudeToolDefs; record them so the context-size
 		// read-out counts what the server bills (context_tools.go).
-		a.Ctx.SetTools(claudeToolDefs)
+		a.Ctx.SetTools(claudeToolDefs())
 
 		buildRoundRequest := func() *deepseek.ClaudeRequest {
 			return deepseek.BuildClaudeRequest(
@@ -5133,7 +5037,7 @@ func (a *Agent) runEngine(userInput string, resume bool, history []deepseek.Mess
 				a.requestMessages(a.KeepThinking),
 				a.SystemPrompt,
 				a.Ctx.ProjectContext,
-				claudeToolDefs,
+				claudeToolDefs(),
 				maxTokens,
 				thinking,
 				wireEffort, // P0-1: real wire parameter (empty when thinking off)
@@ -5580,7 +5484,7 @@ func (a *Agent) runEngine(userInput string, resume bool, history []deepseek.Mess
 			}
 		}
 
-		// Context slimming — WHITELIST semantics (the operator design): unlike the
+		// Context slimming — WHITELIST semantics (nick design): unlike the
 		// former blacklist (only rating=useless + explicit tool_use_id got
 		// dropped, which the LLM almost never issued → slimming never ran),
 		// the default is now DROP EVERY memory_search pair. Only a pair whose
@@ -5640,7 +5544,7 @@ func (a *Agent) runEngine(userInput string, resume bool, history []deepseek.Mess
 			// armed before the loop so the first commit always carries it.
 			a.maybeInjectConsultCheckpoint()
 			// ===== post-commit review moved to a structured TOOL CALL
-			// (tool-family merge — task family, the operator 2026-09-10) =====
+			// (tool-family merge — task family, nick 2026-09-10) =====
 			// The old injectPostCommitReview text prompt (which asked the
 			// model to free-text a REVIEW-VERDICT: reply that NOTHING parsed
 			// — a void slot) is gone. Post-commit review is now the model
@@ -5771,21 +5675,18 @@ func (a *Agent) Chat(userInput string, history []deepseek.Message, images ...*de
 		a.injectJobNotice(n)
 	}
 
-	// THE NOTE AS A SUBSTITUTE (turnfold.go) — the no-tools chat turn's ONE
-	// boundary. The history this turn was seeded with has had its previous
-	// turns folded already (the fold's shape is what the carrier captured as the
-	// next turn's seed), so this call is the cheap idempotent pass that keeps a
-	// conversation whose carrier did NOT fold in step.
-	a.foldCompletedTurns()
+	// NOTHING IS SUBSTITUTED AT THIS BOUNDARY EXCEPT BY THE ONE COMPRESSION — the
+	// no-tools chat turn's ONE boundary injects the inbound notices and then asks
+	// the same question the tools path asks (context_compress.go): is the window
+	// full? Below the trigger the history is append-only.
 
-	// THE WARNING THIS PATH USED TO LACK (context_pressure.go). Agent.Chat never
-	// called trimContext, so a no-tools chat session could fill its window and
-	// reach the send-time cap without telling the operator anything — measured
-	// 2026-11-08: `gopi chat --tools` warned, `gopi chat` was silent, on the same
-	// conversation. It is placed at the same boundary the tools path uses (just
-	// before the request is built), and it only WARNS: this path has never
-	// reduced anything, and it still does not.
-	a.warnContextPressure()
+	// THE SAME BOUNDARY, THE SAME RULE. Agent.Chat used to reduce nothing and
+	// only warn, so a no-tools chat session could fill its window and reach the
+	// send-time cap with the transcript untouched — measured 2026-11-08: `gopi
+	// chat --tools` warned, `gopi chat` was silent, on the same conversation. With
+	// ONE compression there is no second policy to keep in step: both paths ask
+	// the same question at the same point (just before the request is built).
+	a.trimContext(context.Background())
 
 	// Build a chat request: the chat system prompt, the project's GOPI.md when
 	// one was loaded (its own system block — chat_ops.go carries the shared
@@ -5865,7 +5766,8 @@ func (a *Agent) Chat(userInput string, history []deepseek.Message, images ...*de
 	// AUTO-MEMORY for the chat answer: the same one-per-round response capture
 	// the tool-enabled path and the task loop do (loop.go) — a table or a
 	// diagram in the answer this console displayed becomes a memory row, which
-	// is the object the note gate could never carry (maxSelfRecordNoteChars).
+	// is the object the note gate could never carry (a note is ONE LINE by
+	// contract, so a table is not a note at all).
 	a.captureResponseText(res.content)
 	a.Ctx.AddAssistantMessageWithThinking(res.content, nil, res.thinking, res.thinkingSig)
 	if a.SessionLog != nil {
@@ -6651,243 +6553,30 @@ func (a *Agent) chatOnceAttempt(ctx context.Context, req *deepseek.ClaudeRequest
 	}, false, nil
 }
 
-// trimContext is the ONE place that looks at how full the context is before a
-// request goes out — and it asks TWO questions, in this order:
+// trimContext is the ROUND BOUNDARY's question: is the window full? If it is,
+// ONE compression runs (context_compress.go's compressContext); if it is not,
+// this is a no-op and the history stays append-only.
 //
-//  1. "is the window nearly full?" (EstimatedTokens() > CompactTriggerRatio ×
-//     ContextWindow). If not, it is a no-op.
-//  2. "is this run allowed to SHRINK the conversation?" That is
-//     Agent.AutoReduceEnabled, and it is FALSE by default (context_pressure.go):
-//     the operator is WARNED with the numbers and nothing is removed, because
-//     the choice between finishing here and starting a fresh session belongs to
-//     the human, not to the harness.
+// There is no fold here, no summarizer, no cooldown, no anti-thrash breaker and
+// no fallback trim — those were four layers that could each disagree with the
+// others about what had happened, and each needed its own parameters and its own
+// log vocabulary. What remains is one predicate and one deletion.
 //
-// Only when a run has explicitly opted in (GOPI_CONTEXT_AUTOREDUCE=1) does it
-// reduce: first folding old tool results into one-line stubs (R1, zero LLM
-// cost), then LLM-assisted memory compaction, then dropping the oldest messages.
-// The system prompt and the most recent messages are kept either way. No-op when
-// ContextWindow <= 0 (the window is unknown, so nothing can be judged).
+// The trigger is judged on EstimatedTokens (the API-measured size where a
+// measurement exists, the chars/4 estimate for the tail added since), because
+// that is the size the operator pays for; the compression itself cuts to
+// compactTargetTokens(). No-op when ContextWindow <= 0 (the window is unknown,
+// so nothing can be judged).
 func (a *Agent) trimContext(ctx context.Context) {
-	if a.ContextWindow <= 0 {
+	// ctx is accepted because the call site sits in a context-aware path; the
+	// compression itself is pure bookkeeping and never blocks, so it needs none.
+	_ = ctx
+	if a == nil || a.Ctx == nil {
 		return
 	}
-	triggerRatio := a.CompactTriggerRatio
-	if triggerRatio <= 0 {
-		triggerRatio = DefaultCompactTriggerRatio
-	}
-	limit := int(float64(a.ContextWindow) * triggerRatio)
-	before := a.Ctx.EstimatedTokens()
-	if before <= limit {
-		return
-	}
-	// THE DEFAULT PATH REMOVES NOTHING — it TELLS THE OPERATOR (context_pressure.go).
-	//
-	// This is the whole policy change: crossing the trigger no longer authorises
-	// a mutation of the conversation. Nothing is folded, nothing is summarized,
-	// nothing is dropped, and the message sequence is identical when this
-	// function returns. The operator gets the numbers and the two options
-	// (finish here, or start a new session and pull detail back with
-	// session_search) and the choice is theirs — which is only meaningful if the
-	// run cannot make it for them behind their back.
-	//
-	// The reduction path below survives for a run that opts in with
-	// GOPI_CONTEXT_AUTOREDUCE=1 (AutoReduceEnv). It is kept whole, and kept
-	// reachable, so a long unattended run still has the old behaviour available —
-	// but as a stated choice at start-up, never as a surprise mid-conversation.
-	if !a.AutoReduceEnabled {
-		a.notifyContextPressure(before, limit)
-		return
-	}
-	// SELF-RECORDING (第一期): the record's SURVIVAL GUARANTEE, on EVERY exit
-	// from this function. The compaction path is not the only one that can remove
-	// the message a note block lived in — the deterministic trim
-	// (trimToFitStickyHead, no anchor floors) reaches it too, and the structural
-	// no-op guard can restore the context and hand over to that trim. Putting the
-	// guarantee here makes it a property of "the context was bounded" rather than
-	// of one of the three ways that happens.
-	//
-	// It is NOT a TakeOldest exemption and NOT an anchor target: it re-injects the
-	// notes this run recorded (a harness-injected user message, which the anchor
-	// policy already refuses to treat as the operator's last word) and is a no-op
-	// when they are all still there. See selfrecord.go.
-	defer a.ensureSelfRecordPresent()
-	// THE MEASURED COUNT AT TRIGGER TIME (Rule 15 — a number that is read for
-	// a log line is read where it still exists). `measuredAtTrigger` is what
-	// the trigger actually judged; reading a.Ctx.PromptTokens further down
-	// would read it AFTER the compaction branch below RESET it (compact.go:
-	// "the API measurement ... must be invalidated or the next round
-	// re-triggers on the stale count"), so the compaction line printed
-	// "measured 0" for a trigger that had fired ON the measurement — measured
-	// on this repo's own sessions: every one of the 95 compacted lines in
-	// ~/.gopi/sessions/*/console.log reads "(measured 0)", including
-	// 8981132f's, whose raw log carries 144 message_start frames and not one
-	// of them has input_tokens==0 (its own last measurement reads 151407).
-	// The value was never missing; it was read one branch too late.
-	measuredAtTrigger := a.Ctx.PromptTokens
-	// R1: collapse old tool results into one-line stubs before resorting to
-	// a destructive trim or an LLM compaction. Tool results are the
-	// context-growth driver and the model rarely re-reads old ones; folding
-	// may bring the estimate back under the limit at zero cost.
-	// THE FOLD LOG'S PAIR IS MEASURED ON ONE BASIS — the chars/4 heuristic —
-	// and this is a correction, not a style choice. The log used to print
-	// EstimatedTokens() on both sides of the fold, and that pair is CONSTANT by
-	// construction: EstimatedTokens() uses the API-measured count as its base for
-	// every message up to PromptTokensIndex, and every result folding touches is
-	// OLDER than that index (folding reaches only results past
-	// maxVerbatimToolResults), so rewriting their content cannot move the
-	// measured base at all. The field log therefore read
-	// "folded 12 old tool result(s) into stubs (est 150491 → 150491 tokens)" on
-	// every fold — a before/after comparison that says nothing, printed by the
-	// one path whose whole purpose is to shrink the context. Same defect class as
-	// compact.go's savings verdict (never compare numbers from two bases; the
-	// heuristic is the only basis available on BOTH sides of a mutation, which is
-	// what Context.heuristicTokens is for).
-	//
-	// WHAT IS NOT CHANGED HERE: the DECISION. `limit` and the early return below
-	// stay on EstimatedTokens() — the trigger must fire on the measured size
-	// (context.go's EstimatedTokens note), and a fold verdict that skipped
-	// compaction on the heuristic alone would re-open the measured-size hole the
-	// calibration closed. Only the pair the reader sees is on one basis.
-	beforeFoldHeuristic := a.Ctx.heuristicTokens()
-	// The compaction log below pairs its own before/after on this basis; with a
-	// fold already applied it is re-based to the post-fold state, so the
-	// compaction is never credited with the fold's own saving.
-	beforeHeuristic := beforeFoldHeuristic
-	if folded := a.Ctx.summarizeOldToolResults(); folded > 0 {
-		afterFold := a.Ctx.EstimatedTokens()
-		afterFoldHeuristic := a.Ctx.heuristicTokens()
-		if a.Logger != nil {
-			a.Logger.Printf("🧠 context window: folded %d old tool result(s) into stubs (est %d → %d tokens, limit %d)",
-				folded, beforeFoldHeuristic, afterFoldHeuristic, limit)
-		}
-		if afterFold <= limit {
-			return
-		}
-		before = afterFold
-		beforeHeuristic = afterFoldHeuristic
-	}
-	// Prefer LLM-assisted memory compaction: summarize the oldest messages
-	// into a memory block so the agent keeps its goal, decisions and
-	// findings. Falls back to dropping the oldest messages when compaction
-	// is disabled, paused (failure cooldown / anti-thrash debounce) or the
-	// summarizer fails (compactContext already removed the oldest messages
-	// on failure — the result is a plain trim).
-	if a.CompactionEnabled && !a.compactionPaused() && a.compactContext(ctx) {
-		after := a.Ctx.EstimatedTokens()
-		targetRatio := a.CompactTargetRatio
-		if targetRatio <= 0 {
-			targetRatio = DefaultCompactTargetRatio
-		}
-		target := int(float64(a.ContextWindow) * targetRatio)
-		// Assertion (P0): after a compaction the context must fit within the
-		// target waterline plus the summary block itself. A violation means
-		// the keep-recent/anchor/protected floor deliberately kept the
-		// estimate above target — warn loudly with the numbers.
-		summaryEst := 0
-		if len(a.Ctx.Messages) > 0 && isMemorySummaryMessage(a.Ctx.Messages[0]) {
-			summaryEst = EstimateTokens(a.Ctx.Messages[0])
-		}
-		assertOK := after <= target+summaryEst
-		// THE CHANGE PAIR IS ON ONE BASIS (defect A's class, second instance in
-		// this function). `before` is the MEASURED estimate that tripped the
-		// trigger, while `after` is necessarily heuristic — compactContext resets
-		// PromptTokens (the measurement covered the pre-compaction context), so
-		// EstimatedTokens() falls back to chars/4 on the post-reset side. Printing
-		// them as one pair is exactly the phantom-savings shape compact.go's own
-		// savings verdict was corrected for (its field log: "before=119145
-		// measured → after=118285 heuristic — saved 0.7%" for a context that GREW).
-		// So the trigger STATEMENT stays measured (`est %d (measured %d)` — a
-		// real-usage judgement, the basis the trim must fire on) and the CHANGE is
-		// printed on the heuristic, the only basis defined on both sides.
-		line := fmt.Sprintf("🧠 context window: est %d tokens (measured %d) > %d (%.1f%% of %d) — compacted: heuristic %d → %d tokens (%.1f%% → %.1f%%, target %.1f%%) — assertion: after ≤ target+summary = %v",
-			before, measuredAtTrigger, limit, float64(before)/float64(a.ContextWindow)*100, a.ContextWindow,
-			beforeHeuristic, a.Ctx.heuristicTokens(),
-			float64(beforeHeuristic)/float64(a.ContextWindow)*100,
-			float64(a.Ctx.heuristicTokens())/float64(a.ContextWindow)*100, targetRatio*100, assertOK)
-		if a.Logger != nil {
-			if assertOK {
-				a.Logger.Print(line)
-			} else {
-				a.Logger.Printf("⚠️ %s (measured-before=%d heuristic-after=%d limit=%d)", line, before, after, limit)
-			}
-		}
-		return
-	}
-	// The eviction target is the compaction waterline when a summarizer can
-	// follow the eviction (it is what refills the freed region cheaply), and
-	// the trigger line itself when compaction is OFF: there the window is the
-	// only regulator, so trimming past the line would simply be discarded
-	// budget — the context may sit at the line, not below it.
-	target := limit
-	if a.CompactionEnabled {
-		targetRatio := a.CompactTargetRatio
-		if targetRatio <= 0 {
-			targetRatio = DefaultCompactTargetRatio
-		}
-		if amt := int(float64(a.ContextWindow) * targetRatio); amt < limit {
-			target = amt
-		}
-	}
-	removed := a.Ctx.trimToFitStickyHead(limit, target)
-	a.Logger.Printf("⚠️ context window: est %d tokens > %d (%.1f%% of %d) — trimmed %d oldest message(s)",
-		before, limit, float64(before)/float64(a.ContextWindow)*100, a.ContextWindow, removed)
+	a.compressContext(compressReasonThreshold, nil)
 }
 
-// compactionPaused reports whether summary attempts are currently paused:
-// after a summarizer failure (cooldown, CompactCooldown), during a structural
-// no-op backoff (no window to compress — transient, does not strike), or after
-// consecutive ineffective compressions (debounce: last compactIneffectiveCount
-// saved under compactEffectiveSavingsPct each). While the breaker is tripped
-// the anti-thrash recovery probe lets ONE attempt through once the recovery
-// window elapses, so a session that has since grown real compressible material
-// recovers; an
-// ineffective probe re-trips immediately (Hermes _ANTI_THRASH_RECOVERY at
-// :3659-3698, _STRUCTURAL_NO_OP at :2601-2625). While paused the loop falls
-// back to TrimToFit so the context stays bounded (Hermes :1173-1209).
-func (a *Agent) compactionPaused() bool {
-	if time.Now().Before(a.compactFailureCooldownUntil) {
-		if a.Logger != nil {
-			a.Logger.Printf("⚠️ memory compaction in cooldown until %v — trimming instead",
-				a.compactFailureCooldownUntil.Format("15:04:05"))
-		}
-		return true
-	}
-	if time.Now().Before(a.compactStructuralNoOpUntil) {
-		if a.Logger != nil {
-			a.Logger.Printf("⚠️ compaction skipped — no compressible window, retrying in %v — trimming instead",
-				time.Until(a.compactStructuralNoOpUntil).Round(time.Second))
-		}
-		return true
-	}
-	if a.compactIneffectiveCount >= compactIneffectiveStrikes {
-		if a.Logger != nil {
-			a.Logger.Printf("⚠️ compaction skipped — last %d compressions saved <%.0f%% each — consider a fresh session",
-				a.compactIneffectiveCount, compactEffectiveSavingsPct)
-		}
-		// Anti-thrash recovery probe: once the recovery window elapses, drop
-		// the counter to one strike and allow a single probation attempt. If
-		// it is ineffective again the next verdict re-trips the guard — the
-		// worst case in a truly incompressible session is one attempt per
-		// recovery window, bounded, not thrash (Hermes #14694, #54923).
-		if !a.compactRecoveryProbeAt.IsZero() && time.Now().After(a.compactRecoveryProbeAt) {
-			a.compactRecoveryProbeAt = time.Time{}
-			a.compactIneffectiveCount = 1
-			if a.Logger != nil {
-				a.Logger.Printf("⚠️ anti-thrash recovery: %v elapsed since the guard tripped — allowing one compaction probe (ineffective=%d)",
-					compactRecoveryProbeDelay.Round(time.Second), a.compactIneffectiveCount)
-			}
-			return false
-		}
-		return true
-	}
-	return false
-}
-
-// maxSearchResults caps one search tool result at 50. The old cap of 20
-// silently truncated real targets (R2 A/B A14: the 21st+ match was the
-// symbol the model needed); the formatter now renders "N more matches" when
-// the cap bites, so no truncation is silent. 50 keeps a noisy query from
-// flooding the context while leaving headroom over typical hit counts.
 const maxSearchResults = 50
 
 // codeSearchScope is the search scope for the code_search tool: the project
@@ -8286,8 +7975,19 @@ type thinkingMarkers struct {
 // rows written over — and os.Stderr otherwise, byte-for-byte as before. It is
 // the ONE write point for a reasoning fragment, so the marker bytes and the
 // text they wrap cannot be addressed to two different writers.
+//
+// HideThinking IS ENFORCED HERE, at that one write point, and not only at the
+// call sites. The two emit paths guard it themselves (the streaming branch and
+// the non-streaming fallback both test `!a.HideThinking` before opening a
+// block), so today this line changes nothing — and that is exactly the point of
+// keeping it: `Agent.HideThinking` is a RUNTIME switch (`/thinking off` writes
+// it mid-session, cmd/agent/chat_thinking.go), so the question "can the display
+// be turned off?" must be answerable by reading the ONE function every fragment
+// goes through. A future emit path added beside the two that exist would
+// otherwise re-open the epic's measured worry — a display the switch cannot
+// silence — silently, and this guard makes that impossible to reach.
 func (a *Agent) emitThinking(s string) {
-	if s == "" {
+	if s == "" || a.HideThinking {
 		return
 	}
 	fmt.Fprint(a.flowWriterFor(), s)
@@ -8528,7 +8228,7 @@ func (a *Agent) injectTaskAreaConclusions() {
 // write_task_area commit — now that the conclusion is recorded and carried
 // forward. Physical mechanism (POC §3): in-round message-array compaction
 // keeps tool_use/tool_result pairing, so the drop walks whole
-// assistant+tool-result groups (the orphan-safety discipline TrimToFit /
+// assistant+tool-result groups (the orphan-safety discipline Context.dropOldestTo /
 // RemoveToolPair use). What goes: earlier items' analysis AND this item's own
 // analysis region — every committed item's conclusion survives in the
 // carry-forward block, so dropping the analysis cannot lose information
@@ -8842,7 +8542,7 @@ func taskReviewMenuFor(verdict, taskID, reason string) string {
 
 // handleTaskReview implements task(action=review): the POST-COMMIT CHECKPOINT as
 // a structured TOOL CALL — the tool-family-merge successor to the removed
-// injectPostCommitReview text injection (the operator 2026-09-10 design). The model
+// injectPostCommitReview text injection (nick 2026-09-10 design). The model
 // calls it right after each task(action=commit) (drilled by the system TASK
 // MANAGEMENT RULES); when the committed item is the LAST one, this review
 // doubles as the whole-epic closing review.

@@ -59,7 +59,7 @@ const (
 // JUST spawned — one home for a value two packages need (Rule 14: a shared value
 // gets exactly one definition, in a leaf every consumer can import).
 //
-// WHY THE RETRY EXISTS AT ALL (measured 2026-10-12, host=host-a):
+// WHY THE RETRY EXISTS AT ALL (measured 2026-10-12, host=the host):
 // exec.Command's Start() returns once the FORK is done, but the child may not
 // have reached execve yet. In that window /proc/<pid>/cmdline EXISTS and is 0
 // bytes, and the process reads state=R — so ONE read immediately after Start()
@@ -278,8 +278,15 @@ const (
 	// user service with this flag on its own command line).
 	UserManagerArg = "--user"
 	// ArgvVerbIndex is the argv index of the top-level CLI verb: argv[0] is the
-	// binary path, argv[1] is the verb.
+	// binary path, argv[1] is the verb (or the first process-global flag).
 	ArgvVerbIndex = 1
+	// LongFlagPrefix marks a process-global flag in raw argv. config's
+	// BootstrapEnvFromArgs consumes these BEFORE the top-level verb, so a
+	// worker-shape scan must walk them the same way (Rule 14: one spelling).
+	LongFlagPrefix = "--"
+	// FlagAssignSep separates a long flag's name from its inline value in the
+	// `--name=value` form, which consumes a single argv element.
+	FlagAssignSep = "="
 )
 
 // --- the liveness IDENTITY TRIPLE ------------------------------------------
@@ -1084,10 +1091,70 @@ func IsGopiImage(procRoot, pid, argv0, comm string) (isGopi, fromComm bool) {
 	return strings.HasPrefix(comm, ImageGopiPrefix), true
 }
 
+// WorkerVerbIndex returns the argv index of the top-level `worker` verb, or
+// -1 when argv carries no worker verb. argv[0] is the binary path.
+//
+// WHY THE VERB IS NOT ALWAYS argv[1]. This binary accepts process-global
+// config flags BEFORE the subcommand word — the launcher this host actually
+// uses starts workers as `gopi --settings <path> worker <task-id>` (the HY4
+// profile's standard shape). `main.go` consumes those flags through
+// config.BootstrapEnvFromArgs before dispatching, so inside the process the
+// verb is argv[1] of the DISPATCH remainder — but /proc/<pid>/cmdline records
+// the RAW argv the process was started with, where the verb sits after the
+// flag and its value. Every worker-shape judgement reads that raw argv, so a
+// hardcoded argv[1] == VerbWorker dropped every such worker in the discovery
+// phase (measured 2026-11-18: three real HY4 workers with `worker` at argv[3]
+// were invisible to `gopi worker --status` while two in_progress rows ran).
+//
+// THE RULE, stated so the scan cannot drift from the dispatcher: walk from
+// ArgvVerbIndex and interpret each token by its SYNTACTIC ROLE — process-global
+// flag, that flag's value, or the top-level verb. A leading `--name=value`
+// flag is one token; a leading `--name value` flag is two, so its value is
+// skipped. The FIRST token that is neither a flag nor a flag's value is the
+// top-level verb: stop there and answer whether it is VerbWorker. Scanning on
+// to the end of argv is precisely the 007c774a regression — in
+// `gopi task submit worker` the `worker` is the submit SUMMARY (a positional
+// argument), in `chat --once --prompt worker` it is a subcommand flag's value;
+// neither is the top-level verb, and both were falsely counted as workers
+// (measured 2026-11-18: `worker --status` reported a live worker while a
+// `task submit worker` child was the only gopi process). Stopping at the verb
+// needs no per-verb or per-flag whitelist: anything after the verb belongs to
+// the subcommand and is never this scan's business.
+//
+// It is a PURE function on an argv slice (no os.Args, no env, no exit), so the
+// process scanner can attribute ANOTHER process's argv without touching its
+// own environment — the reason it lives in this leaf package rather than
+// calling config.BootstrapEnvFromArgs (which mutates env and may os.Exit).
+func WorkerVerbIndex(argv []string) int {
+	for i := ArgvVerbIndex; i < len(argv); i++ {
+		a := argv[i]
+		if strings.HasPrefix(a, LongFlagPrefix) {
+			// A process-global flag before the verb consumes its value.
+			// `--name=value` is inline (one token); `--name value` is two.
+			// Skip that value so a VALUE equal to VerbWorker is never read
+			// as the verb. A following flag is not a value — leave it for
+			// the next iteration.
+			if !strings.Contains(a, FlagAssignSep) && i+1 < len(argv) &&
+				!strings.HasPrefix(argv[i+1], LongFlagPrefix) {
+				i++
+			}
+			continue
+		}
+		// The first non-flag, non-value token IS the top-level verb. Decide
+		// here and STOP: every later token is a positional argument or a
+		// subcommand flag whose value may equal VerbWorker by coincidence.
+		if a == VerbWorker {
+			return i
+		}
+		return -1
+	}
+	return -1
+}
+
 // WorkerShape reports whether a process — its comm, its argv and the image the
 // kernel says it executes — is a WORKER by shape: the process runs the gopi
 // program (IsGopiImage — NEVER the comm equality, which was the false absence) AND
-// argv[1] == VerbWorker. It is the counting predicate the launcher implements in
+// its top-level verb (after any process-global flags) is VerbWorker. It is the counting predicate the launcher implements in
 // shell (scripts/gopi-worker-up.sh: "which processes are workers at this
 // instant"), stated here so the Go side of the same contract has one definition
 // to call (Rule 13/14) and so a test can pin the shape the shell mirrors.
@@ -1098,7 +1165,7 @@ func WorkerShape(procRoot, pid, comm string, argv []string) bool {
 	if isGopi, _ := IsGopiImage(procRoot, pid, argvFirst(argv), comm); !isGopi {
 		return false
 	}
-	return len(argv) > ArgvVerbIndex && argv[ArgvVerbIndex] == VerbWorker
+	return WorkerVerbIndex(argv) >= 0
 }
 
 // WorkerImageIsGopi is IsGopiImage for a caller that has the pid as a STRING and

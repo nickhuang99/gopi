@@ -57,6 +57,7 @@ import (
 	"time"
 
 	"github.com/nickhuang99/gopi/internal/config"
+	"github.com/nickhuang99/gopi/internal/scratch"
 	"github.com/nickhuang99/gopi/internal/signalrec"
 	"github.com/nickhuang99/gopi/internal/tools"
 )
@@ -2084,7 +2085,7 @@ func workerLockPath() (string, error) {
 		return "", fmt.Errorf("resolve gopi dir: %w", err)
 	}
 	path := filepath.Join(gd, workerLockFilename)
-	if err := os.MkdirAll(filepath.Dir(path), serveLockDirMode); err != nil {
+	if err := scratch.MkdirAllWithSuiteRunOwnerPerm(filepath.Dir(path), serveLockDirMode); err != nil {
 		return "", fmt.Errorf("create %s: %w", filepath.Dir(path), err)
 	}
 	return path, nil
@@ -2773,7 +2774,7 @@ func workerClearStopRequestFor(dir string, pid int) {
 // things (Rule 2).
 //
 // WHY THE ANCHOR IS THE RECEIPT'S OWN req_ts AND NOT THE FILE'S MTIME (measured
-// 2026-10-16 on host-a): the first shape compared the receipt file's mtime
+// 2026-10-16 on the host): the first shape compared the receipt file's mtime
 // against the instant the poll was armed, and on this filesystem mtime is
 // TRUNCATED to a granularity coarser than time.Now() — a file created 1.6ms
 // AFTER the reading still carried an mtime BEFORE it, so a legitimate receipt
@@ -3028,7 +3029,7 @@ func (c workerDaemonCtx) consumeDrainRequests() {
 	}
 	if workerFileStopRequested(c.dir, c.pid) {
 		// FRESHNESS, AND WHY IT IS NOT AN OPTIMISATION (measured 2026-10-15,
-		// host host-a). consumeDrainRequests is called from THREE places: the
+		// host the host). consumeDrainRequests is called from THREE places: the
 		// loop's claim boundary, the ticker watcher, and — decisively — the
 		// forwarder ITSELF, as its first act (forwardWorkerStopDuringRound).
 		// With the wake-up unconditional, that was a self-re-arming loop: the

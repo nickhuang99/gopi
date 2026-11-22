@@ -64,6 +64,7 @@ import (
 	"strings"
 
 	"github.com/nickhuang99/gopi/internal/agent"
+	"github.com/nickhuang99/gopi/internal/scratch"
 	"github.com/nickhuang99/gopi/internal/uiclient"
 )
 
@@ -443,7 +444,7 @@ func chatScreenCapture(ag *agent.Agent, sess *chatSession, req chatScreenRequest
 			return "", "", fmt.Errorf("this session has no directory to write the capture into; pass %s PATH", chatScreenOutFlag)
 		}
 	}
-	if mkerr := os.MkdirAll(filepath.Dir(dest), dumpDirPerm); mkerr != nil {
+	if mkerr := scratch.MkdirAllWithSuiteRunOwnerPerm(filepath.Dir(dest), dumpDirPerm); mkerr != nil {
 		return "", "", fmt.Errorf("cannot create the capture's directory %s: %w", filepath.Dir(dest), mkerr)
 	}
 	rng, frames, err := uiclient.ReadSgrTurnFile(src, span)

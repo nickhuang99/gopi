@@ -36,7 +36,7 @@
 //	       ④ provenance — tags are FORCED to carry the from-node tag
 //	       (from-peer1 style, decided at import, never trusted from the
 //	       file — the same rule as brew rows' node:<host>).
-//	       ⑤ no-overwrite (the the operator hard rule) — an existing row's
+//	       ⑤ no-overwrite (the nick hard rule) — an existing row's
 //	          summary is NEVER rewritten: a same-task_id pending
 //	          row only gets a tags union.
 package tools
@@ -304,6 +304,19 @@ type SyncTaskRow struct {
 	// once. Omitted (not "") on a single-parent row, so a peer's payload for an
 	// ordinary row is byte-identical to what it was before this field existed.
 	ParentTaskIDs string `json:"parent_task_ids,omitempty"`
+	// SessionID is the run session the row was executed under — the value a
+	// memory row's own `session_id` is matched against when the recall routes
+	// resolve "which session produced this record" (see syncSessionColumnExpr's
+	// doc for the measurement).
+	//
+	// It rides this wire as an ADDITIVE field with `omitempty`, which is what
+	// makes the compatibility split safe: a row whose session is unknown omits
+	// the key entirely, so a peer running a build from before this field
+	// existed decodes it as absent and imports the row unchanged; and this build
+	// reads an old peer's absent key as the same "" it always wrote there. No
+	// version gate, no batch refusal — the column is optional in both
+	// directions.
+	SessionID string `json:"session_id,omitempty"`
 }
 
 // deliverableVersionKnown is the highest deliverable-blob schema version
@@ -378,7 +391,7 @@ type SyncTaskExportOptions struct {
 const syncTaskExportColumns = `task_id, summary, COALESCE(payload,''), COALESCE(tags,''),
 	                 COALESCE(source,''), created_at, status, updated_at, COALESCE(ended_at,0),
 	                 COALESCE(run_method,''), COALESCE(run_cmd,''), COALESCE(reason,''),
-	                 ` + syncParentColumnExpr + `, ` + syncParentIDsColumnExpr
+	                 ` + syncParentColumnExpr + `, ` + syncParentIDsColumnExpr + `, ` + syncSessionColumnExpr
 
 // SyncTaskExportStats reports what the export produced.
 type SyncTaskExportStats struct {
@@ -436,7 +449,7 @@ func SyncTaskExport(opts SyncTaskExportOptions) (*SyncTaskPatch, *SyncTaskExport
 	// row, B mirrored it, B's pull must deliver A's verdict back even
 	// though B's copy carries from-A; the import face absorbs the echo
 	// idempotently). Terminal verdicts are history, not channel spam.
-	// M4.24 anti-reflow correction (the operator's anchor-premise doctrine): the
+	// M4.24 anti-reflow correction (nick's anchor-premise doctrine): the
 	// gate must exclude rows the PEER sent us (from-<peer> — relaying them
 	// back is the reflow), NOT rows tagged from-<self>. Self-tagged rows
 	// are either local-born (first export is their WHOLE POINT) or
@@ -471,7 +484,7 @@ func SyncTaskExport(opts SyncTaskExportOptions) (*SyncTaskPatch, *SyncTaskExport
 		var tags, source string
 		var createdAt, updatedAt, endedAt float64 // SQLite REAL — scan into float, cast below
 		if err := rows.Scan(&r.TaskID, &r.Summary, &r.Payload, &tags, &source, &createdAt, &r.Status, &updatedAt, &endedAt, &r.RunMethod, &r.RunCmd, &r.Reason,
-			&r.ParentTaskID, &r.ParentTaskIDs); err != nil {
+			&r.ParentTaskID, &r.ParentTaskIDs, &r.SessionID); err != nil {
 			return nil, nil, fmt.Errorf("memsync export-tasks: scan: %w", err)
 		}
 		r.CreatedAt = int64(createdAt)
@@ -593,9 +606,17 @@ type SyncTaskImportStats struct {
 	// leg may make), and a drop would be the very silence this pair of
 	// counters exists to end (Rule 15).
 	RowsParentsConflict int
-	RowsResolved        int // M4.13 delta: server ruled a conflict → completed
-	RowsRelabeled       int // collision: same id, DIFFERENT work → re-labeled -n<node>
-	RowsLostRace        int // M4.20-B: rank-guarded UPDATE hit 0 rows — re-read done, row already newer
+	// RowsSessionAdopted counts rows whose RUN SESSION this import landed onto
+	// an existing local row that carried none — the repair arm for every row
+	// replicated before the session travelled (syncSessionColumnExpr's doc
+	// carries the measured population). Its own counter because "the row was
+	// already current" and "the row was already current AND its session was
+	// recovered" are different answers for an operator asking whether a re-sync
+	// made a peer-born memory row addressable.
+	RowsSessionAdopted int
+	RowsResolved       int // M4.13 delta: server ruled a conflict → completed
+	RowsRelabeled      int // collision: same id, DIFFERENT work → re-labeled -n<node>
+	RowsLostRace       int // M4.20-B: rank-guarded UPDATE hit 0 rows — re-read done, row already newer
 	// RowsResumeKept counts the ONE backward edge the ladder deliberately does
 	// not adjudicate: a peer's `failed` copy arriving on a row this host resumed
 	// into `in_progress` (the resume edge — see syncDeltaApplyNewer). It is its
@@ -1261,13 +1282,17 @@ func importTaskFreshTx(ctx context.Context, tx *sql.Tx, r SyncTaskRow, tags stri
 	}
 	parentFirst, parentRest := taskParentsForWrite(parentRows)
 	err := importTaskInsertTx(ctx, tx, taskCreateFields{
-		TaskID:        r.TaskID,
-		Summary:       r.Summary,
-		Payload:       r.Payload,
-		Tags:          tags,
-		Source:        source,
-		Status:        taskStatusPending,
-		Priority:      taskTagPriority(tags),
+		TaskID:   r.TaskID,
+		Summary:  r.Summary,
+		Payload:  r.Payload,
+		Tags:     tags,
+		Source:   source,
+		Status:   taskStatusPending,
+		Priority: taskTagPriority(tags),
+		// THE RUN SESSION, on the same terms as the edge above: it travels, and
+		// an old peer that never sent the key decodes it as empty — the value
+		// this arm wrote unconditionally before (syncSessionColumnExpr's doc).
+		SessionID:     strings.TrimSpace(r.SessionID),
 		ParentTaskID:  parentFirst,
 		ParentTaskIDs: parentRest,
 	})
@@ -1405,7 +1430,7 @@ func importTaskAdoptParentsTx(ctx context.Context, tx *sql.Tx, existing *Task, r
 }
 
 // importTaskExisting handles a task_id collision without ever rewriting the
-// row's data (mechanic ⑤ — the the operator hard rule):
+// row's data (mechanic ⑤ — the nick hard rule):
 //   - live patch row + SAME work: tags union ONLY / already (idempotent
 //     re-import — the pre-collision semantics, unchanged). "Same work" is
 //     the SUMMARY (epic 01a0fea1 ③): the payload is the briefing's free-text
@@ -1499,7 +1524,7 @@ func importTaskExistingTx(ctx context.Context, tx *sql.Tx, existing *Task, r Syn
 	if !syncTaskForwardable(r.Status) {
 		// A cancelled patch row: the intent to abandon travels, but the
 		// RULING on a terminal collision is completed-wins (the epic's
-		// completed-vs-cancelled ruling — work is never dropped, the the operator
+		// completed-vs-cancelled ruling — work is never dropped, the nick
 		// hard rule). See terminalConflictRuling below.
 		return terminalConflictRulingTx(ctx, tx, existing, r, tags, stats, lifecycle)
 	}
@@ -1517,7 +1542,7 @@ func importTaskExistingTx(ctx context.Context, tx *sql.Tx, existing *Task, r Syn
 	if syncTaskForwardable(r.Status) && existing.Status != taskStatusPending {
 		// M4.20-B rank advance over a live row. If the local row was
 		// cancelled, that intent is provenance — it survives the ruling as
-		// the cancel-was-intent tag (the the operator hard rule: the cancel was
+		// the cancel-was-intent tag (the nick hard rule: the cancel was
 		// only intent, work is never dropped, and audits see WHY).
 		if existing.Status == taskStatusCancelled {
 			if err := taskTagsUnionTx(ctx, tx, existing.TaskID, existing.Tags,
@@ -1537,7 +1562,7 @@ func importTaskExistingTx(ctx context.Context, tx *sql.Tx, existing *Task, r Syn
 			// Terminal-vs-terminal divergence: local was cancelled (the
 			// intent to abandon), the patch carries finished work
 			// (completed|failed|verified). The ruling is COMPLETED WINS —
-			// work is never dropped (the the operator hard rule); the cancel was
+			// work is never dropped (the nick hard rule); the cancel was
 			// only intent, and it stays on the row as a tag.
 			if err := taskTagsUnionTx(ctx, tx, existing.TaskID, existing.Tags,
 				syncTaskCancelIntentTag); err != nil {
@@ -1602,7 +1627,7 @@ const syncTaskCancelIntentTag = "cancel-was-intent"
 
 // terminalConflictRuling applies the completed-vs-cancelled ruling for a
 // cancelled patch row colliding with an existing local row. The principle:
-// completed (work exists) outranks cancelled (intent to abandon) — the the operator
+// completed (work exists) outranks cancelled (intent to abandon) — the nick
 // hard rule "never drop work". The cancel intent is NOT discarded: it lands
 // on the row as the cancel-was-intent tag (provenance, visible in
 // devdocs and audits). Matrix:
@@ -1687,7 +1712,7 @@ func syncStatusMoveRecord(ctx context.Context, q QueryExecer, leg, peer, taskID,
 // sync-back row completed on ANOTHER node — its remote walk was legal there;
 // this row is catching up to distributed truth. The gates here are stricter
 // where it matters: the source must be pending (a claimed/in_progress row is
-// live local execution — never clobbered, the the operator rule) and the target
+// live local execution — never clobbered, the nick rule) and the target
 // must be forwardable (syncTaskForwardable — cancelled stays local).
 func syncTaskMoveStatusTx(ctx context.Context, tx *sql.Tx, taskID, fromStatus, status, peer string) error {
 	now := float64(time.Now().Unix())
@@ -1769,7 +1794,7 @@ func stringSetEqual(a, b []string) bool {
 //   same id, remote newer  → adopt remote truth … migrated
 //   same id, remote older  → local already ahead … skipped
 //   local terminal row     → never demoted, whatever the remote says … skipped
-//                            (终态不回退 — the the operator hard rule)
+//                            (终态不回退 — the nick hard rule)
 //   same ts, same content  → duped (idempotent re-harvest)
 //   same ts, diverging     → conflict (two truths, one stamp — human eyes)
 //   row-level error        → failed (+ reason in Errors)
@@ -1916,7 +1941,7 @@ func harvestStatusRank(status string) int {
 // harvestBlockedLocal re-states the hard ownership rules the same-stamp
 // ladder must respect even when the remote row wins the rank comparison: a
 // local terminal row is never rewritten (终态不回退), and a live local
-// execution is never clobbered by a live-status rewrite (the the operator rule).
+// execution is never clobbered by a live-status rewrite (the nick rule).
 func harvestBlockedLocal(localStatus, remoteStatus string) bool {
 	if terminalTaskStatus(localStatus) {
 		return true
@@ -1968,6 +1993,12 @@ type harvestRemoteRow struct {
 	// older peers (the SELECT COALESCEs, so a peer whose schema predates the
 	// column still scans).
 	ParentTaskIDs string `json:"parent_task_ids"`
+	// SessionID is the row's RUN SESSION — the same column the delta channel
+	// now carries (syncSessionColumnExpr's doc has the measurement). It rides
+	// this wire for the same reason the edge does: the harvest window is the
+	// v1 leg, and a row it copies without the session leaves every peer-born
+	// memory record unroutable here. "" on older peers (the SELECT COALESCEs).
+	SessionID string `json:"session_id"`
 }
 
 // deliverableValidForImport reports whether a remote deliverable blob may
@@ -2381,7 +2412,7 @@ func harvestReconcile(ctx context.Context, tx *sql.Tx, bus *taskNotifyBus, count
 	// same-second collision. The incoming live row is relabeled and queued —
 	// a conflict line would leave HP's new work stranded on the peer. Only a
 	// locally-pending row relabels: a protected local state (terminal — 终态
-	// 不回退 / live-owned — the the operator rule) keeps the status ladder, a remote
+	// 不回退 / live-owned — the nick rule) keeps the status ladder, a remote
 	// TERMINAL report for a different task is refused (inserting a ghost
 	// completion fabricates history), and a remoteLive twin keeps the ladder
 	// (the peer is executing it — queuing it here invites double execution).
@@ -2435,7 +2466,7 @@ func harvestReconcile(ctx context.Context, tx *sql.Tx, bus *taskNotifyBus, count
 			}
 			counts.Migrated++
 		case remoteRank > harvestStatusRank(local.status):
-			// Terminal outranks the local live row but the the operator rule blocks
+			// Terminal outranks the local live row but the nick rule blocks
 			// the rewrite of a locally-owned run — unless the content is
 			// identical (the twin-in-flight case: the shared row's own
 			// completion result).
@@ -2476,7 +2507,7 @@ func harvestReconcile(ctx context.Context, tx *sql.Tx, bus *taskNotifyBus, count
 		return
 	}
 	// A live local execution owned by this node is protected from
-	// live-status rewrites (the the operator rule): the remote twin arrives
+	// live-status rewrites (the nick rule): the remote twin arrives
 	// coerced to pending, and pending must never pull a live row back
 	// down the ladder. A remote TERMINAL row (the run's result) is NOT a
 	// live rewrite — it lands via harvestUpdate below, migrating the live
@@ -2548,7 +2579,7 @@ func harvestInsert(ctx context.Context, tx *sql.Tx, r harvestRemoteRow, status, 
 		                    parent_task_id, `+taskParentIDsColumnName+`, tags, payload, source, deliverable,
 		                    priority, run_method, run_cmd, reason, created_at, updated_at, ended_at)
 		 VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)`,
-		r.TaskID, r.Summary, status, "", r.Model, strings.TrimSpace(r.ParentTaskID),
+		r.TaskID, r.Summary, status, strings.TrimSpace(r.SessionID), r.Model, strings.TrimSpace(r.ParentTaskID),
 		strings.TrimSpace(r.ParentTaskIDs),
 		localTagsWith(fromTag, r.Tags), r.Payload, r.Source,
 		deliverable,
@@ -2620,12 +2651,32 @@ func harvestUpdate(ctx context.Context, tx *sql.Tx, bus *taskNotifyBus, prevStat
 			parentNew, parentIDsNew = taskParentsForWrite(taskParentIDsOf(r.ParentTaskID, r.ParentTaskIDs))
 		}
 	}
+	// THE RUN SESSION backfills exactly like the edge above, one column over:
+	// a local row that arrived before the session travelled carries '' and the
+	// peer's copy names it, so the repair must reach EXISTING rows too (the
+	// measured population was 966 of 1049 shared rows — an insert-only fix
+	// would leave nearly all of them unroutable). Guarded on the local value
+	// still being empty, so a session this ledger already knows is never
+	// overwritten, and it deliberately does not touch updated_at (provenance,
+	// not a state transition — see syncDeltaAdoptSession).
+	sessionNew := ""
+	if remoteSession := strings.TrimSpace(r.SessionID); remoteSession != "" {
+		var localSession string
+		if err := tx.QueryRowContext(ctx,
+			`SELECT COALESCE(`+originSessionCol+`,'') FROM tasks WHERE task_id = ?`, r.TaskID).Scan(&localSession); err != nil {
+			return fmt.Errorf("apply: probe session: %w", err)
+		}
+		if strings.TrimSpace(localSession) == "" {
+			sessionNew = remoteSession
+		}
+	}
 	res, err := tx.ExecContext(ctx,
 		`UPDATE tasks SET status = ?, payload = ?, tags = ?,
 		        model = COALESCE(NULLIF(?, ''), model),
 		        deliverable = CASE WHEN ? != '' THEN ? ELSE deliverable END,
 		        parent_task_id = CASE WHEN ? != '' THEN ? ELSE COALESCE(parent_task_id,'') END,
 		        `+taskParentIDsColumnName+` = CASE WHEN ? != '' THEN ? ELSE COALESCE(`+taskParentIDsColumnName+`,'') END,
+		        `+originSessionCol+` = CASE WHEN ? != '' THEN ? ELSE COALESCE(`+originSessionCol+`,'') END,
 		        run_method = COALESCE(NULLIF(?, ''), run_method),
 		        run_cmd = COALESCE(NULLIF(?, ''), run_cmd),
 		        reason = COALESCE(NULLIF(?, ''), reason),
@@ -2636,6 +2687,7 @@ func harvestUpdate(ctx context.Context, tx *sql.Tx, bus *taskNotifyBus, prevStat
 		deliverableNew, deliverableNew,
 		parentNew, parentNew,
 		parentIDsNew, parentIDsNew,
+		sessionNew, sessionNew,
 		r.RunMethod, r.RunCmd,
 		r.Reason,
 		ended, ended, r.UpdatedAt, r.TaskID,
@@ -2759,8 +2811,8 @@ func importTaskMirrorTx(ctx context.Context, tx *sql.Tx, r SyncTaskRow, tags str
 	if _, err := tx.ExecContext(ctx, `INSERT INTO tasks
 			(task_id, summary, status, session_id, model, parent_task_id, `+taskParentIDsColumnName+`, tags, payload,
 			 source, run_method, run_cmd, reason, created_at, updated_at, ended_at)
-		 VALUES (?, ?, ?, '', '', ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)`,
-		r.TaskID, summary, r.Status, strings.TrimSpace(r.ParentTaskID), strings.TrimSpace(r.ParentTaskIDs), tags, r.Payload, tasksource.MirrorTerminal,
+		 VALUES (?, ?, ?, ?, '', ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)`,
+		r.TaskID, summary, r.Status, strings.TrimSpace(r.SessionID), strings.TrimSpace(r.ParentTaskID), strings.TrimSpace(r.ParentTaskIDs), tags, r.Payload, tasksource.MirrorTerminal,
 		r.RunMethod, r.RunCmd, r.Reason,
 		createdAt, float64(r.UpdatedAt), endedAt); err != nil {
 		return fmt.Errorf("mirror insert: %w", err)

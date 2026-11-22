@@ -61,8 +61,21 @@ import (
 // is usable either way, and the age window remains the fallback collector.
 // Creating the directory keeps os.MkdirAll's full contract, error included.
 func MkdirAllWithSuiteRunOwner(dir string) error {
+	return MkdirAllWithSuiteRunOwnerPerm(dir, DirPerm)
+}
+
+// MkdirAllWithSuiteRunOwnerPerm is MkdirAllWithSuiteRunOwner for a caller that
+// creates directories at its OWN permission bits.
+//
+// WHY IT EXISTS (Rule 14): a profile root is created 0700 while the scratch tree
+// is 0755, and the registration predicate must not be copied to satisfy a mode —
+// a second copy of "which ancestors may I claim" is a second policy that drifts.
+// The namespace predicate and the record writer therefore live HERE, once, and
+// the mode is the caller's parameter. Nothing else in the function differs from
+// the DirPerm spelling above.
+func MkdirAllWithSuiteRunOwnerPerm(dir string, perm os.FileMode) error {
 	created := suiteRunAncestorsToCreate(dir)
-	if err := os.MkdirAll(dir, DirPerm); err != nil {
+	if err := os.MkdirAll(dir, perm); err != nil {
 		return err
 	}
 	for _, root := range created {

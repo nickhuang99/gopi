@@ -42,6 +42,7 @@ import (
 	"io"
 	"os"
 	"strings"
+	"time"
 
 	"github.com/nickhuang99/gopi/internal/cliverbs"
 	"github.com/nickhuang99/gopi/internal/uiclient"
@@ -107,6 +108,9 @@ type screenReplayVerbOptions struct {
 	operands []string
 	verify   bool
 	help     bool
+	// playback carries the SELECTION and PACING controls to the ONE writer, so
+	// this door and the sub-verb's cannot drift in what they mean (Rule 14).
+	playback screenReplayOptions
 }
 
 // isScreenReplaySubcommand reports whether argv begins with this verb. It
@@ -142,7 +146,7 @@ func runScreenReplayVerb(args []string, out io.Writer, errw io.Writer) int {
 	if opts.verify {
 		return screenReplayVerbDiff(opts.operands[0], opts.operands[1], out, errw)
 	}
-	return screenReplayVerbWrite(opts.operands[0], out, errw)
+	return screenReplayVerbWrite(opts.operands[0], opts.playback, out, errw)
 }
 
 // parseScreenReplayVerbArgs reads this verb's flags. An unknown flag is refused
@@ -165,9 +169,47 @@ func parseScreenReplayVerbArgs(args []string) (screenReplayVerbOptions, error) {
 		case strings.HasPrefix(a, screenReplayVerbVerifyFlag+"="):
 			return opts, fmt.Errorf("%s takes no value — it takes two recordings (%s A B)",
 				screenReplayVerbVerifyFlag, screenReplayVerbSynopsis)
+		case a == screenReplayStepFlag:
+			opts.playback.step = true
+		case a == screenReplayFromFlag:
+			if i+1 >= len(args) {
+				return opts, fmt.Errorf("%s needs a frame index (0 is the first frame)", screenReplayFromFlag)
+			}
+			n, nerr := screenReplayIndex(screenReplayFromFlag, args[i+1])
+			if nerr != nil {
+				return opts, nerr
+			}
+			opts.playback.from = n
+			i++
+		case strings.HasPrefix(a, screenReplayFromFlag+"="):
+			n, nerr := screenReplayIndex(screenReplayFromFlag,
+				strings.TrimPrefix(a, screenReplayFromFlag+"="))
+			if nerr != nil {
+				return opts, nerr
+			}
+			opts.playback.from = n
+		case a == screenReplayPaceFlag:
+			if i+1 < len(args) && !strings.HasPrefix(args[i+1], "-") {
+				d, derr := screenReplayPace(screenReplayPaceFlag, args[i+1])
+				if derr != nil {
+					return opts, derr
+				}
+				opts.playback.pace = d
+				i++
+			} else {
+				opts.playback.pace = screenReplayDefaultPaceMS * time.Millisecond
+			}
+		case strings.HasPrefix(a, screenReplayPaceFlag+"="):
+			d, derr := screenReplayPace(screenReplayPaceFlag,
+				strings.TrimPrefix(a, screenReplayPaceFlag+"="))
+			if derr != nil {
+				return opts, derr
+			}
+			opts.playback.pace = d
 		case strings.HasPrefix(a, "-"):
-			return opts, fmt.Errorf("unknown flag %q (this page takes %s, %s and %s)",
-				a, HelpFlag, HelpFlagLong, screenReplayVerbVerifyFlag)
+			return opts, fmt.Errorf("unknown flag %q (this page takes %s, %s, %s, %s, %s and %s)",
+				a, HelpFlag, HelpFlagLong, screenReplayVerbVerifyFlag,
+				screenReplayFromFlag, screenReplayPaceFlag, screenReplayStepFlag)
 		default:
 			opts.operands = append(opts.operands, a)
 		}
@@ -204,13 +246,14 @@ func screenReplayVerbOperandShape(verify bool) string {
 // a new-suffix file, a legacy-suffix file and any existing path — which is
 // exactly this verb's contract, and the reason there is no second resolver to
 // keep in step (Rule 14).
-func screenReplayVerbWrite(operand string, out io.Writer, errw io.Writer) int {
+func screenReplayVerbWrite(operand string, playback screenReplayOptions, out io.Writer, errw io.Writer) int {
 	path, err := screenReplayStreamPath(operand)
 	if err != nil {
 		fmt.Fprintf(errw, "%s%v\n", screenReplayVerbErrorPrefix, err)
 		return chatExitFailed
 	}
-	return screenReplayWrite(operand, path, out, errw)
+	playback.id = operand
+	return screenReplayWrite(playback, path, os.Stdin, out, errw)
 }
 
 // screenReplayVerbDiff is the `--verify A B` arm: two named recordings, compared
@@ -276,6 +319,10 @@ var screenReplayVerbUsage = screenReplayVerbUsageHead + "\n" +
 	"Usage:\n" +
 	"  " + screenReplayVerbSynopsis + "\n" +
 	"        Write the recorded render bytes to stdout, unchanged.\n" +
+	"  " + screenReplayVerbSynopsis + " " + screenReplayFromFlag + " N " + screenReplayPaceFlag + " MS\n" +
+	"        Write them FROM frame N (0-based), MS milliseconds apart.\n" +
+	"  " + screenReplayVerbSynopsis + " " + screenReplayStepFlag + "\n" +
+	"        Write ONE frame per line read from stdin (ENTER next, `" + screenReplayStepQuit + "` to stop).\n" +
 	"  " + screenReplayVerbSynopsis + " " + screenReplayVerbVerifyFlag + " A B\n" +
 	"        Compare two recordings frame by frame, and print where they first differ.\n" +
 	"  " + screenReplayVerbSynopsis + " " + HelpFlag + "\n" +
@@ -287,11 +334,20 @@ var screenReplayVerbUsage = screenReplayVerbUsageHead + "\n" +
 	"(" + screenStreamSuffixSpellings() + ").\n" +
 	"\n" +
 	"WHAT GOES TO STDOUT, AND WHAT DOES NOT. Every frame's payload, in recorded\n" +
-	"order, and nothing else: no canvas is built, no frame is paced, no colour is\n" +
-	"rewritten and no line is re-wrapped, so the output is the recording's own\n" +
-	"bytes and can be piped, hashed or captured. Every diagnostic — the counts and\n" +
-	"how the recording ended — goes to STDERR, so a redirected stdout never carries\n" +
-	"a word that was not in the recording.\n" +
+	"order, and nothing else: no canvas is built, no colour is rewritten and no\n" +
+	"line is re-wrapped, so the output is the recording's own bytes and can be\n" +
+	"piped, hashed or captured. `" + screenReplayPaceFlag + "`, `" + screenReplayStepFlag + "` and `" + screenReplayFromFlag + "` decide WHEN\n" +
+	"and FROM WHERE a frame goes out; they never change the bytes. Every\n" +
+	"diagnostic — the counts and how the recording ended — goes to STDERR, so a\n" +
+	"redirected stdout never carries a word that was not in the recording. The ONE\n" +
+	"deliberate exception is the LAST thing written on every exit, error paths\n" +
+	"included: the terminal is handed back CLEAN — the DECSTBM scroll region reset\n" +
+	"`" + screenReplayScrollResetSpelled + "` first (a recording that sets a scroll region and never clears it\n" +
+	"freezes every row below it, which is what \"I have to run clear\" actually is),\n" +
+	"then the cursor made visible `" + screenReplayCursorShowSpelled + "`, then a carriage return so the prompt\n" +
+	"starts at column 1, and the SGR reset `" + screenReplaySgrResetSpelled + "` LAST, so the final sequence on\n" +
+	"the wire is a reset and the shell inherits a terminal in its default\n" +
+	"attributes rather than the last frame's.\n" +
 	"\n" +
 	"HOW THE RECORDING ENDED is stated in its own sentence, from the file's own\n" +
 	"records: a recording whose close-out record is present and agrees with its\n" +

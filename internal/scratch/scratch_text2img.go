@@ -159,7 +159,7 @@ func Text2ImgDumpFile() (string, error) {
 	if dir == "" {
 		return "", fmt.Errorf("text2img: no scratch home to write into (scratch.HomeDir is empty) — pass an explicit --out")
 	}
-	if err := os.MkdirAll(dir, DirPerm); err != nil {
+	if err := MkdirAllWithSuiteRunOwnerPerm(dir, DirPerm); err != nil {
 		return "", fmt.Errorf("text2img: create %s: %w", dir, err)
 	}
 	stamp := time.Now().Unix()

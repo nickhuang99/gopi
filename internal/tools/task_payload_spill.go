@@ -6,6 +6,8 @@ import (
 	"path/filepath"
 	"strings"
 	"time"
+
+	"github.com/nickhuang99/gopi/internal/scratch"
 )
 
 // taskPayloadInlineMaxBytes is the largest payload the submit funnel writes
@@ -150,7 +152,7 @@ func taskSpillPayload(taskID, payload string) (TaskAttachment, error) {
 		return TaskAttachment{}, err
 	}
 	dir := filepath.Join(sd, taskPayloadSpillSourceDirName)
-	if err := os.MkdirAll(dir, 0o755); err != nil {
+	if err := scratch.MkdirAllWithSuiteRunOwner(dir); err != nil {
 		return TaskAttachment{}, fmt.Errorf("task %s: payload spill dir: %w", taskID, err)
 	}
 	src := filepath.Join(dir, taskPayloadSpillFileName)

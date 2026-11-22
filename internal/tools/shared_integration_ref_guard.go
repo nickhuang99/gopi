@@ -1316,7 +1316,7 @@ func refGuardHeredocTerminates(line, delim string) bool {
 //
 // THE HEAD WALK IS SHARED (gitCommandHeadIdx), because the operand rule is the
 // half that was missing here: this function used to skip `-u` as "an option" and
-// then refuse `the operator` as "a foreign word", so `sudo -u the operator git push --force` read
+// then refuse `nick` as "a foreign word", so `sudo -u nick git push --force` read
 // as NO git invocation and the ref-move fence never saw the push (measured, task
 // 01a19d8a).
 func refGuardGitSubcommand(words []string) (verb string, rest []string, ok bool) {

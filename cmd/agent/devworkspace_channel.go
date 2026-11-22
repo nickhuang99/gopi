@@ -121,9 +121,32 @@ func taskRunCloneChannelFor(taskID string, log io.Writer) (*cloneRunState, tools
 	// repo outside the workspace root, so a normal repo's log and git calls are
 	// untouched, and it caches nothing: the refusal re-asks every time.
 	repo := tools.TaskDeliverableRepoFor(taskID)
+	// WHICH REPOSITORY DOES *THIS ROW* CLONE FROM? The row's own
+	// deliverable.repo when it is a usable work tree of its own, else the host's
+	// dev_repo (internal/devworkspace.ResolveCloneSource — ONE resolver, so this
+	// leg and the delivery leg cannot disagree about the origin).
+	//
+	// THE DEFECT THIS CLOSES (measured 2026-11-22, row 01a20059-fc11): the
+	// channel cloned `dev_repo` unconditionally, so a row whose deliverable.repo
+	// was /home/user/work/sudoku got a ground holding the GOPI tree — the work it
+	// was asked to do could not be written there, and the delivery loop would
+	// have pushed gopi's master onto gopi's server.
+	cloneSrc := devworkspace.ResolveCloneSource(repo, root, devRepo)
+	if cloneSrc.Note != "" {
+		fmt.Fprintf(log, "task %s: %s\n", taskID, cloneSrc.Note)
+	}
 	state := &cloneRunState{cfg: devworkspace.Config{
 		TaskID:  taskID,
-		DevRepo: devRepo,
+		DevRepo: cloneSrc.Repo,
+		// THE ROW'S OWN DECLARATION, kept BESIDE the resolved clone source: the
+		// two are the same on the ordinary shape and differ exactly when the
+		// channel fell back to the host's dev_repo — and that is the only case in
+		// which the empty gate's sentence needs a scope (epic measured 2026-11-22,
+		// row 01a200a0-6062: gopi clone + sudoku deliverable.repo). Passing the
+		// row's value through is what lets the sentence say "this count is about
+		// the GROUND, not about the repository your row names" instead of leaving
+		// a reader to conclude there is nothing to fetch back.
+		RowRepo: repo,
 		Root:    root,
 		// THE GROUND STANDS ON THE INTEGRATION BRANCH — GroundBranch is left
 		// EMPTY on purpose (the operator's ruling, 2026-11-05).
@@ -159,9 +182,42 @@ func taskRunCloneChannelFor(taskID string, log io.Writer) (*cloneRunState, tools
 	if recorded, _ := tools.TaskDeliverableWorktreeFor(taskID); recorded != "" {
 		state.cfg.Worktree = recorded
 	}
-	fmt.Fprintf(log, "task %s: clone channel ON (%s=%s via %s; %s=%s via %s)\n",
-		taskID, config.DevRepoSettingsKey, devRepo, source,
+	// THE LINE NAMES THE SOURCE THAT DECIDED, not the declaration that did not
+	// (Rule 15's positive half). It used to print `dev_repo=<declared>` only, so
+	// a run cloned from the row's repository still read as if dev_repo had
+	// chosen — the same sentence/decision disagreement this change exists to
+	// remove.
+	fmt.Fprintf(log, "task %s: clone channel ON (source=%s from %s; %s=%s via %s; %s=%s via %s)\n",
+		taskID, cloneSrc.Repo, cloneSrc.Arm,
+		config.DevRepoSettingsKey, devRepo, source,
 		config.WorkspaceRootSettingsKey, root, rootSource)
+	// THE DESTINATION IS ASKED BEFORE THE WORK, not after it.
+	//
+	// This is the whole first half of the epic: on hp the declaration named the
+	// host's OWN non-bare tree with `master` checked out and no
+	// `receive.denyCurrentBranch`, so the channel cloned, pulled and BUILT — most
+	// of the way through a run — and only then learned that git refuses to push a
+	// checked-out branch there:
+	//
+	//	! [remote rejected]     HEAD -> master (branch is currently checked out)
+	//
+	// The answer is a property of the DESTINATION's own configuration (the same
+	// declaration works on a host that sets `updateInstead`), so it is a question
+	// to ASK the destination, and asking it costs one rev-parse. It is reported
+	// BY NAME and the run continues: a misdeclaration is a fact the operator
+	// decides about, and both fixes (declare a peer/bare destination, or set
+	// `updateInstead` there) are configuration changes this run must not make for
+	// them (PROJECT.md Rule 15 names the cause; Rule 35 forbids a new dependency
+	// to carry the message).
+	if acceptance := devworkspace.ProbePushTargetAcceptance(
+		context.Background(), cloneSrc.Repo, devworkspace.DefaultBranch); acceptance.RejectsPush {
+		fmt.Fprintf(log, "%s\n", devworkspace.PushTargetWarning(cloneSrc.Repo, acceptance))
+	} else if acceptance.Probed {
+		fmt.Fprintf(log, "task %s: the delivery point accepts a push of %s — %s\n",
+			taskID, devworkspace.DefaultBranch, acceptance.Note)
+	} else {
+		fmt.Fprintf(log, "task %s: the delivery point was NOT asked — %s\n", taskID, acceptance.Note)
+	}
 	opened, err := devworkspace.Open(context.Background(), state.cfg)
 	if err != nil {
 		return state, tools.TaskGroundResolution{}, err

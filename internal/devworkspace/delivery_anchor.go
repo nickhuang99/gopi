@@ -160,10 +160,37 @@ const (
 
 	// deliveryEmptyRefusalFmt is the ONE spelling of "nothing to deliver": the
 	// directory, the MEASURED count, the command that produced it, the pull/push
-	// clause `%s` (two spellings below, chosen by a COUNT), and the two stories it
-	// explicitly denies. `%s` order: dir, command, base, pull-push clause.
-	deliveryEmptyRefusalFmt = "%s carries no commit to deliver: `%s` answered 0 against %s, %s. " +
+	// clause `%s` (two spellings below, chosen by a COUNT), the optional SCOPE
+	// clause (deliveryEmptyScopeFmt — empty unless the row names a repository of
+	// its own, so the composition is byte-identical on every existing shape), and
+	// the two stories it explicitly denies.
+	// `%s` order: dir, command, base, pull-push clause, scope clause.
+	deliveryEmptyRefusalFmt = "%s carries no commit to deliver: `%s` answered 0 against %s, %s.%s " +
 		"This is NOT a refused pull and NOT a conflict — do not chase the network"
+
+	// deliveryEmptyScopeFmt is the SCOPE the sentence above carries, and it
+	// exists because THAT SENTENCE MEASURES ONE GROUND (epic measured
+	// 2026-11-22, row 01a200a0-6062: a row whose `deliverable.repo` was
+	// /home/user/work/sudoku closed with "carries no commit to deliver" while its
+	// real deliverable sat one commit ahead in a scratch clone of sudoku).
+	//
+	// WHAT IT IS NOT: a second judgement. `ahead == 0` on THIS ground is correct
+	// and stays exactly as computed — nothing here widens or narrows "should this
+	// push", and no other repository's refs are read (measuring the row's repo
+	// from the close-out would let a leg that owns no ground there decide about
+	// commits it cannot see the history of). What changes is only the CLAIM a
+	// reader takes from the words: the count is about this ground against its own
+	// remote, so a reader is told which repository that was and that the row's own
+	// declaration is not it.
+	//
+	// EVERY CLAUSE IS MEASURED: `%s` is `git remote get-url origin` in the ground
+	// (deliveryOriginURL — the very address the count was taken against), and `%s`
+	// is the row's own `deliverable.repo` string. An unreadable origin falls back
+	// to the resolved clone source, never to a guess (Rule 15).
+	// `%s` order: origin, row repo.
+	deliveryEmptyScopeFmt = " (scope: this counts THIS ground against ITS OWN remote %s only — the row's deliverable.repo is %s, " +
+		"a DIFFERENT repository that nothing here measured, so a commit waiting there, or in a clone of it, " +
+		"is invisible to this sentence)"
 
 	// The pull/push clause has TWO measured spellings, and which one is printed is
 	// decided by a count of its own — never by the ahead reading alone. `ahead == 0`
@@ -458,7 +485,7 @@ func deliveryHeadDirGate(ctx context.Context, cfg Config, dir string) error {
 		}
 		return nil
 	}
-	return fmt.Errorf(CloneChannelPrefix+deliveryHeadElsewhereFmt,
+	return fmt.Errorf(CloneChannelPrefix + deliveryHeadElsewhereFmt,
 		dir, head, deliveryTopLevelVerb, deliveryTopLevelFlag, dir, head)
 }
 
@@ -712,7 +739,7 @@ func deliveryBaseTip(ctx context.Context, dir, base, ground string) (tip, integr
 	ground = strings.TrimSpace(ground)
 	base = strings.TrimSpace(base)
 	if base == "" || base == ground {
-		return "", "", fmt.Errorf(CloneChannelPrefix+"the integration base of %s is %q, which cannot be "+
+		return "", "", fmt.Errorf(CloneChannelPrefix + "the integration base of %s is %q, which cannot be "+
 			"measured (a ground branch is never its own base)", dir, base)
 	}
 	ref := deliveryFullRef(base)
@@ -724,7 +751,7 @@ func deliveryBaseTip(ctx context.Context, dir, base, ground string) (tip, integr
 	// spelling with the tip it resolved to.
 	out, err := runCommand(ctx, dir, gitBinary, gateTipVerb, "--verify", "--quiet", base)
 	if err != nil {
-		return "", "", fmt.Errorf(CloneChannelPrefix+"the integration base %s cannot be resolved in %s "+
+		return "", "", fmt.Errorf(CloneChannelPrefix + "the integration base %s cannot be resolved in %s "+
 			"(neither %s nor %q): %w (output: %s)", base, dir, ref, base, err, tail(out))
 	}
 	return strings.TrimSpace(out), base, nil
@@ -814,12 +841,12 @@ func deliveryOutstanding(ctx context.Context, dir, tip, baseTip string) (int, er
 	out, err := runCommand(ctx, dir, gitBinary, deliveryRevListVerb, deliveryCountFlag, tip,
 		deliveryNotFlag, baseTip)
 	if err != nil {
-		return 0, fmt.Errorf(CloneChannelPrefix+"count the commits %s carries against %s in %s: %w (output: %s)",
+		return 0, fmt.Errorf(CloneChannelPrefix + "count the commits %s carries against %s in %s: %w (output: %s)",
 			tip, baseTip, dir, err, tail(out))
 	}
 	n, perr := strconv.Atoi(strings.TrimSpace(out))
 	if perr != nil {
-		return 0, fmt.Errorf(CloneChannelPrefix+"`%s` printed %q, which is not a commit count: %w",
+		return 0, fmt.Errorf(CloneChannelPrefix + "`%s` printed %q, which is not a commit count: %w",
 			deliveryRevListVerb+" "+deliveryCountFlag+" "+tip+" "+deliveryNotFlag+" "+baseTip,
 			strings.TrimSpace(out), perr)
 	}
@@ -901,7 +928,7 @@ func deliveryAnchorGate(ctx context.Context, cfg Config, dir, base string) error
 	if here == "" || there == "" {
 		// Unmeasurable is not a pass: name the side that could not be resolved
 		// instead of publishing from a directory nobody could identify.
-		return fmt.Errorf(CloneChannelPrefix+"cannot decide whether %q is the directory this row's deliverable lives in "+
+		return fmt.Errorf(CloneChannelPrefix + "cannot decide whether %q is the directory this row's deliverable lives in "+
 			"(%q): one side resolves to no path; refusing to publish from %q", dir, recorded, dir)
 	}
 	if here == there {
@@ -919,11 +946,11 @@ func deliveryAnchorGate(ctx context.Context, cfg Config, dir, base string) error
 	}
 	switch {
 	case recAhead > 0 && pubAhead > 0:
-		return fmt.Errorf(CloneChannelPrefix+deliveryAnchorRefusalFmt,
+		return fmt.Errorf(CloneChannelPrefix + deliveryAnchorRefusalFmt,
 			recorded, dir,
 			fmt.Sprintf(deliveryAnchorBothFmt, deliveryOriginPrefix+base, recAhead, pubAhead))
 	case recAhead > 0:
-		return fmt.Errorf(CloneChannelPrefix+deliveryAnchorRefusalFmt,
+		return fmt.Errorf(CloneChannelPrefix + deliveryAnchorRefusalFmt,
 			recorded, dir,
 			fmt.Sprintf("%d commit(s) ahead of %s live there; this directory carries %d",
 				recAhead, deliveryIntegrationFmt, pubAhead))
@@ -1098,13 +1125,87 @@ func deliveryEmptyGate(ctx context.Context, cfg Config, dir, base string) (*Bloc
 	}
 	words := fmt.Sprintf(deliveryEmptyRefusalFmt, dir,
 		deliveryRevListVerb+" "+deliveryCountFlag+" "+gitHeadRef+" "+deliveryNotFlag+" "+integration,
-		integration, moveText)
+		integration, moveText, deliveryEmptyScope(ctx, cfg, dir))
 	if sibling != "" {
 		words += sibling
 	}
 	return &Blocker{Kind: BlockerKindEmpty,
 		Step:  deliveryRevListVerb + " " + deliveryCountFlag + " " + gitHeadRef + " " + deliveryNotFlag + " " + integration,
 		Words: words}, nil
+}
+
+// deliveryEmptyScope answers WHICH REPOSITORY the "nothing to deliver"
+// measurement is about — and it answers "" when the answer is already implied.
+//
+// THE DEFECT IT CLOSES (epic measured 2026-11-22, row 01a200a0-6062). The
+// channel's empty sentence is composed entirely from reads taken in ONE
+// directory: `rev-list --count HEAD --not origin/<base>`, the ground's own
+// `origin`, the ground's own HEAD. When the ground was cloned from the host's
+// `dev_repo` while the ROW's `deliverable.repo` named another repository
+// (/home/user/work/sudoku), that row closed with
+//
+//	/home/user/workspace/<id> carries no commit to deliver: `rev-list --count
+//	HEAD --not origin/master` answered 0 against origin/master, so there is
+//	nothing to pull and nothing to push. This is NOT a refused pull …
+//
+// The MEASUREMENT was right (that ground genuinely held nothing the gopi server
+// lacked) and the CONCLUSION the words invited was wrong: the row's deliverable
+// was one commit ahead in a clone of sudoku, so a reader — the next resume, the
+// PA — concluded there was nothing to fetch back.
+//
+// WHAT THIS FUNCTION DOES NOT DO, deliberately: it does not measure the row's
+// repository. A close-out leg owns no ground there and holds no history of it,
+// so any count it took would be a second, unauthoritative judgement about
+// whether some OTHER repository needs a push — and the fix for a misread
+// sentence is the sentence, not a wider mandate (the epic's own (b) arm).
+// Nothing about `ahead` changes: this clause is printed AFTER the decision, it
+// can never add or remove a commit from it, and no ref anywhere is written.
+//
+// The two facts it prints are both read, never assumed: the row's own declared
+// repository (cfg.RowRepo), and the address the count was actually taken against
+// (`git remote get-url origin` in the ground — the same helper the pull advice
+// uses, so the two cannot name two different peers). The repository the ground
+// was cloned from is the FALLBACK for that address, never a third claim.
+//
+// IT ABSTAINS WHEN THE ANSWER IS IMPLIED, and abstaining is the pre-existing
+// wording, byte for byte:
+//
+//	· no row repository was read                → "" (every caller with no row)
+//	· the row's repository IS the clone source  → "" (the ordinary shape: the
+//	  count is about the repository the row names, so a scope clause would say
+//	  nothing a reader needs)
+func deliveryEmptyScope(ctx context.Context, cfg Config, dir string) string {
+	rowRepo := strings.TrimSpace(cfg.RowRepo)
+	if rowRepo == "" {
+		return ""
+	}
+	cloneSource := strings.TrimSpace(cfg.DevRepo)
+	// THE TWO DECLINE ARMS ABSTAIN ON PURPOSE, so a scope clause never becomes
+	// the sentence's way of guessing: an unread ground (empty) is no question,
+	// and a clone source the caller did not resolve (empty) means the two cannot
+	// be told apart — the clause would have to invent one side.
+	if cloneSource == "" {
+		return ""
+	}
+	if rowRepo == cloneSource {
+		return ""
+	}
+	// TWO SPELLINGS OF ONE DIRECTORY ARE ONE REPOSITORY: a row recorded through a
+	// symlink names the same place as the resolved path, and printing a scope
+	// clause there would tell a reader about a difference that does not exist.
+	// The identity used is the anchor gate's own (deliveryDirIdentity), so this
+	// clause and the "is this the row's deliverable" gate never disagree about
+	// whether two paths are one repository.
+	if deliveryDirIdentity(rowRepo) == deliveryDirIdentity(cloneSource) {
+		return ""
+	}
+	// THE ADDRESS THE COUNT WAS TAKEN AGAINST, read in the ground itself. An
+	// unreadable `origin` falls back to the clone source the caller resolved —
+	// never to a guess, and never to omitting the clause (Rule 15: the reader
+	// gets the fact with the part that could not be measured named as the source
+	// it came from).
+	origin := deliveryOriginURL(ctx, dir, cloneSource)
+	return fmt.Sprintf(deliveryEmptyScopeFmt, origin, rowRepo)
 }
 
 // deliveryEmptySibling is the answer to the operator's immediate next question

@@ -47,10 +47,12 @@ package main
 // epic's whole point is that a missing log must be visible, never guessed at.
 
 import (
+	"errors"
 	"fmt"
 	"io"
 	"os"
 	"path/filepath"
+	"sync"
 
 	"github.com/nickhuang99/gopi/internal/sessionlayout"
 	"github.com/nickhuang99/gopi/internal/tools"
@@ -91,6 +93,60 @@ type consoleLog struct {
 
 // consoleLogCurrent is the active attachment (nil = none).
 var consoleLogCurrent *consoleLog
+
+// consoleLogAttachGuard serialises ATTACH, RESTORE and the fan-out's own
+// detach. Without it the two interleave: Restore puts the operator's stream back
+// and the fan-out's goroutine then overwrites it with the (now dead) pipe write
+// end — or the reverse, closing a read end the copy is still using.
+var consoleLogAttachGuard sync.Mutex
+
+// detachOnFanOutExit is the fan-out goroutine's own cleanup, run on EVERY exit —
+// both the normal one (Restore closed the write end, the copy returned EOF) and
+// the fatal one (the operator's consumer went away and the copy returned
+// EPIPE). See the call site for why the fatal arm is a deadlock and not merely
+// an early return.
+//
+// WHAT IT DOES is deliberately the minimum that cannot lose anything: the
+// stream is put back ONLY while this attachment is still the current one (a
+// Restore that already ran has put the operator's own stream back and must not
+// be undone), and the read end is closed so nothing can block on it. It never
+// touches the log file — that is Restore's, and the fan-out owes no write after
+// its copy returned.
+func (c *consoleLog) detachOnFanOutExit(idx int) {
+	consoleLogAttachGuard.Lock()
+	defer consoleLogAttachGuard.Unlock()
+	if consoleLogCurrent != c {
+		// Restore already took the attachment apart (it sets consoleLogCurrent
+		// nil before touching any stream). It owns the streams now.
+		return
+	}
+	// The stream goes back to the operator's original as soon as no fan-out is
+	// left to carry it: a remaining write to os.Stdout then reaches the real
+	// consumer directly (and, if that consumer is gone, gets EPIPE — the
+	// ordinary non-fatal answer `| head` already relies on).
+	if c.pipeW[idx] == os.Stdout && idx == 0 {
+		os.Stdout = c.original[0]
+	}
+	if c.pipeW[idx] == os.Stderr && idx == 1 {
+		os.Stderr = c.original[1]
+	}
+	// Closing the read end is what turns "block forever" into EPIPE: while this
+	// process holds a read end nothing consumes, the pipe can never drain.
+	c.readEndClose(idx)
+}
+
+// readEndClose releases one stream's read end exactly once. It is called from
+// the fan-out's exit and, on the failure path of Attach, from a half-built
+// attachment; a second close returns EBADF, which is not news.
+func (c *consoleLog) readEndClose(idx int) {
+	if c.pipeR[idx] == nil {
+		return
+	}
+	if err := c.pipeR[idx].Close(); err != nil && !errors.Is(err, os.ErrClosed) {
+		fmt.Fprintf(c.original[1], "[gopi] console log: closing the console pipe: %v\n", err)
+	}
+	c.pipeR[idx] = nil
+}
 
 // consoleLogAttachFor points this process's console output at the session
 // directory of sessionLogPath (the run's JSONL) while keeping the operator's
@@ -165,6 +221,24 @@ func consoleLogAttachFor(sessionLogPath string) string {
 			if copyErr != nil {
 				fmt.Fprintf(cur.original[1], "[gopi] console log: %v (the operator's stream went away; %s keeps what was written)\n", copyErr, path)
 			}
+			// THE FAN-OUT'S DEATH MUST NOT OUTLIVE IT AS A DEADLOCK. This is
+			// defect row 01a1e59c, measured on a live process (pid 2680213, a
+			// one-shot bare-prompt run, frozen 11 days 4 hours and killable only
+			// by SIGKILL): when the operator's consumer goes away (`gopi … |
+			// head -15`), io.Copy's first write fails, this goroutine EXITS — and
+			// the run continues writing to os.Stdout, which is still pipeW here,
+			// whose read end `cur.pipeR[idx]` this process is still holding open.
+			// A pipe with a live reader and NO reader-side consumption FILLS and
+			// the writer BLOCKS FOREVER, in a plain syscall, so no timeout,
+			// context or handler can reach it. Reproduced with a 30-line
+			// standalone sample: `fan-out exited after 0 bytes: broken pipe` then
+			// `WRITE BLOCKED FOREVER`.
+			//
+			// The cure is one line each: put the ORIGINAL stream back, and close
+			// the read end so anything already holding pipeW gets EPIPE (the
+			// ordinary, non-fatal `| head` answer) instead of blocking. Both are
+			// idempotent under the same guard as Restore.
+			cur.detachOnFanOutExit(idx)
 		}(i)
 	}
 	fmt.Fprintf(cur.original[1], "[gopi] console log: %s\n", path)
@@ -176,8 +250,10 @@ func consoleLogAttachFor(sessionLogPath string) string {
 // wait (so the closing line reaches the operator's terminal, not the pipe), and
 // the log file is closed last. Idempotent and safe when nothing was attached.
 func consoleLogRestore() {
+	consoleLogAttachGuard.Lock()
 	cur := consoleLogCurrent
 	if cur == nil {
+		consoleLogAttachGuard.Unlock()
 		return
 	}
 	consoleLogCurrent = nil
@@ -188,8 +264,16 @@ func consoleLogRestore() {
 			fmt.Fprintf(os.Stderr, "[gopi] console log: closing the console pipe: %v\n", err)
 		}
 	}
+	consoleLogAttachGuard.Unlock()
 	for i := range cur.done {
 		<-cur.done[i]
+		// The fan-out has returned; its read end goes with it. detachOnFanOutExit
+		// skipped this because Restore already cleared consoleLogCurrent (that
+		// guard exists to stop it overwriting the streams Restore just put
+		// back), so the release is owed HERE.
+		consoleLogAttachGuard.Lock()
+		cur.readEndClose(i)
+		consoleLogAttachGuard.Unlock()
 	}
 	if err := cur.logFile.Close(); err != nil {
 		fmt.Fprintf(os.Stderr, "[gopi] console log: closing %s: %v\n", cur.path, err)

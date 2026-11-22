@@ -160,7 +160,7 @@ func chatPrefetchTurnInput(out chatOutbound, terms []string) (memoryprefetch.Tur
 	// THE POINTER LEAVES THE KEY ONCE ITS PAYLOAD IS IN IT (measured — see
 	// lineedit.StripPasteRefs). A reference renders the path, the size and the
 	// rune count, and the keyword budget is smaller than that: on the live paste
-	// run the recorded query was `paste turn 5411 home the operator workspace gopi
+	// run the recorded query was `paste turn 5411 home nick workspace gopi
 	// sandbox`, i.e. the operator's two words plus the pointer's, with the
 	// payload's own terms never reaching the extractor's cut. The payload is read
 	// ABOVE, so keeping the pointer as well pays twice for the same content and

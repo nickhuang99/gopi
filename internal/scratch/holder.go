@@ -222,6 +222,18 @@ func HolderScanDeadline() time.Duration {
 type HolderScan struct {
 	// Paths is every holder path observed. Partial when Truncated.
 	Paths []string
+	// Observations is the SAME pass as Paths, keeping which PID held which path
+	// through which channel. Paths alone can answer "is anything inside this
+	// candidate" but not "WHO is inside it", and that second question is what a
+	// keep verdict has to name: a 22-day orphaned `tail -f` and a live worker both
+	// show up in Paths identically (measured 2026-11-17, task 01a1e663 — 12 roots
+	// with a PROVEN-DEAD owner were pinned by inherited descriptors from log
+	// pipelines, and the report could not say so).
+	//
+	// It is carried by the ONE pass rather than collected per candidate because a
+	// second /proc walk per candidate is the cost this package already measured
+	// and refused (6,064 children did not finish inside two minutes).
+	Observations []HolderObservation
 	// Truncated reports that the pass stopped at its bound with processes (or
 	// fd entries) left unvisited. A caller MUST treat "not held" as unknown.
 	Truncated bool
@@ -302,12 +314,14 @@ func ScanHoldersWithin(budget time.Duration) HolderScan {
 			continue
 		}
 		if target, err := os.Readlink(filepath.Join(ProcRootDir, pid, ProcCwdName)); err == nil {
-			scan.Paths = append(scan.Paths, target)
+			scan.observe(pid, ProcCwdName, target)
 		}
 		if target, err := os.Readlink(filepath.Join(ProcRootDir, pid, ProcExeName)); err == nil {
-			scan.Paths = append(scan.Paths, target)
+			scan.observe(pid, ProcExeName, target)
 		}
-		scan.Paths = append(scan.Paths, procMapsPaths(filepath.Join(ProcRootDir, pid, ProcMapsName))...)
+		for _, mapped := range procMapsPaths(filepath.Join(ProcRootDir, pid, ProcMapsName)) {
+			scan.observe(pid, ProcMapsName, mapped)
+		}
 		fdDir := filepath.Join(ProcRootDir, pid, ProcFdName)
 		fds, err := os.ReadDir(fdDir)
 		if err != nil {
@@ -315,12 +329,20 @@ func ScanHoldersWithin(budget time.Duration) HolderScan {
 		}
 		for _, fd := range fds {
 			if target, err := os.Readlink(filepath.Join(fdDir, fd.Name())); err == nil {
-				scan.Paths = append(scan.Paths, target)
+				scan.observe(pid, ProcFdName, target)
 			}
 		}
 	}
 	scan.Elapsed = time.Since(start)
 	return scan
+}
+
+// observe records ONE sighting on both faces of the pass: the flat path list every
+// comparison reads, and the per-pid observation the identity report reads. ONE call
+// site pair means the two faces can never describe different passes.
+func (s *HolderScan) observe(pid, channel, path string) {
+	s.Paths = append(s.Paths, path)
+	s.Observations = append(s.Observations, HolderObservation{Pid: pid, Channel: channel, Path: path})
 }
 
 // HolderVetoReason is the sentence a delete arm reports when the holder scan

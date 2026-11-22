@@ -2,9 +2,12 @@ package main
 
 import (
 	"sort"
+	"strconv"
 	"sync"
 	"sync/atomic"
 	"time"
+
+	"github.com/nickhuang99/gopi/internal/procname"
 )
 
 // --- the in-flight CHILD REGISTRY (shared with the worker/wrapper) --------
@@ -41,6 +44,17 @@ type passChild struct {
 	// child that does not exist), which makes the registration instant the
 	// child's start time.
 	Started time.Time
+	// StartTicks is /proc/<pid>/stat's starttime for the registered child —
+	// the field that makes an entry name a PROCESS rather than a pid NUMBER
+	// (pids are recycled). It is read at registration, right after Start, and
+	// it is what a stop path compares against to answer "is this entry's
+	// process still the one I am waiting for?" (passChildProcessAlive).
+	//
+	// EMPTY when the read failed (a /proc that refused, a child that exited
+	// between Start and the read): the entry then carries the pid alone, and
+	// its liveness reader accepts the pid's mere presence rather than declaring
+	// a live child gone.
+	StartTicks string
 }
 
 // pendingPassChild is a child process registered BEFORE Start succeeded: its
@@ -71,6 +85,16 @@ func registerPassChild(c passChild) func() {
 	}
 	if c.Started.IsZero() {
 		c.Started = time.Now()
+	}
+	// The PROCESS IDENTITY is read here, immediately after the successful
+	// Start the caller just did, so an entry can be told apart from a recycled
+	// pid later (passChildProcessAlive). A second read after an unknown
+	// registration would be too late: the pid may already belong to something
+	// else.
+	if c.StartTicks == "" {
+		if ticks, ok := procname.StartTicks(procname.DefaultProcRoot, strconv.Itoa(c.PID)); ok {
+			c.StartTicks = ticks
+		}
 	}
 	passChildRegistry.mu.Lock()
 	passChildRegistry.m[c.PID] = c

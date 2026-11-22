@@ -55,6 +55,8 @@ import (
 	"sort"
 	"strconv"
 	"strings"
+
+	"github.com/nickhuang99/gopi/internal/scratch"
 )
 
 const (
@@ -124,7 +126,7 @@ func TaskSessionDirUnder(taskID string) (string, error) {
 	if err != nil {
 		return "", err
 	}
-	if err := os.MkdirAll(dir, workerLogDirMode); err != nil {
+	if err := scratch.MkdirAllWithSuiteRunOwnerPerm(dir, workerLogDirMode); err != nil {
 		return "", fmt.Errorf("task session dir: cannot create %s: %w", dir, err)
 	}
 	return dir, nil

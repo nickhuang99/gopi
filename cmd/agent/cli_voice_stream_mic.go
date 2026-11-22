@@ -4,7 +4,7 @@ package main
 // IS SPOKEN (the routing half of task 01a12161: the first-text report itself, and
 // the file-fed pass it was measured with, are cli_voice_first_text.go's).
 //
-// THE DEFECT THIS CLOSES, measured on host-b's own microphone (2026-10-09, task
+// THE DEFECT THIS CLOSES, measured on sager's own microphone (2026-10-09, task
 // 01a120a7's evidence, ev4-bare-streaming-mic.err):
 //
 //	[voice] first text at 14.7s (first partial) (engine doubao-stream) = capture
@@ -148,7 +148,12 @@ func voiceRunMicStream(opts *voiceOptions, dev voiceDevice, runClock *voiceRunCl
 	fmt.Println(text)
 	// THE EMPTY TRANSCRIPT IS ANNOUNCED, exactly as it is on the file shapes: an
 	// empty stdout with no explanation reads as a broken pipe (Rule 15).
-	voiceReportTranscribedBy(opts, text, time.Duration(report.FinalMS)*time.Millisecond)
+	//
+	// The WINDOW is the captured one (--seconds), which is what this arm has
+	// always quoted: the audio went out as it was captured, so the run's own
+	// length IS the window, and the sentence keeps the exact words and figure it
+	// printed before the report took the figure as a parameter.
+	voiceReportTranscribedBy(opts, text, float64(opts.seconds), time.Duration(report.FinalMS)*time.Millisecond)
 	// THE REPORT CARRIES NO CAPTURE WINDOW TERM — the audio went out as it was
 	// captured — and report.WindowMS is deliberately left at zero by the arm above
 	// rather than zeroed here, so the line states the run's own measurement and not
@@ -229,7 +234,7 @@ func voiceMicStreamFirstText(opts *voiceOptions, dev voiceDevice, runClock *voic
 			Token:    cred.Token,
 			Endpoint: endpoint,
 		},
-		OnPartial: func(p voiceLivePartial) { voiceReportStreamPartial(voiceLivePartialV2(p), opts.voiceVerbose()) },
+		OnPartial: func(p voiceLivePartial) { voiceReportStreamPartial(voiceLivePartialV2(p), opts.voicePrintPartials()) },
 		Budget:    time.Duration(voiceMicStreamBudgetMS(opts.seconds)) * time.Millisecond,
 	})
 	// The endpoint (always) and the credential's ORIGIN (under --verbose) are

@@ -7,7 +7,7 @@ package tools
 // was closed against the acceptance criterion «devdoc/DOC-INDEX.tsv 与
 // anchor-number baseline 用 master 的版本», and the deliverable's red/green
 // depended entirely on WHICH ref the reviewer held. Measured in ONE tree
-// (host-b, 2026-10-14), three different blobs each answering to
+// (nick-HP-Laptop, 2026-10-14), three different blobs each answering to
 // "master":
 //
 //	refs/heads/master                  DOC-INDEX.tsv 578ada5ab  2502 lines
@@ -52,6 +52,9 @@ import (
 	"fmt"
 	"strconv"
 	"strings"
+
+	"github.com/nickhuang99/gopi/internal/config"
+	"github.com/nickhuang99/gopi/internal/devworkspace"
 )
 
 // MasterReadingRead is the measurement behind the clause: the two refs, their
@@ -76,6 +79,28 @@ type MasterReadingRead struct {
 	Remotes      []string
 	RemotesKnown bool
 
+	// Shape is the ground model these two refs were chosen FOR
+	// (devworkspace.GroundModelOf — the ONE resolver, Rule 6c), and Clone is
+	// the half of it that changes behaviour: a CLONE carries its own
+	// integration ref plus `origin`'s tracking ref, and structurally cannot
+	// carry the delivery lane's mirror ref, so reading the mirror there was a
+	// seam that could only ever print "unmeasurable" (see masterReadingPair).
+	Shape devworkspace.GroundModel
+	Clone bool
+
+	// LocalRole / TipRole are the ref table's second column, chosen WITH the
+	// refs rather than picked by the renderer: on a clone the peer-mirror
+	// wording would describe a ref this tree cannot have, so the role travels
+	// with the pair it describes.
+	LocalRole string
+	TipRole   string
+
+	// ClonePair reports that the pair above is the CLONE mode's (local vs the
+	// ordinary remote's tracking ref) rather than the delivery lane's mirror.
+	// It gates the mirror-namespace warning, which describes a namespace this
+	// tree does not use in that mode.
+	ClonePair bool
+
 	// NamespaceIsRemote reports whether a remote is configured under the
 	// mirror namespace's own name (gitPushbackCheckNamespace). It is the
 	// measurement that decides whether `git fetch <that name>` can be run at
@@ -94,8 +119,35 @@ func (r MasterReadingRead) Measured() bool {
 // Aligned reports whether the two readings name the SAME commit — the positive
 // control's case, where "the master version" is unambiguous on this tree and a
 // clause claiming a lag would be a lie.
+//
+// THE SHA COMPARISON IS PART OF THE PREDICATE, and it is not redundant with the
+// distance (measured 2026-11-15 on this epic's own ground). Behind==0 says only
+// that TipRef holds NOTHING LocalRef lacks; it says nothing about the other
+// direction, so a checkout that is AHEAD of its upstream reads as "0 behind"
+// while the two tips are different commits. Measured here right after this
+// run's own commit:
+//
+//	refs/heads/master         tip 945a0bb
+//	refs/remotes/origin/master tip 036fcc4
+//	rev-list --count local..tip ⇒ 0
+//
+// and the clause then asserted "the two readings name the SAME commit" about two
+// commits that differ — a contradiction a reader can see IN THE SAME PARAGRAPH.
+// "0 behind" is a distance; "aligned" is an identity, and only the second one
+// licenses the sentence that prints it.
 func (r MasterReadingRead) Aligned() bool {
-	return r.Measured() && strings.TrimSpace(r.Behind) == gitSyncLagAlignedValue
+	return r.Measured() && strings.TrimSpace(r.Behind) == gitSyncLagAlignedValue &&
+		strings.TrimSpace(r.LocalSHA) != "" &&
+		strings.TrimSpace(r.LocalSHA) == strings.TrimSpace(r.TipSHA)
+}
+
+// Ahead reports whether the two readings are DIFFERENT commits with nothing on
+// the upstream side this checkout lacks — the state Aligned refused above. It is
+// a distinct arm, never folded into either neighbour: calling it "aligned" would
+// print one identity for two commits, and calling it "N behind" would print a
+// lag that does not exist.
+func (r MasterReadingRead) Ahead() bool {
+	return r.Measured() && strings.TrimSpace(r.Behind) == gitSyncLagAlignedValue && !r.Aligned()
 }
 
 const (
@@ -116,7 +168,7 @@ const (
 	// which is the fact that makes the two readings differ at all.
 	//
 	// The peer row ALSO says what the mirrored name is and is NOT — a REF, not a
-	// remote. Measured 2026-10-17 on host-a (row 01a14877): `git remote -v`
+	// remote. Measured 2026-10-17 on the host (row 01a14877): `git remote -v`
 	// listed only `peer1`, while refs/remotes/gitPushcheck/master existed and was
 	// the ground's cut point, so `git fetch --quiet gitPushcheck` answered
 	// `fatal: 'gitPushcheck' does not appear to be a git repository` (exit 128)
@@ -125,6 +177,27 @@ const (
 	// a refusable-lane mistake look like a broken probe.
 	masterReadingLocalRole = "the integration branch's own ref — what a local checkout is on"
 	masterReadingTipRole   = "the PEER's integration tip, mirrored by the sync lane — this ground was cut from its line. It is a REF, not a remote: the name names the lane's scratch namespace (refs/remotes/" + gitPushbackCheckNamespace + "/), never a configured git remote"
+
+	// THE CLONE-GROUND PAIR (epic 01a1de00, measured 2026-11-15). Rule 6a makes
+	// a CLONE the only shape a dispatched run is given, and a clone carries
+	// `origin`'s refspec and nothing else: the delivery lane's mirror namespace
+	// is written in the MAIN repository, so the pair above is structurally
+	// unreadable there. Measured on this epic's own ground:
+	//
+	//	git rev-parse --verify refs/remotes/gitPushcheck/master  ⇒ exit=128
+	//	git remote                                              ⇒ origin
+	//
+	// so the clause printed "unmeasurable" on the most ordinary path there is —
+	// honestly (Rule 15), but permanently. The two refs a clone DOES carry are
+	// the same two readings the clause exists to distinguish: this checkout's
+	// own integration ref, and the upstream tip it was cut from.
+	masterReadingCloneTipRole = "the UPSTREAM integration tip this clone's remote-tracking ref mirrors — the line the ground was cut from"
+
+	// masterReadingCloneUnfetchedNote is the clone-mode arm's stated reason when
+	// the tracking ref has not been written yet (a hand-built clone whose fetch
+	// never ran). It is a STATE of a ref that does exist as a slot, not a
+	// substitution: the clause still names no reading (Rule 15).
+	masterReadingCloneUnfetchedFmt = "the upstream tracking ref %s has not been fetched into this clone yet, so the upstream tip is UNMEASURED — run `%s` and re-read; do NOT treat %s as the upstream reading"
 
 	// masterReadingHeadFmt is the clause's opening: what the ambiguity IS. It
 	// names the integration branch twice (as the criterion's word, and as the
@@ -152,6 +225,19 @@ const (
 	// produced this epic (Rule 15: a record that cannot name its subject says so;
 	// the local ref is NOT the fallback).
 	masterReadingUnmeasuredFmt = "The refs could NOT be read here (%s), so NO reading is named: do NOT fall back on %s as though it were the only %s there is — read both refs yourself before judging a criterion phrased against \"the %s version\"."
+
+	// masterReadingAheadFmt is the arm the distance alone cannot express: the
+	// two tips are DIFFERENT commits and the upstream holds nothing this
+	// checkout lacks. Printing "aligned" here would assert one commit about two
+	// (measured 2026-11-15: local 945a0bb, upstream 036fcc4, count 0); printing
+	// "N behind" would invent a lag. So it says which side carries the extra
+	// work, which is the fact a reader needs to judge the criterion.
+	masterReadingAheadFmt = "%s and %s are DIFFERENT commits — %s carries work the upstream does not have yet (0 commit(s) behind, but NOT the same commit) — so \"the %s version\" means one of two commits and the deliverable must say which."
+
+	// masterReadingRefUnreadFmt is the stated reason for a pair where one ref
+	// did not resolve. Spelled once so the clone arm and the original arm cannot
+	// describe the same failure in two ways (Rule 1b).
+	masterReadingRefUnreadFmt = "%s and/or %s did not resolve in %s"
 
 	// masterReadingRecordFmt is the seam's ONE record line for this measurement,
 	// rendered by the same function that renders the clause so the two can never
@@ -189,6 +275,44 @@ const (
 	masterReadingRemoteUnreadFmt = "The remote layout of this tree could NOT be read, so whether `%s` is a configured git remote is UNMEASURED — but %s is a REF either way, and an ancestry probe answers on it without any fetch."
 )
 
+// masterReadingPair answers WHICH two refs this tree's clause must compare, and
+// the role wording for each — from the ground's own measured shape (Rule 6c's
+// ONE resolver, devworkspace.GroundModelOf; Rule 35: no new ref, file or knob).
+//
+// THE DEFECT THIS CLOSES (epic 01a1de00, measured 2026-11-15 on this epic's own
+// ground). The pair was a CONSTANT — refs/heads/<integration> vs the delivery
+// lane's mirror ref — and Rule 6a makes a CLONE the only ground shape a
+// dispatched run is given. A clone carries `origin`'s refspec and nothing else:
+// the mirror is written in the MAIN repository, so the second ref cannot exist
+// here. Measured in this run's own ground:
+//
+//	git rev-parse --verify refs/remotes/gitPushcheck/master   ⇒ exit=128
+//	git remote                                               ⇒ origin
+//
+// The clause therefore printed "unmeasurable" on the most ordinary path there
+// is — HONESTLY (Rule 15: it refused to substitute the local ref), which is why
+// there was no red light anywhere, only a line nobody acts on. A seam that can
+// only say "I could not measure" on every legal ground is not cautious, it is
+// dead.
+//
+// The switch is the MEASURED shape, not a channel's opinion: a clone that has
+// the ordinary remote (config.DeliveryOriginRemoteName) compares its own
+// integration ref against THAT remote's tracking ref — the same question the
+// clause exists to ask ("which of these two commits does 'master' mean"), asked
+// with the two refs this tree actually carries. A linked worktree, a bare
+// directory, and a clone with NO remote keep the original pair: on those the
+// mirror ref is the ref that exists (or there is no upstream reading at all, and
+// then the original pair's honest "unmeasurable" is the correct answer).
+func masterReadingPair(repo string, remotes []string, remotesKnown bool) (localRef, tipRef, localRole, tipRole string, originPair bool) {
+	if devworkspace.GroundModelOf(repo) == devworkspace.GroundModelClone &&
+		remotesKnown && masterReadingHasRemote(remotes, config.DeliveryOriginRemoteName) {
+		return MasterReadingLocalRef(), MasterReadingUpstreamRef(),
+			masterReadingLocalRole, masterReadingCloneTipRole, true
+	}
+	return MasterReadingLocalRef(), MasterReadingTipRef(),
+		masterReadingLocalRole, masterReadingTipRole, false
+}
+
 // MasterReading reads the two refs a criterion phrased against "master" can mean
 // on this tree, and the commit distance between them.
 //
@@ -199,11 +323,10 @@ const (
 // spelling of "we could not count" (Rules 8/13).
 func MasterReading(repo string) MasterReadingRead {
 	r := strings.TrimSpace(repo)
-	out := MasterReadingRead{
-		LocalRef: MasterReadingLocalRef(),
-		TipRef:   MasterReadingTipRef(),
-	}
+	out := MasterReadingRead{Shape: devworkspace.GroundModelOf(r)}
 	if r == "" {
+		out.LocalRef, out.TipRef = MasterReadingLocalRef(), MasterReadingTipRef()
+		out.LocalRole, out.TipRole = masterReadingLocalRole, masterReadingTipRole
 		out.Note = "the ground directory is empty, so no tree was read"
 		out.Evidence = "not attempted: repo is empty"
 		return out
@@ -211,12 +334,21 @@ func MasterReading(repo string) MasterReadingRead {
 	remotes, remotesKnown, remotesEv := masterReadingRemotes(r)
 	out.Remotes, out.RemotesKnown = remotes, remotesKnown
 	out.NamespaceIsRemote = remotesKnown && masterReadingHasRemote(remotes, gitPushbackCheckNamespace)
+	out.LocalRef, out.TipRef, out.LocalRole, out.TipRole, out.ClonePair =
+		masterReadingPair(r, remotes, remotesKnown)
 	out.Evidence = remotesEv
 	localSHA, localOK, localEv := masterReadingResolveRef(r, out.LocalRef)
 	tipSHA, tipOK, tipEv := masterReadingResolveRef(r, out.TipRef)
 	out.Evidence = remotesEv + "; " + localEv + "; " + tipEv
 	if !localOK || !tipOK {
-		out.Note = fmt.Sprintf("%s and/or %s did not resolve in %s", out.LocalRef, out.TipRef, r)
+		if !tipOK && out.ClonePair {
+			// The slot exists, the fetch has not run: a STATE, named as one, and
+			// the local ref is still forbidden as the answer (Rule 15).
+			out.Note = fmt.Sprintf(masterReadingCloneUnfetchedFmt, out.TipRef,
+				gitBinaryName+" "+gitPeerFetchVerb+" "+config.DeliveryOriginRemoteName, out.LocalRef)
+			return out
+		}
+		out.Note = fmt.Sprintf(masterReadingRefUnreadFmt, out.LocalRef, out.TipRef, r)
 		return out
 	}
 	out.LocalSHA, out.TipSHA = localSHA, tipSHA
@@ -291,6 +423,12 @@ func masterReadingRemoteField(r MasterReadingRead) string {
 // borrows an instruction (Rules 15/15a).
 func masterReadingRemoteLine(r MasterReadingRead) string {
 	switch {
+	case r.ClonePair:
+		// The clone pair names the ORDINARY remote's tracking ref, so the
+		// mirror-namespace warning describes a namespace this tree does not use
+		// for this reading — rendering it would be a true sentence pointing at
+		// the wrong ref.
+		return ""
 	case !r.RemotesKnown:
 		return fmt.Sprintf(masterReadingRemoteUnreadFmt, gitPushbackCheckNamespace, r.TipRef)
 	case r.NamespaceIsRemote:
@@ -369,12 +507,32 @@ func MasterReadingLocalRef() string { return refsHeadsPrefix + IntegrationBranch
 // delivery lane's ancestry gate decides on (gitPushbackCheckRef).
 func MasterReadingTipRef() string { return gitPushbackCheckRef }
 
+// MasterReadingUpstreamRef is the CLONE mode's second ref: the ordinary
+// remote's tracking ref for the integration branch, i.e. the upstream tip a
+// clone ground was cut from. It is built from the two constants that already
+// own its halves (Rule 13) — the package's refs/remotes/ prefix and the
+// configured name of the ordinary remote — so no ref spelling is typed here.
+func MasterReadingUpstreamRef() string {
+	return refsRemotesPrefix + config.DeliveryOriginRemoteName + "/" + IntegrationBranchName
+}
+
 // MasterReadingRefs names the TWO refs this clause speaks about, in one string —
 // EXPORTED so the seam's record line addresses the SAME pair of definitions
 // (Rule 14: a shared value is spelled once, and a consumer outside this package
 // must be able to reference it rather than re-type it).
 func MasterReadingRefs() string {
 	return MasterReadingLocalRef() + " vs " + MasterReadingTipRef()
+}
+
+// MasterReadingRefsFor is MasterReadingRefs with the GROUND SHAPE taken into
+// account: the pair printed is the pair the clause on THIS tree actually
+// measured (masterReadingPair), so a seam's record line cannot name the mirror
+// on a clone ground that compares the upstream tracking ref instead.
+func MasterReadingRefsFor(repo string) string {
+	r := strings.TrimSpace(repo)
+	remotes, known, _ := masterReadingRemotes(r)
+	local, tip, _, _, _ := masterReadingPair(r, remotes, known)
+	return local + " vs " + tip
 }
 
 // TaskBriefingMasterReadingClause renders the clause that names WHICH ref a
@@ -394,8 +552,8 @@ func TaskBriefingMasterReadingClause(repo string) (clause, record string) {
 		read.TipRef, masterReadingShaField(read.TipSHA), masterReadingRecordVerdict(read),
 		masterReadingRemoteField(read), read.Evidence)
 	refs := strings.Join([]string{
-		fmt.Sprintf(masterReadingRefLineFmt, read.LocalRef, masterReadingShaField(read.LocalSHA), masterReadingLocalRole),
-		fmt.Sprintf(masterReadingRefLineFmt, read.TipRef, masterReadingShaField(read.TipSHA), masterReadingTipRole),
+		fmt.Sprintf(masterReadingRefLineFmt, read.LocalRef, masterReadingShaField(read.LocalSHA), read.LocalRole),
+		fmt.Sprintf(masterReadingRefLineFmt, read.TipRef, masterReadingShaField(read.TipSHA), read.TipRole),
 	}, "\n")
 	// The mirror name's OWN status rides in the same table block: a reader who
 	// has just been told "refs/remotes/gitPushcheck/master" is one sentence away
@@ -416,6 +574,8 @@ func masterReadingStatusLine(r MasterReadingRead) string {
 	switch {
 	case r.Aligned():
 		return fmt.Sprintf(masterReadingAlignedFmt, r.LocalRef, r.TipRef, r.Behind, IntegrationBranchName)
+	case r.Ahead():
+		return fmt.Sprintf(masterReadingAheadFmt, r.LocalRef, r.TipRef, r.LocalRef, IntegrationBranchName)
 	case r.Measured():
 		return fmt.Sprintf(masterReadingBehindFmt, r.LocalRef, r.Behind, r.TipRef)
 	default:
@@ -439,6 +599,8 @@ func masterReadingRecordVerdict(r MasterReadingRead) string {
 	switch {
 	case r.Aligned():
 		return "aligned (0 behind) — the two readings name one commit"
+	case r.Ahead():
+		return "0 behind but DIFFERENT commits — " + r.LocalRef + " carries work the upstream does not have yet"
 	case r.Measured():
 		return r.Behind + " behind"
 	default:

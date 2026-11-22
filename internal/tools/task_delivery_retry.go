@@ -848,9 +848,19 @@ func deliveryRetryCloneConfig(ctx context.Context, ground string, row deliveryRe
 	if err != nil {
 		return devworkspace.Config{}, fmt.Errorf("%s unusable: %w", config.WorkspaceRootSettingsKey, err)
 	}
+	// THE ORIGIN IS THE ONE THE SPAWN LEG OPENED (Rule 13/14): the same resolver
+	// cmd/agent uses, so a repair pushes to the repository the row names rather
+	// than the host's dev_repo — the defect measured 2026-11-22 (row
+	// 01a20059-fc11) where a sudoku row was grounded on a gopi clone.
 	cfg := devworkspace.Config{
-		TaskID:     row.TaskID,
-		DevRepo:    devRepo,
+		TaskID:  row.TaskID,
+		DevRepo: devworkspace.ResolveCloneSource(row.Repo, root, devRepo).Repo,
+		// THE ROW'S DECLARATION, BESIDE THE RESOLVED SOURCE (epic measured
+		// 2026-11-22, row 01a200a0-6062): a repair leg runs on the same ground the
+		// run-time leg opened, so its empty sentence must carry the same scope —
+		// otherwise the two faces describe one measurement in two different
+		// vocabularies (Rule 14/15).
+		RowRepo:    row.Repo,
 		Root:       root,
 		RootSource: rootSource,
 		Branch:     row.Branch,

@@ -301,7 +301,28 @@ func chatContextRules() string { return chatContextRulesFor(false) }
 // The block states these things, in the order a reader needs them:
 //  1. WHERE — host · node · repo, rendered, not typed.
 //  2. WHAT — the long-lived interactive console, operator watching, the answer
-//     body is the artifact (and NOT a task run: no epic framing, no task list).
+//     body is the artifact (and NOT a task run: no epic framing). The `task`
+//     CHECKLIST is a different thing from an epic — it is how this surface
+//     reports which of its own steps are still open, and the harness READS it
+//     (loop's trustedCompletion: TaskState.hasList && AllCompleted). WHAT THAT
+//     READ DECIDES IS ONE TURN, NOT A PERIOD: the list is how this surface says
+//     "this turn's work is finished", so a no-open-items list lets the round
+//     exit early and a list with open items keeps it working. It does NOT carry
+//     the console past a period boundary, and no mechanism does that from a
+//     checklist — the period is opened by a line this surface did not write
+//     (cmd/agent/cli_chat.go's selfDriven := false seam), because a budget the
+//     model can raise by editing its own list is not a bound. The claim this
+//     comment used to make named a self-drive seam READER that has never existed
+//     anywhere in the tree — it is deleted rather than implemented, so the
+//     comment now states what the code does. (The dead spelling is not repeated
+//     here on purpose: this file's prose names only symbols that exist, which is
+//     what `TestChatPromptNamesOnlySymbolsThePackageDeclares` enforces. The
+//     defect and its measured evidence are recorded in that test's header and in
+//     task 01a1e125.) The other
+//     half — carrying the console past a period — is UNWIRED, not ruled out:
+//     the period accounting and its wiring have their own owner (task
+//     01a1e101), so a later reader who wants that capability must go there
+//     rather than conclude this surface does not want it.
 //  3. HOW TO SEE MYSELF HERE — arm, read, compare, and the authoritative
 //     transcript, each spelled through cliverbs.
 //  4. THE OPERATOR'S RULE — no pixel snapshot on this surface.
@@ -360,7 +381,7 @@ func chatContextRulesFor(toolsOn bool) string {
 	b.WriteString("repo ")
 	b.WriteString(chatRepoRoot())
 	b.WriteString(". What: the long-lived interactive `gopi " + cliverbs.Chat +
-		"` console — the operator is watching this screen and the ANSWER BODY is the artifact: a turn is conversation, not a task run (no task list, no epic framing). ")
+		"` console — the operator is watching this screen and the ANSWER BODY is the artifact: a turn is conversation, not a task run (no epic framing, no roadmap ceremony — but `task`'s own CHECKLIST is this surface's tool and the operator WANTS it used: a multi-step job gets task(action=view) plus a [TASK_LIST_BEGIN] block, and the list is what tells the harness whether THIS turn's work is finished — it does not extend the turn budget, which is opened only by a line you did not write). ")
 	b.WriteString("Seeing THIS surface: `gopi " + cliverbs.Chat + " " + cliverbs.DumpScreen +
 		"` arms the run so its own dump is written (an UNARMED chat writes none — `gopi " + cliverbs.UIState +
 		"` then exits 1); `gopi " + cliverbs.UIState + " " + cliverbs.TargetFlag + " " + cliverbs.Chat +
@@ -428,7 +449,7 @@ func assembleChatSystemPrompt(a *Agent) string {
 	// where the run is, the unattended sentence is what it may do there.
 	parts := []string{chatSystemPrompt}
 	if block != "" {
-		parts = append(parts, block+chatSessionBlock(a)+chatSurfaceFactRules(a))
+		parts = append(parts, block+chatSessionBlock(a)+chatSurfaceFactRules(a)+chatSurfaceBudgetLine(a))
 	}
 	if extra := chatUnattendedBlockOpen(a); extra != "" {
 		parts = append(parts, extra)

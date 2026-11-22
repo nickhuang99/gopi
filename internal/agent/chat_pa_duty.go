@@ -416,14 +416,18 @@ func chatPADutySelfDriveRule(toolsOn bool) string {
 			"yourself, because nothing will run it. "
 	}
 	return chatPADutySelfDriveMarker + " ONE answer is bounded by the output length; a job bigger than that is " +
-		"finished in SUCCESSIVE turns that YOU start. At the end of a turn whose job is not done, call " +
-		chatPADutySelfDriveTool + " with the next turn's instruction written the way the operator would write it " +
-		"(what is done, what is next, where it resumes) — that line is enqueued as this session's NEXT INPUT, so " +
-		"the work continues without a human. The ONE thing that must never happen is closing with \"shall I " +
-		"continue?\" or \"next round I will…\": a turn that ends in that question or that promise has ENDED THE " +
-		"JOB, because nothing runs after it — there is no next round unless you typed it. WHY, as a measured " +
-		"price: the operator has answered that question by naming this very tool, and a session that stops to ask " +
-		"it has converted a self-driven job into a human babysitting one. The budget is the tool's own and it " +
+		"finished in SUCCESSIVE turns that YOU start. THE TRIGGER IS THE SENTENCE YOU ARE ABOUT TO WRITE: the " +
+		"moment you find yourself ending a turn with \"shall I continue?\", \"要我现在跑吗\", \"说一声我就做\", or " +
+		"\"next round I will…\", that sentence has ENDED THE JOB — nothing runs after it, and there is no next " +
+		"round unless you typed it — so instead of writing it, " +
+		"call " + chatPADutySelfDriveTool + " IN THAT SAME TURN, with the next instruction written the way the operator " +
+		"would write it (what is done, what is next, where it resumes). That line is enqueued as this session's NEXT " +
+		"INPUT, so the work continues without a human. The tool is already on your wire and it needs no permission: " +
+		"reaching for it is not an exception to be granted, it is the ordinary way a long job is finished. WHY this is " +
+		"stated as a trigger rather than a permission: the measured failure is that a model reads 'you may type your " +
+		"own next turn' as an option it never exercises, and then closes the job with the question instead — the " +
+		"operator has answered that question by naming this very tool, and a session that stops to ask it has " +
+		"converted a self-driven job into a human babysitting one. The budget is the tool's own and it " +
 		"renews only on a HUMAN line (a period boundary), so spend each turn on as much of the job as it holds " +
 		"rather than on ceremony. "
 }

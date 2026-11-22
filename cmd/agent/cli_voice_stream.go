@@ -337,7 +337,11 @@ func transcribeFileStream(opts *voiceOptions, audioPath string) (string, time.Du
 		// operator's own container, and the HTTP arm spools an upload. So the
 		// streaming arm decodes a container and never has to guess a geometry
 		// — which is why there is no raw-PCM flag here to get wrong.
-		OnPartial: func(p doubaostream.Partial) { voiceReportStreamPartial(p, opts.voiceVerbose()) },
+		// THE ONE GATE of the per-partial line (Rule 2/14): --verbose (the debug
+		// sink) OR --realtime (the operator's own display). Asking the fold here
+		// rather than writing the disjunction at each call site is what stops the
+		// three printers this file and its siblings own from drifting apart.
+		OnPartial: func(p doubaostream.Partial) { voiceReportStreamPartial(p, opts.voicePrintPartials()) },
 	}
 	voiceReportStreamStart(cred, credPath, doubaostream.DefaultChunkMillis, endpoint, opts.voiceVerbose())
 

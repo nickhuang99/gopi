@@ -48,6 +48,7 @@ import (
 	"time"
 
 	"github.com/nickhuang99/gopi/internal/procname"
+	"github.com/nickhuang99/gopi/internal/scratch"
 )
 
 // The search shape and the probe cadence. Every one of these is a NAMED
@@ -226,7 +227,7 @@ func CheckFilmScratch(dir, label string) error {
 	if strings.TrimSpace(dir) == "" {
 		return fmt.Errorf("%s names no directory: this run has nowhere to put the display server's logs", label)
 	}
-	if err := os.MkdirAll(dir, 0o755); err != nil {
+	if err := scratch.MkdirAllWithSuiteRunOwnerPerm(dir, 0o755); err != nil {
 		return fmt.Errorf("%s %s cannot be created: %w", label, dir, err)
 	}
 	info, err := os.Stat(dir)

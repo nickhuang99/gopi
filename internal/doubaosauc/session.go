@@ -140,6 +140,11 @@ type Session struct {
 	// audioMS / nextSeq are the WRITE side's own bookkeeping, under mu.
 	audioMS int
 	nextSeq int32
+	// level folds the captured audio, packet by packet — the LIVE arm's
+	// counterpart of the file arm's measurement (audio_level.go). A live window
+	// that carried no speech ends with an empty transcript too, and its verdict
+	// deserves the same basis the file verdict states.
+	level levelAccumulator
 
 	// onPartial is Options.OnPartial, kept so the reader does not re-read a
 	// caller's struct.
@@ -250,6 +255,7 @@ func (s *Session) Say(pcm []byte) error {
 	}
 	s.nextSeq++
 	s.audioMS += pcmDurationMSV3(len(pcm))
+	s.level.add(pcm)
 	return nil
 }
 
@@ -279,6 +285,7 @@ func (s *Session) Finish(tail []byte) (*Result, error) {
 		return s.res, s.err
 	}
 	s.audioMS += pcmDurationMSV3(len(tail))
+	s.level.add(tail)
 	s.endSent = true
 	lastSeen := s.lastSeen
 	s.mu.Unlock()
@@ -413,28 +420,23 @@ func (s *Session) readLoop() {
 // text, so appending would repeat the transcript once per packet) and the
 // caller's partial callback.
 func (s *Session) apply(msg []byte) {
-	code, last, text, errMsg, definite := parseResponseDoc(msg)
+	o := observeResponse(msg)
 	s.mu.Lock()
-	if code != 0 {
-		s.res.Codes = append(s.res.Codes, code)
-	}
-	if last {
-		s.res.last = true
+	// THE FOLD IS Result.fold — the SAME accounting the file arm uses — so the
+	// two arms cannot disagree about what arrived (frames, last msgType, codes,
+	// text). It runs under the lock because finishResult reads s.res from the
+	// finishing goroutine. `lastSeen` is the session's OWN view of the same fact
+	// and stays here because it is what the read loop terminates on.
+	s.res.fold(o, s.start)
+	if o.last {
 		s.lastSeen = true
 	}
-	if errMsg != "" {
-		s.res.errMsg = errMsg
-	}
-	if text != "" {
-		if s.res.FirstTextAt == 0 {
-			s.res.FirstTextAt = time.Since(s.start)
-		}
-		s.res.Text = text
+	if o.text != "" {
 		s.partialsSeen++
 		index := s.partialsSeen
 		s.mu.Unlock()
 		if s.onPartial != nil {
-			s.onPartial(Partial{Index: index, Text: text, Definite: definite, At: time.Since(s.start)})
+			s.onPartial(Partial{Index: index, Text: o.text, Definite: o.definite, At: time.Since(s.start)})
 		}
 		return
 	}
@@ -553,6 +555,9 @@ func (s *Session) finishResult() (*Result, error) {
 	res := s.res
 	res.Elapsed = time.Since(s.start)
 	res.AudioMS = s.audioMS
+	// THE LIVE ARM'S OWN MEASUREMENT rides the result through the same field the
+	// file arm fills, read under the mutex the write side folds under.
+	res.level = s.level.level()
 	err := s.err
 	s.mu.Unlock()
 	if err != nil {

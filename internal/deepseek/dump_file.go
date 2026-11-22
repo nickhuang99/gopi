@@ -18,6 +18,8 @@ import (
 	"path/filepath"
 	"strconv"
 	"time"
+
+	"github.com/nickhuang99/gopi/internal/scratch"
 )
 
 // Named constants — Rule 1 (no magic numbers / bare keywords).
@@ -74,7 +76,7 @@ func writeDumpFile(dir string, body []byte, logTag string) string {
 // same-second collision rule is testable deterministically (Rule: no sleeps
 // — a test passes ONE ts to prove two writes in the same second both land).
 func writeDumpFileAt(dir, ts string, body []byte, logTag string) string {
-	if err := os.MkdirAll(dir, dumpDirPerm); err != nil {
+	if err := scratch.MkdirAllWithSuiteRunOwnerPerm(dir, dumpDirPerm); err != nil {
 		log.Printf("%s dump mkdir failed: %v", logTag, err)
 		return ""
 	}

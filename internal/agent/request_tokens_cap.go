@@ -19,20 +19,21 @@ import (
 //
 // WHY THIS EXISTS AT ALL (the shape it closes, measured): every other size
 // control in this package is a TRIGGER — trimContext fires on
-// EstimatedTokens() (a chars/4 heuristic), the fold fires on the same number,
-// compaction fires on the same number. A trigger answers "should I shrink
-// this?", never "may this go on the wire?" — so a single tool_result large
-// enough to blow the window BETWEEN two rounds is assembled, sent, and charged
-// for before anything notices, and the round is then thrown away. The gate
-// below is the only place that asks the second question, and it asks it on the
-// EXACT basis (the embedded BPE tokenizer, through the official V4.1 template)
-// rather than the heuristic.
+// EstimatedTokens(), the fold fires on the same number, compaction fires on the
+// same number. A trigger answers "should I shrink this?", never "may this go on
+// the wire?" — so a single tool_result large enough to blow the window BETWEEN
+// two rounds is assembled, sent, and charged for before anything notices, and the
+// round is then thrown away. The gate below is the only place that asks the
+// second question.
 //
-// IT DOES NOT TOUCH THE TRIGGER. EstimatedTokens and its chars/4 arithmetic are
-// deliberately unchanged: every trim/compaction threshold in the suite is
-// pinned in those units, and a trigger that changed its unit would silently
-// re-tune itself (context_tokens.go's note). Two questions, two bases, two
-// functions.
+// THE TWO BASES HAVE CONVERGED, AND THE TWO QUESTIONS HAVE NOT. This gate asks
+// the endpoint's own question through the official V4.1 template (request tokens,
+// markers and all); the trigger asks "is the conversation too big to keep?".
+// EstimatedTokens() was moved onto the embedded tokenizer in the same change that
+// touched this file's neighbours, so a trigger no longer under-counts Chinese
+// text — but it remains a different arithmetic from this one (a message-level
+// count plus a recorded-measurement prefix), and a reader must not fold them
+// together just because both say "tokenizer" now.
 
 // RequestTokensCap is the ceiling on a request's prompt-side token count: a
 // request counted above it is NOT sent.
@@ -334,7 +335,7 @@ func (a *Agent) chatOnceGated(ctx context.Context, build requestBuilder, iter in
 		if a.Logger != nil {
 			a.Logger.Printf("⛔ request over the send-time cap (counted=%d cap=%d) — NOT sent; shrinking the context and retrying once", tc.Counted, tc.Cap)
 		}
-		if !a.shrinkForRequestCap(ctx) {
+		if !a.shrinkForRequestCap(ctx, tc) {
 			// The shrink path had nothing to work with: the context as it stands
 			// is the smallest this run can send, and it still does not fit. The
 			// last reading IS the number to report — recounting the identical
@@ -345,47 +346,33 @@ func (a *Agent) chatOnceGated(ctx context.Context, build requestBuilder, iter in
 	return nil, &RequestTokensOverCapError{Counted: last.Counted, Cap: last.Cap}
 }
 
-// shrinkForRequestCap is the ONE shrink step the send-time gate asks for. It
-// reduces the context using machinery that already exists and reports whether
-// it changed anything:
+// shrinkForRequestCap is the ONE shrink step the send-time gate asks for: the
+// request it just counted did not fit RequestTokensCap, so the context is
+// compressed before the retry. It reports whether anything changed — the retry
+// loop stops when it did not, because recounting the identical bytes would spend
+// a full BPE pass to print the same integer.
 //
-//   - summarizeOldToolResults folds old, long tool results into one-line
-//     stubs — the growth driver, and the cheapest change (no LLM round-trip);
-//   - compactContext is the existing LLM-assisted compaction, unchanged;
-//   - TrimToFit is the deterministic bedrock when compaction is disabled,
-//     paused, or had no window.
+// IT CALLS THE SAME FUNCTION THE ROUND BOUNDARY CALLS (context_compress.go's
+// compressContext). Two reduction policies used to meet here — a fold, an
+// LLM compaction and a fallback trim, each with its own threshold — so "the
+// request did not fit" and "the window is full" could shrink the conversation in
+// two different shapes and leave two different transcripts for the same number
+// of tokens. There is one shape now: delete the oldest run, carry the notes back.
 //
 // WHAT IT DOES NOT DO: it does not change EstimatedTokens' arithmetic, and it
-// does not pick its own thresholds. The trigger's units stay pinned
-// (context_tokens.go's note); this function only decides WHEN to invoke the
-// same operations the trigger would have invoked.
-func (a *Agent) shrinkForRequestCap(ctx context.Context) bool {
-	if a == nil || a.Ctx == nil {
+// does not pick its own threshold — the send-time gate has already decided that
+// SOMETHING must shrink, and the waterline is the one the threshold path uses.
+func (a *Agent) shrinkForRequestCap(ctx context.Context, measured RequestTokenCount) bool {
+	if a == nil || a.Ctx == nil || a.ContextWindow <= 0 {
 		return false
 	}
-	changed := false
-	if folded := a.Ctx.summarizeOldToolResults(); folded > 0 {
-		changed = true
-	}
-	if a.ContextWindow > 0 {
-		target := int(float64(a.ContextWindow) * compactionTargetRatio(a))
-		if a.CompactionEnabled && !a.compactionPaused() && a.compactContext(ctx) {
-			return true
-		}
-		if a.Ctx.TrimToFit(target) > 0 {
-			changed = true
-		}
-	}
-	return changed
-}
-
-// compactionTargetRatio is the shrink target the compaction path already uses,
-// read in ONE place so the gate and compaction cannot drift apart.
-func compactionTargetRatio(a *Agent) float64 {
-	if a != nil && a.CompactTargetRatio > 0 {
-		return a.CompactTargetRatio
-	}
-	return DefaultCompactTargetRatio
+	// THE READING TRAVELS WITH THE DEMAND. The gate has just counted this request
+	// and found it over the ceiling; that number is the only one the operator's
+	// notice may quote, because it is the number the REFUSAL is made on. Passing it
+	// (rather than letting the compression re-derive one) is what keeps the gate's
+	// "counted=N cap=M" line and the compression notice from printing two different
+	// token counts for one request at one instant.
+	return a.compressContext(compressReasonSendCap, &measured) > 0
 }
 
 // recordRequestTokens keeps the last reading the gate took, so a status row or

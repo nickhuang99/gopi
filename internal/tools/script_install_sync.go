@@ -228,8 +228,8 @@ func runScriptInstall(scriptPath, repo string) error {
 				// signal to a process group we are already abandoning (the
 				// runBuild pattern); ESRCH is the expected error.
 				// The group id is RE-VERIFIED before delivery: it is this child's pid, and the
-				// kernel may have recycled that number to an unrelated group (see killGroupGuard.go).
-				_, _ = signalProcessGroup(cmd.Process.Pid, cmd.Process.Pid, syscall.SIGKILL) //stylegate:ignore kill of an abandoned group: ESRCH is the expected outcome
+		// kernel may have recycled that number to an unrelated group (see killGroupGuard.go).
+		_, _ = signalProcessGroup(cmd.Process.Pid, cmd.Process.Pid, syscall.SIGKILL) //stylegate:ignore kill of an abandoned group: ESRCH is the expected outcome
 			}
 			return fmt.Errorf("--install timed out after %s (output: %s)",
 				scriptSyncInstallTimeout, outputTailTrim(string(out), scriptSyncOutputMax))

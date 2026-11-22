@@ -17,6 +17,7 @@ import (
 	"github.com/nickhuang99/gopi/internal/inputsource"
 	"github.com/nickhuang99/gopi/internal/lineedit"
 	"github.com/nickhuang99/gopi/internal/replaymode"
+	"github.com/nickhuang99/gopi/internal/scratch"
 	"github.com/nickhuang99/gopi/internal/sessionlayout"
 	"github.com/nickhuang99/gopi/internal/uiclient"
 )
@@ -685,7 +686,7 @@ func (in *chatInput) CopyDumpTo(dst string) error {
 		return errors.New("this run has no screen dump sink")
 	}
 	in.SettleDump()
-	if err := os.MkdirAll(filepath.Dir(dst), 0o755); err != nil {
+	if err := scratch.MkdirAllWithSuiteRunOwnerPerm(filepath.Dir(dst), 0o755); err != nil {
 		return fmt.Errorf("create %s: %w", filepath.Dir(dst), err)
 	}
 	src, err := os.Open(in.dumper.Path())

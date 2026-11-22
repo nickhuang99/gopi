@@ -169,6 +169,19 @@ func runUIChat(args []string) int {
 		return code
 	}
 
+	// THE SAME DEFAULT `gopi chat` AND `gopi web` ALREADY PUBLISH. Every turn of
+	// this face is assembled by the same task prompt path, so with no
+	// publication it inherits internal/agent's 60-minute TASK planning ceiling —
+	// and the prompt then carried "session budget … of 1h0m0s" beside its own
+	// [CHAT SURFACE] paragraph saying this is not a task run; the budget half won
+	// and the model hurried a conversation that had no deadline (measured
+	// 2026-10-07, PA chat closing itself at t+5527s). PLACED BEFORE
+	// uiStartServer, after the ONE environment resolution for this face, for the
+	// reason cli_web.go gives at its own call: the notice is a start-up remark
+	// about the surface, and the never-override test has to see the FINAL
+	// environment (Rule 2 — one resolution, one precedence).
+	publishUISessionBudgetDefault(termToolStylesFor(lineedit.ColourOff))
+
 	engine, base, err := uiStartServer(opts)
 	if err != nil {
 		fmt.Fprintf(os.Stderr, "gopi ui: %v\n", err)
@@ -705,7 +718,7 @@ func uiResolveDumpPath(opts uiOptions, ag *agent.Agent) (string, error) {
 	}
 	if opts.dumpPath != "" {
 		if dir := filepath.Dir(opts.dumpPath); dir != "" && dir != "." {
-			if err := os.MkdirAll(dir, dumpDirPerm); err != nil {
+			if err := scratch.MkdirAllWithSuiteRunOwnerPerm(dir, dumpDirPerm); err != nil {
 				return "", fmt.Errorf("cannot create the dump directory %s: %w", dir, err)
 			}
 		}

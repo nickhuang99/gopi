@@ -194,7 +194,7 @@ func SyncTaskPushOnlyPeers(taskID string, peers []string) ([]string, error) {
 // ── the manual push's RECEIPT, and why it had to change ─────────────────
 //
 // WHAT WENT WRONG (measured 2026-09-21 on peer1, re-measured 2026-10-12 from
-// host-b): the manual push rode `--claim-remote`, a CLAIM-BROADCAST handler
+// sager): the manual push rode `--claim-remote`, a CLAIM-BROADCAST handler
 // that mirrors the row's LOCK and answers an accepted/refused VERDICT. It
 // never stores the row — so `push peer1: accepted (1 row(s))` was TRUE about
 // the LOCK and read as "the row arrived", and the operator's own follow-up
@@ -301,7 +301,7 @@ func syncClaimPushReceipt(peer string, rows int, taskID string) string {
 }
 
 // PushTerminalTaskSync is the END-of-life must-succeed push (epic M4.19 ②,
-// the operator: "at end we are a bit aggressive — there is no reason to fail, must
+// nick: "at end we are a bit aggressive — there is no reason to fail, must
 // be done"): a task just reached a terminal status locally (completed /
 // failed); its row is pushed to EVERY whitelisted peer via the claim
 // channel's push-only path. Unlike the lock protocol (unreachable →

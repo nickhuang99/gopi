@@ -1,11 +1,11 @@
 package tools
 
 // Per-repo merger sweep engine (epic architecture-fix-v2, 2026-09-03,
-// the operator's simpler config-driven design): the merger is a PURE git sweep
+// nick's simpler config-driven design): the merger is a PURE git sweep
 // driven by the settings.json "repos" table — NOT task-oriented, NOT
 // DB-driven. It periodically cd's to each configured repo and merges all
 // branches whose worktree protection has been removed ("worktree-removed
-// branches can be merged" — the operator). A branch appears in repo X → the merger
+// branches can be merged" — nick). A branch appears in repo X → the merger
 // (which sweeps repo X every tick) merges it when unprotected. Whether a
 // task row tracks the branch is irrelevant to the merge DECISION — merging is
 // fully decoupled from the task ledger.
@@ -17,7 +17,7 @@ package tools
 //	① DISCOVER unprotected merge candidates: local branches whose tip is
 //	  NOT already in master AND NOT checked out in a linked worktree (a
 //	  checked-out branch is ACTIVE BOND WORK — the "merge-time indicator"
-//	  the operator's design keys on. git would happily land it because only branch
+//	  nick's design keys on. git would happily land it because only branch
 //	  -d refuses a linked-worktree checkout, so the sweep's own occupancy
 //	  guard is load-bearing). Archive-ledger branches (hp-unique-*,
 //	  refs/tags/archive/<name>) are exempt, as in every other merge path.
@@ -688,7 +688,7 @@ func repoSweepClassify(repo string, scanMax int, excluded map[string]bool) ([]st
 	// Worktree-protected = ACTIVE BOND WORK — never touch. An already-merged
 	// UNPROTECTED branch stays in the candidate list: TaskMerge's per-branch
 	// ancestry check (①) prunes it with branch -d, exactly the merge-time
-	// delete the operator's design calls for.
+	// delete nick's design calls for.
 	var mergeable []string
 	for _, name := range strings.Fields(names) {
 		name = strings.TrimSpace(name)

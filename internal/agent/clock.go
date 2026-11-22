@@ -7,7 +7,7 @@ import (
 	"github.com/nickhuang99/gopi/internal/deepseek"
 )
 
-// SessionClock is a cheap monotonic session clock (CLOCK-TICK design, the operator
+// SessionClock is a cheap monotonic session clock (CLOCK-TICK design, nick
 // 定案): t0 is recorded when the session starts, and every tool result
 // carries an elapsed tick label like [t+47s]. The LLM is bad at computing
 // differences between wall-clock timestamps ("bad at math"), so instead of
@@ -296,9 +296,15 @@ const (
 // request." at 94 characters (measured by TestTurnStamp_WallclockIsBounded's own
 // arithmetic, which formats a worst-case stamp rather than trusting this note).
 const (
-	turnStampMaxChars   = 96 // characters, either arm, both counters at 4 digits
-	turnStampMaxTokens  = 32 // chars/4 estimate, the budget's own heuristic
-	turnStampDigitDrift = 2  // two counters of at most +2 digits can move it
+	turnStampMaxChars = 96 // characters, either arm, both counters at 4 digits
+	// turnStampMaxTokens is the BPE cost bound of the worst-case stamp, measured by
+	// TestTurnStamp_WallclockIsBounded through EstimateTokens — the SAME function
+	// the budget's arithmetic uses, so the bound and the reader cannot be on
+	// different bases. It was 32 under the chars/4 basis; the exact count of the
+	// 94-character worst case is 41 (mostly ASCII, ~2.3 chars/token), so the bound
+	// moved with the basis rather than the basis being tuned to the bound.
+	turnStampMaxTokens  = 48
+	turnStampDigitDrift = 2 // two counters of at most +2 digits can move it
 )
 
 // Render is the stamp's wire form: one harness-prefixed line, O(1) length

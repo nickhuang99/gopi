@@ -54,6 +54,22 @@ const BoldMarker = "**"
 // boldMarkerLen is the marker's length in bytes, used by the tokenizer's scan.
 const boldMarkerLen = len(BoldMarker)
 
+// InlineCodeMarker is the intra-line code span delimiter — the backtick. It is
+// defined HERE, beside BoldMarker, so the renderer asks the format layer whether
+// a line carries code rather than spelling the backtick itself (Rule 1b). A
+// backtick span names a path or a command: unlike a bold run it is the reader's
+// copying material, and a line carrying one is drawn without the turn gutter so
+// that a terminal selection is the answer's text byte for byte (see
+// AnswerRenderer.rowFor).
+const InlineCodeMarker = "`"
+
+// hasInlineCode reports whether a line carries at least one CLOSED backtick
+// pair — the same shape as hasBoldMarker's marker test: two delimiters are a
+// pair whose enclosed text the reader copy-pastes. A line with one lone
+// backtick is an unclosed span (literal punctuation), not copying material.
+// It is the format layer's verdict, asked by the renderer (Rule 1b).
+func hasInlineCode(line string) bool { return strings.Count(line, InlineCodeMarker) >= 2 }
+
 // LineSpan is one piece of an answer line: the text as the terminal must draw
 // it — markers REMOVED — and the emphasis it carries.
 //

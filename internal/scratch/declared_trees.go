@@ -568,6 +568,14 @@ func DeclaredTrees() []DeclaredTree {
 	// 2026-10-12 `/`-exhaustion found sitting outside every arm of this sweep
 	// (measured: 320 directories / 10.27 GB, invisible to both faces).
 	trees = append(trees, budgetRunsTree())
+	// The SAME tree's FLAT half — the per-run `run-<tag>.json` STREAMS (17.7 GiB
+	// of 21 GiB measured on this host, 2026-11-22). It is a SECOND row over the
+	// same root because its window is a different decision (evidence kept for
+	// weeks, not a binary kept for hours) and its candidates are a different
+	// KIND; the two predicates are disjoint by construction and the gate checks
+	// it. See declared_budget_evidence.go for why the directory row cannot be
+	// widened to reach these.
+	trees = append(trees, budgetEvidenceTree())
 	// The DECLARED TEMP ROOT's own residue — the row that bounds `_tmp` itself,
 	// the tree gopi publishes as TMPDIR for every child. It roots at the same
 	// directory `go-tmp` may root at and takes a DISJOINT name shape (the base
@@ -1245,7 +1253,7 @@ func measuredEntry(tree DeclaredTree, path string, isDir bool, now time.Time) Tr
 // this function says which one it is: NO holder is consulted here (grep this
 // body — `held`/`Holder` appear zero times). It is a WALK OF THE TREE, filtered
 // by entryName and nothing else, which makes `holding_n` EQUAL to the probe's
-// `entries` on every tree (measured 2026-10-27 on host-a: 46 tree lines
+// `entries` on every tree (measured 2026-10-27 on the host: 46 tree lines
 // across four invocations, `entries != holding_n` on ZERO of them; the pair
 // `budget-runs entries=431 holding=9175448847 holding_n=431` is that identity).
 //
@@ -1518,18 +1526,39 @@ func DeclaredTreeRoots() map[string]string {
 // DeclaredTrees(), and the lookup refuses an EMPTY root (an unconfigured tree
 // resolves to "" on a host that has no such directory, and an empty path would
 // match everything).
-func declaredTreeForRoot(path string) (DeclaredTree, bool) {
+// IT RETURNS EVERY ROW THAT ROOTS THERE, not the first one, and that is a
+// correctness requirement rather than a generality: since 2026-11-22 two rows
+// share the test-budget root (the binary directories and the flat streams, each
+// with its OWN window — see declared_budget_evidence.go). A first-match lookup
+// made the second row UNREACHABLE from the queue arm, so the home sweep and its
+// dry-run silently judged half the tree while reporting the container as
+// handed over — the same "a declared tree the arm never walks" defect this
+// interposition was written to end, reintroduced one level down.
+func declaredTreesForRoot(path string) []DeclaredTree {
 	want := CachedCanonicalPath(path)
+	var out []DeclaredTree
 	for _, tree := range DeclaredTrees() {
 		root, err := tree.Resolve()
 		if err != nil || root == "" {
 			continue
 		}
 		if want == root {
-			return tree, true
+			out = append(out, tree)
 		}
 	}
-	return DeclaredTree{}, false
+	return out
+}
+
+// declaredTreeForRoot is the SINGLE-row form, kept for callers that need to
+// answer "is this a declared root, and which row names it" (the gate, a report
+// line). A caller that would SWEEP must use declaredTreesForRoot: taking the
+// first row here is how a second row over the same root became invisible.
+func declaredTreeForRoot(path string) (DeclaredTree, bool) {
+	rows := declaredTreesForRoot(path)
+	if len(rows) == 0 {
+		return DeclaredTree{}, false
+	}
+	return rows[0], true
 }
 
 // sweepDeclaredTreeFromQueue collects one declared tree's candidates where the

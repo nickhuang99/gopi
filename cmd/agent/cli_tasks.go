@@ -4,6 +4,7 @@ import (
 	"context"
 	"errors"
 	"fmt"
+	"github.com/nickhuang99/gopi/internal/scratch"
 	"github.com/nickhuang99/gopi/internal/tasksource"
 	"io"
 	"os"
@@ -326,7 +327,7 @@ const (
 
 // tasksUsage is the help text for the gopi task subcommand family. It is
 // printed when a subcommand is missing required arguments or the user passes
-// -h/--help. The ledger is append-only — no delete subcommand exists (the operator's
+// -h/--help. The ledger is append-only — no delete subcommand exists (nick's
 // iron rule: LLM/CLI may create tasks, edit summaries, change status — never
 // delete; records are permanent for cross-session tracing/audit).
 const tasksUsage = `GoPi task subcommands — the task-as-memory ledger (跨会话追溯/审计).
@@ -414,9 +415,9 @@ immutable, and a briefing revision is itself an audit record.
       as "parent_task_id does not exist", which pointed at a mistyped id rather
       than at the other face. Combining it with a real id is refused.
 
-  gopi task update <task_id> [--status X] [--payload TEXT|@FILE] [--reason WHY]
-                   [--result DIGEST] [--repo PATH] [--parent-task-id ID]
-                   [--clear-parent] [--force] [--db PATH]
+  gopi task update <task_id> [--status X [--result DIGEST]] [--payload TEXT|@FILE]
+                   [--reason WHY] [--repo PATH] [--clear-ground]
+                   [--parent-task-id ID] [--clear-parent] [--force] [--db PATH]
       Move a status, revise the briefing, re-point the repo or the dependency
       edge (at least one arm; they run in a fixed order). --parent-task-id is
       REPEATABLE and REPLACES the row's whole parent set in the typed order;
@@ -435,12 +436,17 @@ immutable, and a briefing revision is itself an audit record.
       cannot be proven foreign is never touched; every change is recorded on
       the row's trail as session-repaired. With no <task_id> the pass sweeps
       every row carrying a value, with one it narrows to that row. --repo
-      naming a repo
-      re-points deliverable.repo; naming a LIVE REGISTERED LINKED work tree of
-      the row's own repo instead records the ground (deliverable.worktree +
-      branch) — the door the ground refusal sends you to. --payload requires
-      --reason, records payload_revised (old/new sha256s) and refuses blanking
-      by name; --reason omitted takes a status-specific default.
+      naming a repo re-points deliverable.repo; naming a LIVE REGISTERED LINKED
+      work tree of the row's own repo instead records the ground
+      (deliverable.worktree + branch) — the door the ground refusal sends you
+      to. --clear-ground is the FIRST of those two recorded steps (it needs
+      --reason); the second is --repo, and the pair is mutually exclusive:
+      man gopi-task. --payload requires --reason, records payload_revised
+      (old/new sha256s) and refuses blanking by name; --reason omitted takes a
+      status-specific default. --result rides on --status (it is the evidence a
+      status MOVE carries, so it is refused by name rather than dropped when no
+      transition is asked for); --reason is a MODIFIER and rides whichever arm
+      records a WHY — neither is an arm of its own.
 
   gopi task archive <task_id> [--db PATH]
       Archive a TERMINAL row as resolved ("resolved" tag): still searchable and
@@ -559,6 +565,13 @@ type tasksOptions struct {
 	status  string
 	summary string
 	result  string // update --result: result digest recorded to task_events (verify-loop evidence)
+	// resultSet records that `task update --result` was PRESENT. The digest has
+	// no arm of its own — it rides a status move — so its presence is what the
+	// parse arm refuses by name when `--status` is absent, and what the dispatch
+	// arm refuses when the invocation is a pure edit (epic 01a2003e). Without
+	// this bit the flag was SILENTLY DROPPED: `--payload X --status` -less
+	// invocations returned success and recorded the digest nowhere (measured).
+	resultSet bool
 	// repoRepairOnly marks a `task update --repo PATH` with NO --status: a pure
 	// deliverable.repo repair (epic 01a0d55b), so the command returns without a
 	// status transition instead of erroring on "nothing to update".
@@ -594,9 +607,14 @@ type tasksOptions struct {
 	// DRY by default. Presence-not-value, the same rule as force.
 	repairSession bool
 	repairApply   bool
-	taskID        string // show/update/archive target; submit's --task-id
-	all           bool   // list --all: include archived (resolved) rows
-	query         string // search keyword
+	// clearGround is `task update --clear-ground`: the FIRST step of the
+	// deliberate two-step move that re-points a row's recorded ground pair
+	// (epic 01a1fc52). Presence-not-value, the same rule as force — it is an
+	// instruction, not a path. The engine refuses it without --reason.
+	clearGround bool
+	taskID      string // show/update/archive target; submit's --task-id
+	all         bool   // list --all: include archived (resolved) rows
+	query       string // search keyword
 	// rowArchive / branchArchive are the TWO meanings of `task archive <operand>`
 	// (epic verb-restructure, 2026-10-05). Exactly one is set, and the parser
 	// decides which by resolving the operand against the ledger: a row id
@@ -908,6 +926,33 @@ const (
 	taskParentTaskIDFlagName = "parent-task-id"
 	taskClearParentFlagName  = "clear-parent"
 
+	// taskResultFlagName / taskStatusFlagName are `task update`'s STATUS-MOVE
+	// pair, and they are ONE constant block because the two spellings are only
+	// meaningful TOGETHER: `--result DIGEST` is the evidence a status move
+	// carries (it rides task_events via TaskUpdateWithResult), and it has no
+	// arm of its own — there is nothing for a digest to describe until a status
+	// moves. The help page therefore nests it INSIDE `--status`, and the
+	// nothing-asked-for refusal names the subordination when it is typed alone
+	// (epic 01a2003e, Rule 15).
+	//
+	// WHY THE PAIR IS NAMED HERE RATHER THAN TYPED AT EACH SITE (Rule 1/13,
+	// measured 2026-11-22): the page led its synopsis with `[--result DIGEST]`
+	// while the refusal — the sentence that calls itself the ONE list of arms —
+	// named six arms and not this one, and the flag was then dropped SILENTLY
+	// when another arm was present (`--payload X --result Y` exited 0 with the
+	// digest recorded nowhere). Three sites read these two words (the admission
+	// table, the parse arm, the refusal's sentence); four spellings of "the same
+	// pair" is how they drifted.
+	taskStatusFlagName = "status"
+	taskResultFlagName = "result"
+	// taskLedgerFlagName is the family's `--db PATH`: the LEDGER to read and
+	// write, not a change to the row. It is named here because the
+	// nothing-asked-for refusal now diagnoses the flags that are not arms
+	// (taskUpdateModifierNotes), and a diagnostic that spelled its subjects as
+	// bare literals would be the mirror defect Rule 1 bans — the sentence an
+	// operator reads would then be the one string nobody could find by name.
+	taskLedgerFlagName = "db"
+
 	// taskPayloadFlagName is `--payload`: the row's briefing TEXT. On `submit`
 	// it is the raw request the executing instance runs with (mirrored from
 	// the positional summary when omitted); on `update` it is the REVISION
@@ -938,6 +983,27 @@ const (
 	// THREE sites must agree (Rule 13): the admission table taskFlagMember, the
 	// parser, and the help page.
 	taskRepairSessionFlagName = "repair-session"
+
+	// taskClearGroundFlagName is `task update --clear-ground`: the FIRST half of
+	// the deliberate two-step move that re-points a row's recorded ground pair
+	// (deliverable.worktree + branch). It exists because the ground refusal used
+	// to send its reader to "clear the recorded ground first" while NO flag
+	// could clear one — the refusal named a door that did not exist (epic
+	// 01a1fc52, Rule 15).
+	//
+	// It is a SECOND spelling rather than an empty `--repo ""` for the reason
+	// --clear-parent is: an empty value reads as a dropped argument on a command
+	// whose whole subject is which path to record, while `--clear-ground` says
+	// the removal IS the instruction. The parser refuses it beside --repo (they
+	// contradict each other about one axis).
+	//
+	// FOUR sites must agree (Rule 1b/13): the admission table taskFlagMember,
+	// the parse arm, the dispatch arm and the help page — the same rule the
+	// parent-edge pair above states. The WORD is an alias of
+	// cliverbs.TaskClearGroundWord because internal/tools RENDERS the same
+	// spelling inside the refusal it answers (Rule 13/14: one definition, no
+	// mirror on the one string the operator then types).
+	taskClearGroundFlagName = cliverbs.TaskClearGroundWord
 	// taskConfirmCancelledFlagName is `task clone --confirm-cancelled`: the
 	// operator's explicit "yes, I mean the row we ABANDONED". `cancelled` is
 	// refused by default because minting work from an abandoned row silently
@@ -1031,6 +1097,46 @@ func taskBareScopeRefusal(verb string) error {
 	return fmt.Errorf("missing required parameter: %s takes no bare spelling", verb)
 }
 
+// taskUpdateModifierNotes is the DIAGNOSTIC half of the nothing-asked-for
+// refusal: for every flag the caller actually typed that is not an arm of its
+// own, one clause saying what it needs instead. It exists because the arm list
+// alone answered a question the caller did not ask (epic 01a2003e, measured
+// 2026-11-22: `task update <id> --result x` printed six arms and never the flag
+// that was typed, while the help page led its synopsis with that flag).
+//
+// Only TYPED flags are named, so the sentence stays a diagnosis of this
+// invocation rather than a second help page; and each clause is derived from
+// the presence bit, never from the value — a modifier typed with an empty value
+// is still a modifier the caller asked for.
+func taskUpdateModifierNotes(fs *memoryFlagSet) string {
+	// The table is [word, clause]; order is the fixed order below, so the
+	// sentence is deterministic for a given argv (a refusal that reshuffled
+	// itself would be unquotable in a report).
+	//
+	// `--db` is NOT in the table and is handled after it: every invocation
+	// carries `--db PATH` in practice, so restating "it asks for no change to
+	// the row" beside a REAL modifier would bury the diagnosis in noise. It is
+	// named only when it is the whole story (below), which keeps the epic's
+	// criterion true for every advertised flag: used alone, it is either
+	// accepted or named.
+	notes := []struct{ flag, clause string }{
+		{taskResultFlagName, "--" + taskResultFlagName + ", which rides --" + taskStatusFlagName + " — a digest is the EVIDENCE a status move carries, so there is nothing for it to describe until one happens"},
+		{cliverbs.TaskReasonWord, "--" + cliverbs.TaskReasonWord + ", which rides whichever arm records a WHY; on its own there is no WHY to record"},
+		{taskForceFlagName, "--" + taskForceFlagName + ", the operator's ESCAPE — it waives the delivery-proof refusal on a move that actually happens"},
+	}
+	var out strings.Builder
+	for _, n := range notes {
+		if fs.has(n.flag) {
+			out.WriteString("; you typed ")
+			out.WriteString(n.clause)
+		}
+	}
+	if out.Len() == 0 && fs.has(taskLedgerFlagName) {
+		out.WriteString("; you typed --" + taskLedgerFlagName + ", which selects the LEDGER to read and write; it asks for no change to the row")
+	}
+	return out.String()
+}
+
 // parseTasksArgs parses args for the given sub-verb (list/show/new/update)
 // without touching the process (no os.Exit, no env mutation) — the pure,
 // unit-testable front-end. Flag syntax follows the memoryFlagSet convention:
@@ -1062,6 +1168,11 @@ func parseTasksArgs(verb string, args []string) (*tasksOptions, error) {
 	// reason (the next token is a status word or an id, never their value).
 	fs.boolean(taskRepairSessionFlagName)
 	fs.boolean(taskApplyFlagName)
+	// `task update --clear-ground` is VALUELESS for the same reason: without
+	// this the scanner's "a bare flag takes the next token as its value" rule
+	// would EAT the token after it (a status word, an id, or --reason), so the
+	// clear would silently corrupt the command line it was typed on.
+	fs.boolean(taskClearGroundFlagName)
 	// `sweep-worktrees --backfill-anchors` is VALUELESS: without this the
 	// scanner's "a bare flag takes the next token as its value" rule would eat
 	// the token after it.
@@ -1226,8 +1337,12 @@ func parseTasksArgs(verb string, args []string) (*tasksOptions, error) {
 			// --result DIGEST: the status move MAY carry a result digest
 			// (the verify-loop evidence). The digest rides task_events via
 			// TaskUpdateWithResult — the summary column stays immutable
-			// (bug056). Requiring --status always (nothing else is mutable).
-			opts.result = fs.get("result")
+			// (bug056). Requiring --status always (nothing else is mutable):
+			// this flag has NO arm of its own, so typing it alone is refused BY
+			// NAME by the dependency check below rather than dropped on the
+			// floor (epic 01a2003e, Rule 15).
+			opts.resultSet = fs.has(taskResultFlagName)
+			opts.result = fs.get(taskResultFlagName)
 			// --reason WHY: the operator-visible reason for the status move
 			// (task-update-reason epic). '@path' file reference (same rule
 			// as clone/submit) for long reasons. Empty = the caller is
@@ -1325,14 +1440,52 @@ func parseTasksArgs(verb string, args []string) (*tasksOptions, error) {
 			if opts.repairApply && !opts.repairSession {
 				return nil, fmt.Errorf("task update: --%s belongs to --%s (it is that pass's opt-in)", taskApplyFlagName, taskRepairSessionFlagName)
 			}
+			// --clear-ground is the GROUND-PAIR arm's FIRST step (epic
+			// 01a1fc52). It is MUTUALLY EXCLUSIVE with --repo, and the pair is
+			// refused by name rather than resolved silently: the 2026-09-12
+			// foreign-owner guard exists because a re-point must be two
+			// RECORDED decisions (remove the claim, then make a new one), and
+			// honouring both flags in one invocation would collapse them into
+			// the single step the guard forbids — with a trail that looked
+			// audited. The refusal names both steps in the order to type them.
+			opts.clearGround = fs.has(taskClearGroundFlagName)
+			if opts.clearGround && opts.repo != "" {
+				return nil, fmt.Errorf("%s and %s move the same ground and must stay TWO recorded steps — first `%s %s update <task_id> %s %s \"<why the row moved>\"`, then `%s %s update <task_id> %s <path-to-live-worktree>`. The one-step form is refused by the 2026-09-12 foreign-owner guard: a rebind in one write is not a decision the ledger can audit",
+					cliverbs.TaskClearGroundFlag, tools.TaskRepairRepoVerb,
+					cliverbs.Program, cliverbs.Task, cliverbs.TaskClearGroundFlag, cliverbs.TaskReasonFlag,
+					cliverbs.Program, cliverbs.Task, tools.TaskRepairRepoVerb)
+			}
+			// --result's own dependency check, and it comes FIRST because it is
+			// the one flag that used to be accepted-and-dropped: every other
+			// arm below would happily run and leave the digest recorded
+			// NOWHERE (measured: `--payload X --reason Y --result Z` exited 0
+			// with a success line and `grep -c Z` = 0 on the row). A present
+			// argument that nothing consumes is a SILENT FAILURE, the class
+			// Rule 15 forbids outright — so it is refused BY NAME, and the
+			// refusal says which flag it rides on and what to type instead.
+			if opts.resultSet && !fs.has(taskStatusFlagName) {
+				return nil, fmt.Errorf("task update: --%s rides on --%s and cannot be given alone — a result digest is the EVIDENCE a status move carries, so it is recorded only when a transition happens. Type `--%s <status> --%s \"<digest>\"`. If no status is moving, record the finding where it belongs instead: `gopi task submit \"<the finding>\"` for new work, or `--%s \"<the finding>\"` on THIS row (which requires --%s)",
+					taskResultFlagName, taskStatusFlagName,
+					taskStatusFlagName, taskResultFlagName,
+					taskPayloadFlagName, cliverbs.TaskReasonWord)
+			}
 			// Nothing-asked-for refusal: the ONE place that lists what this
 			// verb can change. It names every arm, so a caller who typed a
 			// flag the table refuses reads the table's contents here rather
 			// than guessing (Rule 15).
-			if !fs.has("status") && opts.repo == "" && !opts.payloadSet && !opts.parentSet && !opts.clearParent && !opts.repairSession {
-				return nil, fmt.Errorf("task update: nothing to update (set --status, --payload, --repo, --parent-task-id, --clear-parent or --repair-session)")
+			//
+			// A MODIFIER is not an arm, and the sentence now says WHICH
+			// modifiers were typed and what each needed (epic 01a2003e): the
+			// arm list alone was a refusal that answered a question the
+			// caller did not ask — he typed --result, and the page's first
+			// bracketed group told him it was an arm. Only the modifiers
+			// ACTUALLY TYPED are named (rendered by taskUpdateModifierNotes),
+			// so the sentence stays a diagnosis instead of a second page.
+			if !fs.has(taskStatusFlagName) && opts.repo == "" && !opts.payloadSet && !opts.parentSet && !opts.clearParent && !opts.repairSession && !opts.clearGround {
+				return nil, fmt.Errorf("task update: nothing to update (set --status, --payload, --repo, --parent-task-id, --clear-parent, --clear-ground or --repair-session)%s",
+					taskUpdateModifierNotes(fs))
 			}
-			if !fs.has("status") {
+			if !fs.has(taskStatusFlagName) {
 				// No status was given: this is a PURE EDIT (--repo repair
 				// and/or --payload revision), so the row keeps the status it
 				// had and no transition is attempted. Recorded as the
@@ -1653,7 +1806,7 @@ func parseTasksArgs(verb string, args []string) (*tasksOptions, error) {
 			return nil, fmt.Errorf("unexpected positional argument %q", positionals[0])
 		}
 	case taskverbs.AuditMerges:
-		// Merge-backlog audit's CLI face (the operator's post-receive hook design):
+		// Merge-backlog audit's CLI face (nick's post-receive hook design):
 		// discover unmerged client branches → enqueue merge-backlog tasks.
 		// The hook calls this detached right after a push lands — the
 		// event-driven stage-1 (no serve daemon needed for discovery).
@@ -1949,7 +2102,8 @@ func taskFlagMember(verb, flag string) bool {
 		switch flag {
 		case "db", "status", "result", "reason", "repo", taskPayloadFlagName,
 			taskParentTaskIDFlagName, taskClearParentFlagName, taskForceFlagName,
-			taskRepairSessionFlagName, taskApplyFlagName, taskDryRunFlagName:
+			taskRepairSessionFlagName, taskApplyFlagName, taskDryRunFlagName,
+			taskClearGroundFlagName:
 			return true
 		}
 	}
@@ -1987,7 +2141,7 @@ const (
 // often the essential line a submitter wrote FIRST) and the payload (the
 // detailed request) feed the briefing — a non-empty payload no longer
 // suppresses the summary, so a submitter who put the intent in the summary
-// and the detail in the payload loses neither (the operator, 2026-09-02).
+// and the detail in the payload loses neither (nick, 2026-09-02).
 //
 // Composition (stable format):
 //
@@ -3240,7 +3394,7 @@ func runTaskRunOnce(opts *tasksOptions) error {
 		briefing, masterAppended = tools.BriefingWithClause(briefing, masterClause)
 		if masterAppended {
 			fmt.Fprintf(execRunFacts, taskBriefingMasterReadingLineFmt, target, ground.Dir,
-				tools.IntegrationBranchName, tools.MasterReadingRefs(), tools.IntegrationBranchName)
+				tools.IntegrationBranchName, tools.MasterReadingRefsFor(ground.Dir), tools.IntegrationBranchName)
 		}
 		// THE CENSUS REVISION ANCHOR (epic 01a1abcd, 2026-11-05). Every clause
 		// above quotes MEASUREMENTS it took by reading THIS GROUND'S TREE — "this
@@ -4100,7 +4254,7 @@ func reconcileChildMirror(wrapperTaskID, status, reason string) {
 // runTaskRunOnce callers are manual + worker) and the
 // VERBATIM re-runnable command line. run_cmd on a crashed row doubles as the
 // resume recipe, so it must be a command an operator can actually paste —
-// never a human-readable description of the launch (the defect the operator reported:
+// never a human-readable description of the launch (the defect nick reported:
 // `gopi worker (claim→run round, target <id>)` is a parenthesis, not a
 // command).
 //
@@ -4538,14 +4692,14 @@ const taskServeAliasPointerFmt = "gopi task %s is a deprecated alias — the mer
 // tools.TaskMerge (devdoc/merge-landing-path-ownership.md, and
 // `gopi task merge -h`).
 //
-// What the pass was built as (epic serve/worker-split 2026-09-03, the operator's final
+// What the pass was built as (epic serve/worker-split 2026-09-03, nick's final
 // design — REFINED by architecture-fix-v2 2026-09-03; its PROCESS FORM became
 // one-tick-and-exit in epic daemon-machinery-removal, 2026-09-17):
 // A merger is a
 // PURE branch-merge process — it owns NO task execution: claim/run/writeback
 // is the worker's job (runTaskWorker), which runs on BOTH client and server.
 //
-// Architecture-fix-v2 (the operator's SIMPLER design): the merger's real work is a
+// Architecture-fix-v2 (nick's SIMPLER design): the merger's real work is a
 // CONFIG-DRIVEN PURE GIT SWEEP — NOT task-oriented, NOT DB-driven. Each pass
 // iterates the settings.json "repos" table keys (the sweep list) and, per
 // repo, runs MergerRepoSweep: cd to the repo, merge every branch whose
@@ -4579,7 +4733,7 @@ const taskServeAliasPointerFmt = "gopi task %s is a deprecated alias — the mer
 // (epic architecture-fix-v2, config-driven pure git sweep). The merger is
 // NO LONGER task-oriented or DB-driven: settings.json "repos" is the sweep
 // list, and each pass cd's to every configured repo and merges all
-// branches whose worktree protection has been removed (the operator's exact model:
+// branches whose worktree protection has been removed (nick's exact model:
 // "in the config file we specify the repo.path and the merger just
 // periodically cd's to repo.path and merges all branches"). Whether a task
 // row tracks a branch is irrelevant to the merge decision.
@@ -5267,7 +5421,7 @@ func serveLockPathResolved() (string, error) {
 		return "", fmt.Errorf("resolve gopi dir: %w", err)
 	}
 	path := filepath.Join(gd, serveLockFilename)
-	if err := os.MkdirAll(filepath.Dir(path), serveLockDirMode); err != nil {
+	if err := scratch.MkdirAllWithSuiteRunOwnerPerm(filepath.Dir(path), serveLockDirMode); err != nil {
 		return "", fmt.Errorf("create %s: %w", filepath.Dir(path), err)
 	}
 	return path, nil
@@ -6604,7 +6758,7 @@ func mergerSweepRepo(repo string) tools.RepoSweepResult {
 	// Mechanism-2 snapshot (epic merger-failure-dual-mechanism, 2026-09-08):
 	// BEFORE the sweep runs, capture master's pre-sweep tip + the branch
 	// registry, so a landing whose rebuild FAILS can be auto-reverted to the
-	// pre-sweep buildable state (master must stay buildable — the operator). If the
+	// pre-sweep buildable state (master must stay buildable — nick). If the
 	// capture fails (no PreTip) the tick simply lands WITHOUT auto-revert
 	// capability — never abort the sweep over the snapshot.
 	capture := tools.CaptureFailedMergeRevert(repo)
@@ -7093,6 +7247,24 @@ func runTasksSubcommand(args []string) {
 				os.Exit(1)
 			}
 			fmt.Println(repair)
+		}
+		// --clear-ground is the SAME axis's SECOND door, and the FIRST of the
+		// two recorded steps a moved row takes (epic 01a1fc52). It runs right
+		// after the repo repair because both act on the ground question, and it
+		// cannot run beside it (the parser refuses the pair by name): clearing
+		// AND stamping in one invocation is exactly the one-step rebind the
+		// 2026-09-12 foreign-owner guard forbids.
+		//
+		// The engine owns the refusals: a missing --reason is refused by name
+		// (one definition, one message), and every clear writes its reason plus
+		// the values it removed to the append-only task_events trail.
+		if opts.clearGround {
+			cleared, rerr := tools.TaskClearDeliverableGround(opts.taskID, opts.reason)
+			if rerr != nil {
+				fmt.Fprintf(os.Stderr, "gopi task update error: %v\n", rerr)
+				os.Exit(1)
+			}
+			fmt.Println(cleared)
 		}
 		// --payload (epic 01a0fea1 item [2/5]) is the REVISION arm: it
 		// replaces the row's briefing and records the old value in the

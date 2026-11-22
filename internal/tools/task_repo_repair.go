@@ -29,6 +29,8 @@ import (
 	"fmt"
 	"strings"
 	"time"
+
+	"github.com/nickhuang99/gopi/internal/cliverbs"
 )
 
 // TaskRepairRepoVerb is the ONE spelling of the repair's flag surface, shared by
@@ -66,10 +68,26 @@ const (
 	// no-op the old message described (correctly, for THIS state).
 	TaskRepairGroundPresentFmt = "task %s " + TaskRepairGroundPresentPhrase + " %s — nothing to repair"
 	// TaskRepairGroundResetRefusalFmt — the row records a DIFFERENT worktree.
-	// NEVER re-bound: the 2026-09-12 foreign-owner hijack was exactly this
-	// write, and the ground pair is single-owner by construction.
-	TaskRepairGroundResetRefusalFmt = "task repair: task %s already records the worktree %s — a recorded ground is never re-pointed " +
-		"(the 2026-09-12 foreign-owner guard), so %s was NOT stamped; clear the recorded ground first if the row truly moved"
+	// NEVER re-bound in one step: the 2026-09-12 foreign-owner hijack was
+	// exactly this write, and the ground pair is single-owner by construction.
+	//
+	// THE DOOR IT NAMES IS REAL (epic 01a1fc52). It used to end "clear the
+	// recorded ground first" and no verb, flag or code path could clear one —
+	// the eleven `gopi task` verbs carry no `clear` and `update` had no
+	// `--clear-ground` — so a reader followed a refusal into a second refusal
+	// (Rule 15: a refusal must name a destination that exists). The two steps
+	// are named from the shared vocabulary (cliverbs), never re-typed here, and
+	// the WHY of the split is stated so the reader does not ask the guard to
+	// relax: a clear REMOVES the claim (audited, with a required reason) and the
+	// stamp MAKES a new one, which is the only shape in which a re-point can be
+	// evidence rather than a hijack.
+	TaskRepairGroundResetRefusalFmt = "task repair: task %s already records the worktree %s — a recorded ground is never re-pointed in one step " +
+		"(the 2026-09-12 foreign-owner guard: the merger's attribution, the sweep's ownership arm and the finish recycle all read this pair, " +
+		"so a rebind by whatever directory an executor last touched makes two rows foreign owners of one worktree), so %s was NOT stamped. " +
+		"To move the row, do it in TWO recorded steps: (1) clear the claim — `" + cliverbs.Program + " " + cliverbs.Task + " update %s " +
+		cliverbs.TaskClearGroundFlag + " " + cliverbs.TaskReasonFlag + " \"<why the row moved>\"` (the reason is required and both old values are " +
+		"written to the row's trail); (2) stamp the new ground — `" + cliverbs.Program + " " + cliverbs.Task + " update %s " + TaskRepairRepoVerb +
+		" <path-to-live-worktree>`. If the row did not move, %s is already its ground and there is nothing to repair"
 	// TaskRepairGroundNotLinkedFmt — the argument is not a LIVE REGISTERED
 	// LINKED work tree of the row's own repo. This is the arm that keeps the
 	// ground stamp an EVIDENCE claim rather than a copy of the operator's
@@ -243,8 +261,10 @@ func taskRepairSameRepo(taskID, durable, repo, recordedWorktree string) (string,
 			return fmt.Sprintf(TaskRepairGroundPresentFmt, taskID, recordedWorktree), nil
 		}
 		// (1b) A DIFFERENT worktree: never re-bound. Silence here would be the
-		// hijack this guard exists for, and the refusal says so.
-		return "", fmt.Errorf(TaskRepairGroundResetRefusalFmt, taskID, recordedWorktree, repo)
+		// hijack this guard exists for, and the refusal names the TWO recorded
+		// steps that move a row (clear the claim, then stamp the new one) —
+		// never a door that does not exist (epic 01a1fc52, Rule 15).
+		return "", fmt.Errorf(TaskRepairGroundResetRefusalFmt, taskID, recordedWorktree, repo, taskID, taskID, recordedWorktree)
 	}
 	if !registered {
 		return "", fmt.Errorf(TaskRepairGroundNotLinkedFmt, repo, durable, len(linked), durable)

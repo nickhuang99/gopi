@@ -68,10 +68,22 @@ const (
 // result.
 //
 // The row ceiling of a turn's body is internal/replayplay's own (roundRowsMax),
-// shared between the turn's rounds: each round gets `remaining / rounds-left`
-// rows, raised to the number its own tool rows need, so a round carrying many
-// calls is never clipped by a budget a different round spent. A round whose
-// CONTEXT had to be cut says so in a row of its own.
+// and it applies PER ROUND — the same bound `--round N` has always used
+// (roundRows). Each of the turn's rounds therefore gets its own full ceiling, and
+// the tool rows are reserved on top of it, so a round carrying many calls is never
+// clipped by a budget a different round spent. A round whose CONTEXT had to be cut
+// says so in a row of its own.
+//
+// IT WAS ONCE SHARED, and that was a defect with a measured cost (2026-11-22,
+// session 1c42c121, task 01a1fff6): one ceiling split among all of a turn's
+// rounds, first come first served, meant a 28-round turn (4961 rows needed
+// against a 4000 ceiling) spent it in its first ~25 rounds and gave every later
+// round ZERO — the FINAL round, which is where a run records its `[IMPORTANT]`
+// self-record note, laid out 1 row of 88. `--turn 1` then printed a body whose
+// ending was missing while every shorter turn showed its own, and the note was in
+// session.jsonl all along (the loss was this allocation, not the data). A turn is
+// many rounds; borrowing the word "rounds-left" from a different problem did not
+// make one round's bound into a material-wide one.
 //
 // With Dims.FullLayout the ceiling is LIFTED (Dims.rowCeiling) and no round is
 // cut at all: the debug view's whole point is that nothing was left out, so it
@@ -148,18 +160,31 @@ func turnBodyRows(r Round, dims Dims) []FrameRow {
 		// reach the ceiling used to lose its calls entirely (measured: session
 		// 0945c8bd turn 2, `calls=69`, zero call rows).
 		tools := toolRows(seg, dims)
-		context := roundRows(contextOnly(seg), dims)
-		budget := ceiling - len(rows) - len(tools)
-		if ceiling > 0 && i > 0 {
-			budget-- // the separator
-		}
-		if ceiling > 0 && budget < 0 {
-			budget = 0
-		}
-		// withBudget is the OTHER half of the ceiling, and it is honest only when
-		// there IS one: clipContextRows subtracts the tool rows it can never drop
-		// from its quota, so a "no ceiling" spelling of 0 would keep nothing.
-		kept, dropped := withBudget(context, budget, ceiling)
+		// THE CONTEXT IS LAID OUT UNCAPPED HERE, AND CUT ONCE, BELOW. roundRows
+		// applies the same per-round ceiling AND prints its own `(round truncated:
+		// N more row(s) …)` row, so letting it cap this segment first produced TWO
+		// notes on one segment and a count that could be wrong: the second clip then
+		// spent its quota on the first note and reported "1 row(s) not laid out" for
+		// a round that was 500 rows over (measured with a 4500-tick segment). Cutting
+		// in ONE place — clipContextRows, which is the pass that knows the tool rows
+		// are exempt — makes the printed count the whole truth.
+		context := roundRows(contextOnly(seg), dims.uncapped())
+		// THE CEILING IS PER ROUND, NOT PER TURN (measured 2026-11-22, session
+		// 1c42c121, task 01a1fff6). It used to be the turn's shared remainder —
+		// `ceiling - len(rows) - len(tools)` — so a turn of many rounds spent the
+		// whole budget in its first rounds and every LATER one got zero rows: on
+		// that turn (28 rounds, 4961 rows needed against a 4000 ceiling) the FINAL
+		// round laid out 1 row of 88, so `--turn 1` printed a body whose ending was
+		// missing while `--turn 2` and every shorter turn showed theirs. The note
+		// that vanished was the run's `[IMPORTANT]` self-record block: present in
+		// session.jsonl, printed by `--full`, lost by this allocation.
+		//
+		// roundRowsMax's own contract is "how many rows ONE round contributes", and
+		// `--round N` has always applied it that way (roundRows). A turn is many
+		// rounds; sharing one round's ceiling among all of them was the defect, and
+		// it never bounded what it claimed to — the TOOL rows are exempt from it by
+		// design, and they are the rows that dominate a material.
+		kept, dropped := withBudget(context, ceiling, ceiling)
 		rows = appendSegmentSeparator(rows, i, dims)
 		rows = append(rows, kept...)
 		if dropped > 0 {

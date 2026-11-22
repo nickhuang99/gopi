@@ -139,9 +139,39 @@ func (s *FamilyScan) add(fams []Family, e Entry2, size int64) {
 		s.Files++
 		s.Bytes += size
 	}
-	key := e.Shape
-	if e.Dir {
-		key = e.Shape + "/"
+	fam, claimed := classifyWith(fams, e)
+	famName, decision := "", DecisionUnclassified
+	if claimed {
+		famName, decision = fam.Name, fam.Decision
+	}
+	key := shapeScanKey(e)
+	// A SHAPE IS NOT A FAMILY, AND ONE LINE MUST NOT AGGREGATE TWO FAMILIES.
+	//
+	// The rollup key is the entry's shape token, which deliberately carries NO
+	// DEPTH (`messages/` is the token for a container's inbox AND for a copy at
+	// the sessions root). Most shapes live at exactly one depth, so the two
+	// questions coincide — but when a shape DOES live at both, the entries can
+	// belong to two DIFFERENT families, and folding them onto one line reports
+	// the last entry's family as the family of all of them.
+	//
+	// MEASURED (this host, 2026-11-14, while registering the root-level inbox
+	// family): the tree holds 388 `messages/` directories at the correct depth
+	// (inside session containers, the inbox each run reads) and EXACTLY ONE at
+	// the root (the shape the new family is about). One line reported
+	// `shape=messages/ family=sessions-root-inbox count=389` — attributing 388
+	// live inboxes to a family registered for the one copy no session reads,
+	// and (before that) `count=389` on the unclassified line whose stderr
+	// sibling correctly said "1 entries". A census that misreports WHICH family
+	// a count belongs to is worse than one that reports nothing: the decision
+	// attached to it is about the wrong population.
+	//
+	// SO A DISAGREEMENT SPLITS THE KEY instead of overwriting it: the first
+	// entry keeps the plain shape key, and an entry whose family differs gets
+	// the shape key plus the family's own name. Counts and bytes stay exact per
+	// family, and a census with no disagreement (every shape in this tree but
+	// this one) prints exactly the lines it printed before.
+	if existing, ok := s.ByShape[key]; ok && existing.Family != famName {
+		key += shapeFamilyKeySep + famName
 	}
 	entry, ok := s.ByShape[key]
 	if !ok {
@@ -149,19 +179,33 @@ func (s *FamilyScan) add(fams []Family, e Entry2, size int64) {
 	}
 	entry.Count++
 	entry.Bytes += size
-	fam, ok := classifyWith(fams, e)
-	if !ok {
+	if !claimed {
 		entry.Family = ""
 		entry.Decision = DecisionUnclassified
 		s.Unclassified = append(s.Unclassified, Unclassified{
 			Path: e.Path, Name: e.Name, Shape: e.Shape, Dir: e.Dir, Where: e.Where,
 		})
 	} else {
-		entry.Family = fam.Name
-		entry.Decision = fam.Decision
+		entry.Family = famName
+		entry.Decision = decision
 	}
 	s.ByShape[key] = entry
 }
+
+// shapeScanKey is the rollup key of one entry: its shape token, with a trailing
+// slash for a directory — the spelling the census has always printed.
+func shapeScanKey(e Entry2) string {
+	if e.Dir {
+		return e.Shape + "/"
+	}
+	return e.Shape
+}
+
+// shapeFamilyKeySep separates a shape token from the family name in the rollup
+// key of an entry that DISAGREES with another entry of the same shape (see
+// add). It is spelled once here: the report line and any reader of a split key
+// have to agree about where the family name begins.
+const shapeFamilyKeySep = " #"
 
 // sizeOf returns one entry's own size: a regular file's byte count, 0 for a
 // directory (its subtree is the container family's business) and 0 for anything

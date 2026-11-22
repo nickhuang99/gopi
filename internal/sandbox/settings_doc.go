@@ -82,7 +82,7 @@ const (
 // that is a SYMLINK is unlinked first: that is the pre-fix shape, and writing
 // "over" it would follow it into the operator's real file — the very defect this
 // file exists to end.
-func materialiseSettingsDoc(dir string, opts Options) (source, path string, err error) {
+func materialiseSettingsDoc(dir string, opts Options) (source, path string, absent bool, err error) {
 	source, err = settingsDocSource(dir, opts)
 	if err != nil {
 		// AN ABSENT DOCUMENT IS NAMED, NEVER SWALLOWED (Rule 15, and the same
@@ -91,18 +91,21 @@ func materialiseSettingsDoc(dir string, opts Options) (source, path string, err 
 		// never written a settings file, GOPI_SETTINGS pointing at a
 		// deliberately absent path (testutil/suiteenv.go) — and the pre-fix LINK
 		// was happy to point at nothing while reporting nothing. So absence
-		// returns the source it looked for with an EMPTY path, which the creation
-		// line renders as `settings=<source>(absent-not-linked)`. Any other
-		// failure (an unreadable document, a self-referential source) stays a
-		// loud error.
+		// returns the source it looked for with an EMPTY path AND a TRUE `absent`
+		// flag, which is carried on the Sandbox as SettingsDocAbsent and rendered
+		// on the creation line as `settings_doc=MISSING` — a STRUCTURED fact, not
+		// only a human sentence, so a caller reading the result (or a reader
+		// skimming the line) cannot mistake an incomplete profile for a complete
+		// one. Any other failure (an unreadable document, a self-referential
+		// source, a dangling symlink) stays a loud error.
 		if errors.Is(err, fs.ErrNotExist) {
-			return source, "", nil
+			return source, "", true, nil
 		}
-		return source, "", err
+		return source, "", false, err
 	}
 	raw, err := os.ReadFile(source)
 	if err != nil {
-		return source, "", fmt.Errorf("sandbox: read the settings document %s to copy it into the sandbox: %w", source, err)
+		return source, "", false, fmt.Errorf("sandbox: read the settings document %s to copy it into the sandbox: %w", source, err)
 	}
 	path = SettingsFileNameIn(dir)
 
@@ -122,7 +125,7 @@ func materialiseSettingsDoc(dir string, opts Options) (source, path string, err 
 	if lerr == nil && info.Mode()&os.ModeSymlink != 0 {
 		target, _ := os.Readlink(path) //stylegate:ignore a non-symlink settings file is the ordinary profile case, answered as 'not a sandbox profile'
 		if !opts.ReplaceLegacySettingsLink {
-			return source, "", fmt.Errorf("sandbox: refusing to build the settings copy at %s — it is a SYMLINK to %s, "+
+			return source, "", false, fmt.Errorf("sandbox: refusing to build the settings copy at %s — it is a SYMLINK to %s, "+
 				"the pre-fix write-through shape (a redirect into the profile path would reach the target and, on "+
 				"2026-09-27, destroyed the operator's live settings document). Remove the sandbox and recreate it "+
 				"(gopi tool sandbox create), or pass ReplaceLegacySettingsLink to migrate the link in place", path, target)
@@ -130,24 +133,24 @@ func materialiseSettingsDoc(dir string, opts Options) (source, path string, err 
 		// os.Remove on a symlink removes the LINK NODE, never the file it points
 		// at — the only safe way to retire this shape.
 		if rerr := os.Remove(path); rerr != nil {
-			return source, "", fmt.Errorf("sandbox: remove the settings symlink %s (the pre-fix write-through shape): %w", path, rerr)
+			return source, "", false, fmt.Errorf("sandbox: remove the settings symlink %s (the pre-fix write-through shape): %w", path, rerr)
 		}
 	}
 
 	tmp, err := settingsDocTemp(path)
 	if err != nil {
-		return source, "", err
+		return source, "", false, err
 	}
 	if werr := os.WriteFile(tmp, raw, settingsDocCopyPerm); werr != nil {
-		return source, "", fmt.Errorf("sandbox: write the settings copy %s: %w", tmp, werr)
+		return source, "", false, fmt.Errorf("sandbox: write the settings copy %s: %w", tmp, werr)
 	}
 	if cerr := os.Chmod(tmp, settingsDocCopyPerm); cerr != nil {
-		return source, "", fmt.Errorf("sandbox: seal the settings copy %s read-only: %w", tmp, cerr)
+		return source, "", false, fmt.Errorf("sandbox: seal the settings copy %s read-only: %w", tmp, cerr)
 	}
 	if rerr := os.Rename(tmp, path); rerr != nil {
-		return source, "", fmt.Errorf("sandbox: install the settings copy %s: %w", path, rerr)
+		return source, "", false, fmt.Errorf("sandbox: install the settings copy %s: %w", path, rerr)
 	}
-	return source, path, nil
+	return source, path, false, nil
 }
 
 // settingsDocTemp names the temporary file the copy is built in — a sibling of
@@ -181,6 +184,47 @@ func settingsDocSource(dir string, opts Options) (string, error) {
 	if scratch.PathWithin(scratch.CanonicalPath(abs), scratch.CanonicalPath(dir)) {
 		return "", fmt.Errorf("sandbox: refusing to copy the settings document %s — it is INSIDE the sandbox %s "+
 			"(a sandbox must read the operator's real configuration, never its own copy)", abs, dir)
+	}
+	// A DANGLING SYMBOLIC LINK IS A MISCONFIGURATION, NOT AN ABSENT DOCUMENT —
+	// and os.Stat cannot tell the two apart, because it FOLLOWS the link. A
+	// dangling GOPI_SETTINGS answers ENOENT exactly like a path nobody ever
+	// wrote, so materialiseSettingsDoc reads it as the LEGAL-HOST case, returns
+	// (source, "", nil), and the caller gets `created=true` beside a sandbox
+	// whose profile holds no settings.json at all: the sandbox then runs on
+	// built-in defaults with the api_key and repos table silently gone
+	// (measured 2026-11-15, `GOPI_SETTINGS=<dangling> gopi tool sandbox create`
+	// → exit=0, `.gopi/settings.json` absent, `config show` printing
+	// "(absent — built-in defaults in force)").
+	//
+	// os.Lstat sees the NODE, so the two shapes are separable: node ABSENT is a
+	// legal host (a test profile, an operator who never wrote the file) and
+	// keeps the reported-not-linked outcome; node PRESENT while its target is
+	// not is refused BY NAME, naming the link and the target it points at
+	// (Rule 15's "a refusal names its own cause", Rule 34's fixed profile
+	// shape — a profile is the operator's document or it is an error).
+	nodeInfo, lerr := os.Lstat(abs)
+	if lerr != nil {
+		return abs, fmt.Errorf("sandbox: stat the settings document %s to copy it into the sandbox: %w", abs, lerr)
+	}
+	if nodeInfo.Mode()&os.ModeSymlink != 0 {
+		if _, serr := os.Stat(abs); serr != nil {
+			if errors.Is(serr, fs.ErrNotExist) {
+				linkTarget, rerr := os.Readlink(abs)
+				if rerr != nil {
+					linkTarget = "(unreadable link target: " + rerr.Error() + ")"
+				}
+				// no-wrap: this error MUST NOT chain fs.ErrNotExist. The caller
+				// converts that sentinel into the legal-host outcome (an absent
+				// document answered with "(absent-not-linked)"), which is exactly
+				// the silent degradation this refusal replaces — wrapping would
+				// make the loud refusal indistinguishable from the quiet pass.
+				return abs, fmt.Errorf("sandbox: refusing to build a profile from the DANGLING settings symlink %s -> %s "+
+					"(the link target does not exist), because the sandbox would be created WITHOUT a settings.json "+
+					"and would then run on built-in defaults: point %s at an existing file, or fix the environment value (%s) that names it",
+					abs, linkTarget, abs, config.SettingsPathEnv)
+			}
+			return abs, fmt.Errorf("sandbox: stat the settings document %s that the symlink %s points at: %w", abs, abs, serr)
+		}
 	}
 	if _, err := os.Stat(abs); err != nil {
 		return abs, fmt.Errorf("sandbox: stat the settings document %s to copy it into the sandbox: %w", abs, err)

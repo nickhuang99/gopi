@@ -4,11 +4,13 @@ package main
 // screen's render bytes back out, BYTE FOR BYTE.
 //
 // WHAT IT IS, AND WHAT IT DELIBERATELY IS NOT. `gopi session replay` is a
-// RENDERER: it builds a canvas at a chosen geometry, paces the frames at a human
-// rate, and falls back to the reduced dump when a session recorded no stream.
-// This sub-verb is a WRITER: it reads the artifact, hands every frame's payload
-// to stdout in recorded order, and adds nothing — no canvas, no pacing, no
-// colour change, no line re-wrapping, no dump fallback. The two answer different
+// RENDERER: it builds a canvas at a chosen geometry and falls back to the
+// reduced dump when a session recorded no stream. This sub-verb is a WRITER: it
+// reads the artifact, hands every frame's payload to stdout in recorded order,
+// and changes nothing about them — no canvas, no colour change, no line
+// re-wrapping, no dump fallback. Its `--pace`/`--step`/`--from` controls decide
+// WHEN and FROM WHERE a frame goes out, never WHAT it contains, which is what
+// keeps "byte for byte" true. The two answer different
 // questions ("what was on the screen" vs "what bytes did the renderer emit"),
 // and the second one is only answerable if the reader subtracts nothing.
 //
@@ -27,13 +29,17 @@ package main
 // sentence — never folded into "nothing is wrong" (Rule 15).
 
 import (
+	"bufio"
 	"fmt"
 	"io"
 	"os"
+	"strconv"
 	"strings"
+	"time"
 
 	"github.com/nickhuang99/gopi/internal/cliverbs"
 	"github.com/nickhuang99/gopi/internal/replayplay"
+	"github.com/nickhuang99/gopi/internal/sgr"
 	"github.com/nickhuang99/gopi/internal/uiclient"
 )
 
@@ -83,13 +89,122 @@ const (
 	screenReplayContradictionFormat = "%sthe recording contradicts itself (%d byte(s) on disk): %s. That is a fact about the FILE, not about the code that reads it\n"
 	screenReplayEndUnreadableFormat = "%scannot tell how the recording at %s ends: %v\n"
 	screenReplayWriteFormat         = "%swriting the %s bytes failed: %v\n"
+	// The SELECTION line: a replay that started partway says so, so its short
+	// counts are never read as a short recording.
+	screenReplaySelectionFormat = "%sselection: started at frame %d, emitted %d of %d frame(s)\n"
+	// The reset's own failure — a terminal left dirty because stdout closed is a
+	// fact the caller acts on (it must still run `clear`), not a footnote.
+	screenReplayResetFormat = "%scould not restore the terminal's attributes: %v — the colours above are still in force, run `clear`\n"
+	// A start past the end is refused by name and with both numbers, because the
+	// caller's next action depends on which side was wrong.
+	screenReplayFromPastEndFormat = "%s--from %d is past the end: this recording has %d frame(s), indexed from 0\n"
+	// A stdin that cannot be read in `--step` mode. Not folded into "continue":
+	// replaying at full speed is a different command than the one asked for.
+	screenReplayStepReadFormat = "%scannot read the stepping key: %v\n"
 )
+
+// screenReplaySgrReset is the SGR sequence that puts every attribute back to the
+// terminal's default. A replay hands the terminal the RECORDED bytes, so the last
+// frame's colours are still in force when the process exits and the caller has to
+// run `clear` to get a readable prompt back. This is written on EVERY exit of the
+// replay path — a normal end, a writer error, an unreadable stream — because the
+// defect it repairs is "the terminal was left in a state nobody recovered from",
+// and an early return is exactly the path where nobody notices until the next
+// prompt is invisible.
+// It is a VAR rather than a CONST because the spelling comes from internal/sgr,
+// the project's one source of truth for the escape vocabulary (Rule 13/14): the
+// literal "\x1b[0m" typed here is a second spelling of `sgr.ResetSeq()`, and the
+// standards gate fails the build for exactly that.
+var screenReplaySgrReset = sgr.ResetSeq()
+
+// screenReplayTerminalRestore is the CLOSING TAIL: the last bytes this verb puts
+// on stdout, on every exit including the error paths.
+//
+// It restores the TERMINAL STATE the recording may have changed, in the one
+// order that leaves the shell usable, and each piece is here for a measured
+// reason:
+//
+//  1. the DECSTBM scroll region reset FIRST — a recording that sets a scroll
+//     region (`CSI 1;19r` appeared three times in the 369396-byte capture that
+//     produced this fix) and never clears it freezes every row below the region
+//     for the shell that follows, which is exactly what "I have to run `clear`"
+//     looks like. It goes first so the sequences after it are not confined to a
+//     region the terminal is about to forget;
+//  2. the cursor made VISIBLE again (a recording may have hidden it);
+//  3. the carriage return, so the shell's prompt starts at column 1 instead of
+//     wherever the last frame parked the cursor (`CSI 20;6H` in that capture) —
+//     a bare CR rather than a CUP keeps the LAST CSI a reset-class sequence;
+//  4. the SGR reset LAST, so it is the final CSI on the wire — the old tail's
+//     own promise, kept.
+//
+// Every sequence comes from internal/sgr (Rule 13/14): the literals are that
+// package's, never a second spelling typed here.
+var screenReplayTerminalRestore = sgr.ResetScrollRegionSeq() + sgr.CursorShowSeq() +
+	screenReplayCarriageReturn + screenReplaySgrReset
+
+// screenReplayCarriageReturn is CR: "return to column 1" without moving rows.
+// It is the one piece of the tail that is not an escape sequence, which is why
+// it can sit between the cursor restore and the SGR reset without becoming the
+// last CSI — the cursor's column comes back while the last CSI stays a reset.
+const screenReplayCarriageReturn = "\r"
+
+// screenReplaySgrResetSpelled is how the PAGES name that sequence. A help page
+// is read as text and printed to a terminal, so embedding the raw bytes would
+// make the page itself repaint the reader's screen — the exact defect the reset
+// exists to repair, committed by the documentation. The bytes and their spelling
+// are two constants so neither can be edited alone (Rule 14).
+const screenReplaySgrResetSpelled = "ESC[0m"
+
+// screenReplayScrollResetSpelled and screenReplayCursorShowSpelled name the
+// OTHER two pieces of the closing tail in the pages' own spelling, for the same
+// reason: the page must not emit the bytes it documents. They stay separate
+// constants beside the sequences they describe (Rule 14).
+const (
+	screenReplayScrollResetSpelled = "ESC[r"
+	screenReplayCursorShowSpelled  = "ESC[?25h"
+)
+
+// screenReplayFromFlag selects the FIRST frame to emit: a replay that can only
+// start at zero cannot be resumed, and a long recording is unviewable in one
+// pass.
+const screenReplayFromFlag = "--from"
+
+// screenReplayPaceFlag is the per-frame delay. Without it a replay of a long
+// session finishes in a fraction of a second — the bytes arrive faster than they
+// can be read, which is the second half of the defect this verb repairs.
+const screenReplayPaceFlag = "--pace"
+
+// screenReplayStepFlag makes the replay advance ONE frame per keypress on stdin,
+// so a viewer controls the pace instead of guessing it up front.
+const screenReplayStepFlag = "--step"
+
+// screenReplayDefaultPaceMS is the delay used when `--pace` is given with no
+// argument, and the unit `--pace N` is read in. Chosen so a recorded screen is
+// followable by eye without being slow: a frame is a whole redraw, not a byte.
+const screenReplayDefaultPaceMS = 40
+
+// screenReplayStepPrompt is written to stderr before each interactive wait. It
+// goes to stderr with every other diagnostic, so stdout keeps carrying the
+// recording's own bytes and nothing else.
+const screenReplayStepPrompt = "press ENTER for the next frame, q then ENTER to stop"
+
+// screenReplayStepQuit answers the step prompt with "stop here": a viewer that
+// wants to leave must be able to, and the reset is still written.
+const screenReplayStepQuit = "q"
 
 // screenReplayOptions is one parsed command line.
 type screenReplayOptions struct {
 	id     string
 	verify string
 	help   bool
+	// from is the zero-based frame index the replay STARTS at; 0 is the whole
+	// recording, which is the historical behaviour and stays the default.
+	from int
+	// pace is the delay between frames; zero emits as fast as the writer
+	// accepts, which is the historical behaviour and stays the default.
+	pace time.Duration
+	// step turns the replay into a one-frame-per-keypress viewer.
+	step bool
 }
 
 // runScreenReplay is the sub-verb's entry point from the group dispatcher.
@@ -101,6 +216,24 @@ func runScreenReplay(args []string) int {
 // watch the bytes and the notices without a terminal (Rule 31: the surface is
 // executed, not described).
 func screenReplayRun(args []string, out io.Writer, errw io.Writer) int {
+	return screenReplayRunWithStdin(args, os.Stdin, out, errw)
+}
+
+// screenReplayRunWithStdin is screenReplayRun with the STEPPING keys as a
+// parameter too, so a test can drive `--step` without a terminal.
+// screenReplayRunWithStdin is the verb's body with BOTH of its inputs as
+// parameters: `--step` reads keys from `in`, so this is the form a test drives.
+//
+// WHO WRITES THE RESET, and who must not. screenReplayWrite owns it, because "the
+// replay path" is exactly the set of exits that may have put colour on the
+// caller's terminal — a normal end, a writer error, a stream that could not be
+// opened or parsed, a start past the end. The exits ABOVE it (a usage error, an
+// operand that names no recording) write NOTHING to stdout and keep writing
+// nothing: a refusal must not emit control bytes at a caller whose invocation was
+// wrong, and the contract that stdout carries only the recording is older than
+// this reset. The reset is therefore not double-written — only this one path
+// emits it (Rule 14).
+func screenReplayRunWithStdin(args []string, in io.Reader, out io.Writer, errw io.Writer) int {
 	opts, err := parseScreenReplayArgs(args)
 	if err != nil {
 		fmt.Fprintf(errw, "%s%v\n%s", screenReplayErrorPrefix, err, screenReplayUsage)
@@ -118,7 +251,7 @@ func screenReplayRun(args []string, out io.Writer, errw io.Writer) int {
 	if opts.verify != "" {
 		return screenReplayVerify(opts.id, path, opts.verify, out, errw)
 	}
-	return screenReplayWrite(opts.id, path, out, errw)
+	return screenReplayWrite(opts, path, in, out, errw)
 }
 
 // parseScreenReplayArgs reads the sub-verb's flags. A flag this page does not
@@ -144,9 +277,49 @@ func parseScreenReplayArgs(args []string) (screenReplayOptions, error) {
 			if opts.verify == "" {
 				return opts, fmt.Errorf("%s= names no recording", screenReplayVerifyFlag)
 			}
+		case a == screenReplayStepFlag:
+			opts.step = true
+		case a == screenReplayFromFlag:
+			if i+1 >= len(args) {
+				return opts, fmt.Errorf("%s needs a frame index (0 is the first frame)", screenReplayFromFlag)
+			}
+			n, nerr := screenReplayIndex(screenReplayFromFlag, args[i+1])
+			if nerr != nil {
+				return opts, nerr
+			}
+			opts.from = n
+			i++
+		case strings.HasPrefix(a, screenReplayFromFlag+"="):
+			n, nerr := screenReplayIndex(screenReplayFromFlag,
+				strings.TrimPrefix(a, screenReplayFromFlag+"="))
+			if nerr != nil {
+				return opts, nerr
+			}
+			opts.from = n
+		case a == screenReplayPaceFlag:
+			// A BARE `--pace` takes the default, because "slow this down" is the
+			// common request and demanding a number for it buys nothing.
+			if i+1 < len(args) && !strings.HasPrefix(args[i+1], "-") {
+				d, derr := screenReplayPace(screenReplayPaceFlag, args[i+1])
+				if derr != nil {
+					return opts, derr
+				}
+				opts.pace = d
+				i++
+			} else {
+				opts.pace = screenReplayDefaultPaceMS * time.Millisecond
+			}
+		case strings.HasPrefix(a, screenReplayPaceFlag+"="):
+			d, derr := screenReplayPace(screenReplayPaceFlag,
+				strings.TrimPrefix(a, screenReplayPaceFlag+"="))
+			if derr != nil {
+				return opts, derr
+			}
+			opts.pace = d
 		case strings.HasPrefix(a, "-"):
-			return opts, fmt.Errorf("unknown flag %q (this page takes %s and %s)",
-				a, HelpFlag, screenReplayVerifyFlag)
+			return opts, fmt.Errorf("unknown flag %q (this page takes %s, %s, %s, %s and %s)",
+				a, HelpFlag, screenReplayVerifyFlag, screenReplayFromFlag,
+				screenReplayPaceFlag, screenReplayStepFlag)
 		default:
 			if opts.id != "" {
 				return opts, fmt.Errorf("one session id, got %q and %q", opts.id, a)
@@ -158,6 +331,38 @@ func parseScreenReplayArgs(args []string) (screenReplayOptions, error) {
 		return opts, fmt.Errorf("no session id was given (usage: %s)", screenReplaySynopsis)
 	}
 	return opts, nil
+}
+
+// screenReplayIndex reads a NON-NEGATIVE frame index. A negative one is refused
+// rather than clamped: `--from -1` reads to a caller as "the last frame", and a
+// silent clamp would hand back the whole recording while the invocation said
+// otherwise (Rule 15).
+func screenReplayIndex(flag, raw string) (int, error) {
+	v := strings.TrimSpace(raw)
+	n, err := strconv.Atoi(v)
+	if err != nil {
+		return 0, fmt.Errorf("%s wants a frame index, got %q", flag, raw)
+	}
+	if n < 0 {
+		return 0, fmt.Errorf("%s wants a frame index of 0 or more, got %d", flag, n)
+	}
+	return n, nil
+}
+
+// screenReplayPace reads a per-frame delay in MILLISECONDS and answers it as a
+// duration. Milliseconds rather than a Go duration string because the operand is
+// typed at a shell by someone watching a screen, and `--pace 80` is a thing
+// nobody has to look up.
+func screenReplayPace(flag, raw string) (time.Duration, error) {
+	v := strings.TrimSpace(raw)
+	ms, err := strconv.Atoi(v)
+	if err != nil {
+		return 0, fmt.Errorf("%s wants a delay in milliseconds, got %q", flag, raw)
+	}
+	if ms < 0 {
+		return 0, fmt.Errorf("%s wants a delay of 0 or more milliseconds, got %d", flag, ms)
+	}
+	return time.Duration(ms) * time.Millisecond, nil
 }
 
 // screenReplayStreamPath resolves the operand to a screen-stream FILE. A path
@@ -197,7 +402,34 @@ func screenReplayStreamPath(operand string) (string, error) {
 // belongs on `errw`, because a caller piping this into a file or another program
 // must receive the recording and only the recording. The ending is reported even
 // so, on the diagnostic stream.
-func screenReplayWrite(id, path string, out io.Writer, errw io.Writer) int {
+func screenReplayWrite(opts screenReplayOptions, path string, in io.Reader, out io.Writer, errw io.Writer) int {
+	code := screenReplayWriteFrames(opts, path, in, out, errw)
+	// THE TRAILING SGR RESET IS WRITTEN HERE, on EVERY exit — the ordinary end,
+	// a writer error, an unreadable stream, a bad frame index. It is the LAST
+	// thing this verb puts on stdout by construction: screenReplayWriteFrames
+	// never emits it, so nothing can follow it. A failed reset is reported
+	// rather than swallowed (Rule 15) — the caller has to know the terminal it
+	// is about to type into still carries the recording's colours.
+	if rerr := screenReplayEmitReset(out); rerr != nil {
+		fmt.Fprintf(errw, screenReplayResetFormat, screenReplayErrorPrefix, rerr)
+		return chatExitFailed
+	}
+	return code
+}
+
+// screenReplayEmitReset restores the terminal's state: the scroll region, the
+// cursor and the SGR attributes, in screenReplayTerminalRestore's one order.
+// The name is kept because every caller and every page names this step after
+// the SGR reset it used to do alone; the comment states the wider job.
+func screenReplayEmitReset(out io.Writer) error {
+	_, err := io.WriteString(out, screenReplayTerminalRestore)
+	return err
+}
+
+// screenReplayWriteFrames reads the stream and emits the SELECTED frames. It
+// never writes the reset — that belongs to its caller, so that it happens once
+// on every path including this function's own early returns.
+func screenReplayWriteFrames(opts screenReplayOptions, path string, in io.Reader, out io.Writer, errw io.Writer) int {
 	f, oerr := os.Open(path)
 	if oerr != nil {
 		fmt.Fprintf(errw, "%scannot open %s: %v\n", screenReplayErrorPrefix, path, oerr)
@@ -216,26 +448,88 @@ func screenReplayWrite(id, path string, out io.Writer, errw io.Writer) int {
 		fmt.Fprintf(errw, "%s%s is not a readable screen stream: %v\n", screenReplayErrorPrefix, path, perr)
 		return chatExitFailed
 	}
-	var written int64
-	for _, frame := range frames {
-		n, werr := out.Write(frame)
-		written += int64(n)
-		if werr != nil {
-			fmt.Fprintf(errw, screenReplayWriteFormat, screenReplayErrorPrefix,
-				strings.TrimPrefix(uiclient.ScreenStreamSuffix, "."), werr)
-			return chatExitFailed
-		}
+	// A start past the end is REFUSED, not clamped to an empty replay: the
+	// invocation asked for a frame this recording does not have, and an empty
+	// exit 0 would read as "there was nothing to show" (Rule 15).
+	if opts.from > len(frames) {
+		fmt.Fprintf(errw, screenReplayFromPastEndFormat, screenReplayErrorPrefix,
+			opts.from, len(frames))
+		return chatExitFailed
+	}
+	steps := bufio.NewReader(in)
+	written, emitted, code := screenReplayEmitFrames(opts, frames, steps, out, errw)
+	if code != chatExitOK {
+		return code
 	}
 	// THE RECORDED COUNTS ARE STATED ON STDERR, always — they are what makes
 	// "byte for byte" checkable by the caller (it can compare them against its
 	// own count) and they never touch stdout. The trailer's own claim is what
 	// meta carries when the run closed out; otherwise these are the reader's
-	// counted values, which meta also distinguishes.
+	// counted values, which meta also distinguishes. A SELECTIVE replay says
+	// how many frames it left out, so a short count is never mistaken for a
+	// short recording.
 	fmt.Fprintf(errw, screenReplayCountsFormat,
-		screenReplayNoticePrefix, id, len(frames), written, meta.Grid[0], meta.Grid[1],
+		screenReplayNoticePrefix, opts.id, emitted, written, meta.Grid[0], meta.Grid[1],
 		orUndeclared(meta.Revision))
+	if emitted != len(frames) {
+		fmt.Fprintf(errw, screenReplaySelectionFormat, screenReplayNoticePrefix,
+			opts.from, emitted, len(frames))
+	}
 	screenReplaySayEnding(path, errw)
 	return chatExitOK
+}
+
+// screenReplayEmitFrames writes frames[opts.from:] one at a time, honouring the
+// pacing and stepping controls, and answers how many bytes went out and how many
+// frames carried them. A stop asked for by the viewer is NOT a failure: it is
+// the control working, so it returns chatExitOK.
+func screenReplayEmitFrames(opts screenReplayOptions, frames [][]byte, steps *bufio.Reader,
+	out io.Writer, errw io.Writer) (int64, int, int) {
+	var written int64
+	emitted := 0
+	for _, frame := range frames[opts.from:] {
+		// The wait happens BEFORE the frame it introduces, and never before the
+		// first: a replay that paused before showing anything would look hung.
+		if emitted > 0 {
+			if opts.step {
+				stop, serr := screenReplayAwaitStep(steps, errw)
+				if serr != nil {
+					fmt.Fprintf(errw, screenReplayStepReadFormat, screenReplayErrorPrefix, serr)
+					return written, emitted, chatExitFailed
+				}
+				if stop {
+					return written, emitted, chatExitOK
+				}
+			}
+			if opts.pace > 0 {
+				time.Sleep(opts.pace)
+			}
+		}
+		n, werr := out.Write(frame)
+		written += int64(n)
+		emitted++
+		if werr != nil {
+			fmt.Fprintf(errw, screenReplayWriteFormat, screenReplayErrorPrefix,
+				strings.TrimPrefix(uiclient.ScreenStreamSuffix, "."), werr)
+			return written, emitted, chatExitFailed
+		}
+	}
+	return written, emitted, chatExitOK
+}
+
+// screenReplayAwaitStep asks for one keypress and answers whether the viewer
+// asked to stop. Both answers come from the SAME read so the prompt and the
+// decision cannot disagree, and a read error is returned rather than treated as
+// "continue": a stdin that cannot be read makes the stepping mode unusable, and
+// silently replaying at full speed instead would be a different command than the
+// one the caller asked for.
+func screenReplayAwaitStep(steps *bufio.Reader, errw io.Writer) (bool, error) {
+	fmt.Fprintf(errw, "%s%s\n", screenReplayNoticePrefix, screenReplayStepPrompt)
+	line, err := steps.ReadString('\n')
+	if err != nil && line == "" {
+		return false, err
+	}
+	return strings.TrimSpace(line) == screenReplayStepQuit, nil
 }
 
 // orUndeclared names an empty revision as the absence it is, rather than
@@ -333,17 +627,39 @@ var screenReplayUsage = screenReplayUsageHead + "\n" +
 	"\n" +
 	"Usage:\n" +
 	"  " + screenReplaySynopsis + "                 Write the recorded render bytes to stdout\n" +
+	"  " + screenReplaySynopsis + " " + screenReplayFromFlag + " N " + screenReplayPaceFlag + " MS  Write them FROM frame N, MS apart\n" +
+	"  " + screenReplaySynopsis + " " + screenReplayStepFlag + "            Write ONE frame per keypress\n" +
 	"  " + screenReplaySynopsis + " " + screenReplayVerifyFlag + " OTHER  Compare two recordings frame by frame\n" +
 	"  " + screenReplaySynopsis + " -h              This page\n" +
 	"\n" +
 	"WHAT GOES TO STDOUT, AND WHAT DOES NOT. Every frame's payload, in recorded\n" +
-	"order, and nothing else: no canvas is built, no frame is paced, no colour is\n" +
-	"rewritten and no line is re-wrapped, so the output is the recording's own\n" +
-	"bytes and can be piped, hashed or captured. Every diagnostic — the counts and\n" +
-	"how the recording ended — goes to STDERR, so a redirected stdout never carries\n" +
-	"a word that was not in the recording.\n" +
+	"order, and nothing else: no canvas is built, no colour is rewritten and no\n" +
+	"line is re-wrapped, so the output is the recording's own bytes and can be\n" +
+	"piped, hashed or captured. Every diagnostic — the counts and how the\n" +
+	"recording ended — goes to STDERR, so a redirected stdout never carries a\n" +
+	"word that was not in the recording. The ONE exception is deliberate and it\n" +
+	"is the last thing written on every exit, error paths included: the terminal\n" +
+	"is handed back CLEAN. Four sequences, in one order — the DECSTBM scroll\n" +
+	"region reset `" + screenReplayScrollResetSpelled + "` first (a recording that sets a scroll region and never\n" +
+	"clears it freezes every row below it, which is what \"I have to run clear\"\n" +
+	"actually is), then the cursor made visible again `" + screenReplayCursorShowSpelled + "`, then a carriage\n" +
+	"return so the prompt starts at column 1, and the SGR reset `" + screenReplaySgrResetSpelled + "` LAST, so\n" +
+	"the final sequence on the wire is a reset and the shell inherits a terminal\n" +
+	"in its default attributes rather than the last frame's.\n" +
 	"\n" +
 	"Options:\n" +
+	"  " + screenReplayFromFlag + " N         start at frame N (0-based). Omitted = frame 0, the whole\n" +
+	"                    recording, which is the historical behaviour. A start\n" +
+	"                    past the last frame is refused by name, never clamped\n" +
+	"                    to an empty replay.\n" +
+	"  " + screenReplayPaceFlag + " MS        wait MS milliseconds between frames. A bare " + screenReplayPaceFlag + "\n" +
+	"                    takes " + strconv.Itoa(screenReplayDefaultPaceMS) + "ms. Omitted = emit as fast as the writer accepts,\n" +
+	"                    which is the historical behaviour and is unusable for\n" +
+	"                    watching a long session.\n" +
+	"  " + screenReplayStepFlag + "           advance ONE frame per line read from stdin: press ENTER\n" +
+	"                    for the next frame, type `" + screenReplayStepQuit + "` then ENTER to stop early. The\n" +
+	"                    prompt goes to stderr, so stdout stays the recording.\n" +
+	"                    Combine with " + screenReplayPaceFlag + " if you want both.\n" +
 	"  " + screenReplayVerifyFlag + " OTHER     does not write the bytes: compares THIS session's recording with\n" +
 	"                    OTHER (a session id, or the path of a screen-stream file),\n" +
 	"                    frame by frame, and prints where they first differ — the\n" +

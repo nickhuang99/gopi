@@ -12,9 +12,9 @@
 //	internal/devworkspace the clone channel's delivery loop (AttemptDelivery)
 //
 // `internal/tools` imports `internal/devworkspace` in 46 files (measured:
-// `grep -rln 'the operator/gopi/internal/devworkspace' internal/tools/*.go | wc -l`),
+// `grep -rln 'nick/gopi/internal/devworkspace' internal/tools/*.go | wc -l`),
 // while `internal/devworkspace` imports `internal/tools` in NONE (measured:
-// `grep -rn 'the operator/gopi/internal/tools' internal/devworkspace/*.go` → no hits).
+// `grep -rn 'nick/gopi/internal/tools' internal/devworkspace/*.go` → no hits).
 // So the direction of that edge is fixed: devworkspace can never read a
 // constant out of tools (Rule 14 — the value shared across packages lives in a
 // small exported-constant package every consumer can import; the alternative is

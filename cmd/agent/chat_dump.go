@@ -320,7 +320,7 @@ func chatResolveDumpPath(opts chatDumpOptions, ag *agent.Agent) (string, error) 
 	}
 	if opts.path != "" {
 		if dir := filepath.Dir(opts.path); dir != "" && dir != "." {
-			if err := os.MkdirAll(dir, dumpDirPerm); err != nil {
+			if err := scratch.MkdirAllWithSuiteRunOwnerPerm(dir, dumpDirPerm); err != nil {
 				return "", fmt.Errorf("cannot create the dump directory %s: %w", dir, err)
 			}
 		}

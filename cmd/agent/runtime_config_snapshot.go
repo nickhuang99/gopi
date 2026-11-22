@@ -35,7 +35,9 @@ import (
 	"strings"
 
 	"github.com/nickhuang99/gopi/internal/agent"
+	"github.com/nickhuang99/gopi/internal/boolvocab"
 	"github.com/nickhuang99/gopi/internal/config"
+	"github.com/nickhuang99/gopi/internal/configreport"
 	"github.com/nickhuang99/gopi/internal/deepseek"
 	"github.com/nickhuang99/gopi/internal/scratch"
 	"github.com/nickhuang99/gopi/internal/thinkmode"
@@ -43,38 +45,23 @@ import (
 
 // The vocabulary of this report. Every literal that carries meaning is a named
 // constant (Rules 1/13/14) — the channels below are compared against by callers
-// and by tests, so they are not prose.
+// and by tests, so they are not prose. Their VALUES now live in configreport
+// (the shared parsing layer, epic 01a1eaec); these names alias that one source
+// so the chat renderer, the CLI renderer and the decision function cannot spell
+// a channel differently.
 const (
-	// runtimeConfigChannelFlag is the highest precedence: a CLI flag.
-	runtimeConfigChannelFlag = "flag"
-	// runtimeConfigChannelEnv is an environment variable that was ALREADY in
-	// the process before this run resolved anything — an operator's own export.
-	runtimeConfigChannelEnv = "env"
-	// runtimeConfigChannelSettings is a value THIS RUN loaded from the settings
-	// document and published into its own environment (config.ApplyEnv). It is
-	// distinguishable from runtimeConfigChannelEnv only because the process
-	// recorded it: a key the document states, the process carries, and the
-	// document's value matches the process's is a published value, not a
-	// coincidence.
-	runtimeConfigChannelSettings = "settings.json"
-	// runtimeConfigChannelDefault is the compiled-in default: nothing named it,
-	// and the code's own constant runs.
-	runtimeConfigChannelDefault = "built-in default"
-	// runtimeConfigChannelNotApplied is THE ROW THIS SURFACE EXISTS FOR: the
-	// settings document states a value and the running process does not have
-	// it. On a knob whose only reader is os.Getenv it means the value is DEAD.
-	runtimeConfigChannelNotApplied = "NOT APPLIED"
-	// runtimeConfigChannelUnset is a knob nothing specified at all — neither an
-	// environment variable nor the document.
-	runtimeConfigChannelUnset = "(unset)"
-
-	// runtimeConfigChannelDecidedByPrefix names the channel of a row ANOTHER ROW
-	// decides. It exists because `[built-in default]` would be a false claim
-	// there: the compiled-in value of such a knob does NOT run, the coupled row's
-	// value does. The channel column is where "what decided this" is answered, so
-	// naming a table key is the honest answer — and the `!` note below spells the
-	// mechanism out in words.
-	runtimeConfigChannelDecidedByPrefix = "decided by "
+	runtimeConfigChannelFlag            = configreport.ChannelFlag
+	runtimeConfigChannelEnv             = configreport.ChannelEnv
+	runtimeConfigChannelSettings        = configreport.ChannelSettings
+	runtimeConfigChannelDefault         = configreport.ChannelDefault
+	runtimeConfigChannelNotApplied      = configreport.ChannelNotApplied
+	runtimeConfigChannelUnset           = configreport.ChannelUnset
+	runtimeConfigChannelDecidedByPrefix = configreport.ChannelDecidedByPrefix
+	// The THIRD source position (bug row 01a1ffdd): a value THIS PROCESS set at
+	// run time, carried by no flag, export or document. Its spelling lives in
+	// configreport with the other channels; this name only aliases it so no
+	// renderer re-spells a channel (Rules 1/13/14).
+	runtimeConfigChannelRunning = configreport.ChannelRunning
 
 	// runtimeConfigCoupledNoteFormat is the `!` line for a coupled row: WHAT
 	// decides it, the value in force, and the compiled-in default that therefore
@@ -104,7 +91,26 @@ const (
 	// unable to tell 16384 from 0; `16384` alone would claim the process holds
 	// something it does not. Together: "the process holds nothing — and THIS is
 	// what will run".
-	runtimeConfigUnsetDefaultFormat = "%s, %s runs"
+	//
+	// THE THIRD %s IS THE KNOB'S UNIT, and it comes from the FIELD, never from
+	// this shared template. This template serves token budgets, counts,
+	// ratios and character lengths — hard-coding a unit here would put the
+	// wrong one on most rows. `runtimeConfigDefaultUnitOf` supplies either a
+	// leading-space unit (" token") or "" for a dimensionless knob, so the two
+	// token knobs render `200000 token` / `16384 token` while a count renders a
+	// bare number. There is deliberately NO fallback word: the old "%s runs"
+	// made readers parse `200000 runs` as "200000 runs of something", which is
+	// the bug this change closes. `[built-in default]` in the channel column
+	// already states "this value is in force"; a predicate in the value cell
+	// was always redundant.
+	runtimeConfigUnsetDefaultFormat = "%s, %s%s"
+
+	// runtimeConfigUnitTokens is the unit for the two token-dimension knobs:
+	// `context_window` (a token budget) and `max_tokens` (an output cap). It is
+	// SINGULAR on purpose — a dimension name used as a quantity modifier takes
+	// the singular in English ("200000 token budget"), so both magnitudes read
+	// consistently and there is no plural branch at the value 1.
+	runtimeConfigUnitTokens = " token"
 
 	// runtimeConfigEffortValuesSeparator is how a LIST-valued knob's members are
 	// joined for the value cell — the same comma the settings document and
@@ -130,10 +136,28 @@ const (
 	// halved and not why it may be halved cannot act on it.
 	runtimeConfigClampNoteFormat = "%s: thinking budget is clamped — %d configured, %d goes on the wire because the request builder caps the budget at max_tokens/2 (%d/2); that capped number is also the token count the harness aborts a round at, so raise max_tokens to keep a larger thinking budget"
 
+	// runtimeConfigRunningNoteFormat is the `!` line for a row a console command
+	// changed. The two %s after the key are the value IN FORCE (what this process
+	// holds) and what the CONFIGURATION states, because the difference between
+	// those two is the whole point of the row: the change is real and ephemeral.
+	runtimeConfigRunningNoteFormat = "%s is in force from THIS process, not from a configuration channel: it holds %q because that value was set at run time, and it is never written back (this session only) — the configuration still states %s, so a new process starts there"
+
+	// runtimeConfigConfigurationSaysWord is what the note says when no
+	// configuration channel states the knob at all. It is a phrase rather than a
+	// blank so the note cannot read as a truncated sentence.
+	runtimeConfigConfigurationSaysWord = "nothing"
+
 	// runtimeConfigKeyAgentThinkingBudget is the resolved row's key: the budget
 	// the AGENT resolved, which is the same number the builder then clamps. It
 	// is a constant because the clamp logic keys on it (Rule 1).
 	runtimeConfigKeyAgentThinkingBudget = "agent.thinking.budget_tokens"
+
+	// The two resolved BOOL fields of the agent's section. They are constants
+	// because the run-time registry keys on the knob spellings while these rows
+	// name the resolved field, and a test asserts BOTH lists are complete
+	// (Rules 1/13).
+	runtimeConfigKeyAgentHideThinking = "agent.hide_thinking"
+	runtimeConfigKeyAgentKeepThinking = "agent.keep_thinking"
 
 	// The two environment spells the budget clamp reads. internal/agent resolves
 	// both by these names (loop.go's maxTokens / thinking-budget statements), so
@@ -181,8 +205,17 @@ type runtimeConfigField struct {
 	// document states none.
 	Document string
 	// Channel is what decided InForce, computed from the three facts above by
-	// the ONE classifier (runtimeConfigChannelOf).
+	// the ONE classifier (runtimeConfigChannelOf / configreport.ResolveRun).
 	Channel string
+	// Configured is what the CONFIGURATION channels held for this knob before
+	// any run-time value was folded in — the environment's value, in the row's
+	// own value vocabulary. It is "" when the process carried nothing.
+	//
+	// IT EXISTS SO A RUN-TIME ROW CAN SAY WHAT THE CONFIGURATION STILL STATES
+	// (bug row 01a1ffdd): `/thinking off` writes no configuration, so the report
+	// must be able to print "in force here: hidden; the configuration says
+	// shown" without reading the environment a second time (Rule 2).
+	Configured string
 	// Default is the compiled-in value that runs when nothing decided this
 	// knob, read from runtimeConfigBuiltinDefaultOf and stored here so the
 	// renderer NAMES the value instead of leaving the reader to reconcile the
@@ -190,6 +223,14 @@ type runtimeConfigField struct {
 	// no compiled-in default (and for every resolved agent row, which carries
 	// its own answer), and "" for a COUPLED row — see DecidedBy.
 	Default string
+	// DefaultUnit is the UNIT of Default, carried on the field rather than
+	// hard-coded in the shared value template. It is "" for a dimensionless
+	// knob (a count, a ratio, a toggle) and a leading-space unit such as
+	// " token" for the two token-dimension knobs. The renderer appends it only
+	// on the `(unset), <default>` row, so `context_window` reads
+	// `(unset), 200000 token` while a count reads a bare number — no unit is
+	// ever guessed from the shared template.
+	DefaultUnit string
 	// DecidedBy is the KEY of another row of this same table that decides this
 	// knob's value, or "" for the ordinary case. It exists for the one knob with
 	// a cross-field coupling: `thinking` is auto-enabled by an explicit non-off
@@ -357,19 +398,13 @@ func runtimeConfigSourcesSnapshot() runtimeConfigEnvSources {
 // name, which is checked first among the two records, so a name both a flag and
 // the document set reads as flag — because that IS what happened.
 func runtimeConfigChannelOf(envName, inForce, document string, src runtimeConfigEnvSources) string {
-	if inForce != "" {
-		if envName != "" && src.Flag[envName] {
-			return runtimeConfigChannelFlag
-		}
-		if envName != "" && src.Settings[envName] {
-			return runtimeConfigChannelSettings
-		}
-		return runtimeConfigChannelEnv
-	}
-	if document != "" {
-		return runtimeConfigChannelNotApplied
-	}
-	return runtimeConfigChannelUnset
+	// THE DECISION IS configreport.Resolve's, not this renderer's (epic
+	// 01a1eaec). Every channel — and the in-effect verdict beside it — comes
+	// from the one classifier both frontends call. This wrapper only adapts the
+	// process-wide source record to the resolver's two booleans.
+	flagSet := envName != "" && src.Flag[envName]
+	settingsSet := envName != "" && src.Settings[envName]
+	return configreport.Resolve("", envName, inForce, document, flagSet, settingsSet).Channel
 }
 
 // runtimeConfigRowChannelOf is the classifier PLUS the one refinement a row can
@@ -387,12 +422,11 @@ func runtimeConfigChannelOf(envName, inForce, document string, src runtimeConfig
 //
 // A knob with NO compiled-in default keeps `(unset)` in both columns — labelling
 // it `[built-in default]` would promise a fallback the code does not have.
-func runtimeConfigRowChannelOf(key, envName, inForce, document string, src runtimeConfigEnvSources) string {
-	channel := runtimeConfigChannelOf(envName, inForce, document, src)
-	if channel == runtimeConfigChannelUnset && runtimeConfigBuiltinDefaultOf(key) != "" {
+func runtimeConfigRowChannelOfResolved(key string, decided configreport.Resolution) string {
+	if decided.Channel == runtimeConfigChannelUnset && runtimeConfigBuiltinDefaultOf(key) != "" {
 		return runtimeConfigChannelDefault
 	}
-	return channel
+	return decided.Channel
 }
 
 // runtimeConfigDeps is the ONE dependency seam: every source this report reads
@@ -463,7 +497,6 @@ var runtimeConfigKnownKeys = []string{
 	settingsKeyReasoningEffort,
 	settingsKeyThinkingBudget,
 	settingsKeyEffortValues,
-	settingsKeyCompact,
 	settingsKeyDebug,
 	settingsKeyHideThinking,
 	settingsKeyKeepThinking,
@@ -485,7 +518,6 @@ const (
 	settingsKeyReasoningEffort = "reasoning_effort"
 	settingsKeyThinkingBudget  = "thinking_budget"
 	settingsKeyEffortValues    = "effort_values"
-	settingsKeyCompact         = "compact"
 	settingsKeyDebug           = "debug"
 	settingsKeyHideThinking    = "hide_thinking"
 	settingsKeyKeepThinking    = "keep_thinking"
@@ -508,9 +540,146 @@ var runtimeConfigSecretKeys = []string{settingsKeyAPIKey}
 // "TOKENS", which is a limit.
 var runtimeConfigSecretSegmentShapes = []string{"key", "token", "secret", "password"}
 
+// runtimeConfigSpeechBool renders a bool the code's own vocabulary speaks
+// (`shown`/`hidden`), so a row's value cell is a word rather than a number AND
+// the report cannot describe one state with two words (Rules 1/13/14: the words
+// are chatThinkingStateHidden/chatThinkingStateShown, the ONE mapping
+// chatThinkingStateWord already publishes).
+//
+// HIDDEN IS THE POSITIVE SIDE, which is the whole point: `hide_thinking` is true
+// when the display is hidden, so the row reads "hidden" exactly when the field
+// does.
+func runtimeConfigSpeechBool(b bool) string {
+	return chatThinkingStateWord(b)
+}
+
+// runtimeConfigRunTimeReaders is THE registry of knobs whose LIVE value lives on
+// the agent rather than in the environment or the document, and it is the shape
+// the 2026-11-22 defect is fixed in: `hide_thinking` and `keep_thinking` are
+// rows HERE, not `if`s at a call site, so a third run-time switch is one line
+// added to this table instead of a third special case.
+//
+// THE READER IS ASKED ONLY WHEN A LIVE AGENT EXISTS. A carrier with none (the
+// web table's `slashConfigCommand`) has no run-time face to read, so its answer
+// comes from the configuration channels exactly as before.
+var runtimeConfigRunTimeReaders = map[string]func(*agent.Agent, string, string) string{
+	settingsKeyHideThinking: func(ag *agent.Agent, env, document string) string {
+		return runtimeConfigDepartingBoolWord(settingsKeyHideThinking, ag.HideThinking, env, document)
+	},
+	settingsKeyKeepThinking: func(ag *agent.Agent, env, document string) string {
+		return runtimeConfigDepartingBoolWord(settingsKeyKeepThinking, ag.KeepThinking, env, document)
+	},
+}
+
+// runtimeConfigRowValueWord renders the held value of a BOOL row in the
+// vocabulary its row speaks, leaving every other value untouched.
+//
+// WHY THE VALUE COLUMN NEEDS THIS. The environment carries `1` for a switch and
+// the document carries `1` too (ApplyEnv publishes exactly that spelling), so a
+// reader who set GOPI_HIDE_THINKING=1 saw `1` on the knob row while the command
+// that flips the same field said `hidden`. One state, two words, two rows apart.
+// A value that is neither a true- nor a false-spelling is printed VERBATIM: an
+// unparsable environment value is a fact about the process, not something a
+// report may round into a state word.
+func runtimeConfigRowValueWord(key, value string) string {
+	if value == "" || !config.IsBoolSettingsKey(key) {
+		return value
+	}
+	switch {
+	case config.IsTrueValue(value):
+		return runtimeConfigBoolWordFor(true, key)
+	case config.IsFalseValue(value):
+		return runtimeConfigBoolWordFor(false, key)
+	}
+	return value
+}
+
+// runtimeConfigRunTimeOf answers the run-time observation for one knob: "" when
+// this carrier has none — and "" ALSO when the live value AGREES with the
+// configuration.
+//
+// THE AGREEMENT RULE IS WHAT KEEPS A SESSION THAT NEVER TOUCHED THE SWITCH
+// BYTE-IDENTICAL (acceptance 3). `ag.HideThinking == false` is not an
+// observation of a change: it is the state every process starts in, and the
+// configuration channels already describe it (the compiled-in default is
+// `shown`). Reporting it as a run-time value would relabel every row of every
+// untouched session `[this process (run time)]`, which is the regression this
+// whole design exists to avoid. Only a value that DEPARTS from what the
+// configuration resolves to is a run-time fact.
+func runtimeConfigRunTimeOf(ag *agent.Agent, key, env, document string) string {
+	if ag == nil {
+		return ""
+	}
+	read, ok := runtimeConfigRunTimeReaders[key]
+	if !ok {
+		return ""
+	}
+	return read(ag, env, document)
+}
+
+// runtimeConfigDepartingBoolWord renders the run-time value of a BOOL knob in its
+// row's vocabulary, or "" when the live field agrees with the configuration.
+//
+// THE COMPARISON IS IN THE KNOB'S OWN DOMAIN, not between raw strings: the
+// environment may spell the same state `1`, `true` or `on`, and a document that
+// states `false` must compare equal to a field holding false. Spreading the
+// three channels into one bool first (runtimeConfigConfiguredBool) is what makes
+// the comparison meaningful, and it is the same precedence ApplyEnv publishes:
+// a held environment value wins, else the document, else the compiled-in zero —
+// which for both of these switches is `false` (loop.go's EnvBool reads).
+func runtimeConfigDepartingBoolWord(key string, live bool, env, document string) string {
+	if live == runtimeConfigConfiguredBool(key, env, document) {
+		return ""
+	}
+	return runtimeConfigBoolWordFor(live, key)
+}
+
+// runtimeConfigConfiguredBool resolves what the CONFIGURATION says a bool knob
+// is: the held environment value when the process carries one, else the
+// document's declared value, else false (the Go zero, and the code's own default
+// for every bool switch it reads through config.EnvBool).
+func runtimeConfigConfiguredBool(key, env, document string) bool {
+	if env != "" {
+		return runtimeConfigBoolValueOf(key, env)
+	}
+	return runtimeConfigBoolValueOf(key, document)
+}
+
+// runtimeConfigBoolValueOf reads a bool knob's value out of a RAW cell, in
+// whichever vocabulary that cell speaks.
+//
+// IT EXISTS BECAUSE THE VOCABULARY IS TWO-WAY (Rules 1/13/14): the document
+// column of a speech knob is rendered as `shown`/`hidden`, so a comparison that
+// only understood the boolean spellings would read `hidden` as "not one of the
+// true values" — i.e. hide=false — and report the OPPOSITE of what the file
+// says. One mapping function, used by the renderer and by the comparison, is
+// what keeps those two from disagreeing.
+func runtimeConfigBoolValueOf(key, raw string) bool {
+	if raw == "" {
+		return false
+	}
+	if runtimeConfigBoolSpeaksSpeech(key) {
+		switch raw {
+		case chatThinkingStateHidden:
+			return true
+		case chatThinkingStateShown:
+			return false
+		}
+	}
+	return config.IsTrueValue(raw)
+}
+
 // settingsDocumentString marshals ONE settings key out of a parsed document.
 // The keys are read from the parsed Config, so a key this build does not model
 // is reported as absent rather than invented.
+//
+// A BOOL KEY ANSWERS THREE STATES, NEVER TWO (bug row 01a1ffdd). `false` used to
+// render as "" — the same cell as "the document does not state this key at all"
+// — so `"hide_thinking": false` and an absent `hide_thinking` were
+// indistinguishable in a report whose whole job is to tell those apart. The
+// presence question is asked of the document that was decoded
+// (config.Config.SettingsCarriesKeyInDecoded), and the VALUE column's word for a
+// declared bool comes from runtimeConfigSpeechBool.
 func settingsDocumentString(cfg *config.Config, key string) string {
 	if cfg == nil {
 		return ""
@@ -537,17 +706,12 @@ func settingsDocumentString(cfg *config.Config, key string) string {
 		return runtimeConfigInt(cfg.ThinkingBudget)
 	case settingsKeyEffortValues:
 		return strings.Join(cfg.EffortValues, ",")
-	case settingsKeyCompact:
-		if cfg.Compact == nil {
-			return ""
-		}
-		return runtimeConfigBool(bool(*cfg.Compact))
 	case settingsKeyDebug:
-		return runtimeConfigBool(cfg.Debug)
+		return runtimeConfigDeclaredBoolOf(cfg, key, cfg.Debug)
 	case settingsKeyHideThinking:
-		return runtimeConfigBool(cfg.HideThinking)
+		return runtimeConfigDeclaredBoolOf(cfg, key, cfg.HideThinking)
 	case settingsKeyKeepThinking:
-		return runtimeConfigBool(cfg.KeepThinking)
+		return runtimeConfigDeclaredBoolOf(cfg, key, cfg.KeepThinking)
 	case settingsKeyTimeout:
 		return runtimeConfigInt(cfg.TimeoutSec)
 	case settingsKeyTmpDir:
@@ -561,6 +725,59 @@ func settingsDocumentString(cfg *config.Config, key string) string {
 	return ""
 }
 
+// runtimeConfigDeclaredBoolOf answers the document column of a BOOL key, and the
+// answer is three-state by construction:
+//
+//	the document does not carry the key   -> "" (absent — the honest blank)
+//	it carries it as true                 -> the report's bool vocabulary
+//	it carries it as false                -> that SAME vocabulary, "not on"
+//
+// Which spelling is used comes from the vocabulary itself (config.IsFalseValue /
+// config.IsTrueValue), never from a literal here, and which words a bool row's
+// value column speaks is the report's own decision (runtimeConfigDeclaredBoolWord).
+func runtimeConfigDeclaredBoolOf(cfg *config.Config, key string, declared bool) string {
+	if !cfg.SettingsCarriesKeyInDecoded(key) {
+		return ""
+	}
+	return runtimeConfigDeclaredBoolWord(declared, key)
+}
+
+// runtimeConfigDeclaredBoolWord renders a DECLARED bool for a BOOL key: the
+// code's own true/false spelling, taken from boolvocab's canonical lists so this
+// report and the resolver cannot disagree about which word means "on".
+//
+// A bool row whose subject is the SPEECH vocabulary (hide_thinking: the
+// reasoning DISPLAY) speaks that vocabulary instead — see
+// runtimeConfigBoolWordFor, which owns that decision once.
+func runtimeConfigDeclaredBoolWord(declared bool, key string) string {
+	if !config.IsBoolSettingsKey(key) {
+		// A non-bool key cannot have a declared bool; answering "" keeps the cell
+		// honest instead of printing a word the knob's dimension does not have.
+		return ""
+	}
+	if runtimeConfigBoolSpeaksSpeech(key) {
+		return runtimeConfigSpeechBool(declared)
+	}
+	return boolvocab.Canonical(declared)
+}
+
+// runtimeConfigBoolWordFor renders a LIVE bool (an env-carried value, a declared
+// document value, a field the process holds) in the vocabulary its ROW speaks.
+// It is the ONE mapping, so the same knob cannot read `1` in one column and
+// `hidden` in another.
+func runtimeConfigBoolWordFor(b bool, key string) string {
+	return runtimeConfigDeclaredBoolWord(b, key)
+}
+
+// runtimeConfigBoolSpeaksSpeech reports whether a knob's value cell speaks the
+// reasoning-display vocabulary (`shown` / `hidden`) rather than the generic
+// boolean spelling. hide_thinking IS that display switch: it is the same field
+// `/thinking` flips, so a report that called it `1` while the command's own
+// confirmation said `hidden` would describe one state with two words.
+func runtimeConfigBoolSpeaksSpeech(key string) bool {
+	return key == settingsKeyHideThinking
+}
+
 // runtimeConfigInt renders a positive int, or "" when the document states none
 // (0 is the document's own "not stated" for every int knob here).
 func runtimeConfigInt(n int) string {
@@ -568,17 +785,6 @@ func runtimeConfigInt(n int) string {
 		return ""
 	}
 	return strconv.Itoa(n)
-}
-
-// runtimeConfigBool renders a declared bool. It cannot say "declared false" for
-// a plain bool field (the shape carries no presence), so a false reads as "" —
-// and the channel for such a knob is then decided by its env var alone, which
-// is what the process obeys anyway.
-func runtimeConfigBool(b bool) string {
-	if !b {
-		return ""
-	}
-	return "1"
 }
 
 // buildRuntimeConfigSnapshot reads the LIVE process through the given deps. ag
@@ -593,15 +799,29 @@ func buildRuntimeConfigSnapshot(ag *agent.Agent, deps runtimeConfigDeps) *runtim
 	}
 	s := &runtimeConfigSnapshot{Agent: ag}
 	add := func(key, envName, document string) {
+		// THE THREE SOURCES ANSWERED ONCE, IN ONE CALL (bug row 01a1ffdd): the
+		// configuration channels (env / flag / settings.json) and the RUN-TIME
+		// observation this process holds, decided together by configreport — so a
+		// knob the console can flip is a row of the MODEL, never an `if` at this
+		// call site. A knob with no run-time face answers "" and resolves exactly
+		// as it did before this change.
+		decided := configreport.ResolveRun(
+			key, envName, deps.Getenv(envName), document,
+			envName != "" && deps.Sources.Flag[envName],
+			envName != "" && deps.Sources.Settings[envName],
+			runtimeConfigRunTimeOf(s.Agent, key, deps.Getenv(envName), document),
+		)
 		f := runtimeConfigField{
-			Key:       key,
-			EnvName:   envName,
-			InForce:   deps.Getenv(envName),
-			Document:  document,
-			Channel:   runtimeConfigRowChannelOf(key, envName, deps.Getenv(envName), document, deps.Sources),
-			Default:   runtimeConfigDefaultForValueColumn(key, deps.Getenv(envName), document),
-			DecidedBy: runtimeConfigDecidedByOf(s.Agent, key, deps.Getenv(envName), document, deps.Getenv),
-			Clamp:     runtimeConfigBudgetClampOf(s.Agent, key, deps),
+			Key:         key,
+			EnvName:     envName,
+			InForce:     runtimeConfigRowValueWord(key, decided.Value),
+			Configured:  runtimeConfigRowValueWord(key, deps.Getenv(envName)),
+			Document:    document,
+			Channel:     runtimeConfigRowChannelOfResolved(key, decided),
+			Default:     runtimeConfigDefaultForValueColumn(key, deps.Getenv(envName), document),
+			DefaultUnit: runtimeConfigDefaultUnitOf(key),
+			DecidedBy:   runtimeConfigDecidedByOf(s.Agent, key, deps.Getenv(envName), document, deps.Getenv),
+			Clamp:       runtimeConfigBudgetClampOf(s.Agent, key, deps),
 		}
 		if f.Clamp != nil && f.Channel != runtimeConfigChannelDefault {
 			// A clamped row's number was NOT taken from a compiled-in default,
@@ -635,7 +855,6 @@ func buildRuntimeConfigSnapshot(ag *agent.Agent, deps runtimeConfigDeps) *runtim
 
 	// --- the run's shape ----------------------------------------------------
 	add(settingsKeyEffortValues, "GOPI_EFFORT_VALUES", deps.Document(settingsKeyEffortValues))
-	add(settingsKeyCompact, "GOPI_COMPACT", deps.Document(settingsKeyCompact))
 	add(settingsKeyDebug, "GOPI_DEBUG", deps.Document(settingsKeyDebug))
 	add(settingsKeyKeepThinking, "GOPI_KEEP_THINKING", deps.Document(settingsKeyKeepThinking))
 	add(settingsKeyHideThinking, "GOPI_HIDE_THINKING", deps.Document(settingsKeyHideThinking))
@@ -688,6 +907,15 @@ func buildRuntimeConfigSnapshot(ag *agent.Agent, deps runtimeConfigDeps) *runtim
 			budgetRow,
 			runtimeConfigField{Key: "agent.max_tokens", InForce: strconv.Itoa(ag.MaxTokens), Channel: runtimeConfigChannelAgent},
 			runtimeConfigField{Key: "agent.context_window", InForce: strconv.Itoa(ag.ContextWindow), Channel: runtimeConfigChannelAgent},
+			// THE TWO ROWS THAT MAKE THIS SECTION THE WHOLE RESOLVED AGENT
+			// (bug row 01a1ffdd). Without them a reader could see the knob rows
+			// (`hide_thinking`, `keep_thinking`) and the resolved `agent.*` block
+			// and never learn that these two switches ARE agent fields — which is
+			// why a console command could change one and reach no row at all.
+			// The words come from the SAME vocabulary the knob rows and
+			// `/thinking` use (runtimeConfigBoolWordFor → chatThinkingStateWord).
+			runtimeConfigField{Key: runtimeConfigKeyAgentHideThinking, InForce: runtimeConfigBoolWordFor(ag.HideThinking, settingsKeyHideThinking), Channel: runtimeConfigChannelAgent},
+			runtimeConfigField{Key: runtimeConfigKeyAgentKeepThinking, InForce: runtimeConfigBoolWordFor(ag.KeepThinking, settingsKeyKeepThinking), Channel: runtimeConfigChannelAgent},
 		)
 	}
 
@@ -851,6 +1079,31 @@ func runtimeConfigBuiltinDefaultOf(key string) string {
 	return ""
 }
 
+// runtimeConfigDefaultUnitOf names the unit of a knob's compiled-in default,
+// carried on the FIELD so the shared value template never hard-codes one.
+//
+// A unit belongs to the knob's DIMENSION, not to the template that happens to
+// render it: the same template serves token budgets, counts, ratios and
+// character lengths. Only the two token-dimension knobs in this fix's scope get
+// a unit here — `context_window` (a token budget) and `max_tokens` (an output
+// cap). Every other knob returns "" and renders a bare number. The bar for
+// adding a unit is deliberately high: a knob left out of scope keeps a bare
+// number rather than a guessed one, because a wrong unit is worse than none.
+// This is why `thinking`, `timeout`, `effort_values` and every resolved
+// `agent.*` row carry no unit; `thinking_budget` is token-dimension too but was
+// explicitly left out of this fix's two-knob scope.
+//
+// The leading space is part of the unit: the shared template is "%s, %s%s", so
+// a unit-carrying row reads `(unset), 200000 token` while a dimensionless one
+// reads `(unset), 8` — neither carries a stray space.
+func runtimeConfigDefaultUnitOf(key string) string {
+	switch key {
+	case settingsKeyMaxTokens, settingsKeyContextWindow:
+		return runtimeConfigUnitTokens
+	}
+	return ""
+}
+
 // runtimeConfigNotesOf states the couplings the values alone do not say.
 func runtimeConfigNotesOf(ag *agent.Agent, fields []runtimeConfigField) []string {
 	var notes []string
@@ -883,6 +1136,19 @@ func runtimeConfigNotesOf(ag *agent.Agent, fields []runtimeConfigField) []string
 			f.Key, runtimeConfigBuiltinDefaultOrUnknown(f.Key)))
 	}
 	for _, f := range fields {
+		if f.Channel != runtimeConfigChannelRunning {
+			continue
+		}
+		// THE ROW A CONSOLE COMMAND JUST CHANGED, in words. The channel column
+		// already says `this process (run time)`; this line adds the two facts
+		// that column cannot carry — that nothing was written back, and what the
+		// configuration therefore still says. Without the second half a reader
+		// comparing `/config` with `gopi config show` has to guess why the two
+		// processes disagree about the same knob.
+		notes = append(notes, fmt.Sprintf(runtimeConfigRunningNoteFormat,
+			f.Key, f.InForce, runtimeConfigConfigurationSays(f)))
+	}
+	for _, f := range fields {
 		if f.Channel != runtimeConfigChannelEnv || f.Document == "" || f.Document == f.InForce {
 			continue
 		}
@@ -891,9 +1157,15 @@ func runtimeConfigNotesOf(ag *agent.Agent, fields []runtimeConfigField) []string
 		// force — but a reader comparing this report with the file would
 		// otherwise have to spot the difference in a column this table does not
 		// print.
+		//
+		// BOTH values go through the ONE redaction decision before they reach
+		// %q. This note is printed and copied into run logs exactly like the
+		// value column, so a credential here would leak even though the cell
+		// itself shows <set>. Routing through redactIfSecret (the same function
+		// the value column calls) keeps the decision in one place (Rules 1/13/14).
 		notes = append(notes, fmt.Sprintf(
 			"%s: the process carries %q while the settings document states %q — the environment wins, and the file is not what this run is using",
-			f.Key, f.InForce, f.Document))
+			f.Key, redactIfSecret(f.Key, f.InForce), redactIfSecret(f.Key, f.Document)))
 	}
 	// The COUPLED row, in words. It is stated even when no agent is in hand: the
 	// coupling is decided by the ENVIRONMENT, so a carrier that resolved nothing
@@ -910,7 +1182,8 @@ func runtimeConfigNotesOf(ag *agent.Agent, fields []runtimeConfigField) []string
 		// The value of the DECIDING row, read from the table itself rather than
 		// from the environment a second time: the two must not disagree, and the
 		// row is already the report's own record of it.
-		deciding := byKey[f.DecidedBy].InForce
+		decidingKey := f.DecidedBy
+		deciding := byKey[decidingKey].InForce
 		// What the request will carry. The agent's own resolution when one is in
 		// hand; otherwise the fact that the coupling IMPLIES enabled (that is
 		// what runtimeConfigDecidedByOf measured) — never the compiled-in
@@ -920,7 +1193,7 @@ func runtimeConfigNotesOf(ag *agent.Agent, fields []runtimeConfigField) []string
 			effective = runtimeConfigThinkingOf(ag.Thinking)
 		}
 		notes = append(notes, fmt.Sprintf(runtimeConfigCoupledNoteFormat,
-			f.Key, f.DecidedBy, deciding, runtimeConfigBuiltinDefaultOrUnknown(f.Key),
+			f.Key, decidingKey, redactIfSecret(decidingKey, deciding), runtimeConfigBuiltinDefaultOrUnknown(f.Key),
 			config.EffortOff, agent.ThinkingEnvName, f.Key, effective))
 	}
 	if ag == nil {
@@ -929,7 +1202,7 @@ func runtimeConfigNotesOf(ag *agent.Agent, fields []runtimeConfigField) []string
 	if runtimeConfigThinkingDisabled(ag) {
 		if ag.ReasoningEffort != "" {
 			notes = append(notes, fmt.Sprintf(
-				"thinking is OFF while reasoning_effort=%q is set: the request builder CLEARS effort whenever thinking is disabled, so the effort never reaches the wire", ag.ReasoningEffort))
+				"thinking is OFF while reasoning_effort=%q is set: the request builder CLEARS effort whenever thinking is disabled, so the effort never reaches the wire", redactIfSecret(settingsKeyReasoningEffort, ag.ReasoningEffort)))
 			return notes
 		}
 		notes = append(notes, "thinking is OFF: every request is sent thinking=disabled, so reasoning_effort is absent from the wire")
@@ -1063,6 +1336,23 @@ func runtimeConfigBudgetOf(t *deepseek.Thinking) string {
 	return strconv.Itoa(t.BudgetTokens)
 }
 
+// runtimeConfigConfigurationSays answers, in the report's own value vocabulary,
+// what the configuration channels state for a knob whose run-time value is in
+// force: the document's value when it states one, else the environment's
+// configured value, else the phrase for "nothing".
+//
+// IT IS DERIVED FROM THE ROW, not re-read from the environment: the row already
+// carries both, and a second read could disagree with the cell above it (Rule 2).
+func runtimeConfigConfigurationSays(f runtimeConfigField) string {
+	if f.Document != "" {
+		return fmt.Sprintf("%q", redactIfSecret(f.Key, f.Document))
+	}
+	if f.Configured != "" {
+		return fmt.Sprintf("%q", redactIfSecret(f.Key, f.Configured))
+	}
+	return runtimeConfigConfigurationSaysWord
+}
+
 // renderRuntimeConfigSnapshot is the ONE renderer both doors call: the REPL arm
 // and the shared table's answer are the same bytes.
 func renderRuntimeConfigSnapshot(s *runtimeConfigSnapshot) []string {
@@ -1088,8 +1378,10 @@ func renderRuntimeConfigSnapshot(s *runtimeConfigSnapshot) []string {
 		case value == "" && f.Default != "":
 			// The cell states BOTH facts, because either alone is a different
 			// (and misleading) answer: the process holds nothing, and this is
-			// what runs anyway.
-			value = fmt.Sprintf(runtimeConfigUnsetDefaultFormat, runtimeConfigChannelUnset, f.Default)
+			// what runs anyway. The unit comes from the FIELD, not this shared
+			// template — only the two token knobs carry one; a dimensionless
+			// knob renders a bare number with no invented predicate.
+			value = fmt.Sprintf(runtimeConfigUnsetDefaultFormat, runtimeConfigChannelUnset, f.Default, f.DefaultUnit)
 		case value == "":
 			value = runtimeConfigChannelUnset
 		default:

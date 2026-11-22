@@ -932,6 +932,12 @@ const workerStopUndeliveredNote = "worker: stop — the in-flight run child %d r
 //     (workerStopGraceDefault), then terminated so the close-out still runs.
 //     This is the pre-existing signal contract, unchanged.
 func awaitWorkerStopChild(drain bool) {
+	// THE WAIT IS OVER BEFORE IT STARTS when the registry's only entries name
+	// children that are already gone (see the bounded loops below): there is no
+	// close-out left to protect, so neither shape may spend its grace on it.
+	if left := reclaimVanishedPassChildren(workerStopVanishedNote); len(left) == 0 {
+		return
+	}
 	if drain {
 		awaitWorkerDrainChild()
 		return
@@ -947,7 +953,7 @@ func awaitWorkerStopChild(drain bool) {
 		if workerStopEscalated() {
 			break // the operator spelled the escalation: stop waiting
 		}
-		if left := waitForChildren(workerStopPollInterval); len(left) == 0 {
+		if left := waitForChildrenStoppable(workerStopPollInterval); len(left) == 0 {
 			return
 		}
 		if !time.Now().Before(deadline) {
@@ -955,6 +961,183 @@ func awaitWorkerStopChild(drain bool) {
 		}
 	}
 	terminateInFlightChild(grace, workerSupervisorTerminateNote)
+}
+
+// workerStopVanishedNote is the ONE line a stop prints when it gave up its wait
+// because the only child it was waiting on has NO PROCESS ANY MORE. It names
+// the mechanism (a registry entry outliving its process) rather than the
+// symptom, because this is the line an operator finds a day later asking "why
+// did this worker leave instead of waiting?" and the answer must not be "it
+// looked stuck".
+const workerStopVanishedNote = "worker: stop — the only in-flight child record names a process that is already gone " +
+	"(pid %d): nothing is left to wait for, so the wait is abandoned instead of running out its %s\n"
+
+// workerStopVanishedFailNote is the same verdict on the FAILING boundary: the
+// child exited non-zero, which is why its record was not dropped on the way
+// out (a failed round keeps its holder record). Printed from a site with no
+// measured grace to quote, so it names the registry fact alone.
+const workerStopVanishedFailNote = "worker: stop — the failed round's child record names a process that is already gone " +
+	"(pid %d): it is dropped here, so the stop leaves instead of waiting on it\n"
+
+// reclaimVanishedPassChildren drops every registry entry whose process is no
+// longer alive and RETURNS what is genuinely still in flight.
+//
+// WHY THIS IS NOT A COSMETIC CLEAN-UP (measured 2026-11-08, specimen pid
+// 1680158, still resident on this host 2026-11-17): the registry is dropped by
+// the caller's DEFERRED deregistration, so an entry normally lives exactly as
+// long as its process. The round that leaked the specimen exited through a path
+// that skipped the defer (its cwd and its exe were both `(deleted)` — the suite
+// scratch root it ran from was torn down under it), and from then on
+// `livePassChildren()` reported a child that had no process at all. Every
+// reader of that list treated a non-empty answer as "work is in flight", so:
+//
+//	· the bare-signal arm waited out workerStopGraceDefault and then
+//	  "terminated" a pid that no longer existed — a no-op, every time;
+//	· the DRAIN arm (an operator's `--stop`/`--restart`) has NO deadline by
+//	  design, so it waited FOREVER, printing its "still closing out" note once
+//	  per grace. SIGTERM re-affirmed the same request (a repeated graceful
+//	  signal escalates nothing, by design), and SIGKILL was the only exit.
+//
+// The kernel's /proc is the distinction the registry cannot make on its own,
+// and it is what separates "the child is working" from "the record outlived
+// it". SIGUSR1 / `--force` still kills a LIVE child, and a child that dies
+// while we wait is now noticed rather than waited on (the starvation arm the
+// deferred deregistration has: a waiter that never returns never runs it).
+func reclaimVanishedPassChildren(noteFmt string) []passChild {
+	live := make([]passChild, 0, len(passChildRegistryEntries()))
+	for _, c := range passChildRegistryEntries() {
+		if c.PID <= 0 || passChildProcessAlive(c) {
+			live = append(live, c)
+			continue
+		}
+		fmt.Fprintf(os.Stderr, noteFmt, c.PID, workerStopGrace())
+		unregisterPassChild(c.PID)
+	}
+	return live
+}
+
+// passChildRegistryEntries is the raw registry read the reclaimer needs: every
+// reservation (pid 0) AND every running entry, in livePassChildren's order.
+// livePassChildren cannot be reused for it — it is the same list, and the
+// difference here is what the caller does with a dead one.
+func passChildRegistryEntries() []passChild {
+	return livePassChildren()
+}
+
+// waitForChildrenStoppable is waitForChildren with the SECONDS HALF the stop
+// path needs: a poll that also reclaims vanished entries (so a child that died
+// while we waited stops the wait) and that honours the ESCALATION (so the
+// operator's force spelling interrupts the wait instead of being noticed only
+// after the grace). It is a separate function rather than a flag on
+// waitForChildren because the claim-side reader wants neither: there, "is the
+// child gone" is answered by the deregistration.
+func waitForChildrenStoppable(budget time.Duration) []passChild {
+	deadline := time.Now().Add(budget)
+	for {
+		if workerStopEscalated() {
+			return livePassChildren()
+		}
+		kids := reclaimVanishedPassChildren(workerStopVanishedNote)
+		if len(kids) == 0 || !time.Now().Before(deadline) {
+			return kids
+		}
+		time.Sleep(passChildSettlePoll) //stylegate:allow-sleep bounded settle wait for an in-flight child
+	}
+}
+
+// passChildProcessAlive reports whether a registered child still HAS a process.
+//
+// TWO EXACT READS, NO PATTERN MATCHING (Rule 24: a stop path never looks up a
+// process by name — the entry's own pid is the address, and /proc is asked
+// about that pid and no other):
+//
+//	① the process table has an entry for the pid, and
+//	② its start ticks equal the ticks recorded at registration.
+//
+// ② is what makes the answer about THE PROCESS rather than about a NUMBER: a
+// pid is recyclable, and answering "alive" because the number is now owned by
+// something else is the same class of mistake as signalling that number. When
+// the registry carries no ticks (an entry stamped before this field existed) ②
+// cannot be answered, and the pid's mere presence is accepted — the conservative
+// arm, because treating an unverifiable LIVE child as gone would abandon a round
+// that still has a close-out to run.
+func passChildProcessAlive(c passChild) bool {
+	pid := strconv.Itoa(c.PID)
+	state, ok := procname.State(procRoot, pid)
+	if !ok {
+		return false // no /proc entry: the process is gone (or, for a zombie, reaped)
+	}
+	if state == passChildStateZombie {
+		// A zombie has exited. It has no work left to do and no close-out to
+		// wait for; its PARENT (this process, if it is the spawner) reaps it.
+		// Waiting on one is exactly the unbounded wait this function exists to
+		// end.
+		return false
+	}
+	if c.StartTicks == "" {
+		return true
+	}
+	ticks, ok := procname.StartTicks(procRoot, pid)
+	if !ok {
+		return false
+	}
+	return ticks == c.StartTicks
+}
+
+// passChildStateZombie is /proc/<pid>/stat's state letter for an exited,
+// not-yet-reaped process (procname.StatFieldState's own column).
+const passChildStateZombie = "Z"
+
+// workerStopExitStatus is the exit status a worker LEAVES WITH when a
+// terminating signal is what ends it: 128 + N, the convention every stop path
+// in this repository uses (bare_prompt_signal_exit.go's signalExitStatus,
+// internal/replayplay's signalExitBase, internal/sandbox's documented
+// `128+N`). A signal that was recorded as the stop's spelling is therefore
+// reported to the SUPERVISOR the way the kernel reports it.
+//
+// IT FALLS BACK TO workerExplicitExitOK ON PURPOSE. A stop that arrived by
+// DURABLE FILE alone (`--stop`/`--restart` with no signal, or a hangup drain)
+// has no signal to map, and the file's contract is "you asked and it stopped
+// cleanly" = success (cli_tasks_worker_stop.go's header: a service unit's
+// restart policy keys on it).
+func workerStopExitStatus() int {
+	return workerStopExitStatusOn(workerExplicitExitOK)
+}
+
+// workerStopExitStatusOn is the same mapping with an explicit FALLBACK, because
+// the faces do not agree on what "no signal ended this" means: a round that
+// closed out is a clean stop (workerExplicitExitOK), while a round that could
+// not run at all keeps its own failing status. The signal, when one was
+// recorded, wins over both — the supervisor's waitpid is asking "did my signal
+// end it?", and the answer must not depend on which arm of the face replied.
+func workerStopExitStatusOn(fallback int) int {
+	sig, ok := workerStopSignalNumber()
+	if !ok {
+		return fallback
+	}
+	return signalExitBase + sig
+}
+
+// workerStopSignalNumber maps the RECORDED spelling (the one the handler wrote
+// with signalrec.SignalName, exactly as the termination line prints it) back to
+// its number. (false) = no spelling recorded, or a spelling this worker never
+// handles — both mean "no signal ended this process", and the caller answers the
+// file-only contract rather than inventing a signal.
+func workerStopSignalNumber() (int, bool) {
+	spelling := workerStopSignalSpelling()
+	if spelling == "" {
+		return 0, false
+	}
+	for _, sig := range workerStopSignals {
+		s, ok := sig.(syscall.Signal)
+		if !ok {
+			continue
+		}
+		if signalrec.SignalName(s) == spelling {
+			return int(s), true
+		}
+	}
+	return 0, false
 }
 
 // awaitWorkerDrainChild waits for the in-flight round to FINISH (no deadline):
@@ -968,7 +1151,7 @@ func awaitWorkerDrainChild() {
 			terminateInFlightChild(grace, workerForceTerminateNote)
 			return
 		}
-		if left := waitForChildren(workerStopPollInterval); len(left) == 0 {
+		if left := waitForChildrenStoppable(workerStopPollInterval); len(left) == 0 {
 			return
 		}
 		if !time.Now().Before(nextReport) {

@@ -1152,7 +1152,16 @@ func resolveNotifySessionDir(session string) (dir, id, whence string, err error)
 		if statErr != nil || !fi.IsDir() {
 			return "", "", "", fmt.Errorf("no session directory at %s", operand)
 		}
-		if !sessionlayout.DirHasRecord(operand) {
+		// THE ONE CRITERION, asked of the leaf that owns the tree's shape: a
+		// directory is a session dir when a RECORD stands inside it, and never
+		// when its NAME is the tree's own bookkeeping (`messages`, `artifacts`)
+		// or when it IS the sessions root. All three refusals come back as a
+		// sentence that names what the operand actually is (Rule 15).
+		record, refuseErr := sessionlayout.SessionDirRefusal(operand, root)
+		if refuseErr != nil {
+			return "", "", "", refuseErr
+		}
+		if record == "" {
 			return "", "", "", fmt.Errorf(notifyStrayDirFormat, operand, sessionlayout.RecordName)
 		}
 		return filepath.Clean(operand), filepath.Base(filepath.Clean(operand)), notifySessionByPath, nil
@@ -1163,7 +1172,18 @@ func resolveNotifySessionDir(session string) (dir, id, whence string, err error)
 	candidateIsDir := false
 	if fi, statErr := os.Stat(candidate); statErr == nil && fi.IsDir() {
 		candidateIsDir = true
-		if sessionlayout.DirHasRecord(candidate) {
+		// THE SAME ONE CRITERION the absolute arm applies, so the two forms of
+		// the operand cannot answer differently. The reserved-name and
+		// sessions-root refusals fire HERE, before the not-ready sentence: a
+		// `messages` directory that holds an `inbox.jsonl` is not "a session
+		// that has not written its record yet" (measured 2026-11-14 — it was
+		// accepted, delivered into <root>/messages/messages/inbox.jsonl and
+		// reported "queued" with exit 0).
+		record, refuseErr := sessionlayout.SessionDirRefusal(candidate, root)
+		if refuseErr != nil {
+			return "", "", "", refuseErr
+		}
+		if record != "" {
 			return candidate, operand, notifySessionByDirName, nil
 		}
 	}
@@ -1209,6 +1229,17 @@ func resolveNotifySessionDir(session string) (dir, id, whence string, err error)
 	// the answer is taken from the ONE definition (sessionlayout.RecordContainer),
 	// which the cross-peer handler calls for the same operand.
 	dir = sessionlayout.RecordContainer(path)
+	// THE FLAT LAYOUT HAS NO CONTAINER OF ITS OWN — its "container" is the
+	// sessions ROOT, so its inbox would be the root's shared
+	// `<root>/messages/`, which every flat-layout session reads (measured
+	// 2026-11-14: the delivery printed "queued", exited 0 and landed there).
+	// A delivery into a shared inbox is a CROSS-DELIVERY no retry repairs, so
+	// it is refused by name before anything is written (the constant carries
+	// the measurement and the way out).
+	if sessionlayout.ContainerIsSessionsRoot(path, root) {
+		return "", "", "", fmt.Errorf(sessionlayout.SessionRootInboxRefusalFormat,
+			operand, path, sessionlayout.SessionMessagesDirName, sessionlayout.RecordName)
+	}
 	// The display id is the record's own session_start id (gopilog.FileToID),
 	// which for a bare session equals the directory name and for a task run is
 	// the run uuid.

@@ -9,6 +9,7 @@ import (
 	"strings"
 	"time"
 
+	"github.com/nickhuang99/gopi/internal/scratch"
 	"github.com/nickhuang99/gopi/internal/toolnames"
 	"github.com/nickhuang99/gopi/internal/workerownership"
 )
@@ -201,7 +202,7 @@ func atomicWriteFile(path string, content string, followSymlink bool) error {
 
 	// Ensure parent directories exist, with hints on failure.
 	dir := filepath.Dir(path)
-	if err := os.MkdirAll(dir, 0o755); err != nil {
+	if err := scratch.MkdirAllWithSuiteRunOwnerPerm(dir, 0o755); err != nil {
 		// Try to find similar directory names.
 		parent := filepath.Dir(dir)
 		if entries, readErr := os.ReadDir(parent); readErr == nil {

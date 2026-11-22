@@ -84,9 +84,28 @@ var ErrNoTurnRecorded = errors.New("this session recorded no turn boundary, so t
 // turn(s)`. A reader sent to `--turns` to check "16" would be handed "8" and
 // would conclude the export was broken — two numbers, one word, no statement of
 // which is which, which is EXACTLY the defect this epic removes, moved out one
-// layer. `gopi session show <id>` prints the number this axis counts, under the
+// layer. `gopi session stats <id>` prints the number this axis counts, under the
 // same word.
-const TurnWitnessWords = "run `gopi session show <id>` and read its `turns` row (NOT `session log --turns`, which is the human-turn subset)"
+//
+// AND THE WITNESS MUST PRINT THAT NUMBER ON EVERY SPECIES THE EXPORT ACCEPTS,
+// which `session show` does NOT — measured 2026-11-16 on this epic's own session
+// (01a1e143-370b-7539-a579-6925337aee75, `kind run`):
+//
+//	gopi session context <id> --turn 999999 → holds 1 turn(s)
+//	gopi session show <id>                  → NO turns row at all (grep -ci turn → 0)
+//	gopi session show <id> --json           → only "turns_provenance":"no-chats-row"
+//	gopi session stats <id>                 → turns 1 / human turns 1
+//
+// A `kind=run` row has no `chats` row, so `show` omits the turn block entirely
+// while this export still addresses its turns and still refuses by their count.
+// Pointing a reader at a page that prints nothing is the same defect one layer
+// down: the refusal names a number and then names a witness that is silent on
+// it. `session stats` prints it on BOTH species — measured on a `kind=chat`,
+// `state ended` row (1918704d-3823-40d4-b1bb-e928ac791f73): `show` turns 285 /
+// refusal `holds 285` / `stats` turns 285, all three equal — and on 30 of 30
+// sampled sessions `stats`'s turns row equalled len(SessionTurnViews), the very
+// number the refusal interpolates.
+const TurnWitnessWords = "run `gopi session stats <id>` and read its `turns` row (NOT `session log --turns`, which is the human-turn subset; `session show` prints NO turns row for a `kind=run` session, so it cannot witness this count)"
 
 // Address is one artifact's address: which axis it is written in, the turn
 // when the axis is AxisTurn, and the round it rendered in either case.

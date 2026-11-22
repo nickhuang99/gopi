@@ -85,7 +85,37 @@ const (
 	// chatter: the turn exists because the person sent something, and the
 	// framing is how the model is told the payload is data.
 	HarnessMessageBoundaryPrefix = "[gopi message boundary] "
+
+	// TurnCounterFace is the face the session's TURN COUNTER judges a row
+	// under — the one place that decides it, so the two sides of the clock
+	// cannot drift apart (Rule 14).
+	//
+	// WHY IT IS THE READER'S DEFAULT AND NOT THE ROW'S RECORDED SOURCE
+	// (measured, session 563b0edb-ddf0-406a-a77b-b6007ff1555a, 4617 rows).
+	// The counter in internal/agent (SessionLogger.TurnsSoFar, which
+	// noteTurnNumber stamps every self-record line with) used to pass the row's
+	// recorded `source`. The FOLD in the same package judges THIS SESSION'S
+	// message array ([]deepseek.Message), which carries no provenance at all, so
+	// it can only ask the text face. Replaying that record through both faces
+	// diverges on 28 rows and every one of them is source="notify":
+	//
+	//	TOTALS notifyRows=28 writeTurns=42 readTurns=14 delta=28
+	//	DIVERGE row=4363 src="notify" w=true r=false cumW=38 cumR=14
+	//
+	// A delivery IS one complete input (the operator's ruling, pinned by
+	// turninput_test.go's "a delivery under the notify face OPENS a turn") —
+	// that ruling is about the RECORD reader, which does have the provenance
+	// (internal/gopilog). The counter feeds the FOLD's anchor, so it must use
+	// the fold's face; a counter on a wider face than its reader's opens turns
+	// that no window exists for, and every stamp after the first delivery
+	// drifts one turn per delivery.
 )
+
+// TurnCounterFace is the face the session's turn counter judges a row under.
+// It is a var, not a const, because its VALUE is derived from the one definition
+// (TurnRowSource turns an absent face into the honest reading) rather than
+// spelled again (Rule 14).
+var TurnCounterFace = TurnRowSource("")
 
 // IsTurnOpeningRow reports whether a user row OPENS A TURN — whether what
 // arrived is ONE COMPLETE INPUT the harness has to answer.
@@ -127,7 +157,8 @@ const (
 //     context judges arrives here under the empty-source default (`human`). While
 //     this leg was absent, leg 3 claimed the opener as a restatement and NOTHING
 //     in a chat's post-carrier history opened a turn: the fold's split collapsed
-//     into ONE range and `foldCompletedTurns` returned at `len(turns) < 2` —
+//     into ONE range and the caller's split returned nothing at all at
+//     `len(turns) < 2` —
 //     measured on session 6f982833-6291-45cd-b420-ed9df0ce1e36, where request
 //     300 carried 247 messages / 5 genuine turns as ONE unfoldable range while
 //     the same log's 527 batch-opener rows all carried the clause.

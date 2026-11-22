@@ -113,6 +113,11 @@ const (
 	voiceRIFFMagic    = "RIFF"
 	voiceWAVEMagic    = "WAVE"
 	voiceWAVDataMagic = "data"
+
+	// voiceBitsPerByte is the one arithmetic a container's sample width needs
+	// (a WAV states bits, a frame is measured in bytes). Named because it is a
+	// literal in a formula rather than a magic number at the call site (Rule 1).
+	voiceBitsPerByte = 8
 )
 
 // The derived values: the chunk length and the tick it represents. Derived from
@@ -972,6 +977,58 @@ func voiceWAVDataPayload(path string, raw []byte) ([]byte, error) {
 		voiceFlagAudioSource, path, voiceWAVEMagic, voiceWAVDataMagic)
 }
 
+// voiceFileSecondsOf reports how long the audio in path is, in seconds, or 0
+// when this package cannot measure it.
+//
+// WHY IT EXISTS. The file shape has no `--seconds` window, so the sentence a
+// silent file run prints must quote the AUDIO the run was given rather than a
+// flag it never read: the live-capture arm's sentence is "returned no text for a
+// %.1fs window", and the file arm owes the operator the same fact about ITS
+// input. The length is measured from the CONTAINER (a WAV states its own rate,
+// channels and sample width), so a 44.1 kHz stereo file reports its real length
+// even if the engine will refuse its geometry afterwards.
+//
+// 0 IS "UNKNOWN", NEVER "ZERO SECONDS": a container this package does not walk
+// (mp3, flac) gets a sentence that does not quote a length at all, because
+// printing "0.0s" for a 10-second file is the same class of false figure this
+// change exists to remove (Rule 15).
+func voiceFileSecondsOf(path string) float64 {
+	raw, err := os.ReadFile(path)
+	if err != nil {
+		return 0
+	}
+	if len(raw) >= voiceWAVHeaderProbeBytes &&
+		string(raw[0:4]) == voiceRIFFMagic && string(raw[8:12]) == voiceWAVEMagic {
+		if len(raw) < voiceWAVFmtChunkEnd {
+			return 0
+		}
+		channels := int(binary.LittleEndian.Uint16(raw[voiceWAVChannelsOffset:]))
+		rate := int(binary.LittleEndian.Uint32(raw[voiceWAVRateOffset:]))
+		bits := int(binary.LittleEndian.Uint16(raw[voiceWAVBitsOffset:]))
+		frameBytes := channels * bits / voiceBitsPerByte
+		if rate <= 0 || frameBytes <= 0 {
+			return 0
+		}
+		pcm, perr := voiceWAVDataPayload(path, raw)
+		if perr != nil {
+			return 0
+		}
+		return float64(len(pcm)) / float64(rate*frameBytes)
+	}
+	// A CONTAINER THIS PACKAGE DOES NOT WALK IS UNKNOWN, NOT BARE PCM. The engine
+	// decodes mp3 / flac itself, so a run over one may well produce text — but its
+	// duration is inside a format this file does not parse, and measuring those
+	// bytes as if they were samples would report a figure off by an order of
+	// magnitude. The magic is the only evidence available, and its presence means
+	// "somebody else's format" (cli_voice_format.go owns the classifier).
+	if voiceHasContainerMagic(raw) {
+		return 0
+	}
+	// Bare PCM: the capture contract is the only geometry such a file can have,
+	// and the SAME function the capture arm reports its own window with.
+	return voicePCMSeconds(raw)
+}
+
 // voiceAudioSourceFor builds the capture source a run will read from: the file
 // the operator named, or the recorder process on the device that was selected.
 //
@@ -1032,7 +1089,7 @@ func openVoiceStagedStream(opts *voiceOptions, dev *voiceDevice) (*voiceStagedSt
 // the field's zero value, `nil`, and the builder spent the whole mode selecting
 // on a nil channel: `Next` blocked past every deadline and the mode reported
 // "produced no audio within 10s" about a device that was delivering the entire
-// time (measured on host-b, 2026-10-10: builder.chunks = 0x0 while the reader was
+// time (measured on sager, 2026-10-10: builder.chunks = 0x0 while the reader was
 // writing to 0xc000218380, and the source's own firstSample was stamped 10 s
 // earlier — see the task report).
 //

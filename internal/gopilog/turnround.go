@@ -111,8 +111,9 @@ func BuildTurnRoundIndex(s *Session) TurnRoundIndex {
 func (ix TurnRoundIndex) TotalRounds() int { return ix.totalRounds }
 
 // Total is how many turns the session recorded — the number
-// `gopi session show <id>` prints on its `turns` row (both read
-// SessionTurnBounds through this package's ONE derivation).
+// `gopi session stats <id>` prints on its `turns` row (both read
+// SessionTurnBounds through this package's ONE derivation). `stats`, not
+// `show`: `show` prints NO turns row for a `kind=run` session.
 func (ix TurnRoundIndex) Total() int { return len(ix.views) }
 
 // RoundsOfTurn answers "turn N covers which rounds?": the interval in the ROUND

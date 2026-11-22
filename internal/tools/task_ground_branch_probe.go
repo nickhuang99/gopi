@@ -18,7 +18,7 @@ package tools
 //	      --verify --quiet refs/heads/task/01a17df21d647624b08ef6ba187631b2
 //	3af81a93271e80356c99b95263a125a808a27e67      # the clone ground does
 //	$ ls -ld /home/user/workspace/01a17df2-1d64-7624-b08e-f6ba187631b2/.git
-//	drwxrwxr-x 8 the operator the operator 4096 Oct 28 01:47 …/.git   # a DIRECTORY = clone
+//	drwxrwxr-x 8 nick nick 4096 Oct 28 01:47 …/.git   # a DIRECTORY = clone
 //
 // and `task show` rendered `branch=task/01a17df2… (NOT FOUND now — a stale
 // reading)` for a run that had committed its work. The ledger therefore could

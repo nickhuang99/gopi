@@ -44,7 +44,7 @@ const (
 	// originLocalOnlyPrefix / originLocalOnlyUnknownHost are the two halves of
 	// the explicit unreachable state's sentence. The FIRST half is the epic's
 	// own words for it:「细节仅在本机 <host>，不可达」. The second half is what
-	// the sender stamps when it could not name itself (originhostbsent) — a
+	// the sender stamps when it could not name itself (originHostAbsent) — a
 	// reader must not be told "on host unknown-host" as if that were an
 	// address, so the sentence says the address is unknown instead.
 	originLocalOnlyPrefix      = "detail only on its own host"
@@ -150,7 +150,7 @@ func originLocallyReachable(o *SyncRowOrigin, thisHost string) originReachabilit
 // sameOriginHost compares two node names for identity. Case-insensitive: a
 // hostname is not case-significant, and the wire value is produced by
 // `os.Hostname()` on one node and by GOPI_SYNC_NODE on a simulated one, so
-// "peer1" and "Peer1" must not read as two machines.
+// "peer1" and "ZBook" must not read as two machines.
 func sameOriginHost(a, b string) bool {
 	return strings.EqualFold(strings.TrimSpace(a), strings.TrimSpace(b))
 }

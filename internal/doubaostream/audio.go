@@ -17,6 +17,7 @@ package doubaostream
 import (
 	"crypto/rand"
 	"encoding/binary"
+	"errors"
 	"fmt"
 	"math"
 	"os"
@@ -196,10 +197,23 @@ func loadAudio(opts Options) ([]byte, int, error) {
 // capture client's own rate — see voicePCM16ToWAV's siblings).
 const captureSampleRate = 48000
 
+// ErrAudioNotWAVPCM is the sentinel the WAV decoder refuses with when the bytes
+// are not a RIFF/WAVE container and not bare PCM either (an MP3, a FLAC, an Ogg
+// — measured on a real MP3 run).
+//
+// WHY IT IS ITS OWN TYPE AND NOT JUST A SENTENCE (Rule 15, and Rule 43's
+// criterion that a symbol is worth exporting when a caller OUTSIDE needs it): the
+// refusal is the one failure whose BEST answer is another ENGINE rather than a
+// retry. The batch channel (`--engine recording`) uploads the file as it is and
+// decodes it on the vendor's side, so the same MP3 transcribes there and not
+// here. This package knows the FORMAT but not the flag, so it reports the
+// distinction and the CLI — which knows the engines — turns it into the route.
+var ErrAudioNotWAVPCM = errors.New("the streaming channel takes a WAV or bare PCM")
+
 // decodeWAV decodes a canonical WAV into 16 kHz mono PCM16.
 func decodeWAV(raw []byte) ([]byte, int, error) {
 	if len(raw) < wavChunkHeaderBytes || string(raw[0:4]) != wavRIFFMagic || string(raw[8:12]) != wavWAVEMagic {
-		return nil, 0, fmt.Errorf("the streaming channel takes a WAV or bare PCM: these bytes are neither (no RIFF/WAVE header)")
+		return nil, 0, fmt.Errorf("%w: these bytes are neither (no RIFF/WAVE header)", ErrAudioNotWAVPCM)
 	}
 	var (
 		formatTag, channels, rate, bits int

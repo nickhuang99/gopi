@@ -42,6 +42,7 @@ package tools
 // this?".
 import (
 	"context"
+	"errors"
 	"fmt"
 	"strings"
 
@@ -342,14 +343,35 @@ func TaskResumeGroundForTask(taskID string) (TaskResumeGround, error) {
 	}
 	// The row must EXIST before any of its facts mean anything: a row's absent
 	// deliverable and a row that is not there must never render the same way
-	// (Rule 15), and TaskStatusOf is the ledger's own existence verdict (it
-	// errors for no row, rather than answering "").
+	// (Rule 15). BUT NEITHER MAY A LEDGER NOBODY COULD READ: the sentence "no
+	// ledger row to resume" was printed for a ledger that had never been read at
+	// all, sending the operator to look for a row that was in fact there.
+	//
+	// MEASURED, both binaries against ONE unreadable ledger (chmod 000):
+	//   old -> "resume: no ledger row to resume: unable to open database file"
+	//   new -> "resume: the row's LEDGER could not be read, so whether it exists
+	//           is UNKNOWN — this is not the same as an unknown row: ..."
+	// errors.Is on ErrTaskRowAbsent separates the two: an absent row is a WRONG ID
+	// (its own repair), anything else is a READ failure (a different repair).
 	status, err := TaskStatusOf(taskID)
 	if err != nil {
-		return out, fmt.Errorf("resume: no ledger row to resume: %w", err)
+		if errors.Is(err, ErrTaskRowAbsent) {
+			return out, fmt.Errorf("resume: no ledger row to resume: %w", err)
+		}
+		return out, fmt.Errorf("resume: the row's LEDGER could not be read, so whether it exists is "+
+			"UNKNOWN — this is not the same as an unknown row: %w", err)
 	}
-	worktree, branch := TaskDeliverableWorktreeFor(taskID)
-	repo := TaskDeliverableRepoFor(taskID)
+	// ONE READ, and it carries the LEDGER'S OWN VERDICT with it (measured
+	// 2026-11-21): a deliverable read that failed must never be mistaken for a
+	// row that records no ground, because the two refusals name different
+	// repairs — "the row never recorded a ground" sends the operator to the row,
+	// and "the ledger could not be read" sends them to the ledger. Before this,
+	// the lenient reader answered ("", "", "") for a read that never happened.
+	repo, branch, worktree, err := taskRowDeliverableErr(taskID)
+	if err != nil {
+		return out, fmt.Errorf("resume: the row's deliverables could not be READ, so its ground is "+
+			"UNKNOWN — this is not the same as a row that records none: %w", err)
+	}
 	if worktree == "" && branch == "" {
 		// The refusal is TYPED (TaskResumeGroundRefusal) so a caller rendering
 		// "recorded path / model / detail / repair" does not parse a sentence,

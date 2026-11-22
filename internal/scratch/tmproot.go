@@ -818,7 +818,7 @@ func (e *TmpDirUnusableError) Unwrap() error { return ErrTmpDirUnusable }
 // mode-bit check would report the intent, not the effect — an ACL, a read-only
 // mount or a full filesystem all pass a mode-bit reading).
 func ensureUsableTempRoot(dir string) error {
-	if err := os.MkdirAll(dir, DirPerm); err != nil {
+	if err := MkdirAllWithSuiteRunOwnerPerm(dir, DirPerm); err != nil {
 		return &TmpDirUnusableError{Path: dir, Reason: fmt.Sprintf("cannot create it: %v", err)}
 	}
 	info, err := os.Stat(dir)

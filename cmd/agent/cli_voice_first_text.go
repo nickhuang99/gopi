@@ -84,6 +84,15 @@ const (
 	// remainder IS the story.
 	voiceFirstTextOverheadFloorMS = 100
 
+	// voiceFirstTextNoTextFromEngineFormat is WHY a whole-answer engine's run
+	// produced no first text: the engine returned an empty transcript. It exists
+	// as a constant because the absence has to be spelled the same way by the
+	// three arms that answer through voiceFirstTextFromEngine, and because a run
+	// that prints a DURATION for a transcript that never existed is the exact
+	// defect this sentence replaces (measured: `gopi tool voice_input silent.wav`
+	// printed "[voice] first text at 2.7s" for an empty stdout).
+	voiceFirstTextNoTextFromEngineFormat = "the %s engine returned no text for this recording (silence, or the speech fell outside it)"
+
 	// voiceFirstTextBudgetMS is the budget a FILE fed to the streaming channel
 	// gets before the run stops waiting for a first text.
 	//
@@ -328,7 +337,7 @@ func voiceStreamFirstText(opts *voiceOptions, audioFile string, runClock *voiceR
 			Token:    cred.Token,
 			Endpoint: endpoint,
 		},
-		OnPartial: func(p voiceLivePartial) { voiceReportStreamPartial(voiceLivePartialV2(p), opts.voiceVerbose()) },
+		OnPartial: func(p voiceLivePartial) { voiceReportStreamPartial(voiceLivePartialV2(p), opts.voicePrintPartials()) },
 		Budget:    time.Duration(voiceFirstTextBudgetMS) * time.Millisecond,
 	})
 	// The endpoint (always) and the credential's ORIGIN (under --verbose) are

@@ -383,7 +383,7 @@ func isLinkedWorktree(dir string) bool {
 // mkdirAll creates the process root, reporting the failure (the caller then
 // degrades rather than pretending the directory exists).
 func mkdirAll(dir string) error {
-	return os.MkdirAll(dir, DirPerm)
+	return scratch.MkdirAllWithSuiteRunOwnerPerm(dir, DirPerm)
 }
 
 // EscapeFromWorktree answers the EXECUTOR's question (a different question from

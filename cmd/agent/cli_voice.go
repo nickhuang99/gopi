@@ -552,6 +552,27 @@ Flags:
                    own channels, in precedence order: this flag > the env name
                    GOPI_AUDIO_VERBOSE > the settings key "audio_verbose" (the
                    channel for a headless run that cannot pass a flag).
+  --{realtime}      SHOW WHAT IS BEING HEARD, as it arrives. On the STREAMING
+                   engine this prints one line per interim partial
+                   ("[voice] partial N at T: …") on stderr, so the text appears
+                   while you speak; the transcript still goes to stdout, and the
+                   ordinary per-run lines are unchanged.
+                   NARROWER THAN --verbose on purpose: the debug sink carries
+                   those lines PLUS the channel's counters, the plumbing note
+                   and the live shape note, while this one prints the partials
+                   and nothing else — it answers "what is being heard", not
+                   "what is the channel doing". Either flag enables the stream.
+                   AN ENGINE WITH NO INTERIM TEXT SAYS SO. The batch engine
+                   (the DEFAULT) transcribes the finished recording and answers
+                   once, so a run like that prints a named sentence explaining
+                   there is nothing to show and naming the streaming route,
+                   followed by a capture progress line every 2s for the length
+                   of the window — a recording that emits nothing is
+                   indistinguishable from a tool that did nothing. A --client
+                   run says the same kind of thing: its interim text, if any,
+                   is produced on the host it posts to.
+                   Default OFF: without this flag the run's output is exactly
+                   what it was before the flag existed.
 
 Examples:
   gopi tool voice_input                                  speak, read the transcript
@@ -564,13 +585,13 @@ Examples:
   gopi tool voice_input --client --list-devices          which microphones exist
   gopi tool voice_input --client --seconds 8             record; transcribe on
                                                     the host named by --server-url
-  gopi tool voice_input --client --seconds 8 --out voice.wav  …and keep the WAV
+  gopi tool voice_input --client --seconds 8 --out nick.wav  …and keep the WAV
   gopi tool voice_input --client --self --seconds 8      speak, and it lands in the
                                                     window you ran this in
   gopi tool voice_input --client --self --seconds 8 --display :57   …on another X11
                                                     display (same as act)
   gopi tool act key --key return --self                  send the reviewed text
-  gopi tool voice_input --client --server-url http://voice-host:7788 --seconds 8
+  gopi tool voice_input --client --server-url http://10.0.0.6:7788 --seconds 8
   ssh host gopi tool voice_input --server --stdio < a.pcm   pipe over an ssh hop
   gopi tool voice_input clip.ogg                 refused: ogg is not in {formats}
   gopi tool voice_input clip.pcm                         refused; pipe it instead:
@@ -686,6 +707,19 @@ type voiceOptions struct {
 	// lines (the engine/timing line, the first-text report) print exactly as
 	// they did before this knob existed — the switch can only ADD a stream.
 	verbose bool
+
+	// realtime is the operator's OPT-IN realtime display (--realtime): one
+	// line per interim partial on stderr, and nothing else. It is NOT the
+	// debug sink — --verbose still carries the partial stream PLUS the
+	// channel's counters, the plumbing note and the live shape note — and the
+	// two are folded into one question by voicePrintPartials, so the printers
+	// ask once rather than comparing two booleans at each call site.
+	//
+	// DEFAULT OFF, and the default path is unchanged by construction: with the
+	// flag absent no printer and no progress goroutine is entered at all (see
+	// cli_voice_realtime.go). An engine that cannot produce interim text says
+	// so and names the route instead of accepting the flag silently (Rule 15).
+	realtime bool
 
 	// Engine selection (--engine local|recording|streaming, plus the
 	// pre-rename names doubao/doubao-stream) and the cloud engines' knobs.
@@ -825,7 +859,7 @@ const (
 // consumes the token after one (see memoryFlagSet.boolean).
 var voiceValuelessFlags = []string{
 	voiceFlagServer, voiceFlagStdio, voiceFlagClient, voiceFlagListDevices,
-	voiceFlagSelf, voiceFlagVerbose,
+	voiceFlagSelf, voiceFlagVerbose, voiceFlagRealtime,
 }
 
 // voiceFlagConstNames maps each of master's still-bare capture flag literals to
@@ -860,6 +894,7 @@ var voiceFlagConstNames = map[string]string{
 	voiceFlagRecord:               voiceFlagRecord,
 	voiceFlagSelf:                 voiceFlagSelf,
 	voiceFlagVerbose:              voiceFlagVerbose,
+	voiceFlagRealtime:             voiceFlagRealtime,
 	voiceFlagDisplay:              voiceFlagDisplay,
 }
 
@@ -871,7 +906,8 @@ func voiceFlagMember(f string) bool {
 		voiceFlagEngine, voiceFlagDoubaoKeyFile, voiceFlagDoubaoResource, voiceFlagDoubaoHotwords,
 		voiceFlagDoubaoSubmit, voiceFlagDoubaoQuery,
 		voiceFlagDoubaoBaseURL, voiceFlagDoubaoStreamEndpoint,
-		voiceFlagOut, voiceFlagSelf, voiceFlagDisplay, voiceFlagRecord, voiceFlagVerbose:
+		voiceFlagOut, voiceFlagSelf, voiceFlagDisplay, voiceFlagRecord, voiceFlagVerbose,
+		voiceFlagRealtime:
 		return true
 	}
 	// Master accepted --recorder (cli_voice_capture.go) and this client does
@@ -1181,6 +1217,9 @@ func parseVoiceArgs(args []string) (*voiceOptions, error) {
 	if fs.has(voiceFlagVerbose) || verboseShort {
 		opts.verbose = true
 	}
+	if fs.has(voiceFlagRealtime) {
+		opts.realtime = true
+	}
 	if fs.has(voiceFlagDisplay) {
 		opts.display = strings.TrimSpace(fs.get(voiceFlagDisplay))
 	}
@@ -1398,7 +1437,7 @@ func parseVoiceArgs(args []string) (*voiceOptions, error) {
 // is opened: a mistake that is knowable up front must not cost a recording.
 func voiceValidateOutPath(path string) error {
 	if path == "" {
-		return fmt.Errorf("--%s requires a file path (e.g. --%s voice.wav)", voiceFlagOut, voiceFlagOut)
+		return fmt.Errorf("--%s requires a file path (e.g. --%s nick.wav)", voiceFlagOut, voiceFlagOut)
 	}
 	fi, err := os.Stat(path)
 	if err != nil {
@@ -1554,8 +1593,25 @@ func voiceLegacyRungNote(legacyModels, legacyRuntime, legacyEnc, legacyLLM strin
 // discipline, so every caller stays engine-blind; the local arm's behaviour
 // (and its argv contract) is byte-for-byte what it was before the dispatch
 // existed.
+//
+// THIS IS THE NARROW SEAM, AND ITS SILENCE CONTRACT IS DELIBERATE. The engine
+// now answers "this recording produced no transcript" with a TYPED verdict
+// (voiceNoTranscriptError), because the CLI's file shapes must refuse it with a
+// non-zero exit status. The callers HERE want the opposite: the chat `/voice`
+// loop and the two server shapes all treat "empty transcript" as a legitimate
+// answer — a failed round makes the mode LEAVE, so one quiet window would switch
+// the microphone off for the rest of the session (task 01a11b39, pinned by
+// TestVoiceDoubaoNoSpeechIsAnEmptyTranscriptNotAFailure). So the verdict is
+// translated BACK into the empty transcript, and ONLY that verdict: every other
+// engine failure still fails.
+//
+// A caller that must not lose the distinction asks the ENGINE directly
+// (transcribeFileReport's arms) rather than this seam.
 func transcribeFile(opts *voiceOptions, audioPath string) (string, time.Duration, error) {
 	text, elapsed, _, err := transcribeFileReport(opts, audioPath, newVoiceRunClock(voiceRunOrigin()))
+	if voiceIsNoTranscript(err) {
+		return "", elapsed, nil
+	}
 	return text, elapsed, err
 }
 
@@ -1575,7 +1631,10 @@ func transcribeFileReport(opts *voiceOptions, audioPath string, runClock *voiceR
 	switch voiceResolveEngine(opts) {
 	case config.AudioEngineRecording:
 		text, elapsed, err := transcribeFileDoubao(opts, audioPath)
-		report = voiceFirstTextFromEngine(elapsed, runClock)
+		// THE TEXT TRAVELS INTO THE REPORT, because the report's question is "did a
+		// first text EXIST" and an engine that came back empty has no first text to
+		// time (voiceFirstTextFromEngine's own contract).
+		report = voiceFirstTextFromEngine(opts, text, elapsed, runClock)
 		return text, elapsed, report, err
 	case config.AudioEngineStreaming:
 		text, report, err := voiceStreamFirstText(opts, audioPath, runClock)
@@ -1591,11 +1650,11 @@ func transcribeFileReport(opts *voiceOptions, audioPath string, runClock *voiceR
 		return transcribeFileSauc(opts, audioPath, runClock)
 	}
 	text, elapsed, err := transcribeFileLocal(opts, audioPath)
-	report = voiceFirstTextFromEngine(elapsed, runClock)
+	report = voiceFirstTextFromEngine(opts, text, elapsed, runClock)
 	return text, elapsed, report, err
 }
 
-// voiceFirstTextFromEngine is the report for the two engines whose first text IS
+// voiceFirstTextFromEngine is the report for the engines whose first text IS
 // their answer: the batch channel returns one transcript for the whole recording
 // and the local runtime returns one for the whole file, so there is no earlier
 // instant to report. Its INSTANT is taken from the run's own clock at the moment
@@ -1603,8 +1662,28 @@ func transcribeFileReport(opts *voiceOptions, audioPath string, runClock *voiceR
 // included — while EngineMS carries the engine's own duration, i.e. the part of
 // that wait the engine accounts for. WindowMS is filled in by the capture path,
 // the only shape with a recording in front of the engine.
-func voiceFirstTextFromEngine(engine time.Duration, runClock *voiceRunClock) voiceFirstTextReport {
+//
+// AN EMPTY TRANSCRIPT HAS NO FIRST TEXT, and it must not be given one. MEASURED
+// (2026-11-15, `gopi tool voice_input silent.wav`): the batch engine answered
+// 20000003 with `{"result":{"text":""}}`, stdout carried one bare newline, and
+// this function still reported `[voice] first text at 2.7s` — a figure for a
+// transcript that never existed, on a run whose output was nothing at all. So
+// the text is now an ARGUMENT: when it is empty (or whitespace, which prints the
+// same nothing) the report carries the REASON and neither a first-text instant
+// nor a split, because there is no instant to name (cli_voice_first_text.go's
+// measured() and voiceFirstTextReportLine then print the absence).
+//
+// The WAIT is still real, and it stays in the report as EngineMS so the caller
+// that DOES keep the numbers (the bare capture's split) can report the cost
+// without dressing it as a first text.
+func voiceFirstTextFromEngine(opts *voiceOptions, text string, engine time.Duration, runClock *voiceRunClock) voiceFirstTextReport {
 	ms := int(engine.Milliseconds())
+	if strings.TrimSpace(text) == "" {
+		return voiceFirstTextReport{
+			EngineMS: ms,
+			Missing:  fmt.Sprintf(voiceFirstTextNoTextFromEngineFormat, voiceEngineLabel(opts)),
+		}
+	}
 	return voiceFirstTextReport{
 		FirstTextMS: int(runClock.elapsed().Milliseconds()),
 		EngineMS:    ms,
@@ -1713,6 +1792,20 @@ func runVoiceSubcommand(args []string) {
 	if needsEngine && voiceResolveEngine(opts) == config.AudioEngineRecording {
 		voiceReportDoubaoPrivacy(opts)
 	}
+	// THE REALTIME DISPLAY'S HONEST ANSWER, announced BEFORE the work for the
+	// same reason the disclosure is: an engine that cannot produce interim text
+	// tells the operator NOW — while they are about to speak and nothing would
+	// appear — rather than after the transcript has already answered the
+	// question. Silent unless --realtime was given (cli_voice_realtime.go).
+	if needsEngine {
+		voiceReportRealtimeNoInterim(opts)
+	}
+	// The remote shape gets its own sentence: a --client run's interim text, if
+	// any exists, is produced by the host it posts to and never reaches this
+	// process. Silent unless --realtime was given.
+	if opts.client {
+		voiceReportRealtimeClientNote(opts)
+	}
 	// The v3 SAUC engine uploads too, and its disclosure is its own sentence:
 	// it names the CREDENTIAL SHAPE as well as the destination, because on this
 	// channel the shape is the difference between a working run and a 403 that
@@ -1755,13 +1848,49 @@ func runVoiceSubcommand(args []string) {
 		voiceReportEngineProvenance(opts)
 		runClock := newVoiceRunClock(voiceRunOrigin())
 		text, elapsed, report, err := transcribeFileReport(opts, opts.audio, runClock)
+		// A RUN THAT PRODUCED NO TRANSCRIPT IS NOT A SUCCESS ON THIS SHAPE. stdout
+		// IS the deliverable here, so an empty one followed by exit 0 is
+		// indistinguishable from a broken tool — measured 2026-11-15: stdout was one
+		// bare newline, exit 0, and a `$(…)` consumer got "" as a success. The
+		// verdict is checked BEFORE the error arm (it is not an engine failure, so
+		// it must not be reported as one) and the report is NOT printed: there is no
+		// first text to report, and voiceFirstTextFromEngine already left the
+		// absence in report.Missing.
+		if voiceIsNoTranscript(err) {
+			voiceRefuseEmptyTranscript(opts, err)
+		}
 		if err != nil {
 			fmt.Fprintf(os.Stderr, "gopi tool voice_input: %v\n", err)
 			os.Exit(1)
 		}
 		fmt.Println(text)
-		fmt.Fprintf(os.Stderr, "[voice] %s in %.1fs (chunk=%ds)\n",
-			filepath.Base(opts.audio), elapsed.Seconds(), opts.chunk)
+		// THE CLOSING LINE, AND A RUN THAT PRODUCED NO TEXT GETS THE LIVE ARM'S
+		// SENTENCE RATHER THAN A DURATION.
+		//
+		// WHAT WAS WRONG. This shape used to print "[voice] <file> in %.1fs
+		// (chunk=%ds)" unconditionally, so a file whose transcript came back EMPTY
+		// closed with "in 0.0s" — the engine's cost dressed as a successful run —
+		// while the live-capture arm answered the same empty result with a sentence
+		// saying what it means (voiceEngineNoTextNote: "returned no text for a
+		// %.1fs window … may be silence"). Two shapes, one fact, two vocabularies:
+		// the operator could only self-diagnose on one of them.
+		//
+		// THE WINDOW IS THE FILE'S OWN LENGTH, measured from the container
+		// (voiceFileSecondsOf) because this shape has no --seconds flag to quote.
+		// 0 means "this package cannot measure it" and the sentence then quotes no
+		// duration — never a fabricated 0.0s (Rule 15).
+		window := voiceFileSecondsOf(opts.audio)
+		if strings.TrimSpace(text) == "" {
+			voiceReportTranscribedBy(opts, text, window, elapsed)
+			// THE FIRST-TEXT REPORT SAYS THE SAME THING, in the capture shape's
+			// words: the engine's own reason ("returned no text for this recording")
+			// is replaced by the sentence that names the audio this run was given, so
+			// the two lines of one run cannot disagree about what was silent.
+			report.Missing = voiceNoTextReason(opts, window)
+		} else {
+			fmt.Fprintf(os.Stderr, "[voice] %s in %.1fs (chunk=%ds)\n",
+				filepath.Base(opts.audio), elapsed.Seconds(), opts.chunk)
+		}
 		// THE REPORT IS THE RUN'S OWN MEASUREMENT, not the engine's: the instant it
 		// names was taken from the clock this shape started, so a file run says how
 		// long the operator waited rather than only how long the engine said it

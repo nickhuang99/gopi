@@ -76,6 +76,7 @@ import (
 	"sort"
 
 	"github.com/nickhuang99/gopi/internal/config"
+	"github.com/nickhuang99/gopi/internal/scratch"
 )
 
 // Named constants — Project Rule 1.
@@ -300,7 +301,7 @@ func (c *webFilesCache) saveToDisk() {
 	// component owns "make ~/.gopi"), and a fresh profile — a sandbox, a test's
 	// temp home — legitimately has none yet. Creating it here is what lets the
 	// very first upload of a brand-new profile be remembered.
-	if err := os.MkdirAll(dir, webFilesCacheDirMode); err != nil {
+	if err := scratch.MkdirAllWithSuiteRunOwnerPerm(dir, webFilesCacheDirMode); err != nil {
 		webFilesCacheWarnf("cannot create the profile directory %s (%v) — this run's file ids are not persisted", dir, err)
 		return
 	}

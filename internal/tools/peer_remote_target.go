@@ -4,7 +4,7 @@ package tools
 // into a git push/fetch TARGET (Rule 14: a shared value lives in exactly one
 // place, referenced — never mirrored, never bare-written).
 //
-// WHY this file exists (the defect it repairs, measured 2026-10-12 on host-b):
+// WHY this file exists (the defect it repairs, measured 2026-10-12 on sager):
 // every client-side git leg composed its target as
 //
 //	fmt.Sprintf("%s:%s", peer, repoTail)   // peer = settings.json sync_peers[0]
@@ -13,7 +13,7 @@ package tools
 // are two different NAME SPACES with no contract between them: the alias is
 // resolved by ssh (its own config, on this host), while a remote name is a
 // per-repository local setting (`git remote add`). They coincide only by
-// coincidence — and the coincidence breaks loudly. On host-b `sync_peers` was
+// coincidence — and the coincidence breaks loudly. On sager `sync_peers` was
 // ["peer1"] while `git remote -v` listed only `origin`, so every delivery leg
 // died on git's own sentence
 //

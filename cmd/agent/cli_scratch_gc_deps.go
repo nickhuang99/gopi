@@ -127,12 +127,12 @@ const (
 )
 
 // depsGopiNameRes recognises a gopi-shaped command: the token `gopi` (also
-// `gopi-*`), plus the peer-side worker names this host's gopi family uses
-// (peer-launcher-autostart / gopi-worker-up). It is deliberately a NAME test, not a
+// `gopi-*`), plus the HP-side worker names this host's gopi family uses
+// (hp-worker-autostart / gopi-worker-up). It is deliberately a NAME test, not a
 // process-ownership test: the question the operator asks is "is anything of
 // OURS scheduled here", and an entry pointing at the retired autostart is
 // exactly the case that must be visible.
-var depsGopiNameRes = regexp.MustCompile(`(^|[^A-Za-z0-9_-])(gopi|peer-launcher)([^A-Za-z0-9_]|$)`)
+var depsGopiNameRes = regexp.MustCompile(`(^|[^A-Za-z0-9_-])(gopi|hp-worker)([^A-Za-z0-9_]|$)`)
 
 // depsInterpreterRes matches an interpreter basename (see
 // depsInterpreterNames), so the arm knows to look one argument deeper.

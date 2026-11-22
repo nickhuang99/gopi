@@ -8,7 +8,7 @@ import (
 
 // declared_tmpdir_residue.go — the row that bounds the DECLARED TEMP ROOT itself.
 //
-// WHY THIS ROW EXISTS (measured 2026-11-02 on host-a). `_tmp` is not a wild
+// WHY THIS ROW EXISTS (measured 2026-11-02 on the host). `_tmp` is not a wild
 // directory: it is gopi's OWN declared default temp workspace
 // (`config.ResolveTmpDirConfigured` → `DefaultTmpDir()` → `<home>/workspace/_tmp`,
 // `DefaultTmpDirLeaf` in scratch.go, documented at CONFIG.md:82/557). gopi

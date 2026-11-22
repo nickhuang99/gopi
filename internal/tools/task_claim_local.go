@@ -66,7 +66,7 @@ func claimBroadcastNodeName() string {
 }
 
 // RollbackLocalClaim is the LOCAL half of the transaction rollback (M4.21
-// revert semantics — the the operator veto of cancel+sync-yielded): claimed →
+// revert semantics — the nick veto of cancel+sync-yielded): claimed →
 // pending (and, in the runTaskRunOnce yield shape where TaskStart already
 // advanced the row to in_progress before the remote lock leg failed —
 // the anchor-guard incident, 2026-09-02 — in_progress → pending too),

@@ -3,7 +3,6 @@ package agent
 import (
 	"encoding/json"
 	"hash/fnv"
-	"unicode/utf8"
 
 	"github.com/nickhuang99/gopi/internal/deepseek"
 )
@@ -101,7 +100,10 @@ func (c *Context) ToolsTokens() int {
 	for _, def := range c.tools.defs {
 		payload, err := json.Marshal(def)
 		if err != nil {
-			total += utf8.RuneCountInString(def.Name+def.Description)/charsPerToken + 1
+			// The marshal failed, so the exact bytes are unavailable; fall back to
+			// the chars/4 rule for the two fields we do have rather than dropping
+			// the definition from the total.
+			total += heuristicTextTokens(def.Name + def.Description)
 			continue
 		}
 		total += countTokens(string(payload))

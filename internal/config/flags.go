@@ -452,10 +452,6 @@ func applyFlag(cfg *Config, flag, value string) error {
 		return setInt(&cfg.MaxTokens, flag, value)
 	case "context-window":
 		return setInt(&cfg.ContextWindow, flag, value)
-	case "compact-keep-recent":
-		return setInt(&cfg.CompactKeepRecent, flag, value)
-	case "compact-max-summary-tokens":
-		return setInt(&cfg.CompactMaxSummaryToks, flag, value)
 	case "tool-timeout":
 		return setInt(&cfg.ToolTimeoutSec, flag, value)
 	case "bash-timeout":
@@ -468,24 +464,6 @@ func applyFlag(cfg *Config, flag, value string) error {
 			return err
 		}
 		cfg.TimeoutSec = n
-	case "compact-cooldown":
-		n, err := atoi(flag, value)
-		if err != nil {
-			return err
-		}
-		cfg.CompactCooldownSec = n
-	case "compact-trigger":
-		f, err := atof(flag, value)
-		if err != nil {
-			return err
-		}
-		cfg.CompactTrigger = &f
-	case "compact-target":
-		f, err := atof(flag, value)
-		if err != nil {
-			return err
-		}
-		cfg.CompactTarget = &f
 	case "thinking":
 		b, err := atob(flag, value)
 		if err != nil {
@@ -510,13 +488,6 @@ func applyFlag(cfg *Config, flag, value string) error {
 			return err
 		}
 		cfg.KeepThinking = b
-	case "compact":
-		b, err := atob(flag, value)
-		if err != nil {
-			return err
-		}
-		c := CompactEnabled(b)
-		cfg.Compact = &c
 	case "debug":
 		b, err := atob(flag, value)
 		if err != nil {
@@ -574,12 +545,6 @@ func applyFlag(cfg *Config, flag, value string) error {
 		// the usable list; validating here would put a second, weaker opinion of
 		// what a terminal is called in the parser (Rule 13/14).
 		cfg.FilmTerminal = value
-	case "compact-reference-only":
-		b, err := atob(flag, value)
-		if err != nil {
-			return err
-		}
-		cfg.CompactReferenceOnly = &b
 	default:
 		// A catalog row whose CLIFlag exists but whose applyFlag case does not:
 		// the name came from the accepted-flag table (so the caller's error must

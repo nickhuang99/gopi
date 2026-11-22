@@ -525,7 +525,7 @@ const chatGitWrappedPayloadSubject = "a wrapped command payload"
 // (chatRepoRelativePath, then chatRepoRelativeSlash): an absolute path inside
 // the resolved repo root becomes repo-relative, anything else keeps its cleaned
 // spelling. A path OUTSIDE the repository is therefore spelled by its leading
-// segments (`/home/user/.gopi/sessions/<id>/artifacts/x.md` -> `home the operator …`),
+// segments (`/home/user/.gopi/sessions/<id>/artifacts/x.md` -> `home nick …`),
 // which no `write <tree>` rule mentions, so the POSTURE answers — the operator's
 // question for a target no rule has an opinion about, which is the safe
 // direction for a path nobody wrote a rule for.

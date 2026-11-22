@@ -819,10 +819,12 @@ func NewVisionClient() (*Client, error) {
 	}
 
 	return &Client{
-		BaseURL:     ResolveVisionBaseURL(cfg),
-		APIKey:      apiKey,
-		HTTPClient:  newHTTPClient(),
-		RetryConfig: DefaultRetryConfig(),
+		BaseURL:      ResolveVisionBaseURL(cfg),
+		APIKey:       apiKey,
+		HTTPClient:   newHTTPClient(),
+		RetryConfig:  DefaultRetryConfig(),
+		MessagesPath: claudeMessagesPathFromConfig(cfg),
+		VisionModel:  ResolveVisionModel(cfg),
 	}, nil
 }
 
@@ -838,7 +840,10 @@ func (c *Client) VisionAnalyze(ctx context.Context, imageBase64, mediaType, prom
 	if prompt == "" {
 		prompt = "描述这张图片，并识别其中的文字（如有）"
 	}
-	model := ResolveVisionModel(nil) // env overrides at call time
+	model := c.VisionModel
+	if model == "" {
+		model = ResolveVisionModel(nil) // fallback for directly-constructed clients (env at call time)
+	}
 	req := &ClaudeRequest{
 		Model:     model,
 		MaxTokens: DefaultVisionMaxTokens,

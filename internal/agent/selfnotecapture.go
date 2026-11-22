@@ -351,11 +351,13 @@ func truncateRunes(s string, n int) string {
 //     store refusal, a database error — is logged with its reason and the round
 //     carries on. A note we could not store is a lost record, never a failed run
 //     (Rule 15b: the log line is the record; the answer is worth more).
-//   - IT DEDUPES LOCALLY, per run. The store has its own two-tier dedup, but the
-//     note is capped at exactly the contract length (maxSelfRecordNoteChars), so
-//     several rounds can produce byte-identical text; a map here keeps a repeated
-//     status phrase from paying a store round-trip. The map is per Agent and
-//     per run — no file, no lock, no cross-run state (Rule 35).
+//   - IT DEDUPES LOCALLY, per run. The store has its own two-tier dedup, but
+//     several rounds legitimately produce BYTE-IDENTICAL notes (a repeated status
+//     phrase, a re-stated constraint), so a map here keeps the repeat from paying
+//     a store round-trip. The map is per Agent and per run — no file, no lock, no
+//     cross-run state (Rule 35). The note it keys on is the WHOLE note now, not a
+//     500-rune prefix: two notes that differ only past the old cap used to collide
+//     here and the second was silently skipped.
 func (a *Agent) captureSelfNotes(notes []string) int {
 	// A REPLAY CAPTURES NOTHING — asked ONCE for the round, at the TOP.
 	//
@@ -447,7 +449,7 @@ func (a *Agent) captureSelfNote(note string) string {
 // selfNoteLogHead renders the head of a note for a log line: enough to recognize
 // WHICH note is being talked about, short enough that a 500-rune note does not
 // dominate the run's log. The cut is on a rune boundary, so a CJK note is never
-// split mid-character (the same rule collapseSelfNote follows at the contract cap).
+// split mid-character (the same rule collapseSelfNote follows at the render budget).
 func selfNoteLogHead(note string) string {
 	runes := []rune(strings.TrimSpace(note))
 	if len(runes) <= selfNoteLogHeadRunes {

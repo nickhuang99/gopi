@@ -43,6 +43,7 @@ import (
 	"time"
 
 	"github.com/nickhuang99/gopi/internal/replay"
+	"github.com/nickhuang99/gopi/internal/scratch"
 )
 
 // The flag vocabulary of the beat protocol on the chat surface. The SCRATCH is
@@ -321,7 +322,7 @@ func startChatReplayBeats(f chatBeatFlag, input *chatInput) (*chatReplayBeatDriv
 		return nil, fmt.Errorf("this terminal is %dx%d but the beat protocol was asked for %dx%d — start `gopi chat %s` at the geometry the driver films (the driver's legibility floor belongs to that width)",
 			haveCols, haveRows, f.cols, f.rows, chatFlagReplay)
 	}
-	if err := os.MkdirAll(filepath.Join(f.scratch, replay.DumpDirName), 0o755); err != nil {
+	if err := scratch.MkdirAllWithSuiteRunOwnerPerm(filepath.Join(f.scratch, replay.DumpDirName), 0o755); err != nil {
 		return nil, fmt.Errorf("create the per-beat dump directory under %s: %w", f.scratch, err)
 	}
 	ledger, err := replay.NewLedgerWriter(filepath.Join(f.scratch, replay.LedgerName))

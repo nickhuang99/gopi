@@ -151,6 +151,15 @@ const (
 	// answer (permission, another namespace): neither running nor stopped is
 	// established, and the row says so.
 	SessionRunStateLiveUnknown = "live-unknown"
+	// SessionRunStateEndedAlive — the log carries its session_end AND the
+	// stamped process is still alive. This is not "running": the run finished
+	// its work and wrote its verdict, and a process is STILL there holding the
+	// directory. It is the only state word that names defect row 01a1e59c's
+	// shape (pid 2680213: session a59966eb finished at 22:17, the process was
+	// alive for eleven more days, 36 threads parked on futex_wait, unkillable by
+	// SIGTERM) — and until this word existed NOTHING in the tree could report
+	// it, because a live writer unconditionally outranked a recorded end.
+	SessionRunStateEndedAlive = "ended-alive"
 )
 
 // sessionRunState decides a run row's word from the FACTS the record carries,
@@ -158,9 +167,20 @@ const (
 // read it — Rule 13).
 func sessionRunState(rec rundir.Record, alive procstat.Verdict) string {
 	if alive == procstat.VerdictAlive {
-		// A live writer outranks a recorded end: a resumed session appends a
-		// second segment to the SAME log, so the previous segment's verdict is
-		// on disk while the run is very much going.
+		// A live writer normally outranks a recorded end: a resumed session
+		// appends a second segment to the SAME log, so the previous segment's
+		// verdict is on disk while the run is very much going.
+		//
+		// BUT NOT WHEN THE VERDICT IS THE LAST WORD. A resume writes session_end
+		// and then a fresh session_start, so a mid-resume log has
+		// StartSegments > EndSegments. When every start segment has already been
+		// closed by an end segment (EndSegments >= StartSegments), a live pid is
+		// no longer "a run in progress" — it is a finished run whose process did
+		// not leave. Naming that shape is the difference between an operator
+		// seeing a wedged process and seeing a healthy run (Rule 15).
+		if rec.HasEnd && !rec.TailTruncated && rec.EndSegments >= rec.StartSegments {
+			return SessionRunStateEndedAlive
+		}
 		return SessionRunStateRunning
 	}
 	if rec.HasEnd {

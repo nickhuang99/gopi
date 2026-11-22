@@ -185,7 +185,7 @@ const (
 	// the four things a reader needs to turn the refusal into an action.
 	//
 	// MEASURED 2026-10-08 on HP: `remote.peer1.pushurl = DISABLED-no-push`
-	// (installed 2026-10-03 by an earlier session as a guardrail) makes
+	// (installed 2026-10-03 by the hermes-agent session as a guardrail) makes
 	// `git push peer1 master:master` fail with git's own
 	// `fatal: 'DISABLED-no-push' does not appear to be a git repository`, and
 	// the operator-facing report said only "the peer rejected the push". The
@@ -207,7 +207,7 @@ const (
 	// repo's remotes, not a config block. Before this line the operator got
 	// git's sentence and no way to see WHICH of the two worlds they were in.
 	//
-	// MEASURED 2026-10-12 on host-b: `sync_peers: ["peer1"]` while
+	// MEASURED 2026-10-12 on sager: `sync_peers: ["peer1"]` while
 	// `git remote -v` lists only `origin` — the report said only "the peer
 	// rejected the push — git said: fatal: 'peer1' does not appear to be a
 	// git repository", naming neither the declared peer, nor the remotes
@@ -941,7 +941,7 @@ func gitPushbackPlan(ctx context.Context, repoDir, target string) gitPushbackFlu
 		// The decoration is owed HERE more than anywhere: this fetch is the
 		// FIRST target-git call a pass makes, so a peer name this machine
 		// cannot resolve breaks the pass before any push runs — the shape
-		// measured on host-b 2026-10-12, where the entire report was git's
+		// measured on sager 2026-10-12, where the entire report was git's
 		// bare sentence with no mention of the declared topology or of the
 		// remotes that DO exist there.
 		flush.Failed = append(flush.Failed,

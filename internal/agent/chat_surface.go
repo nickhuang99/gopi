@@ -307,19 +307,25 @@ func chatSurfaceToolDef() deepseek.ClaudeToolDef {
 		// The first sentence is the routing decision (Rule 11): the model must reach
 		// for this tool, not for an `ui_state` shell call, when the screen in
 		// question is the one it is answering in.
-		Description: "Call " + toolnames.ToolChatSurface + " when the screen in question is THE ONE YOU ARE ANSWERING IN — your own chat surface. " +
-			"action=" + ChatSurfaceActionSee + " returns this surface's painted screen as an interpreted CELL GRID (no pixels, no vision model): the answer band, the editing line, the status row. " +
-			"action=" + ChatSurfaceActionCompare + " checks one line against BOTH the painted grid and the authoritative transcript and tells you which SIDE lost it — that is the one call that separates 'the paint truncated it' from 'it was never said'. " +
-			"action=" + ChatSurfaceActionType + " types a LINE into your own input line and submits it, so the turn that produced it is followed by an input **that this turn wrote** — the self-driven loop. It is BOUNDED: at most " +
-			fmt.Sprintf("%d", bound) + " self-driven turns per PERIOD, after which the loop refuses and says so on the console the operator is watching; a period is the stretch between two lines a HUMAN wrote, and every line the operator submits grants a fresh budget — you can never renew it yourself, and it does not raise itself (pass max_turns (2.." +
-			fmt.Sprintf("%d", bound) + ") to bound a period sooner). Use it only when the task genuinely needs the next step typed for you; it spends a whole turn. " +
-			"action=" + ChatSurfaceActionKey + " injects RAW KEY BYTES into your own line editor — through the SAME decoder a real keyboard goes through — and submits NOTHING (bounded separately: " +
-			fmt.Sprintf("%d", chatSurfaceKeyCeiling) + " keys per PERIOD, and a period is the same stretch between two lines a HUMAN wrote that bounds " + ChatSurfaceActionType + " — an operator line opens a fresh key budget too, and you can never renew it yourself). CHOOSE BETWEEN " + ChatSurfaceActionType + " AND " + ChatSurfaceActionKey + " BY WHAT YOU ARE TESTING: " +
-			ChatSurfaceActionKey + " is for driving the EDITOR's own state — opener a completion menu, walking it with down/up, accepting with tab or enter, editing the line with backspace/left/right — i.e. every interaction that a whole-line submission cannot reach, because " +
-			ChatSurfaceActionType + " never enters the editor at all: it enqueues a finished line as the next turn, so a line and a key can end up EXECUTING (a submitted `/quit` with a following Down runs the command instead of opening its menu). " +
-			ChatSurfaceActionType + " is for moving the CONVERSATION one step; " + ChatSurfaceActionKey + " is for exercising the INPUT PATH. " +
+		Description: "Call " + toolnames.ToolChatSurface + " — REACH FOR IT THE MOMENT you are about to end a turn with \"shall I continue?\", \"next round I will…\", \"要我现在跑吗\", or any promise whose job is not actually done. " +
+			"That sentence ENDS the job — nothing runs after it unless YOU type the next turn, and this tool is how you type it. You have it on THIS surface, in THIS turn; it needs no permission. " +
+			"CASE 1 — THIS TURN CANNOT FINISH THE JOB (your output is running out, or more steps are already known and none of them needs the operator to choose): " +
+			"call action=" + ChatSurfaceActionType + " with the next instruction written the way the OPERATOR would write it. That line is enqueued as this session's NEXT INPUT, so the work continues with no human in the loop. " +
+			"EXAMPLE OF THE SHAPE (not text to copy): you have run several commands, more steps are still needed and the answer is getting long → action=" + ChatSurfaceActionType + ", text=\"继续：跑 make build 和 go test ./internal/memoryprefetch/，再修掉失败项\" — what is done, what is next, where it resumes. " +
+			"NOT for asking the operator a question they must answer, and NOT for re-reading a screen (that is action=" + ChatSurfaceActionSee + ", which costs nothing). " +
+			"CASE 2 — YOU NEED TO KNOW WHAT THE OPERATOR SEES (did the band truncate your line, does the editing line hold what you think): " +
+			"action=" + ChatSurfaceActionSee + " returns this surface's painted screen as an interpreted CELL GRID — the answer band, the editing line, the status row — no pixels and no vision model. " +
+			"action=" + ChatSurfaceActionCompare + " checks ONE line against both the painted grid and the authoritative transcript and names which SIDE lost it: the call that separates 'the paint truncated it' from 'it was never said'. " +
+			"THE BUDGET, so you can spend it deliberately: " + ChatSurfaceActionType + " lets you type at most " +
+			fmt.Sprintf("%d", bound) + " self-driven turns per PERIOD, and a period is the stretch between two lines a HUMAN wrote — every operator line grants a fresh budget, you can never renew it yourself (pass max_turns (2.." +
+			fmt.Sprintf("%d", bound) + ") to bound a period sooner). A " + ChatSurfaceActionType + " costs one turn of that budget and NEVER the operator's attention, because nobody is asked anything; the chat context block states turns-used-so-far before you spend it. " +
+			"action=" + ChatSurfaceActionKey + " injects RAW KEY BYTES into your own line editor through the SAME decoder a real keyboard goes through, and submits NOTHING (its own budget: " +
+			fmt.Sprintf("%d", chatSurfaceKeyCeiling) + " keys per PERIOD). " +
+			"PICK " + ChatSurfaceActionType + " OR " + ChatSurfaceActionKey + " BY WHAT YOU ARE TESTING: a KEY drives the EDITOR's own state — opening a completion menu, walking it with down/up, accepting with tab or enter, editing with backspace/left/right — everything a whole-line submission cannot reach, because " +
+			ChatSurfaceActionType + " never enters the editor (a submitted `/quit` followed by a Down EXECUTES the command instead of opening its menu). " +
+			ChatSurfaceActionType + " moves the CONVERSATION one step; " + ChatSurfaceActionKey + " exercises the INPUT PATH. " +
 			"action=" + ChatSurfaceActionStop + " cancels a pending or running self-driven loop. " +
-			"Reading is possible while this run still writes its own screen dump — which it does BY DEFAULT; a run started with `" + cliverbs.Chat + " " + cliverbs.NoDumpScreen + "` (or a falsey `" + cliverbs.ChatDumpEnv + "`) has declined it, and then every read answers 'no observation', never 'blank screen'. " +
+			"Reading works because this run writes its own screen dump, which it does BY DEFAULT; a run started with `" + cliverbs.Chat + " " + cliverbs.NoDumpScreen + "` (or a falsey `" + cliverbs.ChatDumpEnv + "`) declined it, and then every read answers 'no observation', never 'blank screen'. " +
 			"NOT for another gopi surface — a `" + cliverbs.UI + "` window or a second chat is read by " + cliverbs.UIState + " through " + toolnames.ToolBash + " — and NOT for a file, a page or the desktop (read / web_fetch / " + toolnames.ToolScreenCapture + ").",
 		InputSchema: map[string]interface{}{
 			"type": "object",

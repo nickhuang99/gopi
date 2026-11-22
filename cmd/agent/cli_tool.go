@@ -202,7 +202,7 @@ var toolLeafCommands = []toolLeafCommand{
 	},
 	{
 		word: CliVerbTokens,
-		form: "--file <path> | --session <id> | …",
+		form: "--file <path> | --prompt '<text>' | …",
 		desc: "Count tokens: a text file, a session's verification rows, or a request against its server number.",
 	},
 	{

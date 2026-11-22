@@ -59,6 +59,7 @@ import (
 	"time"
 
 	"github.com/nickhuang99/gopi/internal/inputsource"
+	"github.com/nickhuang99/gopi/internal/scratch"
 	"github.com/nickhuang99/gopi/internal/sessionlayout"
 )
 
@@ -180,7 +181,7 @@ func sessionInboxLock(dir string, create bool) (*os.File, error) {
 		return nil, errors.New("session inbox: empty session directory")
 	}
 	if create {
-		if err := os.MkdirAll(filepath.Join(dir, sessionInboxDirName), sessionInboxDirPerm); err != nil {
+		if err := scratch.MkdirAllWithSuiteRunOwnerPerm(filepath.Join(dir, sessionInboxDirName), sessionInboxDirPerm); err != nil {
 			return nil, fmt.Errorf("session inbox: cannot create %s: %w", filepath.Join(dir, sessionInboxDirName), err)
 		}
 	}

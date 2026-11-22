@@ -41,6 +41,12 @@ type Client struct {
 	// claudeMessagesURL). Empty means the legacy suffix logic applies.
 	MessagesPath string
 
+	// VisionModel is the resolved multimodal model (env > settings > default),
+	// captured at construction by NewVisionClient. VisionAnalyze uses it so a
+	// settings-only vision_model actually takes effect; the nil-resolve fallback
+	// inside VisionAnalyze keeps directly-constructed clients working.
+	VisionModel string
+
 	// RawLog is an optional callback for raw HTTP request/response debugging.
 	// It receives the record's DIRECTION TAG (rawlogfmt.TagRequest /
 	// TagProbeRequest / TagResponse / TagChunk / TagError), an ANNOTATION naming a

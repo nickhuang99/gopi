@@ -275,7 +275,7 @@ func mergeBuildGateGoCache(repo string) (cacheDir string, ok bool) {
 		taskNotifyLog("merger: BUILD gate ABSTAINING — %s", reason)
 		return "", false
 	}
-	if err := os.MkdirAll(cacheDir, scratch.DirPerm); err != nil {
+	if err := scratch.MkdirAllWithSuiteRunOwnerPerm(cacheDir, scratch.DirPerm); err != nil {
 		taskNotifyLog("merger: BUILD gate ABSTAINING — %s",
 			fmt.Sprintf(mergeBuildGateGoCacheUncreatableFmt, cacheDir, err))
 		return "", false

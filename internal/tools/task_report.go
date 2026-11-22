@@ -44,6 +44,7 @@ import (
 	"strings"
 	"time"
 
+	"github.com/nickhuang99/gopi/internal/scratch"
 	"github.com/nickhuang99/gopi/internal/taskreport"
 )
 
@@ -131,7 +132,7 @@ func TaskReportDestination(taskID string) (string, error) {
 		return "", err
 	}
 	dir := filepath.Dir(path)
-	if err := os.MkdirAll(dir, taskReportDirMode); err != nil {
+	if err := scratch.MkdirAllWithSuiteRunOwnerPerm(dir, taskReportDirMode); err != nil {
 		return "", fmt.Errorf("task report destination for %s: create %s: %w", taskID, dir, err)
 	}
 	if err := taskReportProbeWritable(dir); err != nil {
@@ -216,7 +217,7 @@ func SealTaskReportOutcome(taskID, outcome string) (string, error) {
 	if err != nil {
 		return "", err
 	}
-	if err := os.MkdirAll(filepath.Dir(path), taskReportDirMode); err != nil {
+	if err := scratch.MkdirAllWithSuiteRunOwnerPerm(filepath.Dir(path), taskReportDirMode); err != nil {
 		return "", fmt.Errorf("task report: create session dir for %s: %w", taskID, err)
 	}
 	body, readErr := os.ReadFile(path)

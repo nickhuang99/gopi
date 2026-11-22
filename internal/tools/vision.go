@@ -129,6 +129,10 @@ func VisionAnalyze(imagePath, prompt string) (string, error) {
 		return "", fmt.Errorf("vision_analyze: %w", err)
 	}
 
+	model := client.VisionModel
+	if model == "" {
+		model = deepseek.ResolveVisionModel(nil) // fallback for env-only resolution
+	}
 	return fmt.Sprintf("【vision 分析结果】(模型 %s, 输入 %d tokens / 输出 %d tokens, 图片 %d bytes)\n%s",
-		deepseek.ResolveVisionModel(nil), usage.InputTokens, usage.OutputTokens, img.Bytes, text), nil
+		model, usage.InputTokens, usage.OutputTokens, img.Bytes, text), nil
 }

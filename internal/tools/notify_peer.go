@@ -406,11 +406,21 @@ func notifyPeerSessionDir(sessionID string) (dir, id string, err error) {
 		return "", "", fmt.Errorf(notifyPeerNoSessionsFormat, operand, root)
 	}
 	// A bare directory name inside the sessions root: the chat layout, whose
-	// directory IS its id (sessionlayout.DirHasRecord is the one classifier).
+	// directory IS its id. THE ONE CRITERION is sessionlayout.SessionDirRefusal
+	// — the same call the local DELIVER face makes, so the two faces cannot
+	// answer differently for the same operand (Rules 13/14). It refuses the
+	// sessions root itself and the tree's reserved bookkeeping names
+	// (`messages`, `artifacts`) BY NAME, before the not-ready sentence can call
+	// an inbox directory "a session that has not written its record yet"
+	// (measured 2026-11-14, task 01a1d7fb: a `messages` operand was accepted and
+	// delivered into `<root>/messages/messages/inbox.jsonl`).
 	candidate := filepath.Join(root, operand)
 	candidateIsDir := false
 	if fi, statErr := os.Stat(candidate); statErr == nil && fi.IsDir() {
 		candidateIsDir = true
+		if _, refuseErr := sessionlayout.SessionDirRefusal(candidate, root); refuseErr != nil {
+			return "", "", refuseErr
+		}
 		if sessionlayout.DirHasRecord(candidate) {
 			return candidate, operand, nil
 		}
@@ -436,6 +446,15 @@ func notifyPeerSessionDir(sessionID string) (dir, id string, err error) {
 	// (both name their file after the session id) and land the message in
 	// <sessions>/messages/, which no session reads (see RecordContainer).
 	dir = sessionlayout.RecordContainer(record)
+	// THE SAME REFUSAL THE LOCAL FACE APPLIES, for the same reason: a flat
+	// record's container is the sessions ROOT, so the peer would append to the
+	// root's shared `<root>/messages/` and every flat-layout session on that
+	// host would read the message (measured 2026-11-14, Rules 13/14: the
+	// predicate and the sentence are the leaf's, not this handler's).
+	if sessionlayout.ContainerIsSessionsRoot(record, root) {
+		return "", "", fmt.Errorf(sessionlayout.SessionRootInboxRefusalFormat,
+			operand, record, sessionlayout.SessionMessagesDirName, sessionlayout.RecordName)
+	}
 	return dir, operand, nil
 }
 

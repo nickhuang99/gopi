@@ -228,17 +228,6 @@ func ApplyEnv(cfg *Config, fromFlags bool) {
 			set(env, strconv.Itoa(sec))
 		}
 	}
-	// Pointer bools (nil = unset).
-	setBoolPtr := func(env string, b *bool) {
-		if b == nil {
-			return
-		}
-		if *b {
-			set(env, "1")
-		} else {
-			set(env, "off")
-		}
-	}
 	// setThinkingMode feeds the canonical "enabled"/"disabled" strings the
 	// agent's GOPI_THINKING switch parses verbatim (a bool knob would emit
 	// "1"/"off", which the switch would reject as invalid).
@@ -357,23 +346,7 @@ func ApplyEnv(cfg *Config, fromFlags bool) {
 
 	// Runtime
 	setDur("GOPI_TIMEOUT_SEC", cfg.TimeoutSec)
-	if cfg.Compact != nil {
-		b := bool(*cfg.Compact)
-		setBoolPtr("GOPI_COMPACT", &b)
-	}
 	setBool("GOPI_DEBUG", cfg.Debug)
-
-	// Compaction
-	if cfg.CompactTrigger != nil {
-		set("GOPI_COMPACT_TRIGGER", strconv.FormatFloat(*cfg.CompactTrigger, 'f', -1, 64))
-	}
-	if cfg.CompactTarget != nil {
-		set("GOPI_COMPACT_TARGET", strconv.FormatFloat(*cfg.CompactTarget, 'f', -1, 64))
-	}
-	setInt("GOPI_COMPACT_KEEP_RECENT", cfg.CompactKeepRecent)
-	setInt("GOPI_COMPACT_MAX_SUMMARY_TOKENS", cfg.CompactMaxSummaryToks)
-	setDur("GOPI_COMPACT_COOLDOWN", cfg.CompactCooldownSec)
-	setBoolPtr("GOPI_COMPACT_REFERENCE_ONLY", cfg.CompactReferenceOnly)
 
 	// Logging
 	setStr("GOPI_RAW_LOG", cfg.RawLog)

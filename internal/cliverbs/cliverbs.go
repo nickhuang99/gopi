@@ -535,6 +535,33 @@ const TaskUpdateForceWord = "force"
 // same shape TaskTagsFlag has, so the two halves cannot drift.
 const TaskUpdateForceFlag = "--" + TaskUpdateForceWord
 
+// TaskClearGroundWord is the `--clear-ground` of `gopi task update` — the FIRST
+// half of the deliberate TWO-step move that re-points a row's recorded ground
+// (deliverable.worktree + branch).
+//
+// WHY IT IS A SHARED WORD (Rule 13/14, measured): the refusal that sends an
+// operator here is RENDERED by internal/tools (`task_repo_repair.go`'s
+// TaskRepairGroundResetRefusalFmt — the 2026-09-12 foreign-owner guard), and the
+// flag is ADMITTED by cmd/agent. Before this constant existed the refusal said
+// "clear the recorded ground first" and named NO spelling at all, so a reader
+// went looking for a verb or a flag that does not exist (epic 01a1fc52, Rule 15:
+// a refusal must name a door that is real). A tools-side literal would be the
+// mirror Rule 13 bans — on the one string the operator then types.
+const TaskClearGroundWord = "clear-ground"
+
+// TaskClearGroundFlag is the dashed spelling — DERIVED, the same shape
+// TaskUpdateForceFlag has above, so the two halves cannot drift.
+const TaskClearGroundFlag = "--" + TaskClearGroundWord
+
+// TaskReasonWord is the `--reason` carried by every edit door that records a WHY
+// (`gopi task update`'s status moves, its briefing revision, its reparent and
+// the ground clear). The tools side renders it inside the ground refusal, so it
+// lives here rather than as a literal on each side.
+const TaskReasonWord = "reason"
+
+// TaskReasonFlag is the dashed spelling — DERIVED, the same shape above.
+const TaskReasonFlag = "--" + TaskReasonWord
+
 // TaskIDWord / TaskIDFlag are the `--task-id` selector — the ROW ADDRESS of the
 // task ledger (submit's id, the manual push's single-row choice, and the row
 // legs' row).

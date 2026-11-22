@@ -78,6 +78,7 @@ import (
 	"github.com/nickhuang99/gopi/internal/agent"
 	"github.com/nickhuang99/gopi/internal/borrowedfd"
 	"github.com/nickhuang99/gopi/internal/deepseek"
+	"github.com/nickhuang99/gopi/internal/lineedit"
 	"github.com/nickhuang99/gopi/internal/sessionevent"
 	"github.com/nickhuang99/gopi/internal/signalrec"
 )
@@ -362,7 +363,15 @@ func runTermOnce(args []string) int {
 	// built the same way rather than with a second copy of the rules. The write
 	// boundary is frozen beside it: this surface executes tools, so a boundary
 	// left at the package defaults would judge every write as a question.
+	// THE SAME DEFAULT THE INTERACTIVE LEG PUBLISHES (see the call in runTermChat's
+	// launch chain, cli_term.go): `gopi cli "<prompt>" --once` is the same
+	// conversational face over the same engine, so its system prompt must not
+	// teach internal/agent's 60-minute TASK ceiling either. It is published by
+	// the ONE implementation (publishSessionBudgetDefault), so the value, the
+	// never-override rule and the failure line cannot drift between the two legs
+	// of this face — only the start-up prefix differs.
 	chatFreezeChatPolicyState(chatFacePrefixCli, "")
+	publishCliSessionBudgetDefault(termToolStylesFor(lineedit.ColourOff))
 	srv := &webServer{addr: webDefaultAddr(), tools: opts.tools, newWebAgent: termOnceAgentFactory}
 	ag, err := srv.newWebAgent()
 	if err != nil {

@@ -1639,7 +1639,7 @@ func webPeerIP(remoteAddr string) string {
 }
 
 // webDisplayURLs returns the browser-reachable URLs for a listen host+port.
-//   - host is concrete ("127.0.0.1", "localhost", "192.0.2.10") → exactly
+//   - host is concrete ("127.0.0.1", "localhost", "10.0.0.10") → exactly
 //     that one URL.
 //   - host is empty or "0.0.0.0"/"::" (all interfaces) → the loopback URL plus
 //     each non-loopback IPv4 address on the machine (so a browser on another
@@ -1961,8 +1961,9 @@ func (s *webServer) handleChat(w http.ResponseWriter, r *http.Request) {
 		s.noteToolState(ev)
 	}
 
-	// A statement addressed to the OPERATOR (context pressure — a filled window is
-	// ANNOUNCED, never silently emptied: internal/agent/context_pressure.go). It
+	// A statement addressed to the OPERATOR (context compression — a filled window
+	// is shortened ONCE and the operator is told what went:
+	// internal/agent/context_compress.go). It
 	// rides its OWN SSE event (`notice` is already taken by a server-started
 	// turn, and a warning about this turn's context is not a new turn), so the
 	// page can render it in the page's own notice style without the client
@@ -2395,8 +2396,8 @@ const (
 	webEventQueued   = "queued"   // B2: this turn is waiting on s.mu
 	webEventNotice   = "notice"   // a SERVER-started turn (session inbox delivery)
 	// webEventWarning is a statement for the OPERATOR about the turn in flight,
-	// not about a turn that started: today the only producer is context pressure
-	// (internal/agent/context_pressure.go). A separate name from webEventNotice
+	// not about a turn that started: today the only producer is the context
+	// compression (internal/agent/context_compress.go). A separate name from webEventNotice
 	// because the page renders the two differently — a notice opens an answer
 	// bubble (a turn follows it), a warning does not.
 	webEventWarning = "warning"
@@ -3269,8 +3270,8 @@ const webChatPage = `<!DOCTYPE html>
   .msg .qcancel:hover{border-color:var(--qc);color:var(--qc2)}
   #status .qsum{color:var(--qm);margin-left:6px}
   .msg.notice{align-self:flex-start;background:var(--nt);border:1px dashed var(--nl);color:var(--nf);font-style:italic}
-  /* A statement for the OPERATOR about the turn in flight (context pressure:
-     the window is filling and NOTHING was removed). Solid brick border rather
+  /* A statement for the OPERATOR about the turn in flight (context compression:
+     the window was shortened once, or could not be). Solid brick border rather
      than the notice's dashed one, because it asks for a decision — finish here
      or start a new session — and a dashed frame reads as passing commentary. */
   .msg.warning{align-self:flex-start;background:var(--wb);border:1px solid var(--wl);color:var(--w);border-radius:10px;padding:8px 12px;max-width:85%;font-size:13px;line-height:1.45}
@@ -3508,7 +3509,7 @@ const API_TRANSCRIPT='/api/transcript';
 const API_EVENTS='/api/events';
 const EV_NOTICE='notice';
 // EV_WARNING is a statement addressed to the OPERATOR about the turn in flight
-// (context pressure — internal/agent/context_pressure.go). A separate name from
+// (context compression — internal/agent/context_compress.go). A separate name from
 // EV_NOTICE because the two mean different things to this page: a notice
 // ANNOUNCES a server-started turn and the bubble below it carries that turn's
 // answer, while a warning opens no bubble and continues the turn already

@@ -27,7 +27,6 @@ package main
 import (
 	"fmt"
 	"os"
-	"path/filepath"
 
 	"github.com/nickhuang99/gopi/internal/envctx"
 )
@@ -126,11 +125,12 @@ func runConfigEnv(args []string) {
 			len(facts.Nodes), len(facts.Conflicts), path)
 		return
 	}
-	if err := os.MkdirAll(filepath.Dir(path), 0o700); err != nil {
-		fmt.Fprintf(os.Stderr, "gopi config env: cannot create %s: %v\n", filepath.Dir(path), err)
-		os.Exit(1)
-	}
-	if err := os.WriteFile(path, []byte(text), 0o600); err != nil {
+	// The directory and the file are created by the package that OWNS the
+	// profile document (envctx.WriteDocument), never by a second copy of the mode
+	// bits here: that copy skipped the suite-run owner registration, which is how
+	// a recreated /dev/shm/suite-*-run-<N> root came back with no `.holder` and
+	// only the age window to bound it (Rule 14, and this run's own defect).
+	if err := envctx.WriteDocument(path, []byte(text)); err != nil {
 		fmt.Fprintf(os.Stderr, "gopi config env: cannot write %s: %v\n", path, err)
 		os.Exit(1)
 	}

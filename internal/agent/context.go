@@ -1,10 +1,8 @@
 package agent
 
 import (
-	"encoding/json"
 	"fmt"
 	"strings"
-	"unicode/utf8"
 
 	"github.com/nickhuang99/gopi/internal/deepseek"
 	"github.com/nickhuang99/gopi/internal/sessionevent"
@@ -19,10 +17,10 @@ import (
 // late for interactive round times.
 const DefaultContextWindow = 200000
 
-// DefaultCompactTriggerRatio is the fraction of the context window at which
-// trimming kicks in. When the estimated token count exceeds this fraction of
-// the window before an API call, the oldest messages are trimmed automatically
-// (fold → compact → TrimToFit, all on this single limit).
+// DefaultCompactTriggerRatio is the fraction of the context window at which the
+// ONE compression runs (context_compress.go). Below it the history is
+// append-only; at it, the oldest run of messages is deleted once and the run's
+// [IMPORTANT] notes are carried back to the head.
 //
 // 0.75, not 0.9 or 0.6: at 0.9 the history grew to ~810K tokens before
 // anything was trimmed, and every late-task round re-prefilled a 200-400K
@@ -34,28 +32,43 @@ const DefaultContextWindow = 200000
 const DefaultCompactTriggerRatio = 0.75
 
 // DefaultCompactKeepRecent is how many of the most recent messages are never
-// removed by compaction (GOPI_COMPACT_KEEP_RECENT). Aligned with
-// maxVerbatimToolResults: the model is still working from the recent tail.
+// removed by compaction: the model is still working from the recent tail, and a
+// compression that cut into it would break the round it is in the middle of.
+//
+// WHAT IT COUNTS IS SUBSTANTIVE MESSAGES, NOT SLOTS (fixed 2026-11-21). It used
+// to count MESSAGES, and that made the floor a lottery on what the last eight
+// array entries happened to be: a harness-injected `[system] …` checkpoint or a
+// content-less assistant turn spends a slot without carrying anything the model
+// can work from. Measured on one real session (task 01a1fae1-411a), the eight
+// newest messages held 19 characters of real content beside 460 characters of
+// harness injection — the floor was nominally intact and had protected almost
+// nothing. The count now runs over the substantive messages that survive, and a
+// TOKEN CEILING (compactKeepRecentTokensCap) bounds the other direction: eight
+// substantive messages that are each 40 KB of tool output are not a tail anyone
+// benefits from keeping verbatim.
 const DefaultCompactKeepRecent = 8
 
-// Tool-result folding policy (R1): tool results are the context-growth driver
-// (a 16KB bash output is ~4K tokens), but the model rarely re-reads OLD ones
-// — when it needs the data again it re-runs the command. When the context is
-// over budget, tool results older than maxVerbatimToolResults with more than
-// maxToolResultLines are collapsed into one-line stubs
-// (Context.summarizeOldToolResults). The most recent results stay verbatim:
-// the model is still working from them.
-const (
-	// maxVerbatimToolResults is how many of the most recent tool results
-	// stay verbatim during folding.
-	maxVerbatimToolResults = 8
-	// maxToolResultLines is the line count above which an OLD tool result
-	// is collapsed into a one-line stub.
-	maxToolResultLines = 20
-	// maxToolResultSummaryChars caps the first line kept in a stub, so a
-	// single pathological long line cannot defeat the collapse.
-	maxToolResultSummaryChars = 120
-)
+// compactKeepRecentTokenCapDivisor is the fraction of DefaultContextWindow the
+// recent tail may occupy (1/4). Named because the token ceiling's arithmetic
+// must not spell a bare literal (Rule 13 — the gate that caught this change's
+// first draft as `DefaultContextWindow / 4`).
+const compactKeepRecentTokenCapDivisor = 4
+
+// compactKeepRecentTokensCap is the TOKEN CEILING on the recent tail. The
+// substantive count above says "keep at least DefaultCompactKeepRecent messages
+// a reader would recognise as content"; this says "but do not hold more of the
+// window hostage than this to do it". Without the ceiling, changing the floor's
+// unit from slots to substantive messages would let a tail of eight 40 KB tool
+// results grow without bound — which is the same defect in the other direction.
+//
+// The value is a quarter of DefaultContextWindow, stated in tokens rather than
+// as a ratio of the window ON PURPOSE: the window is a deploy-time number
+// (GOPI_CONTEXT_WINDOW), and a floor that tracks it lets an operator "fix"
+// compression by enlarging the window — exactly the "turn the number up"
+// non-fix this change forbids. At the deployed 200K window the two readings
+// coincide, which is why the number is recognisable; at any other window the
+// ceiling stays the one this project measured its tail against.
+const compactKeepRecentTokensCap = DefaultContextWindow / compactKeepRecentTokenCapDivisor
 
 // Harness-injection markers. harnessMessagePrefix opens every user message the
 // agent framework appends for the model (start/review checkpoints, job and
@@ -95,57 +108,17 @@ const harnessMessagePrefix = sessionevent.HarnessMessagePrefix
 // block into harnessMessagePrefix would spell "this is framework chatter" for a
 // message that is the run's OWN distilled record, and it would put the note
 // text inside the [system] log contract every harness message keeps. The
-// property the ANCHOR POLICY needs is not the label but the predicate — a
-// harness-injected user message must never become TakeOldest's "last user"
-// floor — and an entry in the shared slice buys exactly that, because
-// isHarnessInjectedUserMessage consults it.
+// property the READERS need is not the label but the predicate — a
+// harness-injected user message is not something the operator typed, so a
+// transcript reader must not attribute it to them — and an entry in the shared
+// slice buys exactly that, because isHarnessInjectedUserMessage consults it.
 var harnessMessageMarkers = sessionevent.HarnessMessageMarkers
-
-// AnchorStop reasons — WHY TakeOldest's deletion pass stopped before the
-// estimate reached maxTokens. Each value is a named constant because the same
-// string is written into the anchor log line (compact.go) and asserted on by
-// the compaction tests: a bare literal at either site is one rename away from
-// a silent mismatch (Rule 1b/13).
-const (
-	// anchorStopLastUser is the instruction floor: a REAL instruction the
-	// operator issued (the epic is index 0 and never anchors).
-	anchorStopLastUser = "last user"
-	// anchorStopLastVisibleAssistant is the reply floor: the last assistant
-	// message with visible content (the model's most recent answer).
-	anchorStopLastVisibleAssistant = "last visible assistant"
-	// anchorStopMemoryBlock is set when TakeOldest refused to compress a
-	// region that holds nothing but compaction memory blocks (livelock guard).
-	anchorStopMemoryBlock = "memory block floor"
-)
-
-// isNonCompressibleMessage reports whether asking an LLM to distill this
-// message would be a wasted call: a compaction memory block (distilling the
-// compaction's own output converges on nothing — the reported livelock), or a
-// self-recording note block (an LLM distillation of the model's OWN one-line
-// distillation, whose verbatim copy is re-injected anyway — see selfrecord.go).
-//
-// IT IS NOT A STOP FLOOR AND NOT AN EXEMPTION FROM DELETION (the epic's hard
-// constraint: TakeOldest's stop conditions — lastUser / lastVisibleAssistant /
-// keepRecent / protected — gain nothing, and the re-injected note block is not a
-// new anchor target). The deletion pass takes such a message like any other
-// message when there is real material around it; what this predicate decides is
-// the SINGLE question windowIsMemoryBlocks has always asked — "is there anything
-// in this window worth a summarizer call?" — so a window holding only these
-// stops by the EXISTING anchorStopMemoryBlock path (structural no-op, zero LLM
-// calls).
-//
-// The record itself does not depend on that: a note whose message is deleted is
-// re-injected from this run's note list (Agent.ensureSelfRecordPresent), which
-// is why discarding the message is safe and why no exemption is needed.
-func isNonCompressibleMessage(m deepseek.Message) bool {
-	return isMemorySummaryMessage(m) || isSelfRecordMessage(m)
-}
 
 // isHarnessInjectedUserMessage reports whether a user-role message was
 // appended by the harness (the agent framework itself) rather than typed by
-// the operator. It is the predicate behind the anchor policy in TakeOldest:
-// a harness follow-up is NOT an instruction, so it must not become the
-// "last user" stop floor (see the anchor discussion there).
+// the operator. Two readers depend on it: a transcript RENDERER (the terminal
+// chat surface must not attribute the framework's own follow-ups to the
+// operator) and the session-log reader that classifies rows.
 //
 // The distinction is structural and lives in the message's own first line:
 // every framework-injected user message opens with harnessMessagePrefix
@@ -206,12 +179,6 @@ type Context struct {
 	// the pure heuristic is used then.
 	PromptTokens      int
 	PromptTokensIndex int
-
-	// AnchorStop records why TakeOldest stopped early on an anchor during
-	// the most recent call: "last user" / "last visible assistant". Empty
-	// when no anchor stopped it. Set/read by the single-threaded agent loop
-	// (or tests) only.
-	AnchorStop string
 
 	// trimmedIDs records tool_use ids already processed by RemoveToolPair
 	// (context_trim / memory_feedback useless-slim). A call_id is handled at
@@ -448,22 +415,36 @@ func (c *Context) WireMessages(keepThinking bool) []deepseek.Message {
 	return out
 }
 
-// EstimateTokens estimates the token count of a message using a chars/4
-// heuristic (roughly 4 characters per token for mixed text). Tool call names,
-// IDs and serialized arguments are counted too. CJK text is under-estimated
-// by this rule of thumb, but it is a safe lower bound for triggering the
-// trim; the API-reported usage remains authoritative.
+// EstimateTokens estimates the token count of one message on the BPE basis —
+// the same basis the endpoint bills and `gopi tool tokens` reports. Tool call
+// names, IDs and serialized arguments are counted too, because they ride the
+// request.
+//
+// WHY THIS IS NO LONGER chars/4 (and why the old comment's justification was
+// wrong). The retired wording said CJK was "a safe lower bound for triggering
+// the trim". It is not: the trigger fires when the estimate EXCEEDS a fraction of
+// the window (context_compress.go), so an under-count fires it LATE or never —
+// MEASURED 1.78x under on a 35-rune Chinese sentence and 2.24x on a 2 KB Chinese
+// aggregate (single Chinese sentences read 2.4-2.6x low), while ENGLISH prose
+// reads 1.39x OVER, so the same fallback can also make the trigger fire EARLY. The measured table, the two
+// readers this number feeds (the compression's trigger and the compression
+// target's fixed floor, context_compress.go) and the send-time cap that then
+// refuses the request are on tokenCost in context_tokens.go.
+//
+// THE OVERHEAD. messageTokenOverhead is added on top of the counted text; it is
+// NOT a fudge factor for BPE error (the count is exact) but the template markers
+// the server charges around a message that this package does not render. It is
+// the SAME value the chars/4 arms used (+1 per message), kept so the estimate is
+// continuous with the suite's calibrated arithmetic.
+//
+// CJK: the previous basis divided by charsPerToken, which is right for English
+// prose and wrong for Chinese — MEASURED heur/real 0.45 on a Chinese aggregate
+// (2.24x under) while ENGLISH reads 1.389 (1.39x over), so the fallback's error
+// changes sign with the content. charsPerToken survives only as
+// the tokenizer-unavailable fallback (heuristicTextTokens) — Rule 1/13's single
+// named constant is unchanged.
 func EstimateTokens(msg deepseek.Message) int {
-	n := len(msg.Role) + 2 + utf8.RuneCountInString(msg.Content)
-	for _, tc := range msg.ToolCalls {
-		n += utf8.RuneCountInString(tc.Name) + utf8.RuneCountInString(tc.ID)
-		if args, err := json.Marshal(tc.Arguments); err == nil {
-			n += utf8.RuneCountInString(string(args))
-		} else {
-			n += utf8.RuneCountInString(tc.RawArgs)
-		}
-	}
-	return n/charsPerToken + 1
+	return tokenCost(nil, messageWireText(msg), messageTokenOverhead)
 }
 
 // EstimatedTokens returns the estimated token count of the full conversation,
@@ -477,20 +458,19 @@ func EstimateTokens(msg deepseek.Message) int {
 func (c *Context) EstimatedTokens() int {
 	if c.PromptTokens > 0 && c.PromptTokensIndex <= len(c.Messages) {
 		total := c.PromptTokens // measured count already includes system prompts
+		// c.messageTokens, not EstimateTokens: this loop runs once per round over
+		// the post-measurement tail, and EstimateTokens takes no context, so it
+		// cannot reach the content-keyed cache (context_tokens.go's tokenCost).
+		// Two entry points for one arithmetic is how they drifted before; the
+		// cached one is the package's own.
 		for _, m := range c.Messages[c.PromptTokensIndex:] {
-			total += EstimateTokens(m)
+			total += c.messageTokens(m)
 		}
 		return total
 	}
-	total := 0
-	if c.SystemPrompt != "" {
-		total += utf8.RuneCountInString(c.SystemPrompt)/charsPerToken + 1
-	}
-	if c.ProjectContext != "" {
-		total += utf8.RuneCountInString(c.ProjectContext)/charsPerToken + 1
-	}
+	total := c.textTokens(c.SystemPrompt) + c.textTokens(c.ProjectContext)
 	for _, m := range c.Messages {
-		total += EstimateTokens(m)
+		total += c.messageTokens(m)
 	}
 	// The tool definitions ride the request as a TOP-LEVEL field and the server
 	// bills them with the rest of the prompt. They are counted here — and NOT in
@@ -502,357 +482,56 @@ func (c *Context) EstimatedTokens() int {
 	return total + c.ToolsTokens()
 }
 
-// heuristicTokens is the pure chars/4 estimate of the conversation (system
-// prompts included) with NO dependence on a recorded API measurement. It is
+// estimateAfterDroppingHead returns the conversation's estimate once the first
+// drop messages are gone, given est — the estimate BEFORE they were dropped.
+//
+// WHY THIS EXISTS. The trim loops drop one message per iteration and ask
+// "are we under the limit yet?". Calling EstimatedTokens() there is O(n) per
+// iteration even when every message is cached (n hashes and n map lookups), so the
+// loop is O(n²) — and this loop only ever runs on a context that is ALREADY large,
+// which is the worst possible place for a quadratic term. With the messages'
+// BPE costs cached (messageTokens), the exact new total is one subtraction per
+// dropped message.
+//
+// THE ANCHORED CASE RECOMPUTES, deliberately. When an API measurement covers a
+// PREFIX of the array, the total is `measured + tail`, and a message inside that
+// prefix does not cost what messageTokens says it costs — the measurement priced
+// the whole rendered prefix, markers included. Dropping from the head therefore
+// invalidates the subtraction, not just the cache, so that case pays the O(n)
+// recompute and stays correct rather than fast.
+func (c *Context) estimateAfterDroppingHead(drop, est int) int {
+	if c.PredictionAnchored() || drop > len(c.Messages) {
+		return c.EstimatedTokens()
+	}
+	for _, m := range c.Messages[:drop] {
+		est -= c.messageTokens(m)
+	}
+	if est < 0 {
+		return 0
+	}
+	return est
+}
+
+// heuristicTokens is the estimate of the conversation (system prompts included)
+// with NO dependence on a recorded API measurement — on the BPE basis, not
+// chars/4 (that wording described the basis this function no longer uses; its own
+// name is the only thing left over from it). It is
 // the common basis for comparing context sizes across a mutation: a
 // measurement reset (compaction) invalidates the measured base, so a
 // before/after verdict must use this function on both sides.
 func (c *Context) heuristicTokens() int {
-	total := 0
-	if c.SystemPrompt != "" {
-		total += utf8.RuneCountInString(c.SystemPrompt)/charsPerToken + 1
-	}
-	if c.ProjectContext != "" {
-		total += utf8.RuneCountInString(c.ProjectContext)/charsPerToken + 1
-	}
+	total := c.textTokens(c.SystemPrompt) + c.textTokens(c.ProjectContext)
 	for _, m := range c.Messages {
-		total += EstimateTokens(m)
+		total += c.messageTokens(m)
 	}
-	return total
-}
-
-// TakeOldest removes the oldest messages until the estimated token count fits
-// within maxTokens and RETURNS them, so the caller can summarize them (memory
-// compaction) instead of discarding. Drop semantics are identical to
-// TrimToFit: never leaves an orphaned "tool" message at the head, and the
-// system prompt is never trimmed (it is injected by GetMessages). The last
-// keepRecent messages are never removed — the deletion loop stops at
-// len(Messages) <= keepRecent+1, so a single giant recent message cannot
-// blow the tail away.
-//
-// Two further floors stop the deletion early (the estimate may stay above
-// maxTokens — deliberately): messages in protected (memory_store rounds)
-// and the two anchors — the last user message and the last visible assistant
-// message (Content non-empty; thinking/tool_calls-only do not count) are
-// never deleted (Hermes #10896/#29824: compaction must not swallow the
-// current instruction or the last visible reply). Exception: the first
-// message of the history (the epic task input at index 0) is the compaction
-// boundary by design — the summary replaces it — so index 0 is never an
-// anchor. Later user messages (job notices, continuations, follow-up
-// instructions) anchor normally.
-//
-// A LIVE memory-summary block is not an anchor: a compaction of its own
-// output is a no-op that would strand the loop (see the livelock note below).
-//
-// LIVELOCK GUARD (2026-09-17): the anchor floors can pin the compressible
-// window to a single message while the estimate stays far above the target
-// (field report, session c2eff914: the previous compaction's memory block sat
-// at index 1, the anchors sat right behind it, and every round summarized
-// exactly ONE message — the cycle
-// "anchored at last user" / "summarized 1 oldest message(s)" /
-// "assertion: after ≤ target+summary = false" repeated forever, each round
-// paying a summarizer call and prepending another block). The deletion loop
-// therefore refuses to keep eating the history once ONLY the memory blocks
-// remain between the head and the floors: summarizing them converges on
-// nothing (the summary is itself a block), so the loop stops, AnchorStop
-// reports "memory block floor", and the caller treats the window as
-// structurally unusable (structural no-op backoff + bounded trim) instead of
-// paying an LLM call per round.
-//
-// The returned slice is in original order; the caller must not use the
-// returned messages after mutating the context further.
-func (c *Context) TakeOldest(maxTokens int, keepRecent int, protected map[int]bool) []deepseek.Message {
-	if keepRecent < 0 {
-		keepRecent = 0
-	}
-	c.AnchorStop = ""
-	lastUser := -1
-	lastVisibleAssistant := -1
-	for i := len(c.Messages) - 1; i >= 1; i-- { // index 0 = epic, never anchors
-		m := c.Messages[i]
-		// A harness-injected follow-up is not an instruction: it must not
-		// become the instruction floor. Injected messages are appended
-		// whenever the framework has something to say (start checkpoint, job
-		// notice, truncation notice, carry-forward block, end-turn nudge), so
-		// treating the newest one as "the current instruction" pins the
-		// compressible window to the sliver directly behind the head — the
-		// field defect this policy fixes (session c2eff914: the checkpoint
-		// injections the run received early held the floor for the whole run
-		// while the body of work sat behind them, and every round summarized
-		// exactly ONE message while the estimate stayed above the limit). The
-		// operator's own instruction — the epic at index 0, or a real
-		// follow-up typed later — still anchors normally.
-		if m.Role == "user" && lastUser == -1 && !isHarnessInjectedUserMessage(m) {
-			lastUser = i
-		}
-		if m.Role == "assistant" && m.Content != "" && lastVisibleAssistant == -1 {
-			lastVisibleAssistant = i
-		}
-	}
-	var taken []deepseek.Message
-	offset := 0 // original index of the current head message
-	for len(c.Messages) > keepRecent+1 && c.EstimatedTokens() > maxTokens {
-		if protected != nil && protected[offset] {
-			break // protected round (memory_store distillation)
-		}
-		if offset == lastUser || offset == lastVisibleAssistant {
-			if offset == lastUser {
-				c.AnchorStop = anchorStopLastUser
-			} else {
-				c.AnchorStop = anchorStopLastVisibleAssistant
-			}
-			break
-		}
-		// Livelock guard: when EVERY message the deletion can reach before
-		// its stop floors is a compaction memory block, there is no
-		// compressible material left — summarizing those blocks feeds the
-		// compaction its own output (one LLM call to produce one more block,
-		// the observed cycle). See windowIsMemoryBlocks.
-		if c.windowIsMemoryBlocks(offset, lastUser, lastVisibleAssistant, keepRecent) {
-			c.AnchorStop = anchorStopMemoryBlock
-			break
-		}
-		// Drop the assistant message together with any tool results that
-		// immediately follow it, so the remaining history never starts
-		// with an orphaned tool message.
-		for len(c.Messages) > keepRecent+1 && c.Messages[1].Role == "tool" {
-			taken = append(taken, c.Messages[0])
-			c.Messages = c.Messages[1:]
-			offset++
-		}
-		if len(c.Messages) <= keepRecent+1 {
-			break
-		}
-		taken = append(taken, c.Messages[0])
-		c.Messages = c.Messages[1:]
-		offset++
-	}
-	// Safety net: never leave a lone orphaned tool result as the head.
-	for len(c.Messages) > 0 && c.Messages[0].Role == "tool" {
-		taken = append(taken, c.Messages[0])
-		c.Messages = c.Messages[1:]
-	}
-	return taken
-}
-
-// windowIsMemoryBlocks reports whether every message this deletion pass could
-// still remove is one the summarizer may never be asked to distill — a
-// compaction memory block, or a self-recording note block. The whole region
-// from the current head up to the FIRST stop floor (an anchor floor or the
-// keep-recent count floor) then holds no compressible material at all.
-//
-// Such a window is not worth a summarizer call: the only thing left to distill
-// is the compaction's own earlier output (or a copy of the model's own note), so
-// the pass would spend an LLM round-trip to prepend one more memory block and
-// re-create the identical window on the next round — the reported cycle (field
-// log: "anchored at last user" / "summarized 1 oldest message(s)" on 305 rounds
-// of one session, the two counts equal). The deletion loop stops instead and
-// records anchorStopMemoryBlock, so the caller treats the window as a structural
-// no-op (cheap bounded trim) rather than one LLM call per round.
-//
-// This is NOT a stop floor and NOT a new exemption: the predicate decides
-// nothing about WHEN the pass stops (that is still the anchors, the keep-recent
-// count and the protected store rounds, unchanged), only WHICH material is
-// worth an LLM call. A note block that falls inside a window with real
-// compressible material is simply taken along with it — and is excluded from
-// the summarizer's input, so the pass discards it silently; the record itself is
-// re-injected by selfrecord.go's carrier, which is what makes discarding it safe
-// (see ensureSelfRecordPresent).
-//
-// INDEX SPACE: the loop deletes from the FRONT, so c.Messages[0] is original
-// index `offset` — every position below is expressed as a CURRENT index
-// (anchors arrive as original indices and are rebased by `offset`), because the
-// current length shrinks with each deletion while the anchor floors do not.
-func (c *Context) windowIsMemoryBlocks(offset, lastUser, lastVisibleAssistant, keepRecent int) bool {
-	if keepRecent < 0 {
-		keepRecent = 0
-	}
-	// First current index the loop cannot cross, from each floor.
-	stop := len(c.Messages) - keepRecent - 1
-	for _, anchor := range []int{lastUser, lastVisibleAssistant} {
-		if anchor < 0 {
-			continue
-		}
-		if cur := anchor - offset; cur < stop {
-			stop = cur
-		}
-	}
-	if stop > len(c.Messages) {
-		stop = len(c.Messages)
-	}
-	if stop <= 0 {
-		// The floor stops the loop at or before the current head: there is no
-		// window to judge, and claiming the blocks-only shape here would abort
-		// a deletion the anchor/keep-recent checks already bound.
-		return false
-	}
-	for i := 0; i < stop; i++ {
-		if !isNonCompressibleMessage(c.Messages[i]) {
-			return false
-		}
-	}
-	return true
-}
-
-// summarizeOldToolResults collapses old tool results into one-line stubs
-// (R1): tool messages older than the most recent maxVerbatimToolResults whose
-// content exceeds maxToolResultLines are replaced with a stub of their first
-// line. Recent results stay verbatim. Returns the number of collapsed
-// messages. Cheap O(n) pass, no LLM involved, never removes messages — so no
-// orphaned-tool-result risk. The stub keeps the command's exit line (bash
-// results start with "exit=N") so the model still sees the outcome.
-func (c *Context) summarizeOldToolResults() int {
-	seen := 0
-	folded := 0
-	for i := len(c.Messages) - 1; i >= 0; i-- {
-		m := &c.Messages[i]
-		if m.Role != "tool" {
-			continue
-		}
-		seen++
-		if seen <= maxVerbatimToolResults {
-			continue
-		}
-		lines := strings.Count(m.Content, "\n") + 1
-		if lines <= maxToolResultLines {
-			continue
-		}
-		first := strings.TrimSpace(m.Content)
-		if j := strings.IndexByte(first, '\n'); j >= 0 {
-			first = first[:j]
-		}
-		if len(first) > maxToolResultSummaryChars {
-			first = first[:maxToolResultSummaryChars] + "…"
-		}
-		m.Content = fmt.Sprintf("[tool result summarized: was %d lines — first line: %q]", lines, first)
-		folded++
-	}
-	return folded
-}
-
-// trimToFitStickyHead brings the conversation back under maxTokens with a
-// CACHE-AWARE eviction, replacing the plain sliding-window trim at the chat/
-// task call site (TrimToFit itself is kept for callers that need it verbatim).
-// Measured reason (session a09b91ae, 2026-09-30; numbers in
-// devdoc/chat-cache-hit-attribution.md). That chat's context sat just above the
-// trim limit because of a fixed per-turn overhead (system prompt + tool schema
-// ≈ 31K tokens re-sent on every request), so trimContext fired on EVERY
-// request. `TrimToFit(limit)` removed only the overshoot's worth, the round's
-// own append pushed the context straight back over the limit, and the next trim
-// deleted from the NEW head — the head crept forward a few messages per round
-// like a sliding window. Every one of those requests therefore re-sent the
-// whole conversation past the (frozen) system prompt as a MISS. Wire truth,
-// joined 684/685 requests to their actual payload: the 41 requests whose
-// message list SHRANK at the head versus the previous request carried 60.9% of
-// the session's 7.9M miss tokens, and 49 of the 65 big-miss requests followed a
-// shrinking list. Each such request paid a multi-second prefill, which is what
-// turned ordinary rounds into the 473s turn in the console log.
-//
-// THE DEFECT WAS THE NIBBLING, NOT THE EVICTION. Deleting a few messages per
-// round pays a cold prefix on EVERY round and can never amortize the loss. The
-// fix removes head messages only down to targetTokens — one amortized eviction
-// that costs ONE round's prefill, after which the following rounds are served
-// from cache again until the context grows back to the limit.
-//
-// Recency is preserved deliberately: the victim is the oldest message, never
-// the newest. Dropping the model's own most recent turn would break the round
-// it is in the middle of, which no cache saving buys back.
-//
-// THE HISTORY IS NEVER EMPTIED — the same floor TrimToFit carries, for the same
-// measured reason (9b9264b9: an empty slice reaches the wire as
-// `"messages":null` and the endpoint answers HTTP 422). Two guards enforce it,
-// both copied from TrimToFit, and both load-bearing:
-//
-//   - a whole head RUN (the head plus every tool result immediately following
-//     it) is dropped in ONE step, so no iteration can end between a tool_use and
-//     its tool_result — which is also what guarantees the surviving head is
-//     never an orphaned tool result;
-//   - the run that would consume the ENTIRE history is refused, so the estimate
-//     may stay above maxTokens: a valid over-budget request (the newest message
-//     IS the round being served) is strictly better than an emptied, i.e.
-//     malformed, one.
-func (c *Context) trimToFitStickyHead(maxTokens, targetTokens int) int {
-	if maxTokens <= 0 {
-		return 0
-	}
-	if targetTokens <= 0 || targetTokens > maxTokens {
-		targetTokens = maxTokens
-	}
-	removed := 0
-	for len(c.Messages) > 1 && c.EstimatedTokens() > targetTokens {
-		drop := 1 + pairedToolResultRun(c.Messages, 0)
-		if drop >= len(c.Messages) {
-			break // never empty the history — see the doc comment
-		}
-		c.Messages = c.Messages[drop:]
-		removed += drop
-	}
-	return removed
-}
-
-// TrimToFit removes the oldest messages until the estimated token count fits
-// within maxTokens. The system prompt is never trimmed (it is injected by
-// GetMessages, not stored in Messages). Trimming never leaves an orphaned
-// "tool" message at the head of the history: if the new head would be a tool
-// result whose owning assistant tool-call message was removed, that result is
-// removed along with it (the API rejects tool messages without a preceding
-// tool_calls message). Returns the number of messages removed.
-//
-// THE HISTORY IS NEVER EMPTIED. A trim trades old context for budget; it must
-// never trade away the request itself. Two guards enforce that, and both are
-// load-bearing:
-//
-//   - a whole head RUN (the head plus every tool result immediately following
-//     it) is dropped in ONE step, so no iteration can end between a tool_use
-//     and its tool_result;
-//   - the run that would consume the ENTIRE history is refused — the estimate
-//     may stay above maxTokens, deliberately, exactly like TakeOldest's anchor
-//     floors.
-//
-// Measured defect (2026-09-30, dumps/20260930-194502-1.dump.json): the old
-// two-step loop deleted the head and relied on the NEXT iteration to delete
-// the tool results it had orphaned. On a short multi-round chat — history is
-// exactly one tool round (user, assistant tool_use, tool result) while the
-// bulk of the estimate is the system prompt + project context — the floor
-// stopped the loop between those two steps, the safety net then removed the
-// stranded tool result, and c.Messages became EMPTY. ClaudeRequest.Messages
-// carries no `omitempty`, so the empty slice serialized as
-//
-//	{"model":"deepseek-flash","max_tokens":16384,"messages":null}
-//
-// and the endpoint answered HTTP 422 "Failed to deserialize ... messages:
-// invalid type: null, expected a sequence". Every chat turn that needed a
-// SECOND round died there, deterministically (the first round has one message
-// and was saved by the len>1 guard), which is why only round 2+ ever hit it.
-//
-// The API measurement is invalidated when anything is removed: it was taken
-// over the OLD, larger range, so its index no longer bounds this array and
-// EstimatedTokens would score the survivors against a count that included the
-// removed messages. Same semantics as compaction (compact.go: "the API
-// measurement ... must be invalidated or the next round re-triggers on the
-// stale count").
-func (c *Context) TrimToFit(maxTokens int) int {
-	removed := 0
-	for len(c.Messages) > 1 && c.EstimatedTokens() > maxTokens {
-		drop := 1 + pairedToolResultRun(c.Messages, 0)
-		if drop >= len(c.Messages) {
-			break // never empty the history — see the doc comment
-		}
-		c.Messages = c.Messages[drop:]
-		removed += drop
-	}
-	// Safety net: never leave a lone orphaned tool result as the head. Bounded
-	// by the same floor as the loop above, so it cannot empty the history
-	// either.
-	for len(c.Messages) > 1 && c.Messages[0].Role == "tool" {
-		c.Messages = c.Messages[1:]
-		removed++
-	}
-	if removed > 0 {
-		c.PromptTokens = 0
-		c.PromptTokensIndex = 0
-	}
-	return removed
+	// The tool definitions ride the request as a TOP-LEVEL field, exactly as in
+	// EstimatedTokens above — and they are counted HERE for the same reason,
+	// which this function was missing (task 01a1dce2). A savings verdict
+	// compares this function on both sides, so leaving ~14K of immovable tool
+	// schema out of the denominator made every reported saving larger than the
+	// truth, and the same basis is what the compression target's fixed floor is
+	// measured on (context_compress.go) — one basis, one arithmetic.
+	return total + c.ToolsTokens()
 }
 
 // messageUsesToolID reports whether m is an assistant message carrying a

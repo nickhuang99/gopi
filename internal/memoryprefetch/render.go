@@ -120,6 +120,27 @@ const sectionHeaderPrefix = "memory-prefetch"
 // the two cannot drift apart.
 const headerTemplate = sectionHeaderPrefix + " (experimental, optional; %d hits; %d runes of %d budget)"
 
+// voteDisciplineLine is the section's OWN statement of the vote that keeps it
+// alive, rendered immediately under the header of every NON-EMPTY section.
+//
+// WHY IT LIVES HERE AND NOT IN THE SYSTEM PROMPT (measured, 2026-11-22). The
+// task kernel is 4485 chars against a 4500 budget — 15 chars of headroom — so a
+// clause in toolRoutingRules would have to be paid for by compressing an existing
+// rule, and the density gate is the prompt's own guard against exactly that
+// trade. The section is where the reader meets the hit lines, its bytes are
+// bounded by the same Config that bounds the hits, and it is paid for ONLY on the
+// turns that actually injected something — which is the shape of the defect it
+// addresses: measured over 162 injected pairs in 60 sessions, 14 pairs ever got a
+// vote on a record they returned and only 7 got a useful one, because nothing at
+// the injection point said a vote was what kept the section on the wire.
+//
+// It is a claim about the MECHANISM the slim already implements
+// (agent.whitelistContextSlim): a pair whose returned records were voted useful
+// survives, and every other one is dropped on the next round. The wording states
+// the consequence, not a request (Rule 15 — the reader is told what happens, not
+// asked to be good).
+const voteDisciplineLine = "# vote: these are prefetched hits — memory(action=feedback, id=#N, rating=useful) on a record you used; without a useful vote this pair is cut next round"
+
 // RenderSegment renders the hits into the ONE section the model may be handed.
 //
 // Every rendered hit carries, on its own line, its SOURCE annotation and its
@@ -148,6 +169,14 @@ func RenderSegment(hits []Hit, extraDegradations []Degradation, cfg Config) Segm
 		seg.Hits = append(seg.Hits, rh)
 		b.WriteString("\n")
 		b.WriteString(rh.Line)
+	}
+	// The vote discipline rides with the hits, and ONLY with them: a section that
+	// kept no hit is never injected (InjectSection refuses it), so a header-only
+	// segment must stay a header only — the empty-segment shape is asserted
+	// elsewhere and a stray line there would be a claim about nothing.
+	if len(trim.Kept) > 0 {
+		b.WriteString("\n")
+		b.WriteString(voteDisciplineLine)
 	}
 	for _, d := range seg.Degradations {
 		b.WriteString("\n")

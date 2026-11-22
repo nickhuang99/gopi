@@ -63,6 +63,8 @@ import (
 	"path/filepath"
 	"strings"
 	"time"
+
+	"github.com/nickhuang99/gopi/internal/scratch"
 )
 
 // The snapshot's own vocabulary (Rule 1/13: no bare literals at a call site).
@@ -230,7 +232,7 @@ func taskWIPDeposit(taskID, worktree, porcelain string, out *TaskWIPSnapshot) (s
 		return "", fmt.Errorf("no session directory for %s", taskID)
 	}
 	dir := filepath.Join(sessionDir, taskWIPDirName)
-	if err := os.MkdirAll(filepath.Join(dir, taskWIPUntrackedDirName), 0o755); err != nil {
+	if err := scratch.MkdirAllWithSuiteRunOwnerPerm(filepath.Join(dir, taskWIPUntrackedDirName), 0o755); err != nil {
 		return "", err
 	}
 	// ① the inventory, exactly as git printed it.
@@ -421,7 +423,7 @@ func taskWIPCopyFile(src, dst string, perm os.FileMode) (int64, error) {
 	if err != nil {
 		return 0, err
 	}
-	if err := os.MkdirAll(filepath.Dir(dst), 0o755); err != nil {
+	if err := scratch.MkdirAllWithSuiteRunOwnerPerm(filepath.Dir(dst), 0o755); err != nil {
 		return 0, err
 	}
 	if err := os.WriteFile(dst, data, perm); err != nil {
@@ -438,7 +440,7 @@ func taskWIPCopyTo(reader func(string) (string, error), src, dst string) (int64,
 	if err != nil {
 		return 0, err
 	}
-	if err := os.MkdirAll(filepath.Dir(dst), 0o755); err != nil {
+	if err := scratch.MkdirAllWithSuiteRunOwnerPerm(filepath.Dir(dst), 0o755); err != nil {
 		return 0, err
 	}
 	if err := os.WriteFile(dst, []byte(target), 0o644); err != nil {

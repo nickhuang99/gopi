@@ -124,10 +124,11 @@ func (t workerTask) sourceWord() string {
 // recorded", not a keyword harvested from a sentence the scanner did not
 // understand.
 func workerTaskFromArgv(argv []string) workerTask {
-	if len(argv) < 2 || argv[1] != procname.VerbWorker {
+	idx := procname.WorkerVerbIndex(argv)
+	if idx < 0 || idx+1 >= len(argv) {
 		return workerTask{Source: workerTaskSourceNone}
 	}
-	wa, bad := scanWorkerArgs(argv[2:])
+	wa, bad := scanWorkerArgs(argv[idx+1:])
 	if bad != "" || wa.explicit == "" {
 		return workerTask{Source: workerTaskSourceNone}
 	}

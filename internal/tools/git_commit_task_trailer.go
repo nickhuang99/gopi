@@ -38,7 +38,7 @@ package tools
 // ── THE SECOND REFERENCE: WHICH MACHINE MADE IT ─────────────────────────────
 //
 // `git log` says nothing about the HOST that produced a commit, so across the
-// fleet (host-a / hp / peer1) review and triage are blind on that axis: a
+// fleet (the host / hp / peer1) review and triage are blind on that axis: a
 // commit is visible but its author-machine is not. The same seam carries a
 // second trailer, `<HostTrailerKey>: <local hostname>`.
 //
@@ -388,7 +388,7 @@ func gitCommitInPreamble(words []string) bool {
 	// preamble.
 	pre := words[:len(words)-1]
 	// Leading process wrappers (`sudo`, `env`, `nohup`), their own flag words AND
-	// the operands those flags consume (`sudo -u the operator git …`) — the shared walk, so
+	// the operands those flags consume (`sudo -u nick git …`) — the shared walk, so
 	// this reader cannot keep the operand-blind shape the ref guard was repaired of
 	// (task 01a19d8a).
 	head, ok := gitCommandHeadIdx(pre, gitCommandPreambleWords)

@@ -22,6 +22,7 @@ import (
 	"database/sql"
 	"encoding/hex"
 	"encoding/json"
+	"errors"
 	"fmt"
 	"hash/fnv"
 	"os"
@@ -206,26 +207,56 @@ func taskRowExists(taskID string) (bool, error) {
 // verified/failed onto the judged row). Returns an error when the ledger or
 // the row is unavailable, so a caller can never mistake "no ledger" for a
 // verdict.
+//
+// TWO defects were repaired here on 2026-11-21 (epic failed-resume-no-ground),
+// and both are the same shape: a pure READ was shaped like a WRITER, so it
+// answered with the writer's silence.
+//
+//  1. It opened through openTasksDB, the READ-WRITE opener, whose every open
+//     runs the tasks DDL batch over a `_txlock=immediate` DSN — a BEGIN
+//     IMMEDIATE, i.e. THE LEDGER'S WRITE LOCK — to read one row that nothing
+//     writes. Behind a live writer that wait is dbBusyTimeoutMSec, and the
+//     measured cost was 14.93s AND a failure (see ledgerReadTimeout's comment).
+//     openTasksDBReadOnly is the opener built for exactly this: mode=ro +
+//     query_only, no DDL, no write lock, so a reader never queues on a writer.
+//  2. It reported an UNREADABLE ledger with the row's own absence. A caller
+//     that must act differently on the two — the resume ground resolver is one,
+//     and it renders a typed refusal naming the REPAIR — could not tell them
+//     apart. ErrTaskRowAbsent is that distinction, and it is a sentinel so the
+//     caller asks with errors.Is rather than by matching English (Rule 15).
 func TaskStatusOf(taskID string) (string, error) {
 	taskID = taskIDNormalize(taskID)
 	if taskID == "" {
 		return "", fmt.Errorf("task status: empty task_id")
 	}
-	ctx := context.Background()
-	db, err := openTasksDB(ctx, memoryDBPath())
+	ctx, cancel := context.WithTimeout(context.Background(), ledgerReadTimeout)
+	defer cancel()
+	db, err := openTasksDBReadOnly(ctx, memoryDBPath())
 	if err != nil {
-		return "", err
+		return "", fmt.Errorf("task status: open ledger: %w", err)
 	}
 	defer db.Close()
 	t, err := taskByID(ctx, db, taskID)
 	if err != nil {
-		return "", fmt.Errorf("task status: %w", err)
+		return "", fmt.Errorf("task status: read row: %w", err)
 	}
 	if t == nil {
-		return "", fmt.Errorf("task status: no task with task_id=%q%s", taskID, taskIDPrefixRefusal(ctx, db, taskID))
+		return "", fmt.Errorf("task status: no task with task_id=%q%s: %w",
+			taskID, taskIDPrefixRefusal(ctx, db, taskID), ErrTaskRowAbsent)
 	}
 	return t.Status, nil
 }
+
+// ErrTaskRowAbsent marks "this ledger holds no such row" — an ANSWER about the
+// ledger's contents, as opposed to a failure to read them.
+//
+// It exists because the two facts have DIFFERENT REPAIRS and were being
+// rendered with one sentence: a row that is absent is a wrong id (or another
+// host's ledger), while a ledger that cannot be read is a lock, a permission or
+// a schema the binary is behind. A caller that has to refuse — the resume
+// ground resolver renders "recorded path / model / detail / repair" from a TYPED
+// refusal — wraps this sentinel when it means the first (Rule 15).
+var ErrTaskRowAbsent = errors.New("ledger holds no such row")
 
 // TaskStatusVerified and TaskStatusFailed are the two verdict values the
 // verify loop writes; aliased here so the gate compares against the SAME
@@ -867,6 +898,15 @@ var verdictTrailEventNames = []string{
 	// close: it MEASURES what the refusal strands and tells the row, and it is
 	// rendered because it is in this list. Membership is this list's own test.
 	reclaimStrandedCommitsEvent, // "reclaim-stranded-commits"
+	// THE PRODUCTS THAT LANDED OUTSIDE THE RUN'S GROUND (task_row_repo_products.go,
+	// measured 2026-11-22 on row 01a20059-d6c4). The arm measures the repository
+	// the ROW DECLARES — the one directory no close-out arm had ever read — and
+	// files what it can attribute to this run. It is a JUDGMENT ON the row (the
+	// close-out measured where the work actually went and is telling the row),
+	// and it must be RENDERED: the row it was written for closed `completed`,
+	// which is the one status no operator re-reads. Membership is this list's
+	// own test.
+	TaskRowRepoProductsEvent, // "products-in-row-repo"
 }
 
 // taskShowVerdictEventName is the exact membership test the verdict reader
@@ -3008,8 +3048,17 @@ const TaskListAllFlag = "--all"
 const TaskListArchiveHiddenPrefix = "[hidden] "
 
 // taskListArchiveHiddenFormat spells the disclosure line's body ONCE
-// (Rule 1/13: the count and the two named values are the only variables).
-const taskListArchiveHiddenFormat = "%s%d archived row(s) hidden — tags contain %q; %s shows them"
+// (Rule 1/13: the count and the named values are the only variables).
+//
+// THE WORDING STATES THE CRITERION THE CODE ACTUALLY APPLIES. The filter is
+// isTaskResolved, which compares a whole comma-separated tag token with ==
+// (`resolved`), NOT a substring match. The line used to say "tags contain
+// %q", which reads as LIKE '%resolved%' — a reader recomputing by that rule
+// counted 43 rows where the filter hid 9, and every one of the extra 34 was
+// tagged `sync-resolved` (a sync echo, NOT an archive mark). The code was
+// right and the sentence was wrong, so the sentence says the tag must EQUAL
+// the marker and names the near-miss tag that is deliberately NOT hidden.
+const taskListArchiveHiddenFormat = "%s%d archived row(s) hidden — a row is hidden only when one of its tags EQUALS %q exactly; a different tag such as %q is NOT hidden. %s shows them"
 
 // TaskListArchiveHiddenNote renders the archived-row disclosure for a view
 // that dropped n rows — and "" for n == 0, because a view that hid nothing
@@ -3034,7 +3083,8 @@ func TaskListArchiveHiddenNote(n int) string {
 	if n <= 0 {
 		return ""
 	}
-	return fmt.Sprintf(taskListArchiveHiddenFormat, TaskListArchiveHiddenPrefix, n, taskTagResolved, TaskListAllFlag)
+	return fmt.Sprintf(taskListArchiveHiddenFormat, TaskListArchiveHiddenPrefix, n,
+		taskTagResolved, syncTagSyncResolved, TaskListAllFlag)
 }
 
 // TaskListRowPrefix starts every rendered TaskList row ("#<hash>  <id> …");
@@ -6802,6 +6852,23 @@ func taskUpdateStampedCore(taskID, status, summary, reason, holder, expectFrom s
 	// one caller so the switch means the same thing on every door. Nothing is
 	// deleted and no branch is touched either way (see recollect below).
 	if stateChanged && taskStatusClaimsDelivery(status) {
+		// THE ROW'S OWN REPOSITORY (epic measured 2026-11-22, row 01a20059-d6c4):
+		// every arm below measures the GROUND, so a run whose products landed in
+		// the repository the ROW declares — while the ground is a clone of some
+		// other repository — left no trace at all and closed `completed`: the
+		// ground was clean (Rule 30 passed), the delivery leg's "carries no
+		// commit to deliver" was TRUE OF THE GROUND, and the proof could not see
+		// the row's repository. This arm takes the one reading nobody took.
+		//
+		// IT RUNS FIRST, BEFORE EVERY GATE THAT CAN REFUSE, and the order is
+		// load-bearing: the fact it records stays true whether or not something
+		// below refuses this write, and a refusal that returned early would
+		// leave the row's trail silent about the very thing that makes the row
+		// confusing. It is a RECORD, never a refusal — a row may legitimately
+		// declare a repository it does not commit in, and the binding gates
+		// below must keep meaning exactly what they mean. Nothing is deleted,
+		// moved, committed or stashed by it.
+		TaskRowRepoProductsRecord(taskID)
 		// The BINDING gate (Rule 30's tracked shape): a run whose OWN recorded
 		// worktree still holds an uncommitted TRACKED change has not delivered
 		// — the branch would be invisible to every merge path — so the claim is
@@ -8295,6 +8362,17 @@ func TaskSubmitReturningID(opts TaskSubmitOptions) (string, string, error) {
 			out += "\n" + TaskSubmitAttachmentClaimWarningText(phrase)
 		}
 	}
+	// HOST-OWNERSHIP warning (Rule 40): a hermes-agent row is HP's work, and
+	// a hermes-agent PATH exists on both hosts — so the repo verification
+	// above (which passed) says nothing about WHICH host this row was filed
+	// on. The measured misroute (2026-10-03, 01a0fe63 → 01a0fe67) is exactly
+	// that: verified repo, wrong ledger, a row no worker would ever claim.
+	// Reported where the submitter looks and NEVER refused — the row is
+	// dispatched by the ledger that holds it, and a submit that blocks on a
+	// hostname guess would block the legitimate HP-side submit too.
+	if w := TaskHermesHostWarning(repo); w != "" {
+		out += "\n" + w
+	}
 	// REPO-DECLARED warning (the uppercase-checkout family, rows 01a159a9 and
 	// the repeats). The git verification above answers "is this a work tree"
 	// and says nothing about "does this repository declare a build contract" —
@@ -8339,6 +8417,32 @@ func TaskSubmitReturningID(opts TaskSubmitOptions) (string, string, error) {
 	// the host, repo-declared and base-staleness warnings above, and the same
 	// columns: the summary plus the payload as they stand after the spill.
 	if w := TaskSubmitDeadTestNameWarning(repo, opts.Summary, opts.Payload); w != "" {
+		out += "\n" + w
+	}
+	// PROSE-DEPENDENCY warning (the WRITE FACE of the "dependency lives only in
+	// the prose" family, measured 2026-11-22 on rows 01a20059-*; defect row
+	// 01a20076-96f6). A briefing that says it waits on another row while
+	// parent_task_id / parent_task_ids / `task_group:` are ALL empty is offered
+	// `[next]` at once by `gopi task list --status pending`, so a dispatcher
+	// starts it in PARALLEL with the work it says it waits for — and the
+	// collision surfaces only at merge time. Step 4 of the measured epic also
+	// showed the deeper half: it waited on step 1, not on the chain tail, and a
+	// parent edge can express only "my predecessor is X", so the submitter's
+	// intent was unrepresentable in the ledger even when it remembered.
+	//
+	// Warned where the author still has the command in front of them, and NEVER
+	// refused — the same shape as the host, repo-declared, base-staleness and
+	// dead-test-name warnings above: a consumer that waits on a SET expresses
+	// that in prose (Rule 33b), a briefing may quote another row's edge while
+	// being about something else, and a refusal would let a wording nit block a
+	// dispatch through the funnel every internal auto-submit path passes.
+	//
+	// The ledger half is read off the FINAL columns (opts.ParentTaskID /
+	// opts.ParentTaskIDs after the parent fold above, and the payload as it
+	// stands after a spill decision) — the same columns the row will carry, so
+	// the warning and the dispatch gate can never disagree about whether an edge
+	// exists (Rule 14).
+	if w := TaskSubmitProseDependencyWarning(opts.Summary, opts.Payload, opts.ParentTaskID, opts.ParentTaskIDs); w != "" {
 		out += "\n" + w
 	}
 	// Bug-flow adoption stats (P2.5, Rule 11): every 'bug'-tagged submission
@@ -9615,6 +9719,12 @@ func taskNextClaimID(ctx context.Context, db *sql.DB) (string, error) {
 // TaskArchive, stripped of nothing — tombstones stay fully searchable.
 const taskTagResolved = "resolved"
 
+// TaskTagResolved is the EXPORTED spelling of taskTagResolved, for the
+// operator-facing text that must name the marker without re-typing it
+// (Rule 1/13/14: the value has ONE definition and every writer references it —
+// the help text in cmd/agent/commands.go is such a writer).
+const TaskTagResolved = taskTagResolved
+
 // taskTagResumedPrefix prefixes the resume-linkage tag: `resumed:<session-id>`
 // (M4.7 resume observability — a `gopi session resume --task T` continuation runs in
 // a FRESH session, and without the tag that session is an orphan row-less
@@ -10267,6 +10377,20 @@ func TaskClaimExplicitForce(taskID, claimedBy string, force bool) error {
 	if recovered {
 		return nil // crash-recovery resume won the re-stamp
 	}
+	// Shape ③: in_progress whose holder is PROVABLY GONE and whose run lock is
+	// FREE — the revival `gopi task status` already prints the recipe for. The
+	// two measurements live in ONE place (taskRunReviveStrandedClaim), which is
+	// the same evidence `task status` renders, so the printed instruction and
+	// the gate can never disagree again. A LIVE holder, a HELD lock, or an
+	// unmeasurable lock all decline and fall through to the refusal below, which
+	// then names the blocker it measured.
+	revived, reviveBlocked, rvErr := taskRunReviveStrandedClaim(ctx, db, prev, claimedBy, now)
+	if rvErr != nil {
+		return rvErr
+	}
+	if revived {
+		return nil // the stranded row is claimed again — the run proceeds
+	}
 	// RowsAffected==0 — the row exists but is not claimable. Report the
 	// actual status and holder so the refusal names WHO holds it (the
 	// M4.5 "already live-claimed" refusal shape): in_progress means a
@@ -10283,6 +10407,10 @@ func TaskClaimExplicitForce(taskID, claimedBy string, force bool) error {
 	holder := t.ClaimedBy
 	if holder == "" {
 		holder = "(none)"
+	}
+	if reviveBlocked != "" {
+		return fmt.Errorf("task: claim: task %s is %s (holder %s) — refusing to run: the row is not revivable because %s; only pending or claimed rows, or an in_progress row whose holder is dead AND whose run.lock is free, are claimable",
+			taskID, t.Status, holder, reviveBlocked)
 	}
 	return fmt.Errorf("task: claim: task %s is %s (holder %s) — refusing to run: only pending or claimed (crash-recovery) rows are claimable, never an in_progress or finished row",
 		taskID, t.Status, holder)

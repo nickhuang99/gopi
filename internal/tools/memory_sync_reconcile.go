@@ -1,6 +1,6 @@
 // Package tools — memory_sync_reconcile.go: the M4.24 reconciliation layer
 // (devdoc/sync-reconcile.md). The timestamp-delta protocol has one
-// self-evident premise (the operator: common sense — the anchor is a SYNCHRONIZED
+// self-evident premise (nick: common sense — the anchor is a SYNCHRONIZED
 // STARTING TIMELINE; rows on either side BEFORE the anchor must be
 // identical). This file mechanizes that premise in three pieces:
 //
@@ -289,7 +289,7 @@ func syncPeerDeclaredIn(peers []string, peer string) bool {
 	return false
 }
 
-// syncAnchorGuard is ③: the anchor-advance precondition (the operator's premise,
+// syncAnchorGuard is ③: the anchor-advance precondition (nick's premise,
 // mechanized). An anchor may only advance when our PENDING count and the
 // peer's agree on what existed before that moment — the cheap, writable
 // proof of "identical before the anchor". Returns an error naming the

@@ -1,7 +1,7 @@
 // declared_trees_automatic.go — the DECLARED TREES' automatic face: one call
 // that sweeps every row of the declared set at its OWN window.
 //
-// THE DEFECT THIS CLOSES (measured on host-b, 2026-10-17). `/home`
+// THE DEFECT THIS CLOSES (measured on nick-HP-Laptop, 2026-10-17). `/home`
 // (device 66309) reached 100% and a `git worktree add` inside `cmd/agent`'s own
 // suite died with `cannot create directory … 设备上没有空间`. `gopi tool
 // scratch-gc trees --dry-run` — the ONLY face that can free a declared tree —

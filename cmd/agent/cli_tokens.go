@@ -11,14 +11,21 @@ import (
 	"os"
 )
 
-// The four input shapes `gopi tool tokens` accepts, plus the two modifiers.
+// The five input shapes `gopi tool tokens` accepts, plus the two modifiers.
 // They are named constants (Rule 1) because the parser, the failure sentences
 // and the usage page all address the same words: a page that taught `--file`
 // while the parser compared `"--file"` typed inline would be two definitions of
 // one flag, and the day one moved the page would advertise a word the verb
 // refuses.
+//
+// `--prompt` is the fifth shape and the shortest path of all: a few words a
+// person wants counted WITHOUT writing a file first. It was added because the
+// bare-prompt surface grows a length floor measured in tokens, and the only
+// honest way to answer "is my sentence long enough?" is to count it with the
+// same encoder the floor uses.
 const (
 	tokensFlagFile    = "--file"
+	tokensFlagPrompt  = "--prompt"
 	tokensFlagSession = "--session"
 	tokensFlagRaw     = "--raw"
 	tokensFlagBody    = "--body"
@@ -51,12 +58,14 @@ func runTokensSubcommand(args []string) int {
 		}
 	}
 	var (
-		rawPath   string
-		bodyPath  string
-		filePath  string
-		sessionID string
-		compare   bool
-		limit     int
+		rawPath     string
+		bodyPath    string
+		filePath    string
+		promptText  string
+		promptGiven bool
+		sessionID   string
+		compare     bool
+		limit       int
 	)
 	for i := 0; i < len(args); i++ {
 		switch a := args[i]; a {
@@ -81,6 +90,14 @@ func runTokensSubcommand(args []string) int {
 				return tokensExitUsage
 			}
 			filePath = args[i]
+		case tokensFlagPrompt:
+			i++
+			if i >= len(args) {
+				fmt.Fprintln(os.Stderr, "gopi tool tokens: "+tokensFlagPrompt+" needs a text")
+				return tokensExitUsage
+			}
+			promptText = args[i]
+			promptGiven = true
 		case tokensFlagSession:
 			i++
 			if i >= len(args) {
@@ -106,6 +123,8 @@ func runTokensSubcommand(args []string) int {
 	switch {
 	case filePath != "":
 		return runFile(filePath)
+	case promptGiven:
+		return runPrompt(promptText)
 	case sessionID != "":
 		return runSession(sessionID)
 	case rawPath != "":
@@ -113,7 +132,7 @@ func runTokensSubcommand(args []string) int {
 	case bodyPath != "":
 		return runBody(bodyPath, compare)
 	}
-	fmt.Fprintln(os.Stderr, "gopi tool tokens: one of "+tokensFlagFile+", "+tokensFlagSession+
-		", "+tokensFlagRaw+" or "+tokensFlagBody+" is required\n"+tokensUsage)
+	fmt.Fprintln(os.Stderr, "gopi tool tokens: one of "+tokensFlagFile+", "+tokensFlagPrompt+
+		", "+tokensFlagSession+", "+tokensFlagRaw+" or "+tokensFlagBody+" is required\n"+tokensUsage)
 	return tokensExitUsage
 }

@@ -139,7 +139,7 @@ func CaptureDumpFile(prefix string) (string, error) {
 	if dir == "" {
 		return "", fmt.Errorf("capture: no scratch home to write into (scratch.HomeDir is empty)")
 	}
-	if err := os.MkdirAll(dir, DirPerm); err != nil {
+	if err := MkdirAllWithSuiteRunOwnerPerm(dir, DirPerm); err != nil {
 		return "", fmt.Errorf("capture: create %s: %w", dir, err)
 	}
 	stem := prefix + strconv.FormatInt(time.Now().Unix(), 10)

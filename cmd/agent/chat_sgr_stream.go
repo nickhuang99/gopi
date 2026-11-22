@@ -310,7 +310,7 @@ func chatResolveSgrPath(opts chatSgrOptions, ag *agent.Agent) (string, error) {
 		// below exists to protect the recording from a path this run DERIVED,
 		// not to override a path a human typed.
 		if dir := filepath.Dir(opts.path); dir != "" && dir != "." {
-			if err := os.MkdirAll(dir, dumpDirPerm); err != nil {
+			if err := scratch.MkdirAllWithSuiteRunOwnerPerm(dir, dumpDirPerm); err != nil {
 				return "", fmt.Errorf("cannot create the SGR stream directory %s: %w", dir, err)
 			}
 		}

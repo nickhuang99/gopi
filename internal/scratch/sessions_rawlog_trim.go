@@ -2,7 +2,7 @@ package scratch
 
 // sessions_rawlog_trim.go — the BOUND on a session's raw HTTP log.
 //
-// WHY IT EXISTS (measured 2026-10-30, host host-a, the row this file
+// WHY IT EXISTS (measured 2026-10-30, host the host, the row this file
 // answers). `~/.gopi/sessions` held 3282 containers / 83 GB on a `/` partition
 // at 98%, and the largest single class inside it was `*.raw.log`: 1095 files,
 // 64.4 GiB, p50 = 48.4 MiB, p90 = 115.7 MiB, max = 1515.7 MiB (one file per

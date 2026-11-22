@@ -279,7 +279,7 @@ func stashWordIsInvocation(clause string) bool {
 	}
 	// Every word before the git command word must be a wrapper command
 	// (`sudo git stash pop`), one of ITS OWN options (`xargs -r git …`) or that
-	// option's OPERAND (`sudo -u the operator git …`, `env FOO=1 git …`). Any other word
+	// option's OPERAND (`sudo -u nick git …`, `env FOO=1 git …`). Any other word
 	// means the git token is an ARGUMENT to some other command — `echo git stash`,
 	// `grep -rn stash file`.
 	if head, ok := gitCommandHeadIdx(words, gitCommandPreambleWords); !ok || head != gitIdx {

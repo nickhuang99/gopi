@@ -70,12 +70,76 @@ const (
 	// sessionContextUsageFingerprint is the usage page's first line — the
 	// string the help contract pins (cli_contracts_test.go).
 	sessionContextUsageFingerprint = "gopi session context — export the context the model received at one turn"
+
+	// sessionContextAxisRules is the page's statement of the TWO AXES this verb
+	// has, and it is a CONSTANT rather than prose inside the page for one
+	// reason: the claim is the thing that drifted, so a contract test has to be
+	// able to pin the exact words (cli_session_context_axis_test.go references
+	// it — Rule 13: a constant that exists is referenced, never only defined).
+	//
+	// What it replaces: the page used to say "The default selector is --last."
+	// That sentence names ONE FLAG as if it were the whole default for a verb
+	// with two independent axes, and it is wrong in BOTH directions — --last
+	// never picks the session (a session id is required), and the selector the
+	// parser actually defaults is the turn AXIS TAKEN WHOLE (all three flags
+	// omitted), which happens to name the same page --last does.
+	sessionContextAxisRules = `TWO AXES, AND ONLY ONE OF THEM EVER DEFAULTS:
+
+  SESSION — NEVER DEFAULTED. The <session-id> operand is required on EVERY
+  call; no flag supplies it. "gopi session context --last" on its own is
+  REFUSED — "which session? give a session id" — because "the newest session"
+  would be a guess, and this verb exports EVIDENCE: a page silently selected
+  from an unknown session cannot be told apart from a page about the one you
+  meant.
+
+  TURN/ROUND — the axis --last, --turn N and --round N address, and the ONLY
+  axis with a default. Omit ALL THREE and the export takes the session's NEWEST
+  TURN, the same page --last names. So --last is the EXPLICIT spelling of that
+  default: never the default itself, and never a selector for the session.`
+
+	// sessionContextInFlightNotice is the ONE statement of a property of the
+	// TURN axis that nothing on either page used to say: a turn that has not
+	// ENDED is still SENDING requests, so exporting it more than once yields
+	// pages that GROW.
+	//
+	// MEASURED, and the reason it is stated rather than left to be discovered
+	// (session 3965695b-6f70-4067-8b61-68628d7a6dfc, 2026-11-17): the same
+	// command with the same N — `session context <id> --user` — wrote 147419,
+	// 151555 and 153127 bytes within three minutes. The address did not change;
+	// the turn had not finished. The page for a COMPLETED turn is stable, which
+	// is why the ordinary case (export the turn that just finished) does not hit
+	// this, and why silent discovery of it is expensive: a reader diffing two
+	// of those pages reasonably concludes the export is non-deterministic.
+	//
+	// WHY IT IS A CONSTANT: both carriers render it — the sub-verb's page here
+	// and the chat REPL's `/context` page (chat_context.go) — and a property
+	// stated twice drifts (Rule 14). One definition, two readers.
+	sessionContextInFlightNotice = `A TURN THAT HAS NOT ENDED IS STILL GROWING. An export renders the LAST
+request that turn has sent so far, so exporting a turn that is still running
+twice gives two pages of different sizes (measured: 147419 → 151555 → 153127
+bytes in three minutes on one unended turn). The address is stable; the
+content is not, until the turn ends. A finished turn exports a page that is
+identical every time.`
+
+	// sessionContextRetiredDefaultClaim is the sentence the page carried before
+	// the two-axis statement, kept as a named constant because the contract
+	// test asserts its ABSENCE (a discarded wording has to stay discarded).
+	sessionContextRetiredDefaultClaim = "The default selector is --last."
+
+	// sessionContextNoSessionMessage is the refusal the SESSION axis raises when
+	// no operand names a session. It is a constant because TWO carriers quote it
+	// — the parser, which prints it, and the help page, which must not
+	// paraphrase its own error — and the axis contract test compares them
+	// (cli_session_context_axis_test.go; Rule 14: one definition, both readers).
+	sessionContextNoSessionMessage = "which session? give a session id"
 )
 
-// sessionContextUsage is the sub-verb's own page. It is a VAR so the two
-// defaults it documents (the destination's name and the last-turn selector) are
-// rendered from the constants the code enforces — the page cannot promise a
-// spelling the parser does not accept.
+// sessionContextUsage is the sub-verb's own page. It is a VAR so the claims it
+// makes are rendered from the constants the code enforces — the page cannot
+// promise a spelling the parser does not accept, nor state an axis rule the
+// parser contradicts (sessionContextAxisRules is the two-axis statement, and it
+// is rendered here rather than typed inline so the contract test can pin the
+// exact words; cli_session_context_axis_test.go).
 var sessionContextUsage = sessionContextUsageFingerprint + `
 
 The artifact is the CONTEXT, not the conversation: the system prompt VERBATIM as
@@ -92,10 +156,25 @@ Usage:
   gopi session context <session-id> [--out PATH]
       --last      the newest TURN — the context the model is running with now
       --turn N    TURN N of this session (1-based — the SAME number
-                  ` + "`gopi session show <id>`" + ` prints on its ` + "`turns`" + ` row,
+                  ` + "`gopi session stats <id>`" + ` prints on its ` + "`turns`" + ` row,
                   whose boundaries come from one algorithm shared by every
                   surface; NOT ` + "`session log --turns`" + `, which prints the
-                  human-turn SUBSET and can be fewer)
+                  human-turn SUBSET and can be fewer).
+                  THE WITNESS IS ` + "`stats`" + `, NOT ` + "`show`" + `: a ` + "`kind=run`" + ` session
+                  (every dispatched task) prints NO turns row in ` + "`session show`" + `
+                  at all, so ` + "`show`" + ` cannot witness this count — ` + "`session list`" + `
+                  says so on the row itself ("turns none (no chats row)").
+                  ` + "`stats`" + ` answers for BOTH species, and the refusal below
+                  names it for that reason.
+                  A TURN is one input line — a turn is NOT a request: the page
+                  holds the LAST such input's request, one request per request
+                  row in the session record — measured: a 42-turn session held
+                  211 request rows, a 16-turn one held 25. So --turn 3 and
+                  --turn 4 are NOT three requests apart, and page N is NOT a
+                  prefix of page N+1: a turn that folds its context re-sends a
+                  SHORTER list, so the pages nest only where no fold happened.
+                  A probe is a real send with no request row, so it is not
+                  addressable here — this walk counts request rows only.
       --round N   DEBUG AXIS, not the ordinary address: ROUND N is one HTTP
                   request/response record in the log's own request sequence,
                   written to ` + ctxdump.RoundFileNamePattern + ` and headed ROUND.
@@ -122,7 +201,9 @@ Usage:
                   shows ONE side of a request, and the pair together would be the
                   full page under a filtered name
 
-  The default selector is --last.
+` + sessionContextAxisRules + `
+
+` + sessionContextInFlightNotice + `
 
   A section export is a DERIVED VIEW, not a smaller version of the evidence:
   ` + ctxdump.FileNamePattern + ` still holds the request's own bytes and is still the
@@ -242,7 +323,7 @@ func runSessionContext(args []string) int {
 		}
 	}
 	if sessionID == "" {
-		fmt.Fprintf(os.Stderr, "gopi session %s: which session? give a session id\n%s", sessionSubcmdContext, sessionContextUsage)
+		fmt.Fprintf(os.Stderr, "gopi session %s: %s\n%s", sessionSubcmdContext, sessionContextNoSessionMessage, sessionContextUsage)
 		return 1
 	}
 	// THREE selectors, TWO axes, and each refusal names the ACTUAL conflict:

@@ -269,7 +269,7 @@ func printDeployDrift() {
 // `d.Stale()` where Stale() meant "some ref is not followed", while the per-ref
 // line for an AHEAD ref said "this artifact is AHEAD of it, not stale behind
 // it", and DeployDriftVerdictAhead's own doc said the same. Measured 2026-10-29
-// on host host-a: refs/heads/master `follows`, refs/remotes/origin/master
+// on host the host: refs/heads/master `follows`, refs/remotes/origin/master
 // `1 ahead`, refs/remotes/gitPushcheck/master `426 ahead` — and a printed
 // `STALE:` beside three lines that each denied it.
 //

@@ -121,7 +121,7 @@ const workerResumeSpellingGateMsg = "  resume: `gopi worker " + workerFlagResume
 // UNKNOWN ARGUMENTS ARE REFUSED (Rule 15, devdoc/worker-unknown-flag.md): the
 // scan used to ignore every word it did not recognize, so a launcher passing
 // an option the deployed binary predates got a SILENTLY DEGRADED worker — the
-// option dropped, the loop started, nothing said so (the peer-inline-launchers
+// option dropped, the loop started, nothing said so (the hp-inline-launchers
 // sweep: a stale remote binary swallowed `--worker-log-root`, so the worker
 // ran with output attribution OFF). An unrecognized word now exits
 // workerUnexpectedArgExitCode with workerUnexpectedArgMessage BEFORE the
@@ -334,6 +334,18 @@ func isWorkerSubcommand(args []string) bool {
 	// scheduler reads a transport-dead node as idleness and retries forever.
 	if code := workerApiGateRefusedExitCodeFor(); code != 0 {
 		os.Exit(code)
+	}
+	// THE SIGNAL IS THE EXIT STATUS ON THIS FACE TOO (defect 01a1e661; Rule 14
+	// — one runner, one exit contract). runTaskWorkerExplicit maps the recorded
+	// signal spelling to 128+N inside its own body, but the LOOP returns
+	// normally and this entry point used to answer 0: a supervisor that sent
+	// SIGTERM and then read its waitpid was told "the round succeeded", which is
+	// a different fact (measured on this host 2026-11-17: a loop worker with no
+	// in-flight child left 67 ms after the signal with status 0). The api-gate
+	// refusal above keeps its own code — it means "nothing was claimed", which
+	// the stop's mapping must not mask.
+	if workerStopRequested() {
+		os.Exit(workerStopExitStatus())
 	}
 	return true
 }
@@ -839,6 +851,27 @@ func main() {
 		os.Exit(1)
 	}
 
+	// §1b·2 A SINGLE BARE LEAF VERB — `gopi submit`, `gopi list`, `gopi dedup-scan`
+	// — is refused too: it is the second level of a family (`gopi task submit`),
+	// and neither refusal above can answer it. §1 holds FAMILY and TOP-LEVEL
+	// words (no leaf word is one) and §1b is a closed seven-word near-miss list.
+	// The word therefore fell through to the bare-prompt path and bought a real
+	// agent run — measured in this profile's ledger: 6 `[auto] submit` rows
+	// (task 01a1e5a2, operator's ruling 2026-11-17). §1d's length floor catches
+	// the 1-token ones but cannot name the command, and catches none of the
+	// multi-token leaves (`dedup-scan` = 4 tokens, `sweep-worktrees` = 6).
+	//
+	// THE SHAPE IS ONE POSITIONAL, so a leaf word that OPENS a sentence
+	// (`gopi list the docs`) keeps running — the property that lets this screen
+	// apply on the operator's own terminal, where §1c is deliberately a no-op.
+	// The vocabulary comes from ONE table (cliverbs.FamilyLeaves) whose rows are
+	// pinned to the families' dispatch surfaces in both directions by
+	// internal/cliverbs/leaves_drift_test.go and cli_leaf_verbs_drift_test.go.
+	if leaf := config.PositionalCommandLeafRefusal(verbCfg); leaf != "" {
+		fmt.Fprintln(os.Stderr, leaf)
+		os.Exit(config.CLIUsageExitCode)
+	}
+
 	// §1c THE BARE-PROMPT FACE ITSELF is guarded here — the LAST positional
 	// screen before money is spent, and the one neither refusal above reaches:
 	// they answer words this binary RECOGNISES (a dispatched verb, a near-miss),
@@ -881,6 +914,37 @@ func main() {
 	if input.prompt == "" && len(input.images) == 0 {
 		fmt.Fprintf(os.Stderr, "No input provided\n")
 		os.Exit(1)
+	}
+
+	// §1d THE LENGTH FLOOR — the second screen on the bare-prompt face, and
+	// the one §1c above cannot provide: that guard answers a bare word only
+	// when an agent signature is present, so on the operator's OWN terminal
+	// `gopi submit` (a leaf verb written without its family word) was spent
+	// as a prompt — a session directory, an `[auto] submit` ledger row and a
+	// clone ground. Length is the axis the command line CAN decide: quotes
+	// never reach argv, so `gopi submit` and `gopi "submit"` are the same
+	// three bytes, but one token cannot carry a request while every complete
+	// question measured costs two or more (`你好吗` = 2, `who are you?` = 4).
+	//
+	// PLACED HERE, not beside §1c, because it must judge the RESOLVED prompt
+	// text (`readInput` is where a positional, an @file payload, a text-file
+	// argument and joined positionals all become one string) — the screen
+	// counts the text the model would be charged for, never argv. It sits
+	// BEFORE newAgent, so a refusal has created nothing: no session, no
+	// ledger row, no ground, no tokens.
+	//
+	// IT IS A NO-OP FOR AN EXPLICIT CHANNEL. `--prompt X` and the settings
+	// "prompt" key state that the text IS input, which is exactly the answer
+	// the refusal hands the operator; an image-only run carries no text at
+	// all. Both leave `input.prompt` empty-or-deliberate and are allowed at
+	// once (config.GuardShortBarePrompt's own contract).
+	// The SCREEN is §1c's own predicate (config.BarePromptWord, Rule 2) — the
+	// word a positional would become — so exactly the invocations §1c judges
+	// on the agent face are the ones this floor judges on the human one, and
+	// an explicit channel (`--prompt X`, settings "prompt", a piped stdin
+	// body) never reaches it: those state that the text IS input.
+	if word := config.BarePromptWord(verbCfg); word != "" && len(input.images) == 0 {
+		guardShortBarePromptOrExit(input.prompt)
 	}
 
 	// Native image input: the vision model runs the whole loop. The user's
@@ -1004,6 +1068,36 @@ func main() {
 			// `category: unknown` — a terminal teardown filed under "something
 			// unrecognised happened". The spelling is signalrec's (Rule 14).
 			ag.CloseSignal = signalrec.SignalName(sig)
+			// NO RUN IN FLIGHT ⇒ NOTHING TO UNWIND ⇒ DIE NOW. This arm is the
+			// defect row 01a1e59c exists for, measured on a live process
+			// (pid 2680213, `./bin/gopi submit`, killed by SIGTERM-then-SIGKILL
+			// after 11 days 4 hours frozen, 36 threads parked on futex_wait):
+			// Interrupt() only CANCELS the run root. A process whose run has
+			// already returned — or never started a request — has nobody
+			// waiting on that cancellation, so the signal was RECORDED and then
+			// SWALLOWED while the process kept its SigCgt bit set. From the
+			// kernel's side "a handler covers SIGTERM, so the default action is
+			// gone" and from the operator's side `kill -TERM` does nothing; only
+			// SIGKILL ended it. A terminating signal must terminate: this face
+			// owns no in-flight work once the run returned, so it leaves with
+			// the conventional 128+N status after filing its provenance record.
+			if barePromptSignalPlanFor(ag.RunInFlight()) == planExitNow {
+				fmt.Fprintf(os.Stderr, "[gopi] %v received with no run in flight — terminating\n", sig)
+				settleProvenanceRecord(roleLabelMainPrompt)
+				os.Exit(signalExitStatus(sig))
+			}
+			// AN IN-FLIGHT RUN GETS THE BOUNDED GRACE AND NOT ONE MILLISECOND
+			// MORE. The unwind above (Interrupt → ctx cancellation → the run
+			// engine's end-of-run defer, which writes session_end) is the reason
+			// this handler exists instead of the default death. But the unwind can
+			// itself park — a turn waiting on a peer that never answers, a lock
+			// held across a model round trip (the `gopi web` SIGTERM hang,
+			// internal/agent/loop.go's chatOnceAttempt) — and then the handler's
+			// work has already been done and the process still never leaves. An
+			// unkillable shape is not allowed to exist, so the timer is the
+			// floor: when it fires the process exits, and the record of why is
+			// already on disk because settleProvenanceRecord ran first.
+			armSignalExitEscalation(sig)
 			ag.Interrupt()
 		}
 	}()

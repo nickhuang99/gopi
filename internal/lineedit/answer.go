@@ -3179,10 +3179,30 @@ func (r *AnswerRenderer) rowsFor(text string) []answerRow {
 // from "what a line IS" to "how the table draws it" therefore has ONE home, and
 // this function no longer reaches for styleFor itself.
 func (r *AnswerRenderer) rowFor(line string, ls LineStyle) answerRow {
-	st := layerStyleFor(r.pal, layerForLine(ls), ls)
+	// The row's LAYER is asked ONCE, of the ONE decision both halves of the
+	// renderer share (bodyLayer, layers.go): the gutter at column 0 reads it for
+	// the marker and this reads it for the emphasis, so a reasoning row cannot
+	// open with `· ` and then be painted in the answer's own colour.
+	layer := bodyLayer(r.thinking, ls)
+	st := layerStyleFor(r.pal, layer, ls)
 	// A code/tool-layer line is the reader's COPYING material (see
 	// answerRow.copied): its gutter keeps its two cells and loses its glyph.
-	copied := layerForLine(ls) == LayerCodeTool
+	// A prose line carrying an inline-code span is copying material by the same
+	// criterion — the backticks hold a path or command the reader pastes — so
+	// it is drawn from column 0 too; otherwise a long path that wraps carries
+	// the turn's `▌ ` (first row) and two blank gutter cells (continuation)
+	// INTO the terminal selection, between the path's own characters. Turn
+	// separability is not weakened: the header, request row and closing rule
+	// are chrome drawn independently of the body's gutter (40/20-column grids
+	// measured). Only CLOSED backtick pairs count (hasInlineCode), so a prose
+	// line with one literal backtick keeps its marker.
+	// A REASONING line is never copying material, whatever its content: its
+	// `· ` gutter is chrome the reader relies on to tell thinking from answer,
+	// and a closed backtick pair inside reasoning (e.g. `a.go`) must not flip
+	// this row to copied and eat the marker. Excluding thinking here — rather
+	// than dropping hasInlineCode — keeps 01a1eb06's inline-code PROSE rows
+	// copied (col 0, byte-exact).
+	copied := layer == LayerCodeTool || (hasInlineCode(line) && !r.thinking)
 	// The marker's SPELLING is a question for the format layer, so the renderer
 	// asks it there (hasBoldMarker) rather than looking for the marker itself;
 	// a line that certainly carries no emphasis takes the plain-text shape and
@@ -5298,14 +5318,20 @@ func (r *AnswerRenderer) lineGutter() string {
 	// The body's own layer decides the marker (layers.go): reasoning and answer
 	// are the two marked layers here, and their rows are the same two cells wide
 	// so the turn's left edge stays one column.
-	switch {
-	case r.thinking:
+	//
+	// WHICH LAYER a line belongs to is the ONE decision (bodyLayer), the same one
+	// rowFor reads for the emphasis: the gutter asks it about the layer and adds
+	// only what the gutter itself knows — whether the line opens the block or
+	// continues it. Asking a second, independent question here is exactly how the
+	// marker and the colour came apart before (a `· ` row painted in the answer's
+	// own style).
+	if bodyLayer(r.thinking, LinePlain) == LayerThinking {
 		return layerMarker(LayerThinking)
-	case !r.ledged:
-		return layerMarker(LayerResponse)
-	default:
-		return layerContinuation(LayerResponse)
 	}
+	if !r.ledged {
+		return layerMarker(LayerResponse)
+	}
+	return layerContinuation(LayerResponse)
 }
 
 // minGutterContentCells is how many cells of actual LINE content must survive

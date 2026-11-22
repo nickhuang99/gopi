@@ -142,8 +142,49 @@ const (
 			kw_who TEXT DEFAULT '',
 			session_id TEXT DEFAULT '',
 			round_index INTEGER DEFAULT 0,
-			source_host TEXT DEFAULT ''
+			source_host TEXT DEFAULT '',
+			qkey TEXT DEFAULT ''
 		)`
+
+	// dedupKeyColumn is the dedup IDENTITY of a row, stored as a REAL column:
+	// truncateRunes(question, dedupQuestionRunes). It exists because the dedup
+	// probes used to filter on `substr(question,1,?) = ?` — a FUNCTION of a
+	// column compared against BOUND parameters, which SQLite can only SCAN
+	// (no index can answer it).
+	//
+	// THE COST, and its provenance: measured by /proc/self/io rchar delta on the
+	// production probe text (5 trials × 10 runs, every run MISS, spread 0.0) —
+	// sager: 97.2 MB read per probe / 76.7 ms; hp: 115.5 MB per probe / 96.2 ms.
+	// Over a 19282-row import that is ~1.80 TB (sager) / ~2.14 TB (hp) of reads
+	// for ONE sync leg. `dbstat` was tried first and is NOT the instrument: it
+	// reports disk occupancy (236.5 MB main table, 356.4 MB with the tri+fts
+	// indexes) rather than what one query READ, and it cannot see where the
+	// evaluation short-circuits — measured: scanning question+topic reads
+	// 115.5 MB, and adding answer to the scan reads the SAME 115.5 MB because
+	// substr() already decided the row is a miss.
+	//
+	// A plain column index (plan A) and an EXPRESSION index (plan B) were both
+	// measured useless: the production shape binds the width as a parameter,
+	// so `EXPLAIN QUERY PLAN` still prints SCAN for both. Plan C — a real
+	// column written by the store and backfilled for existing rows — is the
+	// only shape whose plan becomes SEARCH.
+	dedupKeyColumn = "qkey"
+
+	// dedupKeyIndexDDL is the composite index every dedup probe searches:
+	// import probes on qkey alone, the store probes on (qkey, topic).
+	dedupKeyIndexDDL = `CREATE INDEX IF NOT EXISTS idx_distilled_qa_qkey_topic
+			ON distilled_qa(qkey, topic)`
+
+	// dedupKeyBackfillSQL fills the key for rows written before the column
+	// existed. SQLite's substr() counts CHARACTERS for a TEXT argument, so it
+	// matches truncateRunes exactly (both are rune-based, not byte-based).
+	dedupKeyBackfillSQL = `UPDATE distilled_qa SET qkey = substr(question,1,?)
+			WHERE qkey IS NULL OR qkey = ''`
+
+	// dedupKeyAddColumnDDL heals a legacy ledger whose distilled_qa predates
+	// the column (the base DDL above is CREATE TABLE IF NOT EXISTS, so it does
+	// not touch an existing table).
+	dedupKeyAddColumnDDL = `ALTER TABLE distilled_qa ADD COLUMN qkey TEXT DEFAULT ''`
 
 	// defaultConfidence / defaultTier are the store defaults when the model
 	// does not provide value signals (same defaults as the reference engine).
@@ -578,10 +619,35 @@ const (
 // not a Go constant, so it lives in a var next to the const block above).
 var m1KwCols = [5]string{"kw_what", "kw_why", "kw_when", "kw_where", "kw_who"}
 
+// searchKwColumn is the search_kw column's own name. It is named because
+// THREE different readers must agree on which column this is — the INSERT's
+// column list (memoryStoreRow), the intent-column reader (rowIntentColumns,
+// which excludes it because its caller already holds the value) and the
+// backfill's page SELECT (jiebaBackfillSelectPage, which must NOT exclude it).
+// A re-typed spelling at any of those sites is how the backfill came to derive
+// from a different text than the writer (Rule 1b/13).
+const searchKwColumn = "search_kw"
+
+// m1JiebaIntentCols is the ordered set of retrieval-intent columns whose text
+// enters jieba_token BESIDE the prose and search_kw — the M1 columns the
+// writer fills from the record and the backfill must re-read. Built FROM
+// m1ExamQuestions and m1KwCols so a sixth 5W1H column cannot be added to the
+// schema and forgotten here (Rule 14: one definition, no mirror).
+var m1JiebaIntentCols = append([]string{m1ExamQuestions}, m1KwCols[:]...)
+
 // m1JiebaTextCols is the ordered column set whose text enters jieba_token
 // (see the contract note in the const block above). search_kw comes last
 // because it is passed explicitly at both write sites rather than read.
-var m1JiebaTextCols = []string{m1ExamQuestions, "kw_what", "kw_why", "kw_when", "kw_where", "kw_who", "search_kw"}
+//
+// THIS SLICE IS THE ONE DEFinition BOTH PATHS READ. The writer derives from
+// the VALUES it is about to write; the backfill derives from the STORED ones —
+// but the SET must be the same or the two disagree about what a row's token is,
+// and a freshly written row gets rewritten by the next backfill (measured
+// 2026-11-22: the page SELECT read only id/topic/question/answer/jieba_token,
+// so every row whose keywords or 5W1H text carried a word the prose did not lost
+// it, and the derivation reported "1 re-derived" for a row the current binary
+// had just written).
+var m1JiebaTextCols = append(append([]string{}, m1JiebaIntentCols...), searchKwColumn)
 
 // feedback ratings (memory_feedback tool / CLI). Three-valued: useful
 // (adopted/helped), useless (contradicted/failed/misleading — bug-report
@@ -727,28 +793,164 @@ const memoryEmptyHint = "No distilled memory found for this query. " +
 // jieba_token backfill (the segmenter swap's one-shot).
 // ---------------------------------------------------------------------------
 
-// jiebaBackfillBatch bounds how many rows are re-derived inside ONE
-// transaction. The work is a bounded UPDATE over the ledger's own table — no
-// external resource, no network — but a ledger can be large and SQLite holds
-// the write lock for the whole transaction, so the backfill commits in
-// batches and a concurrent search is never locked out for the whole scan.
-// A constant, not a literal (Rule 1a); the value is a queue depth, not a
-// measurement.
-const jiebaBackfillBatch = 500
+// JiebaBackfillBatch bounds how many rows are READ and (in a write run)
+// COMMITTED inside ONE transaction. The work is a bounded UPDATE over the
+// ledger's own table — no external resource, no network — but a ledger can be
+// large and SQLite holds the write lock for the whole transaction, so the
+// backfill commits in batches and a concurrent search is never locked out for
+// the whole scan.
+//
+// It is BOTH the READ page size and the write transaction size on purpose: a
+// keyset page is exactly one unit of work, so the cursor advance and the
+// commit are the same event. A constant, not a literal (Rule 1a); the value is
+// a queue depth, not a measurement.
+//
+// EXPORTED because the CLI's start-up announcement states it to the reader
+// ("batch 500") and must take the number from this ONE definition rather than
+// re-typing it (Rule 13/14) — a second spelling could drift from what the scan
+// actually reads.
+const JiebaBackfillBatch = 500
 
-// jiebaBackfillSelect reads every row's jieba_token SOURCES and the stored
-// value: the same column list deriveJiebaToken consumes at write time, so the
-// backfill cannot derive from a different text than the writer does. Legacy
-// rows are the target, so the scan is by (id) with no predicate — MySQL-style
-// "WHERE token IS NULL" would miss the rows whose token is the OLD spelling
-// but not NULL, which is the whole population this fixes.
-const jiebaBackfillSelect = "SELECT id, topic, question, answer, jieba_token FROM distilled_qa ORDER BY id"
+// The BATCH STRIDE that used to gate the progress lines is GONE on purpose, and
+// this note stays where it was so a reader does not reintroduce it.
+//
+// It was JiebaBackfillProgressEvery = 10, i.e. one line per 5000 rows. Measured
+// on the operator's 32743-row ledger (2026-11-21, task 01a1fc80): the FIRST
+// line arrived 62 s after start of a 99 s run, so the first minute of the
+// command was total silence, and the gap was coupled to the batch SPEED —
+// every slower page pushed the next line further away. The lines are now
+// driven by WALL CLOCK in the printer (cmd/agent/cli_memory_backfill_heartbeat
+// .go), which decouples them from both the row count and the batch rate. There
+// is deliberately no replacement constant here: a stride is the defect.
+
+// jiebaBackfillSelectSources is the derivation source set the ACTUAL schema can
+// satisfy: m1JiebaTextCols (the one definition of that set) filtered through the
+// table's own columns. The order is m1JiebaTextCols' order, and the scan below
+// maps value i back to source i, so ordering is part of the contract.
+func jiebaBackfillSelectSources(cols map[string]bool) []string {
+	out := make([]string, 0, len(m1JiebaTextCols))
+	for _, c := range m1JiebaTextCols {
+		if cols[c] {
+			out = append(out, c)
+		}
+	}
+	return out
+}
+
+// jiebaBackfillSelectPage reads ONE keyset page of rows: the jieba_token
+// SOURCES plus the stored value, for ids STRICTLY GREATER than the cursor.
+//
+// WHY KEYSET AND NOT OFFSET, and why this replaced one un-LIMITed scan:
+//   - the page is bounded, so the statement returns promptly and the caller
+//     holds no open read cursor across a write (the old shape streamed the
+//     whole table and issued UPDATEs from inside that same iteration — a
+//     writer fighting its own cursor);
+//   - the cursor is a VALUE (the last id seen), not a row offset, so an
+//     interleaved INSERT/UPDATE can never shift a page boundary and skip or
+//     repeat a row the way OFFSET would;
+//   - restartability comes from the DATA, not from a progress table: "already
+//     migrated" is a row whose stored token equals the current derivation, so
+//     re-running after an interruption rescans cheaply and changes nothing
+//     (Rule 35 — no new artifact to own).
+//
+// The column list is RENDERED FROM m1JiebaTextCols — the one definition of the
+// jieba_token source set (see that var) — so the backfill cannot derive from a
+// different text than the writer does. It used to be a fixed literal naming
+// only id/topic/question/answer/jieba_token, and the sentence above was
+// therefore FALSE: the writer derives from the prose PLUS search_kw PLUS the
+// five 5W1H columns and exam_questions, while this SELECT read four columns and
+// passed ""/nil for the rest — so a row the current binary had just written
+// came back as "1 would be re-derived" and a write run rewrote it (measured
+// 2026-11-22). The rendering below is the repair: every source column the
+// schema HAS is read, in m1JiebaTextCols order, and the scan assigns each to
+// the same argument deriveJiebaToken takes it as.
+//
+// A column the actual schema lacks is simply not selected (the same
+// "only added, never dropped" adaptation the INSERT path uses), and the missing
+// value is then the zero string — which is exactly what the writer of such a
+// row contributed.
+//
+// There is deliberately NO "WHERE token IS NULL" predicate: the population is
+// every row whose token is not the current spelling, NULL or not.
+//
+// The RENDERING below is the part that makes that true (see
+// jiebaBackfillSelectSources for the list it renders from): the prose columns
+// first, then every source the schema actually has, then the stored token.
+func jiebaBackfillSelectPage(sources []string) string {
+	sel := make([]string, 0, len(sources)+5)
+	sel = append(sel, "id", "topic", "question", "answer")
+	sel = append(sel, sources...)
+	sel = append(sel, jiebaTokenCol)
+	return "SELECT " + strings.Join(sel, ", ") + " FROM " + knowledgeBaseAnchorTable +
+		" WHERE id > ? ORDER BY id LIMIT ?"
+}
+
+// JiebaBackfillExtent describes the population a backfill is about to traverse:
+// how many rows the ledger holds and the id window they occupy. It is what the
+// CLI's t=0 announcement prints, so the FIRST line of a long run can state the
+// size of the work WITHOUT waiting for the first batch.
+//
+// It is a measurement, never an estimate: Rows/MinID/MaxID come from the table
+// itself, so a reader can reconcile them with the totals the run ends on.
+// MinID is 0 when the table is empty (there is nothing to name).
+type JiebaBackfillExtent struct {
+	Rows         int64
+	MinID, MaxID int64
+}
+
+// jiebaBackfillExtentSQL reads the population in ONE statement — the count and
+// the id window are independent of any page boundary, so they cannot disagree
+// with a partially scanned cursor.
+const jiebaBackfillExtentSQL = "SELECT COUNT(*), COALESCE(MIN(id), 0), COALESCE(MAX(id), 0) FROM " + knowledgeBaseAnchorTable
+
+// JiebaBackfillPageExtent measures the population a backfill would traverse, for
+// the start-up announcement. It never writes and never pages: one aggregate over
+// the anchor table.
+//
+// A failure is RETURNED rather than defaulted to zeros: an announcement that
+// printed "0 rows" because the count could not be taken would be a false
+// measurement, and the caller turns the error into the line's own sentence
+// (Rule 15) instead of hiding it.
+func JiebaBackfillPageExtent(ctx context.Context, db *sql.DB) (JiebaBackfillExtent, error) {
+	var e JiebaBackfillExtent
+	if db == nil {
+		return e, fmt.Errorf("jieba backfill extent: no ledger handle")
+	}
+	if err := db.QueryRowContext(ctx, jiebaBackfillExtentSQL).Scan(&e.Rows, &e.MinID, &e.MaxID); err != nil {
+		return e, fmt.Errorf("jieba backfill extent: %w", err)
+	}
+	return e, nil
+}
+
+// JiebaBackfillProgress is one progress observation, reported to the caller's
+// callback after every jiebaBackfillProgressEvery batches. Scanned counts rows
+// READ; Changed counts rows whose stored token is not the current derivation
+// (written, or would be written under --dry-run). Done reports which batch
+// closed the scan (0 = the scan is not finished).
+type JiebaBackfillProgress struct {
+	Scanned int
+	Changed int
+	Batches int
+	LastID  int64
+	// Done is set on the report of the batch that CLOSED the scan (the page
+	// was short, or empty), so a printer can always emit a final line.
+	Done bool
+}
 
 // ScanJiebaTokens reports how many rows would be re-derived, writing nothing.
 // It is the --dry-run half of BackfillJiebaTokens and shares its derivation
 // rule exactly, so the report cannot promise a different set than the write.
 func ScanJiebaTokens(ctx context.Context, db *sql.DB) (scanned, wouldChange int, err error) {
-	return jiebaBackfill(ctx, db, true)
+	return jiebaBackfill(ctx, db, true, nil)
+}
+
+// ScanJiebaTokensWithProgress is ScanJiebaTokens with a progress callback. A
+// dry run over a real ledger takes minutes (it derives every row's token and
+// writes nothing), so it needs the same liveness signal the writer has —
+// otherwise the one command meant to PREDICT the work is the one a supervisor
+// kills for being silent.
+func ScanJiebaTokensWithProgress(ctx context.Context, db *sql.DB, progress func(JiebaBackfillProgress)) (scanned, wouldChange int, err error) {
+	return jiebaBackfill(ctx, db, true, progress)
 }
 
 // BackfillJiebaTokens re-derives the jieba_token column for every row whose
@@ -767,61 +969,148 @@ func ScanJiebaTokens(ctx context.Context, db *sql.DB) (scanned, wouldChange int,
 //   - a row already carrying the current derivation is not written at all, so
 //     the command is idempotent and safe to re-run after an interruption.
 func BackfillJiebaTokens(ctx context.Context, db *sql.DB) (scanned, changed int, err error) {
-	return jiebaBackfill(ctx, db, false)
+	return jiebaBackfill(ctx, db, false, nil)
 }
 
-// jiebaBackfill is the ONE implementation behind both public entries: dry
-// only decides whether the UPDATE is issued, never what counts as a change.
-func jiebaBackfill(ctx context.Context, db *sql.DB, dry bool) (scanned, changed int, err error) {
+// BackfillJiebaTokensWithProgress is BackfillJiebaTokens with a progress
+// callback: the ONE implementation is shared, so the reported numbers can
+// never disagree with what is written. A nil callback is the plain entry.
+func BackfillJiebaTokensWithProgress(ctx context.Context, db *sql.DB, progress func(JiebaBackfillProgress)) (scanned, changed int, err error) {
+	return jiebaBackfill(ctx, db, false, progress)
+}
+
+// jiebaBackfill is the ONE implementation behind every public entry: dry only
+// decides whether the UPDATE is issued, never what counts as a change.
+//
+// The loop is keyset pagination: page by `id > cursor ORDER BY id LIMIT n`,
+// derive inside the page, and commit the page in ONE transaction. So the
+// invariant a reader can rely on at ANY instant is "every row before the
+// cursor is either current or not derivable" — an interruption costs at most
+// one page of re-derivation, never the whole scan.
+func jiebaBackfill(ctx context.Context, db *sql.DB, dry bool, progress func(JiebaBackfillProgress)) (scanned, changed int, err error) {
+	return jiebaBackfillPageSize(ctx, db, dry, JiebaBackfillBatch, progress)
+}
+
+// jiebaBackfillPageSize is jiebaBackfill with the page size INJECTED. The
+// production entries pass JiebaBackfillBatch; a test passes a small page so it
+// can prove the CURSOR, not the page size — a paging test that needs 500 real
+// rows to reach page 2 takes seconds and would go green on a "single big page"
+// implementation that never advanced a boundary.
+func jiebaBackfillPageSize(ctx context.Context, db *sql.DB, dry bool, pageSize int, progress func(JiebaBackfillProgress)) (scanned, changed int, err error) {
 	if db == nil {
 		return 0, 0, fmt.Errorf("jieba backfill: no ledger handle")
 	}
-	rows, err := db.QueryContext(ctx, jiebaBackfillSelect)
-	if err != nil {
-		return 0, 0, fmt.Errorf("jieba backfill: %w", err)
-	}
-	var batch []jiebaBackfillRow
-	for rows.Next() {
-		var (
-			id              int64
-			topic, question string
-			answer          string
-			stored          string
-		)
-		if err := rows.Scan(&id, &topic, &question, &answer, &stored); err != nil {
-			rows.Close() //stylegate:ignore read-only cursor at end of iteration; the error carries no state to recover
-			return scanned, changed, fmt.Errorf("jieba backfill: %w", err)
+	var cursor int64
+	batches := 0
+	for {
+		if err := ctx.Err(); err != nil {
+			// An interrupted run is a legal state: everything committed so far
+			// is current, and the next run resumes from the data.
+			return scanned, changed, fmt.Errorf("jieba backfill stopped after %d batch(es) at id %d: %w", batches, cursor, err)
 		}
-		scanned++
-		want := deriveJiebaToken(topic, question, answer, "", nil)
-		if want == "" || want == stored {
-			continue // nothing derivable, or already current (idempotent)
+		page, err := readJiebaBackfillPage(ctx, db, cursor, pageSize)
+		if err != nil {
+			return scanned, changed, err
 		}
-		changed++
-		if dry {
-			continue
+		if len(page) == 0 {
+			return scanned, changed, nil
 		}
-		batch = append(batch, jiebaBackfillRow{id: id, tok: want})
-		if len(batch) >= jiebaBackfillBatch {
-			if err := applyJiebaTokenBatch(ctx, db, batch); err != nil {
-				rows.Close() //stylegate:ignore read-only cursor at end of iteration; the error carries no state to recover
+		cursor = page[len(page)-1].id
+		batches++
+		scanned += len(page)
+		writes := make([]jiebaBackfillRow, 0, len(page))
+		for _, row := range page {
+			// THE WRITER'S ARGUMENT LIST, REPLAYED: prose + the stored search_kw
+			// + every other intent column. The backfill previously passed "" and
+			// nil here while the select also never read those columns, so the two
+			// halves agreed with each other and disagreed with the writer.
+			want := deriveJiebaToken(row.topic, row.question, row.answer, row.searchKw, row.intent)
+			if want == "" || want == row.stored {
+				continue // nothing derivable, or already current (idempotent)
+			}
+			changed++
+			writes = append(writes, jiebaBackfillRow{id: row.id, tok: want})
+		}
+		if !dry && len(writes) > 0 {
+			if err := applyJiebaTokenBatch(ctx, db, writes); err != nil {
 				return scanned, changed, err
 			}
-			batch = batch[:0]
+		}
+		done := len(page) < pageSize
+		if progress != nil {
+			progress(JiebaBackfillProgress{Scanned: scanned, Changed: changed, Batches: batches, LastID: cursor, Done: done})
+		}
+		if done {
+			return scanned, changed, nil
 		}
 	}
-	if err := rows.Err(); err != nil {
-		rows.Close() //stylegate:ignore read-only cursor at end of iteration; the error carries no state to recover
-		return scanned, changed, fmt.Errorf("jieba backfill: %w", err)
+}
+
+// jiebaBackfillScanRow is one row as the scan reads it: the derivation inputs
+// (the prose, the search_kw value, every other intent column the schema carries)
+// and the currently stored token.
+//
+// THE SPLIT BETWEEN searchKw AND intent IS NOT COSMETIC: deriveJiebaToken takes
+// them as two arguments, so the scan must hand search_kw over where that
+// function expects it and the rest as the intent slice. A scan that put
+// search_kw into the intent slice would derive the same TEXT (jiebaTokenText
+// joins everything) but would no longer be readable as "the writer's argument
+// list, replayed".
+type jiebaBackfillScanRow struct {
+	id                      int64
+	topic, question, answer string
+	searchKw                string
+	intent                  []string
+	stored                  string
+}
+
+// readJiebaBackfillPage reads one keyset page and CLOSES the cursor before
+// returning: the rows are materialised into a slice so no read cursor is open
+// while the page's transaction writes. That ordering is the whole point of the
+// rewrite — the old code updated rows from inside an open scan.
+//
+// The source set is probed ONCE PER PAGE and the SELECT rendered from it (see
+// jiebaBackfillSelectPage): a ledger written by an older binary may lack a
+// source column, and the adaptation is "select what exists", never "select a
+// fixed list and read four of them" — that fixed list was the defect.
+func readJiebaBackfillPage(ctx context.Context, db *sql.DB, after int64, limit int) (rows []jiebaBackfillScanRow, err error) {
+	cols, err := tableColumns(ctx, db, knowledgeBaseAnchorTable)
+	if err != nil {
+		return nil, fmt.Errorf("jieba backfill: %w", err)
 	}
-	rows.Close() //stylegate:ignore read-only cursor at end of iteration; the error carries no state to recover
-	if dry || len(batch) == 0 {
-		return scanned, changed, nil
+	sources := jiebaBackfillSelectSources(cols)
+	cursor, err := db.QueryContext(ctx, jiebaBackfillSelectPage(sources), after, limit)
+	if err != nil {
+		return nil, fmt.Errorf("jieba backfill: %w", err)
 	}
-	if err := applyJiebaTokenBatch(ctx, db, batch); err != nil {
-		return scanned, changed, err
+	defer cursor.Close() //stylegate:ignore read-only page cursor closed on return; the loop below reports its own error
+	page := make([]jiebaBackfillScanRow, 0, limit)
+	for cursor.Next() {
+		var r jiebaBackfillScanRow
+		held := make([]sql.NullString, len(sources))
+		dest := make([]interface{}, 0, len(sources)+5)
+		dest = append(dest, &r.id, &r.topic, &r.question, &r.answer)
+		for i := range held {
+			dest = append(dest, &held[i])
+		}
+		dest = append(dest, &r.stored)
+		if err := cursor.Scan(dest...); err != nil {
+			return nil, fmt.Errorf("jieba backfill: %w", err)
+		}
+		r.intent = make([]string, 0, len(sources))
+		for i, c := range sources {
+			if c == searchKwColumn {
+				r.searchKw = held[i].String
+				continue
+			}
+			r.intent = append(r.intent, held[i].String)
+		}
+		page = append(page, r)
 	}
-	return scanned, changed, nil
+	if err := cursor.Err(); err != nil {
+		return nil, fmt.Errorf("jieba backfill: %w", err)
+	}
+	return page, nil
 }
 
 // jiebaBackfillRow is one re-derivation to write: the row id and the token
@@ -831,24 +1120,31 @@ type jiebaBackfillRow struct {
 	tok string
 }
 
-// applyJiebaTokenBatch writes one batch of re-derived tokens, each in its own
+// applyJiebaTokenBatch writes one page of re-derived tokens in a SINGLE
 // transaction: the UPDATE touches the token column and the FTS row is
-// refreshed by the table's OWN sync trigger, so no index DDL is needed here
-// and an interrupted run is repaired by re-running the command.
+// refreshed by the table's OWN sync trigger, so no index DDL is needed here.
+//
+// One transaction per page is both the interruptibility and the throughput
+// fix: a commit per row made a 32k-row ledger tens of thousands of fsyncs and
+// meant an interruption could leave a page half-applied; a commit per page
+// makes "the page landed or it did not" the only observable state.
 func applyJiebaTokenBatch(ctx context.Context, db *sql.DB, batch []jiebaBackfillRow) error {
+	if len(batch) == 0 {
+		return nil
+	}
+	tx, err := db.BeginTx(ctx, nil)
+	if err != nil {
+		return fmt.Errorf("jieba backfill: %w", err)
+	}
 	for _, p := range batch {
-		tx, err := db.BeginTx(ctx, nil)
-		if err != nil {
-			return fmt.Errorf("jieba backfill: %w", err)
-		}
 		if _, err := tx.ExecContext(ctx,
 			"UPDATE distilled_qa SET jieba_token=? WHERE id=?", p.tok, p.id); err != nil {
 			tx.Rollback() //stylegate:ignore the UPDATE error is returned below and is the one that matters
 			return fmt.Errorf("jieba backfill row %d: %w", p.id, err)
 		}
-		if err := tx.Commit(); err != nil {
-			return fmt.Errorf("jieba backfill row %d: %w", p.id, err)
-		}
+	}
+	if err := tx.Commit(); err != nil {
+		return fmt.Errorf("jieba backfill: %w", err)
 	}
 	return nil
 }
@@ -1096,7 +1392,7 @@ type QueryExecer interface {
 // ftsTriggersOwned saw them and skipped syncFTSRow — the row stayed
 // unindexed forever and the search returned the empty hint.
 func ensureSchema(ctx context.Context, db *sql.DB) error {
-	return execSchemaBatch(ctx, db, func(q QueryExecer) error {
+	if err := execSchemaBatch(ctx, db, func(q QueryExecer) error {
 		// 1. Base table first, inside the batch — the FTS DDL below is
 		// rendered for the layout this CREATE produces (the column probe,
 		// running on the SAME transaction, sees the table it describes).
@@ -1127,7 +1423,165 @@ func ensureSchema(ctx context.Context, db *sql.DB) error {
 			}
 		}
 		return nil
+	}); err != nil {
+		return err
+	}
+	// 3. The dedup key runs in its OWN transaction, AFTER the schema batch
+	// above COMMITS. It must be a separate transaction: the leg drops and
+	// re-creates the keep-in-sync triggers around an `ALTER TABLE ADD COLUMN`,
+	// and doing that inside the batch that CREATES those virtual tables leaves
+	// the engine's schema cache inconsistent (measured: the backfill then
+	// reports `database disk image is malformed (267)`, or a bare `SQL logic
+	// error (1)` on a warm cache). Both batches are idempotent, and the second
+	// is a pure probe on a ledger that already carries the column.
+	if err := ensureDedupKeyIndex(ctx, db); err != nil {
+		return err
+	}
+	return nil
+}
+
+// ensureDedupKeyIndex is the DEDUP-KEY leg that must run on EVERY ledger this
+// process writes into, not only on the schema-owning default one.
+//
+// Why it cannot live in ensureSchema alone: ensureSchema is called
+// unconditionally only by OpenMemoryLedger (the FIRST-OPEN path). The import
+// path (memory_sync_assets.go) opens the peer's ledger through openStoreDB,
+// and on a healthy ledger openStoreDB takes the heal branch whose predicate is
+// `!hasTri || !hasM1 || !hasOrigin` — all three are false on a healthy peer, so
+// nothing heals and an index added only to ensureSchema would NEVER be created
+// on the very database the probes run against (a silent no-op: the DDL is
+// correct, the plan stays SCAN).
+//
+// Three facts, each measured or proven, shape it:
+//   - The column is added when missing (ALTER TABLE) because memoryBaseTableDDL
+//     is CREATE TABLE IF NOT EXISTS: it does not touch an existing table.
+//   - The backfill runs only where the key is empty, so a healthy ledger pays
+//     ONE indexed probe and no write at all.
+//   - The index is created AFTER the backfill, so it is built once over final
+//     values rather than maintained row-by-row through the fill.
+func ensureDedupKeyIndex(ctx context.Context, db *sql.DB) error {
+	return execSchemaBatch(ctx, db, func(q QueryExecer) error {
+		return ensureDedupKeyIndexTx(ctx, q)
 	})
+}
+
+// dedupKeyTriggerSaves reads the live keep-in-sync triggers off the ledger so
+// the heal can put back EXACTLY what was there.
+//
+// It must be the live DDL, not the generators, because a legacy or partial
+// ledger legitimately carries a SUBSET: a schema without distilled_qa_tri has
+// no tri_* triggers, and re-creating them from the generator would reference a
+// missing table (`no such table: main.distilled_qa_tri` — measured by
+// TestMemoryStoreLegacySchema / TestMemoryStorePartialSchemaFailsLoudly /
+// TestM2EnsureFeedbackSchemaHealsLegacyTierConfidence). Reading `sql` from
+// sqlite_master also keeps this leg honest if the generators ever change: it
+// restores what was running, not what it wishes had been.
+func dedupKeyTriggerSaves(ctx context.Context, q QueryExecer) ([]string, []string, error) {
+	rows, err := q.QueryContext(ctx,
+		"SELECT name, COALESCE(sql,'') FROM sqlite_master WHERE type='trigger' AND tbl_name='distilled_qa'")
+	if err != nil {
+		return nil, nil, fmt.Errorf("dedup key: read triggers: %w", err)
+	}
+	defer rows.Close() //stylegate:ignore read-only cursor; the iteration error is returned by rows.Err() below
+	var names, ddls []string
+	for rows.Next() {
+		var name, ddl string
+		if err := rows.Scan(&name, &ddl); err != nil {
+			return nil, nil, fmt.Errorf("dedup key: scan trigger: %w", err)
+		}
+		if ddl == "" {
+			continue
+		}
+		names = append(names, name)
+		ddls = append(ddls, ddl)
+	}
+	if err := rows.Err(); err != nil {
+		return nil, nil, fmt.Errorf("dedup key: read triggers: %w", err)
+	}
+	return names, ddls, nil
+}
+
+// ensureDedupKeyIndexTx is the same leg inside a caller's transaction.
+//
+// THE MEASURED CONSTRAINT — taking the UPDATE triggers down is not tidiness.
+// On a ledger that already carries the external-content FTS5 indexes
+// (distilled_qa_fts / distilled_qa_tri, `content='distilled_qa'`), an
+// `ALTER TABLE distilled_qa ADD COLUMN` followed by an UPDATE over the content
+// table makes the AFTER UPDATE trigger's `INSERT INTO …(fts, rowid, …)
+// VALUES('delete', old.rowid, …)` fail with `database disk image is malformed
+// (267)` — and the same statement reads as a bare `SQL logic error (1)` when
+// the engine's schema cache is warm. Measured on this tree 2026-11-15: with the
+// triggers installed the backfill failed every time; with `distilled_qa_au` and
+// `distilled_qa_tri_au` dropped it succeeded immediately, and the ledger passed
+// `PRAGMA integrity_check` afterwards.
+//
+// The drop is SAFE and loses no index content, for a reason specific to this
+// column: qkey is NOT one of the indexed columns, so the trigger's delete/
+// re-insert pair is a NET NO-OP on the index. Skipping it therefore leaves the
+// search index exactly as correct as performing it would have — that claim is
+// MEASURED in TestDedupKeyHealKeepsTheSearchIndexesIntact, not asserted here.
+func ensureDedupKeyIndexTx(ctx context.Context, q QueryExecer) error {
+	cols, err := tableColumns(ctx, q, "distilled_qa")
+	if err != nil {
+		return fmt.Errorf("dedup key: column probe: %w", err)
+	}
+	// Fast path: the column is there and no row needs a key. One probe + the
+	// (usually already-present) index, no writes — this is what an ordinary
+	// open of a healed ledger costs.
+	if cols[dedupKeyColumn] {
+		missing, err := dedupKeyRowsMissing(ctx, q)
+		if err != nil {
+			return fmt.Errorf("dedup key: backfill probe: %w", err)
+		}
+		if !missing {
+			if _, err := q.ExecContext(ctx, dedupKeyIndexDDL); err != nil {
+				return fmt.Errorf("dedup key: create index: %w", err)
+			}
+			return nil
+		}
+	}
+	// Slow path: a legacy ledger, or rows written before the column existed.
+	// Save the triggers this ledger actually carries, take them down for the
+	// write, and put exactly those back afterwards.
+	names, ddls, err := dedupKeyTriggerSaves(ctx, q)
+	if err != nil {
+		return err
+	}
+	for _, name := range names {
+		if _, err := q.ExecContext(ctx, "DROP TRIGGER IF EXISTS "+name); err != nil {
+			return fmt.Errorf("dedup key: drop trigger %s: %w", name, err)
+		}
+	}
+	if !cols[dedupKeyColumn] {
+		if _, err := q.ExecContext(ctx, dedupKeyAddColumnDDL); err != nil {
+			return fmt.Errorf("dedup key: add column: %w", err)
+		}
+	}
+	// Backfill only the rows that carry no key yet (a fresh insert writes its
+	// own). Rule 1: the width is dedupQuestionRunes, never a literal.
+	if _, err := q.ExecContext(ctx, dedupKeyBackfillSQL, dedupQuestionRunes); err != nil {
+		return fmt.Errorf("dedup key: backfill: %w", err)
+	}
+	if _, err := q.ExecContext(ctx, dedupKeyIndexDDL); err != nil {
+		return fmt.Errorf("dedup key: create index: %w", err)
+	}
+	for i, ddl := range ddls {
+		if _, err := q.ExecContext(ctx, ddl); err != nil {
+			return fmt.Errorf("dedup key: restore trigger %s: %w", names[i], err)
+		}
+	}
+	return nil
+}
+
+// dedupKeyRowsMissing reports whether any row still needs a key.
+func dedupKeyRowsMissing(ctx context.Context, q QueryExecer) (bool, error) {
+	var one int
+	err := q.QueryRowContext(ctx,
+		"SELECT 1 FROM distilled_qa WHERE "+dedupKeyColumn+" IS NULL OR "+dedupKeyColumn+" = '' LIMIT 1").Scan(&one)
+	if err == sql.ErrNoRows {
+		return false, nil
+	}
+	return err == nil, err
 }
 
 // execSchemaBatch runs the schema DDL build inside ONE exclusive transaction,
@@ -2029,6 +2483,23 @@ func openStoreDB(ctx context.Context, path string) (*sql.DB, error) {
 				}
 			}
 		}
+		// The dedup key is ensured UNCONDITIONALLY — outside the heal branch
+		// above, on EVERY ledger, default or pinned, healthy or not.
+		//
+		// The reason is the import path: memory_sync_assets.go opens the PEER's
+		// ledger here (openStoreDB), not through OpenMemoryLedger, so
+		// ensureSchema's own arm never runs on the very database the dedup
+		// probes search. On a HEALTHY ledger the heal predicate above is
+		// `!hasTri || !hasM1 || !hasOrigin` = false, so nothing would ever
+		// create the index there — the DDL would be correct and the plan would
+		// stay SCAN forever (measured: 97.2 MB read per probe, ~1.80 TB for one
+		// 19282-row sync leg, from /proc/self/io rchar deltas). The call is
+		// cheap when already healed: one column probe, one indexed probe for
+		// empty keys, one CREATE INDEX IF NOT EXISTS.
+		if err := ensureDedupKeyIndex(ctx, db); err != nil {
+			db.Close() //stylegate:ignore handle closed after its last caller finished
+			return nil, fmt.Errorf("memory_store: dedup key index: %w", err)
+		}
 		return db, nil
 	}
 	// Same fact-not-guess recovery as openSearchDB: an empty file with no
@@ -2280,7 +2751,7 @@ func MemorySearchHits(query string, limit int, intent string) ([]MemoryHit, erro
 	// memsearchMaxCJKRouteTerms caps had a 2000-word ASCII query as its
 	// driver; a segmented term list is bounded by the WORD count).
 	if terms := cjkQuerySegments(query); len(terms) > 0 {
-		likeSQL, qargs := likeCJKQuery(terms, searchExtraSelect(cols)+m1ExamSelect(cols), likeCJKRecallK)
+		likeSQL, qargs := likeCJKQuery(ctx, db, memoryDBPath(), terms, searchExtraSelect(cols)+m1ExamSelect(cols), likeCJKRecallK)
 		likeRows, err := db.QueryContext(ctx, likeSQL, qargs...)
 		if err == nil {
 			for likeRows.Next() {
@@ -2295,6 +2766,45 @@ func MemorySearchHits(query string, limit int, intent string) ([]MemoryHit, erro
 				}
 			}
 			likeRows.Close() //stylegate:ignore read-only cursor whose iteration already ended
+		}
+	}
+
+	// Route 4: the SESSION BRIDGE (memory_session_bridge.go). A user asks in
+	// their own colloquial words; the distilled row recorded the same work in
+	// the RECORD's words, and measured over the hand-verified labels the query
+	// carries almost no token the row contains (lexical overlap 8–29%), so the
+	// row never ENTERS the pool and no re-ranking can reach it. The bridge is a
+	// join the corpus already supports: the query matches a past chat's
+	// colloquial opening (chats.first_msg, indexed by chats_tri), and that
+	// session's own distilled rows become candidates. It is capped
+	// (sessionBridgeRows) because bridge candidates sort ahead of the ordinary
+	// pool — an uncapped contribution would evict rows that already answer.
+	bridgeIDs := map[int]bool{}
+	if sessions, berr := sessionBridgeSessions(ctx, db, query); berr == nil && len(sessions) > 0 {
+		args := make([]interface{}, 0, len(sessions))
+		for _, s := range sessions {
+			args = append(args, s)
+		}
+		placeholders := strings.TrimSuffix(strings.Repeat("?,", len(sessions)), ",")
+		bridgeRows, berr := db.QueryContext(ctx,
+			`SELECT d.id, d.topic, d.question, d.answer`+searchExtraSelect(cols)+m1ExamSelect(cols)+
+				`, NULL AS rank FROM distilled_qa d WHERE d.session_id IN (`+placeholders+`)
+				 ORDER BY d.id DESC LIMIT ?`,
+			append(args, sessionBridgeRows)...)
+		if berr == nil {
+			for bridgeRows.Next() {
+				h, perr := scanSearchHit(bridgeRows, cols, now, intent)
+				if perr != nil {
+					bridgeRows.Close() //stylegate:ignore read-only cursor whose iteration already ended
+					return nil, fmt.Errorf("memory_search: %w", perr)
+				}
+				bridgeIDs[h.ID] = true
+				if _, seen := hitsByID[h.ID]; !seen {
+					hitsByID[h.ID] = &h
+					order = append(order, h.ID)
+				}
+			}
+			bridgeRows.Close() //stylegate:ignore read-only cursor whose iteration already ended
 		}
 	}
 
@@ -2347,6 +2857,24 @@ func MemorySearchHits(query string, limit int, intent string) ([]MemoryHit, erro
 		// through the gram index.
 		if subsetIDs[a] != subsetIDs[b] {
 			if subsetIDs[a] {
+				return -1
+			}
+			return 1
+		}
+		// The session bridge (memory_session_bridge.go) sorts next: BELOW the
+		// query's own ladder matches (a row the query's own tokens satisfied is
+		// stronger evidence) and ABOVE the plain pool (a bridge row is the
+		// record of a session whose COLLOQUIAL opening matched this query,
+		// which is exactly the case where the pool's words do not meet the
+		// query's). Measured on the hand-verified labels at limit 20, as a sort
+		// key: MRR 0.1413 -> 0.3566, @20 20/57 -> 48/57, and ZERO already-
+		// recalled label lost its place (the deepest displacement was label
+		// e1e22e9f 14 -> 20, still returned). The same bonus expressed as a
+		// SCORE term instead measured 20/57 -> 23/57: the pool's token coverage
+		// outranks any score a bridge row can gain, so the sort key is what
+		// carries the effect — and that is why it is capped (sessionBridgeRows).
+		if bridgeIDs[a] != bridgeIDs[b] {
+			if bridgeIDs[a] {
 				return -1
 			}
 			return 1
@@ -2857,8 +3385,15 @@ const likeCJKRankMinTermRunes = 2
 // ORDER BY, and the LIMIT binds last. Rendering one builder for both keeps a
 // caller from re-deriving that order (the route and its regression test read
 // this one).
-func likeCJKQuery(terms []string, selectExtra string, limit int) (string, []interface{}) {
-	key := likeCJKRelevanceExpr(terms)
+func likeCJKQuery(ctx context.Context, db *sql.DB, dbPath string, terms []string, selectExtra string, limit int) (string, []interface{}) {
+	// The lexical-rarity factors for `terms` are measured ONCE here, before the
+	// SQL is rendered (memory_route3_df.go): a df is a property of the corpus
+	// snapshot, not of the query, so it is resolved once per search and
+	// rendered as LITERAL numbers. A literal (not a bound parameter) keeps the
+	// key's parameter count equal to its instr-terms — which is exactly what
+	// likeCJKRelevanceArgs promises — and makes the measured ordering readable
+	// in a query log or an EXPLAIN.
+	key := likeCJKRelevanceExprWithDF(terms, cjkDFFactors(ctx, db, dbPath, terms))
 	args := appendCJKLikes(terms, len(terms))
 	args = append(args, likeCJKRelevanceArgs(terms)...)
 	args = append(args, limit)
@@ -2906,6 +3441,22 @@ type cjkRankTerm struct {
 // the ORDER BY on confidence alone — the pre-fix ordering, but only for a
 // query the router produced nothing rankable for.
 func likeCJKRelevanceExpr(terms []string) string {
+	return likeCJKRelevanceExprWithDF(terms, nil)
+}
+
+// likeCJKRelevanceExprWithDF is likeCJKRelevanceExpr with the corpus's lexical
+// RARITY folded in (memory_route3_df.go): each term's rune-length weight is
+// multiplied by a factor in [1, 1+cjkIDFBoostScale] that is 1.0 when the term's
+// df is not in `factors`. The factor is ONE-SIDED on purpose — a rare term can
+// only weigh more than its length said, never less — so the change is additive
+// to the ordering the pre-df key already produced for every query whose
+// segments are all common words.
+//
+// Rendered as a FLOAT LITERAL with a fixed 3 decimals: SQLite's ORDER BY omits
+// `%f` formatting of its own, the value must be stable across the two calls
+// that render the same query (the SQL and a re-render in a test), and a literal
+// keeps the parameter list identical to the pre-df key's.
+func likeCJKRelevanceExprWithDF(terms []string, factors map[string]float64) string {
 	rank := likeCJKRelevanceTerms(terms)
 	if len(rank) == 0 {
 		return likeCJKNoRelevanceExpr
@@ -2921,9 +3472,27 @@ func likeCJKRelevanceExpr(terms []string) string {
 			// the pre-fix ordering).
 			hits = append(hits, "(instr(COALESCE(d."+c+",''), ?) > 0)")
 		}
-		parts = append(parts, fmt.Sprintf("(%s) * %d", strings.Join(hits, " + "), rt.weight))
+		weight := float64(rt.weight) * cjkIDFNeutralFactor
+		if f, ok := factors[rt.term]; ok {
+			weight = float64(rt.weight) * f
+		}
+		parts = append(parts, fmt.Sprintf("(%s) * %s", strings.Join(hits, " + "),
+			formatRelevanceWeight(weight)))
 	}
 	return "(" + strings.Join(parts, " + ") + ")"
+}
+
+// formatRelevanceWeight renders one term's weight. An INTEGRAL weight keeps the
+// pre-df spelling (`* 4`) so the SQL text of a query whose factors are all
+// neutral is byte-identical to what the pre-df builder produced — a difference
+// there would be invisible in results and visible only in the query log, which
+// is the kind of change nobody can later explain. A fractional weight (df
+// measured) renders at cjkRelevanceWeightDecimals.
+func formatRelevanceWeight(w float64) string {
+	if w == math.Trunc(w) {
+		return strconv.FormatInt(int64(w), 10)
+	}
+	return strconv.FormatFloat(w, 'f', cjkRelevanceWeightDecimals, 64)
 }
 
 // likeCJKRelevanceArgs are the bound terms of likeCJKRelevanceExpr, one bare
@@ -3562,7 +4131,16 @@ func meaningfulQueryTokens(query string) []string {
 	for _, field := range strings.Fields(query) {
 		for _, run := range splitCJKRuns(field) {
 			if !hasCJK(run) {
-				add(run)
+				// Split the ASCII run at the SAME unicode61 boundaries the
+				// recall side uses (addFieldTerms -> splitFTSWords), so a
+				// trailing '?' / punctuation never reaches the coverage
+				// regex. Without this, "memory?" survives here while FTS
+				// recalls the token "memory": \bmemory\?\b then matches no
+				// stored row and every hit's tokens= is deflated (the
+				// "how to brew  memory?" search-quality defect).
+				for _, piece := range splitFTSWords(run) {
+					add(piece)
+				}
 				continue
 			}
 			for _, word := range cjkQuerySegments(run) {
@@ -3610,7 +4188,7 @@ func queryTokenCoverage(query string, h *MemoryHit) int {
 func memoryJiebaTextCols(cols map[string]bool) []string {
 	out := make([]string, 0, len(m1JiebaTextCols))
 	for _, c := range m1JiebaTextCols {
-		if cols[c] && c != "search_kw" { // search_kw is already in hand at both call sites
+		if cols[c] && c != searchKwColumn { // search_kw is already in hand at both call sites
 			out = append(out, c)
 		}
 	}
@@ -3925,12 +4503,20 @@ func memoryStoreRow(ctx context.Context, q QueryExecer, topic, question, answer,
 	// be able to SAY when the fold discarded a different body (Rule 15: the
 	// merge stays identical, only its silence ends). `cols` decides whether the
 	// column exists; a schema without it simply has no verdict to give.
-	exactKeyQuery := "SELECT id FROM distilled_qa WHERE substr(question,1,?)=? AND topic=?"
+	//
+	// The filter is the PERSISTED key column (qkey), never substr(question,…):
+	// a function of a column compared against a BOUND parameter cannot use an
+	// index (EXPLAIN QUERY PLAN stays SCAN even with an expression index —
+	// measured both ways), while `qkey=? AND topic=?` is a SEARCH on
+	// idx_distilled_qa_qkey_topic. The stored question is still the full text;
+	// the truncation lives in the key, written on store and backfilled by
+	// ensureDedupKeyIndexTx for rows that predate the column.
+	key := truncateRunes(question, dedupQuestionRunes)
+	exactKeyQuery := "SELECT id FROM distilled_qa WHERE " + dedupKeyColumn + "=? AND topic=?"
 	if cols["answer"] {
-		exactKeyQuery = "SELECT id, COALESCE(answer,'') FROM distilled_qa WHERE substr(question,1,?)=? AND topic=?"
+		exactKeyQuery = "SELECT id, COALESCE(answer,'') FROM distilled_qa WHERE " + dedupKeyColumn + "=? AND topic=?"
 	}
-	keyRow := q.QueryRowContext(ctx, exactKeyQuery,
-		dedupQuestionRunes, truncateRunes(question, dedupQuestionRunes), topic)
+	keyRow := q.QueryRowContext(ctx, exactKeyQuery, key, topic)
 	if cols["answer"] {
 		err = keyRow.Scan(&existing, &existingAnswer)
 	} else {
@@ -3980,8 +4566,16 @@ func memoryStoreRow(ctx context.Context, q QueryExecer, topic, question, answer,
 	// INSERT adapts instead of failing).
 	insCols := []string{"topic", "question", "answer"}
 	vals := []interface{}{topic, question, answer}
-	for _, c := range append([]string{"sources", "confidence", "tier", "distilled_at", "lesson_type", "when_at", "search_kw", "jieba_token",
-		m1ExamQuestions, "kw_what", "kw_why", "kw_when", "kw_where", "kw_who"}, originColumns...) {
+	// The dedup key is written WITH the row, so a fresh insert never needs the
+	// backfill and the probes' index stays exact. It is derived, not caller
+	// input: the question truncated to the dedup width (identical for rows the
+	// backfill touches, because SQLite's substr() is character-based too).
+	if cols[dedupKeyColumn] {
+		insCols = append(insCols, dedupKeyColumn)
+		vals = append(vals, truncateRunes(question, dedupQuestionRunes))
+	}
+	for _, c := range append(append([]string{"sources", "confidence", "tier", "distilled_at", "lesson_type", "when_at", searchKwColumn, jiebaTokenCol},
+		m1JiebaIntentCols...), originColumns...) {
 		if !cols[c] {
 			continue
 		}
@@ -4010,14 +4604,14 @@ func memoryStoreRow(ctx context.Context, q QueryExecer, topic, question, answer,
 			vals = append(vals, defaultTier)
 		case "distilled_at":
 			vals = append(vals, float64(time.Now().Unix()))
-		case "search_kw":
+		case searchKwColumn:
 			// Fix 2 (report §2.3 + §8 #1): the 5W1H keywords are persisted
 			// into their dedicated search_kw column (not just the answer
 			// tail) so FTS5's six-column index covers them as standalone
 			// comma-separated tokens — a keyword query hits directly even
 			// when it never appears verbatim in the answer body.
 			vals = append(vals, searchKwValue(kws))
-		case "jieba_token":
+		case jiebaTokenCol:
 			// Fix 2 + search_kw absorption: the column carries the words a
 			// real Chinese segmenter (internal/cjkseg, gse over its embedded
 			// dictionary) finds in the row, joined by cjkSegmentSep — so the
@@ -4660,6 +5254,13 @@ func MemoryUpdate(id int, f MemoryUpdateFields) (string, error) {
 	if f.Question != "" {
 		sets = append(sets, "question=?")
 		args = append(args, f.Question)
+		// The dedup key IS derived from the question, so an edit that moves
+		// the question must move the key in the same statement — a stale key
+		// would make the probe miss (a duplicate row) rather than merely slow.
+		if cols[dedupKeyColumn] {
+			sets = append(sets, dedupKeyColumn+"=?")
+			args = append(args, truncateRunes(f.Question, dedupQuestionRunes))
+		}
 	}
 	if f.Answer != "" || f.Keywords != nil {
 		newAnswer := f.Answer
@@ -4689,7 +5290,7 @@ func MemoryUpdate(id int, f MemoryUpdateFields) (string, error) {
 		sets = append(sets, "confidence=?")
 		args = append(args, *f.Confidence)
 	}
-	if f.Keywords != nil && cols["search_kw"] {
+	if f.Keywords != nil && cols[searchKwColumn] {
 		sets = append(sets, "search_kw=?")
 		args = append(args, searchKwValue(f.Keywords))
 	}
@@ -4701,7 +5302,7 @@ func MemoryUpdate(id int, f MemoryUpdateFields) (string, error) {
 	// "夜间" was unreachable after an update that added the phrase). The
 	// re-derivation always reads the STORED values, so a partial update keeps
 	// the columns it does not touch.
-	if cols["jieba_token"] && (f.Question != "" || f.Answer != "" || f.Keywords != nil) {
+	if cols[jiebaTokenCol] && (f.Question != "" || f.Answer != "" || f.Keywords != nil) {
 		curTopic, curQuestion, curAnswer, curKw := "", "", "", ""
 		var t, q, a, k sql.NullString
 		if err := db.QueryRowContext(ctx,

@@ -193,6 +193,19 @@ type Sandbox struct {
 	// resolves through config.LedgerPath().
 	SettingsDocSource string
 	SettingsDocPath   string
+	// SettingsDocAbsent is TRUE when the source document the initializer looked
+	// for does not exist, so the profile carries NO settings.json and the
+	// sandbox will run on gopi's built-in defaults (no api_key, no repos
+	// table). It is a SEPARATE, STRUCTURED field rather than a substring of the
+	// human report because the human sentence "settings=<src>(absent-not-linked)"
+	// was the silent-degradation defect this run fixed: a caller parsing the
+	// result (and a reader skimming the line) could not tell a complete profile
+	// from one whose document was never written. Absence is still a LEGAL HOST
+	// (testutil/suiteenv.go points GOPI_SETTINGS at a deliberately absent path
+	// for every suite run, Rule 34), so it is REPORTED LOUDLY and never refused;
+	// a DANGLING symlink is the separate MISCONFIGURATION shape and IS refused
+	// (see materialiseSettingsDoc).
+	SettingsDocAbsent bool
 	LedgerPath        string
 	// PluginsSource is the plugin tree the initializer considered linking and
 	// PluginsLink the target it actually linked (empty when that source does not
@@ -246,6 +259,23 @@ func Create(root, rootSource string, opts Options) (*Sandbox, error) {
 	}
 	sb, err := Ensure(dir, root, rootSource, opts)
 	if err != nil {
+		// THE HALF-BUILT DIRECTORY IS THIS CALL'S OWN LITTER, SO THIS CALL
+		// REMOVES IT. Ensure got as far as the profile skeleton before the
+		// settings document was refused (measured 2026-11-15: the dangling-link
+		// run left `sandbox-pair3-…/.gopi/{sessions,logs,raw}` behind, with no
+		// settings.json) — a directory that LOOKS like a sandbox while its
+		// profile is incomplete is the same defect the refusal exists to
+		// prevent, only moved from a report line onto the disk. `dir` was
+		// created by THIS call two lines above and by nobody else, so removing
+		// it destroys no one's work (Rule 42's ownership test); a REUSED
+		// sandbox never reaches this branch because reuse returns above.
+		//
+		// A removal failure is REPORTED beside the original error, never
+		// swallowed (Rule 15): the caller must not be told "refused, nothing
+		// left behind" while a skeleton is still there.
+		if rmErr := os.RemoveAll(dir); rmErr != nil {
+			return nil, fmt.Errorf("%w (and the partial sandbox %s could not be removed: %w)", err, dir, rmErr)
+		}
 		return nil, err
 	}
 	sb.Created = true
@@ -295,12 +325,13 @@ func Ensure(dir, root, rootSource string, opts Options) (*Sandbox, error) {
 	sb := &Sandbox{Path: dir, Root: root, RootSource: rootSource}
 
 	if !opts.SkipSettingsDoc {
-		source, path, err := materialiseSettingsDoc(dir, opts)
+		source, path, absent, err := materialiseSettingsDoc(dir, opts)
 		if err != nil {
 			return nil, err
 		}
 		sb.SettingsDocSource = source
 		sb.SettingsDocPath = path
+		sb.SettingsDocAbsent = absent
 	}
 
 	// The PLUGIN TREE: <profile>/plugins -> the real tree, the same read-only

@@ -111,6 +111,31 @@ func ChatSessionSlotPath(dir string, i int) string {
 	return filepath.Join(dir, ChatSessionSlotName(i))
 }
 
+// chatSessionSlotMatch says HOW a registration found the slot it writes — the
+// fact that decides what the arm point REPORTS, and the reason "this session was
+// already registered" must be a different observable from "this run filed the
+// first entry" (Rule 15).
+//
+// The distinction exists because the two arms write the SAME slot for opposite
+// reasons: the identity arm is the run re-registering itself (a retry, a
+// web/chat run re-arming), while the session arm is a DIFFERENT PROCESS
+// continuing an already-registered session — `gopi chat --resume <id>`, whose
+// pid half necessarily differs. See registerChatSessionSlot's header for the
+// measured defect the second arm closes.
+type chatSessionSlotMatch string
+
+const (
+	// chatSessionSlotMatchFresh: no entry named this run — a free or reclaimed
+	// slot was taken. The pre-existing case.
+	chatSessionSlotMatchFresh chatSessionSlotMatch = "fresh"
+	// chatSessionSlotMatchIdentity: the WHOLE identity is already filed, i.e.
+	// this is literally the same surface re-registering.
+	chatSessionSlotMatchIdentity chatSessionSlotMatch = "identity"
+	// chatSessionSlotMatchSession: a DIFFERENT identity in the registry names
+	// the same session directory — a resumed run in its session's own slot.
+	chatSessionSlotMatchSession chatSessionSlotMatch = "session"
+)
+
 // ChatSessionSlotEntry is one registered slot as a READER sees it: the file and
 // the identity value it carries. An entry with an empty Identity is noise (a
 // truncated write, an operator's stray edit) and a reader must skip it rather
@@ -173,13 +198,43 @@ func ReadChatSessionSlots(dir string) ([]ChatSessionSlotEntry, error) {
 // A session with an empty directory half still registers: its pid is a real
 // fact and the reader's own refusal (no directory to deliver to) is the honest
 // answer, whereas withholding the entry would look like "no chat is running".
+//
+// IT DOES NOT REWRITE A SESSION THAT IS ALREADY FILED (epic 01a1fae5). A run
+// that continues an existing session publishes a DIFFERENT identity — the pid
+// half is this process, not the one that filed the entry — so a registry keyed
+// on the whole identity could not see the two as one session and took a free
+// slot, delivering every broadcast event twice (scripts/notify/notify.sh's
+// per-slot loop). The write is therefore conditional on the MATCH: an entry
+// that already names this session is LEFT EXACTLY AS IT IS, and the caller is
+// told which match it was so it can say so.
 func RegisterChatSessionSlot(dir, sessionDir string) (ChatSessionSlotEntry, error) {
+	entry, _, err := registerChatSessionSlot(dir, sessionDir)
+	return entry, err
+}
+
+// registerChatSessionSlot is RegisterChatSessionSlot plus the MATCH the
+// registration settled on — the fact the arm point needs to report honestly
+// (chatSessionSlotMatchFresh vs …Identity vs …Session, Rule 15).
+func registerChatSessionSlot(dir, sessionDir string) (ChatSessionSlotEntry, chatSessionSlotMatch, error) {
 	value := config.FormatChatSurfaceIdentity(os.Getpid(), sessionDir)
-	index, err := chatSessionSlotIndex(dir, value)
+	index, match, err := chatSessionSlotIndex(dir, value, sessionDir)
 	if err != nil {
-		return ChatSessionSlotEntry{}, err
+		return ChatSessionSlotEntry{}, "", err
 	}
 	path := ChatSessionSlotPath(dir, index)
+	if match == chatSessionSlotMatchSession {
+		// ALREADY FILED BY AN EARLIER RUN OF THIS SESSION. Nothing is written:
+		// the entry a resume must keep is the one that is there, and rewriting it
+		// with this process's pid would turn "registered exactly once" into
+		// "registered once, by whoever ran last". Its identity is returned as it
+		// READS on disk, so a caller cannot report a value the file does not hold.
+		current, err := os.ReadFile(path)
+		if err != nil {
+			return ChatSessionSlotEntry{}, "", fmt.Errorf("chat session slots: cannot re-read %s: %w", path, err)
+		}
+		return ChatSessionSlotEntry{Path: path, Index: index, Identity: strings.TrimSpace(string(current))},
+			match, nil
+	}
 	// O_TRUNC, not a temp file + rename: one small value, and the reader's
 	// contract is "the file holds an identity or it holds nothing" — a partial
 	// write is impossible for a value this size, and a truncate-then-write that
@@ -187,27 +242,41 @@ func RegisterChatSessionSlot(dir, sessionDir string) (ChatSessionSlotEntry, erro
 	// session.
 	f, err := os.OpenFile(path, os.O_WRONLY|os.O_CREATE|os.O_TRUNC, chatSessionSlotFileMode)
 	if err != nil {
-		return ChatSessionSlotEntry{}, fmt.Errorf("chat session slots: cannot register %s: %w", path, err)
+		return ChatSessionSlotEntry{}, "", fmt.Errorf("chat session slots: cannot register %s: %w", path, err)
 	}
 	if _, err := f.WriteString(value + "\n"); err != nil {
 		f.Close() //stylegate:ignore the registration write failed and that error is the returned one; the close is the last act of a path already reporting its own failure
-		return ChatSessionSlotEntry{}, fmt.Errorf("chat session slots: cannot write %s: %w", path, err)
+		return ChatSessionSlotEntry{}, "", fmt.Errorf("chat session slots: cannot write %s: %w", path, err)
 	}
 	if err := f.Close(); err != nil {
-		return ChatSessionSlotEntry{}, fmt.Errorf("chat session slots: cannot close %s: %w", path, err)
+		return ChatSessionSlotEntry{}, "", fmt.Errorf("chat session slots: cannot close %s: %w", path, err)
 	}
-	return ChatSessionSlotEntry{Path: path, Index: index, Identity: value}, nil
+	return ChatSessionSlotEntry{Path: path, Index: index, Identity: value}, match, nil
 }
 
 // chatSessionSlotIndex decides WHICH slot this registration writes, in the order
 // the file header states: this run's own entry → a free slot → a RECLAIMABLE
 // entry (its subject is gone) → refusal.
 //
-// The first arm is the idempotence: a re-registration, or a resumed run in the
-// same session directory, must not consume a second slot — the registry's size is
-// the count of DISTINCT live surfaces.
-func chatSessionSlotIndex(dir, value string) (int, error) {
+// THE FIRST ARM IS TWO ARMS, and the second is the one epic 01a1fae5 added. An
+// exact identity match is the pre-existing idempotence (the same surface
+// re-registering). A match on the SESSION DIRECTORY ALONE is a DIFFERENT
+// process continuing an already-registered session — `gopi chat --resume <id>`,
+// whose pid half necessarily differs from the run that filed the entry — and it
+// must land in that entry's slot, because the registry's size is the count of
+// DISTINCT SESSIONS a sink can deliver to (scripts/notify/notify.sh loops over
+// slots, so a second entry is a second delivery of every event).
+//
+// WHY THE SESSION ARM COMES BEFORE THE RECLAIM ARM, and why it does not matter
+// that such an entry often LOOKS reclaimable: the filing run has usually
+// exited, so chatSessionSlotReclaimable answers true (dead pid, live directory).
+// Taking a free or reclaimed slot is still wrong for it — that is the duplicate
+// this epic measured — so the session match is decided first and the entry is
+// reused AS IT STANDS (registerChatSessionSlot writes nothing for it).
+func chatSessionSlotIndex(dir, value, sessionDir string) (int, chatSessionSlotMatch, error) {
 	stats := make([]slotStat, 0, ChatSessionSlotLimit)
+	sessionMatch := -1
+	wantDir := strings.TrimSpace(sessionDir)
 	for i := 0; i < ChatSessionSlotLimit; i++ {
 		path := ChatSessionSlotPath(dir, i)
 		fi, err := os.Stat(path)
@@ -216,16 +285,19 @@ func chatSessionSlotIndex(dir, value string) (int, error) {
 				stats = append(stats, slotStat{index: i})
 				continue
 			}
-			return 0, fmt.Errorf("chat session slots: cannot stat %s: %w", path, err)
+			return 0, "", fmt.Errorf("chat session slots: cannot stat %s: %w", path, err)
 		}
 		if fi.IsDir() {
-			return 0, fmt.Errorf("chat session slots: %s is a directory — a slot must be a file holding one identity", path)
+			return 0, "", fmt.Errorf("chat session slots: %s is a directory — a slot must be a file holding one identity", path)
 		}
 		identity := ""
 		if data, readErr := os.ReadFile(path); readErr == nil {
 			identity = strings.TrimSpace(string(data))
 			if identity == value {
-				return i, nil
+				return i, chatSessionSlotMatchIdentity, nil
+			}
+			if wantDir != "" && sessionMatch < 0 && chatSessionSlotNamesSession(identity, wantDir) {
+				sessionMatch = i
 			}
 		}
 		stats = append(stats, slotStat{
@@ -236,14 +308,17 @@ func chatSessionSlotIndex(dir, value string) (int, error) {
 			reclaim:  chatSessionSlotReclaimable(identity),
 		})
 	}
+	if sessionMatch >= 0 {
+		return sessionMatch, chatSessionSlotMatchSession, nil
+	}
 	for _, s := range stats {
 		if !s.exists {
-			return s.index, nil
+			return s.index, chatSessionSlotMatchFresh, nil
 		}
 	}
 	for _, s := range stats {
 		if s.reclaim {
-			return s.index, nil
+			return s.index, chatSessionSlotMatchFresh, nil
 		}
 	}
 	// EVERY ENTRY STILL LOOKS ALIVE. The registry is out of room and no slot here
@@ -254,8 +329,21 @@ func chatSessionSlotIndex(dir, value string) (int, error) {
 	for _, s := range stats {
 		occupants = append(occupants, fmt.Sprintf("slot %d (%s) holds %q", s.index, s.path, s.identity))
 	}
-	return 0, fmt.Errorf("chat session slots: all %d slots are held by chats that still look alive and none could be shown to be gone; refusing to evict one — %s",
+	return 0, "", fmt.Errorf("chat session slots: all %d slots are held by chats that still look alive and none could be shown to be gone; refusing to evict one — %s",
 		ChatSessionSlotLimit, strings.Join(occupants, "; "))
+}
+
+// chatSessionSlotNamesSession reports whether an entry identity names the given
+// session DIRECTORY. It is the ONE predicate behind the resume arm of
+// chatSessionSlotIndex (Rule 13/14): the identity's own parser decides the
+// directory half, so the writer cannot disagree with the reader about what a
+// slot names.
+func chatSessionSlotNamesSession(identity, sessionDir string) bool {
+	got, ok := ChatSessionSlotSessionDir(identity)
+	if !ok {
+		return false
+	}
+	return filepath.Clean(got) == filepath.Clean(sessionDir)
 }
 
 // chatSessionSlotReclaimable reports whether a slot's SUBJECT is gone, so the
@@ -318,6 +406,19 @@ func chatSessionSlotDir() (string, error) {
 	return dir, nil
 }
 
+// chatSessionSlotDeclineDir is the directory a DECLINED run names in its
+// refusal. It resolves the same directory the write would have used (so the
+// sentence points a reader at the place to check), and it falls back to the
+// resolution ERROR — the refusal must still print when the tree cannot be
+// resolved, because "declined" is true either way.
+func chatSessionSlotDeclineDir() string {
+	dir, err := config.ChatSlotsDir()
+	if err != nil {
+		return "the operator's profile (whose chat-slot directory could not be resolved: " + err.Error() + ")"
+	}
+	return dir
+}
+
 // chatSessionSlotRegister is the ARM-POINT call: it files this run's identity
 // and reports on stderr BOTH when it could not and WHERE it did (Rule 15 — a chat
 // whose entry the sink cannot find is a chat that silently receives nothing,
@@ -336,6 +437,38 @@ func chatSessionSlotDir() (string, error) {
 // the cost of a failure is the missing notifications and the operator is told
 // that in one line.
 func chatSessionSlotRegister(sessionPath string, st termToolStyles) (ChatSessionSlotEntry, bool) {
+	return chatSessionSlotRegisterUnless(sessionPath, st, "")
+}
+
+// chatSessionSlotRegisterUnless is the ARM POINT's own body, with the operator's
+// OFF SWITCH as an explicit argument: `declineWord` is the flag word this run
+// was started with (`--no-notify` / `--no-events`), and "" means the run
+// subscribes (the default).
+//
+// WHY IT CARRIES THE WORD AND NOT A BOOL: the refusal below names what was
+// TYPED. A sentence that said only "notifications are off" would leave a reader
+// unable to tell which of the two spellings took effect, and the epic that
+// introduced them is precisely about making the switch observable (Rule 15).
+//
+// WHY THE DECLINE IS CHECKED HERE AND NOT AT THE CALLER. This is the one call
+// that performs the write, so a run that declined is a run that NEVER WROTE a
+// slot — not a run whose slot was written and then removed, which leaves a
+// window in which `notify.cmd` could deliver to a chat that is not listening.
+//
+// AND IT IS NOT SILENT (Rule 15). A declined run prints the sentence that says
+// so, naming the switch and the directory it declined to write into, because
+// "this chat receives no events" and "the write went somewhere I did not look"
+// must be different observables to whoever reads the run's stderr. The refusal
+// is plain (not dimmed), and the return value is the same "not registered"
+// answer the replay short-circuit and a resolved-directory failure give, so no
+// caller can tell them apart by shape — only by the sentence, which is the
+// point of printing it.
+//
+// THE REPLAY SHORT-CIRCUIT COMES FIRST AND STAYS FIRST: a replay already
+// refuses to write (and says so in its own vocabulary); a replay that ALSO
+// carried --no-notify would otherwise get two sentences for one non-write, and
+// the replay sentence is the one that is true about the run as a whole.
+func chatSessionSlotRegisterUnless(sessionPath string, st termToolStyles, declineWord string) (ChatSessionSlotEntry, bool) {
 	// A REPLAY WRITES NO SLOT (internal/replaymode — measured 2026-10-12). The
 	// slot registry is the operator's OWN index of live chats; a `--replay` run
 	// is a picture of a session that already happened, so filing its scratch
@@ -362,6 +495,21 @@ func chatSessionSlotRegister(sessionPath string, st termToolStyles) (ChatSession
 		replaymode.Noticef("%s\n", replaymode.Refuse("register "+ChatSessionSlotPrefix+"* in the operator's profile"))
 		return ChatSessionSlotEntry{}, false
 	}
+	// THE OPERATOR'S OFF SWITCH (--no-notify / --no-events). Checked BEFORE the
+	// directory is resolved, so a declined run does not even ask where it would
+	// have written: the answer is "nowhere", and asking would make the directory
+	// resolution's own failure a second, competing report about a write this run
+	// already declined.
+	//
+	// It names the DIRECTORY it declined into rather than saying "notifications
+	// off", because the directory is the half that is checkable: a reader can
+	// look there and see no file of this run's, which is the observable the
+	// acceptance criterion asks for.
+	if declineWord != "" {
+		fmt.Fprintf(os.Stderr, "%s%s: this run declines the chat event slot — no %s* file was written to %s, so no `notify.cmd` delivery will reach it\n",
+			chatSlotNotice, declineWord, ChatSessionSlotPrefix, chatSessionSlotDeclineDir())
+		return ChatSessionSlotEntry{}, false
+	}
 	dir, err := chatSessionSlotDir()
 	if err != nil {
 		fmt.Fprintln(os.Stderr, err)
@@ -371,13 +519,29 @@ func chatSessionSlotRegister(sessionPath string, st termToolStyles) (ChatSession
 	if strings.TrimSpace(sessionPath) != "" {
 		sessionDir = sessionlayout.RecordContainer(sessionPath)
 	}
-	entry, err := RegisterChatSessionSlot(dir, sessionDir)
+	entry, match, err := registerChatSessionSlot(dir, sessionDir)
 	if err != nil {
 		fmt.Fprintf(os.Stderr, "%v — this run will not receive `notify.cmd` deliveries that address chats\n", err)
 		return ChatSessionSlotEntry{}, false
 	}
-	termWriteRows(os.Stderr, termNoteRows(chatSlotNotice+chatSessionSlotSelfCheckLine(entry, sessionDir), st))
+	line := chatSessionSlotSelfCheckLine(entry, sessionDir)
+	if match == chatSessionSlotMatchSession {
+		line = chatSessionSlotKeepLine(entry, sessionDir)
+	}
+	termWriteRows(os.Stderr, termNoteRows(chatSlotNotice+line, st))
 	return entry, true
+}
+
+// chatSessionSlotKeepLine is what a RESUMED run says instead of the filing line:
+// this session was already registered, so this run added no subscription and
+// rewrote nothing. It exists because the two arms of the registry write the SAME
+// slot for opposite reasons, and "one entry" has to be a different observable
+// from "the write went somewhere I did not look" (Rule 15) — otherwise a resume
+// that silently filed a SECOND slot and a resume that correctly kept the one
+// entry would read identically on the console.
+func chatSessionSlotKeepLine(entry ChatSessionSlotEntry, sessionDir string) string {
+	return fmt.Sprintf("slot %d (%s) already names this session — already registered, so this run added no second %s* file and rewrote nothing (the sink delivers once per session; the entry kept is %s)",
+		entry.Index, filepath.Dir(entry.Path), ChatSessionSlotPrefix, sessionDir)
 }
 
 // chatSessionSlotSelfCheckLine renders the one line that makes this run's

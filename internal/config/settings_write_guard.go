@@ -53,6 +53,8 @@ import (
 	"reflect"
 	"sort"
 	"strings"
+
+	"github.com/nickhuang99/gopi/internal/configreport"
 )
 
 // SettingsBackupSuffix is the sibling-backup naming convention: the document's
@@ -88,7 +90,9 @@ const settingsWriteGuardOp = "settings write refused"
 // "unrecognized — so it is IGNORED" while the worker printed its clone-channel
 // banner reading them on the same host. "Modelled" means "some production reader
 // consumes this key", and there are two such shapes: a decoded field, and a
-// top-level read (devrepo.go). The second set is not transcribed here — it is
+// top-level read (devrepo.go), and a key read by a DIFFERENT package
+// (configreport.ExternalConsumerSettingsKeys: messages_path, read by
+// internal/deepseek). The latter two sets are not transcribed here — each is
 // read off its own registry, whose entries ARE the production read path.
 func ModelledSettingsKeys() []string {
 	t := reflect.TypeOf(Config{})
@@ -105,6 +109,12 @@ func ModelledSettingsKeys() []string {
 		keys = append(keys, name)
 	}
 	keys = append(keys, ModelledTopLevelOnlySettingsKeys()...)
+	// Keys read by production code in OTHER packages (messages_path in
+	// internal/deepseek) are modelled too: "modelled" means some reader consumes
+	// the key, and a cross-package reader is no less live than a struct field.
+	for _, row := range configreport.ExternalConsumerSettingsKeys {
+		keys = append(keys, row.Key)
+	}
 	sort.Strings(keys)
 	return keys
 }

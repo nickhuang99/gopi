@@ -160,6 +160,24 @@ type WorktreeStubPlan struct {
 	// Reason says why it is kept — or, when Keep is false, the evidence that
 	// authorised collecting it (the missing gitdir target).
 	Reason string
+	// Bytes is the candidate's MEASURED size, filled for EVERY verdict (kept
+	// ones included) by the same walk the live sweep uses (DirBytes).
+	//
+	// WHY IT LIVES ON THE PLAN (measured 2026-11-17, clean-room re-verification
+	// of the sandbox arm's fix f2d570a3): without it the arm's DRY RUN had no
+	// figure to publish and printed `bytes=0` for a plan that held real bytes —
+	// ONE collectable stub of 3,124 bytes printed
+	//
+	//	scratch-gc role=cli-stubs home=… plan=1 stale=none disabled=false bytes=0 dry-run=true
+	//
+	// while the identical fixture's live sweep measured `removed=1 … bytes=3124`.
+	// The -h page defines the field for the whole verb — "bytes=: what the plan
+	// WOULD reclaim (or, without --dry-run, did)" — so a 0 there was an
+	// UNMEASURED value wearing a measurement's name (Rule 15), the exact defect
+	// f2d570a3 closed on the sandbox arm. This field is that arm's
+	// SandboxPlan.Bytes, in this arm's vocabulary (Rule 14: same discipline, not
+	// a second one).
+	Bytes int64
 }
 
 // WorktreeStubNameMatches reports whether a directory name is in the leaked-stub
@@ -222,10 +240,48 @@ func PlanWorktreeStubs(root string) ([]WorktreeStubPlan, error) {
 		if !worktreeStubNameRe.MatchString(e.Name()) {
 			continue // not this system's worktree-naming family: out of scope at any age
 		}
-		out = append(out, judgeWorktreeStub(filepath.Join(root, e.Name()), holders))
+		plan := judgeWorktreeStub(filepath.Join(root, e.Name()), holders)
+		// The size is measured for EVERY verdict, kept ones included: the plan
+		// publishes two figures (what it would reclaim, what it would leave), and
+		// a kept entry's bytes are half of that account. Measured through the SAME
+		// walk the live sweep uses (DirBytes), so `bytes=` on a dry run and on a
+		// real run are the same number for the same tree.
+		plan.Bytes = DirBytes(plan.Path)
+		out = append(out, plan)
 	}
 	sort.Slice(out, func(i, j int) bool { return out[i].Path < out[j].Path })
 	return out, nil
+}
+
+// WorktreeStubTally is what a plan adds up to: the removable and kept COUNTS and
+// their measured BYTES. It is a pure function of the verdicts, so the CLI's plan
+// line, the CLI's live line and the roots arm cannot add the same plan up
+// differently (Rule 14 — the SandboxTally precedent, in this arm's vocabulary).
+type WorktreeStubTally struct {
+	// Removable / RemovableBytes are the candidates this pass WOULD collect and
+	// their measured size — the figures `plan=`/`bytes=` publish on a dry run.
+	Removable      int
+	RemovableBytes int64
+	// Kept / KeptBytes are the candidates the predicate protects. They are a
+	// real disk cost that no pass of this arm will ever recover, so a line that
+	// published only the removable half would understate what the root holds.
+	Kept      int
+	KeptBytes int64
+}
+
+// TallyWorktreeStubs adds up a plan. Pure, so every face quotes the same arithmetic.
+func TallyWorktreeStubs(plans []WorktreeStubPlan) WorktreeStubTally {
+	var t WorktreeStubTally
+	for _, p := range plans {
+		if p.Keep {
+			t.Kept++
+			t.KeptBytes += p.Bytes
+			continue
+		}
+		t.Removable++
+		t.RemovableBytes += p.Bytes
+	}
+	return t
 }
 
 // SweepWorktreeStubs removes the candidates PlanWorktreeStubs names and returns

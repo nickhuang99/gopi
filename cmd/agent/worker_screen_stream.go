@@ -49,6 +49,7 @@ import (
 	"github.com/nickhuang99/gopi/internal/cliverbs"
 	"github.com/nickhuang99/gopi/internal/config"
 	"github.com/nickhuang99/gopi/internal/replayplay"
+	"github.com/nickhuang99/gopi/internal/scratch"
 	"github.com/nickhuang99/gopi/internal/tools"
 	"github.com/nickhuang99/gopi/internal/uiclient"
 	"github.com/nickhuang99/gopi/internal/version"
@@ -163,7 +164,7 @@ func workerScreenStreamOpen(taskID string) *workerScreenStreamTee {
 		path = filepath.Join(sessDir, taskID+uiclient.ScreenStreamSuffix)
 	}
 	if dir := filepath.Dir(path); dir != "" && dir != "." {
-		if err := os.MkdirAll(dir, dumpDirPerm); err != nil {
+		if err := scratch.MkdirAllWithSuiteRunOwnerPerm(dir, dumpDirPerm); err != nil {
 			fmt.Printf(workerScreenStreamFailFmt, path, err)
 			fmt.Println(workerScreenStreamNoOutput)
 			return nil

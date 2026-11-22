@@ -19,6 +19,7 @@ import (
 	"github.com/nickhuang99/gopi/internal/inputsource"
 	"github.com/nickhuang99/gopi/internal/replaymode"
 	"github.com/nickhuang99/gopi/internal/requestusage"
+	"github.com/nickhuang99/gopi/internal/scratch"
 	"github.com/nickhuang99/gopi/internal/sessionevent"
 	"github.com/nickhuang99/gopi/internal/sessionid"
 	"github.com/nickhuang99/gopi/internal/sessionlayout"
@@ -96,6 +97,38 @@ type SessionLogger struct {
 	// number would lag the row that produced it — the exact drift the web turn
 	// banner exists to remove. Guarded by mu like every other field here.
 	turns int
+	// recordTurns counts the `user` rows THIS LOGGER wrote that the SESSION
+	// READER counts as turns — the axis `gopi session log --turns` prints,
+	// `session replay --turn N` selects and `gopi session context --turn N`
+	// exports (see TurnsRecorded). Guarded by mu.
+	//
+	// IT IS A SECOND FIELD BECAUSE IT IS A SECOND QUANTITY, and the two are
+	// separated HERE rather than by a caller who would have to know both.
+	// `turns` above is the FOLD's clock: it judges every row by its TEXT
+	// (sessionevent.TurnCounterFace), because the fold reads this session's
+	// message array, which carries no provenance at all. `recordTurns` judges a
+	// row by the FACE it was recorded under (sessionevent.TurnRowSource), which
+	// is what the reader does — so on a log carrying `notify` deliveries the two
+	// disagree, and the measured disagreement is the defect this field closes.
+	//
+	// MEASURED (session 3965695b-6f70-4067-8b61-68628d7a6dfc, 2026-11-17,
+	// 358 user rows): the reader's axis answered 13 turns, a counter on
+	// TurnCounterFace answered 9, and the gap was EXACTLY the 4 rows recorded
+	// with `source=notify` — each one a delivery the record counts as a complete
+	// input (sessionevent.IsTurnOpeningRow leg 1) and a text-face judge cannot
+	// see. The screen printed the 9, so the operator copying `turn9` into
+	// `--turn 9` got a different turn (the screen's number was one behind after
+	// the FIRST delivery and four behind by the end).
+	//
+	// WHY THE ANCHOR'S FIELD IS NOT MERELY MOVED TO THE READER'S FACE: doing that
+	// makes `turns` count rows the anchor has no window for, so the anchor would
+	// name turns that do not exist — task 01a1db5b's measured defect ("turn 46
+	// does not exist anywhere in that session", 13 of 14 notes silently
+	// dropped). (An older redesign counted back over real windows and hit this
+	// first; the reason survives it because the note anchor is still stamped per
+	// turn.) Two consumers on two genuinely different axes get two
+	// named counts; no caller has to add, subtract or infer either.
+	recordTurns int
 	// err is the header write's outcome — a non-nil value means this run's
 	// session_start never made it to disk (a short write, ENOSPC, a closed
 	// descriptor). It is kept because the header write is the ONE write whose
@@ -335,7 +368,10 @@ func NewSessionLoggerForResumedRun(model string, rawLogPath string, sessionID st
 	if err != nil {
 		return nil, fmt.Errorf("session log: %w", err)
 	}
-	if err := os.MkdirAll(dir, 0755); err != nil {
+	// ONE REGISTRAR (this run's fix): the session root can sit inside a per-run
+	// suite root whose pin has already removed it, and a plain os.MkdirAll would
+	// bring that root back with no `.holder` — unjudgeable by the collector.
+	if err := scratch.MkdirAllWithSuiteRunOwner(dir); err != nil {
 		return nil, fmt.Errorf("session log: cannot create %s: %w", dir, err)
 	}
 
@@ -671,18 +707,58 @@ func (sl *SessionLogger) LogUserFromAt(promptID, content, source string, at time
 	if source != "" {
 		ev["source"] = source
 	}
-	// THE TURN COUNTER ADVANCES UNDER THE WRITER'S OWN PREDICATE, BEFORE the
-	// row is written: a surface that asks "which turn is starting now?" right
-	// after this call returns must get the number this row IS. The row's TEXT
-	// is passed with the reader's own face default (sessionevent.TurnRowSource)
-	// so the writer and internal/gopilog's reader cannot disagree about whether
-	// a given row opened a turn.
-	if sessionevent.IsTurnOpeningRow(content, sessionevent.TurnRowSource(source)) {
+	// THE TURN COUNTER ADVANCES UNDER THE FOLD'S OWN FACE, BEFORE the row is written:
+	// a surface that asks "which turn is starting now?" right after this call returns
+	// must get the number this row IS.
+	//
+	// WHY THE TEXT FACE AND NOT THE ROW'S RECORDED PROVENANCE — measured, and the fix
+	// is elsewhere. This counter and the fold must agree on how many turns exist,
+	// because the fold decides WHICH turns it may replace from the same count
+	// (`TestTurnCounterSharesTheFoldsClock`). The fold reads this session's message
+	// array, which carries no provenance, so a counter on the wider recorded face
+	// counts turns the message array has no window for (a `gopi notify` opening
+	// counts as a turn in the log and merges into an existing message) — the two then
+	// disagree by the number of such rows.
+	//
+	// THE OPERATOR'S C3 IS SATISFIED ELSEWHERE, and the place matters: a note no longer
+	// computes its ordinal from this counter at all. It takes the stamp off the very
+	// line it copies (`t<N> ` from self-record.md), so the number a note carries is
+	// the FILE's own and cannot drift from it (the note's ordinal used to be
+	// computed from this counter instead, which is the drift this replaced).
+	if sessionevent.IsTurnOpeningRow(content, sessionevent.TurnCounterFace) {
 		sl.mu.Lock()
 		sl.turns++
 		sl.mu.Unlock()
 	}
+	// THE READER'S OWN AXIS, COUNTED UNDER THE READER'S OWN FACE — the second
+	// quantity, advanced beside the fold's because the row is written once and
+	// both consumers must be able to ask about it without re-parsing a record
+	// whose tail is still buffered (see TurnsRecorded; the two faces and the
+	// measured gap between them are documented on the `recordTurns` field).
+	if sessionevent.IsTurnOpeningRow(content, sessionevent.TurnRowSource(source)) {
+		sl.mu.Lock()
+		sl.recordTurns++
+		sl.mu.Unlock()
+	}
 	return sl.log(ev)
+}
+
+// TurnsRecorded reports how many turn-OPENING `user` rows this logger has
+// written ON THE READER'S AXIS — the number `gopi session log --turns` prints,
+// `session replay --turn N` selects and `gopi session context --turn N`
+// exports.
+//
+// IT IS THE ONE A SCREEN MUST PRINT, and TurnsSoFar is the one a FOLD must use
+// (see the two fields' comments for why they are separate quantities rather
+// than one number with two spellings). A surface that shows a number a reader
+// will COPY into `--turn N` asks THIS function, and nothing else.
+func (sl *SessionLogger) TurnsRecorded() int {
+	if sl == nil {
+		return 0
+	}
+	sl.mu.Lock()
+	defer sl.mu.Unlock()
+	return sl.recordTurns
 }
 
 // TurnsSoFar reports how many turn-OPENING `user` rows this logger has written

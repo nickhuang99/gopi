@@ -30,6 +30,7 @@ import (
 	"github.com/nickhuang99/gopi/internal/procname"
 	"github.com/nickhuang99/gopi/internal/pushfence"
 	"github.com/nickhuang99/gopi/internal/removalaudit"
+	"github.com/nickhuang99/gopi/internal/scratch"
 )
 
 const (
@@ -929,7 +930,7 @@ const (
 // refusal and goes on to deliver. Before this epic each of the three returned
 // a report that said `Skipped` at the HEAD of the chain, so a run that left
 // one untracked scratch file behind never handed its branch over at all
-// (devdoc/peer-push-diagnosis-20260916.md §1, finding A/A′), and a close-out is
+// (devdoc/hp-push-diagnosis-20260916.md §1, finding A/A′), and a close-out is
 // a SINGLE SHOT per row: nothing re-runs it.
 //
 // Each marker is the skip reason's PREFIX — the refusal is followed by the
@@ -1332,7 +1333,7 @@ func finishCleanupRemovalReason(ctx context.Context, rep *FinishCleanupReport, d
 		// BEFORE THIS EPIC this state aborted the whole chain, which is how
 		// a row whose directory was removed by hand reported "never handed
 		// off" instead of "the directory is gone"
-		// (devdoc/peer-push-diagnosis-20260916.md A′). It is now a
+		// (devdoc/hp-push-diagnosis-20260916.md A′). It is now a
 		// REMOVAL-side fact, and the delivery proceeds — with ONE
 		// deliberate narrowing: a gone directory is also the branch-check
 		// lane's missing GROUND, so the chain pushes with the branch's own
@@ -2404,7 +2405,7 @@ func repoDirForStatus(repo, wt string) string {
 // Before 2026-10-12 this function composed `<alias>:<path>` WITHOUT asking the
 // repo's remotes, which read the ssh TOPOLOGY ALIAS as if it were a git REMOTE
 // NAME; the two name spaces have no contract, so a repo whose remote is named
-// otherwise (host-b: sync_peers ["peer1"] vs `git remote -v` = origin) refused
+// otherwise (sager: sync_peers ["peer1"] vs `git remote -v` = origin) refused
 // every delivery on git's own
 // `fatal: 'peer1' does not appear to be a git repository`.
 //
@@ -5833,7 +5834,7 @@ func finishCleanupSalvageDir(taskID string) (string, error) {
 		return "", fmt.Errorf("salvage: resolve the run's session directory for %s: %w", taskID, err)
 	}
 	dir := filepath.Join(sd, finishCleanupSalvageDirName)
-	if err := os.MkdirAll(dir, 0o700); err != nil {
+	if err := scratch.MkdirAllWithSuiteRunOwnerPerm(dir, 0o700); err != nil {
 		return "", fmt.Errorf("salvage: create %s: %w", dir, err)
 	}
 	return dir, nil

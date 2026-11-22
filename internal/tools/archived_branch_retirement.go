@@ -12,7 +12,7 @@ package tools
 // refs/gopi/archive-reason/task/probe-zombie, code `unrelated-history`, written
 // 2026-10-16T06:57:41. The row was then handed over cross-host by `gopi task
 // sync --handover` (its cancel reason names the handover and says nothing about
-// the retirement) and claimed on host-b nine seconds later, so a worker session
+// the retirement) and claimed on sager nine seconds later, so a worker session
 // was spent on a void premise twelve hours after the branch had been taken out
 // of every merge lane. The sibling reconciler (archive_row_reconcile.go) existed
 // and did not close that row: its own doctrine says why, in its header — it

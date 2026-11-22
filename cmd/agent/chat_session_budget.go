@@ -115,7 +115,8 @@ const chatSessionBudgetDefaultNotice = "%s%s unset — publishing %s=%s (unlimit
 // diagnosable from the run's own output.
 const chatSessionBudgetFailedFormat = "%scannot publish the default session budget (%s=%s): %v — this run keeps the %d-minute default planning ceiling, and its system prompt will teach it\n"
 
-// sessionBudgetSurfaceChat / sessionBudgetSurfaceWeb are the two START-UP
+// sessionBudgetSurfaceChat / sessionBudgetSurfaceWeb / sessionBudgetSurfaceUI /
+// sessionBudgetSurfaceCli are the START-UP
 // prefixes the sentence above opens with — the same `[gopi] <face>: ` shape the
 // rest of these notices use (chat_notice_sink.go, chat_session_slots.go), so a
 // reader of a mixed log can tell which surface spoke. They are surfaces, not
@@ -124,6 +125,8 @@ const chatSessionBudgetFailedFormat = "%scannot publish the default session budg
 const (
 	sessionBudgetSurfaceChat = "[gopi] chat: "
 	sessionBudgetSurfaceWeb  = "[gopi] web: "
+	sessionBudgetSurfaceUI   = "[gopi] ui: "
+	sessionBudgetSurfaceCli  = "[gopi] cli: "
 )
 
 // chatSessionBudgetDefault is the task-side default the notice above contrasts
@@ -186,6 +189,36 @@ func publishChatSessionBudgetDefault(st termToolStyles) {
 // line — and that half lives once, in publishSessionBudgetDefault below.
 func publishWebSessionBudgetDefault(st termToolStyles) {
 	publishSessionBudgetDefault(sessionBudgetSurfaceWeb, st)
+}
+
+// publishUISessionBudgetDefault gives THIS `gopi ui` console the same default.
+//
+// THE DEFECT THIS CLOSES (this task, 01a1dec7). `gopi ui` builds its engine in
+// uiStartServer and drives every turn through the same task prompt assembly, and
+// it never called any publication — so it inherited internal/agent's 60-minute
+// TASK default exactly as `gopi web` did before 02c2b3c7. The system prompt then
+// carried "session budget: … of 1h0m0s" beside the [CHAT SURFACE] paragraph
+// saying this is not a task run, and the budget half won.
+//
+// The policy is the chat's, unchanged and not re-decided here: UNSET means
+// "nobody decided" and a conversational surface decides UNLIMITED; SET means
+// "someone decided" and publishSessionBudgetDefault does not touch it.
+func publishUISessionBudgetDefault(st termToolStyles) {
+	publishSessionBudgetDefault(sessionBudgetSurfaceUI, st)
+}
+
+// publishCliSessionBudgetDefault gives THIS `gopi cli` console the same default.
+//
+// WHY IT IS ITS OWN ENTRY POINT rather than a call from the UI or the web one:
+// `gopi cli` has two launch legs of its own (the interactive browser carrier in
+// runTerm, and the non-interactive single turn in runTermOnce) and neither may be
+// reached from another face's launch point — reaching across is the second
+// capability decision this mechanism exists to avoid. What the four chat faces
+// SHARE is everything that matters — the environment name, unlimited's spelling,
+// the never-override rule, the failure line — and that half lives once, in
+// publishSessionBudgetDefault.
+func publishCliSessionBudgetDefault(st termToolStyles) {
+	publishSessionBudgetDefault(sessionBudgetSurfaceCli, st)
 }
 
 // publishSessionBudgetDefault is the ONE implementation both surfaces call: the

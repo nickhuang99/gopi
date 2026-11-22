@@ -156,6 +156,32 @@ type Result struct {
 	last bool
 	// errMsg is the service's own error text, when a response carried one.
 	errMsg string
+	// frames is how many server messages were actually decoded — the number
+	// that separates "the socket said nothing" from "the socket said something
+	// I could not use", which the pre-fix error could not tell apart.
+	frames int
+	// lastMsgType is the message type of the most recent frame (the envelope's
+	// own nibble: 0x9 is a full response, 0xf an error frame). It is quoted in
+	// the failure message so a reader knows WHAT arrived.
+	lastMsgType byte
+	// lastDecoded reports whether the MOST RECENT frame's payload survived JSON
+	// decoding. A frame that arrived but did not decode is a third thing again:
+	// the service answered, and this client could not read the answer.
+	lastDecoded bool
+	// rawPayload is that last frame's payload, quoted (see
+	// responseObservation.rawPayload).
+	rawPayload string
+	// closeReason is the peer's own goodbye — its close code and reason text —
+	// recorded when the socket ends, so a normal close is not reported as
+	// silence with no provenance.
+	closeReason string
+	// level is THIS CLIENT's own measurement of the audio it sent (audio_level.go),
+	// folded by whichever arm produced the result: Transcribe measures the decoded
+	// file once, Session folds each captured packet. It answers a question the four
+	// states above cannot — the service says "the final package carried an empty
+	// transcript", and this says whether there was anything to hear in the first
+	// place, WITH the figures.
+	level audioLevel
 }
 
 // APIError is a failure at a named step, carrying everything the vendor's
@@ -188,7 +214,16 @@ func (e *APIError) Error() string {
 	if e.ReqID != "" {
 		parts += " (reqid " + e.ReqID + ")"
 	}
-	if e.Err != nil {
+	// THE UNDERLYING FAILURE IS PROJECTED ONCE. MEASURED (2026-11-15, this host) on
+	// a real MP3: the command printed
+	//   request: the streaming channel takes a WAV or bare PCM: … (reqid …): the
+	//   streaming channel takes a WAV or bare PCM: …
+	// because the constructor fills Message with err.Error() AND carries err in Err,
+	// and this renderer appended both. The sentence was therefore twice in one
+	// line, which reads as two independent failures and buries the request id
+	// between them. `Err` still rides the struct — errors.Is/As and Unwrap are
+	// untouched — it is only the STRING projection that is not repeated.
+	if e.Err != nil && !strings.Contains(e.Message, e.Err.Error()) {
 		parts += ": " + e.Err.Error()
 	}
 	return parts
@@ -221,6 +256,60 @@ func (e *NoSpeechError) Error() string {
 	}
 	return msg
 }
+
+// NoTranscriptError is the verdict that the run produced NO TRANSCRIPT and the
+// service did not explain it with a code — the state the four sentences above
+// describe. It is a TYPE of its own, rather than a plain *APIError, because the
+// CLI's file shapes must answer it differently from a CHANNEL failure: an empty
+// transcript is "this audio produced nothing" (the batch engine's own shaped
+// verdict travels the same way, voiceNoTranscriptError in cmd/agent), while a
+// refused handshake or a protocol breakage is "the run could not happen". One
+// type for both is what made the two indistinguishable before.
+//
+// It carries the finding SENTENCE (the four states, the frame counts, the peer's
+// goodbye) and this client's own measurement of the audio, so a caller can print
+// the first and, when it wants to, quote the second.
+type NoTranscriptError struct {
+	// Finding is emptyTranscriptFinding's sentence.
+	Finding string
+	// Level is this client's measurement of the audio it sent. Measured is false
+	// when nothing was measured — never "silent" (Rule 15).
+	Level audioLevel
+	// LogID / ReqID identify the request.
+	LogID string
+	ReqID string
+}
+
+func (e *NoTranscriptError) Error() string { return e.Finding }
+
+// ── the FOUR empty-transcript verdicts ─────────────────────────────────
+//
+// finish() has to answer four different questions with four different
+// sentences, because the four facts have four different owners: a silent
+// socket is an account/network question, a FINAL package carrying an empty
+// transcript is a question about the AUDIO, a code is the service's own
+// verdict, and the vendor's error text is the service's own wording. One
+// sentence for all four is what the pre-fix code did, and it made every one of
+// them unactionable (Rule 15: a failure says what it saw).
+//
+// The sentences are constants rather than literals so the tests assert the SAME
+// text a run prints (Rule 1/13), and so a caller grepping a log and a test
+// reading an error agree on one vocabulary.
+const (
+	// noResponseSentence is the verdict when the socket produced NO response
+	// frame at all: nothing was decoded, so there is nothing about the audio to
+	// report — the finding is about the channel.
+	noResponseSentence = "the stream produced no response frame at all"
+	// emptyFinalSentence is the verdict when the service's FINAL package
+	// arrived and carried an empty transcript with no code: the service
+	// finished the utterance and recognised nothing in it (measured on real
+	// traffic — see finish_states_test.go's header for the payload).
+	emptyFinalSentence = "the service's final package carried an empty transcript and no code"
+	// noConclusionSentence is the verdict when responses arrived but the stream
+	// never reached a final package: the exchange has no conclusion yet, which
+	// is a different finding from "the service finished and said nothing".
+	noConclusionSentence = "the stream ended before the service's final package"
+)
 
 // serviceNoSpeechMarker is the phrase the vendor uses for "the audio carried no
 // speech". It is the ONE heuristic in this package, and it is LABELLED as one:
@@ -360,7 +449,7 @@ func Transcribe(ctx context.Context, opts Options) (*Result, error) {
 	}
 	defer func() { _ = conn.Close() }() //stylegate:ignore one-shot session: the close releases the socket after the transcript was read, and its error has no reader
 
-	res := &Result{ReqID: reqID, LogID: conn.LogID(), AudioMS: audioMS}
+	res := &Result{ReqID: reqID, LogID: conn.LogID(), AudioMS: audioMS, level: measureAudioLevel(samples)}
 	start := time.Now()
 	defer func() { res.Elapsed = time.Since(start) }()
 
@@ -372,6 +461,11 @@ func Transcribe(ctx context.Context, opts Options) (*Result, error) {
 	// never waits on the service and the final wait happens once, at the end.
 	incoming := make(chan []byte, incomingQueueLen)
 	readErr := make(chan error, 1)
+	// peerGone carries the peer's own goodbye sentence, when it sent one. It is
+	// a CHANNEL rather than a field on Result because the reader is a separate
+	// goroutine and Result is folded by this one: a shared field would be a data
+	// race for a string that only has to survive until the report is built.
+	peerGone := make(chan string, 1)
 	done := make(chan struct{})
 	defer close(done)
 	go func() {
@@ -386,6 +480,14 @@ func Transcribe(ctx context.Context, opts Options) (*Result, error) {
 				var closeErr *doubaostream.WsCloseError
 				if !errors.As(err, &closeErr) || closeErr.Code != doubaostream.WsCloseCodeNormal {
 					readErr <- err
+				}
+				// The peer's goodbye is RECORDED whether or not it is a
+				// failure: a normal close is the provenance of "nothing more is
+				// coming", and an end-of-run report that cannot say why the
+				// stream stopped makes every incident start from zero (Rule 15).
+				select {
+				case peerGone <- err.Error():
+				default:
 				}
 				return
 			}
@@ -474,7 +576,7 @@ func Transcribe(ctx context.Context, opts Options) (*Result, error) {
 					return res, &APIError{Op: opRead, Message: err.Error(), ReqID: reqID, LogID: res.LogID, Err: err}
 				default:
 				}
-				return res, res.finish(reqID)
+				return res, res.finishWithPeer(reqID, peerGone)
 			}
 			res.apply(msg, start)
 			quiet = 0
@@ -486,7 +588,19 @@ func Transcribe(ctx context.Context, opts Options) (*Result, error) {
 			return res, &APIError{Op: opRead, Message: ctx.Err().Error(), ReqID: reqID, LogID: res.LogID, Err: ctx.Err()}
 		}
 	}
-	return res, res.finish(reqID)
+	return res, res.finishWithPeer(reqID, peerGone)
+}
+
+// finishWithPeer folds whatever goodbye the reader recorded into the result
+// before the verdict is built, so the report can say HOW the stream ended
+// (a normal close, code 1000, a broken pipe) instead of only that it did.
+func (r *Result) finishWithPeer(reqID string, peerGone <-chan string) error {
+	select {
+	case reason := <-peerGone:
+		r.closeReason = reason
+	default:
+	}
+	return r.finish(reqID)
 }
 
 // sleepCtx waits for d, or returns early when the context is done — the ONE
@@ -542,48 +656,80 @@ func (r *Result) absorbReady(incoming <-chan []byte, start time.Time) {
 
 // apply decodes one server message and folds it in.
 func (r *Result) apply(msg []byte, start time.Time) {
-	code, last, text, errMsg := parseResponse(msg)
-	if code != 0 {
-		r.Codes = append(r.Codes, code)
+	r.fold(observeResponse(msg), start)
+}
+
+// fold records ONE decoded server message. It is separate from apply so the
+// LIVE arm (session.go) folds through the SAME code and cannot come to a
+// different account of what arrived (Rule 13/14).
+func (r *Result) fold(o responseObservation, start time.Time) {
+	r.frames++
+	r.lastMsgType = o.msgType
+	r.lastDecoded = o.decoded
+	if o.rawPayload != "" {
+		r.rawPayload = o.rawPayload
 	}
-	if last {
+	if o.code != 0 {
+		r.Codes = append(r.Codes, o.code)
+	}
+	if o.last {
 		r.last = true
 	}
-	if errMsg != "" {
-		r.errMsg = errMsg
+	if o.errMsg != "" {
+		r.errMsg = o.errMsg
 	}
-	if text != "" {
+	if o.text != "" {
 		if r.FirstTextAt == 0 {
 			r.FirstTextAt = time.Since(start)
 		}
-		r.Text = text
+		r.Text = o.text
 	}
 }
 
-// parseResponse is the FILE arm's view of parseResponseDoc: it is the same
-// decode without the segmentation flag, which that arm has no reader for.
-func parseResponse(msg []byte) (code int, last bool, text, errMsg string) {
-	code, last, text, errMsg, _ = parseResponseDoc(msg)
-	return code, last, text, errMsg
+// responseObservation is ONE server message decoded to the depth the failure
+// path needs: WHICH envelope arrived (msgType), whether its payload was readable
+// JSON at all (decoded), and the four payload facts. The distinction matters
+// because an empty transcript has several causes and the message a run prints
+// must name the one that happened (measured 2026-11-15 on the real service: a
+// final package carrying `"text":""` and no code, versus a socket that produced
+// no frame at all, reported the SAME sentence before this type existed).
+type responseObservation struct {
+	// msgType is byte 1's high nibble: 0x9 full response, 0xf server error.
+	msgType byte
+	// last is the envelope's last-packet flag.
+	last bool
+	// decoded reports that the payload reached and survived JSON decoding.
+	decoded bool
+	// code is the application code, from the error frame's first field or the
+	// payload's own `code`; 0 when neither carried one.
+	code int
+	// text is the service's LATEST FULL TEXT.
+	text string
+	// errMsg is the service's own wording: its `error` field, verbatim.
+	errMsg string
+	// rawPayload is the payload of a frame that did NOT decode as JSON, quoted
+	// and truncated. It is kept OUT of errMsg on purpose: errMsg is the
+	// service's own sentence, and a run that confuses "the vendor said this"
+	// with "we could not read what the vendor sent" misdirects the incident.
+	rawPayload string
+	// definite is the service's "this utterance is closed" verdict, false
+	// whenever the response carried no segmentation.
+	definite bool
 }
 
-// parseResponseDoc decodes the v3 envelope. It never fails loudly: an
-// unparseable frame yields zero values, and the caller's own end-of-run report
-// says what it saw (an unparseable payload is quoted, truncated, in the
-// returned message).
-//
-// definite is the service's own "this utterance is closed" verdict, carried out
-// for the LIVE arm's partial callback; it is false whenever the response carried
-// no segmentation at all, which is the honest zero rather than an assumption.
-func parseResponseDoc(msg []byte) (code int, last bool, text, errMsg string, definite bool) {
+// observeResponse decodes the v3 envelope. It never fails loudly: an
+// unparseable frame yields a zero-valued observation carrying whatever envelope
+// facts were legible, and the caller's own end-of-run report says what it saw.
+func observeResponse(msg []byte) responseObservation {
+	var o responseObservation
 	if len(msg) < headerSize4Bytes {
-		return 0, false, "", "", false
+		return o
 	}
 	headerBytes := int(msg[0]&0x0F) * headerSize4Bytes
 	if headerBytes > len(msg) {
-		return 0, false, "", "", false
+		return o
 	}
-	msgType := msg[1] >> 4
+	o.msgType = msg[1] >> 4
 	flags := msg[1] & 0x0F
 	serialization := msg[2] >> 4
 	compression := msg[2] & 0x0F
@@ -593,21 +739,21 @@ func parseResponseDoc(msg []byte) (code int, last bool, text, errMsg string, def
 		p = p[headerFieldBytes:]
 	}
 	if flags&flagLastPacket != 0 {
-		last = true
+		o.last = true
 	}
-	switch msgType {
+	switch o.msgType {
 	case msgTypeServerFullRespond:
 		if len(p) >= headerFieldBytes {
 			p = p[headerFieldBytes:]
 		}
 	case msgTypeServerError:
 		if len(p) >= 2*headerFieldBytes {
-			code = int(binary.BigEndian.Uint32(p[:headerFieldBytes]))
+			o.code = int(binary.BigEndian.Uint32(p[:headerFieldBytes]))
 			p = p[2*headerFieldBytes:]
 		}
 	}
 	if len(p) == 0 {
-		return code, last, "", "", false
+		return o
 	}
 	if compression == compressionGzip {
 		// Trailing padding is tolerated: the gzip reader stops at its own
@@ -617,23 +763,26 @@ func parseResponseDoc(msg []byte) (code int, last bool, text, errMsg string, def
 		}
 	}
 	if serialization != serializationJSON {
-		return code, last, "", "", false
+		return o
 	}
 	var doc responseDoc
 	if err := json.Unmarshal(p, &doc); err != nil {
-		return code, last, "", truncateForMessage(p), false
+		o.rawPayload = truncateForMessage(p)
+		return o
 	}
-	if code == 0 {
-		code = doc.Code
+	o.decoded = true
+	if o.code == 0 {
+		o.code = doc.Code
 	}
 	// THE LAST UTTERANCE'S VERDICT DECIDES `definite`: a response that carries
 	// several utterances is describing a growing text, and the flag the caller
 	// reads is whether the text ENDED — which is the last one's.
-	definite = false
 	if n := len(doc.Result.Utterances); n > 0 {
-		definite = doc.Result.Utterances[n-1].Definite
+		o.definite = doc.Result.Utterances[n-1].Definite
 	}
-	return code, last, doc.Result.Text, doc.Error, definite
+	o.text = doc.Result.Text
+	o.errMsg = doc.Error
+	return o
 }
 
 // finish turns the accumulated state into the caller's answer, or into the
@@ -650,12 +799,85 @@ func (r *Result) finish(reqID string) error {
 		}
 		return &APIError{Op: opServer, Message: r.errMsg, ReqID: reqID, LogID: r.LogID}
 	}
-	if len(r.Codes) == 0 {
-		return &APIError{Op: opRead, ReqID: reqID, LogID: r.LogID,
-			Message: "the stream ended without a transcript and without a code saying why"}
+	// A FRAME THAT ARRIVED AND DID NOT DECODE is reported BEFORE the vendor's
+	// wording branch: it is this client's own reading failure, not something
+	// the service said, and the quoted payload is the only evidence of it.
+	if r.frames > 0 && !r.lastDecoded && r.rawPayload != "" {
+		return &APIError{Op: opServer, ReqID: reqID, LogID: r.LogID, Message: r.emptyTranscriptFinding()}
 	}
-	return &APIError{Op: opServer, Code: r.Codes[len(r.Codes)-1], ReqID: reqID, LogID: r.LogID,
-		Message: "the service returned no transcript"}
+	if len(r.Codes) > 0 {
+		return &APIError{Op: opServer, Code: r.Codes[len(r.Codes)-1], ReqID: reqID, LogID: r.LogID,
+			Message: "the service returned no transcript"}
+	}
+	// NO code and no wording. WHICH sentence is true depends on what actually
+	// arrived, and that is the whole point of the four cases: an empty socket,
+	// a final package with an empty transcript, and a stream that ended before
+	// any conclusion are three different findings with three different owners
+	// (account/network, the AUDIO, and the exchange). The pre-fix code reported
+	// all of them with one sentence that stated none of it.
+	//
+	// THE TYPE, not only the sentence: a caller must be able to tell "this audio
+	// produced nothing" from "the channel failed" without reading English, so the
+	// finding travels as NoTranscriptError (see its comment).
+	return &NoTranscriptError{Finding: r.emptyTranscriptFinding(), Level: r.level, ReqID: reqID, LogID: r.LogID}
+}
+
+// emptyTranscriptFinding is the ONE sentence an empty transcript without a code
+// earns, chosen from what this run actually observed. Each branch names the fact
+// that produced it plus the diagnostics that make it checkable — how many frames
+// arrived, what the last one's message type was, how the peer left — so a reader
+// no longer has to guess which of the four situations happened (Rule 15).
+func (r *Result) emptyTranscriptFinding() string {
+	sentence := r.emptyTranscriptSentence()
+	parts := []string{sentence}
+	if r.frames == 0 {
+		parts = append(parts, "no server frame arrived before the stream ended")
+	} else {
+		parts = append(parts,
+			fmt.Sprintf("%d server frame(s) arrived, the last of msgType 0x%x%s",
+				r.frames, r.lastMsgType, finalPackageClause(r.last)))
+	}
+	if r.frames > 0 && !r.lastDecoded {
+		parts = append(parts, "the last frame's payload did not decode as JSON: "+r.rawPayload)
+	}
+	if r.closeReason != "" {
+		parts = append(parts, "the peer said: "+r.closeReason)
+	}
+	if r.Packets > 0 {
+		parts = append(parts, fmt.Sprintf("%d audio packet(s) were sent over %d ms of audio", r.Packets, r.AudioMS))
+	}
+	// THE AUDIO ITSELF, MEASURED HERE (audio_level.go). The four states above say
+	// WHAT the service did; this says whether there was anything in the audio to
+	// recognise, which is the question an operator actually has. It is added, never
+	// substituted: the frame count, the msgType and the peer's goodbye stay in the
+	// sentence, so a channel problem is still readable as one.
+	if r.level.Measured {
+		parts = append(parts, r.level.Evidence())
+	}
+	return strings.Join(parts, "; ")
+}
+
+// emptyTranscriptSentence picks WHICH of the three no-code situations happened.
+// It is a separate function so the choice is one expression a test can name,
+// rather than a chain of conditions welded into a message builder.
+func (r *Result) emptyTranscriptSentence() string {
+	switch {
+	case r.frames == 0:
+		return noResponseSentence
+	case r.last:
+		return emptyFinalSentence
+	default:
+		return noConclusionSentence
+	}
+}
+
+// finalPackageClause says, in the message, whether the last frame was the
+// service's own end of the utterance.
+func finalPackageClause(last bool) string {
+	if last {
+		return " (the service's final package)"
+	}
+	return " (no final package)"
 }
 
 // truncateForMessage keeps an unparseable payload to a length an error message

@@ -74,7 +74,15 @@ func runVoiceCaptureLocal(opts *voiceOptions) {
 	case opts.audioSource != "":
 		src := voiceFileSourceFor(opts.audioSource, voiceSourceImmediate)
 		var err error
-		pcm, err = voiceCapturePCM(src, opts.seconds)
+		// THE FILE SOURCE IS A CAPTURE TOO (it is read at the source's own
+		// real-time rate, which is the whole point of the seam), so a --realtime
+		// run on this arm gets the same progress line and the same honest
+		// announcement as the microphone one: the operator's question is "is it
+		// hearing me", and it does not depend on where the samples come from.
+		voiceRealtimeCaptureStartNote(opts)
+		pcm, err = voiceCaptureWithRealtimeProgress(opts, func() ([]byte, error) {
+			return voiceCapturePCM(src, opts.seconds)
+		})
 		if err != nil {
 			fmt.Fprintf(os.Stderr, "gopi tool voice_input: %v\n", err)
 			os.Exit(1)
@@ -117,7 +125,17 @@ func runVoiceCaptureLocal(opts *voiceOptions) {
 			return
 		}
 		fmt.Fprintf(os.Stderr, "[voice] %s\n", voiceDescribeCapture(sel, opts.seconds))
-		pcm, err = voiceRecord(sel.Device, opts.seconds)
+		// THE CAPTURE IS NOT SILENT WHEN A DISPLAY WAS ASKED FOR (--realtime): on
+		// this path there is no interim text to show (the batch engine answers
+		// once), so what the operator gets instead is a progress line per
+		// voiceRealtimeProgressInterval and the honest sentence naming the route
+		// that DOES stream. Both are gated on the flag, and the wrapper falls
+		// straight through to voiceRecord when it is absent — the default path
+		// enters none of it.
+		voiceRealtimeCaptureStartNote(opts)
+		pcm, err = voiceCaptureWithRealtimeProgress(opts, func() ([]byte, error) {
+			return voiceRecord(sel.Device, opts.seconds)
+		})
 		if err != nil {
 			fmt.Fprintf(os.Stderr, "gopi tool voice_input: %v\n", err)
 			os.Exit(1)
@@ -153,12 +171,21 @@ func runVoiceCaptureLocal(opts *voiceOptions) {
 	// than swallowing it (Rule 15b).
 	cleanup()
 
+	// A CAPTURE THAT PRODUCED NO TRANSCRIPT IS REFUSED, not printed as a blank
+	// success. This shape's stdout is the deliverable (the operator asked for the
+	// words), and exit 0 with a bare newline is the defect this arm shares with the
+	// file shape: a `$(…)` consumer cannot tell it from a broken tool. The verdict
+	// is checked BEFORE the error arm because it is NOT an engine failure, and the
+	// first-text report is not printed for it — there is no first text.
+	if voiceIsNoTranscript(terr) {
+		voiceRefuseEmptyTranscript(opts, terr)
+	}
 	if terr != nil {
 		fmt.Fprintf(os.Stderr, "gopi tool voice_input: %v\n", terr)
 		os.Exit(1)
 	}
 	engineDone := time.Now()
-	voiceReportTranscribedBy(opts, text, elapsed)
+	voiceReportTranscribedBy(opts, text, float64(opts.seconds), elapsed)
 	// THE FIRST-TEXT REPORT: when the text existed, measured from the TOOL's
 	// start (not from the engine's), with the split that explains it — the measured
 	// capture window, the engine's own duration, and whatever the two do not
@@ -168,13 +195,19 @@ func runVoiceCaptureLocal(opts *voiceOptions) {
 	// absent rather than as a very fast answer: the engine returning empty on a
 	// silent window is a correct verdict about the audio, and a duration printed
 	// beside it would read as "the text came quickly" (Rule 15).
-	firstTextAt := runClock.since(engineDone)
+	//
+	// THE FIGURE IS NOT WRITTEN AT ALL unless the text exists. The capture window
+	// is real either way and it stays in the report (it is what the operator
+	// waited), but FirstTextMS stays zero, because measured() reads it as "no
+	// first text was observed" — and a stale non-zero figure is exactly how the
+	// pre-fix line printed "[voice] first text at …s" over an empty transcript.
 	report.WindowMS = int(captureWindow.Milliseconds())
-	report.FirstTextMS = int(firstTextAt.Milliseconds())
-	report.FinalMS = report.FirstTextMS
-	if strings.TrimSpace(text) == "" {
-		report.Missing = fmt.Sprintf("the %s engine returned no text for the %.1fs window (silence, or the speech fell outside it)",
-			voiceEngineLabel(opts), float64(opts.seconds))
+	if strings.TrimSpace(text) != "" {
+		firstTextAt := runClock.since(engineDone)
+		report.FirstTextMS = int(firstTextAt.Milliseconds())
+		report.FinalMS = report.FirstTextMS
+	} else if report.Missing == "" {
+		report.Missing = voiceNoTextReason(opts, float64(opts.seconds))
 	}
 	voiceReportFirstText(opts, report)
 
@@ -250,10 +283,57 @@ const voiceEngineProvenanceLabel = "[voice] engine %s: models %s, runtime %s (%s
 // arm does not get described as an on-machine run (Rule 13/14).
 const voiceTranscribedByNote = "[voice] transcribed by %s in %.1fs (chunk=%ds)\n"
 
+// voiceNoTextCause is the clause the NOTE line ends with when a run produced no
+// text. It is factored out because TWO shapes print that note now (the live
+// capture and the file run), and a second spelling of the CAUSE is exactly the
+// drift these constants exist to prevent (Rule 1b/13/14).
+//
+// It is NOT shared with voiceCaptureNoTextFormat below: that sentence is the
+// FIRST-TEXT REPORT's reason and already had its own parentheses ("(silence, or
+// the speech fell outside it)") before this change, printed by the capture arm
+// and read against other runs. Rewriting it would change a line the live arm
+// already ships, so the two families keep their own words — the note says
+// "— the recording may be silence, …" and the report reason says
+// "(silence, or the speech fell outside it)".
+const voiceNoTextCause = "— the recording may be silence, or the speech may have fallen outside it"
+
 // voiceEngineNoTextNote is the same line's empty-transcript half. It names the
 // engine for the same reason (an answer that reads "the local engine" on a run
 // that uploaded is a false statement about where the audio went).
-const voiceEngineNoTextNote = "[voice] the %s engine returned no text for a %.1fs window (chunk=%ds) — the recording may be silence, or the speech may have fallen outside it\n"
+const voiceEngineNoTextNote = "[voice] the %s engine returned no text for a %.1fs window (chunk=%ds) " + voiceNoTextCause + "\n"
+
+// voiceEngineNoTextUnknownLengthNote is the same sentence for an input whose
+// LENGTH this package cannot measure (an mp3, a flac — the engine decodes them,
+// this file does not). The duration is left out rather than printed as 0.0s:
+// a figure invented for a ten-second file is the very class of false report the
+// empty-transcript work exists to remove (Rule 15).
+const voiceEngineNoTextUnknownLengthNote = "[voice] the %s engine returned no text for this file (chunk=%ds) " + voiceNoTextCause + "\n"
+
+// voiceCaptureNoTextFormat is the same absence as a MISSING first text on the
+// capture shape: the sentence voiceFirstTextReportLine renders after "none from
+// engine …". It exists (rather than being typed at the one call site) because a
+// measured figure and its absence must be spelled by constants — a reader
+// comparing two runs reads these words, and the capture shape had until now
+// written a FirstTextMS over an empty transcript, which printed "first text at
+// 12.1s" for a window that produced nothing.
+const voiceCaptureNoTextFormat = "the %s engine returned no text for the %.1fs window (silence, or the speech fell outside it)"
+
+// voiceCaptureNoTextUnknownLengthFormat is the same reason for an input whose
+// length is unknown, for the same reason as the note above.
+const voiceCaptureNoTextUnknownLengthFormat = "the %s engine returned no text for this file (silence, or the speech fell outside it)"
+
+// voiceNoTextReason is the WHY clause of a first-text report for a run that
+// produced no text, for an input whose length is `window` seconds (0 = this
+// package cannot measure it). It is one function because two shapes now render
+// this sentence — the capture arm and the file arm — and they must end in the
+// same words; a second call site spelling it again is how the two would drift
+// (Rule 1b/14).
+func voiceNoTextReason(opts *voiceOptions, window float64) string {
+	if window > 0 {
+		return fmt.Sprintf(voiceCaptureNoTextFormat, voiceEngineLabel(opts), window)
+	}
+	return fmt.Sprintf(voiceCaptureNoTextUnknownLengthFormat, voiceEngineLabel(opts))
+}
 
 // voiceReportEngineProvenance prints that line. Called at the point a local
 // transcription is about to happen — the moment "which engine, reading what?"
@@ -284,9 +364,18 @@ func voiceLocalEngineLabel(opts *voiceOptions) string {
 //
 // An empty transcript gets its own line rather than being passed off as a
 // success: the engine exiting 0 with no text is a real outcome (silence, or a
-// --seconds window that missed the speech), and an empty stdout with no
-// explanation reads as a broken pipe.
-func voiceReportTranscribedBy(opts *voiceOptions, text string, elapsed time.Duration) {
+// window that missed the speech), and an empty stdout with no explanation reads
+// as a broken pipe.
+//
+// `window` is how much audio the run handed the engine, in seconds, and it is
+// what the sentence quotes. It is a PARAMETER rather than opts.seconds because
+// the two shapes know that figure from two different places: a CAPTURE asked for
+// --seconds, while a run over a FILE has no such flag and must quote the audio it
+// was given (voiceFileSecondsOf). 0 means "this package cannot measure it" and
+// the sentence then quotes no duration at all — a fabricated 0.0s for a
+// ten-second file is the same class of false report this line exists to prevent
+// (Rule 15).
+func voiceReportTranscribedBy(opts *voiceOptions, text string, window float64, elapsed time.Duration) {
 	// THE ENGINE IS NAMED, and the word "locally" is GONE — "locally" carried two
 	// meanings at once (this machine vs the far end of a --client hop, and the
 	// funasr engine vs the cloud one), so the run that had just announced an
@@ -297,8 +386,13 @@ func voiceReportTranscribedBy(opts *voiceOptions, text string, elapsed time.Dura
 	// the sentence stays TRUE on the cloud arm of the bare capture, which
 	// transcribes with doubao, not on this machine.
 	if strings.TrimSpace(text) == "" {
-		fmt.Fprintf(os.Stderr, voiceEngineNoTextNote,
-			voiceEngineLabel(opts), float64(opts.seconds), opts.chunk)
+		if window > 0 {
+			fmt.Fprintf(os.Stderr, voiceEngineNoTextNote,
+				voiceEngineLabel(opts), window, opts.chunk)
+			return
+		}
+		fmt.Fprintf(os.Stderr, voiceEngineNoTextUnknownLengthNote,
+			voiceEngineLabel(opts), opts.chunk)
 		return
 	}
 	fmt.Fprintf(os.Stderr, voiceTranscribedByNote,

@@ -36,6 +36,7 @@ import (
 	"time"
 
 	"github.com/nickhuang99/gopi/internal/gopilog"
+	"github.com/nickhuang99/gopi/internal/scratch"
 	"github.com/nickhuang99/gopi/internal/sessionlayout"
 )
 
@@ -80,7 +81,7 @@ func (g SessionGround) ArtifactsDir() string {
 // session cannot overwrite the first one's record — the collision is resolved by
 // naming a NEW directory, never by writing over an old one.
 func (g SessionGround) FilmDir(now time.Time) (string, error) {
-	if err := os.MkdirAll(filepath.Join(g.ArtifactsDir(), replayDirName), 0o755); err != nil {
+	if err := scratch.MkdirAllWithSuiteRunOwnerPerm(filepath.Join(g.ArtifactsDir(), replayDirName), 0o755); err != nil {
 		return "", fmt.Errorf("create %s: %w", filepath.Join(g.ArtifactsDir(), replayDirName), err)
 	}
 	stamp := now.Format(stampLayout)

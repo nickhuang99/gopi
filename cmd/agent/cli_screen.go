@@ -64,6 +64,10 @@ var screenUsage = `GoPi screen subcommands — read a RECORDED SCREEN as the byt
 Usage:
   gopi ` + CliVerbScreen + ` ` + screenSubcmdReplay + ` <session-id>
         Write the recorded render bytes to stdout, unchanged.
+  gopi ` + CliVerbScreen + ` ` + screenSubcmdReplay + ` <session-id> ` + screenReplayFromFlag + ` N ` + screenReplayPaceFlag + ` MS
+        Write them FROM frame N, MS milliseconds apart — the way to WATCH one.
+  gopi ` + CliVerbScreen + ` ` + screenSubcmdReplay + ` <session-id> ` + screenReplayStepFlag + `
+        Write ONE frame per keypress on stdin (ENTER next, ` + screenReplayStepQuit + ` to stop).
   gopi ` + CliVerbScreen + ` ` + screenSubcmdReplay + ` <session-id> ` + screenReplayVerifyFlag + ` OTHER
         Compare two recordings frame by frame, and print where they differ.
   gopi ` + CliVerbScreen + ` -h
@@ -79,9 +83,11 @@ interchangeable:
 
   gopi ` + CliVerbScreen + ` ` + screenSubcmdReplay + ` <session-id>
         WRITES the recording — the render bytes exactly as the run wrote them,
-        with no canvas, no pacing, no colour change and no fallback. The answer
-        is "what bytes did the renderer emit", so the output can be piped,
-        diffed and captured without a terminal.
+        with no canvas, no colour change and no fallback. PACING and stepping
+        (` + screenReplayPaceFlag + `, ` + screenReplayStepFlag + `, ` + screenReplayFromFlag + `) choose WHEN and FROM WHERE a frame
+        is emitted; they never alter the bytes themselves. The answer is "what
+        bytes did the renderer emit", so the output can be piped, diffed and
+        captured without a terminal.
 
 A session that recorded no screen stream has no bytes to write, and this family
 REFUSES it by name, naming ` + sessionReplaySynopsis + ` — the reader that can

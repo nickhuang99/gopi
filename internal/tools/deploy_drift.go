@@ -3,7 +3,7 @@ package tools
 // deploy_drift.go — the measured DISTANCE between the artifact a checkout's bin/
 // carries and the branch that checkout would build from.
 //
-// THE MEASURED CASE (host host-b, 2026-10-14, epic 01a137cb). A dispatch
+// THE MEASURED CASE (host nick-HP-Laptop, 2026-10-14, epic 01a137cb). A dispatch
 // seam's guard was correct in the source, wired at the ONE spawn seam, and green
 // for 74 commits — and absent from the artifact the machine actually ran.
 // /usr/local/bin/gopi is a SYMLINK to /home/user/work/GoPi/bin/gopi, so the
@@ -58,7 +58,7 @@ import (
 // written by a push-back pass and pruned by that same pass
 // (gitPushbackPruneMirrors), so on a host that never runs one it freezes and
 // falls further behind on every landing (measured 2026-10-28/29 on host
-// host-a: 3 days old, 405 commits and monotonically growing, then 426).
+// the host: 3 days old, 405 commits and monotonically growing, then 426).
 // A ref that no operator action can bring the artifact to follow cannot make
 // the artifact stale; saying it did was the contradiction this file now
 // removes (its own line read "not stale behind it" beside a printed `STALE:`).
@@ -173,7 +173,7 @@ func deployDriftRefIsScratch(ref string) bool {
 // a report about which refs were read would let the printed list and the
 // measured list disagree (Rules 1/13/14).
 //
-// WHY THIS REF IS MEASURED AT ALL (measured 2026-10-28, host host-a): the
+// WHY THIS REF IS MEASURED AT ALL (measured 2026-10-28, host the host): the
 // report used to measure only the local branch and the peer mirror. The
 // deployment gap it exists to surface was 67 commits on refs/heads/master AND
 // 27 on refs/remotes/origin/master — the second number was simply absent from
@@ -375,7 +375,7 @@ func (d DeployDrift) VotingRefs() []DeployDriftRef {
 // ("is the gopi on this machine old?"), answered about the file that is
 // answering it.
 //
-// WHY THIS IS NOT DeployDriftOf(cwd): measured 2026-10-28 on host host-a.
+// WHY THIS IS NOT DeployDriftOf(cwd): measured 2026-10-28 on host the host.
 // /usr/local/bin/gopi is a SYMLINK to /home/user/work/gopi/bin/gopi. Started
 // from a task ground, `gopi version --drift` reported
 // `drift-artifact: /home/user/workspace/<task-id>/bin/gopi` and

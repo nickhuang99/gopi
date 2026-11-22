@@ -350,7 +350,7 @@ func LedgerBackupSnapshot(opts LedgerBackupOptions) (*LedgerBackupResult, error)
 	if err := scratch.AssertPathOffRootFS(dir); err != nil {
 		return nil, fmt.Errorf("ledger backup: backup directory refused: %w", err)
 	}
-	if err := os.MkdirAll(dir, ledgerBackupDirPerm); err != nil {
+	if err := scratch.MkdirAllWithSuiteRunOwnerPerm(dir, ledgerBackupDirPerm); err != nil {
 		return nil, fmt.Errorf("ledger backup: create backup directory %q: %w", dir, err)
 	}
 
@@ -790,7 +790,7 @@ func LedgerBackupReceive(stdin []byte, dir string) (*LedgerBackupReceipt, error)
 	if err := scratch.AssertPathOffRootFS(dir); err != nil {
 		return nil, fmt.Errorf("ledger backup: serve: backup directory refused: %w", err)
 	}
-	if err := os.MkdirAll(dir, ledgerBackupDirPerm); err != nil {
+	if err := scratch.MkdirAllWithSuiteRunOwnerPerm(dir, ledgerBackupDirPerm); err != nil {
 		return nil, fmt.Errorf("ledger backup: serve: create backup directory %q: %w", dir, err)
 	}
 

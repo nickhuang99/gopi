@@ -34,12 +34,7 @@ var Sections = []envSection{
 	}},
 	{"Agent runtime", []string{
 		"GOPI_TIMEOUT_SEC",
-		"GOPI_COMPACT", "GOPI_DEBUG",
-	}},
-	{"Memory compaction", []string{
-		"GOPI_COMPACT_TRIGGER", "GOPI_COMPACT_TARGET", "GOPI_COMPACT_KEEP_RECENT",
-		"GOPI_COMPACT_MAX_SUMMARY_TOKENS", "GOPI_COMPACT_COOLDOWN",
-		"GOPI_COMPACT_REFERENCE_ONLY",
+		"GOPI_DEBUG",
 	}},
 	{"Logging", []string{
 		"GOPI_RAW_LOG", "GOPI_RAW_LOG_DIR",
@@ -277,7 +272,6 @@ var optionRows = [][2]string{
 	{"--max-tokens N", "per-response output cap (GOPI_MAX_TOKENS)"},
 	{"--context-window N", "context window budget (GOPI_CONTEXT_WINDOW)"},
 	{"--timeout SECONDS", "overall agent timeout, 0 = unlimited (GOPI_TIMEOUT_SEC)"},
-	{"--compact ON|OFF", "memory compaction (GOPI_COMPACT)"},
 	{"--tool-timeout SEC", "read/write/edit timeout (GOPI_TOOL_TIMEOUT_SEC)"},
 	{"--bash-timeout SEC", "bash absolute timeout (GOPI_BASH_TIMEOUT_SEC)"},
 	{"--bash-idle SEC", "bash no-output timeout (GOPI_BASH_IDLE_SEC)"},

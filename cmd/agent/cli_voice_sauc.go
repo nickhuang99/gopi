@@ -726,10 +726,10 @@ func transcribeFileSauc(opts *voiceOptions, audioPath string, runClock *voiceRun
 	res, err := doubaosauc.Transcribe(context.Background(), saucOpts)
 	elapsed := time.Since(started)
 	if err != nil {
-		return "", elapsed, report, voiceSaucError(err)
+		return "", elapsed, report, voiceSaucError(audioPath, err)
 	}
 	voiceReportSaucSummary(res)
-	return res.Text, elapsed, voiceFirstTextFromEngine(elapsed, runClock), nil
+	return res.Text, elapsed, voiceFirstTextFromEngine(opts, res.Text, elapsed, runClock), nil
 }
 
 // voiceReportSaucStart states the destination and the credential's ORIGIN
@@ -762,7 +762,25 @@ func voiceReportSaucSummary(res *doubaosauc.Result) {
 // vendor's log id; this function's whole job is to keep that verbatim (Rule 15)
 // and to say the one thing only the CLI knows: which FILE the credential came
 // from, when the failure was the credential.
-func voiceSaucError(err error) error {
+func voiceSaucError(audioPath string, err error) error {
+	// A RUN THAT PRODUCED NO TRANSCRIPT is the batch engine's own shaped verdict,
+	// so it is translated into the SAME type here rather than being reported as an
+	// engine failure: master unified the two engines on "empty transcript is a
+	// non-zero exit" (56fbc854, measured 2026-11-15 — the recording engine answers
+	// the same silence.wav with exit 1 and the vendor's 20000003), and a sauc run
+	// that leaves the operator with a different SHAPE of answer would split the two
+	// again.
+	//
+	// WHAT THE PACKAGE ADDS, and why the translation is not a loss: the finding
+	// sentence it carries already names WHICH of the four empty-transcript states
+	// this was (no frame / an empty final package / a stream that never concluded /
+	// a payload that did not decode) plus the frame counts, the last msgType, the
+	// peer's close reason AND this client's own measurement of the audio
+	// (internal/doubaosauc/audio_level.go). The refusal keeps all of it verbatim.
+	var noTranscript *doubaosauc.NoTranscriptError
+	if errors.As(err, &noTranscript) {
+		return voiceNoTranscriptVerdict(voiceEngineLabel(&voiceOptions{engine: config.AudioEngineSauc}), noTranscript)
+	}
 	var noSpeech *doubaosauc.NoSpeechError
 	if errors.As(err, &noSpeech) {
 		// NOT a failure of the engine: the audio carries no speech, and saying
@@ -770,5 +788,32 @@ func voiceSaucError(err error) error {
 		// "" as though it were a recognition result.
 		return noSpeech
 	}
+	// THE NON-WAV ROUTE. This channel sends bare PCM16, so it must decode the
+	// container itself and has no decoder for an MP3; the batch channel uploads the
+	// file as it is and lets the vendor decode it, so the SAME file transcribes
+	// there. MEASURED (2026-11-15) on sample2.mp3. Reporting only "these bytes are
+	// neither WAV nor bare PCM" tells the operator what is wrong with their FILE
+	// when what they need is what to do with their COMMAND.
+	if errors.Is(err, doubaostream.ErrAudioNotWAVPCM) {
+		return fmt.Errorf("%s engine: %w. %s", config.AudioEngineSauc, err,
+			voiceSaucFallbackEngineHint(audioPath))
+	}
 	return fmt.Errorf("%s engine: %w", config.AudioEngineSauc, err)
+}
+
+// voiceSaucFallbackEngineHint names the engine to use for audio the v3 channel
+// cannot read — the sauc sibling of the v2 arm's format hint (voiceFormatRefusalHint),
+// and it exists for the same reason: a refusal that names no route is a dead end.
+//
+// It names the ENGINE, not an ffmpeg recipe, on purpose: "re-encode to WAV first"
+// is advice about a tool this machine may not have and a step the operator does not
+// need, while the batch engine already accepts the file they have.
+func voiceSaucFallbackEngineHint(audioPath string) string {
+	return fmt.Sprintf("the %q engine sends 16 kHz mono PCM, so it must decode the container itself and has no decoder for this one; "+
+		"the %q engine uploads the file as it is and the vendor decodes it, so the same file works there: "+
+		"re-run with --%s %s %s (or set \"%s\": %q in %s)",
+		config.AudioEngineSauc,
+		config.AudioEngineRecording,
+		voiceFlagEngine, config.AudioEngineRecording, audioPath,
+		config.AudioEngineSettingsKey, config.AudioEngineRecording, config.ResolveSettingsPath())
 }

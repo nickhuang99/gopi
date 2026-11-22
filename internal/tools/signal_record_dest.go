@@ -32,8 +32,7 @@ package tools
 // rule removes).
 
 import (
-	"os"
-
+	"github.com/nickhuang99/gopi/internal/scratch"
 	"github.com/nickhuang99/gopi/internal/signalrec"
 )
 
@@ -73,7 +72,7 @@ func SignalRecordDest(taskID string) SignalRecordDestination {
 	if err != nil {
 		return SignalRecordDestination{Note: "task session dir unresolved: " + err.Error()}
 	}
-	if err := os.MkdirAll(dir, signalRecordDirPerm); err != nil {
+	if err := scratch.MkdirAllWithSuiteRunOwnerPerm(dir, signalRecordDirPerm); err != nil {
 		return SignalRecordDestination{Note: "task session dir " + dir + " could not be created: " + err.Error()}
 	}
 	return SignalRecordDestination{Dir: dir, TaskID: taskID}

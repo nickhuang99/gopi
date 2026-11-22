@@ -54,6 +54,7 @@ import (
 	"time"
 
 	"github.com/nickhuang99/gopi/internal/procname"
+	"github.com/nickhuang99/gopi/internal/scratch"
 )
 
 // LockFileName is the lock file's name INSIDE a run directory (Rule 1: one
@@ -207,7 +208,7 @@ func Lock(dir string) (*Handle, error) {
 	// not a side effect a refused run leaves behind: a directory nobody has
 	// created yet has no holder either (the first holder is the process that
 	// creates it), so this MkdirAll and a refusal cannot co-occur.
-	if err := os.MkdirAll(dir, runDirMode); err != nil {
+	if err := scratch.MkdirAllWithSuiteRunOwnerPerm(dir, runDirMode); err != nil {
 		return nil, fmt.Errorf("runlock: create run directory %q: %w", dir, err)
 	}
 	path := PathIn(dir)

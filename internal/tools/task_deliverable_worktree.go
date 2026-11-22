@@ -1,5 +1,5 @@
 // Deliverable.worktree backfill at worktree-CREATION time (bugfix epic
-// 2026-09-03, the operator's workflow-gap finding — the M4.8 information-closure
+// 2026-09-03, nick's workflow-gap finding — the M4.8 information-closure
 // loop's missing worktree half). A task row carries repo at submit; the
 // executor's worktree (PROJECT.md Rule 6a — the branch + linked worktree the
 // actual work happens in) was recorded NOWHERE until close-out, so:
@@ -363,14 +363,59 @@ func taskGroundClaimRows() ([]taskGroundClaimRow, error) {
 	return out, rows.Err()
 }
 
+// taskGroundBranchIsCloneDefault reports whether the branch spelling is one a
+// CLONE ground stands on by default. Rule 6a makes that the normal branch of
+// every clone-channel run (`.git` is a DIRECTORY, the run commits on `master`),
+// so the bare NAME carries no ownership information at all: two parallel rows
+// both say `master` while standing in two disjoint clones. The spellings come
+// from the package's ONE source (masterBranchName / mainBranchName,
+// repo_sweep.go — Rule 14: reused, never re-mirrored).
+func taskGroundBranchIsCloneDefault(branch string) bool {
+	return branch == masterBranchName || branch == mainBranchName
+}
+
+// taskGroundBranchNamesGround is the BRANCH AXIS of the one-owner rule, and the
+// answer depends on WHICH branch it is asked about.
+//
+// A branch name is an address only where it is unique. For a TASK branch
+// (`task/<id>`, a hand-made `feat/<name>`) it is: nothing else may declare it,
+// so branch equality scoped to the repository is enough — the rule this axis
+// has always used.
+//
+// For a CLONE-DEFAULT branch (`master`/`main`) it is NOT. Rule 6a puts every
+// clone-channel run on `master` in a clone of its own, so `r.Branch == branch
+// && same repo` is true for any two parallel rows and the axis degrades to
+// "somebody else exists": the later row's creation stamp is refused and its
+// `deliverable.branch`/`deliverable.worktree` are never written (measured: 555
+// ledger rows, 40 of them naming a ground; the refusal line is
+// "<branch> is already named by row <id>"). The commits were never at risk —
+// what broke is the RECORD, and close-out reclaims by `deliverable.worktree`
+// while the merge path finds a branch through `deliverable.branch`, so a row
+// with no record is a row those two paths cannot act on.
+//
+// So on a clone-default branch the DIRECTORY is the owner and the NAME is not
+// an address at all: this returns false, and the worktree axis above has
+// already decided ownership by the directory. What stays refused is a row
+// naming our directory (the worktree axis) and a row naming our TASK branch (the
+// true arm below).
+func taskGroundBranchNamesGround(r *taskGroundClaimRow, branch, repo string) bool {
+	if branch == "" || r.Branch != branch || !sameWorkingPath(r.Repo, repo) {
+		return false
+	}
+	return !taskGroundBranchIsCloneDefault(branch) // a real task branch: the name IS the address
+}
+
 // taskGroundClaimRowNaming returns the row that NAMES the ground, preferring a
 // row that still HOLDS it over one whose binding is history: a directory (or
 // branch) can be named by both a live row and a dead one, and whether the
 // ground may be recorded must rest on the holder, never on scan order.
 //
-// The worktree axis is matched on the DIRECTORY and the branch axis on the
-// branch, scoped to the repository the same way taskBranchRowOwner always
-// scoped it (branch names are per-repository). Nothing matching returns nil.
+// The worktree axis is matched on the DIRECTORY, and the branch axis is scoped
+// to the repository the same way taskBranchRowOwner always scoped it (branch
+// names are per-repository) — but its answer depends on WHICH branch it is
+// asked about, because a CLONE-DEFAULT branch is not an address (see
+// taskGroundBranchNamesGround): an equality test on `master` is satisfied by
+// every parallel clone-channel row at once. Nothing matching returns nil.
 func taskGroundClaimRowNaming(rows []taskGroundClaimRow, taskID, wt, branch, repo string) *taskGroundClaimRow {
 	var other *taskGroundClaimRow
 	for i := range rows {
@@ -379,7 +424,7 @@ func taskGroundClaimRowNaming(rows []taskGroundClaimRow, taskID, wt, branch, rep
 			continue // a row never names its own ground twice
 		}
 		namedWorktree := wt != "" && sameWorkingPath(r.Worktree, wt)
-		namedBranch := !namedWorktree && branch != "" && r.Branch == branch && sameWorkingPath(r.Repo, repo)
+		namedBranch := !namedWorktree && taskGroundBranchNamesGround(r, branch, repo)
 		if !namedWorktree && !namedBranch {
 			continue
 		}
@@ -1176,7 +1221,49 @@ func taskRowDeliverableRepo(taskID string) string {
 // taskRowDeliverable reads a task row's deliverable blob fields leniently
 // (all "" when the row is gone / has no deliverable / not JSON).
 func taskRowDeliverable(taskID string) (repo, branch, worktree string) {
-	ctx, cancel := context.WithTimeout(context.Background(), taskWorktreeBackfillTimeout)
+	// THIS DISCARD IS THE FUNCTION'S CONTRACT, not an oversight (Rule 15b's
+	// commented intentional discard): the lenient reader answers ("", "", "")
+	// for a row that records nothing AND for a ledger it could not read, and its
+	// callers (the advisory line, the claim-time stamp) are built to say nothing
+	// when there is nothing to say. The caller that must TELL THE TWO APART is
+	// taskRowDeliverableErr's other reader, the resume ground resolver — it calls
+	// the Err spelling directly and refuses on the error, so the fact is never
+	// lost, only not propagated to callers that would not act on it.
+	repo, branch, worktree, _ = taskRowDeliverableErr(taskID) //stylegate:ignore the lenient contract — the fact is propagated through taskRowDeliverableErr to the resolver, which refuses on it
+	return repo, branch, worktree
+}
+
+// taskRowDeliverableErr is the SAME read as taskRowDeliverable, with the one
+// fact the lenient wrapper throws away: WHETHER THE LEDGER WAS READ AT ALL.
+//
+// WHY IT EXISTS (measured 2026-11-21, epic failed-resume-no-ground). The
+// lenient wrapper answers ("", "", "") for three facts that are not the same
+// fact, and a caller that has to REFUSE on "the row records no ground" (Rule
+// 15: a refusal names its own cause; no-ground and ground-gone must never
+// impersonate each other) was reading all three as the first:
+//
+//	the row records no deliverable     really is "no ground"
+//	the row is not there               a different row id, or another ledger
+//	the ledger could not be READ       nothing was measured at all
+//
+// and the resume ground resolver refused with the FIRST sentence for the third
+// shape. The budget below was part of that shape, not a coincidence:
+// taskWorktreeBackfillTimeout (10s) is named for the git calls it caps, while
+// the ledger's own busy wait (dbBusyTimeoutMSec, 15s) is LONGER — a pure ledger
+// read was bounded by a number chosen for a `git` subprocess. (What a probe on
+// this host actually measured, and what it did NOT, is written up beside those
+// constants in ledger_dsn.go — the deadline inversion is machine-checked,
+// "a short deadline abandons a queued statement" is not.)
+//
+// The two callers are unchanged: the lenient one keeps its contract byte for
+// byte, and the resolver takes this one so it can tell the three shapes apart.
+func taskRowDeliverableErr(taskID string) (repo, branch, worktree string, err error) {
+	// THE BUDGET IS THE LEDGER'S, NOT GIT'S. This is a pure ledger read, so it
+	// must outlast the SQLite busy wait it can be queued behind — otherwise the
+	// statement is abandoned one instant before the lock would have been
+	// granted, and the caller learns "no data" from a wait that was never over.
+	// See ledgerReadTimeout's own comment for the measured divergence.
+	ctx, cancel := context.WithTimeout(context.Background(), ledgerReadTimeout)
 	defer cancel()
 	// READ-ONLY OPENER (see openTasksDBReadOnly): this is a pure read, called
 	// from the `task show` advisory line among others, and the read-write
@@ -1186,18 +1273,25 @@ func taskRowDeliverable(taskID string) (repo, branch, worktree string) {
 	// a ledger that does not exist yet) still reads as "no deliverable".
 	db, err := openTasksDBReadOnly(ctx, memoryDBPath())
 	if err != nil {
-		return "", "", ""
+		return "", "", "", fmt.Errorf("task deliverable: open ledger: %w", err)
 	}
 	defer db.Close()
 	t, err := taskByID(ctx, db, taskID)
-	if err != nil || t == nil {
-		return "", "", ""
+	if err != nil {
+		return "", "", "", fmt.Errorf("task deliverable: read row %s: %w", taskID, err)
+	}
+	if t == nil {
+		// THE ROW IS NOT THERE — an ANSWER, not a failure. Both callers already
+		// treat it as "records nothing", and that reading stays correct: a row
+		// that does not exist records no deliverable. What changes is that it is
+		// now distinguishable from a ledger nobody could read.
+		return "", "", "", nil
 	}
 	var d TaskDeliverableSpec
 	if err := json.Unmarshal([]byte(t.Deliverable), &d); err != nil {
-		return "", "", ""
+		return "", "", "", nil
 	}
-	return strings.TrimSpace(d.Repo), strings.TrimSpace(d.Branch), strings.TrimSpace(d.Worktree)
+	return strings.TrimSpace(d.Repo), strings.TrimSpace(d.Branch), strings.TrimSpace(d.Worktree), nil
 }
 
 // TaskDeliverableWorktreeFor returns the worktree a task's executor works

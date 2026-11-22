@@ -130,6 +130,39 @@ func trimmedRoot(root string) string {
 	return root
 }
 
+// stubWorktreeTarget is ONE root this arm will look at, with the reason it is on
+// the list — REPORTED, so an operator reading a dry run can see which
+// configuration put a directory there.
+type stubWorktreeTarget struct {
+	root   string
+	source string
+}
+
+// stubWorktreeTargets builds the target list for BOTH faces of the stub arm —
+// the report-only one and the deleting one — from ONE place (Rule 14).
+//
+// WHY IT IS A FUNCTION AND NOT TWO LOOPS (measured 2026-11-17): the DISABLED
+// branch enumerated stubWorktreeRoots() unconditionally and ignored `--root`, so
+//
+//	GOPI_TEST_SCRATCH_GC_MIN=0 gopi tool scratch-gc stubs --root <X>
+//
+// printed a line for the DEFAULT workspace root and nothing about X — the
+// operator asked about one root and was told about another. The trees arm closed
+// exactly this shape ("'the sweep is off' must not become a second, more
+// permissive parser"); this is the same fix for this arm, and routing both faces
+// through one builder is what keeps them from drifting again.
+func stubWorktreeTargets(rootFlag string) []stubWorktreeTarget {
+	if rootFlag != "" {
+		return []stubWorktreeTarget{{root: trimmedRoot(rootFlag), source: "explicit " + scratchGCStubsRootFlag}}
+	}
+	roots := stubWorktreeRoots(true)
+	targets := make([]stubWorktreeTarget, 0, len(roots))
+	for _, r := range roots {
+		targets = append(targets, stubWorktreeTarget{root: r.root, source: r.source})
+	}
+	return targets
+}
+
 // runScratchGCStubs plans (always) and sweeps (only with --yes) the worktree
 // roots. `--root` restricts the whole run to ONE named root, which is how a dry
 // run and the apply that follows it are guaranteed to look at the same tree.
@@ -139,15 +172,7 @@ func trimmedRoot(root string) string {
 // is REFUSED (a mistyped path is a configuration error the operator must see) or
 // when a removal failed.
 func runScratchGCStubs(dryRun, yes bool, rootFlag string, explain bool) {
-	type target struct{ root, source string }
-	var targets []target
-	if rootFlag != "" {
-		targets = append(targets, target{root: trimmedRoot(rootFlag), source: "explicit " + scratchGCStubsRootFlag})
-	} else {
-		for _, r := range stubWorktreeRoots(true) {
-			targets = append(targets, target{root: r.root, source: r.source})
-		}
-	}
+	targets := stubWorktreeTargets(rootFlag)
 	if len(targets) == 0 {
 		fmt.Fprintf(os.Stderr, "gopi %s %s: no worktree root to sweep\n", CliVerbScratchGC, scratchGCStubsFlag)
 		return
@@ -182,6 +207,19 @@ func runScratchGCStubs(dryRun, yes bool, rootFlag string, explain bool) {
 			}
 			removable++
 		}
+		// The BYTES come from the plan's own measurement (scratch.WorktreeStubTally
+		// — the ONE arithmetic, so this line and the live line below cannot
+		// disagree), and that is a deliberate change of behaviour rather than a
+		// tidy-up: the dry run used to pass a hard-coded int64(0) into the `bytes=`
+		// slot, so a report-only pass over a root holding real leftovers printed
+		// `bytes=0` — measured 2026-11-17 on a fixture with ONE collectable stub:
+		// the dry run said `plan=1 … bytes=0` while the identical copy's live sweep
+		// said `removed=1 … bytes=3124`, and the 3,124 bytes were on disk in both
+		// cases. The -h page defines the field for the whole verb ("what the plan
+		// WOULD reclaim (or, without --dry-run, did)"), so a 0 there was an
+		// unmeasured value wearing a measurement's name — the same defect f2d570a3
+		// closed on the sandbox arm, still live on this one.
+		tally := scratch.TallyWorktreeStubs(plans)
 		// The verdict lines: printed for the plan always, and for the sweep's
 		// kept candidates when --explain asks (a sweep that removes something
 		// out of a root the operator owns owes them the reasons for what stayed).
@@ -201,8 +239,12 @@ func runScratchGCStubs(dryRun, yes bool, rootFlag string, explain bool) {
 			// The stub arm's line: the shared `stale=` field carries
 			// StubNoAgeWindow — the word "none" — because this arm applies no age
 			// threshold at all (see the file header and scratch.StubNoAgeWindow).
-			fmt.Printf(scratchGCStubsLogFmt+" "+scratchGCStubsDryRunField+"true\n",
-				scratchGCStubsRole, t.root, removable, scratch.StubNoAgeWindow, false, int64(0))
+			//
+			// `bytes=` is the PLAN's measured total (tally.RemovableBytes), never a
+			// hard-coded 0: see the derivation above and the record on
+			// scratch.WorktreeStubPlan.Bytes.
+			fmt.Printf(scratchGCStubsPlanLogFmt+" "+scratchGCStubsDryRunField+"true\n",
+				scratchGCStubsRole, t.root, tally.Removable, scratch.StubNoAgeWindow, false, tally.RemovableBytes)
 			continue
 		}
 

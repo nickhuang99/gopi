@@ -705,7 +705,25 @@ func EntryVerdictsForBatch(path string, now time.Time, olderThan time.Duration, 
 		// caller must not read a truncated scan as "a process is inside".
 		held, evidence = true, HolderScanWithheldReason()
 	} else if live {
-		held, evidence = true, "the /proc cwd|fd|exe|maps scan found a live process inside it"
+		// WHO is inside it, from the SAME pass (holder_identity.go): a proven-dead
+		// owner whose only visitors are inherited descriptors from an orphaned log
+		// pipeline is collectable, while a gopi image or a process standing in the
+		// directory keeps it exactly as the hard rule always said.
+		ids, total := HolderIdentitiesFromScan(path, holders)
+		released, classEvidence := holdersRelease(ids, total)
+		if released && ownerProvenGone(path) {
+			return releasedVerdict(path, now, classEvidence)
+		}
+		evidence = holderEvidenceSentence(ids, total)
+		if released {
+			// The holders are all unrelated observers, but the OWNER is not proven
+			// gone: the release rule stands on a dead owner, and releasing without
+			// that proof would be deleting a root something may still own. The
+			// sentence still NAMES the observers and the cure, so the operator can
+			// see the pipeline behind the keep instead of an anonymous claim.
+			evidence = fmt.Sprintf(HolderObserverOnlyFmt, holderPopulationClass(classEvidence), classEvidence)
+		}
+		held = true
 	}
 	return entryVerdictInNamespace(path, now, olderThan, held, evidence, nil)
 }
@@ -760,7 +778,7 @@ func queueVerdicts(root string, now time.Time, olderThan time.Duration, holders 
 			return out
 		}
 		path := filepath.Join(root, entry.Name())
-		if tree, ok := declaredTreeForRoot(path); ok {
+		if trees := declaredTreesForRoot(path); len(trees) > 0 {
 			// The reporting twin of queueSweepChildren's interposition: a
 			// declared tree's container is reported AS ITS OWN ENTRIES, never as
 			// one verdict. Reporting the container was the 2026-10-12 defect's
@@ -774,8 +792,16 @@ func queueVerdicts(root string, now time.Time, olderThan time.Duration, holders 
 			// a second walk here would be a second answer. This arm ignores the
 			// census the twin returns — the scratch home has no per-tree summary
 			// line, and its counts belong to the arm that prints them.
-			verdicts, _ := DeclaredTreeVerdicts(tree)
-			out = append(out, verdicts...)
+			//
+			// EVERY row rooted here reports, for the reason declaredTreesForRoot
+			// states: the test-budget root carries two rows with disjoint
+			// predicates, and reporting only the first would leave the streams
+			// (the 17.7 GiB half) with no verdict line at all — the exact silence
+			// this half exists to end.
+			for _, tree := range trees {
+				verdicts, _ := DeclaredTreeVerdicts(tree)
+				out = append(out, verdicts...)
+			}
 			continue
 		}
 		out = append(out, queueChildVerdict(path, entry.IsDir(), now, olderThan, holders))
@@ -865,7 +891,7 @@ func queueSweepChildren(root string, now time.Time, olderThan time.Duration, hol
 			return removed
 		}
 		path := filepath.Join(root, entry.Name())
-		if tree, ok := declaredTreeForRoot(path); ok {
+		if trees := declaredTreesForRoot(path); len(trees) > 0 {
 			// A queue child that is ANOTHER tree's declared ROOT is not a run of
 			// the queue: it is that tree's container, and the tree's own row
 			// judges what is INSIDE it. Judging the container here is the
@@ -873,7 +899,14 @@ func queueSweepChildren(root string, now time.Time, olderThan time.Duration, hol
 			// by one live child, so a tree that is 10.27 GB full reported nothing
 			// collectable. The container itself is never removed here: the row's
 			// root survives every sweep (declaredEntryCollectable).
-			removed += sweepDeclaredTreeFromQueue(tree, olderThan, holders, now)
+			//
+			// EVERY row rooted here is swept, not the first: two rows can share
+			// one root with disjoint predicates and different windows (see
+			// declaredTreesForRoot), and stopping at the first left the second
+			// row's candidates unplanned from this arm.
+			for _, tree := range trees {
+				removed += sweepDeclaredTreeFromQueue(tree, olderThan, holders, now)
+			}
 			continue
 		}
 		verdict := queueChildVerdict(path, entry.IsDir(), now, olderThan, holders)
@@ -962,17 +995,20 @@ func queuePlanChildren(root string, now time.Time, olderThan time.Duration, hold
 			return out
 		}
 		childPath := filepath.Join(root, entry.Name())
-		if tree, ok := declaredTreeForRoot(childPath); ok {
+		if trees := declaredTreesForRoot(childPath); len(trees) > 0 {
 			// The dry-run face must plan what the real sweep collects: a
 			// declared tree's container is planned AS ITS OWN entries (see
-			// queueSweepChildren), never as one unit.
-			planned, perr := DeclaredTreePlan(tree)
-			if perr != nil && planned == nil {
-				fmt.Fprintf(os.Stderr, "scratch: could not plan declared tree %s at %s: %v\n", tree.Name, childPath, perr)
-				continue
-			}
-			for _, e := range planned {
-				out = append(out, ScratchPlanEntry{Path: e.Path, Age: e.Age})
+			// queueSweepChildren), never as one unit — and EVERY row rooted here
+			// contributes, or the plan would promise less than the sweep takes.
+			for _, tree := range trees {
+				planned, perr := DeclaredTreePlan(tree)
+				if perr != nil && planned == nil {
+					fmt.Fprintf(os.Stderr, "scratch: could not plan declared tree %s at %s: %v\n", tree.Name, childPath, perr)
+					continue
+				}
+				for _, e := range planned {
+					out = append(out, ScratchPlanEntry{Path: e.Path, Age: e.Age})
+				}
 			}
 			continue
 		}
@@ -1030,7 +1066,7 @@ var ErrNoScratchHome = errors.New("scratch home unavailable")
 // directory to walk instead of an error.
 func EnsureHomeDir() (string, error) {
 	home := HomeDir()
-	if err := os.MkdirAll(home, DirPerm); err != nil {
+	if err := MkdirAllWithSuiteRunOwnerPerm(home, DirPerm); err != nil {
 		return "", fmt.Errorf("%w: %s: %w", ErrNoScratchHome, home, err)
 	}
 	return home, nil

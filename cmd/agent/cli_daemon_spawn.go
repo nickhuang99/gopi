@@ -63,6 +63,7 @@ import (
 	"github.com/nickhuang99/gopi/internal/daemoncwd"
 	"github.com/nickhuang99/gopi/internal/daemonlifetime"
 	"github.com/nickhuang99/gopi/internal/runcmd"
+	"github.com/nickhuang99/gopi/internal/scratch"
 	"github.com/nickhuang99/gopi/internal/worktreerelease"
 )
 
@@ -396,7 +397,7 @@ func daemonSpawn(spec daemonSpec, args []string) (reused bool, err error) {
 	if err != nil {
 		return false, err
 	}
-	if err := os.MkdirAll(filepath.Dir(logPath), daemonLogDirMode); err != nil {
+	if err := scratch.MkdirAllWithSuiteRunOwnerPerm(filepath.Dir(logPath), daemonLogDirMode); err != nil {
 		return false, fmt.Errorf("create daemon log directory %s: %w", filepath.Dir(logPath), err)
 	}
 	logFile, err := os.OpenFile(logPath, os.O_CREATE|os.O_WRONLY|os.O_APPEND, daemonLogFileMode)

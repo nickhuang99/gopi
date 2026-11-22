@@ -14,10 +14,10 @@ package main
 //
 // THE NUMBER IS NOT A PAGE COUNTER, AND NOT THIS SERVER'S EITHER. It is
 //
-//	turnBaseline + agent.SessionLogger.TurnsSoFar() + 1
+//	turnBaseline + agent.SessionLogger.TurnsRecorded() + 1
 //
 // where turnBaseline is how many turn-opening rows the record ALREADY held when
-// this run started (0 for a fresh session) and TurnsSoFar counts the rows THIS
+// this run started (0 for a fresh session) and TurnsRecorded counts the rows THIS
 // run has written that `sessionevent.IsTurnOpeningRow` accepts. Both halves use
 // the ONE predicate, at the ONE writer, so the number on the wire is the number
 // the record gives the same row — that equality is what the regression test
@@ -59,7 +59,7 @@ const webTurnReport = "[gopi web] turn: "
 // default (`sessionevent.TurnRowSource`), so the two sides cannot disagree
 // about whether this row is a turn.
 //
-// THE COUNT IS TAKEN AT THE WRITER (`SessionLogger.TurnsSoFar`), never by
+// THE COUNT IS TAKEN AT THE WRITER (`SessionLogger.TurnsRecorded`), never by
 // re-reading the file: at the instant a turn starts, the record's tail is still
 // in the writer's buffer, so a parse would read the number one turn behind —
 // the drift this file exists to end.
@@ -73,7 +73,7 @@ func (s *webServer) webTurnOrdinal(text, face string) (int, bool) {
 		fmt.Fprintf(os.Stderr, "%s no session record is open, so this turn has no session ordinal\n", webTurnReport)
 		return 0, false
 	}
-	return s.turnBaseline + s.agent.SessionLog.TurnsSoFar() + 1, true
+	return s.turnBaseline + s.agent.SessionLog.TurnsRecorded() + 1, true
 }
 
 // webTurnPayload encodes the `turn` frame body: the ordinal, and WHEN that turn

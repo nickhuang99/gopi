@@ -230,7 +230,7 @@ func NewRawLoggerForResumedRun(taskID string, id RunIdentity) (*RawLogger, error
 		return nil, fmt.Errorf("raw log: %w", err)
 	}
 	// The session dir must exist before the raw file opens inside it.
-	if err := os.MkdirAll(dir, 0755); err != nil {
+	if err := scratch.MkdirAllWithSuiteRunOwner(dir); err != nil {
 		return nil, fmt.Errorf("raw log: cannot create %s: %w", dir, err)
 	}
 	if taskID != "" {
@@ -301,7 +301,7 @@ func newRawLoggerInTaskRunDir(dir string, id RunIdentity) (*RawLogger, error) {
 	if v := os.Getenv(rawLogEnableEnv); strings.ToUpper(v) == rawLogDisabledValue {
 		return nil, nil
 	}
-	if err := os.MkdirAll(dir, 0755); err != nil {
+	if err := scratch.MkdirAllWithSuiteRunOwner(dir); err != nil {
 		return nil, fmt.Errorf("raw log: cannot create %s: %w", dir, err)
 	}
 	runID := id.SessionID
@@ -402,7 +402,7 @@ func newRawLoggerInDir(dir, runUUID string) (*RawLogger, error) {
 		return nil, nil
 	}
 
-	if err := os.MkdirAll(dir, 0755); err != nil {
+	if err := scratch.MkdirAllWithSuiteRunOwner(dir); err != nil {
 		return nil, fmt.Errorf("raw log: cannot create %s: %w", dir, err)
 	}
 

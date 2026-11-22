@@ -1,7 +1,7 @@
 // cli_worker_foreground.go — the FOREGROUND worker's presence, and the control
 // face's honest answer about it.
 //
-// WHY IT EXISTS (bug 01a131c8-0500, measured 2026-10-12 on host-b):
+// WHY IT EXISTS (bug 01a131c8-0500, measured 2026-10-12 on nick-HP-Laptop):
 // `gopi worker --stop` printed
 //
 //	gopi worker: no worker daemon is running (no live worker state under …);
@@ -30,7 +30,8 @@
 // TWO FACTS THAT ARE REREAD, NEVER ASSUMED (Rule 15):
 //
 //	① the CALLER is excluded by pid. A `gopi worker --stop` invocation has the
-//	   very argv shape a foreground worker has (comm = gopi, argv[1] = worker);
+//	   very argv shape a foreground worker has (gopi program with the worker
+//	   verb at its top-level position);
 //	   without the exclusion the command would find ITSELF and SIGTERM its own
 //	   stop.
 //	② the SIGNAL is sent only when the target's executable is PROVABLY this
@@ -225,7 +226,8 @@ const (
 // fallbackWorkerPIDs, which deliberately requires detachment.
 //
 // The caller's own pid is excluded: a `gopi worker --stop`/`--status`
-// invocation matches the same shape (comm = gopi, argv[1] = worker) and would
+// invocation matches the same shape (gopi program, worker verb at its
+// top-level position) and would
 // otherwise find itself. Ownership is the same second question the daemon
 // fallback asks, answered the same way (the process's OWN environment), with
 // the same degradation: an unattributable worker counts as this profile's.
@@ -267,7 +269,8 @@ func foregroundWorkerPIDs(own string) []int {
 }
 
 // workerForegroundShape is workerProcessShape with the detachment test INVERTED:
-// argv[1] == the worker verb, the executable is the gopi program, and the process
+// the top-level worker verb (after any leading global flags), the executable is
+// the gopi program, and the process
 // does NOT lead its own session (i.e. it is not the post-setsid daemon).
 //
 // THE IMAGE NAME IS READ, NOT ASSUMED (measured 2026-10-13). workerProcessShape
@@ -283,7 +286,7 @@ func foregroundWorkerPIDs(own string) []int {
 func workerForegroundShape(pid int) bool {
 	root := procnameRoot()
 	argv, ok := procname.Cmdline(root, strconv.Itoa(pid))
-	if !ok || len(argv) < 2 || argv[1] != procname.VerbWorker {
+	if !ok || procname.WorkerVerbIndex(argv) < 0 {
 		return false
 	}
 	if !workerGopiImage(root, pid, argv[0]) {

@@ -36,7 +36,7 @@ package tools
 // for `--payload @@missing` (an unreadable reference is an error there too).
 // The alternative — storing the spelling — is the defect this file removes. The
 // prose guard keeps the ordinary case untouched: a payload beginning
-// "@the operator mentioned…" carries whitespace after the prefix and passes through
+// "@nick mentioned…" carries whitespace after the prefix and passes through
 // verbatim, which is why "@" in a briefing is not a hazard for authors.
 
 import (

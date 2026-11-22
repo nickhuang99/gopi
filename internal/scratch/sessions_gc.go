@@ -11,7 +11,7 @@ import (
 
 // The SESSIONS arm of the reclaim surface — `gopi session gc`.
 //
-// THE DEFECT THIS CLOSES (measured 2026-10-29, host host-a, the bug row this
+// THE DEFECT THIS CLOSES (measured 2026-10-29, host the host, the bug row this
 // file answers): `gopi session` carried EIGHT verbs and every one of them was a
 // READER. Nothing could reclaim a session directory, so the tree grew to 90 GB /
 // 3175 directories on a `/` partition at 98% (48 G free), and the only exit was

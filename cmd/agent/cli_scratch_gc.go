@@ -46,6 +46,7 @@ import (
 	"time"
 
 	"github.com/nickhuang99/gopi/internal/config"
+	"github.com/nickhuang99/gopi/internal/removalaudit"
 	"github.com/nickhuang99/gopi/internal/scratch"
 	"github.com/nickhuang99/gopi/internal/sessionlayout"
 	"github.com/nickhuang99/gopi/internal/shot"
@@ -61,6 +62,27 @@ import (
 // (entries deleted), stale (the age threshold applied), disabled (true when
 // the operator's off switch skipped the sweep).
 const scratchGCLogFmt = "scratch-gc role=%s home=%s removed=%d stale=%s disabled=%t"
+
+// scratchGCPlanLogFmt is the SHARED line's DRY-RUN spelling: scratchGCLogFmt with
+// `removed=` renamed to `plan=`. It exists for the arms that print the shared
+// format on a report-only face (the home arm, and the stub arm through its own
+// derivative), derived rather than re-spelled so a field added above lands on
+// both faces at once (Rules 13/14) — the same rule scratchGCTreesPlanLogFmt and
+// scratchGCSandboxesPlanLogFmt obey.
+//
+// WHY IT IS NEEDED AND WAS MISSED (measured 2026-11-17): the two arms this epic
+// went through got the rename one at a time (trees 2026-10-27, sandboxes
+// 2026-11-17) while the SHARED line kept publishing the plan count as `removed=`
+// on `gopi tool scratch-gc --dry-run`. Measured on a fixture home holding one
+// 7h-old suite root:
+//
+//	scratch-gc role=cli home=… removed=1 stale=6h0m0s disabled=false dry-run=true
+//
+// with the root still on disk (`find <home> -type f | wc -l` → 1 before AND
+// after) — a deletion that never happened. The `-h` page states the rule once,
+// for the whole verb, without naming an arm, so every arm's report-only face owes
+// the same rename.
+var scratchGCPlanLogFmt = strings.Replace(scratchGCLogFmt, scratchGCRemovedField, scratchGCPlanField, 1)
 
 // scratchGCLockLogFmt is the LOCK EVIDENCE line, printed ABOVE the count line
 // whenever this pass did not simply acquire a free lock — deferred to a live
@@ -97,6 +119,23 @@ func reportScratchGCLock(role, home string, v scratch.GCLockVerdict) {
 // follows `gopi tool scratch-gc`). ONE format per arm, so a reader never has to
 // guess which tree a line refers to.
 const scratchGCBaseLogFmt = "scratch-gc role=%s base=%s removed=%d stale=%s disabled=%t"
+
+// scratchGCBasePlanLogFmt is the base arm's DRY-RUN line: scratchGCBaseLogFmt
+// with the ONE field whose meaning differs renamed (`removed=` → `plan=`).
+//
+// Derived, never its own literal, for the reasons scratchGCTreesPlanLogFmt states
+// — and this arm needs it for the SAME measured defect: on 2026-11-17 a fixture
+// base holding two aged residue directories printed
+//
+//	scratch-gc role=cli-base base=… removed=2 stale=6h0m0s disabled=false dry-run=true
+//
+// with all three files still on disk (measured: `find <base> -type f | wc -l` → 3
+// before AND after). The `-h` page's own definition of the field is a single
+// general sentence — "under --dry-run the line reports the plan count as plan=
+// instead, so a report-only pass cannot print a deletion it did not perform" —
+// and it names no arm, so an arm that keeps printing `removed=` on its
+// report-only face contradicts it.
+var scratchGCBasePlanLogFmt = strings.Replace(scratchGCBaseLogFmt, scratchGCRemovedField, scratchGCPlanField, 1)
 
 // scratchGCShotUnitsLogFmt is the CAPTURE-UNIT arm's OWN count line: how many
 // orphaned transient capture units this invocation renewed.
@@ -386,9 +425,9 @@ const scratchGCTreesLogFmt = scratchGCLogFmt + " tree=%s present=%t entries=%d b
 // is already documented as a plan figure rather than a measurement. `removed=`
 // had no such definition — it reads as "what I deleted" everywhere else on the
 // verb, which is exactly the ambiguity that misled a reader.
-var scratchGCTreesPlanLogFmt = strings.Replace(scratchGCTreesLogFmt, scratchGCTreesRemovedField, scratchGCTreesPlanField, 1)
+var scratchGCTreesPlanLogFmt = strings.Replace(scratchGCTreesLogFmt, scratchGCRemovedField, scratchGCPlanField, 1)
 
-// scratchGCTreesRemovedField / scratchGCTreesPlanField are the two spellings the
+// scratchGCRemovedField / scratchGCPlanField are the two spellings the
 // substitution above turns on. Named (Rule 1) so the pin test can assert the plan
 // format contains the second and NOT the first without re-typing either.
 //
@@ -397,8 +436,8 @@ var scratchGCTreesPlanLogFmt = strings.Replace(scratchGCTreesLogFmt, scratchGCTr
 // pair the HELP TEXT reads (it documents the fields by name; a constant carrying
 // a scanf verb would print `plan=%d` to a human — observed on this change's
 // first build, which is why the verb is not part of the name).
-const scratchGCTreesRemovedField = "removed="
-const scratchGCTreesPlanField = "plan="
+const scratchGCRemovedField = "removed="
+const scratchGCPlanField = "plan="
 
 // scratchGCDeclaredTreesLogFmt is the resident DECLARED-TREES arm's per-tree
 // line: the shared scratchGCLogFmt plus the tree's identity and the bytes that
@@ -460,13 +499,78 @@ const scratchGCSandboxesFlag = "sandboxes"
 const scratchGCSandboxesRole = "cli-sandboxes"
 
 // scratchGCSandboxesLogFmt is the sandbox line: the shared scratchGCLogFmt
-// extended with the reclaimed BYTES, composed rather than re-spelled (Rules
-// 13/14) so a field added to the shared format lands here automatically. The
-// `home=` field carries the resolved SANDBOX ROOT, so the line names the tree it
-// swept — and the channel that decided it is reported on stderr beside it,
-// because a default presented as a discovery is how a sweep ends up pointed at
-// the wrong directory.
-const scratchGCSandboxesLogFmt = scratchGCLogFmt + " bytes=%d"
+// extended with the reclaimed BYTES, the KEPT bytes and the NOT-OURS bytes,
+// composed rather than re-spelled (Rules 13/14) so a field added to the shared
+// format lands here automatically. The `home=` field carries the resolved SANDBOX
+// ROOT, so the line names the tree it swept — and the channel that decided it is
+// reported on stderr beside it, because a default presented as a discovery is how
+// a sweep ends up pointed at the wrong directory.
+//
+// WHY THERE ARE THREE BYTE FIELDS AND NOT TWO (measured, this host, 2026-11-14):
+// the root held 995,823,652 bytes while four of its five sandboxes were KEPT, so
+// a line carrying `bytes=` alone printed `bytes=0` and the root's real contents
+// were invisible. `bytes=` answers "how much does this pass give back"; a KEEP is
+// a real disk cost and its own figure says how much stays. Same split the
+// declared-trees arm draws between bytes= and holding=.
+//
+// `not_ours_bytes=` is the THIRD and separate answer, and it was added when the
+// same measurement showed two more directories the line accounted for nowhere:
+// 133,141,061 of those 995,823,652 bytes sat in children whose name carries no
+// sandbox- marker. Those are never collected at any age (the marker is
+// load-bearing: the root is a directory the operator may share), so folding them
+// into `kept_bytes=` would present a permanent floor as a deferred reclaim — and
+// leaving them unnamed is the silent failure itself. With all three fields the
+// line accounts for the root's CONTENT, which is the figure DirBytes measures:
+//
+//	bytes= + kept_bytes= + not_ours_bytes= == the sum of the regular-file sizes
+//	                                          under the root.
+//
+// Verified on this host 2026-11-14 after the fix: 0 + 862,565,581 + 133,112,389
+// = 995,677,970 = `find <root> -type f -printf '%s\n' | awk '{s+=$1} END{print s}'`.
+// `du -sb <root>` reports 995,850,122 for the same tree — 172,152 bytes MORE,
+// because du also counts the 39 directory entries' own sizes (≈4 KiB each). So a
+// reader reconciling against du(1) must account for the directory entries
+// separately: the remaining difference is directories, not unaccounted files.
+const scratchGCSandboxesLogFmt = scratchGCLogFmt + " bytes=%d kept_bytes=%d not_ours_bytes=%d"
+
+// scratchGCSandboxesPlanLogFmt is the sandbox arm's DRY-RUN line: the same line
+// as scratchGCSandboxesLogFmt with the ONE field whose meaning differs renamed —
+// `removed=%d` becomes `plan=%d`. Derived (never its own literal) for exactly the
+// reasons scratchGCTreesPlanLogFmt is: the two faces must stay the same line
+// field for field, so a field added to the live format lands here too, and the
+// ONE rename is stated in one place.
+//
+// THE DEFECT THIS CLOSES (measured 2026-11-17, clean-room re-verification of
+// f2d570a3 on an isolated fixture — a root holding one would-remove sandbox, two
+// keeps and one foreign directory):
+//
+//	$ gopi tool scratch-gc sandboxes --dry-run
+//	scratch-gc role=cli-sandboxes home=… removed=1 … bytes=41088 kept_bytes=9683 not_ours_bytes=2048 dry-run=true
+//	$ find <root> -type f | wc -l        # 5 files, all still there
+//
+// …so the report-only face printed `removed=1` on a pass that deleted NOTHING.
+// `bytes=`/`kept_bytes=`/`not_ours_bytes=` were all measured and correct (that is
+// what f2d570a3 fixed); the COUNT field was the remaining unmeasured claim on the
+// line, and it is the very field the -h page promises is renamed on this face
+// ("under --dry-run the line reports the plan count as plan= instead, so a
+// report-only pass cannot print a deletion it did not perform"). The trees arm
+// was given this derivation on 2026-10-27; the sandbox arm was not, so the two
+// faces of one verb disagreed about what the field NAME means.
+var scratchGCSandboxesPlanLogFmt = strings.Replace(scratchGCSandboxesLogFmt, scratchGCRemovedField, scratchGCPlanField, 1)
+
+// scratchGCSandboxesNotOursLineFmt is the CENSUS line: one per direct child the
+// name marker refused, printed on BOTH faces (dry run and real run) because such
+// a directory is never collected — a report-only pass is the only place its path
+// could ever be learned from, and a real pass would otherwise delete the
+// candidates and leave the reader believing the root is now accounted for.
+// Rule 15: the figure goes with the NAME, so an operator can act on it.
+const scratchGCSandboxesNotOursLineFmt = scratch.SandboxNotOursWord + " %s reason=%q bytes=%d"
+
+// scratchGCSandboxesPlanLineFmt is ONE per-sandbox plan line: the verdict word,
+// the path, the sentence that decided it and the measured size. Named (Rule 1b)
+// because the `--explain` face is derived from it — a second spelling would let
+// the two faces drift apart, and telling them apart is the whole point.
+const scratchGCSandboxesPlanLineFmt = "%s %s reason=%q bytes=%d"
 
 // scratchGCStubsFlag is the WORKTREE-STUB arm selector: `scratch-gc stubs`
 // reclaims the degenerate `gopi-<row stem>` directories a TEST-PROCESS worktree
@@ -495,6 +599,20 @@ const scratchGCStubsRole = "cli-stubs"
 // `home=` field carries the ROOT this line reports (one line per root), so a
 // reader never has to guess which tree was swept.
 const scratchGCStubsLogFmt = scratchGCLogFmt + " bytes=%d"
+
+// scratchGCStubsPlanLogFmt is the stub arm's DRY-RUN line: the same line with
+// `removed=` renamed to `plan=`, derived for the reason scratchGCTreesPlanLogFmt
+// states. THIS ARM IS THE ONE THE DEFECT COST THE MOST: a dry run is its DEFAULT
+// (`--yes` is the only spelling that deletes), so the report-only face is the
+// form an operator meets first — and it printed the candidate count in the
+// deletion field. Measured 2026-11-17 on a root whose two children were both
+// kept:
+//
+//	scratch-gc role=cli-stubs home=/home/user/workspace removed=0 stale=none disabled=false bytes=0 dry-run=true
+//
+// (the `removed=0` there is honest by luck — the plan happened to be empty; a
+// root with one collectable stub printed `removed=1` with nothing deleted).
+var scratchGCStubsPlanLogFmt = strings.Replace(scratchGCStubsLogFmt, scratchGCRemovedField, scratchGCPlanField, 1)
 
 // scratchGCStubsYesFlag is the stub arm's CONFIRMATION flag. The arm REMOVES
 // nothing without it: its target is a directory the operator shares with real
@@ -652,11 +770,19 @@ is the only door:
                              #   process, and nothing else — the root and every
                              #   declared child stay
   gopi tool scratch-gc sandboxes  # sweep the AGENT SANDBOX root: remove the
-                             #   sandboxes whose recorded owner is gone and
-                             #   that have aged out (never a live one, never
-                             #   the root itself, never a directory that is
-                             #   not a sandbox of this system's)
+                             #   sandboxes whose recorded owner is GONE (at any
+                             #   age — the writer-owned verdict does not wait out
+                             #   the window), and the UNMARKED ones that have
+                             #   aged out. Never a live one, never the root
+                             #   itself, never a directory that is not a
+                             #   sandbox of this system's
   gopi tool scratch-gc sandboxes --dry-run  # the same, reporting only
+  gopi tool scratch-gc sandboxes --explain  # the plan AND, per sandbox, a verdict
+                             #   line: collectable or keep, the age, and the
+                             #   recorded owner it was measured against
+                             #   (outcome= owner=pid:<n>/start:<ticks>). This is
+                             #   the one face that TELLS the two apart: the plan
+                             #   lines alone are identical to --dry-run's
   gopi tool scratch-gc stubs      # reclaim the WORKTREE STUBS a test-process worktree
                              #   leak left in a REAL worktree root: directories
                              #   holding nothing but a .git pointer whose gitdir
@@ -762,9 +888,39 @@ Read the OTHER fields with their own definitions, because two of them look
 like a bounded/unbounded verdict and neither is one:
 
   bytes=      what the plan WOULD reclaim (or, without --dry-run, did).
+  kept_bytes= the measured size of what this pass KEEPS — the other half of the
+              account, and the field that makes a ` + scratchGCSandboxesFlag + ` line readable on a tree
+              whose sandboxes are all fresh. Measured by the same walk that fills
+              bytes=, so a dry run and a live pass report the same kept figure for
+              the same tree. On a DISABLED sweep bytes= is 0 by construction (nothing
+              is reclaimed) while kept_bytes= is still measured; a root that could
+              not be read prints its 0 WITH the reason on stderr, never as a clean
+              tree. Measured on this host (2026-11-14): 995,823,652 bytes under the
+              sandbox root, every sandbox KEPT — the pre-fix line said bytes=0 and
+              said nothing about the 995 MB.
+  not_ours_bytes=
+              the measured size of the root's direct children whose NAME carries
+              no ` + scratch.SandboxMarkerPrefix + ` marker — ` + scratch.SandboxNotOursWord + ` lines below the summary carry
+              one path each. These are NEVER collected at any age: the marker is
+              load-bearing, because the sandbox root is a directory the operator
+              may share and a sweep that collected by LOCATION would be one
+              mistyped configuration key from deleting the operator's own
+              directories. So this figure is a PERMANENT floor under the root's
+              size, not a deferred reclaim, and it is reported separately for that
+              reason. The three fields account for the root's CONTENT:
+                  bytes= + kept_bytes= + not_ours_bytes= == the sum of the
+                  regular-file sizes under the root
+              The du(1) -sb figure of the same root reports a little MORE than that
+              sum (172,152 bytes on 39 subdirectories here), because du counts every
+              directory entry's own size as well; the leftover is directories,
+              never an unaccounted file. Measured on this host (2026-11-14)
+              before this field existed: 133,141,061 of 995,677,970 bytes (13.4%)
+              sat in two such directories and no line of any arm mentioned them.
+              See TestSandboxCensusReportsTheDirsItRefusesByName and
+              TestScratchGCSandboxesReportsNotOursBytes.
   removed=    how many entries this pass DELETED. It is a measurement, never a
               plan: under ` + scratchGCDryRunFlag + ` the line reports the plan count as
-              ` + scratchGCTreesPlanField + ` instead, so a report-only pass cannot print a
+              ` + scratchGCPlanField + ` instead, so a report-only pass cannot print a
               deletion it did not perform. A face that deleted nothing (disabled,
               failed, unconfigured) prints removed=0 with its own reason beside it.
   plan=       the DRY-RUN line's count of entries the pass WOULD remove. It appears
@@ -780,13 +936,22 @@ like a bounded/unbounded verdict and neither is one:
               by the sweep, and appears only in the verdict sentences).
 
 A tree can therefore print collectable=0 / kept=<n> / holding= all day while most
-of its BYTES sit in a class its own rule never collects. The measured case is
+of its BYTES sit in a class its own rule never collects. The measured case was
 budget-runs on this host (2026-10-27): ~8.7 GiB of run directories (the only
 collectable class) beside ~7.0 GiB of flat per-run evidence that is never a
 candidate at ANY age — the oldest 15 days past every window — because a run's
 stream is the evidence a reader needs when a run is missing its completion line.
-The bound for that half belongs to the writer (scripts/test-budget.sh), not to
-this sweep; do not read a kept= count as "nothing here needs attention".
+THAT HALF IS NOW ITS OWN ROW — ` + scratch.BudgetEvidenceTreeName + ` (the second
+measurement, 2026-11-22: 11,662 flat streams / 17.7 GiB of the tree's 21 GiB,
+with NOT ONE verdict line about them at any age). The two rows share the tree's
+root and split it by KIND: the directories carry the 6h window above, the
+streams carry their OWN 14-day window plus a newest-N floor. Read the two lines
+together — a ` + scratch.BudgetRunsTreeName + ` line can honestly report
+collectable=0 while the ` + scratch.BudgetEvidenceTreeName + ` line beside it plans
+gigabytes. What is still never a candidate, at any age, is the per-run
+EVIDENCE/INDEX half: the START RECORD, the package lists, ` + scratch.BudgetEvidenceTreeName + `'s
+stamps log siblings and the last.json symlink — the record that names a run when
+it was killed, kept forever for ~5 MiB.
  The build cache is
 bounded by AGE because its writer's own per-key bound cannot bound it: measured,
 no key reaches 7.5% of that bound, so the tree grows by accumulating one
@@ -1182,14 +1347,65 @@ func runScratchGCSubcommand(args []string) {
 			// window it would have applied. The stale field carries the SANDBOX
 			// window (not the scratch home's) so a disabled sweep still reports
 			// the bound the operator configured.
+			//
+			// bytes= is 0 because a disabled arm reclaims nothing — that part is
+			// honest. kept_bytes= is MEASURED, for the same reason the declared
+			// trees arm measures holding= here: a disabled sweep is exactly when
+			// a reader most needs to know what is sitting on disk while nothing
+			// bounds it. A plan that cannot be taken (a refused or unreadable
+			// root) leaves the kept figure at 0 and says so on stderr — the
+			// disabled line must never imply it measured a tree it could not read
+			// (Rule 15).
 			root, _ := sandboxRootForSweep()
-			fmt.Printf(scratchGCSandboxesLogFmt+"\n", arm, root, 0, scratch.SandboxStaleAge, true, int64(0))
+			var keptBytes, notOursBytes int64
+			var notOurs []scratch.SandboxNotOurs
+			if census, perr := scratch.PlanSandboxCensus(root, scratch.SandboxStaleAge); perr == nil {
+				tally := scratch.TallySandboxCensus(census)
+				keptBytes, notOursBytes, notOurs = tally.KeptBytes, tally.NotOursBytes, census.NotOurs
+			} else {
+				fmt.Fprintf(os.Stderr, "gopi %s %s: kept_bytes not measured: %v\n",
+					CliVerbScratchGC, scratchGCSandboxesFlag, perr)
+			}
+			fmt.Printf(scratchGCSandboxesLogFmt+"\n", arm, root, 0, scratch.SandboxStaleAge, true, scratch.SandboxNoReclaimBytes, keptBytes, notOursBytes)
+			// A disabled sweep is exactly when the census matters most: nothing
+			// bounds the tree, so the bytes no arm can ever collect must be named
+			// (Rule 15) rather than absorbed into a figure that looks reclaimable.
+			printSandboxNotOurs(notOurs)
 		case scratchGCStubsRole:
 			// ONE line per root the arm WOULD have swept, so a disabled switch
 			// cannot be misread as "those roots were checked and are clean": this
 			// arm's candidates are permanent residue, not an age-bounded tree.
-			for _, r := range stubWorktreeRoots(true) {
-				fmt.Printf(scratchGCStubsLogFmt+"\n", arm, r.root, 0, scratch.SandboxStaleAge, true, int64(0))
+			//
+			// THE `--root` SELECTOR IS HONOURED HERE TOO (measured 2026-11-17):
+			// this face used to enumerate stubWorktreeRoots() unconditionally, so
+			// `GOPI_TEST_SCRATCH_GC_MIN=0 gopi tool scratch-gc stubs --root <X>`
+			// printed a line for the DEFAULT workspace root and not one word about
+			// X — a disabled sweep naming a root the operator never asked about,
+			// which is the trees arm's own lesson ("'the sweep is off' must not
+			// become a second, more permissive parser"). Same target list as the
+			// enabled face, built by the same code.
+			//
+			// `stale=` carries StubNoAgeWindow ("none"), NOT the sandbox window:
+			// this arm applies NO age axis at all (a stub is degenerate, not
+			// aged-out), so a disabled line printing `stale=72h0m0s` was naming a
+			// bound the arm never applies — measured 2026-11-17, the enabled face
+			// said `stale=none` for the same root while this one said
+			// `stale=72h0m0s`. The field is the arm's own account of its
+			// threshold, and it must read the same on both faces (Rule 14: one
+			// definition, quoted twice).
+			//
+			// `bytes=` stays 0 and that is a measurement, not an assertion: the
+			// pass reclaims NOTHING by construction (the off switch returns before
+			// any sweep), so "what this pass did" is honestly zero. The plan's own
+			// measured figure is published by the report-only face
+			// (scratchGCStubsPlanLogFmt).
+			targets := stubWorktreeTargets(stubRoot)
+			if len(targets) == 0 {
+				fmt.Fprintf(os.Stderr, "gopi %s %s: no worktree root to sweep\n",
+					CliVerbScratchGC, scratchGCStubsFlag)
+			}
+			for _, t := range targets {
+				fmt.Printf(scratchGCStubsLogFmt+"\n", arm, t.root, 0, scratch.StubNoAgeWindow, true, int64(0))
 			}
 		case scratchGCRootsRole:
 			// The CENSUS is read-only, so an operator who disabled the SWEEPS
@@ -1232,7 +1448,7 @@ func runScratchGCSubcommand(args []string) {
 		return
 	}
 	if arm == scratchGCSandboxesRole {
-		runScratchGCSandboxes(dryRun)
+		runScratchGCSandboxes(dryRun, explain)
 		return
 	}
 	if arm == scratchGCStubsRole {
@@ -1778,7 +1994,7 @@ func runScratchGCBase(dryRun, explain bool) {
 			fmt.Fprintf(os.Stderr, "gopi %s %s: plan for %s failed: %v\n", CliVerbScratchGC, scratchGCBaseFlag, base, err)
 			os.Exit(scratchGCExitError)
 		}
-		fmt.Printf(scratchGCBaseLogFmt+" dry-run=true\n", scratchGCBaseRole, base, len(report), scratch.ResolveStaleAge(), false)
+		fmt.Printf(scratchGCBasePlanLogFmt+" dry-run=true\n", scratchGCBaseRole, base, len(report), scratch.ResolveStaleAge(), false)
 		for _, p := range report {
 			fmt.Printf("would-remove %s age=%s\n", p.Path, p.Age.Truncate(scratchGCPlanAgePrecision))
 		}
@@ -1859,7 +2075,7 @@ func reportScratchGCDryRun(home string, explain bool) {
 		fmt.Fprintf(os.Stderr, "gopi %s: plan for %s failed: %v\n", CliVerbScratchGC, home, err)
 		os.Exit(scratchGCExitError)
 	}
-	fmt.Printf(scratchGCLogFmt+" dry-run=true\n", scratchGCRoleCLI, home, len(report), scratch.ResolveStaleAge(), false)
+	fmt.Printf(scratchGCPlanLogFmt+" dry-run=true\n", scratchGCRoleCLI, home, len(report), scratch.ResolveStaleAge(), false)
 	for _, p := range report {
 		fmt.Printf("would-remove %s age=%s\n", p.Path, p.Age.Truncate(scratchGCPlanAgePrecision))
 	}
@@ -1969,33 +2185,58 @@ func sandboxRootForSweep() (root, source string) {
 // unverifiable owner — each is REPORTED and resolves to "nothing removed", never
 // to a delete. The sandbox predicate lives in internal/scratch (SweepSandboxes /
 // PlanSandboxes), so this face decides nothing about who may be collected.
-func runScratchGCSandboxes(dryRun bool) {
+func runScratchGCSandboxes(dryRun, explain bool) {
 	root, source := sandboxRootForSweep()
 	fmt.Fprintf(os.Stderr, "gopi %s %s: root=%s source=%s stale=%s\n",
 		CliVerbScratchGC, scratchGCSandboxesFlag, root, source, scratch.SandboxStaleAge)
 
 	if dryRun {
-		plans, err := scratch.PlanSandboxes(root, scratch.SandboxStaleAge)
+		census, err := scratch.PlanSandboxCensus(root, scratch.SandboxStaleAge)
 		if err != nil {
 			fmt.Fprintf(os.Stderr, "gopi %s %s: plan for %s failed: %v\n",
 				CliVerbScratchGC, scratchGCSandboxesFlag, root, err)
 			os.Exit(scratchGCExitError)
 		}
-		removable := 0
-		for _, p := range plans {
+		// The figures come from the PLAN's own measurement (PlanSandboxCensus
+		// sizes every entry, kept ones included), so a dry run reports the same
+		// numbers a live pass would produce for the same tree — that is the whole
+		// point of the report-only face. Before this fix the dry-run branch
+		// hard-coded int64(0), so this host's 950M root printed `bytes=0`
+		// (measured 2026-11-14: 995,823,652 bytes on disk, every sandbox KEPT).
+		//
+		// The COUNT field is carried by the PLAN spelling (scratchGCSandboxesPlanLogFmt),
+		// never by the live one: this branch deletes nothing, so printing the plan
+		// count into `removed=` would be a deletion claim on the report-only face —
+		// the same defect the trees arm closed on 2026-10-27, measured on this arm
+		// 2026-11-17 (`removed=1` on a pass that left all 5 fixture files in place).
+		tally := scratch.TallySandboxCensus(census)
+		fmt.Printf(scratchGCSandboxesPlanLogFmt+" dry-run=true\n",
+			scratchGCSandboxesRole, root, tally.WouldRemove, scratch.SandboxStaleAge, false,
+			tally.WouldRemoveBytes, tally.KeptBytes, tally.NotOursBytes)
+		for _, p := range census.Plans {
+			verdict := scratch.SandboxKeepWord
 			if !p.Keep {
-				removable++
+				verdict = scratch.SandboxWouldRemoveWord
 			}
+			fmt.Printf(scratchGCSandboxesPlanLineFmt+"\n", verdict, p.Path, p.Reason, p.Bytes)
 		}
-		fmt.Printf(scratchGCSandboxesLogFmt+" dry-run=true\n",
-			scratchGCSandboxesRole, root, removable, scratch.SandboxStaleAge, false, int64(0))
-		for _, p := range plans {
-			verdict := "keep"
-			if !p.Keep {
-				verdict = "would-remove"
-			}
-			fmt.Printf("%s %s reason=%q\n", verdict, p.Path, p.Reason)
+		// The VERDICT half, on `--explain` only. This is the difference the -h
+		// page promises between the two faces ("the plan AND a verdict line per
+		// candidate … naming the recorded owner (pid + kernel start ticks) the
+		// decision was measured against") and, before 2026-11-15, did not exist at
+		// all on this arm: `--explain` reached this branch and printed the plan
+		// verbatim, so the two spellings were byte-identical and the flag did
+		// nothing. It shares the home arm's vocabulary (scratchGCVerdictLabel /
+		// the two verdict words / the age precision) so one reader's grep works on
+		// both arms, and it renders the owner through the plan's ONE renderer.
+		if explain {
+			printSandboxVerdicts(census.Plans)
 		}
+		// The census half: one line per child the name marker refused. These are
+		// never collected at ANY age, so this line is the only place their bytes
+		// can be learned from — without it the plan's own figures do not
+		// reconcile with `du -sb` of the root and nothing says so (Rule 15).
+		printSandboxNotOurs(census.NotOurs)
 		return
 	}
 
@@ -2006,13 +2247,67 @@ func runScratchGCSandboxes(dryRun bool) {
 		fmt.Fprintf(os.Stderr, "gopi %s %s: %v\n", CliVerbScratchGC, scratchGCSandboxesFlag, err)
 		os.Exit(scratchGCExitError)
 	}
-	removed, bytes, lockVerdict, err := scratch.SweepSandboxesDetailed(root, scratch.SandboxStaleAge)
+	res, err := scratch.SweepSandboxesReport(root, scratch.SandboxStaleAge)
 	if err != nil {
-		fmt.Println(scratchGCLockLine(fmt.Sprintf(scratchGCSandboxesLogFmt, scratchGCSandboxesRole, root, removed, scratch.SandboxStaleAge, false, bytes), lockVerdict))
+		fmt.Println(scratchGCLockLine(fmt.Sprintf(scratchGCSandboxesLogFmt, scratchGCSandboxesRole, root, res.Removed, scratch.SandboxStaleAge, false, res.Bytes, res.KeptBytes, scratch.SandboxNotOursBytes(res.NotOurs)), res.Lock))
 		fmt.Fprintf(os.Stderr, "gopi %s %s: sweep of %s failed: %v\n",
 			CliVerbScratchGC, scratchGCSandboxesFlag, root, err)
 		os.Exit(scratchGCExitError)
 	}
-	reportScratchGCLock(scratchGCSandboxesRole, root, lockVerdict)
-	fmt.Println(scratchGCLockLine(fmt.Sprintf(scratchGCSandboxesLogFmt, scratchGCSandboxesRole, root, removed, scratch.SandboxStaleAge, false, bytes), lockVerdict))
+	reportScratchGCLock(scratchGCSandboxesRole, root, res.Lock)
+	fmt.Println(scratchGCLockLine(fmt.Sprintf(scratchGCSandboxesLogFmt, scratchGCSandboxesRole, root, res.Removed, scratch.SandboxStaleAge, false, res.Bytes, res.KeptBytes, scratch.SandboxNotOursBytes(res.NotOurs)), res.Lock))
+	// The census half on the REAL face too. A directory the name marker refuses
+	// is never collected, so a reader who only ever runs the sweep would
+	// otherwise never learn which children hold the bytes the line does not
+	// account for — the sweep would delete every candidate and look complete.
+	printSandboxNotOurs(res.NotOurs)
+	// The AUDIT half: one removal-audit record per directory this pass deleted,
+	// written AFTER the deletion succeeded (a record for a surviving directory
+	// would claim a reclaim that did not happen). The arm names THIS channel, so
+	// the sink can answer "was it the operator's sweep or the tick?".
+	// Best-effort by contract (Rule 15): removalaudit's own emit reports a sink
+	// it cannot write on stderr and never fails the deletion it explains.
+	emitSandboxReclaimAudit(removalaudit.ArmSandboxReclaimCLI, root, res)
+}
+
+// printSandboxVerdicts renders the `--explain` face of the sandbox arm: ONE line
+// per candidate, carrying the verdict, the age it was judged at and the RECORDED
+// OWNER the decision was measured against (pid + kernel start ticks + outcome).
+//
+// WHAT IT ADDS OVER THE PLAN LINE, and why both exist: the plan line answers
+// "what would this pass do"; this one answers "why, and against whom". The owner
+// evidence is the difference — a `collectable` whose tree the age window never
+// touched reads as `outcome=gone owner=pid:1013263/start:242112958`, which is a
+// checkable statement, while `reason="not aged"` on the same directory was the
+// defect (task 01a1dbba).
+//
+// It renders through the plan's own SandboxOwnerEvidence (Rule 14), so this line
+// and the reason sentence embedded in the plan cannot disagree about who owned
+// the sandbox.
+func printSandboxVerdicts(plans []scratch.SandboxPlan) {
+	collectable := 0
+	for _, p := range plans {
+		verdict := scratchGCKeepVerdict
+		keptMark := scratchGCKeepMark
+		if !p.Keep {
+			verdict = scratchGCCollectableVerdict
+			keptMark = ""
+			collectable++
+		}
+		fmt.Printf("%s %s verdict=%s age=%s %s %s%s\n",
+			scratchGCVerdictLabel, p.Path, verdict, p.Age.Truncate(scratchGCPlanAgePrecision),
+			p.SandboxOwnerEvidence(), p.Reason, keptMark)
+	}
+	fmt.Fprintf(os.Stderr, "gopi %s %s: %d candidate(s) judged, %d collectable\n",
+		CliVerbScratchGC, scratchGCSandboxesFlag, len(plans), collectable)
+}
+
+// printSandboxNotOurs renders ONE line per directory the name marker refused.
+// The bytes go with the NAME (Rule 15): a total alone cannot answer "which
+// directory is holding 133 MB", and that is the question a reader of this face
+// is asking when the figures do not reconcile with du(1).
+func printSandboxNotOurs(notOurs []scratch.SandboxNotOurs) {
+	for _, n := range notOurs {
+		fmt.Printf(scratchGCSandboxesNotOursLineFmt+"\n", n.Path, n.Reason, n.Bytes)
+	}
 }

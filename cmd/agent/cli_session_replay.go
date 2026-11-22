@@ -156,9 +156,9 @@ var sessionReplayUsage = sessionReplayUsageHead + "\n" +
 	"                    With " + sessionReplayFullFlag + " the SAME row carries the recording's\n" +
 	"                    whole input: no cut, no note (the field order stays the\n" +
 	"                    log's, and `k=v` is how both spellings put it).\n" +
-	"                    (2) A turn's BODY is capped by a ROW CEILING shared by\n" +
-	"                    all of its rounds — a cut round prints `(N row(s) of\n" +
-	"                    this turn's context are not laid out; its tool rows\n" +
+	"                    (2) A round's BODY is capped by a ROW CEILING — the same\n" +
+	"                    bound `--round N` uses. A cut round prints `(N row(s)\n" +
+	"                    of this turn's context are not laid out; its tool rows\n" +
 	"                    are)`. On a canvas too narrow to hold that sentence\n" +
 	"                    the row is SHORTENED and closed with" + replayplay.ReportRowCutLabel() + "\n" +
 	"                    rather than clipped at the edge: a report row NEVER\n" +
@@ -170,6 +170,12 @@ var sessionReplayUsage = sessionReplayUsageHead + "\n" +
 	"                    note at all. Before this, " + sessionReplayFullFlag + " answered only (1),\n" +
 	"                    so a --turn N --full of a 211-request turn still\n" +
 	"                    reported 19 rows not laid out per round.\n" +
+	"                    The ceiling is PER ROUND, never shared across a turn:\n" +
+	"                    a turn is many rounds, and a ceiling divided among\n" +
+	"                    them starves the LAST one — which is where a run\n" +
+	"                    records its closing note. Measured 2026-11-22: turn 1\n" +
+	"                    of a 28-round session laid its final round out as 1\n" +
+	"                    row of 88 while `--full` printed the whole text.\n" +
 	"                    It applies to the views that print ROWS (--turn N,\n" +
 	"                    --round N and the interactive player) and is REFUSED on\n" +
 	"                    the list verbs (--turns/--rounds), which print counts\n" +

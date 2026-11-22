@@ -126,6 +126,19 @@ const (
 	// that is not one of the recognized families: operator residue from a
 	// hand-run probe, a migration manifest, a log somebody parked there.
 	FamilySessionsRootResidue = "sessions-root-residue"
+	// FamilySessionsRootInboxDir is the `messages/` DIRECTORY directly under
+	// the sessions root: an inbox whose session was never named.
+	//
+	// It is its own family rather than a member of the root-stray family
+	// because the two answer different questions. A stray directory is a
+	// probe's name (`zz-…`, `pick`); this one is a name the SHAPE of a session
+	// tree already uses — `SessionMessagesDirName`, which is correct ONE LEVEL
+	// DOWN inside a container — reached at the wrong DEPTH. Registering it
+	// under the stray table would also hand it that family's `bound:` decision
+	// and let an age window remove a directory that may be holding
+	// undelivered messages; a `legacy` row adds no sweep arm at all (Rule 15:
+	// report the shape, let a human decide).
+	FamilySessionsRootInboxDir = "sessions-root-inbox"
 )
 
 // Decision is what the registry DECIDES about a family. Four values, and the
@@ -552,6 +565,71 @@ var families = []Family{
 		Match:    isStrayRootDirShape,
 	},
 	{
+		Name:  FamilySessionsRootInboxDir,
+		Class: ClassResidue,
+		Where: WhereRoot,
+		// A `messages/` DIRECTORY directly under the sessions root: the inbox
+		// name of a session, at the depth of the TREE instead of the depth of a
+		// session.
+		//
+		// THE NAME IS NOT RESIDUE — the DEPTH IS. `SessionMessagesDirName` is
+		// the durable inbound inbox ONE LEVEL DOWN inside a session container
+		// (`internal/tools.sessionInboxPath` joins a SESSION DIR, and the
+		// reader is `internal/agent.sessionInboxDir`, which takes
+		// `RecordContainer(this run's log)`), so every container-level
+		// `messages/` is the `attachments-archive`-style family's sibling and
+		// is NOT this row's subject. This row claims only the copy that a
+		// session can never read, because its own resolver would have to be the
+		// sessions ROOT to produce it.
+		//
+		// MEASURED (this host, 2026-11-14). The live tree holds 388 `messages/`
+		// directories one level down and EXACTLY ONE at the root, holding
+		// `inbox.jsonl` — 4 records, 5079 bytes, all `"session_id":
+		// "d1495e9e-c14b-4ab0-9b54-549e9000e623"`, written 2026-10-13 between
+		// 02:13Z and 04:39Z.
+		//
+		// WHO WROTE IT — measured, and the answer is NOBODY ANY MORE. The only
+		// way a production path can reach this depth is a `dir` operand equal to
+		// the sessions root itself, and both resolvers refuse that by
+		// construction:
+		//   * the local DELIVER face (`cmd/agent.resolveNotifySessionDir`) takes
+		//     `sessionlayout.RecordContainer(path)` — `filepath.Dir` of the
+		//     record — and the record it finds is at least one level down;
+		//   * the peer handler (`internal/tools.notifyPeerSessionDir`) does the
+		//     same and additionally refuses a bare-root candidate with
+		//     `DirHasRecord`.
+		// The ONE path that used to produce the root was the SECOND `Dir()` that
+		// peeled a level whenever the record's basename was not
+		// `session.jsonl` — the defect fixed on the day this inbox was written
+		// (see the comments in `cli_notify.go` and `notify_peer.go`, and
+		// `TestNotifyPeerCLITaskRunRecordKeepsItsContainer`, whose second side
+		// asserts this very directory does NOT come back). The 4 records are
+		// that run's own repro probes, the last of them a "post-fix probe".
+		//   * `gopilog.FindSession` CAN still return the root as `dir` when a
+		//     LEGACY FLAT record (`<root>/<uuid>.jsonl`) is what matched — every
+		//     container candidate is a directory, so a root-level file can only
+		//     match through the flat-name spelling. That path is not reachable
+		//     on this host today: measured, the sessions root holds NO `*.jsonl`
+		//     at all (44 of the records the census counts there are
+		//     `<id>.screen.stream` / `<id>.sgr.stream` / `<id>.dump.json`
+		//     shapes), and the current writers mint `<session-uuid>/`. It stays a
+		//     NAMED possibility here rather than a silent one, which is exactly
+		//     what a `legacy` decision is for.
+		//
+		// THE DECISION IS `legacy`, NOT `bound:` — deliberately. Bounding it
+		// would add a sweep arm over an inbox, and an inbox is the one artifact
+		// whose whole value is that a message it holds has NOT been read yet: it
+		// cannot be re-derived, and "aged and unheld" is precisely the state of
+		// a message nobody has collected. So this row makes the shape VISIBLE
+		// (the census prints it under its own family instead of UNCLASSIFIED)
+		// and leaves the disposition to a person.
+		Decision: DecisionLegacy,
+		Reason:   "a session's inbox name at the TREE's depth instead of a session's: `messages/` directly under the sessions root, which no session can read (every resolver joins `SessionMessagesDirName` onto a session CONTAINER, one level down). Measured this host 2026-11-14: 1 such directory against 388 at the correct depth, holding `inbox.jsonl` — 4 records, 5079 bytes, all addressed to session d1495e9e-c14b-4ab0-9b54-549e9000e623 and written 2026-10-13 02:13Z–04:39Z, the day the one path that could reach this depth (a second `filepath.Dir()` peel in the two notify resolvers) was fixed. No writer in this tree: both resolvers now take `sessionlayout.RecordContainer`, and this host's sessions root holds no `*.jsonl` for a legacy-flat match to be made through. KEPT rather than bounded because an inbox's value IS its unread records — nothing re-derives one, and an age window would be deleting messages nobody has collected yet",
+		Match: func(e Entry2) bool {
+			return e.Dir && e.Where == WhereRoot && e.Name == SessionMessagesDirName
+		},
+	},
+	{
 		Name:  FamilySessionsRootResidue,
 		Class: ClassResidue,
 		Where: WhereRoot,
@@ -678,7 +756,7 @@ func isSessionContainerShape(shape string) bool {
 // (internal/scratch's session-legacy rows), and the near-miss it could not see
 // is a name a run mints for itself by mis-transcribing its own id.
 //
-// MEASURED (2026-10-14, host host-b, this package's sibling gate). A
+// MEASURED (2026-10-14, host nick-HP-Laptop, this package's sibling gate). A
 // run whose row id is `01a13645-66c3-79ec-962a-5f8776e1f216` typed the four-dash
 // form `01a13645-66c3-79ec-962a5f8776e1f216` — the tail group's leading dash
 // moved one group left, i.e. the branch/worktree spelling a stem that strips
@@ -717,7 +795,7 @@ func IsSessionContainerName(name string) bool {
 		// and this predicate is the namespace rule of a row that removes
 		// root-level directories.
 		//
-		// MEASURED (2026-10-17, host host-a, task
+		// MEASURED (2026-10-17, host the host, task
 		// 01a144001e4b7086b97d257497a832ed). The sessions root carried 25
 		// root-level directories named as a bare 32-hex run. ALL 25 had a
 		// canonical twin beside them (25 of 25), and one twin was WRITTEN 40

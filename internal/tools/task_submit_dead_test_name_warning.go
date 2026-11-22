@@ -42,7 +42,7 @@ package tools
 // a test the child is being asked to WRITE (that is the dispatch seam's own
 // stated boundary, and it is why the clause says "or say in the payload that the
 // test is yours to write"). A refusal here would block exactly the epic that
-// commissions a test — the same reason TaskSubmitBaseStalenessWarning and
+// commissions a test — the same reason TaskHermesHostWarning and
 // TaskSubmitBaseStalenessWarning warn and never block (Rules 15/40).
 //
 // SILENCE, stated rather than implied: an unreadable corpus, an unresolvable

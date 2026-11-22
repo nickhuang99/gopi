@@ -8,7 +8,7 @@
 //	default                (lowest)
 //
 // Previously each signal was read independently from os.Getenv scattered
-// across loop.go / compact.go / rawlog.go / tools/timeout.go / claude_client.go,
+// across loop.go / rawlog.go / tools/timeout.go / claude_client.go,
 // which meant there was no single place listing every knob, no way to set the
 // same knob in settings.json, and no way to override it from the command line.
 // This package exists so `gopi -h` can advertise every knob with its env var,
@@ -73,43 +73,6 @@ func (m *ThinkingMode) UnmarshalJSON(data []byte) error {
 		return nil
 	}
 	return fmt.Errorf("invalid thinking value: %s", data)
-}
-
-// CompactEnabled is the settings.json "compact" toggle (memory compaction
-// enabled/disabled). UnmarshalJSON is tolerant: a JSON bool is accepted
-// verbatim, and the string spellings the env/flag channels already accept
-// ("on"/"off"/"true"/"false"/"1"/"0"/"yes"/"no"/"enabled"/"disabled",
-// case-insensitive via normalizedBoolValue) are accepted too — the env and
-// CLI readers advertise "off" as the way to disable, so a settings file
-// written the same way must not hard-fail the whole parse. Any other value
-// is a clear parse error naming the field (a typo must not silently flip
-// the toggle). Zero value ("" / false) means "unset — the code's built-in
-// default (on) applies". Why a named type and not *bool: json.Unmarshal
-// only honours UnmarshalJSON on named types — *bool has no room for the
-// string spellings and would reject "off" before any other settings key
-// was read (P1-C: one bad field loses the ENTIRE settings file).
-type CompactEnabled bool
-
-// UnmarshalJSON accepts both the JSON bool form and the string spellings
-// "on"/"off"/"true"/"false"/"1"/"0"/"yes"/"no"/"enabled"/"disabled"
-// (case-insensitive) — the full normalizedBoolValue set, so the settings
-// channel speaks exactly the language the env/flag channels already do.
-func (c *CompactEnabled) UnmarshalJSON(data []byte) error {
-	var b bool
-	if err := json.Unmarshal(data, &b); err == nil {
-		*c = CompactEnabled(b)
-		return nil
-	}
-	var s string
-	if err := json.Unmarshal(data, &s); err == nil {
-		v, ok := normalizedBoolValue(s)
-		if !ok {
-			return fmt.Errorf("invalid compact value %q (want bool, or \"on\"/\"off\"/\"true\"/\"false\"/\"1\"/\"0\")", s)
-		}
-		*c = CompactEnabled(v)
-		return nil
-	}
-	return fmt.Errorf("invalid compact value: %s (want a bool or one of \"on\"/\"off\"/\"true\"/\"false\"/\"1\"/\"0\")", data)
 }
 
 // Config is the resolved, type-checked view of GoPi's tunable knobs. Every
@@ -284,17 +247,8 @@ type Config struct {
 	ContextWindow  int      `json:"context_window,omitempty"`
 
 	// --- agent runtime ---
-	TimeoutSec int             `json:"timeout,omitempty"` // overall agent timeout in seconds (0 = unlimited)
-	Compact    *CompactEnabled `json:"compact,omitempty"`
-	Debug      bool            `json:"debug,omitempty"`
-
-	// --- compaction parameters ---
-	CompactTrigger        *float64 `json:"compact_trigger,omitempty"`
-	CompactTarget         *float64 `json:"compact_target,omitempty"`
-	CompactKeepRecent     int      `json:"compact_keep_recent,omitempty"`
-	CompactMaxSummaryToks int      `json:"compact_max_summary_tokens,omitempty"`
-	CompactCooldownSec    int      `json:"compact_cooldown,omitempty"`
-	CompactReferenceOnly  *bool    `json:"compact_reference_only,omitempty"`
+	TimeoutSec int  `json:"timeout,omitempty"` // overall agent timeout in seconds (0 = unlimited)
+	Debug      bool `json:"debug,omitempty"`
 
 	// --- logging ---
 	RawLog    string `json:"raw_log,omitempty"` // "on" | "off"

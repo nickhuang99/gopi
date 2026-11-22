@@ -34,12 +34,12 @@ package main
 //	② PROCESS TABLE (the fallback): a worker that never wrote a file — launched
 //	   without a writable state directory, or by an older binary — is still a
 //	   worker, and its /proc entry says so by ARGV SHAPE: comm == the gopi
-//	   binary name AND argv[1] == the worker verb. That is exactly the predicate
+//	   binary name AND the top-level worker verb (after any leading global flags). That is exactly the predicate
 //	   scripts/gopi-worker-up.sh's `--count` uses (internal/procname + the argv
 //	   scan below), so the operator's count and `--status` cannot disagree about
 //	   what a worker is. A `gopi task run <id>` child re-execs the SAME binary
-//	   and is therefore excluded POSITIVELY (argv[1] is the task verb, not the
-//	   worker verb) — a substring filter would count it.
+//	   and is therefore excluded POSITIVELY (its top-level verb is the task
+//	   verb, not the worker verb) — a substring filter would count it.
 
 import (
 	"context"
@@ -764,7 +764,8 @@ func stateFileCarriesPID(name string) (int, bool) {
 // fallbackWorkerPIDs lists the pids whose PROCESS SHAPE is a gopi worker in the
 // CALLER'S OWN profile, plus (separately) the worker-shaped processes that
 // belong to ANOTHER profile. Shape alone is machine-wide by design — comm == the
-// gopi binary name and argv[1] == the worker verb, the launcher's --count
+// gopi binary name and the worker verb at its top-level position
+// (procname.WorkerVerbIndex), the launcher's --count
 // predicate — so ownership is a SECOND question, answered by the process's own
 // environment (workerProfileOf). Splitting the two questions is what keeps the
 // shape predicate honest (no ownership test smuggled into it) and keeps the
@@ -880,15 +881,17 @@ func procnameRoot() string {
 // the executable FILE's basename, so a gopi binary built under another file name
 // (bin/gopi-fix) produced "no live gopi worker" for a worker that was running
 // this very program (bug 01a131fcb8337c1b; Rule 15: a proxy metric is never
-// reported as the measurement). The argv test is an exact comparison of argv[1] —
-// so a shell whose command line merely mentions `gopi worker` is not a worker,
-// and a `gopi task run` child (argv[1] == the task verb) is NOT counted. The
+// reported as the measurement). The argv test is an exact comparison of the
+// top-level worker verb word (procname.WorkerVerbIndex, after any leading
+// global flags) — so a shell whose command line merely mentions `gopi worker`
+// is not a worker, and a `gopi task run` child (its verb is `task`) is NOT
+// counted. The
 // detachment test is what keeps the operator's OWN `gopi worker --status`
 // (a foreground invocation) out of the enumeration.
 func workerProcessShape(pid int) bool {
 	root := procnameRoot()
 	argv, ok := procname.Cmdline(root, strconv.Itoa(pid))
-	if !ok || len(argv) < 2 || argv[1] != procname.VerbWorker {
+	if !ok || procname.WorkerVerbIndex(argv) < 0 {
 		return false
 	}
 	if !procname.WorkerImageIsGopi(root, strconv.Itoa(pid), argv[0]) {

@@ -22,16 +22,20 @@ package tools
 // IT IS NOT a messages-level index, and the boundary is the hermes 4.3GB
 // lesson this package's chat index already records: chat *content* lives in
 // the JSONL pointer files and the DB stores only index facts. A note is not a
-// message dump — it is the model's own one-line summary, capped at
-// maxSelfRecordNoteChars (500 runes) by collapseSelfNote before either writer
-// sees it, so this table is O(rounds) in bounded-size rows and can never grow
-// the way a message mirror does. THIS FILE IS THE SECOND HALF OF THAT SENTENCE:
+// message dump — it is the model's own one-line summary: ONE LINE by contract
+// (the record layer's flattening), stored here IN FULL, because this table is the
+// retrieval layer and a row that held only the opening 500 runes of a note could
+// never answer a query about the rest of it. The 500-rune budget
+// (agent.maxSelfRecordNoteChars) applies to the RE-INJECTION CARRIER only, which
+// is a context message, not evidence — the split is the epic's point. Rows are
+// therefore O(rounds) in *one-line* size, and still bounded by the record layer's
+// ceiling on how many notes a run holds. THIS FILE IS THE SECOND HALF OF THAT SENTENCE:
 // the chats table (chat.go) indexes CONVERSATIONS; chat_notes indexes the
 // round-level records INSIDE them — the same file, two grains, no third store.
 //
 // WHY source_host AND source_path ARE BOTH COLUMNS. The two machines of this
 // topology have home directories that are literally the same string
-// (`/home/user/...`, measured on host-b and peer1), so a PATH alone cannot say
+// (`/home/user/...`, measured on sager and peer1), so a PATH alone cannot say
 // which machine a note came from and a HOST alone cannot say where to look for
 // the rest of the run. Both are stamped, from sources that already exist —
 // tools.OriginHostName() (the node-identity override > hostname, Rule 14: one
@@ -123,9 +127,10 @@ const (
 	chatNoteSearchMaxLimit = 200
 
 	// chatNoteRenderChars caps the note text shown per hit. The stored text is
-	// the record (up to maxSelfRecordNoteChars, the model-facing cap); the
-	// RENDER is a page, and a 500-rune note five times over is not a list a
-	// reader scans. Truncation is marked, never silent.
+	// the record — the WHOLE note (the record layer stores it uncut; the 500-rune
+	// cap is the re-injection carrier's budget, not storage's); the RENDER is a
+	// terminal page, and a 1,200-rune note five times over is not a list a reader
+	// scans. Truncation is marked, never silent.
 	chatNoteRenderChars = 160
 
 	// chatNoteRenderEllipsis marks a rendered note that was cut.

@@ -49,7 +49,7 @@ func IsFileRef(value string) bool {
 // of the referenced file. Non-references pass through unchanged; a bare "@"
 // passes through as literal text; "@@x" unescapes to "@x"; "@-" reads stdin.
 // References are only recognized when the file EXISTS — prose that happens
-// to start with '@' (e.g. "@the operator mentioned...") must never be swallowed.
+// to start with '@' (e.g. "@nick mentioned...") must never be swallowed.
 // Returns the expanded value; an unreadable or oversized referenced file is
 // an error naming the path.
 func ExpandFileRef(value string) (string, error) {
@@ -62,7 +62,7 @@ func ExpandFileRef(value string) (string, error) {
 	}
 	path := value[len(FileRefPrefix):]
 	// A file ref must be a single path token — a value with whitespace after
-	// '@' is prose that merely STARTS with '@' (e.g. "@the operator mentioned this"),
+	// '@' is prose that merely STARTS with '@' (e.g. "@nick mentioned this"),
 	// not a reference. Without this guard such prose would break with a
 	// confusing "open <words>" file error.
 	if strings.ContainsAny(path, " \t\n\r") {

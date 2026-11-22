@@ -36,7 +36,7 @@ import (
 // knows where it is; and so the block can never be lost to a join that prepended
 // a separator to nothing.
 func chatOpsSystemPrompt(a *Agent) string {
-	block := chatContextRulesFor(true) + chatSessionBlock(a) + chatSurfaceFactRules(a)
+	block := chatContextRulesFor(true) + chatSessionBlock(a) + chatSurfaceFactRules(a) + chatSurfaceBudgetLine(a)
 	// The unattended sentence rides AFTER the chat block on this path too, so
 	// the tool-enabled and the plain carrier describe one run the same way: a
 	// run that declared itself unattended says so whichever toolset it carries
@@ -512,8 +512,8 @@ func firstLineOf(fallback, s string) string {
 // nobody expected).
 func (a *Agent) chatOpsToolDefs() []deepseek.ClaudeToolDef {
 	extra := chatScopedToolDefs(a)
-	defs := make([]deepseek.ClaudeToolDef, 0, len(claudeToolDefs)+len(extra))
-	defs = append(defs, claudeToolDefs...)
+	defs := make([]deepseek.ClaudeToolDef, 0, len(claudeToolDefs())+len(extra))
+	defs = append(defs, claudeToolDefs()...)
 	if a.chatSurface.surface != nil {
 		defs = append(defs, extra...)
 	}
@@ -717,14 +717,15 @@ func (a *Agent) ChatOps(userInput string, history []deepseek.Message, images ...
 			a.RawLog.Sync()
 		}
 
-		// THE NOTE AS A SUBSTITUTE (turnfold.go): the chat surface's round
-		// boundary, the same fold and the same POLICY as the task loop's. A chat
-		// turn that ran ten tool rounds is ONE completed turn once the next input
-		// arrives, and by this line that next input is in the context — so the
-		// completed turn's raw traffic leaves HERE and its note takes its place.
-		// No size threshold, no raw window unless GOPI_TURN_FOLD_KEEP_TURNS is
-		// set; the turn in flight is never touched.
-		a.foldCompletedTurns()
+		// NOTHING IS REMOVED HERE. This is the chat surface's round boundary and
+		// it only DURABLY RECORDS what the round produced — the history stays
+		// append-only. The one reduction gopi has is threshold compression
+		// (context_compress.go): it fires when the history crosses
+		// DefaultCompactTriggerRatio of the window and keeps the newest
+		// DefaultCompactKeepRecent SUBSTANTIVE messages (8 — harness injection and
+		// content-less turns do not spend a slot of that floor) verbatim, bounded by
+		// compactKeepRecentTokensCap. No knob here chooses a window and no turn
+		// leaves this context.
 
 		// P0-3: background-job completion notices AND external messages enter
 		// the inbox BEFORE the request is built — the model never polls.
@@ -932,7 +933,8 @@ func (a *Agent) ChatOps(userInput string, history []deepseek.Message, images ...
 				a.captureSelfNotes(a.recordSelfNotes(content, res.thinking))
 				// ...and the response object beside it (selfnotecaptureresponse.go):
 				// the answer this chat displayed is where a table or a diagram
-				// lives, and the note is capped at maxSelfRecordNoteChars.
+				// lives, and a note is ONE LINE by contract — the shape does not
+				// fit a line, whatever the storage limit is.
 				a.captureResponseText(content)
 				a.Ctx.AddAssistantMessageWithThinking(content, nil, res.thinking, res.thinkingSig)
 				finalContent = content

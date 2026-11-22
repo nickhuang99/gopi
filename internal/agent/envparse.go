@@ -15,7 +15,7 @@ import (
 // time.Duration like "600s"), matching each call site's historical text.
 //
 // This is the single home for the "Getenv → Atoi → validate → warn → fall
-// back" template that previously repeated ~14× across loop.go and compact.go
+// back" template that previously repeated ~14× across loop.go and the knobs
 // with per-site drifts in the range rule and warning format.
 func envInt(name string, def int, display interface{}, valid func(int) bool) int {
 	v := os.Getenv(name)

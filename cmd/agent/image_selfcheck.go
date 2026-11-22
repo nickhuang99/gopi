@@ -117,7 +117,7 @@ func mergeImageTickCheck(prog string) bool {
 // WHY A ROUND BOUNDARY AND NOT A TIMER (Rule 35). The round boundary is a clock
 // this loop already has; a timer, a watcher, a unit or a state file would each
 // be a new persistent dependency wrapped around gopi, and a wrapper of that
-// shape is exactly what the retired peer-launcher-autostart cron line was: it makes
+// shape is exactly what the retired hp-worker-autostart cron line was: it makes
 // the machine look healthy while nothing explains why. The check is two reads
 // the process already owns (`/proc/self/exe` and the artifact at that path), so
 // it adds nothing to the machine.

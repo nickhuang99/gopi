@@ -47,6 +47,7 @@ import (
 	"unicode/utf8"
 
 	"github.com/nickhuang99/gopi/internal/deepseek"
+	"github.com/nickhuang99/gopi/internal/scratch"
 	"github.com/nickhuang99/gopi/internal/tools"
 )
 
@@ -185,7 +186,7 @@ func takeChatInbox(sessionDir string) chatInboxDelivery {
 		}
 		// CONSUME: the move is the marker, and it happens only after the bytes
 		// are in hand. A failed move is reported and the file stays.
-		if mvErr := os.MkdirAll(filepath.Dir(chatInboxSentPath(sessionDir, name, stamp)), 0o755); mvErr != nil {
+		if mvErr := scratch.MkdirAllWithSuiteRunOwnerPerm(filepath.Dir(chatInboxSentPath(sessionDir, name, stamp)), 0o755); mvErr != nil {
 			out.Problems = append(out.Problems, fmt.Sprintf("%s: cannot file a delivered attachment: %v", path, mvErr))
 			continue
 		}

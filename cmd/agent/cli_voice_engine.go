@@ -601,18 +601,28 @@ func transcribeFileDoubao(opts *voiceOptions, audioPath string) (string, time.Du
 		// incident: the mode had already exited on its FIRST round, and every
 		// later window the operator spoke into belonged to a mode that was off.
 		//
-		// The verdict is returned as an EMPTY TRANSCRIPT, which is exactly what
-		// it is. The callers that DO treat silence specially (the voice mode's
-		// silence arm, `chatVoiceSilentNote`) then work as designed; a caller
-		// that ignores it appends nothing, which is also correct. Every OTHER
+		// The verdict is returned as a TYPED "no transcript", which carries the
+		// vendor's own code/message/logid. The chat voice mode's narrow seam
+		// (transcribeFile) turns that back into an empty transcript, so the
+		// silence arm keeps working exactly as it did; a FILE shape — whose
+		// stdout is the whole deliverable — refuses it with a non-zero exit
+		// status instead of printing a bare newline as a success. Every OTHER
 		// error — a 403, a quota refusal, an unreachable host — still fails.
 		var apiErr *doubaoasr.APIError
 		if errors.As(err, &apiErr) && apiErr.NoSpeech() {
-			return "", time.Since(start), nil
+			return "", time.Since(start), voiceNoTranscriptVerdict(voiceEngineLabel(opts), apiErr)
 		}
 		return "", 0, voiceDoubaoError(err)
 	}
 	elapsed := time.Since(start)
+	// A COMPLETED JOB CAN STILL CARRY NO TEXT, and that is a different silence:
+	// the service said 20000000 and its result was empty (or whitespace, which
+	// prints the same nothing). The verdict is typed and carries no service code
+	// because there is none to quote — the refusal sentence says exactly that
+	// (Rule 15: the two silences are different facts and are not conflated).
+	if strings.TrimSpace(res.Text) == "" {
+		return "", elapsed, voiceNoTranscriptVerdict(voiceEngineLabel(opts), nil)
+	}
 	return res.Text, elapsed, nil
 }
 

@@ -71,6 +71,10 @@ CHANNELS — what decided each value:
                    A constant that spells "no ceiling" prints as the code
                    spells it (` + "`timeout (unset), 0 runs`" + ` — 0 = unlimited)
   agent            resolved by the agent itself (what the request will carry)
+  this process     (run time) a console command changed it in THIS session —
+                   e.g. ` + "`/thinking off`" + ` sets the live field and writes NO
+                   configuration, so the ` + "`!`" + ` line names what the
+                   configuration still states and a new process starts there
   NOT APPLIED      the document states it and this process never received it —
                    a DEAD value on a knob whose only reader is os.Getenv
   (unset)          nothing specified it anywhere, and the code has no default

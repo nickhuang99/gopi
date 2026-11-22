@@ -9,7 +9,7 @@ import (
 // this system mints for a session container?".
 //
 // WHY THIS EXISTS, and what it does NOT answer (measured 2026-10-30, host
-// host-a, the bug row this file answers): the sessions reclaimer used a
+// the host, the bug row this file answers): the sessions reclaimer used a
 // bare canonical-uuid test (IsUUIDName) as its OURS predicate. That is the
 // shape of a FIRST-RUN container and of nothing else, so the two suffix shapes
 // this system mints for itself — a reopen successor (`<uuid>-r1`, `-r2`) and a

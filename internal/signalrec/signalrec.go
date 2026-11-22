@@ -98,6 +98,7 @@ import (
 	"github.com/nickhuang99/gopi/internal/config"
 	"github.com/nickhuang99/gopi/internal/procname"
 	"github.com/nickhuang99/gopi/internal/procstat"
+	"github.com/nickhuang99/gopi/internal/scratch"
 	"github.com/nickhuang99/gopi/internal/sessionevent"
 	"github.com/nickhuang99/gopi/internal/sessionid"
 	"github.com/nickhuang99/gopi/internal/sessionlayout"
@@ -901,7 +902,7 @@ func sessionDest() (destination, error) {
 // would fail silently.
 func processDest(root, label, note string) (destination, error) {
 	dir := residentDirFor(os.Getpid(), root)
-	if err := os.MkdirAll(dir, sessionDirPerm); err != nil {
+	if err := scratch.MkdirAllWithSuiteRunOwnerPerm(dir, sessionDirPerm); err != nil {
 		return destination{}, fmt.Errorf("signalrec: create process session dir %q: %w", dir, err)
 	}
 	// The two failure shapes are split (and the guard de-indented) because a
@@ -1160,7 +1161,7 @@ func appendRecord(rec record) error {
 	if err != nil {
 		return err
 	}
-	if err := os.MkdirAll(d.Dir, sessionDirPerm); err != nil {
+	if err := scratch.MkdirAllWithSuiteRunOwnerPerm(d.Dir, sessionDirPerm); err != nil {
 		return fmt.Errorf("signalrec: create session dir %q: %w", d.Dir, err)
 	}
 	rec.SessionDir = d.Dir
@@ -1882,7 +1883,7 @@ func targetSessionDir(pid int) string {
 	// resident victim on its FIRST kill, which is the case the guard exists for.
 	if residentMode(argvOf(pid)) {
 		dir := residentDirFor(pid, root)
-		if err := os.MkdirAll(dir, sessionDirPerm); err == nil {
+		if err := scratch.MkdirAllWithSuiteRunOwnerPerm(dir, sessionDirPerm); err == nil {
 			return dir
 		}
 	}
@@ -2430,7 +2431,7 @@ func residentDirHandoff(root, label string) (string, bool) {
 	if filepath.Clean(handed) != filepath.Clean(residentDirFor(os.Getpid(), root)) {
 		return "", false
 	}
-	if err := os.MkdirAll(handed, sessionDirPerm); err != nil {
+	if err := scratch.MkdirAllWithSuiteRunOwnerPerm(handed, sessionDirPerm); err != nil {
 		return "", false
 	}
 	if dirExists(handed) != nil {

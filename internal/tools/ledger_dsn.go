@@ -3,6 +3,7 @@ package tools
 import (
 	"strconv"
 	"strings"
+	"time"
 )
 
 // LedgerDSN returns the database/sql DSN a NON-production opener (a test
@@ -222,6 +223,53 @@ const ledgerRollbackJournalMode = "DELETE"
 // compared against a readback in a test and rendered into the DSN, and a value
 // re-typed at either site is exactly the drift the const exists to prevent.
 const ledgerWALJournalMode = "WAL"
+
+// ledgerReadBusyHeadroom is how far a PURE LEDGER READ's deadline sits above
+// the SQLite busy wait it can queue behind.
+//
+// THE DEFECT IT REPAIRS IS AN INVERSION OF TWO CONSTANTS, and that part is a
+// fact a machine checks: the deliverable reader was bounded by
+// taskWorktreeBackfillTimeout (10s — a constant named for the GIT invocations
+// it caps), while the ledger's own queueing budget is dbBusyTimeoutMSec (15s).
+// A pure ledger read was therefore bounded by a number chosen for a `git`
+// subprocess, and the deadline could expire while SQLite was still willing to
+// serve the statement. Arm (b) of
+// TestResumeGroundDistinguishesUnreadableLedgerFromNoGround fails if the two
+// ever invert again.
+//
+// WHAT THE MEASUREMENT ACTUALLY SAID, because the earlier version of this
+// comment claimed something the probe disproved (Rule 41's third requirement —
+// inference must not be written as measurement). Probed on this host:
+//
+//	WAL (production's mode)      a reader behind an open write transaction
+//	                             returns INSTANTLY: elapsed 0s, no error, the
+//	                             uncommitted row simply invisible. A reader is
+//	                             NEVER blocked, so no deadline of ours can be
+//	                             what abandons it.
+//	rollback journal             the same read fails INSTANTLY with
+//	                             "database is locked (5) (SQLITE_BUSY)" —
+//	                             elapsed 0s, again not the busy timeout, so
+//	                             again not a deadline of ours.
+//
+// So "a short deadline abandons the statement mid-wait" is NOT what this host
+// measures. What the probe does NOT settle is a read whose OPEN is slow (a
+// ledger on a busy filesystem, a schema the binary must migrate) — and there
+// the same argument holds without needing a timing: a deadline picked for a
+// `git` call is not evidence about a ledger read. The repair stands on the
+// INVERSION, which is measured by a constant comparison, and the derived
+// constant's value is the ledger's own patience plus headroom.
+//
+// A deadline SHORTER than the lock's own patience bounds nothing useful — it
+// converts "wait your turn" into "there is no data", which is the one answer a
+// reader must never invent. The headroom is small on purpose: it only has to
+// be enough that the BUSY TIMEOUT is what decides.
+const ledgerReadBusyHeadroom = 5 * time.Second
+
+// ledgerReadTimeout is the ONE deadline for a pure, single-shot LEDGER READ
+// (Rule 2/14). It is DERIVED from dbBusyTimeoutMSec rather than re-typed, so
+// retuning the busy wait retunes this with it and the two can never invert
+// again.
+const ledgerReadTimeout = time.Duration(dbBusyTimeoutMSec)*time.Millisecond + ledgerReadBusyHeadroom
 
 // LedgerRollbackJournalPragma returns the HANDLE-level statement that puts a
 // ledger back in SQLite's rollback journal, for a rig whose subject is what a

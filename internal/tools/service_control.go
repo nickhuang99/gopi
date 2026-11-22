@@ -30,6 +30,7 @@ import (
 
 	"github.com/nickhuang99/gopi/internal/config"
 	"github.com/nickhuang99/gopi/internal/procstat"
+	"github.com/nickhuang99/gopi/internal/scratch"
 )
 
 const (
@@ -66,7 +67,7 @@ func ControlDir(name string) (string, error) {
 		return "", fmt.Errorf("resolve gopi dir: %w", err)
 	}
 	dir := filepath.Join(gd, name)
-	if err := os.MkdirAll(dir, ControlDirMode); err != nil {
+	if err := scratch.MkdirAllWithSuiteRunOwnerPerm(dir, ControlDirMode); err != nil {
 		return "", fmt.Errorf("create %s: %w", dir, err)
 	}
 	return dir, nil
@@ -266,7 +267,7 @@ func WriteControlText(path string, body []byte) error {
 // controlTmpPath is the in-flight write path for ONE write of `path`: the
 // caller's path plus a suffix unique to (this process, this write).
 //
-// WHY IT IS NOT A CONSTANT SUFFIX (measured 2026-10-15, host host-a). The
+// WHY IT IS NOT A CONSTANT SUFFIX (measured 2026-10-15, host the host). The
 // predecessor spelled `path + controlTmpSuffix`, i.e. ONE tmp name shared by
 // EVERY writer of that control file. A control file has several writers by
 // design — a worker's state record is flushed from its loop goroutine and from

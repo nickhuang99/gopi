@@ -395,7 +395,8 @@ func workerControlWorkerShape(pid int, dir string) (workerControlTarget, bool) {
 				workerControlPIDFlag+" "+strconv.Itoa(pid), workerControlShapeForeground)}, true
 	}
 	if tools.PidAlive(pid) && workerGopiImageWorker(pid) {
-		// Alive, our program, `worker` in argv[1], but it leads its own session
+		// Alive, our program, the worker verb at its top-level position, but it leads
+		// its own session
 		// with no state record: a detached process whose record was cleared. It
 		// is still a worker, and the FILE channel addresses it by pid — the
 		// conservative direction (the request is read at its claim boundary).
@@ -417,7 +418,7 @@ func workerControlWorkerShape(pid int, dir string) (workerControlTarget, bool) {
 func workerGopiImageWorker(pid int) bool {
 	root := procnameRoot()
 	argv, ok := procname.Cmdline(root, strconv.Itoa(pid))
-	if !ok || len(argv) < 2 || argv[1] != procname.VerbWorker {
+	if !ok || procname.WorkerVerbIndex(argv) < 0 {
 		return false
 	}
 	return workerGopiImage(root, pid, argv[0])

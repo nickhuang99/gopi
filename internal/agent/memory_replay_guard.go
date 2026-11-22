@@ -38,6 +38,7 @@ import (
 
 	"github.com/nickhuang99/gopi/internal/config"
 	"github.com/nickhuang99/gopi/internal/replaymode"
+	"github.com/nickhuang99/gopi/internal/scratch"
 )
 
 // replayMemoryRefusalLogName is the file, inside the gopi data root's logs
@@ -200,7 +201,7 @@ func appendReplayMemoryRefusal(sentence string) error {
 		return fmt.Errorf("resolve the gopi data root: %w", err)
 	}
 	dir := filepath.Join(gd, replayMemoryRefusalLogDirName)
-	if merr := os.MkdirAll(dir, replayMemoryRefusalLogDirMode); merr != nil {
+	if merr := scratch.MkdirAllWithSuiteRunOwnerPerm(dir, replayMemoryRefusalLogDirMode); merr != nil {
 		return fmt.Errorf("create %s: %w", dir, merr)
 	}
 	path := filepath.Join(dir, replayMemoryRefusalLogName)

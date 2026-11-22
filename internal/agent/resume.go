@@ -243,21 +243,21 @@ func checkpointFromRequest(req *deepseek.ClaudeRequest, origin string) (*deepsee
 // the first request after a resume). Two different producers write consecutive
 // user rows, and BOTH are fused on the wire:
 //
-//	the fold note + the operator's next input  (turnfold.go appends the note
-//	    where the folded turn was; the new turn's input follows it with no
+//	the self-record note + the operator's next input  (a note is written where
+//	    the turn was recorded; the new turn's input follows it with no
 //	    assistant message between them)
 //	two inbox notices, a notice + a voice input, and every other pair of
 //	    back-to-back harness rows
 //
 // Reconstructed with the join, the first shape became ONE message whose text
 // merely STARTS with the note head, and then two predicates read it in opposite
-// directions: isTurnFoldNoteMessage answered TRUE (the head is a prefix of the
+// directions: the note-message test answered TRUE (the head is a prefix of the
 // concatenation) while isTurnOpeningRow answered FALSE (a harness prefix is not
 // an operator row). The operator's own input therefore inherited the note's
-// identity: turnRangeFoldable's first exclusion refused to fold that turn for
-// the rest of the session, and turnFoldNote never collected its anchors. The
-// text still reached the model — this is not lost data in the request — so the
-// failure was silent: one turn per resume, permanently un-foldable.
+// identity, and the turn it opened was never recorded as opened — so its note
+// never collected its anchors. The text still reached the model — this is not
+// lost data in the request — so the failure was silent: one turn per resume,
+// permanently unattributed.
 //
 // The arithmetic that makes "split" the right inverse rather than a taste: the
 // round trip `parse(build(msgs))` must return the SAME block partition. With the

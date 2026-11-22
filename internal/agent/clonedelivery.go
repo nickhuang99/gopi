@@ -567,9 +567,21 @@ func (a *Agent) cloneDeliveryConfig(taskID, workspace, branch string) (devworksp
 	if err != nil {
 		return devworkspace.Config{}, fmt.Errorf(devworkspace.CloneChannelPrefix+"%s unusable: %w", config.WorkspaceRootSettingsKey, err)
 	}
+	// THE ORIGIN IS THE ONE THE SPAWN LEG OPENED, and it asks the SAME resolver
+	// (Rule 13/14 — a delivery that dialled a different repository than the one
+	// the ground was cloned from would publish this row's commits somewhere the
+	// row never named; measured 2026-11-22, row 01a20059-fc11).
+	cloneSrc := devworkspace.ResolveCloneSource(tools.TaskDeliverableRepoFor(taskID), root, devRepo)
 	cfg := devworkspace.Config{
-		TaskID:     taskID,
-		DevRepo:    devRepo,
+		TaskID:  taskID,
+		DevRepo: cloneSrc.Repo,
+		// THE ROW'S OWN DECLARATION, BESIDE THE RESOLVED SOURCE (epic measured
+		// 2026-11-22, row 01a200a0-6062). They agree on the ordinary shape; they
+		// differ exactly when the channel fell back to the host's dev_repo — and
+		// that is the only case where the empty gate's sentence has to SAY which
+		// repository it measured, or a reader takes "carries no commit to
+		// deliver" as a verdict on the row's deliverable.
+		RowRepo:    tools.TaskDeliverableRepoFor(taskID),
 		Root:       root,
 		RootSource: rootSource,
 		Branch:     branch,
