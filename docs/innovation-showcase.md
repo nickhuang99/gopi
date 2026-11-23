@@ -2,7 +2,7 @@
 
 # innovation-showcase.md (7 sections complete; mirrors the Chinese edition section-for-section)
 
-> Target path: `/home/nick/work/github/gopi/docs/innovation-showcase.md`
+> Target path: `docs/innovation-showcase.md` (this file)
 > Section-for-section with the Chinese edition; output blocks byte-identical
 > (same placeholders, same field order). See the Chinese file's notes on why
 > section 2 shows the shape rather than the full byte stream.

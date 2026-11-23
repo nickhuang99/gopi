@@ -2,7 +2,7 @@
 
 # innovation-showcase.zh-CN.md（骨架 · 5 条已填 / 2 条留位）
 
-> 落盘位置：`/home/nick/work/github/gopi/docs/innovation-showcase.zh-CN.md`
+> 落盘位置：`docs/innovation-showcase.zh-CN.md`（本文件）
 > 与英文稿**逐节对应**，标题译法固定（见骨架表的对照）。
 > **7 条已全部填完**（第 1/2/3/4/5/6/7 条，无 `<PENDING>` 残留）。
 > 第 2 条的原始字节流按「不贴整段、给命令 + 形状 + 一句价值」写，理由见下。
