@@ -7,20 +7,20 @@ name: release
 #
 #   OK   linux/amd64  63 MB
 #   OK   linux/arm64  61 MB
-#   FAIL darwin/amd64
-#   FAIL darwin/arm64   syscall.Fsid has no field X__val on darwin,
-#                       syscall.Statfs_t.Type is uint32 there, not int64
+#   OK   darwin/arm64  72 MB Mach-O (build-tag split landed, commit dbf3eca)
 #   FAIL windows/amd64  syscall.Access / syscall.Kill / syscall.Stat_t /
-#                       syscall.O_NOFOLLOW do not exist on windows
+#                       syscall.O_NOFOLLOW / rlimit / statfs have no counterpart
 #
-# Those are POSIX-only call sites in internal/scratch, internal/procstat,
-# internal/borrowedfd and internal/cgroupscope with no build-tag split yet. The
-# failure is real and reproducible, so the matrix carries only what works: a
-# workflow whose darwin job is red on every run teaches a visitor that the
-# project is broken, which is a worse lie than "linux only for now".
+# THE MATRIX IS STILL LINUX-ONLY, and that is deliberate: darwin COMPILES but has
+# never been EXECUTED (no Mac was available). Shipping a binary nobody has ever
+# run is a different and worse claim than shipping one that was measured to run,
+# so darwin stays out until someone runs it on a Mac — at which point it joins
+# this matrix and README's Boundaries section in the SAME change, because those
+# two must not disagree.
 #
-# WHEN THE BUILD-TAG SPLIT LANDS, add the target here AND to README's Boundaries
-# section in the same change — the two must not disagree.
+# Windows still fails to build, and the gap is not syntax: rlimit, O_NOFOLLOW and
+# a batch of statfs call sites have no Windows counterpart, so each needs a real
+# mechanism rather than a field rename.
 
 on:
   push:
