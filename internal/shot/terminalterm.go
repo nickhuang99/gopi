@@ -345,7 +345,7 @@ func StartFilmTerminalSpec(spec FilmTerminalSpec, display string, geometryCells 
 // runs a child (the filmed command), and killing only the emulator would leave
 // that child holding the display.
 func filmTerminalSysProcAttr() *syscall.SysProcAttr {
-	return &syscall.SysProcAttr{Setpgid: true, Pdeathsig: syscall.SIGTERM}
+	return filmChildSysProcAttr()
 }
 
 // resolveWindow waits (bounded) for the default terminal's window and resolves

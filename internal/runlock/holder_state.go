@@ -148,7 +148,7 @@ func LiveHolderOf(path string) LiveHolder {
 		h.Why = "the lock file's device/inode is unavailable on this platform, so its flock cannot be looked up"
 		return h
 	}
-	key := lockFileIDKey(st.Dev, st.Ino)
+	key := lockFileIDKey(statDeviceID(st), st.Ino)
 	pid, found, lerr := locksHolding(filepath.Join(procRootPath, procLocksName), key)
 	if lerr != nil {
 		h.State = LockStateUnmeasured

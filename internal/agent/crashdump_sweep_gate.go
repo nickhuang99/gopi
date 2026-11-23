@@ -269,8 +269,8 @@ func treeCTimeOf(path string) (ctime, mtime int64, err error) {
 	if err := syscall.Stat(path, &st); err != nil {
 		return 0, 0, err
 	}
-	return st.Ctim.Sec*int64(time.Second) + st.Ctim.Nsec,
-		st.Mtim.Sec*int64(time.Second) + st.Mtim.Nsec, nil
+	ctime, mtime = fileChangeTimes(&st)
+	return ctime, mtime, nil
 }
 
 // treeChangeProbe is the cheap change fingerprint of the sessions tree: the

@@ -32,7 +32,6 @@ import (
 	"os"
 	"path/filepath"
 	"strings"
-	"syscall"
 
 	"github.com/nickhuang99/gopi/internal/scratch"
 	"github.com/nickhuang99/gopi/internal/worktreeroots"
@@ -130,12 +129,16 @@ func memoryBaseAncestor(dir string, device uint64) (string, bool) {
 // memoryFilesystemKind classifies the filesystem at path by the statfs magic
 // number, using the ONE definition of those magics in internal/scratch
 // (Rule 14 — a second copy here would be drift waiting to happen).
+//
+// IT CALLS scratch.FilesystemTypeAt RATHER THAN SPELLING STATFS ITSELF, and that
+// is a portability fix, not only a de-duplication: this call site read
+// `st.Type` directly, whose type is int64 on linux and uint32 on darwin, so the
+// bare form did not compile off linux ("cannot use st.Type (variable of type
+// uint32) as int64 value"). scratch owns the per-platform statfs binding
+// (internal/scratch/tmproot_statfs_{linux,darwin,other}.go), and going through
+// it means the NEXT platform needs a change in exactly one place.
 func memoryFilesystemKind(path string) (string, bool) {
-	var st syscall.Statfs_t
-	if err := syscall.Statfs(path, &st); err != nil {
-		return "", false
-	}
-	return scratch.ClassifyFilesystemType(st.Type)
+	return scratch.FilesystemTypeAt(path)
 }
 
 // memoryBaseDeclaredBase returns the base a DECLARATION names, when the scratch

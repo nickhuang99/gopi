@@ -6,7 +6,7 @@ package shot
 // WHY THIS EXISTS. Filming a terminal used to be a shell pipeline whose display
 // logic lived in scripts/replay/display.sh, and its failure path was a GUESS
 // written as a conclusion ("no free X display in :62..:73 — a leaked server is
-// holding them"). Three defects were measured in that one sentence (peer1
+// holding them"). Three defects were measured in that one sentence (zbook
 // 2026-10-02): the range was the AUTHOR'S MACHINE written as a constant (this
 // host held servers at :0 :1 :62 :85 :97 :240); Xvfb's OWN diagnostic for every
 // attempt was already on disk at <scratch>/xvfb-<n>.log and was never read, so
@@ -504,7 +504,7 @@ func tryFilmDisplay(serverExe string, number int, socketDir, logPath string) (*F
 	// no supervisor and no new dependency is involved. Setpgid keeps the server out
 	// of this run's own group, so a signal aimed at the group does not race the
 	// kernel's.
-	cmd.SysProcAttr = &syscall.SysProcAttr{Setpgid: true, Pdeathsig: syscall.SIGTERM}
+	cmd.SysProcAttr = filmChildSysProcAttr()
 	if err := cmd.Start(); err != nil {
 		return nil, fmt.Errorf("display :%d: starting %s: %w", number, serverExe, err)
 	}

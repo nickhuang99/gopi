@@ -3,7 +3,7 @@
 //
 // ROOT CAUSE THIS FILE EXISTS FOR: on this host `/tmp` is a directory on the
 // 147G `/` partition (which the 2026-09-11 exhaustion took from 19G to 1.5G
-// free, devdoc/peer1-resource-exhaustion-20260911.md) and TMPDIR is UNSET, so
+// free, devdoc/zbook-resource-exhaustion-20260911.md) and TMPDIR is UNSET, so
 // every child gopi spawns — `gopi task run` children, the bash tool, git —
 // resolves its temp workspace to /tmp by IMPLICIT fallback (os.TempDir()'s
 // implementation default). 23.5G of residue accumulated there because not one
@@ -33,7 +33,6 @@ import (
 	"strconv"
 	"strings"
 	"sync"
-	"syscall"
 
 	"github.com/nickhuang99/gopi/internal/worktreeroots"
 )
@@ -175,17 +174,36 @@ const TmpDirSettingsKey = "tmpdir"
 // FINAL target either way — the explicit resolution is what keeps that fact
 // from being an accident of the libc call. A resolution failure falls back to
 // the literal path (a not-yet-created path has nothing to resolve).
+// statfsFacts is what one statfs call tells the temp-root probes, already
+// NORMALIZED to this tree's scalar types.
+//
+// WHY THE SHAPE LIVES HERE AND THE CALL DOES NOT: four probes in this file need
+// the same five numbers, but the platforms report them in DIFFERENT structs —
+// linux's Statfs_t.Type is int64 while darwin's is uint32, darwin's Fsid names
+// its field Val and linux's names it X__val, and darwin's Bsize is uint32
+// against linux's int64 (checked with `go doc syscall.Statfs_t` for each GOOS,
+// not from memory). Folding once here is what lets DeviceID, FreeBytes,
+// FilesystemTypeAt and statfsTmpDirHeadroom stay platform-free, so a platform
+// that cannot measure is ONE named refusal (statfsAt, in the per-platform file)
+// rather than four copies of the same split.
+type statfsFacts struct {
+	deviceID uint64 // the Fsid pair folded into one number
+	fsType   int64  // f_type, widened where the platform reports it unsigned
+	bsize    int64  // block size, kept SIGNED so a nonsense value is detectable
+	blocks   uint64 // total blocks
+	bavail   uint64 // blocks available to a writer that is not root
+}
+
 func DeviceID(path string) (uint64, error) {
 	target := path
 	if resolved, err := filepath.EvalSymlinks(path); err == nil && resolved != "" {
 		target = resolved
 	}
-	var st syscall.Statfs_t
-	if err := syscall.Statfs(target, &st); err != nil {
-		return 0, fmt.Errorf("statfs(%s): %w", target, err)
+	f, err := statfsAt(target)
+	if err != nil {
+		return 0, err
 	}
-	f := st.Fsid
-	return uint64(uint32(f.X__val[0]))<<32 | uint64(uint32(f.X__val[1])), nil
+	return f.deviceID, nil
 }
 
 // RootDeviceID is the filesystem identifier of `/` — the partition this probe
@@ -211,16 +229,16 @@ func FreeBytes(path string) (uint64, error) {
 	if resolved, err := filepath.EvalSymlinks(path); err == nil && resolved != "" {
 		target = resolved
 	}
-	var st syscall.Statfs_t
-	if err := syscall.Statfs(target, &st); err != nil {
-		return 0, fmt.Errorf("statfs(%s): %w", target, err)
+	f, err := statfsAt(target)
+	if err != nil {
+		return 0, err
 	}
-	if st.Bsize <= 0 {
+	if f.bsize <= 0 {
 		// A nonsense geometry is reported as an error rather than multiplied
 		// into a negative-turned-huge number (Rule 15: no silent failure).
-		return 0, fmt.Errorf("statfs(%s): implausible block size %d", target, st.Bsize)
+		return 0, fmt.Errorf("statfs(%s): implausible block size %d", target, f.bsize)
 	}
-	return uint64(st.Bavail) * uint64(st.Bsize), nil
+	return f.bavail * uint64(f.bsize), nil
 }
 
 // The free-space floors the suite's scratch placement and its guard measure
@@ -451,11 +469,12 @@ func FilesystemTypeAt(path string) (string, bool) {
 	if resolved, err := filepath.EvalSymlinks(path); err == nil && resolved != "" {
 		target = resolved
 	}
-	var st syscall.Statfs_t
-	if err := syscall.Statfs(target, &st); err != nil {
+	var st statfsFacts
+	var err error
+	if st, err = statfsAt(target); err != nil {
 		return FilesystemOthers, false
 	}
-	return ClassifyFilesystemType(st.Type)
+	return ClassifyFilesystemType(st.fsType)
 }
 
 // SettingsEnvName is the variable that relocates the settings file (the same
@@ -463,7 +482,7 @@ func FilesystemTypeAt(path string) (string, bool) {
 // layer cannot drift (Rule 13).
 const SettingsEnvName = "GOPI_SETTINGS"
 
-// GopiDirEnvName relocates the gopi data root (/home/user/.gopi). Named for the same
+// GopiDirEnvName relocates the gopi data root (/home/nick/.gopi). Named for the same
 // reason.
 const GopiDirEnvName = "GOPI_HOME"
 
@@ -1100,14 +1119,14 @@ func statfsTmpDirHeadroom(path string) (free, total uint64, err error) {
 	if resolved, rerr := filepath.EvalSymlinks(path); rerr == nil && resolved != "" {
 		target = resolved
 	}
-	var st syscall.Statfs_t
-	if err := syscall.Statfs(target, &st); err != nil {
-		return 0, 0, fmt.Errorf("statfs(%s): %w", target, err)
+	f, err := statfsAt(target)
+	if err != nil {
+		return 0, 0, err
 	}
-	if st.Bsize <= 0 {
-		return 0, 0, fmt.Errorf("statfs(%s): implausible block size %d", target, st.Bsize)
+	if f.bsize <= 0 {
+		return 0, 0, fmt.Errorf("statfs(%s): implausible block size %d", target, f.bsize)
 	}
-	return uint64(st.Bavail) * uint64(st.Bsize), uint64(st.Blocks) * uint64(st.Bsize), nil
+	return f.bavail * uint64(f.bsize), f.blocks * uint64(f.bsize), nil
 }
 
 // TmpDirHeadroomFloor resolves the floor: TmpDirHeadroomFloorEnvName's value when
