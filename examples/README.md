@@ -4,6 +4,12 @@ Each directory is a self-contained, runnable demonstration of one gopi capabilit
 Every command output is real — captured from an actual run, never a mock-up.
 Animated GIFs are built with gopi's own pure-Go verbs (`text2img` + `gif`), no ffmpeg.
 
+## Collaboration
+
+- `examples/session-collaboration/` — two sessions, one repository, a mailbox keyed
+  on a session id. 38 messages, 38 receipts, and the corrections that went both
+  ways. (deepseek-flash + hy4-flash)
+
 ## Workflow engine
 
 - `examples/workflow-dispatch/` — the work is a ledger row, not a conversation:
