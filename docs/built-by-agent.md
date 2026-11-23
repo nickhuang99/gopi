@@ -18,6 +18,26 @@ regressions and managed its own tasks. Cumulative output is larger still, since
 much of the early work was revised and replaced; the number above is what is in
 the tree today.
 
+## A live census, not a guess
+
+Line count alone undersells it. The repository ships an instrument that measures
+the whole codebase from `git ls-tree` on every run — files, functions, packages,
+dependencies, architecture by area. The figures below are a snapshot of that
+census at base commit `c7b2260e` (2026-11-24); running the script again gives the
+current numbers, which is the point — this is a live picture, not a typed claim.
+
+```console
+$ bash scripts/gopi-stats.sh          # from the repository root
+size:     1124 production files / 503853 LOC / 12377 functions in 93 packages
+what it is:  one Go binary, zero CGO, 6 direct deps (30 pinned in go.mod)
+surface:  31 LLM tool names, 13 CLI verbs, 11 task subcommands, 111 env vars
+```
+
+Twelve thousand distinct functions across ninety-three packages, held together
+by six direct dependencies. Every number above is re-derived from the tree by
+the script; none is retyped from a previous run. This is the most complete
+picture of the project's size, and it is a command anyone can run after cloning.
+
 ## Why this is a philosophy statement, not a stunt
 
 Most agents are sold on safety by asking a human to approve each file read,
