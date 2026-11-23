@@ -198,6 +198,11 @@ ledgerpin-device-*/
 /docs/archive/demo/human/hero.png
 /docs/archive/demo/human/chat.png
 /docs/archive/demo/final/render-proof.png
+# examples/<name>/frames/*.png — same class, added with the examples tree: each
+# example's `frames/make.sh` renders its frames from the tracked `.txt` sources
+# beside them, and the READMEs say so. The sources and the recipe stay tracked;
+# the render does not. Same reasoning as the rows above, root-anchored the same way.
+/examples/*/frames/*.png
 
 # --- replay RUN artefacts — a session's own evidence, never repo content ---
 # A replay arm is the recording of ONE session, written where the run happens:
