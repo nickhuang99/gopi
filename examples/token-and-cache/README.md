@@ -1,6 +1,8 @@
 # Example: token counting & cache observability
 
 > Every command below was run on a real session. Outputs are verbatim, not mock-ups.
+
+![Token and cache](token-and-cache.gif)
 > Source session: `01a20a33-b6db-7cd2-8231-b2787f919587` (a real worker run, 61 requests).
 
 Most agent harnesses cannot tell you what a run cost, or prove their token count is

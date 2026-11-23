@@ -3,6 +3,8 @@
 > Every command below was run on a real session. Outputs are verbatim, not mock-ups.
 > Source session: `01a20a33-b6db-7cd2-8231-b2787f919587` (a real 61-request worker run).
 
+![Session replay](session-replay.gif)
+
 An agent harness that forgets everything when the context compacts is a chat toy.
 gopi writes every run to a **session** you can list, inspect, replay turn by turn, and
 verify byte-for-byte. The recording is ground truth, not a story told after the fact.

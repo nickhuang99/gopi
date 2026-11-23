@@ -1,6 +1,8 @@
 # Example: voice input (speech-to-text)
 
 > Every command and output below is real — captured from an actual transcription run.
+
+![Voice input](voice-input.gif)
 > Sample: the public-domain JFK inaugural `jfk.flac` (16 kHz).
 
 gopi turns speech into text with **one command and four swappable engines** — cloud

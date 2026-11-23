@@ -2,6 +2,8 @@
 
 > Every command below was run on a real row. Outputs are verbatim, not mock-ups.
 
+![Resume after failure](resume-after-failure.gif)
+
 In a harness where work is a **ledger row**, a failure judges one attempt — not the
 whole piece of work. gopi distinguishes "this try failed" from "this work is done",
 and gives you an explicit ladder to recover.
