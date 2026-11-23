@@ -17,6 +17,10 @@ it as a **row in a ledger**, hands it to a worker that runs in its own clone, an
 remembers the lesson afterward — in one static Go binary with zero runtime
 dependencies.
 
+Several agents can also work the same problem at once: **any session can message
+any other session**, on this host or across machines, and each one is free to
+reject the other's evidence. That is how the mistakes in this README got caught.
+
 [![License: MIT](https://img.shields.io/badge/license-MIT-blue.svg)](LICENSE)
 [![Go 1.24+](https://img.shields.io/badge/go-1.24%2B-00ADD8.svg)](https://go.dev/dl/)
 [![No CGO](https://img.shields.io/badge/cgo-disabled-success.svg)](#why-one-binary)
@@ -110,7 +114,64 @@ Three tiers, all queryable, all searchable, all voted on:
 Retrieval is **automatic** — the right lessons are prefetched into the prompt
 before you ask. Feedback moves confidence, so bad entries sink and good ones rise.
 
-### 4. It can see the screen and act on it
+### 4. Several agents can work the same problem — and correct each other
+
+This is the capability we would put first if we could only keep one, and it is
+the one no other harness advertises.
+
+A gopi session can message **another agent's session** — on this host or across
+machines — with a tool call or one command:
+
+```bash
+$ gopi notify --session <other-session-id> --message "$(cat findings.md)"
+delivered: 1 message into .../messages/inbox.jsonl
+```
+
+The message lands in that session's own inbox and is taken at its **next round
+boundary**: a running turn is never interrupted mid-thought, and a session that
+is idle wakes to read it. The receiving agent can answer back the same way, so
+two agents hold a conversation with each other, not through you.
+
+```bash
+gopi notify --peer hp --session <id> --message "..."   # across hosts, over the declared ssh leg
+```
+
+**Why it is not a chat room.** Each session keeps its own task list, its own
+ledger rows, its own git ground. What crosses the wire is *evidence* — a command
+and its output — and the receiving agent is free to reject it. That is the point:
+a second pair of eyes that can say "your measurement does not support your
+conclusion".
+
+**What that looks like in practice.** In one working session on this project,
+two agents spent a day on the same ledger. They overturned each other repeatedly:
+
+- One reported "3 rows still carry the old token format". The other pulled the
+  raw rows and showed the criterion that produced `3` was itself faulty — the
+  correct count was **zero**. The first claim was withdrawn.
+- One submitted a bug titled "the console hard-codes an absolute path". The other
+  showed the absolute path came from **`bash`'s tilde-expansion in the reporter's
+  own echo**, not from the program — the source line contained `~`. That bug row
+  was cancelled as a false report.
+- One claimed a 2002-line deliverable "was never committed". The other walked the
+  file blobs and found the content **had** landed, under a different commit hash
+  (the delivery channel rebases, so hashes are rewritten by design). The verdict
+  flipped from "work lost" to "work landed".
+
+Both agents were wrong about something that day, and both were right about
+something the other had wrong. **A single agent cannot do that**: nothing in its
+own context disagrees with it.
+
+**The honest boundary.** Delivering a message is immediate; **acting on it
+depends on the receiving agent reaching a round boundary**, which can be minutes.
+An agent that is stuck in a loop never reads its inbox — the mechanism informs a
+working agent, it does not rescue a broken one. Cross-host delivery needs a
+declared peer and a working ssh leg; it fails loudly, with the reason, when
+either is missing.
+
+See [`examples/session-collaboration/`](examples/session-collaboration/) for a
+worked two-agent exchange.
+
+### 5. It can see the screen and act on it
 
 Not a screenshot tool bolted on: a hand-rolled X11 protocol client, pure Go,
 zero CGO. Capture → read → act → verify, with the pixel hashes to prove it changed.
@@ -131,6 +192,7 @@ gopi tool act move 640 400                  # drive the real desktop
 | **Unit of work** | ledger row, survives the session | session | session | session | session |
 | **Work survives context compaction** | yes — it is a database row | no | no | no | no |
 | **Unattended dispatch** | `gopi worker` claims and runs rows | not in README | not in README | print/JSON mode | not in README |
+| **Agent-to-agent messaging** | any session messages any other session; each can reject the other's evidence | not in README | subagents, not in README for cross-session messaging | not in README | parallel tasks, not in README for cross-session messaging |
 | **Isolation per task** | its own git clone, auto-reclaimed | not in README | not in README | not in README | sandbox |
 | **Long-term memory** | 3 tiers + FTS + feedback + auto-prefetch | not in README | not in README | not in README | not in README |
 | **Desktop control** | pure-Go X11 (no deps) | not in README | not in README | not in README | not in README |
