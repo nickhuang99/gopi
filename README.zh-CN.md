@@ -131,7 +131,7 @@ gopi tool act move 640 400                  # 操作真实桌面
 「各家选择宣传什么」，绝不要当成功能审计。数字与引文均取自各项目自己的 README，
 依赖本表之前请自行复核。</sub>
 
-**gopi 弱在哪里，诚实写出来：** 没有 MCP、没有 ARM/macOS/Windows 构建、
+**gopi 弱在哪里，诚实写出来：** 没有 MCP、只有 Linux 发布包（macOS 能交叉编译但没真跑过）、
 开箱只有一家模型、没有 npm/brew 包。见[§ 边界](#边界)。
 
 ---
@@ -166,11 +166,56 @@ chmod +x "gopi_${VER}_linux_amd64"
 mv gopi_${VER}_linux_amd64 ~/.local/bin/gopi
 ```
 
-**只构建 Linux。** macOS 与 Windows 在这棵树上交叉编译失败 —— darwin 的
-`syscall.Fsid` 没有 `X__val`，windows 没有 `syscall.Access` / `syscall.Kill` /
-`syscall.O_NOFOLLOW`；两者都是尚未做 build-tag 拆分的 POSIX-only 调用点。
-工作流只带你实测能构建的两个目标，而不是三个里面有一个永远红。
+**发布包只带 Linux，但 macOS 现在能交叉编译了。** darwin 的平台拆分已落地（2026-11-23）：
+darwin 的 `syscall.Fsid` 字段叫 `Val`（linux 叫 `X__val`）、`Statfs_t.Type`/`Bsize` 是 `uint32`、
+`Stat_t` 的时间戳叫 `Ctimespec`/`Mtimespec`、`SysProcAttr` **没有** `Pdeathsig` 字段 ——
+每一处现在都在各自的平台文件后面。实测于该版本：`GOOS=darwin GOARCH=arm64` 产出一个可用的
+`Mach-O 64-bit arm64 executable`（72 MB），linux 仍然照常构建。
+
+**Windows 构建不了**，而且短期内也不会 —— 缺口不是语法。`syscall.RLIMIT_AS` / `Rlimit` /
+`Getrlimit`（rlimit）、`O_NOFOLLOW`、以及一批 statfs 调用点在 Windows 上没有对应物，
+每一处都需要真机制而不是改个字段名。发布流只发布实测能构建的两个目标，而不是三个里有一个永远红。
 见[§ 边界](#边界)。
+
+**darwin 是「编译通过」，不是「跑过」** —— 手上没有 macOS 机器，所以请当作「它能构建」而不是
+「它能用」。已知三处降级，每处都在自己的调用点上写明：`Pdeathsig` 不存在（被 SIGKILL 的父进程
+留下的 filmed 子进程不会被内核回收）、pty 文本抓取不可用（要 `TIOCPTYGNAME` 加
+`grantpt`/`unlockpt`，属 libc，而本二进制是 `CGO_ENABLED=0`）、`cgroupscope` 依赖的
+`/proc/self/cgroup` 在 darwin 没有对应物。
+
+### 先装 Go —— 克隆之前请读这一段
+
+gopi 需要 **Go 1.24.0 或更新**，这是硬性要求，不是偏好。`go.mod` 声明 `go 1.24.0`，
+而且**四个直接依赖在各自的 `go.mod` 里声明了同样的下界** —— `modernc.org/sqlite v1.44.0`、
+`golang.org/x/sys v0.37.0`、`github.com/charmbracelet/bubbletea v1.3.10`、
+`github.com/go-ego/gse v1.1.0`。旧工具链会直接拒绝构建，没有绕过的路。
+
+```bash
+go version          # 必须打印 go1.24.0 或更高
+```
+
+**不要用发行版的包管理器装。** Ubuntu 22.04 的候选版本是 `2:1.18~0ubuntu2` —— 低了六个
+版本 —— 所以 `sudo apt install golang-go` 装出来的工具链根本编不动这棵树。
+（实测：`apt-cache policy golang-go`。）请装上游工具链：
+
+**Ubuntu / 任意 x86-64 Linux**
+
+```bash
+curl -fLO https://go.dev/dl/go1.24.0.linux-amd64.tar.gz
+sudo rm -rf /usr/local/go && sudo tar -C /usr/local -xzf go1.24.0.linux-amd64.tar.gz
+export PATH=$PATH:/usr/local/go/bin     # 同时把这行写进 ~/.bashrc 或 ~/.profile
+go version                              # go1.24.0 linux/amd64
+```
+
+ARM64 把两条命令里的 `linux-amd64` 换成 `linux-arm64`。
+
+**macOS** —— Homebrew（`brew install go`）或 <https://go.dev/dl/> 的官方 `.pkg`，两者都是
+当前版本。用 `go version` 确认。
+
+**Windows** —— <https://go.dev/dl/> 的官方 MSI 安装包。在新终端里用 `go version` 确认。
+
+> 如果你的 `go version` 偏旧、以为 Go 会自己升级：它不会。`GOTOOLCHAIN=local` 是很多环境里的
+> 默认值，而 `go.mod` 里比工具链更新的 `go` 行是硬构建错误，不是自动升级的触发条件。
 
 ### 从源码
 
@@ -337,11 +382,13 @@ gopi **不是**「什么都能」。下面这些是刻意的取舍，不是待�
 - **它不会替你在别人的机器上装软件。** 取证、探测、验证都允许；
   「装一个第三方 agent 好让某个测试能跑一次」是明确禁止的。
 - **不承诺在设备压力下的延迟。** gopi 不为测量什么而制造负载，所以对争用下的性能不作任何声称。
-- **只有一个平台、两种架构。** 唯一**跑过**的组合是 Linux x86-64。Linux ARM64 会构建并发布
+- **平台收敛到两个，但只有一个真跑过。** 唯一**跑过**的组合是 Linux x86-64。Linux ARM64 会构建并发布
   —— 已实测能编译、能带上版本戳，但**没有**实测能执行，因为 CI runner 是 amd64 且没配模拟器。
-  macOS 与 Windows 在这棵树上**编译不过**：darwin 的 `syscall.Fsid` 没有 `X__val`，
-  windows 没有 `syscall.Access` / `syscall.Kill` / `syscall.O_NOFOLLOW`。
-  那是 POSIX-only 调用点的问题，不是「没测过的猜测」。
+  macOS 自 2026-11-23 起**能交叉编译**（darwin 的平台拆分：`Fsid.Val` vs `X__val`、`Statfs_t.Type`
+  的符号性、`Ctimespec`/`Mtimespec`、缺失的 `Pdeathsig`），实测产出可用的 arm64 Mach-O ——
+  但**从未在 macOS 上运行过一次**，所以它是「能构建」而非「能用」。
+  Windows 仍然**编译不过**，且缺口不在语法：rlimit、`O_NOFOLLOW`、一批 statfs 调用点在
+  Windows 上没有对应物，需要真机制。
 - **这个公开导出仓不带测试套件。** `make test` 跑的是 `go build ./...` 加 `go vet ./...` ——
   在纯产品代码上唯一有意义的两项检查。`_test.go` 与 `internal/standards/` 留在了私有树里。
   **这些文档里引用的任何 `go test` 命令，点名的测试都不在本仓库中：它会打印

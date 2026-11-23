@@ -136,8 +136,9 @@ most of these tools can do more through plugins. Read every row as "what each pr
 chose to advertise", never as a feature audit. Counts and quotes are from each project's own README;
 re-check before relying on this table.</sub>
 
-**Where gopi is weaker, honestly:** no MCP, no ARM/macOS/Windows build, one
-model family out of the box, no npm/brew package. See [§ Boundaries](#boundaries).
+**Where gopi is weaker, honestly:** no MCP, Linux-only release binaries (macOS
+cross-compiles but has never been run), one model family out of the box, no
+npm/brew package. See [§ Boundaries](#boundaries).
 
 ---
 
@@ -171,12 +172,63 @@ Then put it somewhere on your `PATH`:
 mv gopi_${VER}_linux_amd64 ~/.local/bin/gopi
 ```
 
-**Only Linux is built.** macOS and Windows fail to cross-compile against this
-tree — `syscall.Fsid` has no `X__val` on darwin, and `syscall.Access` /
-`syscall.Kill` / `syscall.O_NOFOLLOW` do not exist on windows; both are POSIX-only
-call sites with no build-tag split yet. The workflow carries the two targets that
-were measured to build, rather than three where one is permanently red. See
-[§ Boundaries](#boundaries).
+**The releases carry Linux only, but macOS now cross-compiles.** The darwin split
+landed (2026-11-23): `syscall.Fsid` names its field `Val` on darwin against linux's
+`X__val`, `Statfs_t.Type`/`Bsize` are `uint32` there, `Stat_t` spells the timestamps
+`Ctimespec`/`Mtimespec`, and `SysProcAttr` has **no** `Pdeathsig` field — each is now
+behind a per-platform file. Measured on that rev: `GOOS=darwin GOARCH=arm64` builds a
+working `Mach-O 64-bit arm64 executable` (72 MB), and linux still builds.
+
+**Windows does not build**, and honestly will not soon — the gap is not syntax.
+`syscall.RLIMIT_AS` / `Rlimit` / `Getrlimit` (rlimit), `O_NOFOLLOW`, and a batch of
+statfs call sites have no POSIX counterpart there, so each needs a real mechanism
+rather than a field rename. The release workflow publishes the two targets measured
+to build rather than three where one is permanently red. See [§ Boundaries](#boundaries).
+
+**Darwin is compiled, not run** — no macOS machine was available, so treat it as
+"it builds" rather than "it works". Three things are known degraded there and each
+says so at its own call site: `Pdeathsig` is absent (a filmed child outlives a
+SIGKILLed parent), pty text capture is unavailable (it needs `TIOCPTYGNAME` plus
+`grantpt`/`unlockpt`, which are libc and this binary is `CGO_ENABLED=0`), and
+`cgroupscope`'s `/proc/self/cgroup` has no darwin equivalent.
+
+### Install Go first — read this before you clone
+
+gopi needs **Go 1.24.0 or newer**, and that is a hard requirement, not a preference.
+`go.mod` declares `go 1.24.0`, and **four of the direct dependencies declare the same
+floor in their own `go.mod`** — `modernc.org/sqlite v1.44.0`, `golang.org/x/sys v0.37.0`,
+`github.com/charmbracelet/bubbletea v1.3.10`, `github.com/go-ego/gse v1.1.0`. An older
+toolchain refuses the build outright; there is no fallback path.
+
+```bash
+go version          # must print go1.24.0 or higher
+```
+
+**Do not use your distribution's package manager.** On Ubuntu 22.04 the candidate is
+`2:1.18~0ubuntu2` — six releases too old — so `sudo apt install golang-go` produces a
+toolchain that cannot build this tree. (Measured: `apt-cache policy golang-go`.) Install
+the upstream toolchain instead:
+
+**Ubuntu / any x86-64 Linux**
+
+```bash
+curl -fLO https://go.dev/dl/go1.24.0.linux-amd64.tar.gz
+sudo rm -rf /usr/local/go && sudo tar -C /usr/local -xzf go1.24.0.linux-amd64.tar.gz
+export PATH=$PATH:/usr/local/go/bin     # also add this line to ~/.bashrc or ~/.profile
+go version                              # go1.24.0 linux/amd64
+```
+
+On ARM64 use `go1.24.0.linux-arm64.tar.gz` in the same two lines.
+
+**macOS** — Homebrew (`brew install go`) or the official `.pkg` from
+<https://go.dev/dl/>; both are current. Verify with `go version`.
+
+**Windows** — the official MSI installer from <https://go.dev/dl/>. Verify with
+`go version` in a fresh terminal.
+
+> If your `go version` is older and you expected Go to upgrade itself: it will not.
+> `GOTOOLCHAIN=local` is the default in many environments, and a `go` line newer than
+> your toolchain is a hard build error, not an auto-upgrade trigger.
 
 ### From source
 
@@ -271,8 +323,8 @@ the channel that won (flag / env / settings.json / default). When behaviour disa
 with what you wrote, that is the page to read.
 
 **Platform: Ubuntu 22.04 LTS, x86-64, Go 1.24.x** — the only combination that has been
-run. No macOS, no Windows, no ARM, no other distribution is tested; the honest list
-is [`INSTALL.md` §6](INSTALL.md).
+**run**. macOS cross-compiles but has never been executed, Windows does not compile, and
+no other distribution is tested; the honest list is [`INSTALL.md` §6](INSTALL.md).
 
 ---
 
@@ -352,13 +404,14 @@ gopi is **not** "does everything". These are deliberate trade-offs, not a to-do 
   can run once" is forbidden.
 - **No latency promise under device load.** gopi does not generate load to measure
   anything, so it makes no claim about performance under contention.
-- **One platform, two architectures.** Linux x86-64 is the only combination that has
+- **Two platforms build, one has been run.** Linux x86-64 is the only combination that has
   been **run**. Linux ARM64 is built and published — measured to compile and to carry
   the version stamp, **not** measured to execute, because the CI runner is amd64 and
-  no emulator is set up. macOS and Windows **do not compile** against this tree:
-  `syscall.Fsid` has no `X__val` on darwin, and `syscall.Access` / `syscall.Kill` /
-  `syscall.O_NOFOLLOW` do not exist on windows. That is a POSIX-only call-site
-  problem, not an untested guess.
+  no emulator is set up. macOS **cross-compiles** since the darwin split landed
+  (2026-11-23: `Fsid.Val` vs `X__val`, `Statfs_t.Type` signedness, `Ctimespec`/`Mtimespec`,
+  the missing `Pdeathsig`) — measured to produce a working arm64 Mach-O, but **never
+  executed on a Mac**. Windows **does not compile**, and the gap is not syntax: rlimit,
+  `O_NOFOLLOW` and a batch of statfs call sites have no Windows counterpart.
 - **This public export ships no test suite.** `make test` runs `go build ./...` plus
   `go vet ./...` — the two checks that mean something on product code alone. `_test.go`
   files and `internal/standards/` stayed in the private tree. **A `go test` command

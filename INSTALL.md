@@ -14,7 +14,7 @@ no Docker image. Four things are required and nothing else:
 
 | | requirement | why |
 |---|---|---|
-| **OS** | **Ubuntu 22.04 LTS, x86-64** | the only platform this code has been run on. See §6 for the honest list of what has never been tested. |
+| **OS** | **Ubuntu 22.04 LTS, x86-64** | the only platform this code has been run on. macOS cross-compiles but has never been executed; Windows does not compile. See §6 for the honest list. |
 | **Go** | **1.24.0 or newer** | `go.mod` declares `go 1.24.0`. An older toolchain refuses to build; there is no fallback. |
 | **git** | any recent version | only to clone. |
 | **An LLM API key** | DeepSeek | see §3. Without one, gopi **starts** and its non-model commands work, but nothing can talk to a model. |
@@ -230,9 +230,12 @@ ls -l ~/.gopi/memory.db              # AFTER:  691642368 bytes, mtime 02:58:48 �
 
 Honesty is cheaper than a retraction later:
 
-- **No macOS, no Windows, no ARM, no other Linux distribution.** Only Ubuntu 22.04 x86-64
-  has actually been run. The code is pure Go and should build elsewhere; "should" is not
-  "has been".
+- **No macOS, no Windows, no ARM, no other Linux distribution has been RUN.** Only Ubuntu
+  22.04 x86-64 has actually been executed. macOS **cross-compiles** (the darwin platform
+  split landed 2026-11-23; a working arm64 Mach-O is produced) but has **never been run**
+  on a Mac — treat it as "it builds", not "it works". Windows **does not compile**, and the
+  gap is not syntax: rlimit (`RLIMIT_AS`/`Rlimit`/`Getrlimit`), `O_NOFOLLOW` and a batch of
+  statfs call sites have no Windows counterpart, so each needs a real mechanism.
 - **No Go version other than 1.24.x** has been exercised.
 - **One LLM provider family**: DeepSeek's Anthropic-compatible endpoint. gopi speaks the
   Anthropic wire protocol, so another compatible endpoint *may* work — but only DeepSeek has
