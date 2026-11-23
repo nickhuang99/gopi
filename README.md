@@ -6,6 +6,26 @@
 
 **An agent harness — the layer an AI coding agent runs on, which also keeps the books.**
 
+**This project was written by an agent.** Nearly every line of it — half a million
+lines of Go, in this very repository — was written by gopi itself, over four months.
+Its creator does not write Go. He files the work as ledger rows, reads what comes
+back, and decides direction; the code arrives from workers.
+
+```bash
+git ls-files '*.go' | xargs wc -l | tail -1     # this repository, today
+```
+
+That is not a stunt; it is the argument for the paragraph after this one.
+
+**Delegation by default.** Most coding agents stop and ask before each step —
+approve this edit, approve this command. gopi is built the other way round. A
+session runs commands, edits files, commits and pushes without asking, because a
+supervisor who has to approve every step cannot supervise anything else. What
+still requires a human is narrow and deliberate: an irreversible git ref move, a
+signal to a process it does not own, a destructive system operation. Everything
+else is the agent's to do, and the agent that wrote this repository is the evidence
+that the arrangement works.
+
 *Harness* is the word most readers will not know, so it leads. Most things called
 "an AI app" are **not** harnesses: they are applications that sit on top of one.
 gopi is the harness itself — a complete coding agent (chat, file tools, memory,
