@@ -8,6 +8,12 @@ Animated GIFs are built with gopi's own pure-Go verbs (`text2img` + `gif`), no f
 
 - `examples/workflow-dispatch/` — the work is a ledger row, not a conversation:
   `task submit` → worker claims/runs → PA supervises via events. (deepseek-flash)
+- `examples/parallel-projects/` — different rows declare different repositories, and
+  every row gets its own CLONE. No merge daemon: each worker merges itself.
+  (deepseek-flash)
+- `examples/self-development/` — gopi's own defects are filed on gopi's own ledger and
+  fixed by a worker in a clone of gopi's source tree. Bootstrap, closed.
+  (deepseek-flash)
 
 ## Observability
 
