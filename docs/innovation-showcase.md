@@ -138,8 +138,9 @@ t2 <第二条 — 这一轮推翻了上一轮的哪个结论>
 ```
 
 **One line per round**, prefixed by the round number. This one is 87 lines and
-70 KB — everything a real session decided over dozens of rounds. (The stored
-lessons are in Chinese; left as-is.)
+70 KB — everything a real session decided over dozens of rounds. (The two
+placeholder bodies below are written in Chinese; they stand in for the run's own
+internal notes.)
 
 This is not a log: **the next round's prompt reads it back**, so it changes
 behaviour. Compaction deletes the raw conversation, not this line-by-line record of
