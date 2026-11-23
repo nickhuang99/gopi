@@ -22,21 +22,30 @@ the tree today.
 
 Line count alone undersells it. The repository ships an instrument that measures
 the whole codebase from `git ls-tree` on every run — files, functions, packages,
-dependencies, architecture by area. The figures below are a snapshot of that
-census at base commit `c7b2260e` (2026-11-24); running the script again gives the
-current numbers, which is the point — this is a live picture, not a typed claim.
+tests, docs. The figures below are a snapshot of that census at base commit
+`f5175c78a` (2026-11-24), measured in the full development repository; running
+the script again gives the current numbers, which is the point — this is a live
+picture, not a typed claim.
 
 ```console
-$ bash scripts/gopi-stats.sh          # from the repository root
-size:     1124 production files / 503853 LOC / 12377 functions in 93 packages
+$ bash scripts/gopi-stats.sh          # from the development repository root
+size:     1196 production files / 532870 LOC / 13161 functions in 100 packages
 what it is:  one Go binary, zero CGO, 6 direct deps (30 pinned in go.mod)
-surface:  31 LLM tool names, 13 CLI verbs, 11 task subcommands, 111 env vars
+test:prod LOC: 1.40   (2571 test files, 746839 test LOC, 12339 test functions)
+surface:  31 LLM tool names, 13 CLI verbs, 11 task subcommands
 ```
 
-Twelve thousand distinct functions across ninety-three packages, held together
-by six direct dependencies. Every number above is re-derived from the tree by
-the script; none is retyped from a previous run. This is the most complete
-picture of the project's size, and it is a command anyone can run after cloning.
+Thirteen thousand distinct functions across a hundred packages, with more test
+code than production code (a 1.40 ratio) and nearly as many documentation lines
+as code. Every number above is re-derived from the tree by the script; none is
+retyped from a previous run. This is the most complete picture of the project's
+size, and it is a command anyone can run after cloning the development tree.
+
+The public release snapshot is a filtered subset (`.gitignore` excludes several
+document and rule paths), so the same script reports smaller figures there —
+1124 files / 503853 LOC / 12377 functions — and prints warnings about files the
+snapshot does not carry. The development-repository figures above are the
+project's actual size; the smaller ones describe only what is published.
 
 ## Why this is a philosophy statement, not a stunt
 
