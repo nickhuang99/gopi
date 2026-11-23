@@ -57,10 +57,13 @@ for n, ls in data.items():
     open(n + ".pad.txt", "w", encoding="utf-8").write("\n".join(ls[:18]) + "\n")
 PY
 
-# 3. text -> PNG, one per frame
+# 3. text -> PNG, one per frame. --font a MONOSPACE face is not optional:
+#    the default is PROPORTIONAL, so equal character count does NOT mean equal
+#    pixel width, and step 2's padding would produce four different widths.
 for f in f1 f2 f3 f4; do
   ./bin/gopi tool text2img /tmp/gifframes/$f.pad.txt /tmp/gifframes/$f.png \
-      --size 14 --cols 200 --lh 22
+      --size 14 --cols 200 --lh 22 \
+      --font /usr/share/fonts/truetype/dejavu/DejaVuSansMono.ttf
 done
 
 # 4. PNGs -> one animated GIF. The caption band is drawn BELOW each frame,
@@ -79,6 +82,23 @@ done
 **The frames must be the same size.** A GIF has one logical screen; `gopi tool gif`
 refuses a mismatched frame instead of cropping it. That is why step 2 pads the *text* to a
 uniform shape before rendering — it is cheaper than padding pixels afterwards.
+
+**Padding the text is only half of it — the FONT decides the pixels.** `text2img`'s
+default face is **proportional**, so two frames padded to the same character count
+render at *different* pixel widths and `gopi tool gif` then refuses them. Measured on
+ten characters, same `--size 13`:
+
+```
+default (proportional):   iiiiiiiiii ->  56 px    MMMMMMMMMM -> 131 px
+--font DejaVuSansMono:    iiiiiiiiii -> 103 px    MMMMMMMMMM -> 103 px
+```
+
+That is why step 3 passes `--font` with a monospace face: with it, equal column count
+*is* equal pixel width. (A monospace face with no CJK glyphs still renders Chinese —
+`text2img` falls back through a font chain and reports it, e.g.
+`DejaVuSansMono.ttf → wqy-zenhei.ttc → …` — and the fallback face keeps the same
+advance width, so mixed 中英 frames still line up. Verify with the `od` check below
+rather than trusting it.)
 
 **Width has a ceiling for chat apps.** A GIF wider than **500 px** will not play in a phone
 conversation view. `gopi tool gif` still writes the file and **warns** with the measured
