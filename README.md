@@ -116,8 +116,10 @@ before you ask. Feedback moves confidence, so bad entries sink and good ones ris
 
 ### 4. Several agents can work the same problem — and correct each other
 
-This is the capability we would put first if we could only keep one, and it is
-the one no other harness advertises.
+This is the capability we would put first if we could only keep one. Claude Code ships it
+too, and reaches sessions on other machines; the difference that matters to us is the peer —
+there it is another session of the same user, here the peer **is a dispatched worker on a
+ledger row**, and a message can redirect work that is already running.
 
 A gopi session can message **another agent's session** — on this host or across
 machines — with a tool call or one command:
@@ -192,11 +194,22 @@ gopi tool act move 640 400                  # drive the real desktop
 | **Unit of work** | ledger row, survives the session | session | session | session | session |
 | **Work survives context compaction** | yes — it is a database row | no | no | no | no |
 | **Unattended dispatch** | `gopi worker` claims and runs rows | not in README | not in README | print/JSON mode | not in README |
-| **Agent-to-agent messaging** | any session messages any other session; each can reject the other's evidence | not in README | subagents, not in README for cross-session messaging | not in README | parallel tasks, not in README for cross-session messaging |
+| **Agent-to-agent messaging** | any session messages any other session, on this host or across machines; the receiver takes it at its next round boundary and may reject the sender's evidence | one-way only — MCP **Channels** push events *into* a session; no session addresses another | yes — **cross-session messaging** (`ListAgents` / `SendMessage`, v2.1.224+, other machines included) and **agent teams** (experimental); a peer's request is treated as input, not authority | none — its README: "skips features like sub-agents" | subagents only — a parent spawns parallel agents that report summaries back to the main thread |
 | **Isolation per task** | its own git clone, auto-reclaimed | not in README | not in README | not in README | sandbox |
 | **Long-term memory** | 3 tiers + FTS + feedback + auto-prefetch | not in README | not in README | not in README | not in README |
 | **Desktop control** | pure-Go X11 (no deps) | not in README | not in README | not in README | not in README |
 | **Multi-provider** | DeepSeek (BYOK), Anthropic/OpenAI-compatible via proxy | many | Anthropic | many | OpenAI |
+
+<sub>The messaging row is measured, not read off READMEs (checked 2026-11-24, sources named):
+Claude Code — [code.claude.com/docs/en/cross-session-messaging](https://code.claude.com/docs/en/cross-session-messaging)
+and [code.claude.com/docs/en/agent-teams](https://code.claude.com/docs/en/agent-teams) (its own
+README does not mention it at all); Codex — [developers.openai.com/codex/subagents](https://developers.openai.com/codex/subagents);
+Crush — its README's Channels section; Pi — its README. This row does **not** say gopi's
+mechanism is better: Claude Code reaches other sessions **and other machines**, and it treats a
+peer's message as input rather than authority — a boundary gopi does not draw. What gopi claims
+here is narrower and checkable: the peer can be a **dispatched worker on a ledger row**, the
+message is **durable when the receiver is not running**, and the sender's evidence can be
+**rejected and re-derived** instead of complied with.</sub>
 
 <sub>`not in README` means exactly that: the string did not appear in that project's own
 README when this table was written. It is **not** a claim that the capability is absent —
