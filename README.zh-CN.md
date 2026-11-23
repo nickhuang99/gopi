@@ -110,7 +110,8 @@ clone-channel: attempt 1/M: push accepted
 
 ### 4. 多个 agent 能一起做同一件事，而且能互相纠正
 
-如果只能留一条，我们留这条 —— 它是别的 harness 没有对外讲的。
+如果只能留一条，我们留这条。Claude Code 也有这个能力，而且能跨机器；对我们真正要紧的差别在 peer 是什么 ——
+在那边它是同一个用户的另一个会话，在这里 peer **是账本行上的一个 dispatched worker**，一条消息可以改变已经跑起来的工作。
 
 一个 gopi 会话可以给**另一个 agent 的会话**发消息，同机或跨机，一次工具调用或一条命令：
 
@@ -172,11 +173,20 @@ gopi tool act move 640 400                  # 操作真实桌面
 | **工作单位** | 账本行，跨会话存活 | 会话 | 会话 | 会话 | 会话 |
 | **上下文压缩后工作还在吗** | 在 —— 它就是一条数据库记录 | 不在 | 不在 | 不在 | 不在 |
 | **无人值守派发** | `gopi worker` 认领并跑完 | README 未提及 | README 未提及 | print/JSON 模式 | README 未提及 |
-| **agent 之间通信** | 任何会话都能给任何别的会话发消息；双方都能拒绝对方的证据 | README 未提及 | 有 subagent，跨会话通信 README 未提及 | README 未提及 | 有并行任务，跨会话通信 README 未提及 |
+| **agent 之间通信** | 任何会话都能给任何别的会话发消息，同机或跨机；收方在下一个回合边界取走，且可以拒绝发送方的证据 | 仅单向 —— MCP **Channels** 把事件**推进**会话，没有会话寻址另一个会话 | 有 —— **cross-session messaging**（`ListAgents` / `SendMessage`，需 v2.1.224+，含跨机器）与 **agent teams**（实验性）；peer 的消息被当作输入而非权威 | 无 —— 它自己的 README：「skips features like sub-agents」 | 仅 subagent —— 父 agent 并行派生、子 agent 把摘要回给主线程 |
 | **每个任务的隔离** | 独立 git clone，自动回收 | README 未提及 | README 未提及 | README 未提及 | sandbox |
 | **长期记忆** | 三层 + FTS + 反馈 + 自动预取 | README 未提及 | README 未提及 | README 未提及 | README 未提及 |
 | **桌面控制** | 纯 Go X11，无依赖 | README 未提及 | README 未提及 | README 未提及 | README 未提及 |
 | **多模型** | DeepSeek（自带 key），Anthropic/OpenAI 兼容经 proxy | 多家 | Anthropic | 多家 | OpenAI |
+
+<sub>agent 通信这一行是**实测**的，不是从各家的 README 里读出来的（2026-11-24 核查，来源点名）：
+Claude Code —— [code.claude.com/docs/en/cross-session-messaging](https://code.claude.com/docs/en/cross-session-messaging)
+与 [code.claude.com/docs/en/agent-teams](https://code.claude.com/docs/en/agent-teams)（它自己的 README 一个字没提）；
+Codex —— [developers.openai.com/codex/subagents](https://developers.openai.com/codex/subagents)；
+Crush —— 其 README 的 Channels 一节；Pi —— 其 README。
+这一行**不**声称 gopi 的机制更好：Claude Code 能到达别的会话**也能跨机器**，且把 peer 的消息当输入而非权威 ——
+这条边界 gopi 没有划。gopi 在这里声称的更窄、也可检验：peer 可以是**账本行上的 dispatched worker**、
+消息在收方**未运行**时仍然 durable、发送方的证据**可以被拒绝并重新推导**而不是照办。</sub>
 
 <sub>「README 未提及」就是这个意思：本表写作时，那个字符串没有出现在该项目自己的 README 里。
 它**不是**「对方没有这个能力」的断言 —— 其中大多数通过插件能做到更多。请把每一行读成
