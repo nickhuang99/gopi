@@ -169,9 +169,8 @@ $ file gopi
 gopi: ELF 64-bit LSB executable, x86-64, version 1 (SYSV), statically linked, BuildID[sha1]=ba846563bd697a92c2f81beb245fea549515d2e0, stripped
 ```
 
-`statically linked` 是那个词。sha256 与 release 附带的 `.sha256` 文件逐字符相同。
+`statically linked` 确认它是静态链接。下载的 sha256 与 release 附带的 `.sha256` 文件逐字符一致。
 
-**一个会真踩到的坑：** 地址写错的时候 GitHub **不会大声失败** —— `curl` 退出码仍然是 0，
-body 是 9 字节的 `Not Found`。先看大小或先比 sha256，再信任它。
+**下载校验不可省略**：URL 写错时 GitHub 并不会报错——`curl` 的退出码仍为 0，返回的 body 只有 9 字节的 `Not Found`。因此信任一次下载前，应先核对文件大小或 sha256。
 
-> macOS 那份是交叉编译出来的，**从未运行过**。别把「能编」当「能用」。
+> macOS 二进制是交叉编译产物，从未在 macOS 上实际运行过。能通过编译不等于能在该平台正常工作。

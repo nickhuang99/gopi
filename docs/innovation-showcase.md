@@ -194,12 +194,12 @@ $ file gopi
 gopi: ELF 64-bit LSB executable, x86-64, version 1 (SYSV), statically linked, BuildID[sha1]=ba846563bd697a92c2f81beb245fea549515d2e0, stripped
 ```
 
-`statically linked` is the word. The sha256 matches the release's `.sha256` file
-character for character.
+`statically linked` confirms that it is statically linked. The download's sha256
+matches the release's `.sha256` file character for character.
 
-**A trap you will really hit:** with a wrong URL, GitHub does **not** fail loudly —
-`curl` still exits 0 and the body is a 9-byte `Not Found`. Check the size or the
-sha256 before trusting the download.
+**Verify the download**: a wrong URL produces no error from GitHub — `curl` still
+exits 0 and the body is a 9-byte `Not Found`. Check the file size or the sha256
+before trusting a download.
 
-> The macOS build is cross-compiled and has **never been run**. "It compiles" is
-> not "it works".
+> The macOS binary is cross-compiled and has never actually been run on macOS.
+> Compiling successfully is not the same as working on that platform.
