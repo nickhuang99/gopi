@@ -26,7 +26,7 @@ compacted — and the work is still there, resumable by id.
 
 ```console
 $ gopi task submit "train/queens.py 存 npy 前不建 outdir，训练跑完才崩在保存上" \
-    --tags bug --repo /home/nick/work/sudoku
+    --tags bug --repo ~/work/sudoku
 
 task_id:        01a20a33-fb32-7432-a02d-af098923f67a
 status:         pending
@@ -35,7 +35,7 @@ summary:        bug: train/queens.py 与 graphcoloring.py 存 npy 前不建 outd
 model:          deepseek-flash
 tags:           bug,sudoku,train
 priority:       5
-deliverable.repo: /home/nick/work/sudoku
+deliverable.repo: ~/work/sudoku
 ```
 
 That id is permanent. It is what you resume, clone, archive or search by — not
