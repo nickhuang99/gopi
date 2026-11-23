@@ -4,7 +4,12 @@
 
 # gopi
 
-**一个会记账的 agent。**
+**一个 agent harness —— AI 编程 agent 跑在上面的那一层，而且它自己会记账。**
+
+*Harness*（智能体运行框架）这个词很多人不认识，所以放在第一句。市面上大多数
+"AI 应用"**不是** harness：它们是跑在 harness 之上的应用。gopi 是 harness 本体 ——
+一个完整的编程 agent（对话、文件工具、记忆、可续跑的会话），**外加**只有 harness
+才需要、应用不需要的那套机制：工作账本、派发、每个 worker 一个独立 clone、自合并交付。
 
 你的编程 agent 在上下文被压缩的那一刻就忘了这件事。
 gopi 把它记成**账本里的一行**，交给一个在独立 clone 里跑的 worker，

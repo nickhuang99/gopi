@@ -4,12 +4,18 @@
 
 # gopi
 
-**An agent that keeps the books.**
+**An agent harness — the layer an AI coding agent runs on, which also keeps the books.**
 
-Your coding agent forgets the job the moment the context is compacted.
-gopi files it as a **row in a ledger**, hands it to a worker that runs in its
-own clone, and remembers the lesson afterward — in one static Go binary
-with zero runtime dependencies.
+*Harness* is the word most readers will not know, so it leads. Most things called
+"an AI app" are **not** harnesses: they are applications that sit on top of one.
+gopi is the harness itself — a complete coding agent (chat, file tools, memory,
+resumable sessions) **plus** the machinery a harness needs and an application does
+not: a work ledger, dispatch, a clone per worker, self-merging delivery.
+
+Your coding agent forgets the job the moment the context is compacted. gopi files
+it as a **row in a ledger**, hands it to a worker that runs in its own clone, and
+remembers the lesson afterward — in one static Go binary with zero runtime
+dependencies.
 
 [![License: MIT](https://img.shields.io/badge/license-MIT-blue.svg)](LICENSE)
 [![Go 1.24+](https://img.shields.io/badge/go-1.24%2B-00ADD8.svg)](https://go.dev/dl/)
