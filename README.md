@@ -15,7 +15,21 @@ back, and decides direction; the code arrives from workers.
 git ls-files '*.go' | xargs wc -l | tail -1     # this repository, today
 ```
 
-That is not a stunt; it is the argument for the paragraph after this one.
+That is not a stunt; it is the argument for everything after this paragraph.
+
+`scripts/gopi-stats.sh` measures the rest, live, off the git object store — nothing in
+it is a hard-coded number. In the full development repository (the published tree here
+is a filtered subset of it):
+
+```
+1,196 production files · 532,870 lines · 13,161 functions · 100 packages
+2,571 test files · 746,839 test lines · test:production ratio 1.40
+2,989 markdown files · 587,918 lines of documentation
+```
+
+That last ratio is the one worth a second look: there is **40% more test code than
+production code** — and that is what makes the rest of this plausible. The tests are
+what check the agent's work, not a person reading every diff.
 
 **Delegation by default.** Most coding agents stop and ask before each step —
 approve this edit, approve this command. gopi is built the other way round. A
