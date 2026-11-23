@@ -1,0 +1,18 @@
+CACHE HIT RATE — REAL MONEY              
+gopi session stats <id> --cost           
+                                         
+  prompt tokens   5,367,112              
+  cache           98.43% hit (5.28M)     
+  total cost      0.3601 元               
+    cache hit     0.1057 元 (5.28M tok)   
+    input miss    0.0842 元 (84K tok)     
+    output        0.1703 元 (43K tok)     
+                                         
+                                         
+                                         
+                                         
+                                         
+                                         
+                                         
+                                         
+                                         

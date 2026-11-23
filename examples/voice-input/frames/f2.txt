@@ -1,0 +1,18 @@
+REAL TRANSCRIPT - EXIT 0 IN 2.7s                      
+                                                      
+$ gopi tool voice_input jfk.flac \                    
+      --engine recording                              
+                                                      
+And so, my fellow Americans, ask not                  
+what your country can do for you, ask                 
+what you can do for your country.                     
+                                                      
+[voice] jfk.flac in 2.7s (chunk=15s)                  
+                                                      
+                                                      
+                                                      
+                                                      
+                                                      
+                                                      
+                                                      
+                                                      

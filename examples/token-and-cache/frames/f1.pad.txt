@@ -1,0 +1,18 @@
+TOKEN COUNTING — OUR OWN TOKENIZER       
+gopi ships a DeepSeek-V4.1 BPE tokenizer.
+Not an estimate. The same vocabulary the 
+bill is computed on.                     
+                                         
+  gopi tool tokens --file README.md      
+  > 5457 tokens (19912 bytes, 459 lines) 
+                                         
+  gopi tool tokens --prompt 'gopi ...'   
+  > 8 tokens (29 bytes)                  
+                                         
+                                         
+                                         
+                                         
+                                         
+                                         
+                                         
+                                         

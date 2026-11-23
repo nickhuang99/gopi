@@ -1,0 +1,18 @@
+WITHOUT THE CACHE                             
+                                              
+5.28M tokens re-sent at miss price:           
+  ~6.6 CNY  vs  0.1057 CNY  (62.8x)           
+                                              
+61 requests, only 84K missed.                 
+The cache is not a README claim -             
+it is a measured column, per session.         
+                                              
+  gopi session stats <id> --cost              
+  gopi tool tokens --session <id>             
+                                              
+                                              
+                                              
+                                              
+                                              
+                                              
+                                              

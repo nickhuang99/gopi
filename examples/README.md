@@ -23,8 +23,11 @@ Animated GIFs are built with gopi's own pure-Go verbs (`text2img` + `gif`), no f
   byte-exact `screen-replay`, `--verify` reports the first differing frame.
 - `examples/resume-after-failure/` — the resume ladder: status exit codes,
   LEVEL 1 `worker --resume` vs LEVEL 2 `task clone`, and why `resumable` != resume now.
-- `examples/voice-input/` — speech to text, local and cloud engines. (in progress,
-  not published yet — this line will become a link when the directory lands)
+- `examples/voice-input/` — speech to text, four engines with different trade-offs:
+  `recording` (any container, batch), `streaming`/`sauc` (WAV or bare PCM, low latency),
+  `local` (FunASR, nothing leaves the machine). The container trap is documented:
+  handing a FLAC to the streaming channel is refused, and the refusal names the fix.
+  (hy4-flash)
 
 ## Reproducing the GIFs
 

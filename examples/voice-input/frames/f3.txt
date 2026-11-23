@@ -1,0 +1,18 @@
+THE CONTAINER GOTCHA                                  
+                                                      
+Default engine=sauc eats 16k mono PCM:                
+                                                      
+  flac -> REFUSED (no RIFF/WAVE header)               
+  error says: re-run --engine recording               
+                                                      
+recording uploads the file AS IS;                     
+the vendor decodes it - flac/mp3 work.                
+sauc must decode locally: WAV/PCM only.               
+                                                      
+                                                      
+                                                      
+                                                      
+                                                      
+                                                      
+                                                      
+                                                      

@@ -1,0 +1,18 @@
+BUT: RESUMABLE != RESUME NOW                        
+                                                    
+Real case (01a20a33): resumable=yes,                
+yet the push channel was still broken,              
+so resume would hit the SAME wall.                  
+                                                    
+Fix the root cause first, then resume or            
+reissue. resumable means possible,                  
+not wise. Check WHY it failed.                      
+                                                    
+                                                    
+                                                    
+                                                    
+                                                    
+                                                    
+                                                    
+                                                    
+                                                    

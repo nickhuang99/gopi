@@ -1,0 +1,18 @@
+ONE TURN != ONE ROUND                               
+                                                    
+A TURN is one complete input to the next.           
+Every round and tool call in between                
+belongs to that one turn.                           
+                                                    
+  turns=1  (61 request(s), 64 tool call(s))         
+  rounds 1-61   calls=64   rows=4890                
+  prompt="README 30s ..."                           
+                                                    
+                                                    
+                                                    
+                                                    
+                                                    
+                                                    
+                                                    
+                                                    
+                                                    

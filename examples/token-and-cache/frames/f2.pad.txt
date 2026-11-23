@@ -1,0 +1,18 @@
+PROOF: OUR COUNT == THE SERVER'S         
+gopi tool tokens --session <id>          
+compares every request's count with the  
+number the API actually billed.          
+                                         
+  line   msgs  ours    server   diff     
+  2      1     66376   66376    +0       
+  116    3     73487   73487    +0       
+  ...                                    
+  61 requests, 61 server numbers:        
+  exactly equal: 61                      
+                                         
+                                         
+                                         
+                                         
+                                         
+                                         
+                                         

@@ -1,0 +1,18 @@
+VOICE INPUT - 4 ENGINES, ONE COMMAND                  
+                                                      
+gopi tool voice_input <file> [--engine E]             
+                                                      
+  recording  cloud batch, ANY container               
+  streaming  cloud, partial while speaking            
+  sauc       cloud v3, WAV/PCM only                   
+  local      Fun-ASR-Nano, ON this machine            
+                                                      
+Default is recording (0B weights).                    
+                                                      
+                                                      
+                                                      
+                                                      
+                                                      
+                                                      
+                                                      
+                                                      

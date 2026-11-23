@@ -1,0 +1,18 @@
+ASK STATUS FIRST - ITS EXIT IS THE ANSWER           
+                                                    
+  gopi task status <id>                             
+  Exit: 0  resumable                                
+  Exit: 1  running (do NOT resume)                  
+  Exit: 2  ground in use                            
+  Exit: 3  unverifiable                             
+  Exit: 4  no ledger row names selector             
+  Exit: 5  finished -> use task clone               
+                                                    
+Read the exit directly; a pipe masks it.            
+                                                    
+                                                    
+                                                    
+                                                    
+                                                    
+                                                    
+                                                    

@@ -1,0 +1,18 @@
+FAILURE IS AN ATTEMPT, NOT THE WORK                 
+                                                    
+A worker can finish all its work and still          
+end 'failed' - e.g. the delivery push at            
+the END hook is refused. The commit stays           
+safe in that row's own clone.                       
+                                                    
+  gopi task status <id>                             
+  status: failed   resumable: yes                   
+  holder: (none)   run_lock: free                   
+                                                    
+                                                    
+                                                    
+                                                    
+                                                    
+                                                    
+                                                    
+                                                    

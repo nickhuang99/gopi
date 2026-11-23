@@ -1,0 +1,18 @@
+--VERIFY: PIXEL/TRUTH DIFF                          
+                                                    
+It reports the FIRST frame that differs,            
+with the exact payload bytes and offset:            
+                                                    
+  differ: frame 4 - payload bytes differ            
+  A: "\x1b[1;20r"                                   
+  B: "\x1b[1;22r"                                   
+                                                    
+Not OCR. Not a screenshot. Byte truth.              
+                                                    
+                                                    
+                                                    
+                                                    
+                                                    
+                                                    
+                                                    
+                                                    

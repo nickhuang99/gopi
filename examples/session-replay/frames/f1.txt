@@ -1,0 +1,18 @@
+SESSION REPLAY - A RUN IS A RECORDING               
+                                                    
+Every run writes a session: JSONL turns +           
+an optional screen stream. Replay it later,         
+turn by turn, with transport controls.              
+                                                    
+  gopi session list                                 
+  gopi session show <id>                            
+  gopi session replay <id> --turns                  
+  gopi session replay <id> --turn 1                 
+                                                    
+                                                    
+                                                    
+                                                    
+                                                    
+                                                    
+                                                    
+                                                    

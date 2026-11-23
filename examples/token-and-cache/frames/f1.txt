@@ -1,0 +1,18 @@
+TOKEN COUNTING - OUR OWN TOKENIZER            
+                                              
+DeepSeek-V4.1 BPE, built into gopi.           
+Not an estimate - the SAME vocabulary         
+the bill is computed on.                      
+                                              
+  gopi tool tokens --file README.md           
+  > 5457 tokens (19912 bytes)                 
+                                              
+  gopi tool tokens --prompt '...'             
+  > 8 tokens (29 bytes)                       
+                                              
+                                              
+                                              
+                                              
+                                              
+                                              
+                                              

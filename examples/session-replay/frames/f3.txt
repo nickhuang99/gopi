@@ -1,0 +1,18 @@
+SCREEN REPLAY - BYTE-EXACT                          
+                                                    
+screen-replay writes a recording's render           
+bytes back out, unchanged. Step frame by            
+frame, or compare two recordings:                   
+                                                    
+  gopi screen-replay <id> --step                    
+  gopi screen-replay <id> --verify A B              
+                                                    
+  A: frames=142 bytes=11092                         
+  B: frames=43  bytes=1237                          
+                                                    
+                                                    
+                                                    
+                                                    
+                                                    
+                                                    
+                                                    

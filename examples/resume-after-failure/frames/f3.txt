@@ -1,0 +1,18 @@
+LEVEL 1: RESUME, SAME ROW                           
+                                                    
+A FAILED row is RESUMED, not replaced:              
+same task id, same session, same ground.            
+The checkpoint is appended.                         
+                                                    
+  gopi worker --resume <task-id>                    
+                                                    
+For a clean redo of a finished row:                 
+  gopi task clone <id>  (new session)               
+                                                    
+                                                    
+                                                    
+                                                    
+                                                    
+                                                    
+                                                    
+                                                    
