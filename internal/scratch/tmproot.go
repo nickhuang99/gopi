@@ -482,7 +482,7 @@ func FilesystemTypeAt(path string) (string, bool) {
 // layer cannot drift (Rule 13).
 const SettingsEnvName = "GOPI_SETTINGS"
 
-// GopiDirEnvName relocates the gopi data root (/home/nick/.gopi). Named for the same
+// GopiDirEnvName relocates the gopi data root (~/.gopi). Named for the same
 // reason.
 const GopiDirEnvName = "GOPI_HOME"
 
