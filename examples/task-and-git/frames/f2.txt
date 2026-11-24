@@ -1,0 +1,18 @@
+2/4   worker 拿到自己的 clone
+
+  $ gopi worker 01a20cad-76b9
+
+  deliverable.repo:
+    /home/nick/work/gopi
+  deliverable.branch:  master
+  deliverable.worktree:
+    /home/nick/workspace/01a20cad
+
+--------------------------------------
+不是「在项目里改文件」。
+是 clone 一份、在里面改、
+改完自己 pull --rebase 合、
+自己 push 回去。
+
+没有 merge 守护进程 ——
+每个 worker 自己是合并人。

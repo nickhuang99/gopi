@@ -1,0 +1,18 @@
+3/4   「完成」是它对自己说的
+
+  status: completed  turns: 366
+
+  然后你去看别处:
+
+  delivery (read now):
+    DELIVERED — peer advertises
+    master at this row's own tip
+
+  ground (resolved now):
+    /home/nick/workspace/01a20cad
+    NOT FOUND — a stale reading
+
+--------------------------------------
+一边是「我做完了」,
+一边是「它到底在哪里」。
+两句话必须分开读。
