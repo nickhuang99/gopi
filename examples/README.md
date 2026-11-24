@@ -21,6 +21,22 @@ Animated GIFs are built with gopi's own pure-Go verbs (`text2img` + `gif`), no f
   fixed by a worker in a clone of gopi's source tree. Bootstrap, closed.
   (deepseek-flash)
 
+## Supervision
+
+- `examples/worker-false-completion/` — `completed` is a claim a run makes about
+  itself, not a measurement. Three shapes of "done" that are not done (false
+  positive, false negative, zero output), the four commands a supervisor runs
+  instead of reading the report, and the part that is still not a gate.
+  (deepseek-flash)
+
+## Memory
+
+- `examples/memory-provenance/` — memory is an auditable ledger, not a hand-written
+  file. Every hit carries its origin (`sess=… round=…`), its confidence, and the votes
+  it received; two contradictory lessons are kept side by side instead of one
+  overwriting the other, and an injected memory that nobody votes for is pruned.
+  Measured: 14 of 162 injections ever received a vote. (deepseek-flash)
+
 ## Observability
 
 - `examples/token-and-cache/` — our own BPE tokenizer (ours == server, 61/61 diff +0),
