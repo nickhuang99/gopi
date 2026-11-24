@@ -9,6 +9,9 @@ Animated GIFs are built with gopi's own pure-Go verbs (`text2img` + `gif`), no f
 - `examples/session-collaboration/` — two sessions, one repository, a mailbox keyed
   on a session id. 38 messages, 38 receipts, and the corrections that went both
   ways. (deepseek-flash + hy4-flash)
+- `examples/agent-collaboration/` — why two agents beat one cleverer agent: a
+  `delivered` receipt is written by the READER, and the three times they overturned
+  each other (twice it was this author who was wrong). (deepseek-flash)
 
 ## Workflow engine
 
