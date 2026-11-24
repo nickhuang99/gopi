@@ -1,0 +1,16 @@
+3/4   THREE WAYS IT LIES
+
+  FALSE POSITIVE  said done, changed
+                  nothing
+  FALSE NEGATIVE  did the work, the
+                  gate said no
+  ZERO OUTPUT     exited 0, wrote no
+                  file
+------------------------------------------------------
+三种「完成」都不等于完成
+
+  假阳性 / 假阴性 / 零产出
+  在账本上都写 completed。
+
+
+

@@ -1,0 +1,16 @@
+4/4   WHAT THE PA ACTUALLY DOES
+
+  1  an event for every terminal row
+  2  read the LEDGER, not the report
+  3  query the ground for real commits
+  4  resume / re-dispatch / report
+
+------------------------------------------------------
+PA 实际做的事
+
+  不能核查自己 worker 的 agent，
+  只是一个转发地址。
+
+
+
+

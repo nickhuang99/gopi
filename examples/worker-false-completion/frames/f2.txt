@@ -1,0 +1,16 @@
+2/4   THE QUESTION
+
+  Did it FINISH -- or did it STOP?
+
+  A run killed at 03:00 and one that
+  ended at 03:00 leave the same row.
+
+------------------------------------------------------
+真正的问题
+
+  它是做完了，还是停下来了？
+  这两件事在账本上长得一模一样。
+
+
+
+

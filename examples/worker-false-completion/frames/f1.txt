@@ -1,0 +1,16 @@
+1/4   THE CLAIM
+
+  $ gopi task show $ROW
+    status:  completed
+    turns:   147
+    report:  "3 commits landed"
+
+------------------------------------------------------
+它是这么说的
+
+  这两行都是「声称」，不是「测量」。
+  账本记的是这一轮自己说的话。
+
+
+
+
