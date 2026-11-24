@@ -193,6 +193,38 @@ gopi tool act move 640 400                  # 操作真实桌面
 
 ---
 
+## 看它怎么跑
+
+八个实跑例子，输出都是**真实运行**的原文，不是示意图。
+
+<table>
+<tr>
+<td width="50%"><img src="examples/workflow-dispatch/demo.gif" alt="派发任务"></td>
+<td width="50%"><img src="examples/parallel-projects/demo.gif" alt="并行项目"></td>
+</tr>
+<tr>
+<td><b>提交一行，让 worker 去跑</b><br><code>submit</code> → 一个 clone → 一个 worker → 提交回来。<a href="examples/workflow-dispatch/">完整走一遍</a></td>
+<td><b>同时做几个项目</b><br>互不相干的行，各自在自己的 clone 里，没有共享工作目录。<a href="examples/parallel-projects/">完整走一遍</a></td>
+</tr>
+<tr>
+<td><img src="examples/session-collaboration/replay.gif" alt="两个 agent 互相纠正"></td>
+<td><img src="examples/self-development/demo.gif" alt="自我开发"></td>
+</tr>
+<tr>
+<td><b>两个 agent 互相纠正</b><br>一次真实的收件箱往来——一个 agent 推翻了另一个的结论。<a href="examples/session-collaboration/">完整走一遍</a></td>
+<td><b>gopi 开发 gopi</b><br>这个仓库就是它自己的 worker 在自己的账本上写出来的。<a href="examples/self-development/">完整走一遍</a></td>
+</tr>
+</table>
+
+另外四个，各讲一个机制：
+
+- **[会话回放](examples/session-replay/)** —— 把跑完的会话原样流回来，一个字节不差，不碰模型。
+- **[Token 与缓存](examples/token-and-cache/)** —— 一次运行花了多少，以及为什么这个数不是估算。
+- **[失败后接着跑](examples/resume-after-failure/)** —— 一次失败判的是"这一次尝试"，不是"这件活"。
+- **[语音输入](examples/voice-input/)** —— 四个引擎一个命令；真实数字，包括不好看的那些。
+
+---
+
 ## gopi 与其他主流 harness
 
 | | gopi | Crush | Claude Code | Pi | Codex CLI |

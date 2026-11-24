@@ -220,6 +220,38 @@ gopi tool act move 640 400                  # drive the real desktop
 
 ---
 
+## See it working
+
+Eight worked examples, each built from a **real run** — the outputs are verbatim, not mock-ups.
+
+<table>
+<tr>
+<td width="50%"><img src="examples/workflow-dispatch/demo.gif" alt="Workflow dispatch"></td>
+<td width="50%"><img src="examples/parallel-projects/demo.gif" alt="Parallel projects"></td>
+</tr>
+<tr>
+<td><b>Dispatch a row, let a worker run it</b><br><code>submit</code> → a clone → a worker → a commit back. <a href="examples/workflow-dispatch/">walkthrough</a></td>
+<td><b>Several projects at once</b><br>Independent rows, each in its own clone, no shared working directory. <a href="examples/parallel-projects/">walkthrough</a></td>
+</tr>
+<tr>
+<td><img src="examples/session-collaboration/replay.gif" alt="Two agents collaborating"></td>
+<td><img src="examples/self-development/demo.gif" alt="Self-development"></td>
+</tr>
+<tr>
+<td><b>Two agents that correct each other</b><br>A real inbox exchange — one agent overturns the other's claim. <a href="examples/session-collaboration/">walkthrough</a></td>
+<td><b>gopi works on gopi</b><br>This repository is developed by its own workers, on its own ledger. <a href="examples/self-development/">walkthrough</a></td>
+</tr>
+</table>
+
+Four more, each about one mechanism:
+
+- **[Session replay](examples/session-replay/)** — stream a finished session back, byte for byte, without touching the model.
+- **[Token and cache](examples/token-and-cache/)** — what a run cost, and proof the count is not an estimate.
+- **[Resume after failure](examples/resume-after-failure/)** — a failure judges one attempt, not the work.
+- **[Voice input](examples/voice-input/)** — four engines, one command; real numbers, including the ones that are worse.
+
+---
+
 ## gopi vs. the mainstream harnesses
 
 | | gopi | Crush | Claude Code | Pi | Codex CLI |
