@@ -187,7 +187,7 @@ gopi notify --peer hp --session <id> --message "..."   # 跨主机，走已声�
 
 ```bash
 gopi tool capture --self                    # gopi 自己所在的那个终端，按 pid 解析，不会抓错窗口
-gopi tool vision_analyze --image shot.png   # 这张屏幕说了什么？
+gopi tool vision_analyze shot.png   # 这张屏幕说了什么？
 gopi tool act move 640 400                  # 操作真实桌面
 ```
 
@@ -195,7 +195,9 @@ gopi tool act move 640 400                  # 操作真实桌面
 
 ## 看它怎么跑
 
-八个实跑例子，输出都是**真实运行**的原文，不是示意图。
+**13 个实跑例子** —— `ls -d examples/*/ | wc -l` 就是那个数，每个目录都收录在
+[`examples/README.md`](examples/README.md)。本页链到其中九个；每一个都来自**真实运行**，
+输出是原文，不是示意图。
 
 <table>
 <tr>
@@ -216,12 +218,13 @@ gopi tool act move 640 400                  # 操作真实桌面
 </tr>
 </table>
 
-另外四个，各讲一个机制：
+另外五个，各讲一个机制：
 
 - **[会话回放](examples/session-replay/)** —— 把跑完的会话原样流回来，一个字节不差，不碰模型。
 - **[Token 与缓存](examples/token-and-cache/)** —— 一次运行花了多少，以及为什么这个数不是估算。
 - **[失败后接着跑](examples/resume-after-failure/)** —— 一次失败判的是"这一次尝试"，不是"这件活"。
 - **[语音输入](examples/voice-input/)** —— 四个引擎一个命令；真实数字，包括不好看的那些。
+- **[不信「完成了」](examples/worker-false-completion/)** —— 状态是这一轮自己说的话，不是测量；三种「做完了」其实没做完。
 
 ---
 
@@ -433,65 +436,104 @@ macOS、Windows、ARM、其他发行版都没测过；诚实清单在 [`INSTALL.
 
 ## 它能做什么
 
+顶层动词是 **13 个**，这个数是数出来的，不是记出来的：`gopi -h` 的 `Commands` 块里
+点了 12 个词（`chat`、`config`、`memory`、`notify`、`screen`、`screen-replay`、
+`session`、`task`、`tool`、`ui_state`、`web`、`worker`），`Usage` 块点了第十三个
+`gopi version`。本页按**你想干什么**分组，而不是按 CLI 碰巧怎么组织 —— `gopi -h`
+才是完整清单，也是"某个命令到底存不存在"的唯一权威。这个唯一的门下面挂着
+**18 个 `gopi tool` 命令**（`gopi tool -h`：15 个 direct + 3 个 grouped）。
+
 下面每一条命令都**真的能跑**，没有一个是示意。
 
-### 对话与执行
+同一个命令可能出现在两个标题下：分组按的是**你的目的**，一个命令可以服务两个目的。
+
+### 1. 和一个 agent 对话
 
 | 我想 | 命令 |
 |---|---|
-| 跟它说话 | `gopi chat` |
+| 交互式地用 | `gopi chat` |
 | 一次干完一件小事，不进循环 | `gopi chat --once -p "把这个函数的错误分支补上"` |
-| 派一件活，稍后收结果 | `gopi task submit "<这件事>"` |
+| 用浏览器而不是终端 | `gopi web --addr 127.0.0.1:8080` |
+| 把控制台画的东西读成单元格网格 | `gopi ui_state --json` |
+
+### 2. 派活，并盯着它
+
+| 我想 | 命令 |
+|---|---|
+| 交出一件活得比这次对话更久 | `gopi task submit "<这件事>"` |
 | 看某件活现在走到哪一步 | `gopi task show <id>` |
+| 它背后那个进程真的还活着吗 | `gopi task status <id>` |
 | 找没人认领的活 | `gopi task list --status pending` |
 | 无人值守地消费队列 | `gopi worker` |
+| 在账本里搜过去干过的活 | `gopi task search "<你记得的关键词>"` |
+| 收掉一件已完成的活，保留它的记录 | `gopi task archive <id>` |
+| 清理已完成任务的工作目录 | `gopi task sweep-worktrees` |
 
-### 记忆与检索
+### 3. 记住，以及查东西
 
 | 我想 | 命令 |
 |---|---|
 | 让它记住一条可复用经验 | `gopi memory store --topic "..." --question "..." --answer "..."` |
 | 问它以前是否碰到过 | `gopi memory search "为什么 build 会红"` |
-| 找某个符号的定义 | `gopi tool code-search <Symbol>` |
+| 给召回的经验投票：有用 / 没用 | `gopi memory feedback <id> --useful` |
+| 换模型后重算一行的索引 | `gopi memory backfill-tokens` |
+| 找某个符号的**定义** | `gopi tool code-search <Symbol>` |
 | 全文搜索代码树 | `gopi tool keyword_search "<pattern>"` |
 | 查某一行是谁写的、为什么 | 会话内 `git_blame` 工具；命令行 `git blame` |
 
-### 看与操作
+### 4. 证明当时到底发生了什么
+
+这是大多数 harness 没有的那一组，也是那 13 个动词里有两个存在的理由。
+
+| 我想 | 命令 |
+|---|---|
+| 列出跑过的会话 | `gopi session list` |
+| 一轮一轮读一次运行 | `gopi session log --last` |
+| 发给模型的原始字节 | `gopi session raw --last` |
+| 花了多少，含命中率 | `gopi session stats --last` |
+| 接着一段被打断的对话 | `gopi --session <id>` |
+| 回放一段录下来的屏幕 | `gopi screen replay <id>` |
+| 逐字节对比两份录制 | `gopi screen-replay --verify A B` |
+| 我正在跑的是哪个构建？ | `gopi version` |
+| 给另一个会话投递消息 | `gopi notify --session <id> --message "..."` |
+| 读任务事件流 | `gopi notify events` |
+
+### 5. 让它看得见屏幕，并在上面动手
 
 | 我想 | 命令 |
 |---|---|
 | 捕获当前桌面 | `gopi tool capture --screen --out s.png` |
 | 捕获它自己所在的那个终端 | `gopi tool capture --self` |
 | 操作桌面 | `gopi tool act move 100 100` |
-| 读出图片里是什么 | `gopi tool vision_analyze --image p.png` |
-| 把文本渲染成图片（支持中日韩） | `gopi tool text2img --src notes.txt` |
+| 读出图片里是什么 | `gopi tool vision_analyze <image>` |
+| 在一张已有 PNG 上画标记 | `gopi tool annotate in.png --out marked.png --mark "rect:200x40+14+13::fixed"` |
 | 给网页截图（无头，不碰真实屏幕） | `gopi tool shot --url https://example.com` |
+| 把文本渲染成图片（支持中日韩） | `gopi tool text2img <input.txt>` |
+| 把 PNG 帧拼成一个动画 GIF | `gopi tool gif --frames a.png,b.png,c.png --out out.gif` |
+| 转写音频 | `gopi tool voice_input <audio>` |
+| 搜索 / 抓取网页 | `gopi tool web search "<查询>"` |
 
-### 配置与自省
+### 6. 配置它、数清它、关住它
 
 | 我想 | 命令 |
 |---|---|
-| 看**实际生效**的配置 | `gopi config show` |
-| 列出所有环境变量 | `gopi config show --help-env` |
+| 看**实际生效**的配置，以及每个值是哪条通道定的 | `gopi config show` |
+| 测量这台机器并描述它的环境 | `gopi config env` |
 | 把一台新机器准备好 | `gopi config setup` |
-| 查任意动词的用法 | `gopi <verb> -h` |
-
-### 隔离与清理
-
-| 我想 | 命令 |
-|---|---|
+| 给 shell 装补全 | `gopi config completion bash` |
+| 拿 token 数和 provider 自己报的数对照 | `gopi tool tokens --session <session-id>` |
 | 在私有 profile 里跑一次，不污染主账本 | `gopi tool sandbox run --label probe -- <cmd>` |
 | 看临时目录里哪些可以回收 | `gopi tool scratch-gc --dry-run` |
-| 清理已完成任务的工作目录 | `gopi task sweep-worktrees` |
+| 把一个 OpenAI 上游当 Anthropic 端点提供出去 | `gopi tool proxy --upstream openai` |
 
-### 服务面
-
-| 我想 | 命令 |
-|---|---|
-| 本地 Web UI | `gopi web --addr 127.0.0.1:8080` |
-| 给另一个会话投递消息 | `gopi notify --session <id> --message "..."` |
+`tool` 里有两个是**故意内部化**的 —— `gopi tool -h` 正好把这两个标成 `(internal)`：
+`scratch-gc` 和 `ledger-window`。`screen_capture` 是 `capture` 的整屏拼写，
+`text2img-verify` 用来检查渲染器自己的像素精度。它们都是真的、都能跑；它们的输出是
+本仓库自己那些 gate 的契约，所以脚本可以依赖它，人不必。把它们列在这里而不是藏起来，
+是因为一个没有门的"能力"只能靠单元测试来测。
 
 ---
+
 
 ## 边界
 

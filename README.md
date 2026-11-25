@@ -214,7 +214,7 @@ zero CGO. Capture → read → act → verify, with the pixel hashes to prove it
 
 ```bash
 gopi tool capture --self                    # the terminal gopi itself runs in, resolved by pid
-gopi tool vision_analyze --image shot.png   # what does this screen say?
+gopi tool vision_analyze shot.png   # what does this screen say?
 gopi tool act move 640 400                  # drive the real desktop
 ```
 
@@ -222,7 +222,9 @@ gopi tool act move 640 400                  # drive the real desktop
 
 ## See it working
 
-Eight worked examples, each built from a **real run** — the outputs are verbatim, not mock-ups.
+**13 worked examples** — `ls -d examples/*/ | wc -l` is the count, and every directory is in
+[`examples/README.md`](examples/README.md). Nine are linked from this page; each is built from a
+**real run**, and the outputs are verbatim, not mock-ups.
 
 <table>
 <tr>
@@ -243,12 +245,13 @@ Eight worked examples, each built from a **real run** — the outputs are verbat
 </tr>
 </table>
 
-Four more, each about one mechanism:
+Five more, each about one mechanism:
 
 - **[Session replay](examples/session-replay/)** — stream a finished session back, byte for byte, without touching the model.
 - **[Token and cache](examples/token-and-cache/)** — what a run cost, and proof the count is not an estimate.
 - **[Resume after failure](examples/resume-after-failure/)** — a failure judges one attempt, not the work.
 - **[Voice input](examples/voice-input/)** — four engines, one command; real numbers, including the ones that are worse.
+- **[Not believing "completed"](examples/worker-false-completion/)** — a status a run writes about itself is not a measurement; the three shapes of "done" that are not done.
 
 ---
 
@@ -477,63 +480,107 @@ no other distribution is tested; the honest list is [`INSTALL.md` §6](INSTALL.m
 
 ## What it can do
 
+There are **13 top-level verbs**, and that number is counted, not remembered: the
+`Commands` block of `gopi -h` names 12 words (`chat`, `config`, `memory`,
+`notify`, `screen`, `screen-replay`, `session`, `task`, `tool`, `ui_state`,
+`web`, `worker`) and the `Usage` block names the thirteenth, `gopi version`. This
+page groups them by what you are trying to do, not by how the CLI happens to be
+organised — `gopi -h` is the complete list, and it is the authority for whether a
+command exists. Under that one door sit **18 `gopi tool` commands** (`gopi tool -h`:
+15 direct + 3 grouped).
+
 Every command below **really runs** — none is an illustration.
 
-### Conversation and execution
+A command may appear under two headings. That is deliberate: the grouping is by
+*your goal*, and one command can serve two of them.
+
+### 1. Talk to one agent
 
 | I want to | Command |
 |---|---|
-| Talk to it | `gopi chat` |
+| Talk to it interactively | `gopi chat` |
 | Finish one small job in one shot, no loop | `gopi chat --once -p "把这个函数的错误分支补上"` |
-| Dispatch work and collect it later | `gopi task submit "<这件事>"` |
+| Use a browser instead of a terminal | `gopi web --addr 127.0.0.1:8080` |
+| Read what the console is painting, as a cell grid | `gopi ui_state --json` |
+
+### 2. Dispatch work and follow it
+
+| I want to | Command |
+|---|---|
+| Hand over a job that outlives this conversation | `gopi task submit "<the work>"` |
 | See where a piece of work is right now | `gopi task show <id>` |
+| Is the process behind it actually alive? | `gopi task status <id>` |
 | Find work nobody has claimed | `gopi task list --status pending` |
 | Run the queue unattended | `gopi worker` |
+| Search the ledger for past work | `gopi task search "<what you remember>"` |
+| Retire a finished row, keeping its record | `gopi task archive <id>` |
+| Clean finished tasks' working dirs | `gopi task sweep-worktrees` |
 
-### Memory and retrieval
+### 3. Remember, and look things up
 
 | I want to | Command |
 |---|---|
 | Make it remember one reusable lesson | `gopi memory store --topic "..." --question "..." --answer "..."` |
 | Ask whether it has hit this before | `gopi memory search "为什么 build 会红"` |
-| Find a symbol definition | `gopi tool code-search <Symbol>` |
+| Vote a recalled lesson useful or useless | `gopi memory feedback <id> --useful` |
+| Recompute a row's index after a model change | `gopi memory backfill-tokens` |
+| Find a symbol **definition** | `gopi tool code-search <Symbol>` |
 | Full-text search the tree | `gopi tool keyword_search "<pattern>"` |
-| Find who wrote a line and why | `git_blame` inside a session; `git blame` on the CLI |
+| Find who wrote a line, and why | `git_blame` inside a session; `git blame` on the CLI |
 
-### Seeing and acting
+### 4. Prove what actually happened
+
+This is the group most harnesses do not have, and the reason two of the 13 verbs
+exist at all.
+
+| I want to | Command |
+|---|---|
+| List past runs | `gopi session list` |
+| Read one run turn by turn | `gopi session log --last` |
+| The raw bytes sent to the model | `gopi session raw --last` |
+| What it cost, hit rate included | `gopi session stats --last` |
+| Resume an interrupted conversation | `gopi --session <id>` |
+| Replay a recorded screen | `gopi screen replay <id>` |
+| Diff two recordings byte for byte | `gopi screen-replay --verify A B` |
+| Which build am I running? | `gopi version` |
+| Deliver a message to another session | `gopi notify --session <id> --message "..."` |
+| Read the task event stream | `gopi notify events` |
+
+### 5. Let it see the screen, and act on it
 
 | I want to | Command |
 |---|---|
 | Capture the live desktop | `gopi tool capture --screen --out s.png` |
 | Capture the terminal gopi itself runs in | `gopi tool capture --self` |
 | Drive the desktop | `gopi tool act move 100 100` |
-| Read what is in an image | `gopi tool vision_analyze --image p.png` |
-| Render text to an image (CJK-capable) | `gopi tool text2img --src notes.txt` |
+| Read what is in an image | `gopi tool vision_analyze <image>` |
+| Draw marks onto an existing PNG | `gopi tool annotate in.png --out marked.png --mark "rect:200x40+14+13::fixed"` |
 | Screenshot a web page, headless | `gopi tool shot --url https://example.com` |
+| Render text to an image (CJK-capable) | `gopi tool text2img <input.txt>` |
+| Turn PNG frames into one animated GIF | `gopi tool gif --frames a.png,b.png,c.png --out out.gif` |
+| Transcribe audio | `gopi tool voice_input <audio>` |
+| Search / fetch the web | `gopi tool web search "<query>"` |
 
-### Configuration and introspection
+### 6. Configure it, count it, contain it
 
 | I want to | Command |
 |---|---|
-| See the config **in effect** | `gopi config show` |
-| List every environment variable | `gopi config show --help-env` |
+| See the config **in effect**, and which channel decided each value | `gopi config show` |
+| Measure this host and describe its environment | `gopi config env` |
 | Provision a fresh machine | `gopi config setup` |
-| Look up any verb | `gopi <verb> -h` |
-
-### Isolation and cleanup
-
-| I want to | Command |
-|---|---|
+| Tab-completion for your shell | `gopi config completion bash` |
+| Count tokens against the provider's own number | `gopi tool tokens --session <session-id>` |
 | Run once in a private profile | `gopi tool sandbox run --label probe -- <cmd>` |
 | See what temp dirs can be reclaimed | `gopi tool scratch-gc --dry-run` |
-| Clean finished tasks' working dirs | `gopi task sweep-worktrees` |
+| Serve an Anthropic-shaped endpoint from an OpenAI one | `gopi tool proxy --upstream openai` |
 
-### Service surface
-
-| I want to | Command |
-|---|---|
-| Local web UI | `gopi web --addr 127.0.0.1:8080` |
-| Deliver a message to another session | `gopi notify --session <id> --message "..."` |
+Two `tool` entries are deliberately internal — `gopi tool -h` marks exactly those
+two `(internal)`: `scratch-gc` and `ledger-window`. `screen_capture` is the
+whole-screen spelling of `capture`, and `text2img-verify` exists to check the
+renderer's own pixel accuracy. They are real and they run; their output is a
+contract for this repository's own gates, so a script may depend on it and a
+person should not. They are listed here rather than hidden, because a capability
+with no door can only be tested by unit tests.
 
 ---
 

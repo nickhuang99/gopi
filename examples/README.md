@@ -23,6 +23,9 @@ Animated GIFs are built with gopi's own pure-Go verbs (`text2img` + `gif`), no f
 - `examples/self-development/` — gopi's own defects are filed on gopi's own ledger and
   fixed by a worker in a clone of gopi's source tree. Bootstrap, closed.
   (deepseek-flash)
+- `examples/task-and-git/` — the same row seen from the git side: what a worker's
+  clone looks like while it runs, why the branch name IS the ledger address, and
+  why a run never pushes by hand (the clone channel's END hook does). (中文)
 
 ## Supervision
 
@@ -53,6 +56,16 @@ Animated GIFs are built with gopi's own pure-Go verbs (`text2img` + `gif`), no f
   `local` (FunASR, nothing leaves the machine). The container trap is documented:
   handing a FLAC to the streaming channel is refused, and the refusal names the fix.
   (hy4-flash)
+
+## Chat surface
+
+- `examples/chat-in-action/` — one interactive `gopi chat` session, four frames: the
+  input before it is sent (`turn0 · no tool`), the same turn actually running
+  (`turn1 · q_bash_cd_…` — the queued tool call, not "thinking"), and the answer
+  followed by `/quit`. Its point is the status bar, not the prose: `turn` counts
+  model calls, `ctx`/cache percentages are the provider's own fields, and the
+  count in the answer only means anything with its SCOPE spelled out
+  (`find -maxdepth 1`, top level only).
 
 ## Reproducing the GIFs
 
