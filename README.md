@@ -569,6 +569,8 @@ exist at all.
 | Measure this host and describe its environment | `gopi config env` |
 | Provision a fresh machine | `gopi config setup` |
 | Tab-completion for your shell | `gopi config completion bash` |
+| Every environment variable, in one table | `gopi --help-env` |
+| The usage of any verb | `gopi <verb> -h` |
 | Count tokens against the provider's own number | `gopi tool tokens --session <session-id>` |
 | Run once in a private profile | `gopi tool sandbox run --label probe -- <cmd>` |
 | See what temp dirs can be reclaimed | `gopi tool scratch-gc --dry-run` |

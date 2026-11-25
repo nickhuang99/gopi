@@ -521,6 +521,8 @@ macOS、Windows、ARM、其他发行版都没测过；诚实清单在 [`INSTALL.
 | 测量这台机器并描述它的环境 | `gopi config env` |
 | 把一台新机器准备好 | `gopi config setup` |
 | 给 shell 装补全 | `gopi config completion bash` |
+| 所有环境变量，一张表 | `gopi --help-env` |
+| 任意动词的用法 | `gopi <verb> -h` |
 | 拿 token 数和 provider 自己报的数对照 | `gopi tool tokens --session <session-id>` |
 | 在私有 profile 里跑一次，不污染主账本 | `gopi tool sandbox run --label probe -- <cmd>` |
 | 看临时目录里哪些可以回收 | `gopi tool scratch-gc --dry-run` |
