@@ -297,10 +297,18 @@ darwin 的 `syscall.Fsid` 字段叫 `Val`（linux 叫 `X__val`）、`Statfs_t.Ty
 每一处现在都在各自的平台文件后面。实测于该版本：`GOOS=darwin GOARCH=arm64` 产出一个可用的
 `Mach-O 64-bit arm64 executable`（72 MB），linux 仍然照常构建。
 
-**Windows 构建不了**，而且短期内也不会 —— 缺口不是语法。`syscall.RLIMIT_AS` / `Rlimit` /
-`Getrlimit`（rlimit）、`O_NOFOLLOW`、以及一批 statfs 调用点在 Windows 上没有对应物，
-每一处都需要真机制而不是改个字段名。发布流只发布实测能构建的两个目标，而不是三个里有一个永远红。
-见[§ 边界](#边界)。
+**Windows 上用 WSL —— 这是支持的路径，不是绕过。** 发布包用 `CGO_ENABLED=0` 构建，
+所以是静态链接：在本树上实测 `file` 报 `statically linked`、`ldd` 回 `not a dynamic executable`，
+不需要匹配 glibc 版本，也不需要 C 工具链。WSL2 里的内核是真的 Linux 内核，
+所以 gopi 依赖的 `/proc`、cgroup、inotify、终端处理都是真在那儿，不是模拟。
+下载上面那个 Linux x86-64 文件，在 WSL 的 shell 里直接跑，跑的就是别人跑的那个同一个二进制。
+
+**不带 WSL 的原生 `gopi.exe` 不是本树提供的形态。** 缺口不在语法：
+`syscall.RLIMIT_AS` / `Rlimit` / `Getrlimit`、`O_NOFOLLOW`、`syscall.Kill`、`Stat_t`
+以及一批 statfs 调用点在 Windows 上没有对应物，每一处都需要真机制而不是改个字段名。
+在本快照上实测，`GOOS=windows GOARCH=amd64` 会停在 `undefined: syscall.Kill` /
+`undefined: syscall.Stat_t`。按 GOOS 拆分的改造在上游进行中，而本快照早于它。
+发布流只发布实测能构建的两个目标，而不是三个里有一个永远红。见[§ 边界](#边界)。
 
 **darwin 是「编译通过」，不是「跑过」** —— 手上没有 macOS 机器，所以请当作「它能构建」而不是
 「它能用」。已知三处降级，每处都在自己的调用点上写明：`Pdeathsig` 不存在（被 SIGKILL 的父进程

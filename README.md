@@ -329,11 +329,22 @@ landed (2026-11-23): `syscall.Fsid` names its field `Val` on darwin against linu
 behind a per-platform file. Measured on that rev: `GOOS=darwin GOARCH=arm64` builds a
 working `Mach-O 64-bit arm64 executable` (72 MB), and linux still builds.
 
-**Windows does not build**, and honestly will not soon — the gap is not syntax.
-`syscall.RLIMIT_AS` / `Rlimit` / `Getrlimit` (rlimit), `O_NOFOLLOW`, and a batch of
-statfs call sites have no POSIX counterpart there, so each needs a real mechanism
-rather than a field rename. The release workflow publishes the two targets measured
-to build rather than three where one is permanently red. See [§ Boundaries](#boundaries).
+**On Windows, use WSL — and that is the supported path, not a workaround.** The release
+binaries are built with `CGO_ENABLED=0`, so they are statically linked: measured on this
+tree, `file` says `statically linked` and `ldd` answers `not a dynamic executable`. There
+is no glibc version to match and no C toolchain to install. Under WSL2 the kernel really
+is a Linux kernel, so `/proc`, cgroups, inotify and the terminal handling gopi relies on
+are actually there rather than emulated. Download the Linux x86-64 file above, run it in
+your WSL shell, and you have the same binary everyone else runs.
+
+**A native `gopi.exe` with no WSL is not what this tree ships.** The gap is not syntax:
+`syscall.RLIMIT_AS` / `Rlimit` / `Getrlimit`, `O_NOFOLLOW`, `syscall.Kill`, `Stat_t` and a
+batch of statfs call sites have no Windows counterpart, so each needs a real mechanism
+rather than a field rename. Measured on this snapshot, `GOOS=windows GOARCH=amd64` stops
+at `undefined: syscall.Kill` / `undefined: syscall.Stat_t`. The per-GOOS split is in
+progress upstream and this snapshot predates it. The release workflow publishes the two
+targets measured to build rather than three where one is permanently red. See
+[§ Boundaries](#boundaries).
 
 **Darwin is compiled, not run** — no macOS machine was available, so treat it as
 "it builds" rather than "it works". Three things are known degraded there and each
