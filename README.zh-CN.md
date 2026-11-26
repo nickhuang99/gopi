@@ -256,8 +256,8 @@ Crush —— 其 README 的 Channels 一节；Pi —— 其 README。
 「各家选择宣传什么」，绝不要当成功能审计。数字与引文均取自各项目自己的 README，
 依赖本表之前请自行复核。</sub>
 
-**gopi 弱在哪里，诚实写出来：** 没有 MCP、只有 Linux 发布包（macOS 能交叉编译但没真跑过）、
-开箱只有一家模型、没有 npm/brew 包。见[§ 边界](#边界)。
+**gopi 弱在哪里，诚实写出来：** 没有 MCP、只有 Linux 发布包（macOS 能交叉编译但没真跑过；
+Windows 走 WSL，没有原生 `gopi.exe`）、开箱只有一家模型、没有 npm/brew 包。见[§ 边界](#边界)。
 
 ---
 

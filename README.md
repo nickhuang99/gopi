@@ -287,8 +287,9 @@ chose to advertise", never as a feature audit. Counts and quotes are from each p
 re-check before relying on this table.</sub>
 
 **Where gopi is weaker, honestly:** no MCP, Linux-only release binaries (macOS
-cross-compiles but has never been run), one model family out of the box, no
-npm/brew package. See [§ Boundaries](#boundaries).
+cross-compiles but has never been run; Windows runs through WSL, not as a native
+`gopi.exe`), one model family out of the box, no npm/brew package. See
+[§ Boundaries](#boundaries).
 
 ---
 
